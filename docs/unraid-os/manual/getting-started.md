@@ -279,7 +279,6 @@ device. **Note: this method only works for devices 32GB and *smaller*.**
       Linux system:
     - sudo bash ./make_bootable_linux
 
-
 **NOTE**: during the process of running this script, the flash device
 may seem to disappear and reappear on your workstation a few times –
 this is expected behavior.
@@ -333,7 +332,6 @@ There are a number of standard options available for you to select:
 
 - **Unraid OS (Headless)**
 
-
 The standard boot mode for Unraid Server OS, headless mode utilizes less
 memory than desktop mode but relies on the use of another device capable
 of running a web browser to access the webGui for management. If a
@@ -341,7 +339,6 @@ monitor is attached then a console login will be displayed that can be
 used to access the Linux command line on the server.
 
 - **Unraid OS GUI Mode**
-
 
 Loads a lightweight desktop interface on a directly attached monitor
 with a quick-launch menu for accessing the webGui, product
@@ -356,20 +353,17 @@ server remotely using a web browser.
 
 - **Unraid OS Safe Mode (no plugins, no GUI)**
 
-
 In this mode, Unraid suppresses loading any plugins that the user may
 have installed. Use this boot mode to diagnose if plugins are causing
 stability issues on your system.
 
 - **Unraid OS GUI Safe Mode (no plugins)**
 
-
 In this mode, Unraid suppresses loading any plugins that the user may
 have installed. Use this boot mode to diagnose if plugins are causing
 stability issues on your system.
 
 - **Memtest86+**
-
 
 If you suspect faulty RAM on your system, you can use Memtest86+ to test
 it. Please post in the [general
@@ -404,7 +398,7 @@ following information using a secure connection to our cloud servers:
 - The server's LAN IP address.
 - The version number of Unraid OS you are running.
 
-## F.A.Q.
+## F.A.Q
 
 **I'm unable to get the USB Flash Creator to install Unraid to my flash
 device. What do I do?**
@@ -416,8 +410,8 @@ you, you can try installing Unraid using the legacy [manual method
 documented
 here](https://wiki.unraid.net/Articles/Getting_Started#Manual_Install_Method).
 
-**I can't seem to connect to the webGui using http://tower or
-http://tower.local. What do I do?**
+**I can't seem to connect to the webGui using <http://tower> or
+<http://tower.local>. What do I do?**
 
 Sometimes your local DNS server won't resolve by hostname and if that is
 the case here, you can try connecting to the server by IP address. You

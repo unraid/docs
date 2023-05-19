@@ -12,7 +12,7 @@ down to the \'older versions\' section.**\
     author\'s words
     [here](http://lime-technology.com/forum/index.php?topic=31172.msg473847#msg473847).*
 
-1.  Preparation
+1. Preparation
 
     :   Install the perl package, easiest done by installing the
         [NerdPack
@@ -22,18 +22,18 @@ down to the \'older versions\' section.**\
         background by the Detect function of Step 2. Once you have
         completed System Temp setup, perl is no longer needed and can be
         disabled, uninstalled.
-2.  Detection
+2. Detection
 
     :   Press the `<Detect>`{=html} button to search and automatically
         fill in the required drivers, or alternatively - if you know the
         name of the driver(s) - you can fill them in manually.
-3.  Saving and activation
+3. Saving and activation
 
     :   Press the `<Save>`{=html} button to save and activate (load) the
         driver(s). *This will create the file
         **/config/plugins/dynamix.system.temp/drivers.conf** on your
         flash device.*
-4.  Sensor assignment and display
+4. Sensor assignment and display
 
     :   Use the dropdown menus under sensors to assign the appropriate
         sensor for CPU and motherboard readings. You may need to consult
@@ -44,7 +44,7 @@ down to the \'older versions\' section.**\
         selection. *This will create the file
         **/config/plugins/dynamix.system.temp/sensors.conf** on your
         flash device.*
-5.  You are done! You no longer need perl installed, and can remove it.
+5. You are done! You no longer need perl installed, and can remove it.
 
 \
 : **Last but not least: see also the online Help for System Temp!**
@@ -124,10 +124,10 @@ device(s) and labels (optional) for the temperatures you wish to
 monitor. For Dynamix and Simple Features, it must establish the 2 labels
 \'MB Temp\' and \'CPU Temp\'.
 
--   To be used by Dynamix, save this file to your flash drive, in the
+- To be used by Dynamix, save this file to your flash drive, in the
     path **/boot/config/plugins/dynamix**. In Windows, this path would
     be something like **\\\\tower\\flash\\config\\plugins\\dynamix**.
--   If not for Dynamix, save this file into a persistent location on the
+- If not for Dynamix, save this file into a persistent location on the
     flash drive, e.g. **/boot/config** or **/boot/custom**. Later, you
     will probably need a copy command in your \'go\' file, to copy it to
     its correct location in the UnRAID system.
@@ -162,26 +162,26 @@ installed, at least temporarily.\
 \* If it isn\'t already installed, you will need to download an
 appropriate version for your UnRAID release:
 
--   -   For UnRAID v4 series, get it from
+  - -   For UnRAID v4 series, get it from
         [here](http://slackware.cs.utah.edu/pub/slackware/slackware-12.2/slackware/d/perl-5.10.0-i486-1.tgz)
-    -   For UnRAID v5 series, get it from
+  - For UnRAID v5 series, get it from
         [here](http://slackware.cs.utah.edu/pub/slackware/slackware-13.1/slackware/d/perl-5.10.1-i486-1.txz)
         *May need updated/corrected perl links.*
-    -   For UnRAID v6 series, get it from
+  - For UnRAID v6 series, get it from
         [here](http://slackware.cs.utah.edu/pub/slackware/slackware64-14.1/slackware64/d/perl-5.18.1-x86_64-1.txz)
 
--   Copy it to the **packages** folder on your flash drive, creating
+- Copy it to the **packages** folder on your flash drive, creating
     that folder if it does not already exist (**md /boot/packages**).
 
--   Then use **installpkg** and the perl package name to install it (eg.
+- Then use **installpkg** and the perl package name to install it (eg.
     **installpkg /boot/packages/perl-5.18.1-x86_64-1.txz**).
 
--   Or you can use
+- Or you can use
     [UnMENU](http://lime-technology.com/forum/index.php?topic=27051) to
     download and install Perl. It does not need to be set for
     re-install.
 
--   Or for Dynamix, you can modify the Dynamix System Temp plugin itself
+- Or for Dynamix, you can modify the Dynamix System Temp plugin itself
     (currently for v5 it\'s
     **/boot/config/plugins/dynamix.system.temp-2.1.0-noarch-bergware.plg**),
     by locating the line ending with \"# perl scripting\" and replacing
@@ -215,7 +215,7 @@ output should be similar to:
 `AMD Family 15h thermal sensors...                           No`\
 `AMD Family 15h power sensors...                             No`\
 `Intel digital thermal sensor...                             Success!`\
-``    (driver `coretemp') ``\
+``(driver `coretemp')``\
 `Intel AMB FB-DIMM thermal sensor...                         No`\
 `VIA C7 thermal sensor...                                    No`\
 `VIA Nano thermal sensor...                                  No`\
@@ -229,7 +229,7 @@ output should be similar to:
 `` Trying family `SMSC'...                                     No ``\
 `` Trying family `VIA/Winbond/Nuvoton/Fintek'...               Yes ``\
 `` Found `Winbond W83627DHG-P/W83527HG Super IO Sensors'       Success! ``\
-``    (address 0x290, driver `w83627ehf') ``\
+``(address 0x290, driver `w83627ehf')``\
 `Probing for Super-I/O at 0x4e/0x4f`\
 `` Trying family `National Semiconductor/ITE'...               No ``\
 `` Trying family `SMSC'...                                     No ``\
@@ -259,7 +259,7 @@ output should be similar to:
 `reasonably well on most systems, it has been reported to cause trouble`\
 `on some systems.`\
 `Do you want to probe the I2C/SMBus adapters now? (YES/no): YES`\
-`` Using driver `i2c-i801' for device 0000:00:1f.3: Intel ICH10  ``\
+``Using driver `i2c-i801' for device 0000:00:1f.3: Intel ICH10``\
 `Module i2c-dev loaded successfully.`\
 \
 `Next adapter: SMBus I801 adapter at 0400 (i2c-0)`\
@@ -268,23 +268,23 @@ output should be similar to:
 `` Probing for `Analog Devices ADM1033'...                     No ``\
 `` Probing for `Analog Devices ADM1034'...                     No ``\
 `` Probing for `SPD EEPROM'...                                 Yes ``\
-`   (confidence 8, not a hardware monitoring chip)`\
+`(confidence 8, not a hardware monitoring chip)`\
 `` Probing for `EDID EEPROM'...                                No ``\
 `Client found at address 0x52`\
 `` Probing for `Analog Devices ADM1033'...                     No ``\
 `` Probing for `Analog Devices ADM1034'...                     No ``\
 `` Probing for `SPD EEPROM'...                                 Yes ``\
-`   (confidence 8, not a hardware monitoring chip)`\
+`(confidence 8, not a hardware monitoring chip)`\
 \
 `Now follows a summary of the probes I have just done.`\
 `Just press ENTER to continue:`\
 \
 `` Driver `w83627ehf': ``\
-` * ISA bus, address 0x290`\
-``    Chip `Winbond W83627DHG-P/W83527HG Super IO Sensors' (confidence: 9) ``\
+`* ISA bus, address 0x290`\
+``Chip `Winbond W83627DHG-P/W83527HG Super IO Sensors' (confidence: 9)``\
 \
 `` Driver `coretemp': ``\
-``  * Chip `Intel digital thermal sensor' (confidence: 9) ``\
+``* Chip `Intel digital thermal sensor' (confidence: 9)``\
 `Do you want to generate /etc/sysconfig/lm_sensors? (yes/NO): NO`\
 `To load everything that is needed, add this to one of the system`\
 `initialization scripts (e.g. /etc/rc.d/rc.local):`\

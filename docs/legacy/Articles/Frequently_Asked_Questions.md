@@ -18,7 +18,7 @@ website](https://unraid.net/pricing) and redeem the code for a license
 later when your server is up and running. The activation code will be on
 your receipt.
 
-### How to Redeem a License Activation Code:
+### How to Redeem a License Activation Code
 
 First, buy an activation code via [our
 website](https://unraid.net/pricing). Your unique activation code will
@@ -29,16 +29,16 @@ guide](Articles/Getting_Started "wikilink") to set up an Unraid server.
 
 Once your server is up and running:
 
-1.  Login to your Unraid server's webgui. (http://tower or
-    http://tower.local from Mac by default)
-2.  For Unraid 6.10 and newer, Sign in to your Unraid.net account (or
+1. Login to your Unraid server's webgui. (<http://tower> or
+    <http://tower.local> from Mac by default)
+2. For Unraid 6.10 and newer, Sign in to your Unraid.net account (or
     [create one](https://forums.unraid.net/register/)) from the
     [top-right of the
     webgui](My_Servers#Navigating_the_User_Profile_Component "wikilink")
     and select "Redeem Activation Code" and enter the activation code to
     activate your license. For Unraid 6.9 and older, navigate to the
     Tools -\> Registration page in the webGui and click "Purchase Key."
-3.  Select the corresponding license you purchased via activation code
+3. Select the corresponding license you purchased via activation code
     and enter the activation code in the "Your Activation Code" box to
     complete the activation process. Your registration key will be
     emailed to you with instructions for installation! *Note: Activation
@@ -120,12 +120,12 @@ to a different PC/Mac.
 
 Next:
 
-1.  Shutdown the server, remove the USB flash and install the USB into
+1. Shutdown the server, remove the USB flash and install the USB into
     the other computer.
-2.  Open the USB folder and drag and drop the .key file into the /config
+2. Open the USB folder and drag and drop the .key file into the /config
     folder. Please ensure this is the only .key file present (delete any
     others).
-3.  Then, safely eject/remove the flash and reinstall in your server and
+3. Then, safely eject/remove the flash and reinstall in your server and
     reboot.
 
 Alternately, if your server is running and your flash share is visible
@@ -255,12 +255,12 @@ Unraid webgui.
 To reset your [root
 password](Articles/Getting_Started#Connecting_to_the_Unraid_webGui "wikilink"):
 
-1.  Shutdown your server.
-2.  Plug your USB flash into a laptop or another computer.
-3.  Open the USB folder and delete the files "config/shadow" and
+1. Shutdown your server.
+2. Plug your USB flash into a laptop or another computer.
+3. Open the USB folder and delete the files "config/shadow" and
     "config/smbpasswd". *(DO NOT delete "config/passwd).* This will
     reset all user passwords, including the root user to blank.
-4.  Now, safely eject your USB and reboot it on your Unraid server and
+4. Now, safely eject your USB and reboot it on your Unraid server and
     you’re in. You can then set a new password in the Users tab of the
     Unraid webgui.
 
@@ -271,16 +271,16 @@ remember it or write it down in a secure, locked place!*
 
 ## How do I completely start Unraid OS from scratch? How do I wipe my existing configuration / filesystems?
 
-1.  Ensure there is no data on the system that you want or need.
-2.  Stop the array and shut down the server.
-3.  Remove the USB flash device.
-4.  Using a Windows or Mac computer, reformat the flash using the USB
+1. Ensure there is no data on the system that you want or need.
+2. Stop the array and shut down the server.
+3. Remove the USB flash device.
+4. Using a Windows or Mac computer, reformat the flash using the USB
     Flash Creator tool from our website.
-5.  Reinstall the flash in the server and boot it up.
-6.  Click on the "terminal" icon in the top right corner of the webGui.
-7.  From the command line, type: lsblk
-8.  Note all the devices present excluding your USB flash device.
-9.  Now for each device in the list (excluding the USB flash device),
+5. Reinstall the flash in the server and boot it up.
+6. Click on the "terminal" icon in the top right corner of the webGui.
+7. From the command line, type: lsblk
+8. Note all the devices present excluding your USB flash device.
+9. Now for each device in the list (excluding the USB flash device),
     type the following command: wipefs /dev/sdX (replacing X with the
     letter of the device from the previous steps). This will remove the
     filesystem from the device so it can be reformatted by Unraid OS.
@@ -433,13 +433,13 @@ Any device larger then 2TB uses GPT-style partition table.
 
 For Unraid OS version 6.8.x and earlier:
 
-` Starting position of partition 1 for any storage device is 32KiB from start of device (regardless of whether MBR or GPT).`
+`Starting position of partition 1 for any storage device is 32KiB from start of device (regardless of whether MBR or GPT).`
 
 Starting with Unraid OS 6.9:
 
-` Default starting position of partition 1 for rotational devices is 32KiB from start of device (regardless of whether MBR or GPT).`
+`Default starting position of partition 1 for rotational devices is 32KiB from start of device (regardless of whether MBR or GPT).`
 
-` Default starting position of partition 1 for non-rotational devices is 1MiB from start of device (regardless of whether MBR or GPT)`
+`Default starting position of partition 1 for non-rotational devices is 1MiB from start of device (regardless of whether MBR or GPT)`
 
 Presuming user has valid parity and he wants to preserve data:
 

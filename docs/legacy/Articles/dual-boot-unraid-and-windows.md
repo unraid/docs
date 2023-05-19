@@ -40,32 +40,32 @@ sectors used by Windows partition.
 
 Multiple the number of desired GB for the Windows partition by 2,000,000
 
-`  12 *2,000,000 = 24,000,000`
+`12 *2,000,000 = 24,000,000`
 
 This will be the starting sector for the cache partition.
 
 ## Partition Disk
 
-1.  Boot Slackware to partition disk
-2.  Run fdisk
-3.  Change units to sectors (u command)
-4.  You must create the partitions in this order:
-    1.  Create a new, primary partition, number 1, starting at sector
+1. Boot Slackware to partition disk
+2. Run fdisk
+3. Change units to sectors (u command)
+4. You must create the partitions in this order:
+    1. Create a new, primary partition, number 1, starting at sector
         24,000,000, size +300G
-    2.  Create a new, primary partition, number 2, starting at sector 63
+    2. Create a new, primary partition, number 2, starting at sector 63
         \[default\] (or 64) size \[accept default\]
-    3.  Create a new extended partition, number 3, using the whole rest
+    3. Create a new extended partition, number 3, using the whole rest
         of the disk.
-5.  Change the type of partition 2 to type 7 (NTFS)
-6.  Write the partition table and shutdown.
+5. Change the type of partition 2 to type 7 (NTFS)
+6. Write the partition table and shutdown.
 
 ## Install Windows
 
-1.  Boot Windows Installation CD.
-2.  When you boot Windows Installation, and get to the partitions,
+1. Boot Windows Installation CD.
+2. When you boot Windows Installation, and get to the partitions,
     partition 2 should be listed first and have drive letter C, and be
     12GB in size. That will be where you install Windows.
-3.  Proceed with a normal Windows install to that partition.
+3. Proceed with a normal Windows install to that partition.
     - Be sure to also add your mobo, NIC, video cards, and other drivers
       after getting Windows installed. You should also take care of any
       necessary service packs and Windows Updates.
@@ -81,7 +81,7 @@ drive.
 Before shutting down Windows, open c:\boot.ini and see if in the
 \[operating systems\] section it says:
 
-`    multi(0)disk(0)rdisk(0)partition(1)\WINDOWS=.......`
+`multi(0)disk(0)rdisk(0)partition(1)\WINDOWS=.......`
 
 That means Windows was installed to partition 1 on the first disk. So
 Windows reordered the partitions to make the Windows partition the first
@@ -89,23 +89,23 @@ partition. (Insert various expletives here).
 
 To fix this brain-dead move by Windows, take these steps:
 
-1.  While still in Windows, duplicate the line in the \[operating
+1. While still in Windows, duplicate the line in the \[operating
     systems\] section of boot.ini, and change the second copy so it is
     like this
 
-`  multi(0)disk(0)rdisk(0)partition(1)\WINDOWS=.......`
-`  multi(0)disk(0)rdisk(0)partition(2)\WINDOWS=.......`
+`multi(0)disk(0)rdisk(0)partition(1)\WINDOWS=.......`
+`multi(0)disk(0)rdisk(0)partition(2)\WINDOWS=.......`
 
-1.  Boot Slackware DVD
-2.  Run sfdisk -luS and write down the starting and ending sectors for
+1. Boot Slackware DVD
+2. Run sfdisk -luS and write down the starting and ending sectors for
     partitions 1 and 2.
-3.  Then run fdisk on the cache drive, change the units to sectors,
+3. Then run fdisk on the cache drive, change the units to sectors,
     delete partitions 1 and 2, and recreate them using the exact same
     starting and ending sectors you captured using sfdisk, but in the
     proper order, with the cache partition first as partition1, and the
     Windows partition second as partition 2.
-4.  Change the type of the Windows partition back to 7.
-5.  Reboot Windows and select the SECOND line in the Windows boot menu,
+4. Change the type of the Windows partition back to 7.
+5. Reboot Windows and select the SECOND line in the Windows boot menu,
     and make sure it works. Once you have confirmed it works, you can
     remove the first boot option in the boot.ini, and change the
     “default” to match the “partition(2)\WINDOWS” line.

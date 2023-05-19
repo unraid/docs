@@ -3,16 +3,16 @@ but is still fairly new.**`</font>`{=html}
 
 **Why would you want to shrink your array?**
 
--   Maybe you have recently found a red ball on one of your drives, and
+- Maybe you have recently found a red ball on one of your drives, and
     you want to take it out of the array. You\'ve got enough extra
     space, and don\'t need to replace the drive.
--   Or you are consolidating drives, replacing multiple smaller drives
+- Or you are consolidating drives, replacing multiple smaller drives
     with new and larger ones.
--   Or you have an array drive that you no longer want in the array, for
+- Or you have an array drive that you no longer want in the array, for
     whatever reason, and you don\'t want to replace it.
--   Or you are out of SATA ports, and have emptied a smaller drive so
+- Or you are out of SATA ports, and have emptied a smaller drive so
     you can remove it, and reuse the SATA port.
--   Or you wish to take one or more data drives to a new or different
+- Or you wish to take one or more data drives to a new or different
     array, intact with all its data.
 
 \
@@ -44,43 +44,43 @@ which one will work best for your situation.
 :   *Note: this section has been tested for 6.2, but is still fairly
     new*
 
--   This method `<font color="red">`{=html}does not keep the drive\'s
+- This method `<font color="red">`{=html}does not keep the drive\'s
     data within the array`</font>`{=html}. If the drive to be removed
     has data you want to stay in the array, you must move it yourself to
     the other data drives. Parity will be built based entirely and only
     on the remaining drives and their contents.
--   This method is best if you are removing more than one drive.
--   This method should be used if you need to preserve the contents of
+- This method is best if you are removing more than one drive.
+- This method should be used if you need to preserve the contents of
     the data drive you are removing from the array.
--   This method MUST be used if the drive cannot be cleared, that is, it
+- This method MUST be used if the drive cannot be cleared, that is, it
     is missing, disabled, or has bad sectors.
--   This method does NOT preserve parity, so parity will have to be
+- This method does NOT preserve parity, so parity will have to be
     rebuilt once the array assignments have been adjusted.
 
 ##### Procedure
 
-1.  Make sure that the drive or drives you are removing have been
+1. Make sure that the drive or drives you are removing have been
     removed from any inclusions or exclusions for all shares, including
     in the global share settings. Shares should be changed from the
     default of \"All\" to \"Include\". This include list should contain
     only the drives that will be retained.
-2.  Make sure you have a copy of your array assignments, especially the
+2. Make sure you have a copy of your array assignments, especially the
     parity drive. You may need this list if the \"Retain current
     configuration\" option doesn\'t work correctly
-3.  Stop the array (if it is started)
-4.  Go to **Tools** then **New Config**
-5.  Click on the **Retain current configuration** box (says **None** at
+3. Stop the array (if it is started)
+4. Go to **Tools** then **New Config**
+5. Click on the **Retain current configuration** box (says **None** at
     first), click on the box for **All**, then click on **close**
-6.  Click on the box for **Yes I want to do this**, then click **Apply**
+6. Click on the box for **Yes I want to do this**, then click **Apply**
     then **Done**
-7.  Return to the Main page, and check all assignments. If any are
+7. Return to the Main page, and check all assignments. If any are
     missing, correct them. Unassign the drive(s) you are removing.
     **Double check all of the assignments, especially the parity
     drive(s)!**
-8.  Do not click the check box for **Parity is already valid**; make
+8. Do not click the check box for **Parity is already valid**; make
     sure it is NOT checked; parity is not valid now and won\'t be until
     the parity build completes
-9.  Start the array to commit the changes; system is usable now, but it
+9. Start the array to commit the changes; system is usable now, but it
     will take a long time rebuilding parity
 
 \
@@ -91,22 +91,22 @@ which one will work best for your situation.
     parity protection - this is a new method*
 :   *Note: this section has been tested but is still fairly new*
 
--   This method preserves parity protection at all times.
--   This method can only be used if it\'s a good drive that is
+- This method preserves parity protection at all times.
+- This method can only be used if it\'s a good drive that is
     completely empty, is mounted in the array, and can be completely
     cleared.
--   This method is limited to removing only one drive at a time.
--   As stated above, the drive must be completely empty. If there are
+- This method is limited to removing only one drive at a time.
+- As stated above, the drive must be completely empty. If there are
     still any files on it (including hidden ones), they must be moved to
     another drive, or deleted.
--   *One quick way to clean a drive is reformat it! To format an array
+- *One quick way to clean a drive is reformat it! To format an array
     drive, you stop the array and then on the Main page click on the
     link for the drive and change the file system type to something
     different than it currently is, then restart the array. You will
     then be presented with an option to format it. Formatting a drive
     removes all of its data, and the parity drive is updated
     accordingly, so the data cannot be easily recovered.*
--   Explanatory note: \"*Since you are going to clear the drive anyway,
+- Explanatory note: \"*Since you are going to clear the drive anyway,
     why do I have to empty it? And what is the purpose of this
     strange*clear-me*folder?*\" Yes it seems a bit draconian to require
     the drive to be empty since we\'re about to clear and empty it in
@@ -119,47 +119,47 @@ which one will work best for your situation.
 
 ##### Procedure {#procedure_1}
 
-1.  Make sure that the drive you are removing has been removed from any
+1. Make sure that the drive you are removing has been removed from any
     inclusions or exclusions for all shares, including in the global
     share settings.
-2.  Make sure the array is started, with the drive assigned and mounted.
-3.  Make sure you have a copy of your array assignments, especially the
+2. Make sure the array is started, with the drive assigned and mounted.
+3. Make sure you have a copy of your array assignments, especially the
     parity drive. You may need this list if the \"Retain current
     configuration\" option doesn\'t work correctly.
-4.  It is **highly recommended** to turn on **reconstruct write**, as
+4. It is **highly recommended** to turn on **reconstruct write**, as
     the write method (sometimes called \'Turbo write\'). With it on, the
     script can run 2 to 3 times as fast, saving hours!
     In **Settings** -\> **Disk Settings**, change **Tunable
     (md_write_method)** to **reconstruct write**.
-5.  Make sure ALL data has been copied off the drive; drive MUST be
+5. Make sure ALL data has been copied off the drive; drive MUST be
     completely empty for the clearing script to work.
-6.  Double check that there are no files or folders left on the drive.
+6. Double check that there are no files or folders left on the drive.
     *Note: one quick way to clean a drive is reformat it! (once you\'re
     sure nothing of importance is left of course!)*
-7.  Create a single folder on the drive with the name **clear-me** -
+7. Create a single folder on the drive with the name **clear-me** -
     exactly 7 lowercase letters and one hyphen
-8.  Run the **[clear an array
+8. Run the **[clear an array
     drive](https://forums.unraid.net/topic/48707-additional-scripts-for-userscripts-plugin/#comment-490808)**
     script from the [User
     Scripts](https://forums.unraid.net/topic/48286-plugin-ca-user-scripts/)
     plugin (or run it standalone, at a command prompt).
-    -   If you prepared the drive correctly, it will completely and
+    - If you prepared the drive correctly, it will completely and
         safely zero out the drive. If you didn\'t prepare the drive
         correctly, the script will refuse to run, in order to avoid any
         chance of data loss.
-    -   If the script refuses to run, indicating it did not find a
+    - If the script refuses to run, indicating it did not find a
         marked and empty drive, then very likely there are still files
         on your drive. Check for hidden files. ALL files must be
         removed!
-    -   Clearing takes a loooong time! Progress info will be displayed,
+    - Clearing takes a loooong time! Progress info will be displayed,
         in 6.2 or later. Prior to 6.2, nothing will show until it
         finishes.
-    -   If running in User Scripts, the browser tab will hang for the
+    - If running in User Scripts, the browser tab will hang for the
         entire clearing process.
-    -   While the script is running, the Main screen may show invalid
+    - While the script is running, the Main screen may show invalid
         numbers for the drive, ignore them. **Important! Do not try to
         access the drive, at all!**
-9.  When the clearing is complete, click done and stop the array - do
+9. When the clearing is complete, click done and stop the array - do
     not remove the cleared disk yet.
 10. Go to **Tools** then **New Config**
 11. Click on the **Retain current configuration** box (says **None** at
@@ -202,32 +202,32 @@ which one will work best for your situation.
 
 ## For Unraid v6.0 and 6.1 and possibly 5.0 {#for_unraid_v6.0_and_6.1_and_possibly_5.0}
 
--   **Notice: This section has been partially rewritten, is not well
+- **Notice: This section has been partially rewritten, is not well
     tested yet. But it\'s based on the old tried and true method for
     removing drives**
--   *These instructions assume you are using unRAID v6, but may work for
+- *These instructions assume you are using unRAID v6, but may work for
     unRAID v5 also.*
--   *This procedure starts by removing all drive assignments. You will
+- *This procedure starts by removing all drive assignments. You will
     then need to reenter all of them from your notes, making any changes
     you desire.*
 
 ##### Procedure {#procedure_2}
 
-1.  Take a screenshot of your current array assignments, or make good
+1. Take a screenshot of your current array assignments, or make good
     notes of them
-2.  Make sure that the drive or drives you are removing have been
+2. Make sure that the drive or drives you are removing have been
     removed from any inclusions or exclusions for all shares, including
     in the global share settings.
-3.  Stop the array (if it is started)
-4.  Go to `<Tools>`{=html} and click `<New config>`{=html}, then
+3. Stop the array (if it is started)
+4. Go to `<Tools>`{=html} and click `<New config>`{=html}, then
     `<Apply>`{=html}, then `<Done>`{=html}
-5.  Reassign all disks except the ones you are removing, using your
+5. Reassign all disks except the ones you are removing, using your
     notes or screen shot
-6.  Double check that your Parity disk(s) are assigned correctly!
-7.  Do not click the check box for \"Parity is already valid\"; make
+6. Double check that your Parity disk(s) are assigned correctly!
+7. Do not click the check box for \"Parity is already valid\"; make
     sure it is NOT checked; parity is not valid now and won\'t be until
     the parity build completes
-8.  Start the array - will take a long time while it rebuilds parity
+8. Start the array - will take a long time while it rebuilds parity
 
 ##### Alternate procedure that maintains parity protection {#alternate_procedure_that_maintains_parity_protection}
 

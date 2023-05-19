@@ -35,14 +35,14 @@ The Unraid Server OS is designed to be installed on, and boot from a USB
 Flash storage device, 512MB or larger. Use a high quality Flash drive
 from reputable manufacturers such as:
 
--   Lexar
--   PNY
--   Samsung
--   Kingston
--   And many more listed in the [Hardware Compatibility#USB Flash
+- Lexar
+- PNY
+- Samsung
+- Kingston
+- And many more listed in the [Hardware Compatibility#USB Flash
     Drives](Hardware_Compatibility#USB_Flash_Drives "wikilink") section
 
-`Note: If you are upgrading from a pre-3.0 release of unRAID Server, please read the `[`Pre-3.0 Upgrade Instructions`](Pre-3.0_Upgrade_Instructions "wikilink")` first.`
+`Note: If you are upgrading from a pre-3.0 release of unRAID Server, please read the`[`Pre-3.0 Upgrade Instructions`](Pre-3.0_Upgrade_Instructions "wikilink")`first.`
 
 \
 
@@ -53,10 +53,10 @@ from reputable manufacturers such as:
 **Step 1** Plug the Flash into your PC and re-format it using Windows
 (right-click the Flash under **My Computer** and select **Format**):
 
--   For **File system**, select **FAT32**
--   For **Volume label**, enter **UNRAID** (exactly 6 capital letters)
--   Select **Quick Format** and click **Start**
--   For many, the above steps were all that was necessary to format the
+- For **File system**, select **FAT32**
+- For **Volume label**, enter **UNRAID** (exactly 6 capital letters)
+- Select **Quick Format** and click **Start**
+- For many, the above steps were all that was necessary to format the
     drive. For others, selecting a file system of **FAT** or **FAT16**
     was necessary, and others found that formatting it with the **HP
     Flash Formatter Tool** was required, or even other steps. If you
@@ -97,9 +97,9 @@ select your Flash drive to be safely removed.\
 **Step 1** Plug the Flash into your PC and re-format it using Windows
 (Right-Click the Flash under **Computer** and select **Format**):
 
--   For **File system**, leave it as **Default**
--   For **Volume label**, enter **UNRAID** (exactly 6 capital letters)
--   Check the **Quick Format** box and click **Start**
+- For **File system**, leave it as **Default**
+- For **Volume label**, enter **UNRAID** (exactly 6 capital letters)
+- Check the **Quick Format** box and click **Start**
 
 If you determine that the Windows formatting did not succeed in creating
 a bootable USB drive, then see the Advanced tips at the bottom.
@@ -119,83 +119,83 @@ close any open windows and eject the Flash drive.\
 
 You\'ll need to download the following:
 
--   [unetbootin](http://unetbootin.sourceforge.net) - installs unRAID on
+- [unetbootin](http://unetbootin.sourceforge.net) - installs unRAID on
     your flash drive for you
--   [syslinux](http://www.kernel.org/pub/linux/utils/boot/syslinux/) - a
+- [syslinux](http://www.kernel.org/pub/linux/utils/boot/syslinux/) - a
     collection of linux tools that will allow you to make the drive
     bootable
--   unRAID - don\'t unzip it\...
+- unRAID - don\'t unzip it\...
 
 **1. Plug in your USB Flash drive and format it using Disk Utility.**
 
--   Open Disk Utility (Applications -\> Utilities-\> Disk Utility) and
+- Open Disk Utility (Applications -\> Utilities-\> Disk Utility) and
     choose your device from the list on the left - note: In recent
     versions of macOS you will need to select View \> Show All Devices.
     Please make sure to read carefully to know when to select \"Device\"
     or \"Partition\"
--   Select Partition
--   Choose Partition Layout: 1 Partition
--   Call it \'UNRAID\' (no spaces, all caps)
--   Click Options and make sure Master Boot Record is selected
--   Click Apply and your disk will format
+- Select Partition
+- Choose Partition Layout: 1 Partition
+- Call it \'UNRAID\' (no spaces, all caps)
+- Click Options and make sure Master Boot Record is selected
+- Click Apply and your disk will format
 
 **2. Verify the new partition**
 
--   Choose the UNRAID partition from the list on the left
--   Select First Aid and Verify Disk
--   Check the \"Show Details\" box and get the device path for your
+- Choose the UNRAID partition from the list on the left
+- Select First Aid and Verify Disk
+- Check the \"Show Details\" box and get the device path for your
     disk, ex: /dev/disk2s1
--   Unmount the **partition** by clicking \"Unmount\" in the top menu
--   leave Disk Utility open, you\'ll need it again
+- Unmount the **partition** by clicking \"Unmount\" in the top menu
+- leave Disk Utility open, you\'ll need it again
 
 **3. Make the partition Bootable**
 
--   Open Terminal (Applications -\> Utilities -\> Terminal)
--   Now you\'ll need the raw disk device name.. so if your partition
+- Open Terminal (Applications -\> Utilities -\> Terminal)
+- Now you\'ll need the raw disk device name.. so if your partition
     device path was /dev/disk2s1, the raw device name is /dev/rdisk2,
     basically you drop the s1 off the end (that\'s the partition number)
     and add in a r before disk
--   Type the following command, substituting `<device>`{=html} for your
+- Type the following command, substituting `<device>`{=html} for your
     raw deivce name ex: /dev/rdisk2 and press enter
 
-` fdisk -e ``<device>`{=html}
+`fdisk -e ``<device>`{=html}
 
--   At the \> prompt type the following and press enter between each
+- At the \> prompt type the following and press enter between each
 
-` f 1`\
-` write`\
-` exit`
+`f 1`\
+`write`\
+`exit`
 
 Note: if you get an error about the device not being available for
 writing, ensure you have Unmounted the partition in Disk Utility
 
--   Unmount the partition again in Disk Utility (the above command will
+- Unmount the partition again in Disk Utility (the above command will
     cause it to be remounted)
--   Unzip/tar your syslinux download (you can leave it in the Downloads
+- Unzip/tar your syslinux download (you can leave it in the Downloads
     folder
--   cd to that folder in terminal by typing the following (you may need
+- cd to that folder in terminal by typing the following (you may need
     to change the version number to match your download)
 
-` cd ~/Downloads/syslinux-4.05/mbr`
+`cd ~/Downloads/syslinux-4.05/mbr`
 
--   Install the bootable MBR on your flash drive with the following
+- Install the bootable MBR on your flash drive with the following
     command (again substituting `<device>`{=html} for your raw device
     name)
 
-` dd conv=notrunc bs=440 count=1 if=mbr.bin of=``<device>`{=html}
+`dd conv=notrunc bs=440 count=1 if=mbr.bin of=``<device>`{=html}
 
 **4. Install unRAID on your prepared Flash Drive**
 
--   Change the extension of your unRAID download from zip to iso
--   Open unetbootin (it will need your password)
--   Choose Disk Image at the bottom and browse for your unRAID iso
--   Choose the device path for your partition (it\'s probably already
+- Change the extension of your unRAID download from zip to iso
+- Open unetbootin (it will need your password)
+- Choose Disk Image at the bottom and browse for your unRAID iso
+- Choose the device path for your partition (it\'s probably already
     selected)
--   Click OK
+- Click OK
 
 Note: if you get an error about overwriting menu.c32, click Yes To All
 
--   When it finishes, you can eject your USB Flash Drive and put it in
+- When it finishes, you can eject your USB Flash Drive and put it in
     your unRAID server and power it up
 
 I Think this would work with Windows, Linux versions also. So if any one
@@ -240,7 +240,7 @@ more advanced \'modifications\'. The following tips are what users have
 found to work, in different situations. If one does not work for you,
 try another.
 
--   If your flash drive had pre-installed \"U3\" software, it will need
+- If your flash drive had pre-installed \"U3\" software, it will need
     to be removed before you format and install unRAID on it. U3
     Un-Install software is available
     [here](http://www.u3.com/uninstall/). A U3 removal tool specific to
@@ -250,7 +250,8 @@ try another.
 ```{=html}
 <!-- -->
 ```
--   Some instructions for loading **syslinux** on your flash drive leave
+
+- Some instructions for loading **syslinux** on your flash drive leave
     off the \"**-ma**\" options of the command. If your flash drive does
     not have a preloaded master boot record and a partition marked as
     \"active\", then it is unlikely to boot unless you use the **-ma**
@@ -259,12 +260,14 @@ try another.
 ```{=html}
 <!-- -->
 ```
--   Try formatting the USB drive as FAT instead of FAT32
+
+- Try formatting the USB drive as FAT instead of FAT32
 
 ```{=html}
 <!-- -->
 ```
--   You may need to use the **HP formatting tool** to make your flash
+
+- You may need to use the **HP formatting tool** to make your flash
     drive bootable on your BIOS. It sets the Cylinders/Heads/Sector
     geometry of a flash drive to an alternate set of geometry values.
     The alternate geometry will often will make it possible to use your
@@ -277,7 +280,8 @@ try another.
 ```{=html}
 <!-- -->
 ```
--   Apparently, there is more than one version of the **HP format
+
+- Apparently, there is more than one version of the **HP format
     tool**. The version of the **HP USB Format Tool** that works best
     has a file name of **SP27213.exe**. Some have had problems with the
     version named **SP27608.exe**. (eg. Sandisk 16GB Cruzer Contour &
@@ -288,7 +292,8 @@ try another.
 ```{=html}
 <!-- -->
 ```
--   If it appears as if the flash drive tries to boot, but hangs while
+
+- If it appears as if the flash drive tries to boot, but hangs while
     decompressing the **bzroot** or **bzimage** files on the flash, it
     is possible that either the **bzroot** or **bzimage** file is
     corrupt or incomplete. This could happen if you did not safely eject
@@ -299,7 +304,8 @@ try another.
 ```{=html}
 <!-- -->
 ```
--   If it appears as if the flash drive tries to boot, but only gets
+
+- If it appears as if the flash drive tries to boot, but only gets
     part way before hanging, you may need to add additional options to
     your **syslinux.cfg** file on your flash drive to boot your
     motherboard. Tips on how to proceed are here: [USB Boot
@@ -308,7 +314,8 @@ try another.
 ```{=html}
 <!-- -->
 ```
--   If it appears as if the flash drive gets part way through the boot
+
+- If it appears as if the flash drive gets part way through the boot
     process but stops when loading **bzroot**, you may need to use the
     latest version of **syslinux** in the
     [downloads](http://lime-technology.com/dnlds) folder at
@@ -325,7 +332,8 @@ try another.
 ```{=html}
 <!-- -->
 ```
--   If it appears as if the flash drive gets part way through the boot
+
+- If it appears as if the flash drive gets part way through the boot
     process but reboots when loading **bzroot**, one user found that he
     fixed it be replacing his graphics card with an older (possibly more
     basic) graphics card.
@@ -334,7 +342,8 @@ try another.
 ```{=html}
 <!-- -->
 ```
--   A user has created another procedure based on the **makebootfat**
+
+- A user has created another procedure based on the **makebootfat**
     tool. This procedure seems especially useful for newer Intel boards,
     such as boards based on the P965, P35, and P45 chipsets and their G
     variants. See
@@ -345,7 +354,8 @@ try another.
 ```{=html}
 <!-- -->
 ```
--   Also see
+
+- Also see
     [this](http://lime-technology.com/forum/index.php?topic=922.0)
     thread (uses a Knoppix installation or Live CD), if you have a board
     that will only boot from a flash drive as a USB-ZIP drive. Similar
@@ -355,7 +365,8 @@ try another.
 ```{=html}
 <!-- -->
 ```
--   With some older motherboards, it may not be possible to boot from a
+
+- With some older motherboards, it may not be possible to boot from a
     USB drive. Sometimes, upgrading to the latest BIOS for your board
     will add support. But if not, there are still other choices. The
     best may be to find a newer motherboard! There also are ways to boot
@@ -381,7 +392,8 @@ try another.
 ```{=html}
 <!-- -->
 ```
--   And last of all, try upgrading the BIOS of your motherboard. A later
+
+- And last of all, try upgrading the BIOS of your motherboard. A later
     BIOS may have better support for booting from USB.
 
 [Category: Getting started](Category:_Getting_started "wikilink")

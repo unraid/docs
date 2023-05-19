@@ -11,8 +11,8 @@ you that it needs to support common plugins, containers, and virtual
 machines, but you can also create your own shares for storing other
 types of data. Unraid supports 2 types of share:
 
--   User Shares
--   Disk Shares
+- User Shares
+- Disk Shares
 
 You can control which of these types of shares are to be used under
 Settings-\>Global Share Settings. The default on Unraid is to have User
@@ -48,7 +48,7 @@ is just a logical view imposed on top of the underlying physical file
 system so you can see the same files if you look at the physical level
 (as described below for Disk Shares.
 
--   Current releases of Unraid also include the mount point
+- Current releases of Unraid also include the mount point
     ***/mnt/user0*** that shows the files in User Shares OMITTING any
     files for a share that are on any pool. This is just a different
     view of the files on your server. *However This mount point is now
@@ -62,17 +62,17 @@ settings.
 Which physical drive in the main array is used to store a physical file
 is controlled by a number of settings for the share:
 
--   **Allocation method**: This has various options:
-    -   **Most Free**: This option means that new files should go to the
+- **Allocation method**: This has various options:
+  - **Most Free**: This option means that new files should go to the
         disk with the most free space. It has the downside that one is
         continually switching drives which keeps the drive involved spun
         up.
-    -   **Fill Up**: This option means simply fill up drives in disk
+  - **Fill Up**: This option means simply fill up drives in disk
         order until the free space falls below the Minimum Free Space
         setting, and when that happens move onto the next disk. Many
         users like this setting because their content is static in
         nature to they find this a simple way to manage their storage.
-    -   **High Water**: (default) This option attempts to provide a
+  - **High Water**: (default) This option attempts to provide a
         compromise between continually switching drives as is caused by
         the **Most Free** setting and filling up disks in a sensible
         manner, but not fill each drive to capacity before using the
@@ -97,12 +97,12 @@ is controlled by a number of settings for the share:
             used in disk order until it only has 1TB free space.
         -   etc
 
--   **Included** or **excluded** drives: These settings allow you to
+- **Included** or **excluded** drives: These settings allow you to
     control which array drives can hold files for the share. Never set
     both values, set only the one that is most convenient for you. If no
     drives are specified under these settings then all drives allowed
     under *Settings \>\> Global Share settings* are allowed.
--   **Split level**: This setting controls how files should be grouped.
+- **Split level**: This setting controls how files should be grouped.
 
 :   **Important**: in the event of there being contentions between the
     **Minimum free space**, **Split Level** and the **Allocation
@@ -291,52 +291,52 @@ levels when doing this as explained after the figure.
 Here is an explanation of the different split levels, referenced to the
 folder structure above;
 
-1.  Level 1
-    -   This is what you have if in the GUI you select the
+1. Level 1
+    - This is what you have if in the GUI you select the
         "Automatically split only the top level directory as required"
         option.
-    -   The top level Media share can be created on every disk.
-    -   Every other folder under the Media share must remain on a single
+    - The top level Media share can be created on every disk.
+    - Every other folder under the Media share must remain on a single
         disk.
-    -   This setting does not allow the SD Movies, HD Movies, Kids
+    - This setting does not allow the SD Movies, HD Movies, Kids
         Movies or TV Shows folders to spread to multiple disks.
-    -   This setting is too low for all the media.
-2.  Level 2
-    -   this is what you have if in the GUI you select the
+    - This setting is too low for all the media.
+2. Level 2
+    - this is what you have if in the GUI you select the
         "Automatically split only the top two directory levels as
         required" option.
-    -   The top level Media share can be created on every disk.
-    -   The SD Movies, HD Movies, Kids Movies and TV Shows folders can
+    - The top level Media share can be created on every disk.
+    - The SD Movies, HD Movies, Kids Movies and TV Shows folders can
         be created on every disk.
-    -   Each Movie Folder and TV Show Folder must remain on a single
+    - Each Movie Folder and TV Show Folder must remain on a single
         disk.
-    -   This setting may work well. It will keep each movie and each TV
+    - This setting may work well. It will keep each movie and each TV
         series together on a single disk.
-    -   This setting may give issues because it keeps each TV series on
+    - This setting may give issues because it keeps each TV series on
         a single disk. So, a disk may fill as new TV seasons are added
         to a TV show which is on a disk which is close to full.
-3.  Level 3
-    -   This is what you have if in the GUI you select "Automatically
+3. Level 3
+    - This is what you have if in the GUI you select "Automatically
         split only the top three directory levels as required".
-    -   The top level Media share can be created on every disk.
-    -   The SD Movies, HD Movies, Kids Movies and TV Shows folders can
+    - The top level Media share can be created on every disk.
+    - The SD Movies, HD Movies, Kids Movies and TV Shows folders can
         be created on every disk.
-    -   Each Movie Folder and TV Show Folder can be created on every
+    - Each Movie Folder and TV Show Folder can be created on every
         disk.
-    -   Each Season Folder must remain on a single disk.
-    -   This setting will allow the contents stored in each Movie Folder
+    - Each Season Folder must remain on a single disk.
+    - This setting will allow the contents stored in each Movie Folder
         to be spread out onto multiple disks.
-    -   This setting is too high for the different movie types.
-4.  Level 4
-    -   This is what you have if in the GUI you select "Automatically
+    - This setting is too high for the different movie types.
+4. Level 4
+    - This is what you have if in the GUI you select "Automatically
         split only the top four directory levels as required".
-    -   The top level Media share can be created on every disk.
-    -   The SD Movies, HD Movies, Kids Movies and TV Shows folders can
+    - The top level Media share can be created on every disk.
+    - The SD Movies, HD Movies, Kids Movies and TV Shows folders can
         be created on every disk.
-    -   Each Movie Folder and TV Show Folder can be created on every
+    - Each Movie Folder and TV Show Folder can be created on every
         disk.
-    -   Each Season Folder can be created on every disk.
-    -   This setting is too high because it will allow the contents of
+    - Each Season Folder can be created on every disk.
+    - This setting is too high because it will allow the contents of
         every folder to be spread out onto multiple disks. The split
         level is not being used to keep similar content together.
 
@@ -384,14 +384,13 @@ without messing up the ability of the movies to split to every disk.\
 \
 Some things to keep in mind.
 
--   The above examples are to demonstrate the use of the split level. It
+- The above examples are to demonstrate the use of the split level. It
     is not necessary to store your media sorted in the same format as
     the above example illustrates. You may want to use a Movies share
     and then just place a \"Movie Name\" folder for each movie directly
     into the share without sorting the movies by type.
 
-
--   It is completely valid to force each complete TV series to stay on a
+- It is completely valid to force each complete TV series to stay on a
     single disk. Just understand that a continuing TV series will keep
     filling the disk where it is first placed. This may require manual
     intervention to shift some TV series from an almost full disk to an
@@ -399,8 +398,7 @@ Some things to keep in mind.
     the issue since a completely new TV series would be placed on the
     disk with the most free space.
 
-
--   The above TV example applies to any similar share. It could apply to
+- The above TV example applies to any similar share. It could apply to
     a Pictures share where you store the pictures in folders based on
     the year (2010, 2011, 2012 etc) or it could apply to a Music share
     where you store the music in a folder for each artist. In these
@@ -436,15 +434,14 @@ History of Violence`</u>`{=html} movie folder on the right. The levels
 for this share are labeled on the example. This is what split level = 1
 means:
 
--   A New_Movies folder can be created on each disk allowed by the
+- A New_Movies folder can be created on each disk allowed by the
     include and exclude disk settings. A new New_Movies folder will be
     created on the next disk in line when the allocation method calls
     for unRAID to begin filling the next disk. Note that the New_Movies
     folder will only be created on the next disk in line when it is
     necessary and not when the share is created.
 
-
--   The `<u>`{=html}A History of Violence`</u>`{=html} folder can only
+- The `<u>`{=html}A History of Violence`</u>`{=html} folder can only
     exist on one disk. Once it is created on the disk, all of the
     contents will remain on the same disk. Any changes or additions to
     this folder will remain on the same disk. For example, a new file
@@ -507,10 +504,10 @@ Unraid will apply the other share settings to decide which disk to use.
 The server has 4 disks. A user share called Media is desired. Different
 types of media will be stored in this share. The desired structure is;
 
--   disk1 - will hold the DVD movies.
--   disk2 - will hold the BluRay movies.
--   disk3 - will hold the BluRay movies.
--   disk4 - will hold the TV series.
+- disk1 - will hold the DVD movies.
+- disk2 - will hold the BluRay movies.
+- disk3 - will hold the BluRay movies.
+- disk4 - will hold the TV series.
 
 The desired structure is illustrated below.
 
@@ -523,10 +520,10 @@ Then, the Media folder as well as the DVD Movies, BluRay Movies and TV
 Shows folders become the parent folders for everything stored in the
 Media share. The media will be sorted by disk as follows;
 
--   Movies placed in the DVD Movies folder will go to disk1.
--   Movies placed in the BluRay Movies folder will go to disk2 or disk3.
+- Movies placed in the DVD Movies folder will go to disk1.
+- Movies placed in the BluRay Movies folder will go to disk2 or disk3.
     The disk is selected by the allocation method.
--   TV shows placed in the TV Shows folder will go to disk4.
+- TV shows placed in the TV Shows folder will go to disk4.
 
 Say one day that disk1 is full and disk5 is added to the server to hold
 new DVD Movies. The same folders on disk1 must be created on the new
@@ -598,14 +595,14 @@ to make it easier to support users who encounter problems.
 
 The shares that fall into this category are:
 
--   **appdata**: this is the default location for storing working files
+- **appdata**: this is the default location for storing working files
     associated with docker containers. Typically there will be a
     sub-folder for each docker container.
--   **system**: this is the default location for storing the docker
+- **system**: this is the default location for storing the docker
     application binaries, and VM XML templates
--   **domains**: this is the default location for storing virtual disk
+- **domains**: this is the default location for storing virtual disk
     images (vdisks) that are used by VMs.
--   **isos**: this is the default location for storing CD iso images for
+- **isos**: this is the default location for storing CD iso images for
     use with VMs.
 
 ### Unraid 6.12 {#unraid_6.12}
@@ -623,9 +620,9 @@ files and folders will be created in Secondary storage, if configured
 
 For the Primary storage drop-down:
 
--   this option is mandatory. ie, Primary storage must be selected
--   any named pool can be selected
--   \"Array\" can be selected (meaning the unRAID array)
+- this option is mandatory. ie, Primary storage must be selected
+- any named pool can be selected
+- \"Array\" can be selected (meaning the unRAID array)
 
 #### **Secondary Storage:** {#secondary_storage}
 
@@ -633,11 +630,11 @@ This is the location where files will be moved to if appropriate.
 
 For the Secondary storage drop-down:
 
--   None: This means that there is no secondary storage set for this
+- None: This means that there is no secondary storage set for this
     share i.e Secondary storage is optional
--   if Primary storage is a pool name, then the only options are
+- if Primary storage is a pool name, then the only options are
     \"none\" and \"Array\"
--   if Primary storage is \"Array\", then only \"none\" appears as an
+- if Primary storage is \"Array\", then only \"none\" appears as an
     option
 -
 
@@ -659,7 +656,7 @@ conjunction with User Shares. It's behavior controlled by the "Use Cache
 for new files" setting under each User Share. The way these different
 settings operate is as follows
 
--   **Yes**: Write new files to the cache as long as the free space on
+- **Yes**: Write new files to the cache as long as the free space on
     the cache is above the *Minimum free space* value. If the free space
     is below that then by-pass the cache and write the files directly to
     the main array.
@@ -669,7 +666,7 @@ settings operate is as follows
     file is controlled by the combination of the *Allocation method*,
     *Split level*, and Minimum Free Space setting for the share.
 
--   **No**: Write new files directly to the array. Which array drive
+- **No**: Write new files directly to the array. Which array drive
     will get the file is controlled by the combination of the
     *Allocation method*, *Split level*, and Minimum Free Space setting
     for the share.
@@ -678,7 +675,7 @@ settings operate is as follows
     even if there are files on the cache that logically belong to this
     share.
 
--   **Only**: Write new files directly to the cache. If the free space
+- **Only**: Write new files directly to the cache. If the free space
     on the cache is below the *Minimum free space* setting for the cache
     then the write will fail with an out-of-space error.
 
@@ -686,7 +683,7 @@ settings operate is as follows
     even if there are files on the main array that logically belong to
     this share.
 
--   **Prefer**: Write new files to the cache if the free space on the
+- **Prefer**: Write new files to the cache if the free space on the
     cache is above the *Minimum free space* setting for the share, and
     if the free space falls below that value then write the files to the
     main array instead.
@@ -724,14 +721,14 @@ Sometimes for one reason or another users find that the files seem to be
 \'stuck\' on a pool. The way to proceed in such a case to get the files
 belonging to a share from a pool onto the main array is:
 
--   Disable **Docker/VM** services if they are enabled (as files open in
+- Disable **Docker/VM** services if they are enabled (as files open in
     these services cannot be moved).
--   Change the Use Cache setting for the share to **Yes**
--   Manually run **mover** from the *Main* tab to get it to move *Yes*
+- Change the Use Cache setting for the share to **Yes**
+- Manually run **mover** from the *Main* tab to get it to move *Yes*
     type shares from array to the pool (cache).
--   When **mover** finishes you can re-enable the Docker and/or VMs
+- When **mover** finishes you can re-enable the Docker and/or VMs
     services you use if you disabled them earlier.
--   (optional) change the **Use Cache** setting to *Only* to say files
+- (optional) change the **Use Cache** setting to *Only* to say files
     for this share can never be written to the array.
 
 ##### **Moving Files from the Array to a Pool (cache)** {#moving_files_from_the_array_to_a_pool_cache}
@@ -745,14 +742,14 @@ appdata or system shares
 The way to proceed to get the files belonging to a share from the main
 array onto a pool is:
 
--   Disable **Docker/VM** services if they are enabled (as files open in
+- Disable **Docker/VM** services if they are enabled (as files open in
     these services cannot be moved)
--   Change the Use Cache setting for the share to **Prefer**
--   Manually run **mover** from the *Main* tab to get it to move
+- Change the Use Cache setting for the share to **Prefer**
+- Manually run **mover** from the *Main* tab to get it to move
     *Prefer* type shares from array to the pool (cache).
--   When **mover** finishes you can re-enable the Docker and/or VMs
+- When **mover** finishes you can re-enable the Docker and/or VMs
     services you use.
--   (optional) change the **Use Cache** setting to *No* to say files for
+- (optional) change the **Use Cache** setting to *No* to say files for
     this share can never be cached on a pool.
 
 ## Disk Shares {#disk_shares}
@@ -830,29 +827,29 @@ You can control what protocols should be supported for accessing the
 Unraid server across the network. Click on Settings-\>Network Services
 to see the various options available.. These options are:
 
--   **SMB**: This the standard protocol used by Windows systems. It is
+- **SMB**: This the standard protocol used by Windows systems. It is
     widely implemented on other YS.
--   **NFS**: **N**etwork **F**ile **S**ystem. This is a protocol widely
+- **NFS**: **N**etwork **F**ile **S**ystem. This is a protocol widely
     used on Unix compatible system.
--   **AFP**: **A**pple **F**ile **P**rotocol. This is the protocol that
+- **AFP**: **A**pple **F**ile **P**rotocol. This is the protocol that
     has historically been used on Apple Mac system. It is now a
     deprecated option as the latest versions of MacOS now use SMB as the
     transferred protocol for accessing files and folders over the
     network.
--   **FTP**: **F**ile **T**ransfer **P**rotocol.
+- **FTP**: **F**ile **T**ransfer **P**rotocol.
 
 When you click on the name of a share on the Shares tab then there is a
 section that allows you to control the visibility of the share on the
 network for each of the protocols you have enabled. The setting is
 labelled **Export** and has the following options:
 
--   **Yes**: With this setting the share will be visible across the
+- **Yes**: With this setting the share will be visible across the
     network.
--   **Yes (Hidden)**: With this setting the share can be accessed across
+- **Yes (Hidden)**: With this setting the share can be accessed across
     the network but will not be listed when browsing the shares on the
     server. Users can still access the share as long as they know the
     name and the user is prepared to enter in manually.
--   **No**: With this option selected then it is not possible to access
+- **No**: With this option selected then it is not possible to access
     the share across the network.
 
 ## Access Permissions {#access_permissions}
@@ -862,11 +859,11 @@ section that allows you to control the access rights of the share on the
 network for each of the protocols you have enabled. The setting is
 labelled **Security** and has the following options:
 
--   **Public**: All users have both read and write access to the
+- **Public**: All users have both read and write access to the
     contents of the share
--   **Secure**: All users including guests have read access, you select
+- **Secure**: All users including guests have read access, you select
     which of your users have write access
--   **Private**: You select which of your users have access and for each
+- **Private**: You select which of your users have access and for each
     user whether that user has read/write or read-only access.
 
 **Windows \'Gotcha\'**
@@ -874,7 +871,7 @@ labelled **Security** and has the following options:
 There is an issue with the way Windows handles network shares that many
 users fall foul of:
 
--   This is the fact that Windows only allows a **single** username to
+- This is the fact that Windows only allows a **single** username to
     be used to connect to a specific server at any given time. All
     attempts to then connect to a different share on the same server
     that are not public shares put up a Username/Password prompt and
@@ -884,7 +881,7 @@ users fall foul of:
     such a share first before any shares set for **Public** access which
     may connect as a guest user and make subsequent attempts to connect
     with a specific user fail.
--   A workaround that can help with avoiding this issue is the fact that
+- A workaround that can help with avoiding this issue is the fact that
     if you access a server both by it\'s network name and via it\'s IP
     address then Windows will treat it a two separate servers as far as
     authentication is concerned.
