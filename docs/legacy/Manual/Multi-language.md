@@ -5,7 +5,7 @@
 [Unraid 6.9](https://unraid.net/blog/unraid-6-9-multi-language-support)
 introduced the mechanism to [support multiple
 languages](https://unraid.net/blog/unraid-6-9-multi-language-support) in
-the Unraid GUI.
+the Unraid webGUI.
 
 You can now download, install, and use the Unraid OS in the following
 languages:
