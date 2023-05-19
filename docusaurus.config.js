@@ -3,6 +3,7 @@
 
 const lightCodeTheme = require("prism-react-renderer/themes/github");
 const darkCodeTheme = require("prism-react-renderer/themes/dracula");
+const { sortSidebarItems } = require("./sitebar-semver-sort");
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
@@ -42,6 +43,10 @@ const config = {
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
           editUrl: "https://github.com/unraid/docs/tree/main/",
+          async sidebarItemsGenerator({ defaultSidebarItemsGenerator, ...args}) {
+            const sidebarItems = await defaultSidebarItemsGenerator(args);
+            return sortSidebarItems(sidebarItems);
+          }
         },
         /* blog: {
           showReadingTime: true,
