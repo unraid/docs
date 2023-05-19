@@ -140,22 +140,22 @@ capacity expansion of RAID 0.
 Traditional NAS solutions to application support come with three primary
 limitations:
 
-1.  They cannot support applications written for other operating
+1. They cannot support applications written for other operating
     systems.
-2.  They can be cumbersome to install and even more difficult to remove.
-3.  They don't always "play nice" with other applications in the same
+2. They can be cumbersome to install and even more difficult to remove.
+3. They don't always "play nice" with other applications in the same
     OS.
 
 Docker addresses these problems in a number of key ways:
 
--   It allows for the use of any Linux operating system to empower a
+- It allows for the use of any Linux operating system to empower a
     given application (no longer limited by the operating system of the
     host itself).
--   It removes the "installation" process that applications have to go
+- It removes the "installation" process that applications have to go
     through by providing pre-installed *images* that ensure a consistent
     run-time experience for the user and making them easier to remove
     when the user is done with them.
--   It enables applications that would normally have issues with
+- It enables applications that would normally have issues with
     coexistence to live in harmony in the same operating environment.
 
 Docker is made up of three primary components: the Engine, the Hub, and
@@ -245,9 +245,9 @@ applications in isolated environments. While Docker containers are the
 preferred method for running Linux-based headless applications, virtual
 machines offer these unique benefits:
 
-1.  Run non-Linux operating systems (e.g. Windows).
-2.  Support drivers for physical devices independently of Unraid OS.
-3.  Customize and tune the guest operating systems.
+1. Run non-Linux operating systems (e.g. Windows).
+2. Support drivers for physical devices independently of Unraid OS.
+3. Customize and tune the guest operating systems.
 
 Unraid Server OS is designed to run as a virtualization host, leveraging
 a hypervisor to partition resources to virtualized guests in a secure
@@ -281,29 +281,29 @@ chooses default settings that should work for most people's needs, but
 also allows you to tweak settings to your liking. This makes Unraid
 intuitive where you want it, and tunable where you need it.
 
--   **Dashboard View**. With indicators for disk health, temperatures,
+- **Dashboard View**. With indicators for disk health, temperatures,
     resource utilization, and application states, the dashboard provides
     a 50,000 foot view of what's happening on your system.
--   **Array Operation**. Assign devices for use in either the array or
+- **Array Operation**. Assign devices for use in either the array or
     cache, spin up and down individual disks, start and stop the array,
     and even perform an on-the-fly parity check, all from a single page.
--   **Share Management**. Setting up shares on Unraid is easy. Give the
+- **Share Management**. Setting up shares on Unraid is easy. Give the
     share a name, optionally apply policies to access and distribution
     controls, and click create!
--   **Disk Tuning**. Control how and when devices spin down, the default
+- **Disk Tuning**. Control how and when devices spin down, the default
     file system format, and other advanced settings.
--   **Network Controls**. Enable NIC bonding and bridging, set time
+- **Network Controls**. Enable NIC bonding and bridging, set time
     servers, and more.
--   **APC UPS Safe Shutdown**. When connected to an APC UPS, Unraid can
+- **APC UPS Safe Shutdown**. When connected to an APC UPS, Unraid can
     safely shut down the system in the event of a power loss.
--   **System Notifications**. Unraid can alert you to important events
+- **System Notifications**. Unraid can alert you to important events
     happening on your system through the web management console as well
     as e-mail and other notification systems.
--   **Task Scheduler**. Choose if and when you want to have an automatic
+- **Task Scheduler**. Choose if and when you want to have an automatic
     parity check occur as well how often the mover script should
     transfer files from the cache to the array.
--   **Docker Containers**. Manage application controls from a single
+- **Docker Containers**. Manage application controls from a single
     pane of glass. Add applications with minimal effort using
     community-provided templates.
--   **Virtual Machines**. Choose between pre-created virtual machine
+- **Virtual Machines**. Choose between pre-created virtual machine
     images or create your own custom VM from scratch.

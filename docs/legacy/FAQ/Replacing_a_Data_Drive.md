@@ -1,20 +1,20 @@
 **This page describes how to replace an unRAID array data drive. Why
 would you want to do that? Any number of reasons -**
 
--   *The drive has failed*
--   *The drive has been acting strange or reporting errors, and you
+- *The drive has failed*
+- *The drive has been acting strange or reporting errors, and you
     think it might be failing*
--   *The drive is old or past its warranty period*
--   *The drive is small or full, and you need more storage space*
--   *The drive has bad sectors and you want to pull it and replace it so
+- *The drive is old or past its warranty period*
+- *The drive is small or full, and you need more storage space*
+- *The drive has bad sectors and you want to pull it and replace it so
     you can Preclear/test/fix it*
--   *You just bought a new monster of a drive, and want it in the array*
--   *Any other reason you can think of*
+- *You just bought a new monster of a drive, and want it in the array*
+- *Any other reason you can think of*
 
 \
 **Important Notes**
 
--   If you have purchased a replacement drive, we always recommend
+- If you have purchased a replacement drive, we always recommend
     Preclearing the replacement drive first, to make sure it\'s a good
     drive that won\'t fail for a few years at least. The Preclearing is
     not strictly necessary, as replacement drives don\'t have to be
@@ -25,7 +25,7 @@ would you want to do that? Any number of reasons -**
 :   ***It\'s always good to have a prepared and tested replacement drive
     already on hand!***
 
--   **Important! You cannot replace a drive with one that is LARGER than
+- **Important! You cannot replace a drive with one that is LARGER than
     the parity drive!** If your replacement drive is larger than the
     parity drive, then proceed to [The parity swap
     procedure](The_parity_swap_procedure "wikilink").
@@ -38,7 +38,7 @@ would you want to do that? Any number of reasons -**
     drive to first upgrade the parity drive then replace the old drive
     with the old parity drive.
 
--   If you are here because you have a disabled drive, and you have
+- If you are here because you have a disabled drive, and you have
     already checked the syslog and SMART report (or got instruction from
     the unRAID forums), and are SURE that the drive is good, then you
     can use the procedures below to rebuild it onto itself (below,
@@ -53,17 +53,17 @@ would you want to do that? Any number of reasons -**
 :   *If you are running a very old version of unRAID, such as v4.7 or
     older, skip down to the next section.*
 
-1.  Stop the array
-2.  Unassign the old drive if still assigned *(to unassign, set it to
+1. Stop the array
+2. Unassign the old drive if still assigned *(to unassign, set it to
     **No Device**)*
-3.  Power down
-4.  \[ Optional \] Pull the old drive *(you may want to leave it
+3. Power down
+4. \[ Optional \] Pull the old drive *(you may want to leave it
     installed for Preclearing or testing)*
-5.  Install the new drive
-6.  Power on
-7.  Assign the new drive in the slot of the old drive
-8.  Go to the **Main** -\> **Array Operation** section
-9.  Put a check in the **Yes, I\'m sure** checkbox (next to the
+5. Install the new drive
+6. Power on
+7. Assign the new drive in the slot of the old drive
+8. Go to the **Main** -\> **Array Operation** section
+9. Put a check in the **Yes, I\'m sure** checkbox (next to the
     information indicating the drive will be rebuilt), and click the
     **Start** button
 10. The rebuild will begin, with hefty disk activity on all drives, lots
@@ -81,17 +81,17 @@ would you want to do that? Any number of reasons -**
     older. If you are running v5 or v6 of unRAID, then go back to the
     previous section.*
 
-1.  Stop the array
-2.  Power down
-3.  Replace hard drive with new drive.
-4.  Turn on
-5.  Replaced drive appears with blue dot
-6.  Tick the \"I\'m sure\" checkbox, and press \"Start will bring the
+1. Stop the array
+2. Power down
+3. Replace hard drive with new drive.
+4. Turn on
+5. Replaced drive appears with blue dot
+6. Tick the \"I\'m sure\" checkbox, and press \"Start will bring the
     array on-line, start Data-Rebuild, and then expand the file
     system.\"
-7.  Hefty disk activity and main page will show lots of reading on \"the
+7. Hefty disk activity and main page will show lots of reading on \"the
     other\" disks and writing on new disk as data is being rebuilt.
-8.  End
+8. End
 
 \
 

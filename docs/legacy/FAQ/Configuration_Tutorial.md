@@ -35,24 +35,24 @@ This guide is intended to get you from a completed and working flash
 drive to a usable array.
 
 `Note: written for version 4.5.6`\
-`      valid for version 4.6`\
-`      valid for version 4.7`
+`valid for version 4.6`\
+`valid for version 4.7`
 
 `Note: These instructions assume the use of a Windows computer,`\
-`      but if you don't have access to one, the instructions are `\
-`      basically the same for Linux or Unix-based operating systems.`
+`but if you don't have access to one, the instructions are`\
+`basically the same for Linux or Unix-based operating systems.`
 
 The following assumptions are made:
 
--   You have \'installed\' unRAID to your flash drive. If you have not,
+- You have \'installed\' unRAID to your flash drive. If you have not,
     please see the [Official installation
     guide](http://www.lime-technology.com/support/unraid-server-installation)
     and do so now.
--   You are familiar with (or will become familiar with) [using terminal
+- You are familiar with (or will become familiar with) [using terminal
     sessions with SSH or Telnet or the server
     console](Terminal_Access "wikilink").
--   You know what a command prompt is and how to access it.
--   You have a **basic** understanding of computer networking concepts.
+- You know what a command prompt is and how to access it.
+- You have a **basic** understanding of computer networking concepts.
     You don\'t need to be a network administrator, but if you don\'t
     know what an IP address is you should spend some time on google!
 
@@ -62,22 +62,22 @@ perform your own research, and ask questions in the
 
 ## Pre Boot {#pre_boot}
 
-`Note: If you are in a hurry you may skip copying the `*`preclear_disk.sh`*\
-`      and the `*`unmenu_install`*` scripts to your flash drive.  The preclear`\
-`      script is used to test your disks and prepare them for the unRAID`\
-`      environment.  The merits of preclearing are discussed in this `\
-`      `[`forum post`](http://lime-technology.com/forum/index.php?topic=2817)`.`\
+`Note: If you are in a hurry you may skip copying the`*`preclear_disk.sh`*\
+`and the`*`unmenu_install`*`scripts to your flash drive.  The preclear`\
+`script is used to test your disks and prepare them for the unRAID`\
+`environment.  The merits of preclearing are discussed in this`\
+``[`forum post`](http://lime-technology.com/forum/index.php?topic=2817)`.`\
 \
-`      The `*`unmenu_install`*` script is used to install `[`UnMENU`](UnRAID_Add_Ons#UnMENU "wikilink")` which`\
-`      will allow the installation of Screen.  Installing screen will allow`\
-`      you to start a process (such as a preclear) in a telnet session, then`\
-`      disconnect the telnet session and allow the process to continue.  If`\
-`      you do not mind keeping a telnet session open for potentially days or`\
-`      you run commands directly from the console, skipping `[`UnMENU`](UnRAID_Add_Ons#UnMENU "wikilink")` and Screen`\
-`      is OK.`\
+`The`*`unmenu_install`*`script is used to install`[`UnMENU`](UnRAID_Add_Ons#UnMENU "wikilink")`which`\
+`will allow the installation of Screen.  Installing screen will allow`\
+`you to start a process (such as a preclear) in a telnet session, then`\
+`disconnect the telnet session and allow the process to continue.  If`\
+`you do not mind keeping a telnet session open for potentially days or`\
+`you run commands directly from the console, skipping`[`UnMENU`](UnRAID_Add_Ons#UnMENU "wikilink")`and Screen`\
+`is OK.`\
 \
-`      Installing UnMENU will also allow configuration of the environment to`\
-`      allow the preclear script to send email notifications of its status.`
+`Installing UnMENU will also allow configuration of the environment to`\
+`allow the preclear script to send email notifications of its status.`
 
 Before booting your unRAID system you need to copy a few files to your
 flash drive. The *preclear_disk.sh* script will enable you to prep your
@@ -88,8 +88,8 @@ disks for the array and the *unmenu_install* script will install
 script from this [forum
 post](http://lime-technology.com/forum/index.php?topic=2817).
 
--   The download is at the bottom of the first post
--   You must be logged into the forum to see the file
+- The download is at the bottom of the first post
+- You must be logged into the forum to see the file
 
 Unzip the file and copy *preclear_disk.sh* to the root of your flash
 drive.
@@ -197,13 +197,13 @@ configuration could be
 `NETMASK=255.255.255.0`\
 `GATEWAY=192.168.1.1`
 
--   USE_DHCP should be set to no
--   IPADDR should be set to an unused IP address that is in the same
+- USE_DHCP should be set to no
+- IPADDR should be set to an unused IP address that is in the same
     subnet as your other computers.
--   NETMASK is network dependent, but in most cases will be
+- NETMASK is network dependent, but in most cases will be
     255.255.255.0 or 255.0.0.0. Check the network settings on an
     existing computer on your network if you are unsure.
--   GATEWAY is the default gateway to the internet on your network.
+- GATEWAY is the default gateway to the internet on your network.
     Again, network dependent. Check the settings on an existing computer
     if you are unsure what to use for your environment. This may be left
     blank, but that will prevent the UnRAID server from passing traffic
@@ -221,8 +221,8 @@ re-attach it to the unRAID server and power it back up.
 
 ### Verifying SATA Hard Drives are Detected {#verifying_sata_hard_drives_are_detected}
 
-`Note: This section assumes all SATA hard drives!  `\
-` `**`If you are using older hardware,`\
+`Note: This section assumes all SATA hard drives!`\
+``**`If you are using older hardware,`\
 `or have the disk controller configured in a legacy compatible mode (emulating an IDE disk controller)`\
 `these messages will not exist.`**
 
@@ -272,25 +272,25 @@ management page.
 
 ### Identification
 
--   Server Name - This is the name that your server will be known as on
+- Server Name - This is the name that your server will be known as on
     the network. It must be a unique name not in use on your network.
-    -   Set yours to whatever makes you happy.
--   Comments - The comments entered here will show up next to the server
+  - Set yours to whatever makes you happy.
+- Comments - The comments entered here will show up next to the server
     name under My Network Places.
-    -   Again, whatever makes you happy.
--   Share security - this is the security model used to control access
+  - Again, whatever makes you happy.
+- Share security - this is the security model used to control access
     to the server.
-    -   Leave as Simple for now. Security will be covered later in the
+  - Leave as Simple for now. Security will be covered later in the
         tutorial.
--   Workgroup - This is the Windows Workgroup your server will belong
+- Workgroup - This is the Windows Workgroup your server will belong
     to.
-    -   Set this to the same Workgroup that your Windows computers
+  - Set this to the same Workgroup that your Windows computers
         belong to.
--   Local master - If set to yes UnRAID will attempt to become the local
+- Local master - If set to yes UnRAID will attempt to become the local
     browse master
-    -   Probably un-necessary on a small, single subnet network. Set to
+  - Probably un-necessary on a small, single subnet network. Set to
         No unless you have problems browsing to your server
-    -   More information from
+  - More information from
         [Wikipedia](http://en.wikipedia.org/wiki/Domain_Master_Browser)
         and from [Microsoft](http://support.microsoft.com/kb/188001)
 
@@ -301,26 +301,26 @@ re-connect.
 
 ### Network Settings {#network_settings}
 
--   Obtain IP Address Automatically - When set to yes the server will
+- Obtain IP Address Automatically - When set to yes the server will
     obtain an IP address from a DHCP server on the network. This has the
     benefit of set it and forget it but the IP address may change
     between reboots.
-    -   Set to yes unless you know you need to assign a static IP
+  - Set to yes unless you know you need to assign a static IP
         address to your server.
--   IP Address - Set a static IP address for the server. Not available
+- IP Address - Set a static IP address for the server. Not available
     unless Obtain IP Address Automatically is set to No.
-    -   Set as appropriate for your network.
--   Netmask - Subnet information. Not available unless Obtain IP Address
+  - Set as appropriate for your network.
+- Netmask - Subnet information. Not available unless Obtain IP Address
     Automatically is set to No.
-    -   Set as appropriate for your network.
--   Gateway - Default gateway/router. Not available unless Obtain IP
+  - Set as appropriate for your network.
+- Gateway - Default gateway/router. Not available unless Obtain IP
     Address Automatically is set to No.
-    -   Set as appropriate for your network.
--   Obtain DNS Server Address - Get DNS servers from DHCP or not.
-    -   If you have Obtain IP Address Automatically set to yes, you
+  - Set as appropriate for your network.
+- Obtain DNS Server Address - Get DNS servers from DHCP or not.
+  - If you have Obtain IP Address Automatically set to yes, you
         probably want this set to yes as well. If not you need to
         manually assign your DNS servers.
--   DNS Server 1..3 - You can assign up to 3 DNS servers for name
+- DNS Server 1..3 - You can assign up to 3 DNS servers for name
     resolution. Not available unless Obtain DNS Server Address is set to
     No.
 
@@ -337,21 +337,21 @@ network for the new name.
 
 ### Date and time {#date_and_time}
 
--   Time zone - Sets the time zone for the server.
-    -   Set as appropriate for your location.
--   Use NTP - Use network time protocol to set the server time based on
+- Time zone - Sets the time zone for the server.
+  - Set as appropriate for your location.
+- Use NTP - Use network time protocol to set the server time based on
     a remote time server.
-    -   Highly recommended to set this to yes.
--   NTP Server 1..3 - You can configure UnRAID to use specific time
+  - Highly recommended to set this to yes.
+- NTP Server 1..3 - You can configure UnRAID to use specific time
     servers. These options are only available if Use NTP is set to Yes.
-    -   The default pool.ntp.org is recommended.
-    -   More information from
+  - The default pool.ntp.org is recommended.
+  - More information from
         [Wikipedia](http://en.wikipedia.org/wiki/Network_Time_Protocol)
         and [NTP Project Pool](http://www.pool.ntp.org)
--   Current date & time - Set the current date and time.
-    -   If Use NTP is set to Yes, this is irrelevant and NTP will set
+- Current date & time - Set the current date and time.
+  - If Use NTP is set to Yes, this is irrelevant and NTP will set
         everything.
-    -   IF you are not using NTP you need to set your time and date here
+  - IF you are not using NTP you need to set your time and date here
         in UTC time (FIX ME IF I\'M WRONG!!!!!)
 
 If you made any changes here, click Apply. One thing I noticed was that
@@ -361,14 +361,14 @@ reboot to panic.
 
 ### Disk Settings {#disk_settings}
 
--   Default spin down delay - Set the amount of time without activity to
+- Default spin down delay - Set the amount of time without activity to
     wait before spinning down disks to save power.
-    -   Tweak as appropriate for your environment. If set too short you
+  - Tweak as appropriate for your environment. If set too short you
         will find yourself waiting for disk spinups. If set too long you
         will waste power.
--   Force NCQ disabled - Disable native command queuing.
-    -   Recommend leaving this as yes.
-    -   Disable NCQ on all disk devices that support NCQ. This typically
+- Force NCQ disabled - Disable native command queuing.
+  - Recommend leaving this as yes.
+  - Disable NCQ on all disk devices that support NCQ. This typically
         results in much better write throughput. A setting called
         \"Force NCQ disabled \[yes/no\]\" is also available in the Disk
         section of the Settings page of the System Management Utility to
@@ -376,10 +376,10 @@ reboot to panic.
         then we force NCQ off; if setting is \'no\', we leave NCQ
         queue_depth as-is, ie, whatever linux driver sets it to.
         [Source](http://lime-technology.com/forum/index.php?topic=3764.0)
--   Enable spinup groups - Allow disks to be spun up/down in appropriate
+- Enable spinup groups - Allow disks to be spun up/down in appropriate
     groups.
-    -   Recommend leaving this as yes.
-    -   Good information available
+  - Recommend leaving this as yes.
+  - Good information available
         [here](http://lime-technology.com/forum/index.php?topic=4782.0;wap2).
 
 If you made any changes here, click Apply. At this point it is
@@ -418,19 +418,19 @@ is relatively easy to extend. Installing it now gives you access to
 screen and email notifications, both of which are useful for preclearing
 hard drives.
 
-`Note: This step assumes you have the `*`unmenu_install`*` script on`\
-`      your flash drive.  See the `[`Pre Boot`](Configuration_Tutorial#Pre_Boot "wikilink")` section for details`\
-`      if you do not.`
+`Note: This step assumes you have the`*`unmenu_install`*`script on`\
+`your flash drive.  See the`[`Pre Boot`](Configuration_Tutorial#Pre_Boot "wikilink")`section for details`\
+`if you do not.`
 
 `Note: For this step your server must have access to the internet to`\
-`      download some files.  It is `**`NOT`**` recommended that you connect`\
-`      your UnRAID server directly to the internet as it is not secure.  `\
+`download some files.  It is`**`NOT`**`recommended that you connect`\
+`your UnRAID server directly to the internet as it is not secure.`\
 \
-`      You should connect your unRAID server to a router that in turn is`\
-`      connected to the internet.  To be able to download files you must`\
-`      have both a DNS server and a Gateway defined on the unRAID`\
-`      web-management settings page.  Typically both will be set to the`\
-`      local IP address of your router.`
+`You should connect your unRAID server to a router that in turn is`\
+`connected to the internet.  To be able to download files you must`\
+`have both a DNS server and a Gateway defined on the unRAID`\
+`web-management settings page.  Typically both will be set to the`\
+`local IP address of your router.`
 
 **Step 1** Log into your UnRAID server as root via a
 [Telnet](Telnet "wikilink") connection or at the console.
@@ -502,9 +502,9 @@ Here are settings that work with Gmail
 
 gmail with TLS
 
-sending email: myname@gmail.com
+sending email: <myname@gmail.com>
 
-email recipient: myname@gmail.com
+email recipient: <myname@gmail.com>
 
 Priority in Header: yes
 
@@ -522,7 +522,7 @@ TLS Cert: blank
 
 Auth Method: Login
 
-username: myname@gmail.com
+username: <myname@gmail.com>
 
 password: mypassword
 
@@ -532,7 +532,7 @@ It is also possible to easily install screen without first installing
 UnMENU by downloading the slackware packages required and following the
 steps below:
 
--   Get the *screen* and *utempter* packages from the [Slackware
+- Get the *screen* and *utempter* packages from the [Slackware
     packages site](http://packages.slackware.com/). If you are intending
     to use *screen* with unRAID v5 then you need the *Slackware 13.37*
     versions (which are 32-bit) and for unRAID v6 you need the
@@ -541,7 +541,8 @@ steps below:
 ```{=html}
 <!-- -->
 ```
--   Copy these files onto your USB drive. The easiest way to do this is
+
+- Copy these files onto your USB drive. The easiest way to do this is
     to copy them to the *Flash* share over the network. The *Flash*
     share is available by default (although it is possible to disable it
     via the unRAID GUI settings for the Boot device). The recommended
@@ -551,21 +552,23 @@ steps below:
 ```{=html}
 <!-- -->
 ```
--   If you put the downloaded package files in the *extra* folder as
+
+- If you put the downloaded package files in the *extra* folder as
     recommended then these packages will be automatically installed by
     unRAID every time the server is booted.
 
 ```{=html}
 <!-- -->
 ```
--   You can also install the packages manually from a telnet session. It
+
+- You can also install the packages manually from a telnet session. It
     can be convenient to do this when you have just downloaded the
     packages to avoid the need for a server reboot. It is also the way
     to go if you do not want the screen package to always be
     automatically loaded and want to do it yourself manually as
     required. The manual install is done by using a command of the form:
 
-`installpkg `*`name_of_package_file`*
+`installpkg`*`name_of_package_file`*
 
 ## Install Screen on unRAID V6. + as a plugin {#install_screen_on_unraid_v6._as_a_plugin}
 
@@ -583,11 +586,11 @@ the drive(s) to the array. Preclearing is optional, but
 [recommended](http://lime-technology.com/forum/index.php?topic=2817) and
 has a number of important benefits.
 
--   It provides a good stress test of new drives. This significantly
+- It provides a good stress test of new drives. This significantly
     reduces the chance of a new drive failing when first used with
     unRAID. New drives can have a significant early life failure rate
     (known as *infant mortality*) and this helps identify such drives.
--   If you add a new data drive to an existing parity protected array,
+- If you add a new data drive to an existing parity protected array,
     then unRAID takes the array offline while the drive is cleared. This
     can take a long time with large drives. The preclear process allows
     this to be done before you add the drive to the array, and on
@@ -695,17 +698,17 @@ where sdX is the device mapping of the drive you want to preclear, and 3
 is the number of cycles you want to run.
 
 `Note: If you have only SATA drives and see a /dev/hdX device it`\
-`      indicates you have set your motherboard BIOS to have it`\
-`      emulate an older IDE drive to the operating system.  This`\
-`      is NOT desired for SATA drives since they will not be`\
-`      able to use any of their more advanced features.  You`\
-`      instead want ACHI mode, not legacy mode.`
+`indicates you have set your motherboard BIOS to have it`\
+`emulate an older IDE drive to the operating system.  This`\
+`is NOT desired for SATA drives since they will not be`\
+`able to use any of their more advanced features.  You`\
+`instead want ACHI mode, not legacy mode.`
 
 `Note: If you are pre-clearing a WD EARS drive that has had a jumper installed to electrically`\
-`      add one to a sector when accessed, then use the "-a" option to the preclear script `\
-`      rather than the "-A" option.   This is ONLY for that one specific make/model drive `\
-`      and ONLY IF it has a jumper added.  `\
-`      For ALL other drives, or the WD EARS without a jumper, use the "-A" option.`
+`add one to a sector when accessed, then use the "-a" option to the preclear script`\
+`rather than the "-A" option.   This is ONLY for that one specific make/model drive`\
+`and ONLY IF it has a jumper added.`\
+`For ALL other drives, or the WD EARS without a jumper, use the "-A" option.`
 
 If you are pre-clearing multiple drives it is recommended you also use
 the optional \"-r\" \"-w\" and \"-b\" options. These set the size and
@@ -725,36 +728,36 @@ ssmtp](Configuration_Tutorial#Install_and_Configure_Mail_and_SSMTP "wikilink")
 and wish to have email notifications of the process, instead of the
 above type
 
-`./preclear_disk.sh -A -M 4 /dev/sdX `*`("root" email address)`*` `**`or`**\
-`./preclear_disk.sh -A -m your@emailaddress.com /dev/sdX `*`(optional email address)`*
+`./preclear_disk.sh -A -M 4 /dev/sdX`*`("root" email address)`*``**`or`**\
+`./preclear_disk.sh -A -m your@emailaddress.com /dev/sdX`*`(optional email address)`*
 
 Put your email address and sdX is the device mapping of the drive you
 want to preclear. If this is an IDE device it will be hdX.
 
 `Note: if you do not supply either a "-a" or "-A" option, the preclear_disk.sh script will use the setting`\
 `you've elected in the unRAID "settings" screen as its default partition type.   It is recommended you set this to MBR-4k-aligned.`\
-` -a will override the default and create an MBR-un-aligned partition starting on sector 63. `\
-` -A will override the default and create an MBR-4k-aligned partition starting on sector 64.`\
-` Neither option is recognized for disks > 2.2TB.  They will always be 4k-aligned using a GPT partition.`\
-` If the -a or -A option is given on a drive over 2.2TB, it is silently ignored and no harm is done.`\
-` Disks over 2.2TB will also have a "protective" partition starting on sector 1 added to the MBR`\
-` to be compatible older programs and utilities and show they are entirely allocated. `
+`-a will override the default and create an MBR-un-aligned partition starting on sector 63.`\
+`-A will override the default and create an MBR-4k-aligned partition starting on sector 64.`\
+`Neither option is recognized for disks > 2.2TB.  They will always be 4k-aligned using a GPT partition.`\
+`If the -a or -A option is given on a drive over 2.2TB, it is silently ignored and no harm is done.`\
+`Disks over 2.2TB will also have a "protective" partition starting on sector 1 added to the MBR`\
+`to be compatible older programs and utilities and show they are entirely allocated.`
 
 This will present you with a screen similar to
 
-` Pre-Clear unRAID Disk`\
+`Pre-Clear unRAID Disk`\
 `########################################################################`\
 `Device Model:     WDC WD20EARS-00J2GB0`\
 `Serial Number:    WD-WCAYYXXXXXXX`\
 `Firmware Version: 80.00A80`\
-`User Capacity:    2,000,398,934,016 bytes  `\
+`User Capacity:    2,000,398,934,016 bytes`\
 \
 `Disk /dev/sde: 2000.3 GB, 2000398934016 bytes`\
 `255 heads, 63 sectors/track, 243201 cylinders, total 3907029168 sectors`\
 `Units = sectors of 1 * 512 = 512 bytes`\
 `Disk identifier: 0x00000000`\
 \
-`   Device Boot      Start         End      Blocks   Id  System`\
+`Device Boot      Start         End      Blocks   Id  System`\
 `/dev/sde1              63  3907029167  1953514552+   0  Empty`\
 `Partition 1 does not end on cylinder boundary.`\
 `########################################################################`\
@@ -885,13 +888,13 @@ take that risk, you can substitute each Vterm with a new telnet session.
 `cd /boot`
 
 `Note: If you are preclearing any AF drives, be sure to use the -A option`\
-`      when you invoke the preclear script.  i.e replace`\
-`      `*`./preclear_script.sh /dev/sdX`*` with `*`./preclear_script.sh `**`-A`**` /dev/sdX`*
+`when you invoke the preclear script.  i.e replace`\
+``*`./preclear_script.sh /dev/sdX`*`with`*`./preclear_script.sh`**`-A`**`/dev/sdX`*
 
-`Note: Drives greater than 2.2TB in size automatically use a GPT partition that `\
-`      is always aligned on a 4k boundary.  The "-a" and "-A" options on the `\
-`      preclear script are ignored on those drives > 2.2TB as those options `\
-`      only apply to drives <= 2.2TB.`
+`Note: Drives greater than 2.2TB in size automatically use a GPT partition that`\
+`is always aligned on a 4k boundary.  The "-a" and "-A" options on the`\
+`preclear script are ignored on those drives > 2.2TB as those options`\
+`only apply to drives <= 2.2TB.`
 
 **Step 3** To begin the preclear on the 1st drive, at the prompt type
 
@@ -912,19 +915,19 @@ the drive you want to preclear. If this is an IDE device it will be hdX.
 
 This will present you with a screen similar to
 
-` Pre-Clear unRAID Disk`\
+`Pre-Clear unRAID Disk`\
 `########################################################################`\
 `Device Model:     WDC WD20EARS-00J2GB0`\
 `Serial Number:    WD-WCAYYXXXXXXX`\
 `Firmware Version: 80.00A80`\
-`User Capacity:    2,000,398,934,016 bytes  `\
+`User Capacity:    2,000,398,934,016 bytes`\
 \
 `Disk /dev/sde: 2000.3 GB, 2000398934016 bytes`\
 `255 heads, 63 sectors/track, 243201 cylinders, total 3907029168 sectors`\
 `Units = sectors of 1 * 512 = 512 bytes`\
 `Disk identifier: 0x00000000`\
 \
-`   Device Boot      Start         End      Blocks   Id  System`\
+`Device Boot      Start         End      Blocks   Id  System`\
 `/dev/sde1              63  3907029167  1953514552+   0  Empty`\
 `Partition 1 does not end on cylinder boundary.`\
 `########################################################################`\
@@ -1005,8 +1008,8 @@ partitions will be re-partitioned immediately upon assignment to the
 array. (In other words, do not assign disks from other OS with data you
 wish to retain)`</font>`{=html}**
 
-`Note: The parity disk `**`must`**` be as large or larger than the largest data drive.`\
-`      Remember to leave one of the largest drives free to use as a parity drive.`
+`Note: The parity disk`**`must`**`be as large or larger than the largest data drive.`\
+`Remember to leave one of the largest drives free to use as a parity drive.`
 
 **Step 1** On another computer (not your unRAID system) open a web
 browser and navigate to the [Server Management
@@ -1021,22 +1024,22 @@ array as a data storage disk and add them under *disk2 device*, *disk3
 device*, etc.
 
 `Note: At this point you have to choose whether to add your parity drive now or later.`\
-`      If you wait to add a parity drive later, copying initial data to the array`\
-`      will be much faster, but the data will not be protected from a single disk`\
-`      failure.  If you do add a parity drive, you will be protected from a single`\
-`      disk failure from this point forward, but writes to the array will be much`\
-`      slower due to parity calculations. If you add a parity drive now an initial`\
-`      parity calculation will begin when you start the array.`
+`If you wait to add a parity drive later, copying initial data to the array`\
+`will be much faster, but the data will not be protected from a single disk`\
+`failure.  If you do add a parity drive, you will be protected from a single`\
+`disk failure from this point forward, but writes to the array will be much`\
+`slower due to parity calculations. If you add a parity drive now an initial`\
+`parity calculation will begin when you start the array.`
 
 **Step 4** To add a parity drive, click the drop down box next to
 *parity device* and select a disk to be used for parity. To assign a
 parity drive later, leave the *parity device* unassigned.
 
 `Note: If you intend to work with shares, you may first want to enable them prior`\
-`      to starting the array since enabling shares requires the array to be`\
-`      in an offline state.  Otherwise, you will either have to stop the array (and`\
-`      potentially a parity rebuild) to enable shares.  Note that once user shares are`\
-`      enabled, you can create shares while the array is online.`
+`to starting the array since enabling shares requires the array to be`\
+`in an offline state.  Otherwise, you will either have to stop the array (and`\
+`potentially a parity rebuild) to enable shares.  Note that once user shares are`\
+`enabled, you can create shares while the array is online.`
 
 **Step 5** After all drives have been added to the array click *Main* on
 the navigation bar at the top of the page, then click *Start* to start
@@ -1171,26 +1174,26 @@ Each share can be set to one of five different SMB export modes.
 [SMB](http://en.wikipedia.org/wiki/Server_Message_Block) is the type of
 share used in most Windows networks.
 
--   Don\'t export
-    -   The share will not be visible or accessible on the network.
--   Export read only
-    -   The share will be visible on the network (shown in My Network
+- Don\'t export
+  - The share will not be visible or accessible on the network.
+- Export read only
+  - The share will be visible on the network (shown in My Network
         Places) and data can be read, but not written to the share.
--   Export read/write
-    -   The share will be visible on the network (shown in My Network
+- Export read/write
+  - The share will be visible on the network (shown in My Network
         Places) and data can be read and written to the share.
--   Export read only, hidden
-    -   The share will *not* be visible on the network (will not appear
+- Export read only, hidden
+  - The share will *not* be visible on the network (will not appear
         My Network Places) and data can be read, but not written to the
         share.
--   Export read/write, hidden
-    -   The share will *not* be visible on the network (will not appear
+- Export read/write, hidden
+  - The share will *not* be visible on the network (will not appear
         My Network Places) and data can be read and written to the
         share.
 
-`Note: Setting shares to hidden is `**`NOT`**` a security measure, only a privacy measure.`\
-`      It prevents Nosy Nellies from noticing your data, but does not protect it in any`\
-`      way.`
+`Note: Setting shares to hidden is`**`NOT`**`a security measure, only a privacy measure.`\
+`It prevents Nosy Nellies from noticing your data, but does not protect it in any`\
+`way.`
 
 Shares will be accessed by concatenating the server name with the share
 name. A share called *foo* on the server *Tower* would be accessed at
@@ -1208,10 +1211,10 @@ information on using NFS.
 
 Set the following properties as appropriate for your environment.
 
--   Flash share (SMB)
-    -   Shares the UnRAID flash drive on the network as *flash*.
--   Disk shares (SMB)
-    -   Shares each disk in the array as *disk1*, *disk2*, etc.
+- Flash share (SMB)
+  - Shares the UnRAID flash drive on the network as *flash*.
+- Disk shares (SMB)
+  - Shares each disk in the array as *disk1*, *disk2*, etc.
 
 Click the *Apply* button in the *Export settings* frame.
 
@@ -1225,39 +1228,39 @@ disks yet all be accessible at a single share point *ie
 putting some thought into the User share settings can help avoid a few
 pitfalls later.
 
-`Note: For now, linking explanations to the Un-Official Manual.  This section needs a re-write! `
+`Note: For now, linking explanations to the Un-Official Manual.  This section needs a re-write!`
 
 Set the following options as appropriate for the share and click
 *Apply*.
 
--   Share name
-    -   This is the name of the share.
-    -   It must be unique to the server.
-    -   Valid characters are a-z, A-Z, 0-9, - (dash), and . (dot)
--   Comments
-    -   (Optional) Comments will appear in the comment field of a share
+- Share name
+  - This is the name of the share.
+  - It must be unique to the server.
+  - Valid characters are a-z, A-Z, 0-9, - (dash), and . (dot)
+- Comments
+  - (Optional) Comments will appear in the comment field of a share
         in *My Network Places*.
--   [Allocation
+- [Allocation
     method](Un-Official_UnRAID_Manual#Allocation_method "wikilink")
-    -   Used to determine where to store data as it is copied to the
+  - Used to determine where to store data as it is copied to the
         share.
--   Min free space
-    -   The minimum free space in kilobytes that must be available on a
+- Min free space
+  - The minimum free space in kilobytes that must be available on a
         drive for files to be copied to the drive. This link may help in
         setting the correct value:
         <http://www.aqua-calc.com/convert/data/Gigabyte-to-Kilobyte>
--   [Split level](Un-Official_UnRAID_Manual#Split_level "wikilink")
-    -   Controls at what level UnRAID will allow data to be split among
+- [Split level](Un-Official_UnRAID_Manual#Split_level "wikilink")
+  - Controls at what level UnRAID will allow data to be split among
         multiple disks.
--   [Included
+- [Included
     disk(s)](Un-Official_UnRAID_Manual#Included_disk.28s.29 "wikilink")
-    -   A list of disks *preferred* for use in the array. If blank all
+  - A list of disks *preferred* for use in the array. If blank all
         disks are considered for use in the array.
--   [Excluded
+- [Excluded
     disk(s)](Un-Official_UnRAID_Manual#Excluded_disks.28s.29 "wikilink")
-    -   A list of disks to which data for this share will not be copied.
--   Export (SMB)
-    -   Sets how the share appears on the network and how it may be
+  - A list of disks to which data for this share will not be copied.
+- Export (SMB)
+  - Sets how the share appears on the network and how it may be
         accessed.
 
 Once the share is created, there will be a new section below where you
@@ -1266,8 +1269,8 @@ can create the next share.
 ## Copy Files to the Array {#copy_files_to_the_array}
 
 `Note: If parity is already enabled the bottleneck will be parity writes;`\
-`      pick whichever method is easiest for you `*`without`*` considering`\
-`      the speed.`
+`pick whichever method is easiest for you`*`without`*`considering`\
+`the speed.`
 
 There are several methods of copying files to a new array. The simplest
 method is to browse to a share on the network from an existing machine
@@ -1305,10 +1308,10 @@ array.
 ### Copying Files From an Internal or External Hard Drive {#copying_files_from_an_internal_or_external_hard_drive}
 
 `Note: The NTFS driver included with the UnRAID distribution does not support`\
-`      Unicode characters correctly and using this method `**`WILL`**` corrupt`\
-`      filenames if they contain Unicode characters!  If you have any files`\
-`      containing Unicode characters, it is recommended that you copy those`\
-`      files across the network.`
+`Unicode characters correctly and using this method`**`WILL`**`corrupt`\
+`filenames if they contain Unicode characters!  If you have any files`\
+`containing Unicode characters, it is recommended that you copy those`\
+`files across the network.`
 
 **Step 1** Copy files from an existing system to an internal or external
 hard drive.
@@ -1363,8 +1366,8 @@ where /dev/sdX is the device mapping from Step 4.
 `mc`
 
 `Note: If you are comfortable navigating the filesystem and using the cp`\
-`      or rsync command that is an acceptable alternative to Midnight`\
-`      Commander.`
+`or rsync command that is an acceptable alternative to Midnight`\
+`Commander.`
 
 **Step 7** Use the arrow keys to move the highlighted bar to
 
@@ -1476,8 +1479,8 @@ be allowed read only access to some shares, no access to others, and
 denied write access to the entire array.
 
 `Note: If the username and password match the user's Windows username and`\
-`      password, they will not be prompted for a password when they connect`\
-`      to a share.`
+`password, they will not be prompted for a password when they connect`\
+`to a share.`
 
 **Step 3** Enter a password in the *Password* and *Retype password*
 boxes, then press apply.
@@ -1495,20 +1498,20 @@ users*, and *Invalid Users*. This information is also available in the
 [Un-Official UnRAID
 Manual](Un-Official_UnRAID_Manual#Exceptions "wikilink")
 
--   Exceptions
-    -   This is a comma separated list of users that get the
+- Exceptions
+  - This is a comma separated list of users that get the
         \"opposite\" of the *Export (SMB)* setting. If Export is set to
         *read-only*, users in the Exceptions list get *read/write*
         access. If Export is set to *read/write*, users in the
         Exceptions list get *read only* access.
--   Valid users
-    -   Comma separated list of users that are granted access to the
+- Valid users
+  - Comma separated list of users that are granted access to the
         share as specified by the *Export (SMB)* setting.
-    -   If left blank, all users not in the *Invalid users* are granted
+  - If left blank, all users not in the *Invalid users* are granted
         access.
--   Invalid users
-    -   Comma separated list of users that denied access to the share.
-    -   If left blank, all users not listed in *Valid users* are denied
+- Invalid users
+  - Comma separated list of users that denied access to the share.
+  - If left blank, all users not listed in *Valid users* are denied
         access.
 
 ### Examples
@@ -1531,7 +1534,7 @@ share so they can add new movies and delete old ones.
 
 `Export (SMB)  = read only`\
 `Exceptions    = mom,dad`\
-`Valid users   = `\
+`Valid users   =`\
 `Invalid users =`
 
 For Finances, guests and kids should not have any access and because Mom
@@ -1622,13 +1625,13 @@ the web interface and nosing around or worse.
 
 ### More Sources of Information {#more_sources_of_information}
 
--   [Official UnRAID Manual](UnRAID_Manual "wikilink")
--   [Un-Official UnRAID Manual](Un-Official_UnRAID_Manual "wikilink")
--   [UnRAID Wiki](UnRAID_Wiki "wikilink")
--   [Best of the Forums](Best_of_the_Forums "wikilink")
--   [Troubleshooting Guide](Troubleshooting "wikilink")
--   [UnRAID Add Ons](UnRAID_Add_Ons "wikilink")
--   [unRAID forums](http://lime-technology.com/forum/index.php)
+- [Official UnRAID Manual](UnRAID_Manual "wikilink")
+- [Un-Official UnRAID Manual](Un-Official_UnRAID_Manual "wikilink")
+- [UnRAID Wiki](UnRAID_Wiki "wikilink")
+- [Best of the Forums](Best_of_the_Forums "wikilink")
+- [Troubleshooting Guide](Troubleshooting "wikilink")
+- [UnRAID Add Ons](UnRAID_Add_Ons "wikilink")
+- [unRAID forums](http://lime-technology.com/forum/index.php)
 
 [Category: Getting started](Category:_Getting_started "wikilink")
 [Category: How To](Category:_How_To "wikilink")

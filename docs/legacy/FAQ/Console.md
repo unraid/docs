@@ -6,7 +6,7 @@ if you can!**
 \
 ==Basics of Console Usage==
 
--   If you are new to Linux, as many of us Windows users are, please
+- If you are new to Linux, as many of us Windows users are, please
     start by reading the [Console
     section](FAQ#unRAID_Console_Questions "wikilink") of the
     [FAQ](FAQ "wikilink"), and then read [Terminal
@@ -16,75 +16,75 @@ if you can!**
     [PuTTY](Terminal_Access#PuTTY "wikilink"), how to get a console and
     use it, and what are some of the differences between a Windows
     console and a Linux one.
--   The commands below usually list a usage note, which is a link to a
+- The commands below usually list a usage note, which is a link to a
     \'man page\'. In Linux, man pages describe the syntax of command
     usage, including all options for the command. Linux splits all of
     these command line commands into numbered groups, and often lists
     the group number with the command, eg. **cat(1)**. Ignore the
     numbers! I think they are just there to confuse those of us who did
     not grow up speaking Linux.
--   In some commands, you have to press the Ctrl-C keystroke combination
+- In some commands, you have to press the Ctrl-C keystroke combination
     to break out. In **less**, use the **q** key to quit.
--   When a command produces output that is more than can fit on the
+- When a command produces output that is more than can fit on the
     physical console, you can use the Shift-PgUp and Shift-PgDn key
     combinations to page up and down through the console display,
     including what may appear to have scrolled off the top.
--   The commands below are often compared with DOS or Windows console
+- The commands below are often compared with DOS or Windows console
     commands, but even when they appear essentially equivalent, there
     can be very subtle differences, not necessarily mentioned below.
--   **cat** - [usage](http://linux.die.net/man/1/cat) and a [how to
+- **cat** - [usage](http://linux.die.net/man/1/cat) and a [how to
     use](http://www.cyberciti.biz/faq/howto-use-cat-command-in-unix-linux-shell-script/)
-    -   **cat** is like the DOS/Windows **type**, displays a file on
+  - **cat** is like the DOS/Windows **type**, displays a file on
         screen. The file is assumed to be all text, and if not, will
         usually display garbage.
-    -   **cat** is used often below, but could easily be replaced by
+  - **cat** is used often below, but could easily be replaced by
         **more** or **less** (eg. **cat /proc/cpuinfo** could be **less
         /proc/cpuinfo**)
--   **more** - [usage](http://linux.die.net/man/1/more)
-    -   **more** displays text files like **cat**, but pages them to the
+- **more** - [usage](http://linux.die.net/man/1/more)
+  - **more** displays text files like **cat**, but pages them to the
         screen. It waits for a keystroke between each page.
--   **less** - [usage](http://linux.die.net/man/1/less)
-    -   **less** pages text files like **more**, but also lets you page
+- **less** - [usage](http://linux.die.net/man/1/less)
+  - **less** pages text files like **more**, but also lets you page
         up and down through them (press **q** to quit).
--   **ls** - [usage](http://linux.die.net/man/1/ls)
-    -   **ls** is a little like the DOS/Windows **dir** command, for
+- **ls** - [usage](http://linux.die.net/man/1/ls)
+  - **ls** is a little like the DOS/Windows **dir** command, for
         displaying directories in different ways, but the syntax is very
         different.
-    -   **ls -l** is a common way to list complete directory entries
-    -   see the [Command Macros](Console#Command_Macros "wikilink")
+  - **ls -l** is a common way to list complete directory entries
+  - see the [Command Macros](Console#Command_Macros "wikilink")
         section for more complex examples
-    -   *Note: in the default setup of unRAID, **v** is an alias for
+  - *Note: in the default setup of unRAID, **v** is an alias for
         **ls -l**, so you can replace the **ls -l** above with just
         **v**. It is OK to use the alias, but it is far better to learn
         the actual **ls -l** command in case you are ever in a situation
         where the alias does not exist. (nearly every other Linux based
         device will NOT have **v** as an alias for **ls -l**, and it may
         even be aliased to something completely different!)*
--   **cp** - [usage](http://linux.die.net/man/1/cp)
-    -   **cp** is like the DOS/Windows **copy** command.
--   **rm** - [usage](http://linux.die.net/man/1/rm)
-    -   **rm** is like the DOS/Windows **del** command.
--   **cd** - [usage](http://ss64.com/bash/cd.html) and a [how to
+- **cp** - [usage](http://linux.die.net/man/1/cp)
+  - **cp** is like the DOS/Windows **copy** command.
+- **rm** - [usage](http://linux.die.net/man/1/rm)
+  - **rm** is like the DOS/Windows **del** command.
+- **cd** - [usage](http://ss64.com/bash/cd.html) and a [how to
     use](http://www.linfo.org/cd.html)
-    -   **cd** is like the DOS/Windows **cd** command.
-    -   **cd** with no parameters changes to the users home directory
--   **pwd** - [usage](http://linux.die.net/man/1/pwd)
-    -   **pwd** displays the users current directory
--   **mkdir** - [usage](http://linux.die.net/man/1/mkdir)
-    -   **mkdir** is like the DOS/Windows **md** command.
--   **rmdir** - [usage](http://linux.die.net/man/1/rmdir)
-    -   **rmdir** is like the DOS/Windows **rd** command.
--   **chmod** - [usage](http://linux.die.net/man/1/chmod)
-    -   **chmod** is a little like the DOS/Windows **attrib** command,
+  - **cd** is like the DOS/Windows **cd** command.
+  - **cd** with no parameters changes to the users home directory
+- **pwd** - [usage](http://linux.die.net/man/1/pwd)
+  - **pwd** displays the users current directory
+- **mkdir** - [usage](http://linux.die.net/man/1/mkdir)
+  - **mkdir** is like the DOS/Windows **md** command.
+- **rmdir** - [usage](http://linux.die.net/man/1/rmdir)
+  - **rmdir** is like the DOS/Windows **rd** command.
+- **chmod** - [usage](http://linux.die.net/man/1/chmod)
+  - **chmod** is a little like the DOS/Windows **attrib** command,
         but the syntax is very different.
-    -   The Linux system of security and access attributes is very
+  - The Linux system of security and access attributes is very
         different to the Windows system. For more help, see
         [this](https://wiki.archlinux.org/index.php/File_permissions_and_attributes)
         and
         [this](http://www.yourownlinux.com/2013/09/chmod-basics-of-filesdirectories.html).
--   **find** - [usage](http://linux.die.net/man/1/find)
-    -   **find** is used to search for files
-    -   Example: the command **find . -iname \"file\*\"** will search
+- **find** - [usage](http://linux.die.net/man/1/find)
+  - **find** is used to search for files
+  - Example: the command **find . -iname \"file\*\"** will search
         the current folder and all sub-folders for files matching
         \'file\*\', using a case-insensitive search.
 
@@ -102,7 +102,7 @@ below, and you will substitute the appropriate Device ID for your drive.
 (Extra spaces are added for clarity only, only one space is needed.)\
 ====hdparm====
 
--   Instruction manual (a Linux MAN page) =\>
+- Instruction manual (a Linux MAN page) =\>
     <http://linux.die.net/man/8/hdparm>
 
 To view the identity and configuration information for a drive (at the
@@ -121,7 +121,7 @@ Speed](Check_Harddrive_Speed "wikilink").
 \
 ====smartctl====
 
--   Instruction manual (a Linux MAN page) =\>
+- Instruction manual (a Linux MAN page) =\>
     <http://smartmontools.sourceforge.net/man/smartctl.8.html>
 
 To obtain the SMART info for a drive, including some identity and
@@ -199,7 +199,7 @@ Shows you the drives by their model and serial number and the drive
 device ID (sda, hdc, etc) linked to each
 
 `ls  -l  /dev/disk/by-id`\
-`   -or-`\
+`-or-`\
 `ls  -l  /dev/disk/by-id/[au]*  |  grep  -v  part1`
 
 Lists the drive devices that have \"volume labels\", and device ID
@@ -226,39 +226,39 @@ distributions. See
 [here](http://lime-technology.com/forum/index.php?topic=2109.msg15568#msg15568)
 for more information about ethtool, and a download link.
 
--   **lsmod** - [usage](http://linux.die.net/man/8/lsmod)
-    -   lists the installed kernel modules, including your network
+- **lsmod** - [usage](http://linux.die.net/man/8/lsmod)
+  - lists the installed kernel modules, including your network
         driver
--   **ethtool -i eth0** - [usage](http://linux.die.net/man/8/ethtool)
-    -   displays the network driver being used by your network chipset
+- **ethtool -i eth0** - [usage](http://linux.die.net/man/8/ethtool)
+  - displays the network driver being used by your network chipset
         (for eth0), and its version
--   **ethtool eth0**
-    -   displays a number of the settings for your network chipset
-    -   displays the speed setting, typically \"Speed: 1000 Mb/s\" for a
+- **ethtool eth0**
+  - displays a number of the settings for your network chipset
+  - displays the speed setting, typically \"Speed: 1000 Mb/s\" for a
         gigabit connection
-    -   displays the Wake-on-LAN setting, typically \"Wake-on: g\" if
+  - displays the Wake-on-LAN setting, typically \"Wake-on: g\" if
         enabled for \'magic\' packet
--   **ifconfig** - [usage](http://linux.die.net/man/8/ifconfig)
-    -   displays various numeric parameters and statistics for your
+- **ifconfig** - [usage](http://linux.die.net/man/8/ifconfig)
+  - displays various numeric parameters and statistics for your
         networking
-    -   displays your MAC address, as **HWaddr**
-    -   displays your local IP, as **inet addr**
-    -   displays your MTU setting
-    -   displays assorted transmit and receive statistics, including
+  - displays your MAC address, as **HWaddr**
+  - displays your local IP, as **inet addr**
+  - displays your MTU setting
+  - displays assorted transmit and receive statistics, including
         errors and collisions
--   **ethtool -S eth0**
-    -   displays more detailed network statistics
--   **net lookup google.com** - [usage](http://linux.die.net/man/8/net)
-    -   check for correct nameserver and DNS configuration, should
+- **ethtool -S eth0**
+  - displays more detailed network statistics
+- **net lookup google.com** - [usage](http://linux.die.net/man/8/net)
+  - check for correct nameserver and DNS configuration, should
         provide the IP for Google if setup right
--   **ping -c5 google.com** - [usage](http://linux.die.net/man/8/ping)
-    -   another way to check for correct nameserver configuration (if it
+- **ping -c5 google.com** - [usage](http://linux.die.net/man/8/ping)
+  - another way to check for correct nameserver configuration (if it
         times out, or produces errors, you need to set a nameserver)
--   **egrep -i
+- **egrep -i
     \"eth0\|rc.inet1\|((forcedeth\|r8169\|e1000\|e1000e\|sky2\|skge\|tg3\|bcm5700\|sk98lin)\[
     :\])\|dhcp\" /var/log/syslog** -
     [usage](http://linux.die.net/man/1/egrep)
-    -   displays lines in the system log (/var/log/syslog) affiliated
+  - displays lines in the system log (/var/log/syslog) affiliated
         with networking
 
 \
@@ -267,53 +267,59 @@ for more information about ethtool, and a download link.
 
 **`section needs more work`**
 
--   **tail -f \--lines=99 /var/log/syslog** -
+- **tail -f \--lines=99 /var/log/syslog** -
     [usage](http://linux.die.net/man/1/tail)
-    -   Display current end of syslog
-    -   If you leave the **\--lines** parameter off, it will display the
+  - Display current end of syslog
+  - If you leave the **\--lines** parameter off, it will display the
         last 10 lines, which is often all you need. There are many
         situations though where at least a page full is useful, perhaps
         even 200 (eg. **\--lines=200**).
-    -   It is essentially real time, use Ctrl-C to quit.
+  - It is essentially real time, use Ctrl-C to quit.
 
 ```{=html}
 <!-- -->
 ```
--   **free -l** - [usage](http://linux.die.net/man/1/free)
-    -   Show current memory usage
+
+- **free -l** - [usage](http://linux.die.net/man/1/free)
+  - Show current memory usage
 
 ```{=html}
 <!-- -->
 ```
--   **top** - [usage](http://linux.die.net/man/1/top)
-    -   List processes, with some memory and CPU stats
+
+- **top** - [usage](http://linux.die.net/man/1/top)
+  - List processes, with some memory and CPU stats
 
 ```{=html}
 <!-- -->
 ```
--   **ps -eF** - [usage](http://linux.die.net/man/1/ps)
-    -   List processes (similar to top but \...)
+
+- **ps -eF** - [usage](http://linux.die.net/man/1/ps)
+  - List processes (similar to top but \...)
 
 ```{=html}
 <!-- -->
 ```
--   **ps -eo size,pid,time,args \--sort -size** *(those are commas not
+
+- **ps -eo size,pid,time,args \--sort -size** *(those are commas not
     periods, double hyphen before sort)*
-    -   List the processes on the server and their memory size (first
+  - List the processes on the server and their memory size (first
         column) sorted by memory size
 
 ```{=html}
 <!-- -->
 ```
--   **testparm -sv** - [usage](http://linux.die.net/man/1/testparm)
-    -   Show system configuration parameters, including security and
+
+- **testparm -sv** - [usage](http://linux.die.net/man/1/testparm)
+  - Show system configuration parameters, including security and
         permissions
 
 ```{=html}
 <!-- -->
 ```
--   **w** - [usage](http://linux.die.net/man/1/w)
-    -   Show who is logged on and what they are doing
+
+- **w** - [usage](http://linux.die.net/man/1/w)
+  - Show who is logged on and what they are doing
 
 For excellent descriptions and examples of the use of **screen**
 ([usage](http://linux.die.net/man/1/screen)), see
@@ -386,16 +392,16 @@ Many more file and folder commands can be found in the [Basics of
 Console Usage](Console#Basics_of_Console_Usage "wikilink") section
 above.
 
--   **df** - [usage](http://linux.die.net/man/1/df)
-    -   reports file system disk space usage
-    -   example: **df /var/log** reports space usage of the log folder,
+- **df** - [usage](http://linux.die.net/man/1/df)
+  - reports file system disk space usage
+  - example: **df /var/log** reports space usage of the log folder,
         in RAM
--   **mount** - [usage](http://linux.die.net/man/8/mount)
-    -   mounts file systems; makes your files available!
--   **umount** - [usage](http://linux.die.net/man/8/umount)
-    -   unmounts mounted file systems
--   **which** - [usage](http://linux.die.net/man/1/which)
-    -   checks for shell commands that are executable from the system
+- **mount** - [usage](http://linux.die.net/man/8/mount)
+  - mounts file systems; makes your files available!
+- **umount** - [usage](http://linux.die.net/man/8/umount)
+  - unmounts mounted file systems
+- **which** - [usage](http://linux.die.net/man/1/which)
+  - checks for shell commands that are executable from the system
         path
 
 \
@@ -408,56 +414,56 @@ Usage](Console#Basics_of_Console_Usage "wikilink") section above).
 
 ### CPU Info {#cpu_info}
 
--   **lscpu** - [usage](http://linux.die.net/man/1/lscpu)
-    -   short summary of CPU info
--   **cat /proc/cpuinfo**
-    -   much longer report of all CPU\'s
--   **grep \--color lm /proc/cpuinfo**
-    -   tests for 64 bit compatibility; if your CPU supports 64bit mode,
+- **lscpu** - [usage](http://linux.die.net/man/1/lscpu)
+  - short summary of CPU info
+- **cat /proc/cpuinfo**
+  - much longer report of all CPU\'s
+- **grep \--color lm /proc/cpuinfo**
+  - tests for 64 bit compatibility; if your CPU supports 64bit mode,
         then \'lm\' will be highlighted in the cpuinfo report
--   **grep \--color vmx /proc/cpuinfo**
-    -   tests for Intel VT CPU Virtualization Extensions; if your CPU
+- **grep \--color vmx /proc/cpuinfo**
+  - tests for Intel VT CPU Virtualization Extensions; if your CPU
         supports them, then \'vmx\' will be highlighted in the cpuinfo
         report
--   **grep \--color svm /proc/cpuinfo**
-    -   tests for AMD V CPU Virtualization Extensions; if your CPU
+- **grep \--color svm /proc/cpuinfo**
+  - tests for AMD V CPU Virtualization Extensions; if your CPU
         supports them, then \'svm\' will be highlighted in the cpuinfo
         report
--   **egrep \--color \'lm\|vmx\|svm\' /proc/cpuinfo**
-    -   quick way to test all 3 above *(thanks WeeboTech!)*
+- **egrep \--color \'lm\|vmx\|svm\' /proc/cpuinfo**
+  - quick way to test all 3 above *(thanks WeeboTech!)*
 
 \
 ===Memory Info===
 
--   **free** - [usage](http://linux.die.net/man/1/free)
-    -   abbreviated summary of general memory info
-    -   Note: be careful putting much importance on low free memory
+- **free** - [usage](http://linux.die.net/man/1/free)
+  - abbreviated summary of general memory info
+  - Note: be careful putting much importance on low free memory
         numbers, as Linux uses memory very differently than Windows
--   **free -t**
-    -   summary of general memory info with totals
--   **free -mt**
-    -   summary of general memory info with totals, all in megabytes
--   **cat /proc/meminfo**
-    -   more complete report of memory usage
--   **slabtop** - [usage](http://linux.die.net/man/1/slabtop)
-    -   displays kernel slab cache information in real time
--   **slabtop -s c**
-    -   slabtop display, but sorted by cache size usage
--   **vmstat** - [usage](http://linux.die.net/man/8/vmstat)
-    -   displays virtual memory statistics
--   **vmstat -m**
-    -   detailed memory usage
+- **free -t**
+  - summary of general memory info with totals
+- **free -mt**
+  - summary of general memory info with totals, all in megabytes
+- **cat /proc/meminfo**
+  - more complete report of memory usage
+- **slabtop** - [usage](http://linux.die.net/man/1/slabtop)
+  - displays kernel slab cache information in real time
+- **slabtop -s c**
+  - slabtop display, but sorted by cache size usage
+- **vmstat** - [usage](http://linux.die.net/man/8/vmstat)
+  - displays virtual memory statistics
+- **vmstat -m**
+  - detailed memory usage
 
 \
 ===Sensor Info===
 
--   **sensors** - [usage](http://linux.die.net/man/1/sensors)
-    -   displays some of available sensor info, may include system, CPU,
+- **sensors** - [usage](http://linux.die.net/man/1/sensors)
+  - displays some of available sensor info, may include system, CPU,
         and drive temperatures, system voltages, fan speeds and
         settings, etc
--   **sensors-detect** -
+- **sensors-detect** -
     [usage](http://linux.die.net/man/8/sensors-detect)
-    -   analyses system and displays all available sensors and needed
+  - analyses system and displays all available sensors and needed
         modules, helps configure
         [**sensors.conf**](http://linux.die.net/man/5/sensors.conf),
         requires Perl installed first
@@ -465,36 +471,36 @@ Usage](Console#Basics_of_Console_Usage "wikilink") section above).
 \
 ===Network Info===
 
--   Please see the [Network
+- Please see the [Network
     section](Console#Console_Commands_for_Networking "wikilink") above
 
 \
 ===Other Hardware Info=== *Note: the following commands may or may not
 be installed in your release*
 
--   **lspci** - [usage](http://linux.die.net/man/8/lspci)
-    -   displays information about PCI buses and devices
--   **lspci -vnn**
-    -   displays more verbose information about PCI buses and devices
+- **lspci** - [usage](http://linux.die.net/man/8/lspci)
+  - displays information about PCI buses and devices
+- **lspci -vnn**
+  - displays more verbose information about PCI buses and devices
         (add another **v** (**-vvnn**) for even more verbose)
--   **lspci -knn**
-    -   displays more information about PCI buses and devices, including
+- **lspci -knn**
+  - displays more information about PCI buses and devices, including
         device numbers and assigned kernel modules
--   **lsscsi** - [usage](http://linux.die.net/man/8/lsscsi)
-    -   displays information about SCSI devices
--   **lsscsi -vgl** *(that\'s a lower case L)*
-    -   displays more verbose information about SCSI devices, including
+- **lsscsi** - [usage](http://linux.die.net/man/8/lsscsi)
+  - displays information about SCSI devices
+- **lsscsi -vgl** *(that\'s a lower case L)*
+  - displays more verbose information about SCSI devices, including
         ATA numbers!
--   **lsusb** - [usage](http://linux.die.net/man/8/lsusb)
-    -   displays information about USB buses and the devices connected
+- **lsusb** - [usage](http://linux.die.net/man/8/lsusb)
+  - displays information about USB buses and the devices connected
         to them
--   **dmidecode** - [usage](http://linux.die.net/man/8/dmidecode)
-    -   displays the raw information from DMI/SMBIOS tables; may contain
+- **dmidecode** - [usage](http://linux.die.net/man/8/dmidecode)
+  - displays the raw information from DMI/SMBIOS tables; may contain
         info on system manufacturer, motherboard, BIOS, memory,
         chipsets, etc
-    -   some of it is not human readable, and it is very often
+  - some of it is not human readable, and it is very often
         unreliable or wrong
-    -   if you see *Invalid entry length (0). DMI table is broken!
+  - if you see *Invalid entry length (0). DMI table is broken!
         Stop.*, then the DMI tables are bad. Sometimes a BIOS update
         will improve them, but not guaranteed.
 
@@ -502,16 +508,16 @@ be installed in your release*
 
 ### Version Info {#version_info}
 
--   **uname -a** - [usage](http://linux.die.net/man/1/uname)
-    -   displays the Linux kernel version
--   **grep \"emhttp: unRAID System Management Utility\"
+- **uname -a** - [usage](http://linux.die.net/man/1/uname)
+  - displays the Linux kernel version
+- **grep \"emhttp: unRAID System Management Utility\"
     /var/log/syslog** - [usage](http://linux.die.net/man/1/grep)
-    -   displays the UnRAID version
--   **ethtool -i eth0** - [usage](http://linux.die.net/man/8/ethtool)
-    -   displays the version of the network driver being used by your
+  - displays the UnRAID version
+- **ethtool -i eth0** - [usage](http://linux.die.net/man/8/ethtool)
+  - displays the version of the network driver being used by your
         network chipset (for eth0)
--   **openssl version** - [usage](http://linux.die.net/man/1/openssl)
-    -   displays the version of OpenSSL, if installed
+- **openssl version** - [usage](http://linux.die.net/man/1/openssl)
+  - displays the version of OpenSSL, if installed
 
 \
 ==Command Macros==

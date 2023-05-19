@@ -31,25 +31,25 @@ one, that is even larger than the Parity drive.**
 \
 **Important Notes**
 
--   If you have purchased a replacement drive, we always recommend
+- If you have purchased a replacement drive, we always recommend
     Preclearing the replacement drive first, to make sure it\'s a good
     drive that won\'t fail for a few years at least. The Preclearing is
     not strictly necessary, as replacement drives don\'t have to be
     cleared, they are going to be completely overwritten. But
     Preclearing new drives one to three times provides a thorough test
     of the drive, eliminates \'infant mortality\' failures.
--   **If your replacement drive is the same size or smaller than your
+- **If your replacement drive is the same size or smaller than your
     current Parity drive, then you don\'t need this procedure. Proceed
     with the [Replacing a Data Drive](Replacing_a_Data_Drive "wikilink")
     procedure.**
--   This procedure is strictly for replacing data drives in an unRAID
+- This procedure is strictly for replacing data drives in an unRAID
     array. If all you want to do is replace your Parity drive with a
     larger one, then you don\'t need the Parity Swap procedure. Just
     remove the old parity drive and add the new one, and start the
     array. The process of building parity will immediately begin. (If
     something goes wrong, you still have the old parity drive that you
     can put back!)
--   **IMPORTANT!!!** This procedure REQUIRES that the data drive being
+- **IMPORTANT!!!** This procedure REQUIRES that the data drive being
     replaced MUST be disabled first. If the drive failed (has a red
     ball), then it is already \'disabled\', but if the drive is OK but
     you want to replace it anyway, then you have to force it to be
@@ -62,13 +62,13 @@ one, that is even larger than the Parity drive.**
     It needs to see a disabled data disk with forgotten ID, a new disk
     assigned to its slot that used to be the parity disk, and a new disk
     assigned to the parity slot.
--   Obviously, it\'s very important to identify the drives for
+- Obviously, it\'s very important to identify the drives for
     assignment correctly! Have a list of the drive models that will be
     taking part in this procedure, with the last 4 characters of their
     serial numbers. If the drives are recent Toshiba models, then they
     may all end in **GS** or **S**, so you will want to note the
     preceding 4 characters instead.
--   *Lastly, this page was only tested with v6 (and not with a disabled
+- *Lastly, this page was only tested with v6 (and not with a disabled
     drive), and is \'assumed\' to be correct for all versions. (You know
     what happens when you \'assume\'!) If you see any improvements or
     corrections, please add them, or suggest them to us, either on the
@@ -95,23 +95,23 @@ one, that is even larger than the Parity drive.**
     it), then you would skip steps 5 through 8. Revise the steps as
     needed.
 
-1.  Stop the array *(if it\'s started)*
-2.  Unassign the old drive *(if it\'s still assigned)*
+1. Stop the array *(if it\'s started)*
+2. Unassign the old drive *(if it\'s still assigned)*
     *If the drive was a good drive and notifications are enabled, you
     will get error notifications for a missing drive! This is normal.*
-3.  Start the array (put a check in the **Yes I want to do this**
+3. Start the array (put a check in the **Yes I want to do this**
     checkbox if it appears (older versions: **Yes, I\'m sure**))
     *Yes, you need to do this. Your data drive should be showing as
     **Not installed**.*
-4.  Stop the array again
-5.  Power down
-6.  *\[ Optional \]* Pull the old drive
+4. Stop the array again
+5. Power down
+6. *\[ Optional \]* Pull the old drive
     *You may want to leave it installed, for Preclearing or testing or
     reassignment.*
-7.  Install the new drive (preclear STRONGLY suggested, but formatting
+7. Install the new drive (preclear STRONGLY suggested, but formatting
     not needed)
-8.  Power on
-9.  Stop the array\
+8. Power on
+9. Stop the array\
     *\*If you get an \"Array Stopping•Retry unmounting disk
     share(s)\...\" message, try disabling Docker and/or VM in Settings
     and stopping the array again after rebooting.*
@@ -172,13 +172,13 @@ one, that is even larger than the Parity drive.**
     above) you may have to \'fail\' the drive by removing the drive, and
     starting and stopping the array one time.
 
-1.  Stop the array.
-2.  Power down the unit.
-3.  Replace the parity disk with the new bigger one.
-4.  Replace the failed disk with your old parity disk.
-5.  Power up the unit.
-6.  Start the array.
-7.  When you start the array, the system will first copy the parity
+1. Stop the array.
+2. Power down the unit.
+3. Replace the parity disk with the new bigger one.
+4. Replace the failed disk with your old parity disk.
+5. Power up the unit.
+6. Start the array.
+7. When you start the array, the system will first copy the parity
     information to the new parity disk, and then reconstruct the
     contents of the failed disk.
 

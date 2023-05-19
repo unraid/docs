@@ -20,6 +20,7 @@
 ```{=html}
 <hr>
 ```
+
 \
 The cache disk feature of unRAID greatly increases the perceived
 performance of the system when writing data to a parity-protected array.
@@ -59,12 +60,12 @@ the option to disable the use of the cache disk for that share.
 
 In order to create a cache disk using the GUI:
 
-1.  Stop the array
-2.  Click on \"Disk\" at the top.
-3.  Look at the very bottom of the page in the Disk Devices section for
+1. Stop the array
+2. Click on \"Disk\" at the top.
+3. Look at the very bottom of the page in the Disk Devices section for
     a disk \'slot\' labeled Cache (the very last slot).
-4.  Select any disk not in the array into that slot.
-5.  Start the array
+4. Select any disk not in the array into that slot.
+5. Start the array
 
 ## Cache settings {#cache_settings}
 
@@ -113,7 +114,7 @@ MB/s](http://lime-technology.com/forum/index.php?topic=5754.msg120084#msg120084)
 So generally speaking, a server with a cache drive has write speeds
 **2-3x faster** than the same server without a cache drive.
 
--   Note: These figures (especially the averages) are based upon
+- Note: These figures (especially the averages) are based upon
     personal observations by Rajahal and upon reports from other
     reputable sources in these forums.
 
@@ -134,7 +135,7 @@ they are no longer open.
 :   *Main article: [Plugin/webGui/Mover
     Settings](Plugin/webGui/Mover_Settings "wikilink")*
 
--   The mover will not move any top-level directories which begin with a
+- The mover will not move any top-level directories which begin with a
     \'.\' character. Such directories will not exist in normal use, but
     an advanced user may use this knowledge to create directories which
     won\'t get moved.
@@ -142,7 +143,8 @@ they are no longer open.
 ```{=html}
 <!-- -->
 ```
--   The mover will not move any files that exist in the root of the
+
+- The mover will not move any files that exist in the root of the
     cache disk. Such files will not exist in normal use, but an advanced
     user may use this knowledge to create files which won\'t get moved
     (for example, a swap file).
@@ -150,7 +152,8 @@ they are no longer open.
 ```{=html}
 <!-- -->
 ```
--   The mover is just a script called '/usr/local/sbin/mover' which
+
+- The mover is just a script called '/usr/local/sbin/mover' which
     invokes \'find\' to traverse the cache disk and move files to the
     array using the \'mv\' command. Advanced users may edit this script
     to fine-tune the mover. For example, it\'s possible to set
@@ -193,10 +196,10 @@ As a cache drive is outside of the parity-protected array, it can be
 used for alternate software and unRAID add-ons that need to read and
 write data often. Examples include:
 
--   [Installing unRAID on a full Slackware
+- [Installing unRAID on a full Slackware
     distro](Installing_unRAID_on_a_full_Slackware_distro "wikilink")
--   Multi-boot into a full Windows OS from the HDD,
--   Use as a swap drive/partition for Linux.
+- Multi-boot into a full Windows OS from the HDD,
+- Use as a swap drive/partition for Linux.
 
 :   *Read more: [Forum
     discussion](http://lime-technology.com/forum/index.php?topic=3899.0)*
@@ -231,8 +234,8 @@ frequently and at different times.
 The two key factors to consider to when choosing a hard drive to be your
 cache disk are:
 
--   Your intended purpose.
--   Amount of data
+- Your intended purpose.
+- Amount of data
 
 ### Purpose
 

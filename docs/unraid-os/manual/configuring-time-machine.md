@@ -1,4 +1,5 @@
 # Apple Time Machine
+
 ## Guide: Setting up a Time Machine Share on your Unraid Server {#guide_setting_up_a_time_machine_share_on_your_unraid_server}
 
 Apple's Time Machine is a built-in backup feature for your Mac that will
@@ -17,10 +18,10 @@ To create backups with Time Machine and store them on your Unraid
 server, all you'll need to do is connect it to your Unraid server and
 then Time Machine will automatically make:
 
--   Hourly backups for the past 24 hours
--   Daily backups for the past month
--   Weekly backups for all previous months
--   The oldest backups are deleted when your backup disk is full
+- Hourly backups for the past 24 hours
+- Daily backups for the past month
+- Weekly backups for all previous months
+- The oldest backups are deleted when your backup disk is full
 
 If you want to control when backups are completed, we suggest you use a
 tool such as [Time Machine
@@ -33,47 +34,47 @@ in Time Machine itself.
 Before you begin, make sure **SMB** is enabled in the Unraid webgui by
 going to:
 
-1.  Settings \--\> SMB under "Network Services"
-2.  Set "Enable SMB" to "Yes" and click "Apply" (Array must be stopped
+1. Settings \--\> SMB under "Network Services"
+2. Set "Enable SMB" to "Yes" and click "Apply" (Array must be stopped
     to change this).
-3.  Also, set "Enhanced macOS interoperability" to Yes as well.
+3. Also, set "Enhanced macOS interoperability" to Yes as well.
 
 ![](/docs/legacy/SMBSettings.png "File:SMBSettings.png")
 
 Now:
 
-1.  In the Unraid webGUI, go to \"Shares\" and click \"Add Share".
-2.  Name the share (Ex: Time Machine).
-3.  Set your minimum free space or leave default. This is the minimum
+1. In the Unraid webGUI, go to \"Shares\" and click \"Add Share".
+2. Name the share (Ex: Time Machine).
+3. Set your minimum free space or leave default. This is the minimum
     free space available to allow writing to any disk belonging to the
     share.
-4.  Under "Included disk(s)" select the disk in the array that you'd
+4. Under "Included disk(s)" select the disk in the array that you'd
     like to use for your Time Machine share. You can still use this same
     disk for other shares.
-5.  Keep "Enable Copy-on-write" on "Auto".
+5. Keep "Enable Copy-on-write" on "Auto".
 
--   Under SMB Security Settings.
+- Under SMB Security Settings.
 
-1.  Under "Export" select "Yes (Time Machine)"
-2.  Set your "TimeMachine volume size limit". This limits the reported
+1. Under "Export" select "Yes (Time Machine)"
+2. Set your "TimeMachine volume size limit". This limits the reported
     volume size, preventing Time Machine from using the entire real disk
     space for backup. Example: setting this value to \"1024\" would
     limit the reported disk space to 1GB.
-3.  Set your Security parameters to what you prefer.
-4.  Click Apply/Done.
+3. Set your Security parameters to what you prefer.
+4. Click Apply/Done.
 
 From here, there are just a few more steps:
 
--   Connect to your Time Machine share by connecting to it through the
+- Connect to your Time Machine share by connecting to it through the
     Finder.
 
-1.  Next: go to Time Machine Preferences on your Mac and "Select Disk".
-2.  Your newly mounted Time Machine share should show up. Select this
+1. Next: go to Time Machine Preferences on your Mac and "Select Disk".
+2. Your newly mounted Time Machine share should show up. Select this
     share, enable encryption if desired and click "Use Disk".
-3.  Now, Time Machine will say it's trying to connect to your share.
+3. Now, Time Machine will say it's trying to connect to your share.
     *Before clicking connect, it's recommended to eject your mounted
     share from your desktop and then connect.*
-4.  Time Machine immediately begins making periodic
+4. Time Machine immediately begins making periodic
     backups---automatically and without further action by you.
 
 *Note: The first backup may take a long time, depending on how many

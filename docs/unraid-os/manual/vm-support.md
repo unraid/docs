@@ -14,14 +14,14 @@ listed on this page.
 
 A few notes on virtualizing Windows on Unraid before you begin:
 
--   Before activating your Windows license, we highly encourage thorough
+- Before activating your Windows license, we highly encourage thorough
     testing of your VM first.
--   Changing the machine type between i440fx and Q35 under advanced mode
+- Changing the machine type between i440fx and Q35 under advanced mode
     will prompt Windows for reactivation of the license.
--   Windows 7 and earlier OS variants may not work with host-based
+- Windows 7 and earlier OS variants may not work with host-based
     graphics assignment correctly. Use Windows 8.1 or newer for the best
     experience.
--   If using OVMF, you must use Windows 8 or newer. UEFI is not directly
+- If using OVMF, you must use Windows 8 or newer. UEFI is not directly
     supported by Windows 7 and therefore, OVMF will not work.
 
 Windows is different from Linux-based guests as it requires the user to
@@ -141,15 +141,15 @@ if you are assigning physical devices to virtual machines). It is for
 these reasons we highly encourage users to set their power management
 settings to High-performance mode.
 
-`1) Open up the `**`Control Panel`**` for Windows and in the top-right search box, type "power" to search for the power settings controls, then click on `**`Change what the power buttons do`**`:`
+`1) Open up the`**`Control Panel`**`for Windows and in the top-right search box, type "power" to search for the power settings controls, then click on`**`Change what the power buttons do`**`:`
 
 ![](/docs/legacy/Disable_fast_startup_-_step_1.png "Disable_fast_startup_-_step_1.png")
 
-`2) Click the `**`Change settings that are currently unavailable`**` link near the top of the next window:`
+`2) Click the`**`Change settings that are currently unavailable`**`link near the top of the next window:`
 
 ![](/docs/legacy/Disable_fast_startup_-_step_2.png "Disable_fast_startup_-_step_2.png"){width="800"}
 
-`3) Uncheck `**`Turn on fast startup`**` from under the `*`Shutdown settings`*` section:`
+`3) Uncheck`**`Turn on fast startup`**`from under the`*`Shutdown settings`*`section:`
 
 ![](/docs/legacy/Disable_fast_startup_-_step_3.png "Disable_fast_startup_-_step_3.png"){width="800"}\
 
@@ -165,7 +165,7 @@ By disabling hibernation as a feature entirely, you can reclaim many GB
 of space on your virtual disk and reduce overhead relating to disk IO
 inside the VM.
 
-`1) Open a Windows command prompt as an administrator and enter this command:  `**`powercfg -h off`**
+`1) Open a Windows command prompt as an administrator and enter this command:`**`powercfg -h off`**
 
 `2) Reboot your VM and the hiberfil.sys file should no longer remain (this step may not be necessary for certain versions of Windows).`
 
@@ -175,15 +175,15 @@ The Windows indexing service (aka Windows Search) can cause unnecessary
 disk IO inside your VM. To improve overall VM performance, it is
 recommended to disable this service from running in Windows.
 
-`1) Open a `**`Run`**` window and type `*`services.msc`*` inside, then press `*`Enter`*`:`
+`1) Open a`**`Run`**`window and type`*`services.msc`*`inside, then press`*`Enter`*`:`
 
 ![](/docs/legacy/Disable_windows_indexing_-_step_1.png "Disable_windows_indexing_-_step_1.png")
 
-`2) Right-click the `**`Windows Search`**` service from the next window and then click `**`Stop`**`:`
+`2) Right-click the`**`Windows Search`**`service from the next window and then click`**`Stop`**`:`
 
 ![](/docs/legacy/Disable_windows_indexing_-_step_2.png "Disable_windows_indexing_-_step_2.png"){width="800"}
 
-`3) Double-click the `**`Windows Search`**` item from the list and in the next window, change the `*`Startup type`*` to `**`Disabled`**`:`
+`3) Double-click the`**`Windows Search`**`item from the list and in the next window, change the`*`Startup type`*`to`**`Disabled`**`:`
 
 ![](/docs/legacy/Disable_windows_indexing_-_step_3.png "Disable_windows_indexing_-_step_3.png")
 
@@ -193,19 +193,19 @@ If the Windows disk defragmenter is set to automatically run on a
 schedule, you should disable it. This is not necessary for VMs and can
 cause unnecessary wear and tear on your physical storage devices.
 
-`1) Use Windows Explorer to browse to where you can see the C:\ drive, then right-click on the device and select `**`Properties`**`:`
+`1) Use Windows Explorer to browse to where you can see the C:\ drive, then right-click on the device and select`**`Properties`**`:`
 
 ![](/docs/legacy/Disable_disk_defrag_-_step_1.PNG "Disable_disk_defrag_-_step_1.PNG"){width="600"}
 
-`2) Click on the `**`Tools`**` tab at the top, then click `**`Optimize`**`:`
+`2) Click on the`**`Tools`**`tab at the top, then click`**`Optimize`**`:`
 
 ![](/docs/legacy/Disable_disk_defrag_-_step_2.png "Disable_disk_defrag_-_step_2.png")
 
-`3) Click on the `**`Change settings`**` button:`
+`3) Click on the`**`Change settings`**`button:`
 
 ![](/docs/legacy/Disable_disk_defrag_-_step_3.png "Disable_disk_defrag_-_step_3.png")
 
-`4) Uncheck `**`Run on a schedule`**` from the next window:`
+`4) Uncheck`**`Run on a schedule`**`from the next window:`
 
 ![](/docs/legacy/Disable_disk_defrag_-_step_4.png "Disable_disk_defrag_-_step_4.png")\
 
@@ -217,11 +217,11 @@ make using VMs more difficult, as it requires another device to then
 access the webGui to resume a VM that was suspended due to a period of
 inactivity.
 
-`1) Open up the `**`Control Panel`**` for Windows and in the top-right search box, type "power" to search for the power settings controls, then select `**`Choose a power plan`**`:`
+`1) Open up the`**`Control Panel`**`for Windows and in the top-right search box, type "power" to search for the power settings controls, then select`**`Choose a power plan`**`:`
 
 ![](/docs/legacy/High_performance_power_mode_-_step_1.png "High_performance_power_mode_-_step_1.png")
 
-`2) Select `**`High performance`**` from the options available under `*`Preferred plans`*`:`
+`2) Select`**`High performance`**`from the options available under`*`Preferred plans`*`:`
 
 ![](/docs/legacy/High_performance_power_mode_-_step_2.png "High_performance_power_mode_-_step_2.png"){width="800"}\
 
@@ -243,19 +243,19 @@ edition (the Home edition does not include this feature). To enable RDP
 access to your VM, perform the following steps through VNC or locally
 using GPU pass through:
 
-`1) Open the `**`System`**` panel by right-clicking on the Windows start button in the lower-right corner of your desktop.`
+`1) Open the`**`System`**`panel by right-clicking on the Windows start button in the lower-right corner of your desktop.`
 
 ![](/docs/legacy/Enable_rdp_-_step_1.png "Enable_rdp_-_step_1.png"){width="800"}
 
-`2) Click on `**`Remote settings`**
+`2) Click on`**`Remote settings`**
 
 ![](/docs/legacy/Enable_rdp_-_step_2.png "Enable_rdp_-_step_2.png"){width="800"}
 
-`3) Click on `**`Allow remote connections to this computer`**` and click `**`OK`**`.`
+`3) Click on`**`Allow remote connections to this computer`**`and click`**`OK`**`.`
 
 ![](/docs/legacy/Enable_rdp_-_step_3.png "Enable_rdp_-_step_3.png"){width="800"}
 
-`4) You can now connect using a Microsoft RDP client, but you will need to connect to the IP address of the virtual machine, `*`not Unraid itself`*`.`
+`4) You can now connect using a Microsoft RDP client, but you will need to connect to the IP address of the virtual machine,`*`not Unraid itself`*`.`
 
 ### Enable MSI for Interrupts to Fix HDMI Audio Support {#enable_msi_for_interrupts_to_fix_hdmi_audio_support}
 
@@ -268,16 +268,16 @@ interrupts, you can visit Alex Williamson\'s
 blog[1](http://vfio.blogspot.com/2014/09/vfio-interrupts-and-how-to-coax-windows.html).
 Here\'s the procedure for doing this:
 
--   Shut down your VM and make a copy of your virtual disk before
+- Shut down your VM and make a copy of your virtual disk before
     proceeding (as a backup).
--   Start your VM with the GPU device assigned.
--   Access your server using SSH or telnet.
--   For the device you wish to assign, locate its PCI address identifier
+- Start your VM with the GPU device assigned.
+- Access your server using SSH or telnet.
+- For the device you wish to assign, locate its PCI address identifier
     (this can be found when selecting the device from within the VM
     creation tool)
--   From the command line, type the following: `lspci -v -s 1:00.0`
+- From the command line, type the following: `lspci -v -s 1:00.0`
     (replace 1:00.0 with your GPU device)
--   Look for a line that looks like this:
+- Look for a line that looks like this:
     `Capabilities: [68] MSI: Enable+ Count=1/1 Maskable- 64bit+`
 
 If the **Enable** setting is set to **+**, that means your device claims
@@ -349,27 +349,27 @@ If you have a Windows 10 VM that you want to upgrade to Windows 11,
 there are a number of steps to ensure the upgrade process completes
 successfully. First and foremost, perform the following steps:
 
--   Create a backup of your Windows VM.
--   Upgrade Unraid OS to release 6.10-rc2 or later.
+- Create a backup of your Windows VM.
+- Upgrade Unraid OS to release 6.10-rc2 or later.
 
 The next step will be to add TPM support to your VM. To do this, perform
 the following steps:
 
--   Shut down your Windows 10 VM.
--   Edit your Windows 10 VM.
--   Change the BIOS type from OVMF to OVMF-TPM.
--   Save the changes and start the VM.
+- Shut down your Windows 10 VM.
+- Edit your Windows 10 VM.
+- Change the BIOS type from OVMF to OVMF-TPM.
+- Save the changes and start the VM.
 
 With TPM support added, now you can perform the following steps from
 within your Windows 10 VM:
 
--   Download and run the [Windows 11 Installation
+- Download and run the [Windows 11 Installation
     Assistant](https://www.microsoft.com/en-us/software-download/windows11)
     and the [Windows 11 Health Check
     app](https://aka.ms/GetPCHealthCheckApp).
--   Run the health check app to verify processor and, if applicable, GPU
+- Run the health check app to verify processor and, if applicable, GPU
     compatibility.
--   Upgrade to Windows 11.
+- Upgrade to Windows 11.
 
 ## Unraid as a VM {#unraid_as_a_vm}
 
@@ -397,48 +397,48 @@ questions.
 
 **Prerequisites**
 
--   You will need a valid license key for the Unraid VM. Also, the VM\'s
+- You will need a valid license key for the Unraid VM. Also, the VM\'s
     flash drive has to be a different manufacturer than the host\'s
     flash drive.
--   Unraid 6.4.0 (or later) in the VM. If for any reason you want to run
+- Unraid 6.4.0 (or later) in the VM. If for any reason you want to run
     an earlier release then see the forum thread mentioned above for
     guidance on how to do this.
 
 **Prepare the flash drive for the VM**
 
--   On your Windows or Mac desktop, use the Unraid USB creator tool tool
+- On your Windows or Mac desktop, use the Unraid USB creator tool tool
     to create your flash drive (or see the manual instructions in the
     next post)
-    -   Note that the VM\'s flash drive has to be a different
+  - Note that the VM\'s flash drive has to be a different
         manufacturer than the host\'s flash drive.
-    -   If your main system is named \"Tower\", be sure to specify a
+  - If your main system is named \"Tower\", be sure to specify a
         different name for the VM. Perhaps \"TowerVM\".
-    -   Click the option to \"Allow EFI boot\"
-    -   Write the image to the VM\'s flash drive
--   Make a few edits
-    -   Change the label of the flash drive from \"UNRAID\" to
+  - Click the option to \"Allow EFI boot\"
+  - Write the image to the VM\'s flash drive
+- Make a few edits
+  - Change the label of the flash drive from \"UNRAID\" to
         \"UNRAID-VM\"
-    -   Edit syslinux/syslinux.cfg on the flash drive and add
+  - Edit syslinux/syslinux.cfg on the flash drive and add
         unraidlabel=UNRAID-VM to the \"append\" line, like this:
 
-` label Unraid OS`\
-`    menu default`\
-`    kernel /bzimage`\
-`    append unraidlabel=UNRAID-VM initrd=/bzroot`
+`label Unraid OS`\
+`menu default`\
+`kernel /bzimage`\
+`append unraidlabel=UNRAID-VM initrd=/bzroot`
 
--   You may wish to make the same change to the \"label Unraid OS GUI
+- You may wish to make the same change to the \"label Unraid OS GUI
     Mode\" and \"label Unraid OS Safe Mode\" areas as well
--   On the same flash drive, copy the newly updated
+- On the same flash drive, copy the newly updated
     syslinux/syslinux.cfg over the existing EFI/boot/syslinux.cfg
--   Create a file called startup.nsh in the root of the flash drive
+- Create a file called startup.nsh in the root of the flash drive
     which contains the single line below. This prevents Unraid from
     getting stuck at the EFI shell.
 
 `\EFI\boot\bootx64.efi`
 
--   Make note of the manufacturer of the flash drive while it is still
+- Make note of the manufacturer of the flash drive while it is still
     accessible. You\'ll need it later.
--   Insert the flash drive into your server and reboot. If the system
+- Insert the flash drive into your server and reboot. If the system
     tries to boot from the new \"UNRAID-VM\" flash drive, you\'ll need
     to adjust settings in the bios to get it to consistently boot from
     the original \"UNRAID\" flash drive instead. Once that is done, boot
@@ -446,24 +446,24 @@ questions.
 
 **Setup the VM on the host**
 
--   On the host system, go to *Settings-\>VM* and make sure VMs are
+- On the host system, go to *Settings-\>VM* and make sure VMs are
     enabled. For more details see the [VM
     Management](Manual/VM_Management "wikilink") in the Unraid manual.
--   Go to the VMs tab and click the **Add VM** button. This will display
+- Go to the VMs tab and click the **Add VM** button. This will display
     a list of standard templates.
--   Select the Slackware option to load the template.
--   If you downloaded additional VM icons click on the Slackware icon
+- Select the Slackware option to load the template.
+- If you downloaded additional VM icons click on the Slackware icon
     and change it to the Limetech Unraid icon
--   Change the name to something relevant, like UNRAID-VM
--   (Optional) Add any other useful information to the Description
+- Change the name to something relevant, like UNRAID-VM
+- (Optional) Add any other useful information to the Description
     field. For example, you might like to put here the version of Unraid
     that the VM is running.
--   Set the CPUs and RAM for the VM. Something like 2 CPUs and 3GB of
+- Set the CPUs and RAM for the VM. Something like 2 CPUs and 3GB of
     RAM (initial and max should be the same) should be enough.
--   Choose the highest level Q35 Machine type
--   Leave the BIOS at OVMF and the USB Controller at \"2.0 (EHCI)\"
--   Set up the disk configuration that you want the VM to use:
-    -   Typically you add a vdisk for a cache drive and at least one
+- Choose the highest level Q35 Machine type
+- Leave the BIOS at OVMF and the USB Controller at \"2.0 (EHCI)\"
+- Set up the disk configuration that you want the VM to use:
+  - Typically you add a vdisk for a cache drive and at least one
         data drive. Parity is optional, depending on what kind of
         testing you want to do. You can create all the vdisks from this
         interface, just provide a size, set the type to RAW and the bus
@@ -472,10 +472,10 @@ questions.
         which is which through their file sizes. i.e. make the parity
         slightly larger than the data drives, and make the cache drive
         different as well.
-    -   You can also pass through whole physical drives as long as they
+  - You can also pass through whole physical drives as long as they
         are not part of the cache or array.
--   Leave the graphics/sound/network settings at their defaults.
--   In the USB Devices area, put a checkmark next to the UNRAID-VM flash
+- Leave the graphics/sound/network settings at their defaults.
+- In the USB Devices area, put a checkmark next to the UNRAID-VM flash
     drive. Unfortunately, you can\'t see the label here so you\'ll have
     to identify it by manufacturer. If the VM\'s flash drive and the
     host\'s flash drive have the same manufacturer, the VM\'s drive will
@@ -485,61 +485,61 @@ questions.
 
 Create and start the VM
 
--   Optional) Remove the checkmark for automatically starting the VM
+- Optional) Remove the checkmark for automatically starting the VM
     after creation.
--   Click the **Create** button
--   Back on the VMs -\> Virtual Machines page you can click the unRAID
+- Click the **Create** button
+- Back on the VMs -\> Virtual Machines page you can click the unRAID
     icon and then choose \"VNC Remote\" to watch the VM boot. Note the
     IP address is displayed right before the login prompt.
 
 **Configure the VM**
 
--   Point a web browser at the IP address display when the VM is
+- Point a web browser at the IP address display when the VM is
     started. This will bring up the standard Unraid GUI for the instance
     of Unraid running in the VM
--   You can now configure and manage the VM just like you would any
+- You can now configure and manage the VM just like you would any
     other Unraid server but choose settings that are appropriate for
     this VM.
--   Go to *Settings-\>Identification* and make sure set the *Server
+- Go to *Settings-\>Identification* and make sure set the *Server
     Name* is set to be different to the host. It can also be a good idea
     to set the *Description* to something like \"Unraid as guest\"
--   (Optional) Go to *Settings-\>Display Settings* and choose a
+- (Optional) Go to *Settings-\>Display Settings* and choose a
     different Dynamix color theme to that used on the host. This will
     help with making it more obvious
--   Since this is a test system, you\'ll probably want to go to
+- Since this is a test system, you\'ll probably want to go to
     *Settings-\>SMB Settings-\>Workgroup Settings* and set Local Master
     to No.
--   If you have a UPS on the host system (and you do, right?) go to
+- If you have a UPS on the host system (and you do, right?) go to
     Settings -\> UPS (on the VM) and set the UPS cable to \"Ether\", UPS
     type to \"net\" and Device to the IP address of your host. Configure
     the runtime settings so the VM turns off before the host, and set
     \"Turn off UPS\" to no. Then start the UPS daemon.
--   Add the array devices and cache drive that were setup previously and
+- Add the array devices and cache drive that were setup previously and
     start the array
--   Add Community Applications plugin
--   From the *Apps* tab that is n/w available, add dockers and plugins
+- Add Community Applications plugin
+- From the *Apps* tab that is n/w available, add dockers and plugins
     as needed for testing.
--   Note that you can update the Unraid VM just as you would a normal
+- Note that you can update the Unraid VM just as you would a normal
     bare-metal Unraid system, by going to *Tools-\>Update OS*
 
 **Troubleshooting**
 
--   It has been noted that if you edit the VM settings for any reason
+- It has been noted that if you edit the VM settings for any reason
     that you can get an *Execution Error* when next trying to start the
     VM indicating a problem with the USB flash drive containing the
     Unraid license that is going to be used by this VM. This can be
     fixed using the following steps:
-    -   Select the option to Udit the VM
-    -   switch to XML view (using the toggle at the top right)
-    -   Do to the bottom of the XML where just before the **memballoon**
+  - Select the option to Udit the VM
+  - switch to XML view (using the toggle at the top right)
+  - Do to the bottom of the XML where just before the **memballoon**
         entry you will see a **hostdev** node defining the flash drive.
-    -   Remove this **hostdev** node and all its contents
-    -   Click the *Apply* button to commit the change
-    -   Select the Edit option again and this time switch to Form View.
-    -   Make sure the USB flash drive containing the Unraid license key
+  - Remove this **hostdev** node and all its contents
+  - Click the *Apply* button to commit the change
+  - Select the Edit option again and this time switch to Form View.
+  - Make sure the USB flash drive containing the Unraid license key
         for the VM is selected
-    -   Click Apply to commit the change
-    -   The VM should now start without the Execution Error.
+  - Click Apply to commit the change
+  - The VM should now start without the Execution Error.
 
 ## OpenELEC / LibreELEC {#openelec_libreelec}
 
@@ -553,29 +553,29 @@ card to output to the display closest to their system.
 To make use of these templates, your system must adhere to the following
 requirements:
 
--   Your CPU/Motherboard must have support for HVM and IOMMU support
--   A discrete (PCIe) graphics adapter (NVIDIA/AMD) is required (no
+- Your CPU/Motherboard must have support for HVM and IOMMU support
+- A discrete (PCIe) graphics adapter (NVIDIA/AMD) is required (no
     on-board graphics supported)
-    -   Most GPUs work fine, but some may require additional tweaks to
+  - Most GPUs work fine, but some may require additional tweaks to
         work properly
--   At least 512MB free in RAM to assign to the VM
--   At least 300MB of free disk space in a user share
--   A connection to the Internet is required to download the virtual
+- At least 512MB free in RAM to assign to the VM
+- At least 300MB of free disk space in a user share
+- A connection to the Internet is required to download the virtual
     disk image template
--   Virtual machines must be enabled (under **Settings** -\> **VM
+- Virtual machines must be enabled (under **Settings** -\> **VM
     Manager**)
--   A place to store the virtual disk image and application data must be
+- A place to store the virtual disk image and application data must be
     available (e.g. a domains and appdata share).
 
 **Downloading the VM**
 
--   Navigate to the VMs tab
--   Select **OpenELEC** or **LibreELEC** from the *Templates* section
--   Click inside the **Download Folder** field to select a place to
+- Navigate to the VMs tab
+- Select **OpenELEC** or **LibreELEC** from the *Templates* section
+- Click inside the **Download Folder** field to select a place to
     store the virtual disk image
-    -   Your shares can be found under /mnt/user/ (e.g.
+  - Your shares can be found under /mnt/user/ (e.g.
         /mnt/user/domains)
--   Click **Download** to download the VM image template; progress will
+- Click **Download** to download the VM image template; progress will
     be displayed automatically.
 
 **Configuring the VM**
@@ -583,44 +583,44 @@ requirements:
 When the download completes, additional fields will appear allowing you
 to configure your VM.
 
--   In the *Add VM* section at the top, make sure to give your VM a
+- In the *Add VM* section at the top, make sure to give your VM a
     **Name**
--   Click inside the **Config Folder** field to provide a path to store
+- Click inside the **Config Folder** field to provide a path to store
     your Kodi media library data
-    -   Your shares can be found under /mnt/user/ (e.g.
+  - Your shares can be found under /mnt/user/ (e.g.
         /mnt/user/appdata/OpenELEC)
--   Select how many **CPUs** you want assigned (minimum 1)
--   Select a **Graphics Card** to use for video output
--   Select a **Sound Card** for audio output
--   Select any **USB Devices** you wish to use with the VM (such as a
+- Select how many **CPUs** you want assigned (minimum 1)
+- Select a **Graphics Card** to use for video output
+- Select a **Sound Card** for audio output
+- Select any **USB Devices** you wish to use with the VM (such as a
     keyboard, mouse, or infrared receiver)
--   Click **Create** to start your VM
+- Click **Create** to start your VM
 
 **Updating the VM**
 
 As new versions of Unraid OS are made available, new versions of the VM
 template may also be made available. To obtain a new version:
 
--   From the *VMs* tab, click the icon of the VM you wish to upgrade and
+- From the *VMs* tab, click the icon of the VM you wish to upgrade and
     select **Edit**
--   From the *Edit VM* page, click the *Version* drop-down and select
+- From the *Edit VM* page, click the *Version* drop-down and select
     the new version you wish to download
--   Click the **Download** button and the new image version will
+- Click the **Download** button and the new image version will
     download automatically
--   When the download is complete, click **Update** at the bottom
--   Start your VM from the *VMs* tab
+- When the download is complete, click **Update** at the bottom
+- Start your VM from the *VMs* tab
 
 **Using Kodi** For new users of the ultimate customizable media player
 application, you may want to review [the Kodi
 wiki](http://kodi.wiki/view/Main_Page), and specifically see these
 guides:
 
--   [Quick start guide](http://kodi.wiki/view/Quick_start_guide)
--   [Adding videos to the
+- [Quick start guide](http://kodi.wiki/view/Quick_start_guide)
+- [Adding videos to the
     library](http://kodi.wiki/view/Adding_videos_to_the_library)
--   [Official Kodi Remote for
+- [Official Kodi Remote for
     iOS](https://itunes.apple.com/us/app/unofficial-official-xbmc-remote/id520480364?ls=1&mt=8)
--   [Kore: Official Remote for Kodi on
+- [Kore: Official Remote for Kodi on
     Android](https://play.google.com/store/apps/details?id=org.xbmc.kore&hl=en)
 
 **Questions? Need help or support?**

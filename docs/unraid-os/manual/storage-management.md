@@ -10,7 +10,7 @@ the **Main** tab and select the devices to assign to slots for parity,
 data, and cache disks. Assigning devices to Unraid is easy! Just
 remember these guidelines:
 
--   **Always pick the largest storage device available to act as your
+- **Always pick the largest storage device available to act as your
     parity device(s)**. When expanding your array in the future (adding
     more devices to data disk slots), you cannot assign a data disk that
     is larger than your parity device(s). For this reason, it is highly
@@ -20,7 +20,7 @@ remember these guidelines:
     can vary in size, but the same rule holds true that no disk in the
     array can be larger than your smallest parity device.
 
--   **SSD support in the array is experimental**. Some SSDs may not be
+- **SSD support in the array is experimental**. Some SSDs may not be
     ideal for use in the array due to how TRIM/Discard may be
     implemented. Using SSDs as data/parity devices may have
     unexpected/undesirable results. This does NOT apply to the cache /
@@ -29,14 +29,14 @@ remember these guidelines:
     are in wider use, we only have limited testing experience using them
     in this setting.
 
--   **Using a cache will improve array performance**. It does this by
+- **Using a cache will improve array performance**. It does this by
     redirecting write operations to a dedicated disk (or pool of disks
     in Unraid 6) and moves that data to the array on a schedule that you
     define (by default, once per day at 3:40AM). Data written to the
     cache is still presented through your user shares, making use of
     this function completely transparent.
 
--   **Creating a cache-pool adds protection for cached data**. If you
+- **Creating a cache-pool adds protection for cached data**. If you
     only assign one cache device to the system, data residing there
     before being moved to the array on a schedule is not protected from
     data loss. To ensure data remains protected at all times (both on
@@ -44,15 +44,13 @@ remember these guidelines:
     cache function, creating what is called a cache-pool. Cache pools
     can be expanded on demand, similar to the array.
 
-
--   **SSD-based cache devices are ideal for applications and virtual
+- **SSD-based cache devices are ideal for applications and virtual
     machines**. Apps and VMs benefit from SSDs as they can leverage
     their raw IO potential to perform faster when interacting with them.
     Use SSDs in a cache pool for the ultimate combination of
     functionality, performance, and protection.
 
-
--   **Encryption is disabled by default**. If you wish to use this
+- **Encryption is disabled by default**. If you wish to use this
     feature on your system, you can do so by adjusting the file system
     for the devices you wish to have encrypted. Click on each disk you
     wish to have encrypted and toggle the filesystem to one of the
@@ -86,11 +84,11 @@ unmounted, making all data and applications unavailable until you once
 again start the array. To start or stop the array, perform the following
 steps:
 
-1.  Log into the Unraid webGui using a browser (e.g. <http://tower>;
+1. Log into the Unraid webGui using a browser (e.g. <http://tower>;
     <http://tower.local> from Mac)
-2.  Click on **Main**
-3.  Go to the *Array Operation* section
-4.  Click **Start** or **Stop** (you may first need to click the \"Yes I
+2. Click on **Main**
+3. Go to the *Array Operation* section
+4. Click **Start** or **Stop** (you may first need to click the \"Yes I
     want to do this\" checkbox)
 
 ## Help! I can\'t start my array! {#help_i_cant_start_my_array}
@@ -98,11 +96,11 @@ steps:
 If the array can\'t be started, it may be for one of a few reasons which
 will be reported under the *Array Operation* section:
 
--   Too many wrong and/or missing disks
--   Too many attached devices
--   Invalid or missing registration key
--   Cannot contact key-server
--   This Unraid Server OS release has been withdrawn
+- Too many wrong and/or missing disks
+- Too many attached devices
+- Invalid or missing registration key
+- Cannot contact key-server
+- This Unraid Server OS release has been withdrawn
 
 ### Too many disks missing from the array {#too_many_disks_missing_from_the_array}
 
@@ -131,8 +129,9 @@ storage devices and make use of them (such as USB flash devices for
 assignment to virtual machines). In Unraid Server OS 6, the attached
 storage device limits are as follows:
 
-  Attached Storage Device Limits by Registration Key
+Attached Storage Device Limits by Registration Key
   ----------------------------------------------------
+
   *Trial*
   Unlimited
 
@@ -149,13 +148,13 @@ software, not the license policy.*
 A valid registration key is required in order to start the array. To
 purchase or get a trial key, perform the following steps:
 
-1.  Log into the Unraid webGui using a browser (e.g. <http://tower> from
+1. Log into the Unraid webGui using a browser (e.g. <http://tower> from
     most device, <http://tower.local> from Mac devices)
-2.  Click on **Tools**
-3.  Click on **Registration**
-4.  Click to **Purchase Key** or **Get Trial Key** and complete the
+2. Click on **Tools**
+3. Click on **Registration**
+4. Click to **Purchase Key** or **Get Trial Key** and complete the
     steps presented there
-5.  Once you have your key file link, return to the **Registration** and
+5. Once you have your key file link, return to the **Registration** and
     paste it in the field then click **Install Key**.
 
 *Expired trial*
@@ -201,12 +200,12 @@ version in order to start your array.
 
 There are a number of operations you can perform against your array:
 
--   Add disks
--   Replace disks
--   Remove disks
--   Check disks
--   Spin disks up/down
--   Reset the array configuration
+- Add disks
+- Replace disks
+- Remove disks
+- Check disks
+- Spin disks up/down
+- Reset the array configuration
 
 *NOTE: In cases where devices are added/replaced/removed, etc., the
 instructions say \"Power down\" \... \"Power up\". If your server\'s
@@ -275,41 +274,41 @@ parity disk as a new data disk).
 
 The procedure is:
 
-1.  Stop the array.
-2.  Power down the server.
-3.  Install your new disk(s).
-4.  Power up the server.
-5.  Assign the new storage device(s) to a disk slot(s) using the Unraid
+1. Stop the array.
+2. Power down the server.
+3. Install your new disk(s).
+4. Power up the server.
+5. Assign the new storage device(s) to a disk slot(s) using the Unraid
     webGui.
-6.  Start the array.
-7.  If your array is parity protected then Unraid will now automatically
+6. Start the array.
+7. If your array is parity protected then Unraid will now automatically
     begin to clear the disk as this is required before it can be added
     to the array.
-    -   This step is omitted if you do not have a parity drive.
-    -   If a disk has been pre-cleared before adding it Unraid will
+    - This step is omitted if you do not have a parity drive.
+    - If a disk has been pre-cleared before adding it Unraid will
         recognize this and go straight to the next step.
-    -   The clearing phase is necessary to preserve the fault tolerance
+    - The clearing phase is necessary to preserve the fault tolerance
         characteristic of the array. If at any time while the new
         disk(s) is being cleared, one of the other disks fails, you will
         still be able to recover the data of the failed disk.
-    -   The clearing phase can take several hours depending on the size
+    - The clearing phase can take several hours depending on the size
         of the new disks(s) and although the array is available during
         this process Unraid will not be able to use the new disk(s) for
         storing files until the clear has completed and the new disk has
         been formatted.
-    -   The files on other drives in the array will be accessible during
+    - The files on other drives in the array will be accessible during
         a clear operation, and the clear operation should not degrade
         performance in accessing these other drives.
-8.  Once the disk has been cleared, an option to format the disk will
+8. Once the disk has been cleared, an option to format the disk will
     appear in the webGui. At this point, the disk is added to the array
     and shows as unmountable and the option to format unmountable disks
     is shown.
-    -   Check that the serial number of the disk(s) is what you expect.
+    - Check that the serial number of the disk(s) is what you expect.
         You do not want to format a different disk (thus erasing its
         contents) by accident.
-9.  Click the check box to confirm that you want to proceed with the
+9. Click the check box to confirm that you want to proceed with the
     format procedure.
-    -   A warning dialog will be given warning you of the consequences
+    - A warning dialog will be given warning you of the consequences
         as once you start the format the disks listed will have any
         existing contents erased and there is no going back. This
         warning may seem a bit like over-kill but there have been times
@@ -319,7 +318,7 @@ The procedure is:
     start the formatting process.
 11. The format should only take a few minutes and after the format
     completes the disk will show as mounted and ready for use.
-    -   You will see that a small amount of space will already show as
+    - You will see that a small amount of space will already show as
         used which is due to the overheads of creating the empty file
         system on the drive.
 
@@ -363,23 +362,23 @@ parity drive
 **CAUTION:** If you take the actions below and only have a **single**
 parity drive then you need to bear the following in mind:
 
--   The array will be unprotected until the parity rebuild occurs. This
+- The array will be unprotected until the parity rebuild occurs. This
     means that if a data drive fails during this process you are likely
     to suffer loss of the data on the failing drive.
--   If you already have a failed data drive then this will remove the
+- If you already have a failed data drive then this will remove the
     ability to rebuild that data drive. In such a situation the **Parity
     Swap** procedure is the correct way to proceed.
 
 The procedure to remove a parity drive is as follows:
 
-1.  Stop the array.
-2.  Power down the server.
-3.  Install new larger parity disks. Note if you do this as your first
+1. Stop the array.
+2. Power down the server.
+3. Install new larger parity disks. Note if you do this as your first
     step then steps 2 & 4 listed here are not needed.
-4.  Power up the server.
-5.  Assign the larger disk to the parity slot (replacing the former
+4. Power up the server.
+5. Assign the larger disk to the parity slot (replacing the former
     parity device).
-6.  Start the array.
+6. Start the array.
 
 When you start the array, the system will once again perform a parity
 build to the new parity device and when it completes the array will once
@@ -402,9 +401,9 @@ additional data disk (depending on age and durability)
 There are two primary reasons why you may wish to replace disks in the
 array:
 
--   A disk needs to be replaced due to failure or scheduled retirement
+- A disk needs to be replaced due to failure or scheduled retirement
     (out of warranty / support / serviceability).
--   The array is nearly full and you wish to replace existing data
+- The array is nearly full and you wish to replace existing data
     disk(s) with larger ones (out of capacity).
 
 In either of these cases, the procedure to replace a disk is roughly the
@@ -416,8 +415,9 @@ data when two disks in the array fail. This chart will help you better
 understand your level of protection when various disk replacement
 scenarios occur.
 
-  Data Protection During Disk Replacements
+Data Protection During Disk Replacements
   ------------------------------------------
+
   **Replacing a single disk**
   **Replacing two disks**
 
@@ -429,59 +429,59 @@ the array without increasing the total count of drives in the array.
 
 Point to note are:
 
--   If a disk is showing as unmountable then you should resolve this
+- If a disk is showing as unmountable then you should resolve this
     before attempting to upgrade the drive as the rebuild process does
     not clear an unmountable status
--   If you have single parity then you are not protected against a
+- If you have single parity then you are not protected against a
     different drive failing during the upgrade process. If this happens
     then post to the forums to get advice on the best way to proceed to
     avoid data loss.
--   If you have dual parity and you are upgrading a single data drive
+- If you have dual parity and you are upgrading a single data drive
     then you are still protected against another data drive failing
     during the upgrade process.
--   If you have dual parity you can upgrade two drives simultaneously
+- If you have dual parity you can upgrade two drives simultaneously
     but you would then not be protected against another drive failing
     while doing the upgrade. If this happens then post to the forums to
     get advice on the best way to proceed to avoid data loss. It is up
     to you to decide on whether to take the route of upgrading two
     drives one at a time or taking the faster but riskier route of doing
     them at the same time.
--   Keep the disk that you are replacing with its contents unchanged
+- Keep the disk that you are replacing with its contents unchanged
     until you are happy that the upgrade process has gone as planned.
     This gives a fallback capability if the upgrade has gone wrong for
     any reason.
 
 To perform the upgrade proceed as follows:
 
--   Run a parity check if you have not done so recently and make sure
+- Run a parity check if you have not done so recently and make sure
     that zero errors are reported. Attempting an upgrade if parity is
     not valid will result in the file system on the upgraded disk being
     corrupt.
--   Stop the array.
--   Unassign the disk you want to upgrade.
--   Start the array to commit this change and make Unraid \'forget\' the
+- Stop the array.
+- Unassign the disk you want to upgrade.
+- Start the array to commit this change and make Unraid \'forget\' the
     current assignment.
-    -   Unraid will how tell you that the missing disk is being
+  - Unraid will how tell you that the missing disk is being
         emulated. It does this using the combination of the remaining
         data drives and a parity drive to dynamically reconstruct the
         contents of the emulated drive. From a user perspective the
         system will act as if the drive was still present albeit with a
         reduced level of protection against another drive failing.
-    -   If you started the array in Maintenance mode then this will
+  - If you started the array in Maintenance mode then this will
         ensure no new files can be written to the drive during the
         upgrade process
-    -   If you started the drive in Normal mode then you will be able to
+  - If you started the drive in Normal mode then you will be able to
         read and write to the Emulated drive while the as if it was
         still physically present
--   Stop the array.
-    -   At this point the array is in the same state as it would be if
+- Stop the array.
+  - At this point the array is in the same state as it would be if
         the drive you have stopped using had failed instead of being
         unassigned as part of the upgrade process.
--   Assign the (larger) replacement drive to the slot previously used
+- Assign the (larger) replacement drive to the slot previously used
     for the drive you are upgrading.
--   Start the array to begin rebuilding the contents of the emulated
+- Start the array to begin rebuilding the contents of the emulated
     drive on to the upgraded drive.
-    -   Since the replacement drive is larger than the one it is
+  - Since the replacement drive is larger than the one it is
         replacing when the contents of the emulated drive have been put
         onto the replacement drive Unraid will automatically expand the
         file system on the drive so the full capacity of the drive
@@ -500,8 +500,9 @@ disks, you can replace either one or two disks at a time, but during a
 two disk replacement process, you are also at risk for data loss.
 Another way to visualize the previous chart:
 
-  Array Tolerance to Disk Failure Events
+Array Tolerance to Disk Failure Events
   ----------------------------------------
+
   **A single disk failure**
   **A dual disk failure**
 
@@ -517,9 +518,9 @@ assistance with data recovery on the data devices that have failed.*
 
 It is important to realize what is meant by the term failed drive:
 
--   It is typically used to refer to a drive that is marked with a red
+- It is typically used to refer to a drive that is marked with a red
     \'x\' in the Unraid GUI.
--   It does NOT necessarily mean that there is a physical problem with
+- It does NOT necessarily mean that there is a physical problem with
     the drive (although that is always a possibility). More often than
     not the drive is OK and an external factor caused the write to fail.
 
@@ -538,7 +539,7 @@ that the drive is not healthy.
 realize that this SMART attribute is never reset to 0 so if it stops
 increasing that is what you should be aiming to achieve.
 
--   If you have sufficient parity drives then Unraid will emulate the
+- If you have sufficient parity drives then Unraid will emulate the
     failed drive using the combination of the parity drive(s) and the
     remaining \'good\' drives. **From a user perspective, this results
     in the system reacting as if the failed drive is still present**.
@@ -553,21 +554,21 @@ increasing that is what you should be aiming to achieve.
 When a disk is marked as disabled and Unraid indicates it is being
 emulated then the following points apply:
 
--   **Unraid will stop writing to the physical drive**. Any writes to
+- **Unraid will stop writing to the physical drive**. Any writes to
     the \'emulated\' drive will not be reflected on the physical drive
     but will be reflected in parity so from the end-user perspective
     then the array seems to be updating data as normal.
--   When you rebuild a disabled drive the process will make the physical
+- When you rebuild a disabled drive the process will make the physical
     drive correspond to the emulated drive by doing a
     *sector-for-sector* copy from the emulated drive to the physical
     drive. You can, therefore, check that the emulated drive contains
     the content that you expect before starting the rebuild process.
--   **If a drive is being emulated then you can carry out recovery
+- **If a drive is being emulated then you can carry out recovery
     actions on the emulated drive before starting the rebuild process**.
     This can be important as it keeps the physical drive untouched for
     potential data recovery processes if the emulated drive cannot be
     recovered.
--   If an **emulated** drive is marked as **unmountable** then a rebuild
+- If an **emulated** drive is marked as **unmountable** then a rebuild
     will **not** fix this and the rebuilt drive will have the same
     unmountable status as the emulated drive. The correct handling of
     unmountable drives is described in a later section. It is
@@ -605,13 +606,13 @@ fix any disk-related issues with your Unraid server as soon as possible.
 
 To replace a failed disk or disks:
 
-1.  Stop the array.
-2.  Power down the unit.
-3.  Replace the failed disk(s) with a new one(s).
-4.  Power up the unit.
-5.  Assign the replacement disk(s) using the Unraid webGui.
-6.  Click the checkbox that says *Yes I want to do this*
-7.  (optional) Tick the box to start in Maintenance mode. If you start
+1. Stop the array.
+2. Power down the unit.
+3. Replace the failed disk(s) with a new one(s).
+4. Power up the unit.
+5. Assign the replacement disk(s) using the Unraid webGui.
+6. Click the checkbox that says *Yes I want to do this*
+7. (optional) Tick the box to start in Maintenance mode. If you start
     the array in Maintenance mode you will need to press the **Sync**
     button to trigger the rebuild. The advantage of doing this in
     Maintenance mode is that nothing else can write to the array while
@@ -619,31 +620,31 @@ To replace a failed disk or disks:
     that you cannot use the array in the meantime and until you return
     to normal mode cannot see what the contents of the disk being
     rebuilt will look like.
-8.  Click **Start**.to initiate the rebuild process.and the system will
+8. Click **Start**.to initiate the rebuild process.and the system will
     reconstruct the contents of the emulated didk(s) onto the new
     disk(s) and, if the new disk(s) is/are bigger, expand the file
     system.
 
 **Notes:**
 
--   **IMPORTANT**: If at any point during the replacement process Unraid
+- **IMPORTANT**: If at any point during the replacement process Unraid
     appears to offer an option to format a drive do **not** do so as
     this will result in wiping all files belonging to the drive you are
     trying to replace and updating parity to reflect this.
--   **A** **\'good\' rebuild relies on all the other array disks being
+- **A** **\'good\' rebuild relies on all the other array disks being
     read without error.** If during the rebuild process any of the other
     array disks start showing read errors then the rebuilt disk is going
     to show corruption (and probably end up as unmountable) with some
     data loss highly likely.
--   You must replace a failed disk with a disk that is as big or bigger
+- You must replace a failed disk with a disk that is as big or bigger
     than the original and not bigger than the smallest parity disk.
--   If the replacement disk has been used before then remove any
+- If the replacement disk has been used before then remove any
     existing partitions. It theory this should not be necessary but is
     has been known to sometimes cause problems so it is better to play
     safe.
--   The rebuild process can never be used to change the format of a
+- The rebuild process can never be used to change the format of a
     disk - it can only rebuild to the existing format.
--   The rebuild process will not correct a disk that is showing as
+- The rebuild process will not correct a disk that is showing as
     *unmountable* when being emulated (as this indicates there is some
     level of file system corruption present) - it will still show as
     *unmountable* after the rebuild as the rebuild process simply makes
@@ -656,17 +657,17 @@ disabled is due to an external factor and the disk drive appears to be
 fine. In such a case you need to take a slightly modified process to
 cause Unraid to rebuild a \'disabled\' drive back onto the same drive.
 
-1.  Stop array
-2.  Unassign disabled disk
-3.  Start array so the missing disk is registered
-4.  **Important**: If the drive to be rebuilt is a data drive then check
+1. Stop array
+2. Unassign disabled disk
+3. Start array so the missing disk is registered
+4. **Important**: If the drive to be rebuilt is a data drive then check
     that the emulated drive is showing the content you expect to be
     there as the rebuild process simply makes the physical drive match
     the emulated one. Is this is not the case then you may want to ask
     in forums for advice on the best way to proceed.
-5.  Stop array
-6.  Reassign disabled disk
-7.  (optional) Tick the box to start in Maintenance mode. If you start
+5. Stop array
+6. Reassign disabled disk
+7. (optional) Tick the box to start in Maintenance mode. If you start
     the array in Maintenance mode you will need to press the **Sync**
     button to trigger the rebuild. The advantage of doing this in
     Maintenance mode is that nothing else can write to the array while
@@ -674,7 +675,7 @@ cause Unraid to rebuild a \'disabled\' drive back onto the same drive.
     that you cannot use the array in the meantime and until you return
     to normal mode cannot see what the contents of the disk being
     rebuilt will look like.
-8.  Click **Start**.to initiate the rebuild process.and the system will
+8. Click **Start**.to initiate the rebuild process.and the system will
     reconstruct the contents of the emulated disk,
 
 This process can be used for both data and parity drives that have been
@@ -725,7 +726,7 @@ one, that is even larger than the Parity drive.**
 \
 **Important Notes**
 
--   If you have purchased a replacement drive, we always recommend many
+- If you have purchased a replacement drive, we always recommend many
     users to pre-clear the drive to stress test the replacement drive
     first, to make sure it\'s a good drive that won\'t fail for a few
     years at least. The Preclearing is not strictly necessary, as
@@ -733,18 +734,18 @@ one, that is even larger than the Parity drive.**
     completely overwritten. But Preclearing new drives one to three
     times provides a thorough test of the drive, eliminates \'infant
     mortality\' failures.
--   **If your replacement drive is the same size or smaller than your
+- **If your replacement drive is the same size or smaller than your
     current Parity drive, then you don\'t need this procedure. Proceed
     with the [Replacing a Data Drive](Replacing_a_Data_Drive "wikilink")
     procedure.**
--   This procedure is strictly for replacing data drives in an Unraid
+- This procedure is strictly for replacing data drives in an Unraid
     array. If all you want to do is replace your Parity drive with a
     larger one, then you don\'t need the Parity Swap procedure. Just
     remove the old parity drive and add the new one, and start the
     array. The process of building parity will immediately begin. (If
     something goes wrong, you still have the old parity drive that you
     can put back!)
--   **IMPORTANT!!!** This procedure REQUIRES that the data drive being
+- **IMPORTANT!!!** This procedure REQUIRES that the data drive being
     replaced MUST be disabled first. If the drive failed (has a red
     ball), then it is already \'disabled\', but if the drive is OK but
     you want to replace it anyway, then you have to force it to be
@@ -757,7 +758,7 @@ one, that is even larger than the Parity drive.**
     It needs to see a disabled data disk with forgotten ID, a new disk
     assigned to its slot that used to be the parity disk, and a new disk
     assigned to the parity slot.
--   Obviously, it\'s very important to identify the drives for
+- Obviously, it\'s very important to identify the drives for
     assignment correctly! Have a list of the drive models that will be
     taking part in this procedure, with the last 4 characters of their
     serial numbers. If the drives are recent Toshiba models, then they
@@ -775,23 +776,23 @@ The steps to carry out this procedure are:
     it), then you would skip steps 5 through 8. Revise the steps as
     needed.
 
-1.  Stop the array *(if it\'s started)*
-2.  Unassign the old drive *(if it\'s still assigned)*
+1. Stop the array *(if it\'s started)*
+2. Unassign the old drive *(if it\'s still assigned)*
     *If the drive was a good drive and notifications are enabled, you
     will get error notifications for a missing drive! This is normal.*
-3.  Start the array (put a check in the **Yes I want to do this**
+3. Start the array (put a check in the **Yes I want to do this**
     checkbox if it appears (older versions: **Yes, I\'m sure**))
     *Yes, you need to do this. Your data drive should be showing as
     **Not installed**.*
-4.  Stop the array again
-5.  Power down
-6.  *\[ Optional \]* Pull the old drive
+4. Stop the array again
+5. Power down
+6. *\[ Optional \]* Pull the old drive
     *You may want to leave it installed, for Preclearing or testing or
     reassignment.*
-7.  Install the new drive (preclear STRONGLY suggested, but formatting
+7. Install the new drive (preclear STRONGLY suggested, but formatting
     not needed)
-8.  Power on
-9.  Stop the array\
+8. Power on
+9. Stop the array\
     *\*If you get an \"Array Stopping•Retry unmounting disk
     share(s)\...\" message, try disabling Docker and/or VM in Settings
     and stopping the array again after rebooting.*
@@ -845,8 +846,8 @@ failure occurs during a data-rebuild event, the data rebuild will be
 cancelled as parity will no longer be valid. However, if you have dual
 parity disks assigned in your array, you have options. You can either
 
--   let the first disk rebuild complete before starting the second, or
--   you can cancel the first rebuild, stop the array, replace the second
+- let the first disk rebuild complete before starting the second, or
+- you can cancel the first rebuild, stop the array, replace the second
     failed disk, then start the array again
 
 If the first disk being rebuilt is nearly complete, it\'s probably
@@ -864,20 +865,20 @@ If for some reason you decide you do not need the level of parity
 protection that you have in place then it is always possible to easily
 remove a parity disk.
 
-1.  Stop the array.
-2.  Set the slot for the parity disk you wish to remove to *Unassigned*.
-3.  Start the array to commit the change and \'forget\' the previously
+1. Stop the array.
+2. Set the slot for the parity disk you wish to remove to *Unassigned*.
+3. Start the array to commit the change and \'forget\' the previously
     assigned parity drive.
 
 **CAUTION:** If you already have any failed data drives in the array be
 aware that removing a parity drive reduces the number of failed drives
 Unraid can handle without potential data loss.
 
--   If you started with **dual** parity you can still handle a single
+- If you started with **dual** parity you can still handle a single
     failed drive but would not then be able to sustain another drive
     failing while trying to rebuild the already failed drive without
     potential data loss.
--   If you started with **single** parity you will no longer be able to
+- If you started with **single** parity you will no longer be able to
     handle any array drive failing without potential data loss.
 
 ### Removing data disk(s) {#removing_data_disks}
@@ -889,18 +890,18 @@ should any disk in the array fail.
 
 To remove a disk from your array, perform the following steps:
 
-1.  Stop the array
-2.  (optional) Make note if your disk assignments under the main tab
+1. Stop the array
+2. (optional) Make note if your disk assignments under the main tab
     (for both the array and cache; some find it helpful to take a
     screenshot)
-3.  Perform the [Reset the array
+3. Perform the [Reset the array
     configuration](http://lime-technology.com/wiki/index.php/UnRAID_6_2/Storage_Management#Reset_the_array_configuration)
     procedure. When doing this it is a good idea to use the option to
     preserve all current assignments to avoid you having to re-enter
     them (and possibly make a mistake doing so).
-4.  Make sure all your previously assigned disks are there and set the
+4. Make sure all your previously assigned disks are there and set the
     drive you want removed to be Unassigned
-5.  Start the array without checking the \'Parity is valid\' box.
+5. Start the array without checking the \'Parity is valid\' box.
 
 A parity-sync will occur if at least one parity disk is assigned and
 until that operation completes, the array is vulnerable to data loss
@@ -920,19 +921,19 @@ are doing it at your own risk.*
 
 **Notes:**
 
-1.  This method preserves parity protection at all times.
-2.  This method can only be used if the drive to be removed is a good
+1. This method preserves parity protection at all times.
+2. This method can only be used if the drive to be removed is a good
     drive that is completely empty, is mounted and can be completely
     cleared without errors occurring
-3.  This method is limited to removing only one drive at a time
+3. This method is limited to removing only one drive at a time
     (actually this is not technically true but trying to do multiple
     drives in parallel is slower than doing them sequentially due to the
     contention that arises for updating the parity drive)
-4.  As stated above, the drive must be completely empty as this process
+4. As stated above, the drive must be completely empty as this process
     will erase all existing content. If there are still any files on it
     (including hidden ones), they must be moved to another drive or
     deleted.
-    -   One quick way to clear a drive of files is to reformat it! To
+    - One quick way to clear a drive of files is to reformat it! To
         format an array drive, you stop the array, and then on the Main
         page click on the link for the drive and change the file system
         type to something different than it currently is, then restart
@@ -940,7 +941,7 @@ are doing it at your own risk.*
         it. Formatting a drive removes all of its data, and the parity
         drive is updated accordingly, so the data cannot be easily
         recovered.
-    -   Explanatory note: \"Since you are going to clear the drive
+    - Explanatory note: \"Since you are going to clear the drive
         anyway, why do I have to empty it? And what is the purpose of
         this strange clear-me folder?\" Yes, it seems a bit draconian to
         require the drive to be empty since we\'re about to clear and
@@ -954,53 +955,53 @@ are doing it at your own risk.*
 
 The procedure is as follows:
 
-1.  Make sure that the drive you are removing has been removed from any
+1. Make sure that the drive you are removing has been removed from any
     inclusions or exclusions for all shares, including in the global
     share settings.
-2.  Make sure the array is started, with the drive assigned and mounted.
-3.  Make sure you have a copy of your array assignments, especially the
+2. Make sure the array is started, with the drive assigned and mounted.
+3. Make sure you have a copy of your array assignments, especially the
     parity drive.
-    -   In theory you should not need this but it is a useful safety net
+    - In theory you should not need this but it is a useful safety net
         in case if the \"Retain current configuration\" option under New
         Config doesn\'t work correctly (or you make a mistake using it).
-4.  It is highly recommended to turn on reconstruct write, as the write
+4. It is highly recommended to turn on reconstruct write, as the write
     method (sometimes called \'Turbo write\'). With it on, the script
     can run 2 to 3 times as fast, saving hours!
-    -   However when using \'Turbo Write\' all drives must read without
+    - However when using \'Turbo Write\' all drives must read without
         error so do not use it unless you are sure no other drive is
         having issues.
-    -   To enable \'turbo Write\' in *Settings-\>Disk Settings*, change
+    - To enable \'turbo Write\' in *Settings-\>Disk Settings*, change
         Tunable (md_write_method) to reconstruct write
-5.  Make sure ALL data has been copied off the drive; drive MUST be
+5. Make sure ALL data has been copied off the drive; drive MUST be
     completely empty for the clearing script to work.
-6.  Double check that there are no files or folders left on the drive.
-    -   Note: one quick way to clean a drive is to reformat it! (once
+6. Double check that there are no files or folders left on the drive.
+    - Note: one quick way to clean a drive is to reformat it! (once
         you\'re sure nothing of importance is left of course!)
-7.  Create a single folder on the drive with the name **clear-me** -
+7. Create a single folder on the drive with the name **clear-me** -
     exactly 7 lowercase letters and one hyphen
-8.  Run the [clear an array
+8. Run the [clear an array
     drive](http://lime-technology.com/forum/index.php?topic=50416.msg494968#msg494968)
     script from the [User
     Scripts](http://lime-technology.com/forum/index.php?topic=49992)
     plugin (or run it standalone, at a command prompt).
-    -   If you prepared the drive correctly, it will completely and
+    - If you prepared the drive correctly, it will completely and
         safely zero out the drive. If you didn\'t prepare the drive
         correctly, the script will refuse to run, in order to avoid any
         chance of data loss.
-    -   If the script refuses to run, indicating it did not find a
+    - If the script refuses to run, indicating it did not find a
         marked and empty drive, then very likely there are still files
         on your drive. Check for hidden files. ALL files must be
         removed!
-    -   Clearing takes a loooong time! Progress info will be displayed.
-    -   For best performance, make sure there are no reads/writes
+    - Clearing takes a loooong time! Progress info will be displayed.
+    - For best performance, make sure there are no reads/writes
         happening to the array. The easiest way to do this is to bring
         the array up in maintenance mode.
-    -   If running in User Scripts, the browser tab will hang for the
+    - If running in User Scripts, the browser tab will hang for the
         entire clearing process.
-    -   While the script is running, the Main screen may show invalid
+    - While the script is running, the Main screen may show invalid
         numbers for the drive, ignore them. Important! Do not try to
         access the drive, at all!
-9.  When the clearing is complete, stop the array
+9. When the clearing is complete, stop the array
 10. Follow the procedure for resetting the array making sure you elect
     to retain all current assignments.
 11. Return to the Main page, and check all assignments. If any are
@@ -1022,8 +1023,8 @@ prompt. (Clearing takes just as long though!) If you would rather do
 that than run the script in steps 7 and 8, then here are the 2 commands
 to perform:
 
-` umount /mnt/diskX`\
-` dd bs=1M if=/dev/zero of=/dev/mdX status=progress`
+`umount /mnt/diskX`\
+`dd bs=1M if=/dev/zero of=/dev/mdX status=progress`
 
 (where X in both lines is the number of the data drive being removed)
 **Important!!!** It is VITAL you use the correct drive number, or you
@@ -1122,33 +1123,33 @@ from scratch to build your array configuration, there is a tool in
 Unraid that will do this for you. To reset the array configuration,
 perform the following steps: ![](/docs/legacy/Newconfig.png "Newconfig.png")
 
-1.  Navigate to the **Tools** page and click *New Config*
-2.  You can (optionally) elect to have the system preserve some of the
+1. Navigate to the **Tools** page and click *New Config*
+2. You can (optionally) elect to have the system preserve some of the
     current assignments while resetting the array. This can be very
     useful if you only intend to make a small change as it avoids you
     having to re-enter the details of the disks you want to leave
     unchanged.
-3.  Click the checkbox confirming that you want to do this and then
+3. Click the checkbox confirming that you want to do this and then
     click apply to perform the operation
-4.  Return to the **Main** tab and your configuration will have been
+4. Return to the **Main** tab and your configuration will have been
     reset
-5.  Make any adjustments to the configuration that you want.
-6.  Start the array to commit the configuration. You can start in Normal
+5. Make any adjustments to the configuration that you want.
+6. Start the array to commit the configuration. You can start in Normal
     or Maintenance mode.
 
 Notes:
 
--   Unraid will recognize if any drives have been previously used by
+- Unraid will recognize if any drives have been previously used by
     Unraid, and when you start the array as part of this procedure the
     contents of such disks will be left intact.
--   There is a checkbox next to the Start button that you can use to say
+- There is a checkbox next to the Start button that you can use to say
     \'Parity is Valid\'. Do not check this unless you are sure it is the
     correct thing to do, or unless advised to do so by an experienced
     Unraid user as part of a data recovery procedure.
--   Removing a data drive from the array will always invalidate parity
+- Removing a data drive from the array will always invalidate parity
     unless special action has been taken to ensure the disk being
     removed only contains zeroes
--   Reordering disks after doing the New Config without removing drives
+- Reordering disks after doing the New Config without removing drives
     does not invalidate parity1, but it **DOES** invalidate parity2.
 
 *Undoing a reset*
@@ -1156,10 +1157,10 @@ Notes:
 If for any reason after performing a reset, you wish to undo it, perform
 the following steps:
 
-1.  Browse to your flash device over the network (SMB)
-2.  Open the **Config** folder
-3.  Rename the file *super.old* to *super.dat*
-4.  Refresh the browser on the **Main** page and your array
+1. Browse to your flash device over the network (SMB)
+2. Open the **Config** folder
+3. Rename the file *super.old* to *super.dat*
+4. Refresh the browser on the **Main** page and your array
     configuration will be restored
 
 ## Notifications
@@ -1173,11 +1174,11 @@ the array.
 
 An important point about these reports is:
 
--   They only tell you if the array currently has any disks disabled or
+- They only tell you if the array currently has any disks disabled or
     showing read/write errors.
--   The status is reset when you reboot the system, so it does not tell
+- The status is reset when you reboot the system, so it does not tell
     you what the status was in the past.
--   **IMPORTANT**: The status report does not take into account the
+- **IMPORTANT**: The status report does not take into account the
     SMART status of the drive. You can therefore get a status report
     indicating that the array appears to be healthy even though the
     SMART information might indicate that a disk might not be too
@@ -1199,12 +1200,12 @@ available for SAS drives.
 Which SMART attributes are monitored can be configured by the user, but
 the default ones are:
 
--   5: Reallocated Sectors count
--   187: Reported uncorrected errors
--   188: Command timeout
--   197: Current / Pending Sector Count
--   198: Uncorrectable sector count
--   199: UDMA CRC error count
+- 5: Reallocated Sectors count
+- 187: Reported uncorrected errors
+- 188: Command timeout
+- 197: Current / Pending Sector Count
+- 198: Uncorrectable sector count
+- 199: UDMA CRC error count
 
 If any of these attributes change value then this will be indicated on
 the Dashboard by the icon against the drive turning orange. You can
@@ -1258,12 +1259,12 @@ be mapped to be external to the docker container (typically as a
 container specific subfolder within the appdata share. There are good
 reasons to hold both categories on a Pool for several reasons:
 
--   Writes are much faster than when held on the array as they are not
+- Writes are much faster than when held on the array as they are not
     slowed down by the way in which UnRaid updates parity for a parity
     protected array
--   The working set can be accesssed and updated faster when stored on a
+- The working set can be accesssed and updated faster when stored on a
     Pool.
--   It is not necessary to have array disks spun up when a container is
+- It is not necessary to have array disks spun up when a container is
     accessing its binaries or using its working set.
 
 ### VM vdisks {#vm_vdisks}
@@ -1312,10 +1313,10 @@ space you will have available.
 Here are typical operations that are likely to want to carry out on the
 pool:
 
--   Back up the pool to the array
--   Switch the pool to run in multi-device mode
--   Add disks
--   Replace a disk
+- Back up the pool to the array
+- Switch the pool to run in multi-device mode
+- Add disks
+- Replace a disk
 
 ## Backing up the pool to the array {#backing_up_the_pool_to_the_array}
 
@@ -1323,14 +1324,14 @@ The procedure shown assumes that there are at least some dockers and/or
 VMs related files on the cache disk, some of these steps are unnecessary
 if there aren\'t.
 
-1.  Stop all running Dockers/VMs
-2.  Settings -\> VM Manager: disable VMs and click apply
-3.  Settings -\> Docker: disable Docker and click apply
-4.  Click on Shares and change to \"Yes\" all User Shares with \"Use
+1. Stop all running Dockers/VMs
+2. Settings -\> VM Manager: disable VMs and click apply
+3. Settings -\> Docker: disable Docker and click apply
+4. Click on Shares and change to \"Yes\" all User Shares with \"Use
     cache disk:\" set to \"Only\" or \"Prefer\"
-5.  Check that there\'s enough free space on the array and invoke the
+5. Check that there\'s enough free space on the array and invoke the
     mover by clicking \"Move Now\" on the Main page
-6.  When the mover finishes check that your pool is empty
+6. When the mover finishes check that your pool is empty
 
 :
 
@@ -1340,16 +1341,16 @@ if there aren\'t.
 You. can then later restore files to the pool by effectively reversing
 the above steps:
 
-1.  Click on all shares whose content you want on the pool and set \"Use
+1. Click on all shares whose content you want on the pool and set \"Use
     cache:\" option to \"Only\" or \"Prefer\" as appropriate.
-2.  Check that there\'s enough free space on the pool and invoke the
+2. Check that there\'s enough free space on the pool and invoke the
     mover by clicking \"Move Now\" on the Main page
-3.  When the mover finishes check that your pool now has the expected
+3. When the mover finishes check that your pool now has the expected
     content and that the shares in question no longer have files on the
     main array
-4.  Settings -\> Docker: enable Docker and click apply
-5.  Settings -\> VM Manager: enable VMs and click apply
-6.  Start any Dockers/VMs that you want to be running
+4. Settings -\> Docker: enable Docker and click apply
+5. Settings -\> VM Manager: enable VMs and click apply
+6. Start any Dockers/VMs that you want to be running
 
 ## Switching the pool to multi-device mode {#switching_the_pool_to_multi_device_mode}
 
@@ -1360,40 +1361,40 @@ procedure below for adding an additional drive to a pool
 If the cache is NOT in BTRFS format then you will need to do the
 following:
 
-1.  Use the procedure above for backing up any existing content you want
+1. Use the procedure above for backing up any existing content you want
     to keep to the array.
-2.  Stop the array
-3.  Click on the pool on the Main tab and change the format to be BTRFS
-4.  Start the array
-5.  The pool should how show as **unmountable** and offer the option to
+2. Stop the array
+3. Click on the pool on the Main tab and change the format to be BTRFS
+4. Start the array
+5. The pool should how show as **unmountable** and offer the option to
     format the pool.
-6.  Confirm that you want to do this and click the format button
-7.  When the format finishes you now have a multi-device pool (albeit
+6. Confirm that you want to do this and click the format button
+7. When the format finishes you now have a multi-device pool (albeit
     with only one drive in it)
-8.  If you want additional drives in the pool you can (optionally) do it
+8. If you want additional drives in the pool you can (optionally) do it
     now.
-9.  Use the restore part of the previous procedure to restore any
+9. Use the restore part of the previous procedure to restore any
     content you want on the pool
 
 ## Adding disks to a pool {#adding_disks_to_a_pool}
 
 Notes:
 
--   You can only do this if the pool is **already** formatted as BTRFS
+- You can only do this if the pool is **already** formatted as BTRFS
 
 :   If it is not then you will need to first follow the steps in the
     previous section to create a pool in BTRFS format.
 
 To add disks to the BTRFS pool perform the following steps:
 
-1.  Stop the array.
-2.  Navigate to the **Main** tab.
-3.  Scroll down to the section labeled *Pool Devices*.
-4.  Change the number of **Slots** to be at least as many as the number
+1. Stop the array.
+2. Navigate to the **Main** tab.
+3. Scroll down to the section labeled *Pool Devices*.
+4. Change the number of **Slots** to be at least as many as the number
     of devices you wish to assign.
-5.  Assign the devices you wish to the pool slot(s).
-6.  Start the array.
-7.  Click the checkbox and then the button under **Array Operations** to
+5. Assign the devices you wish to the pool slot(s).
+6. Start the array.
+7. Click the checkbox and then the button under **Array Operations** to
     format the devices.
 
 :   Make sure that the devices shown are those you expect - you do not
@@ -1406,22 +1407,22 @@ To add disks to the BTRFS pool perform the following steps:
 
 Notes:
 
--   You can only do this if your pool is configured for redundancy at
+- You can only do this if your pool is configured for redundancy at
     both the data and metadata level.
 
 :   you can check what raid level your pool is currently set to by
     clicking on it on the Main tab and scrolling down to the Balance
     Status section.
 
--   you can only remove one drive at a time
+- you can only remove one drive at a time
 
-1.  Stop the array
-2.  Unassign a pool drive.
-3.  Start the array
-4.  Click on the pool drive
-5.  if you still have more than one drive in the pool then you can
+1. Stop the array
+2. Unassign a pool drive.
+3. Start the array
+4. Click on the pool drive
+5. if you still have more than one drive in the pool then you can
     simply run a Balance operation
-6.  If you only have one drive left in the pool then switch the pool
+6. If you only have one drive left in the pool then switch the pool
     RAID level to single as described below
 
 \
@@ -1448,24 +1449,24 @@ article](https://btrfs.wiki.kernel.org/index.php/Using_Btrfs_with_Multiple_Devic
 
 You can change the BTRFS raid levels for a pool from the Unraid GUI by:
 
--   If the array is not started then start it in normal mode
--   Click on the Pool name on the Main tab
--   Scroll down to the Balance section
--   At this point information (including current RAID levels) will be
+- If the array is not started then start it in normal mode
+- Click on the Pool name on the Main tab
+- Scroll down to the Balance section
+- At this point information (including current RAID levels) will be
     displayed.
--   **If using UnRaid 6.8.3 or earlier** then add the appropriate
+- **If using UnRaid 6.8.3 or earlier** then add the appropriate
     additional parameters added to the *Options* field.
 
 :   As an example, the following screenshot shows how you might convert
     the pool from the RAID1 to the SINGLE profile.
 :   [800px](file:Btrfs-raid1.jpg "wikilink")
 
--   **If using UnRaid 6.9.0 or later** this has been made even easier by
+- **If using UnRaid 6.9.0 or later** this has been made even easier by
     giving you a drop-down list of the available options so simply
     select the one you want
--   Start the Balance operation.
--   Wait for the Balance to complete
--   The new RAID level will now be fully operational.
+- Start the Balance operation.
+- Wait for the Balance to complete
+- The new RAID level will now be fully operational.
 
 \
 
@@ -1473,21 +1474,21 @@ You can change the BTRFS raid levels for a pool from the Unraid GUI by:
 
 **Notes:**
 
--   You can only do this if the pool is formatted as BTRFS **AND** it is
+- You can only do this if the pool is formatted as BTRFS **AND** it is
     set up to be redundant.
--   You can only replace up to one disk at a time from a pool.
+- You can only replace up to one disk at a time from a pool.
 
 To replace a disk in the redundant pool, perform the following steps:
 
-1.  Stop the array.
-2.  Physically detach the disk from your system you wish to remove.
-3.  Attach the replacement disk (must be equal to or larger than the
+1. Stop the array.
+2. Physically detach the disk from your system you wish to remove.
+3. Attach the replacement disk (must be equal to or larger than the
     disk being replaced).
-4.  Refresh the Unraid webGui when under the **Main** tab.
-5.  Select the pool slot that previously was set to the old disk and
+4. Refresh the Unraid webGui when under the **Main** tab.
+5. Select the pool slot that previously was set to the old disk and
     assign the new disk to the slot.
-6.  Start the array.
-7.  If presented with an option to **Format** the device, click the
+6. Start the array.
+7. If presented with an option to **Format** the device, click the
     checkbox and button to do so.
 
 \
@@ -1506,7 +1507,7 @@ converted to a single profile first).
 
 With the array running type on the console:
 
-` btrfs dev del /dev/mapper/sdX1 /mnt/cache`
+`btrfs dev del /dev/mapper/sdX1 /mnt/cache`
 
 Replace X with the correct letter for the drive you want to remove from
 the system as shown on the Main tab (don\'t forget the 1 after it).
@@ -1518,24 +1519,24 @@ The device is now removed from the pool, you don\'t need to stop the
 array now, but at the next array stop you need to make Unraid forget the
 now-deleted member, and to achieve that:
 
--   Stop the array
--   Unassign all pool devices
--   Start the array to make Unraid \"forget\" the pool config
+- Stop the array
+- Unassign all pool devices
+- Start the array to make Unraid \"forget\" the pool config
 
 :   If the docker and/or VMs services were using that pool best to
     disable those services before start or Unraid will recreate the
     images somewhere else, assuming they are using /mnt/user paths)
 
--   Stop array (re-enable docker/VM services if disabled above)
--   Re-assign all pool member except the removed device
--   Start array
+- Stop array (re-enable docker/VM services if disabled above)
+- Re-assign all pool member except the removed device
+- Start array
 
 Done
 
 You can also remove multiple devices with a single command (as long as
 the above rule is observed):
 
-` btrfs dev del /dev/mapper/sdX1 /dev/mapper/sdY1 /mnt/cache`\
+`btrfs dev del /dev/mapper/sdX1 /dev/mapper/sdY1 /mnt/cache`\
 
 but in practice this does the same as removing one device, then the
 other, as they are still removed one at a time, just one after the other
@@ -1581,15 +1582,15 @@ A typical Use Case for this action is to get files off the pool so that
 you can safely perform some action that you are worried might end up
 losing any existing contents. The steps are:
 
--   Disable the Docker and VM services under *Settings*. This is done to
+- Disable the Docker and VM services under *Settings*. This is done to
     ensure that they will not hold any files open as that would stop
     *mover* from being able to move them.
--   Go to the Shares tab and for each share you want to be moved from
+- Go to the Shares tab and for each share you want to be moved from
     the cache to the array ensure that the *Use Cache* setting is set to
     **Yes**.
--   Go to the Main tab and manually start the **mover** process so that
+- Go to the Main tab and manually start the **mover** process so that
     it starts transferring the files from the cache to the array.
--   When moves completes the files should now be on the array. You can
+- When moves completes the files should now be on the array. You can
     validate there are no files left behind by clicking on the
     \'folder\' icon at the right side of the cache entry on the Main
     tab.
@@ -1602,18 +1603,18 @@ have newly added a cache drive and want the files for selected shares
 (typically *appdata* and *system*) to be moved to the cache. The steps
 are:
 
--   Disable the Docker and VM services under Settings. This is done to
+- Disable the Docker and VM services under Settings. This is done to
     ensure that they will not hold any files open as that would stop
     *mover* from being able to move them.
--   Go to the Shares tab and for each share you want to be moved from
+- Go to the Shares tab and for each share you want to be moved from
     the array to the cache ensure that the *Use Cache* setting is set to
     **Prefer**.
--   Go to the Main tab and manually start the **mover** process so that
+- Go to the Main tab and manually start the **mover** process so that
     it starts transferring the files from the array to the cache.
--   When moves completes the files should now be on the cache.
--   Re-enable the Docker and/or VM services under *Settings* (if you use
+- When moves completes the files should now be on the cache.
+- Re-enable the Docker and/or VM services under *Settings* (if you use
     them).
--   (optional) Go to the Shares tab and for each share you want all
+- (optional) Go to the Shares tab and for each share you want all
     files always be on the cache set the *Use Cache* setting to **Only**
     to stop any new files for this share being created on the array in
     the future.
@@ -1625,7 +1626,7 @@ independently. This feature permits you to define up to 35 named pools,
 of up to 30 storage devices per pool.  Pools are created and managed via
 the Main page.
 
--   Note: A pre-6.9.0 cache disk/pool is now simply a pool named
+- Note: A pre-6.9.0 cache disk/pool is now simply a pool named
     \"cache\".  When you upgrade a server which has a cache disk/pool
     defined, a backup of `config/disk.cfg` will be saved to
     `config/disk.cfg.bak`, and then cache device assignment settings are
@@ -1665,12 +1666,12 @@ would understand to be \"mirrored disks\". Well, this is mostly true in
 that the same data exists on both disks but not necessarily at the
 block-level.  Now let\'s say you create another pool, and what you do is
 un-assign one of the devices from the existing 2-device btrfs pool and
-assign it to this pool.  Now you have x2 single-device btrfs pools. 
+assign it to this pool.  Now you have x2 single-device btrfs pools.
 Upon array Start user might understandably assume there are now x2 pools
 with exactly the same data.  However, **this is not the case**. Instead,
 when Unraid OS sees that a btrfs device has been removed from an
 existing multi-device pool, upon array Start it will do a `wipefs` on
-that device so that upon mount it will not be included in the old pool. 
+that device so that upon mount it will not be included in the old pool.
 This of course effectively deletes all the data on the moved device.
 
 #### Moving files between pools {#moving_files_between_pools}
@@ -1679,8 +1680,8 @@ there is no built-in support for moving files between pools. In the
 event one wants to do this you can do it using the **mover** application
 using the techniques mentioned during earlier by doing it in two steps
 
--   Move the files from pool1 to the main array
--   move the files from the array to pool2
+- Move the files from pool1 to the main array
+- move the files from the array to pool2
 
 The alternative is to it manually in which case you can move files
 directly between the pools.
@@ -1695,79 +1696,77 @@ successfully**.\
 Each array drive in an Unraid system is set up as a self-contained file
 system. Unraid currently supports the following file system types:
 
--   **XFS**: This is the default format for array drives on a new
+- **XFS**: This is the default format for array drives on a new
     system. It is a well-tried Linux file system and deemed to be the
     most robust.
-    -   XFS is better at recovering from file system corruption than
+  - XFS is better at recovering from file system corruption than
         BTRFS or ZFS (which can happen after unclean shutdowns or system
         crashes).
-    -   If used on an array drive then each XFS format drive is a single
+  - If used on an array drive then each XFS format drive is a single
         self-contained file system.
 
-
--   **ZFS**: This is a newer file system introduced with Unraid 6.12
+- **ZFS**: This is a newer file system introduced with Unraid 6.12
     that supports advanced features not available with XFS.
-    -   It supports detecting file content corruption (often
+  - It supports detecting file content corruption (often
         colloquially known as bit-rot) by internally using checksum
         techniques
-    -   If used on array drives then each ZFS format drive is an
+  - If used on array drives then each ZFS format drive is an
         individual free-standing BTRFS file system.
-    -   It can support a single file system spanning multiple drives.
+  - It can support a single file system spanning multiple drives.
         Normally each drive would be of the same size, but if not then
         only the amount of space equivalent to that on the smallest
         drive will be used.
-    -   In multi-drive mode various levels of RAID can be supported. The
+  - In multi-drive mode various levels of RAID can be supported. The
         default in Unraid for a cache pool is RAID1 so that data is
         stored redundantly to protect against drive failure.
-    -   is an option supported when using a cache pool spanning multiple
+  - is an option supported when using a cache pool spanning multiple
         drives that need to run as a single logical drive as this needs
         the multi-drive support.
-    -   In multi-drive mode in the cache pool the usable space is always
+  - In multi-drive mode in the cache pool the usable space is always
         a multiple of the smallest drive (if they are not the same
         size).
-    -   It is thought to be better at recovering from file system
+  - It is thought to be better at recovering from file system
         corruption than BTRFS, although not as good as XFS.
 
-
--   **BTRFS**: This is a newer file system that supports advanced
+- **BTRFS**: This is a newer file system that supports advanced
     features not available with XFS. It is considered not quite as
     stable as XFS but many Unraid users have reported in seems as robust
     as XFS when used on array drives where each drive is a
     self-contained file system. Some of its features are:
-    -   It supports detecting file content corruption (often
+  - It supports detecting file content corruption (often
         colloquially known as bit-rot) by internally using checksum
         techniques.
-    -   If used on array drives then each BTRFS format drive is an
+  - If used on array drives then each BTRFS format drive is an
         individual free-standing BTRFS file system.
-    -   It can support a single file system spanning multiple drives,
+  - It can support a single file system spanning multiple drives,
         and in such a case it is not necessary that the drives all be of
         the same size. It is better than ZFS at making use of available
         space in a multi-drive pool where the drives are of different
         sizes.
-    -   In multi-drive mode various levels of RAID can be supported
+  - In multi-drive mode various levels of RAID can be supported
         (although these are a BTRFS specific implementation and not
         necessarily what one expects). The default in Unraid for a cache
         pool is RAID1 so that data is stored redundantly to protect
         against drive failure.
-    -   is the an option supported when using a cache pool spanning
+  - is the an option supported when using a cache pool spanning
         multiple drives that need to run as a single logical drive as
         this needs the multi-drive support.
-    -   In multi-drive mode in the cache pool the available space is
+  - In multi-drive mode in the cache pool the available space is
         always a multiple of the smallest drive size.
--   **ReiserFS**: This is supported for legacy reasons for those
+- **ReiserFS**: This is supported for legacy reasons for those
     migrating from earlier versions of Unraid where it was the only
     supported file system type.
-    -   There is only minimal involvement from Linux kernel developers
+  - There is only minimal involvement from Linux kernel developers
         on maintaining the ReiserFS drivers on new Linux kernel versions
         so the chance of a new kernel causing problems with ReiserFS is
         higher than for other Linux fine system types.
-    -   **It has a hard limit of 16TB on a ReiserFS file system and
+  - **It has a hard limit of 16TB on a ReiserFS file system and
         commercial grade hard drives have now reached this limit.**
-    -   Write performance can degrade significantly as the file system
+  - Write performance can degrade significantly as the file system
         starts getting full.
-    -   It is extremely good at recovering from even extreme levels of
+  - It is extremely good at recovering from even extreme levels of
         file system corruption
-    -   **It is now deprecated for use with Unraid and should not be
+  - **It is now deprecated for use with Unraid and should not be
         used by new users.** Support for ReiserFS is due to be removed
         from the Linux kernel by 2025 and at that point Unraid will also
         likely stop supporting ReiserFS so existing should be looking to
@@ -1810,18 +1809,18 @@ systems that do not support standard Linux formats.
 
 The File System type for a new drive can be set in 2 ways:
 
-1.  Under *Settings-\>Disk Settings* the default type for array drives
+1. Under *Settings-\>Disk Settings* the default type for array drives
     and the cache pool can be set.
-    -   On a new Unraid system this will be XFS for array drives and
+    - On a new Unraid system this will be XFS for array drives and
         BTRFS for the cache.
-2.  Explicitly for individual drives by clicking on a drive on the Main
+2. Explicitly for individual drives by clicking on a drive on the Main
     tab (with the array stopped) and selecting a type from those
     offered.
-    -   When a drive is first added the file system type will show as
+    - When a drive is first added the file system type will show as
         **auto** which means use the setting specified under
         *Settings-\>Disk Settings*.
-    -   Setting an explicit type over-rides the global setting
-    -   The only supported format for a cache containing more than one
+    - Setting an explicit type over-rides the global setting
+    - The only supported format for a cache containing more than one
         drive is BTRFS.
 
 ## Creating a File System (Format) {#creating_a_file_system_format}
@@ -1841,22 +1840,22 @@ detailed later.
 The basic process to format a drive once the file system type has been
 set is:
 
--   Start the array
--   Any drives where Unraid does not recognize the format will be shown
+- Start the array
+- Any drives where Unraid does not recognize the format will be shown
     as **unmountable** and there will be an option to format unmountable
     drives
--   Check that **ALL** the drives shown as unmountable are ones you want
+- Check that **ALL** the drives shown as unmountable are ones you want
     to format. You do not want to accidentally format another drive and
     erase its contents
--   Click the check box to say you really want to format the drive.
--   Carefully read the resulting dialog that outlines the consequences
--   The **Format** button will now be enabled so if you want to go ahead
+- Click the check box to say you really want to format the drive.
+- Carefully read the resulting dialog that outlines the consequences
+- The **Format** button will now be enabled so if you want to go ahead
     with the format click on it.
--   The format process will start running for the specified disks.
-    -   If the disk has not previously been used by Unraid then it will
+- The format process will start running for the specified disks.
+  - If the disk has not previously been used by Unraid then it will
         start by rewriting the partition table on the drive to conform
         to the standard Unraid expects.
--   The format should only take a few minutes but if the progress does
+- The format should only take a few minutes but if the progress does
     not automatically update you might need to refresh the Main tab.
 
 Once the format has completed then the drive is ready to start being
@@ -1866,13 +1865,12 @@ used to store files.
 
 A drive can show as **unmountable** in the Unraid GUI for two reasons:
 
--   The disk has never been used in Unraid and you have just added is
+- The disk has never been used in Unraid and you have just added is
     new a new disk slot in the array. In this case, you want to follow
     the format procedure shown above to create a new empty file system
     on the drive so it is ready to receive files.
 
-
--   File system corruption has occurred. This means that the file system
+- File system corruption has occurred. This means that the file system
     driver has noticed some inconsistency in the file system control
     structures. This is not infrequent if a write to a disk fails for
     any reason and Unraid marks the disk as disabled, although it can
@@ -1936,8 +1934,8 @@ To recover from file system corruption then one needs to run the tool
 that is appropriate to the file system on the disk. Points to note that
 users new to Unraid often misunderstand are:
 
--   Rebuilding a disk does **not** repair file system corruption
--   If a disk is showing as being emulated then the file system check
+- Rebuilding a disk does **not** repair file system corruption
+- If a disk is showing as being emulated then the file system check
     and/or repair are run against the emulated drive and not the
     physical drive.
 
@@ -1969,11 +1967,11 @@ Unraid 6.12 is release with ZFS support built in.
 The process for checking a file system using the Unraid GUI is as
 follows:
 
-1.  Make sure that you have the array started in the correct mode. If
+1. Make sure that you have the array started in the correct mode. If
     necessary stop the array and restart in the correct mode by
     clicking/unclicking the Maintenance Mode checkbox next to the Start
     button.
-2.  From the Main screen of the webGui, click the name of the disk that
+2. From the Main screen of the webGui, click the name of the disk that
     you want to test or repair. For example, if the drive of concern is
     Disk 5, then click on **Disk 5**. If it\'s the Cache drive, then
     click on **Cache**. If in Maintenance mode then The disks will not
@@ -1982,23 +1980,23 @@ follows:
     This is important as any write operation against one of these \'md\'
     type devices will also update parity to reflect that write has
     happened.
-3.  You should see a page of options for that drive, beginning with
+3. You should see a page of options for that drive, beginning with
     various partition, file system format, and spin down settings.
-4.  The section following that is the one you want, titled **Check
+4. The section following that is the one you want, titled **Check
     Filesystem Status**. There is a box with the 2 words *Not available*
     in it. This is the command output box, where the progress and
     results of the command will be displayed. Below that is the
     **Check** button that starts the test, followed by the options box
     where you can type in options for the test/repair command.
-5.  The tool that will be run is shown and the status at this point will
+5. The tool that will be run is shown and the status at this point will
     show as *Not available*. The *Options* field may include a parameter
     that causes the selected tool to run in *check-only* mode so that
     the underlying drive is not actually changed. For more help, click
     the **Help** button in the upper right.
-6.  Click on the Check button to run the file system check
-7.  Information on the check progress is now displayed. You may need to
+6. Click on the Check button to run the file system check
+7. Information on the check progress is now displayed. You may need to
     use the *Refresh* button to get it to update.
-8.  If you are not sure what the results of the check mean you should
+8. If you are not sure what the results of the check mean you should
     copy the progress information so you can ask a question in the
     forum. When including this information as part of a forum post use
     the mark them as *code* (using the **\<?\>** icon) to preserve the
@@ -2012,11 +2010,11 @@ You can run the file system check from the command line for ReiserFS and
 XFSxfs as shown below if the array is started in Maintenance mode by
 using a command of the form:
 
-` xfs_repair -v /dev/mdX`
+`xfs_repair -v /dev/mdX`
 
 or
 
-` reiserfsck -v /dev/mdX `
+`reiserfsck -v /dev/mdX`
 
 where X corresponds to the diskX number shown in the Unraid GUI. Using
 the /dev/mdX type device will maintain parity. If the file system to be
@@ -2028,20 +2026,20 @@ or if the array is not started then you need to run the appropriate
 command from a console/terminal session. As an example for an XFS disk
 you would use a command of the form:
 
-` xfs_repair -v /dev/sdX1`
+`xfs_repair -v /dev/sdX1`
 
 where X corresponds to the device identifier shown in the Unraid GUI.
 Points to note are:
 
--   The value of X can change when Unraid is rebooted so make sure it is
+- The value of X can change when Unraid is rebooted so make sure it is
     correct for the current boot
--   Note the presence of the \'1\' on the end to indicate the partition
+- Note the presence of the \'1\' on the end to indicate the partition
     to be checked.
--   The reason for not doing it this way on array drives is that
+- The reason for not doing it this way on array drives is that
     although the disk would be repaired parity would be invalidated
     which can reduce the chances of recovering a failed drive until
     valid parity has been re-established.
--   if you run this form of the command on an array disk you will
+- if you run this form of the command on an array disk you will
     invalidate parity so it is not recommended except in exceptional
     circumstances.
 
@@ -2057,7 +2055,7 @@ You can run the file system check from the command line for BTRFS as
 shown below if the array is started in Maintenance mode by using
 commands of the form:
 
-` btrfs check --readonly /dev/mdX1`
+`btrfs check --readonly /dev/mdX1`
 
 where X corresponds to the diskX number shown in the Unraid GUI. Using
 the /dev/mdX type device will maintain parity. If the file system to be
@@ -2069,22 +2067,22 @@ array, if the array is not started, or the disk is part of a pool then
 you need to run the appropriate command from a console/terminal session.
 As an example you would use a command of the form:
 
-` btrfs check --readonly /dev/sdX1`
+`btrfs check --readonly /dev/sdX1`
 
 for pools which are outside the Unraid parity scheme
 
 where X corresponds to the device identifier shown in the Unraid GUI.
 Points to note are:
 
--   The value of X can change when Unraid is rebooted so make sure it is
+- The value of X can change when Unraid is rebooted so make sure it is
     correct for the current boot
--   Note the presence of the \'1\' on the end to indicate the partition
+- Note the presence of the \'1\' on the end to indicate the partition
     to be checked.
--   The reason for not doing it this way on array drives is that
+- The reason for not doing it this way on array drives is that
     although the disk would be repaired parity would be invalidated
     which can reduce the chances of recovering a failed drive until
     valid parity has been re-established.
--   if you run this form of the command on an array disk you will
+- if you run this form of the command on an array disk you will
     invalidate parity so it is not recommended except in exceptional
     circumstances.
 
@@ -2104,28 +2102,28 @@ run against the emulated drive and not the physical drive. It is
 frequently done before attempting to rebuild a drive as it is the
 contents of the emulated drive that is used by the rebuild process.
 
-1.  Remove any parameters from the *Options* field that would cause the
+1. Remove any parameters from the *Options* field that would cause the
     tool to run in *check-only* mode.
-2.  Add any additional parameters to the *Options* field required that
+2. Add any additional parameters to the *Options* field required that
     are suggested from the check phase. If not sure then ask in the
     forum.
-    -   The Help build into the GUI can provide guidance on what options
+    - The Help build into the GUI can provide guidance on what options
         might be applicable.
-3.  Press the Check button to start the repair process. You can now
+3. Press the Check button to start the repair process. You can now
     periodically use the *Refresh* button to update the progress
     information
-4.  If the repair does not complete for any reason then ask in the forum
+4. If the repair does not complete for any reason then ask in the forum
     for advice on how to best proceed if you are not sure.
-    -   If repairing an XFS formatted drive then it is quite normal for
+    - If repairing an XFS formatted drive then it is quite normal for
         the *xfs_repair* process to give you a warning saying you need
         to provide the ***-L*** option to proceed. Despite this ominous
         warning message this is virtually always the right thing to do
         and does not result in data loss.
-    -   When asking a question in the forum and when including the
+    - When asking a question in the forum and when including the
         output from the repair attempt as part of your post use
         ![Code](/docs/legacy/Code-icon.jpg "Code") option to preserve the formatting
         as otherwise it becomes difficult to read
-5.  If the repair completes without error then stop the array and
+5. If the repair completes without error then stop the array and
     restart in normal mode. The drive should now mount correctly.
 
 After running a repair you may well find that a **lost+found** folder is
@@ -2154,11 +2152,11 @@ system then you always want the array to be started in Maintenace mode
 The process for repairing a file system using the Unraid GUI is as
 follows:
 
-1.  Make sure that you have the array started in the correct mode. If
+1. Make sure that you have the array started in the correct mode. If
     necessary stop the array and restart in the correct mode by
     clicking/unclicking the Maintenance Mode checkbox next to the Start
     button.
-2.  From the Main screen of the webGui, click the name of the disk that
+2. From the Main screen of the webGui, click the name of the disk that
     you want to test or repair. For example, if the drive of concern is
     Disk 5, then click on **Disk 5**. If it\'s the Cache drive, then
     click on **Cache**. If in Maintenance mode then The disks will not
@@ -2167,26 +2165,26 @@ follows:
     This is important as any write operation against one of these \'md\'
     type devices will also update parity to reflect that write has
     happened.
-3.  You should see a page of options for that drive, beginning with
+3. You should see a page of options for that drive, beginning with
     various partition, file system format, and spin down settings.
-4.  The section following that is the one you want, titled **Check
+4. The section following that is the one you want, titled **Check
     Filesystem Status**. There is a box with the 2 words *Not available*
     in it. This is the command output box, where the progress and
     results of the command will be displayed. Below that is the
     **Check** button that starts the repair
-5.  This is followed by the options box where you can type in options.
+5. This is followed by the options box where you can type in options.
     To run a repair you need to remove the **-n** option. If repairing a
     XFS system you often get prompted to also use the **-L** option and
     if that happens you rerun the repair adding that option here.
-6.  The tool that will be run is shown and the status at this point will
+6. The tool that will be run is shown and the status at this point will
     show as *Not available*. The *Options* field may include a parameter
     that causes the selected tool to run in *check-only* mode so that
     the underlying drive is not actually changed. For more help, click
     the **Help** button in the upper right.
-7.  Click on the Check button to run the file system check
-8.  Information on the check progress is now displayed. You may need to
+7. Click on the Check button to run the file system check
+8. Information on the check progress is now displayed. You may need to
     use the *Refresh* button to get it to update.
-9.  If you are not sure what the results of the check mean you should
+9. If you are not sure what the results of the check mean you should
     copy the progress information so you can ask a question in the
     forum. When including this information as part of a forum post use
     the mark them as *code* (using the **\<?\>** icon) to preserve the
@@ -2232,11 +2230,11 @@ You can run the file system check from the command line for ReiserFS and
 XFSxfs as shown below if the array is started in Maintenance mode by
 using a command of the form:
 
-` xfs_repair /dev/mdX`
+`xfs_repair /dev/mdX`
 
 or
 
-` reiserfsck /dev/mdX `
+`reiserfsck /dev/mdX`
 
 where X corresponds to the diskX number shown in the Unraid GUI. Using
 the /dev/mdX type device will maintain parity. If the file system to be
@@ -2248,20 +2246,20 @@ or if the array is not started then you need to run the appropriate
 command from a console/terminal session. As an example for an XFS disk
 you would use a command of the form:
 
-` xfs_repair /dev/sdX1`
+`xfs_repair /dev/sdX1`
 
 where X corresponds to the device identifier shown in the Unraid GUI.
 Points to note are:
 
--   The value of X can change when Unraid is rebooted so make sure it is
+- The value of X can change when Unraid is rebooted so make sure it is
     correct for the current boot
--   Note the presence of the \'1\' on the end to indicate the partition
+- Note the presence of the \'1\' on the end to indicate the partition
     to be checked.
--   The reason for not doing it this way on array drives is that
+- The reason for not doing it this way on array drives is that
     although the disk would be repaired parity would be invalidated
     which can reduce the chances of recovering a failed drive until
     valid parity has been re-established.
--   if you run this form of the command on an array disk you will
+- if you run this form of the command on an array disk you will
     invalidate parity so it is not recommended except in exceptional
     circumstances.
 
@@ -2271,20 +2269,20 @@ You can run the file system check from the command line for BTRFS as
 shown below if the array is started in Maintenance mode by using a
 command of the form:
 
-` btrfs check --readonly /dev/sdX1`
+`btrfs check --readonly /dev/sdX1`
 
 where X corresponds to the device identifier shown in the Unraid GUI.
 Points to note are:
 
--   The value of X can change when Unraid is rebooted so make sure it is
+- The value of X can change when Unraid is rebooted so make sure it is
     correct for the current boot
--   Note the presence of the \'1\' on the end to indicate the partition
+- Note the presence of the \'1\' on the end to indicate the partition
     to be checked.
 
 In the event that you want to continue to try and actually repair the
 system you can run
 
-` btrfs check --repair /dev/sdX1`
+`btrfs check --repair /dev/sdX1`
 
 but you are advised to only do this after getting advice in the forum as
 sometimes the *\--repair* option can damage a BTRFS system even further.
@@ -2302,17 +2300,17 @@ IMPORTANT: These steps will **erase any existing content** on the drive
 so make sure you have first copied it elsewhere before attempting to
 change the file system type if you do not want to lose it.
 
-1.  Stop the array
-2.  Click on the drive whose format you want to change
-3.  Change the format to the new one you want to use. Repeat if
+1. Stop the array
+2. Click on the drive whose format you want to change
+3. Change the format to the new one you want to use. Repeat if
     necessary for each drive to be changed
-4.  Start the array
-5.  There will now be an option on the main tab to format unmountable
+4. Start the array
+5. There will now be an option on the main tab to format unmountable
     drives and showing what drives these will be. Check that only the
     drive(s) you expect show.
-6.  Check the box to confirm the format and then press the Format
+6. Check the box to confirm the format and then press the Format
     button.
-7.  The format will now start. It typically only takes a few minutes.
+7. The format will now start. It typically only takes a few minutes.
     There have been occasions where the status does not update but
     refreshing the Main tab normally fixes this.
 
@@ -2321,9 +2319,9 @@ diagnostics zip file (obtained via Tools-\>Diagnostics) to your post.
 
 Notes:
 
--   For SSDs you can erase the current contents using
+- For SSDs you can erase the current contents using
 
-` blkdiscard /dev/sdX `
+`blkdiscard /dev/sdX`
 
 :   at the console where \'X\' corresponds to what is currently shown in
     the Unraid GUI for the device. Be careful that you get it right as
@@ -2342,17 +2340,17 @@ types for other reasons.
 
 In simplistic terms the process is:
 
-1.  Copy the data off the drive in question to another location. This
+1. Copy the data off the drive in question to another location. This
     can be elsewhere on the array or anywhere else suitable.
-    -   You do have to have enough free space to temporarily hold this
+    - You do have to have enough free space to temporarily hold this
         data
-    -   Many uses do such a conversion just after adding a new drive to
+    - Many uses do such a conversion just after adding a new drive to
         the array as this gives them the free space required.
-2.  Follow the procedure above for changing the file system type of the
+2. Follow the procedure above for changing the file system type of the
     drive. This will leave you with an empty drive that is now in the
     correct format but that has no files on it.
-3.  Copy the files you saved in step 1 back to this drive
-4.  If you have multiple drives that need to be converted then do them
+3. Copy the files you saved in step 1 back to this drive
+4. If you have multiple drives that need to be converted then do them
     one at a time.
 
 This is a time-consuming process as you are copying large amounts of
@@ -2382,24 +2380,24 @@ drive (or some similar operation) and preserve as much of its existing
 contents as possible. In such cases the recommended way to proceed that
 is least like;y to go wrong is:
 
-1.  Stop array.
-2.  Disable docker and VM services under Settings
-3.  Start array. If you have correctly disabled these services there
+1. Stop array.
+2. Disable docker and VM services under Settings
+3. Start array. If you have correctly disabled these services there
     will be NO Docker or VMstab in the GUI.
-4.  Set all shares that have files on the cache and are currently not
+4. Set all shares that have files on the cache and are currently not
     have a Use Cache:Yes to BE Cache:Yes. Make a note of which shares
     you changed and what setting they had before the change
-5.  Run mover from the Main tab; wait for completion (which can take
+5. Run mover from the Main tab; wait for completion (which can take
     some time to complete if there are a lot of files); check cache
     drive contents, should be empty. If it\'s not, STOP, post
     diagnostics, and ask for help.
-6.  Stop array.
-7.  Set cache drive desired format to XFS or BTRFS, if you only have a
+6. Stop array.
+7. Set cache drive desired format to XFS or BTRFS, if you only have a
     single cache disk and are keeping that configuration, then XFS is
     the recommended format. XFS is only available as a selection if
     there is only 1 (one) cache slot shown while the array is stopped.
-8.  Start array.
-9.  Verify that the cache drive and ONLY the cache drive shows
+8. Start array.
+9. Verify that the cache drive and ONLY the cache drive shows
     unformatted. Select the checkbox saying you are sure, and format the
     drive.
 10. Set any shares that you changed to be Cache: Yes earlier to Cache:
@@ -2420,7 +2418,7 @@ likely to succeed without error for the average Unraid user.
 ## BTRFS Operations {#btrfs_operations}
 
 If you want more information BTRFS then the
-\[./Https://en.wikipedia.org/wiki/Btrfs Wikipedia BTRFS article\] is a
+\[./<Https://en.wikipedia.org/wiki/Btrfs> Wikipedia BTRFS article\] is a
 good place to start
 
 There are a number of operations that are specific to BTRFS formatted
@@ -2434,11 +2432,11 @@ specific types of data, then the second stage allocates blocks like a
 regular filesystem within these larger regions. There are three
 different types of chunks:
 
--   Data Chunks: These store regular file data.
--   Metadata Chunks: These store metadata about files, including among
+- Data Chunks: These store regular file data.
+- Metadata Chunks: These store metadata about files, including among
     other things timestamps, checksums, file names, ownership,
     permissions, and extended attributes.
--   System Chunks: These are a special type of chunk which stores data
+- System Chunks: These are a special type of chunk which stores data
     about where all the other chunks are located.
 
 Only the type of data that the chunk is allocated for can be stored in
@@ -2497,9 +2495,9 @@ Attached Devices license limits.*
 
 Typical uses for such drives are:
 
--   Plugging in removable drives for the purposes of transferring files
+- Plugging in removable drives for the purposes of transferring files
     or backing up drives.
--   Having drives dedicated to specific use (such as running VMs) where
+- Having drives dedicated to specific use (such as running VMs) where
     you want higher performance than can be achieved by using array
     drives.
 
@@ -2507,9 +2505,9 @@ It is strongly recommended that you install the Unassigned Devices (UD)
 plugins via the **Apps** tab if you want to use Unassigned Drives on
 your system. There are 2 plugins available:
 
-1.  The basic **Unassigned Devices** plugin provides support for file
+1. The basic **Unassigned Devices** plugin provides support for file
     system types supported as standard in Unraid.
-2.  The **Unassigned Devices Plus** plugin extends the file system
+2. The **Unassigned Devices Plus** plugin extends the file system
     support to include options such as ExFat ant HFS+.
 
 You should look at the Unassigned Devices support
@@ -2527,8 +2525,8 @@ is used to update parity.
 
 There are fundamentally 2 methods supported:
 
--   Read/Modify/Write
--   Turbo Mode (also known as *reconstruct write*)
+- Read/Modify/Write
+- Turbo Mode (also known as *reconstruct write*)
 
 These are discussed in more detail below to help users decide which
 modes are appropriate to how they currently want their array to operate.
@@ -2538,10 +2536,10 @@ modes are appropriate to how they currently want their array to operate.
 The write mode is set by going *Settings-\>Disk Settings*, and look for
 the **Tunable (md_write_method**) setting. The 3 options are:
 
--   **Auto**: Currently this operates just like setting the
+- **Auto**: Currently this operates just like setting the
     read/modify/write option but is reserved for future enhancement
--   **read/modify/write**
--   **reconstruct write** (a.k.a.Turbo write)
+- **read/modify/write**
+- **reconstruct write** (a.k.a.Turbo write)
 
 To change it, click on the option you want, then the Apply button. The
 effect should be immediate to you can change it at any time
@@ -2574,23 +2572,23 @@ writes.
 
 To summarize, for the \"read/modify/write\" method, you need to:
 
--   read in the parity block and read in the existing data block (can be
+- read in the parity block and read in the existing data block (can be
     done simultaneously)
--   compare the data blocks, then use the difference to change the
+- compare the data blocks, then use the difference to change the
     parity block to produce a new parity block (very short)
--   wait for platter rotation (very long!)
--   write out the parity block and write out the data block (can be done
+- wait for platter rotation (very long!)
+- write out the parity block and write out the data block (can be done
     simultaneously)
 
 That\'s 2 reads, a calc, a long wait, and 2 writes.
 
 The advantages of this approach are:
 
--   Only the parity drive(s) and the drive being updated need to be spun
+- Only the parity drive(s) and the drive being updated need to be spun
     up.
--   Minimises power usage as array drives can be kept spun down when not
+- Minimises power usage as array drives can be kept spun down when not
     being accessed
--   Does not require all the other array drives to be working perfectly
+- Does not require all the other array drives to be working perfectly
 
 **Turbo write mode**
 
@@ -2607,41 +2605,41 @@ write out! Done!
 
 To summarize, for the \"reconstruct write\" method, you need to:
 
--   write out the data block while simultaneously reading in the data
+- write out the data block while simultaneously reading in the data
     blocks of all other data drives
--   calculate the new parity block from all of the data blocks,
+- calculate the new parity block from all of the data blocks,
     including the new one (very short)
--   write out the parity block
+- write out the parity block
 
 That\'s a write and a bunch of simultaneous reads, a calc, and a write,
 but no platter rotation wait! The upside is it can be much faster.
 
 The downside is:
 
--   ALL of the array drives must be spinning, because they ALL are
+- ALL of the array drives must be spinning, because they ALL are
     involved in EVERY write.
--   Increased power draw due to the need to keep all drives spinning
--   All drives must be reading without error.
+- Increased power draw due to the need to keep all drives spinning
+- All drives must be reading without error.
 
 **Ramifications**
 
 So what are the ramifications of this?
 
--   For some operations, like parity checks and parity builds and drive
+- For some operations, like parity checks and parity builds and drive
     rebuilds, it doesn\'t matter, because all of the drives are spinning
     anyway.
--   For large write operations, like large transfers to the array, it
+- For large write operations, like large transfers to the array, it
     can make a big difference in speed!
--   For a small write, especially at an odd time when the drives are
+- For a small write, especially at an odd time when the drives are
     normally sleeping, all of the drives have to be spun up before the
     small write can proceed.
--   And what about those little writes that go on in the background,
+- And what about those little writes that go on in the background,
     like file system housekeeping operations? EVERY write at any time
     forces EVERY array drive to spin up. So you are likely to be
     surprised at odd times when checking on your array, and expecting
     all of your drives to be spun down, and finding every one of them
     spun up, for no discernible reason.
--   So one of the questions to be faced is, how do you want your various
+- So one of the questions to be faced is, how do you want your various
     write operations to be handled. Take a small scheduled backup of
     your phone at 4 in the morning. The backup tool determines there\'s
     a new picture to back up, so tries to write it to your Unraid
@@ -2653,7 +2651,7 @@ So what are the ramifications of this?
     longer spinning them up than any time saved by using Turbo write to
     save that picture (but a couple of seconds faster in the save).
     Plus, all of the drives are now spinning, uselessly.
--   Another possible problem if you were in Turbo mode, and you are
+- Another possible problem if you were in Turbo mode, and you are
     watching a movie streaming to your player, then a write kicks into
     the server and starts spinning up ALL of the drives, causing that
     well-known pause and stuttering in your movie. Who wants to deal
@@ -2696,16 +2694,16 @@ watching them
 
 Points to note are:
 
--   The **Yes** setting for *Use Cache* causes new files for the share
+- The **Yes** setting for *Use Cache* causes new files for the share
     to initially be written to the cache and later moved to the parity
     protected array when *mover* runs.
--   Writes to the cache run at the full speed the cache is capable of.
--   It is not uncommon to use SSDs in the cache to get maximum
+- Writes to the cache run at the full speed the cache is capable of.
+- It is not uncommon to use SSDs in the cache to get maximum
     performance.
--   Moves from cache to array are still comparatively slow but since
+- Moves from cache to array are still comparatively slow but since
     mover is normally scheduled to fun when the system is otherwise idle
     this is not visible to the end-user.
--   There is a **Minimum Free Space** setting under *Settings-\>Global
+- There is a **Minimum Free Space** setting under *Settings-\>Global
     Share settings* and if the free space on the cache falls below this
     value Unraid will stop trying to write new files to the cache. Since
     when Unraid first creates a file it does not know the final size it
@@ -2714,7 +2712,7 @@ Points to note are:
     you want to stop Unraid selecting the cache for a file that will not
     fit in the space available. this will stop the write failing with an
     \'out of space\' error when the free space gets exhausted.
--   If there is not sufficient free space on the cache then writes will
+- If there is not sufficient free space on the cache then writes will
     start by-passing the cache and revert to the speeds that would be
     obtained when not using the cache.
 

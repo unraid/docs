@@ -37,7 +37,7 @@ So, for example, if you wanted to move a bunch of movies from Disk1 to
 Disk2, you could use this command from a Telnet (PuTTY or otherwise)
 prompt \...
 
-`  `**`nohup mv /mnt/disk1/Movies/* /mnt/disk2/Movies &`**
+``**`nohup mv /mnt/disk1/Movies/* /mnt/disk2/Movies &`**
 
 Do a quick check to see that files are starting to appear in the
 destination folder to make sure you didn\'t have a typo in the command,
@@ -67,11 +67,11 @@ to another from within unRAID (v4.x and later).
 1\) Copy the files from disk# (where \'#\' is the number of the disk in
 unRAID)
 
-` cp -r /mnt/disk# /mnt/disk#`
+`cp -r /mnt/disk# /mnt/disk#`
 
 Example:
 
-` cp -r /mnt/disk4 /mnt/disk8`
+`cp -r /mnt/disk4 /mnt/disk8`
 
 Copies all contents of disk4 to disk8. All files/directories on disk4
 remain.
@@ -94,17 +94,17 @@ preserve the original file date/time stamps and log the output to a text
 file on the flash drive in a format readable by an editor like windows
 notepad use this syntax:
 
-` cp -r -v -p /mnt/disk4/* /mnt/disk8 | todos > /boot/disk1copy.txt`
+`cp -r -v -p /mnt/disk4/* /mnt/disk8 | todos > /boot/disk1copy.txt`
 
 #### Moving files {#moving_files}
 
 2\) Move the contents of disk1 to disk2 using the mv command
 
-` mv /mnt/disk#/ /mnt/disk#`
+`mv /mnt/disk#/ /mnt/disk#`
 
 Example:
 
-` mv /mnt/disk1 /mnt/disk4`
+`mv /mnt/disk1 /mnt/disk4`
 
 Moves all contents from disk1 to disk4. All files/directories on disk1
 are now gone.

@@ -20,21 +20,19 @@ There are also multiple other languages that are in the process of being transla
 
 **A note about all translations:**
 
--   Translations are believed to be accurate to the best of Limetech's
+- Translations are believed to be accurate to the best of Limetech's
     knowledge but the [English
     text](https://github.com/unraid/lang-en_US) is always the go to
     reference point.
 
-
--   Translations are maintained in public
+- Translations are maintained in public
     [Github](https://github.com/unraid) repositories. If you would like
     to inform us of errors and/or participate in translation
     corrections, please write a post in the [respective language forum
     sections](https://forums.unraid.net/forum/75-multi-language-section/)
     and tag @SpencerJ. You can also submit Pull Requests in the respective public language repos.
 
-
--   If you would like to see a new language added, please write a post
+- If you would like to see a new language added, please write a post
     in [this forum thread](https://forums.unraid.net/forum/77-general/).
 
 ### How to Load a Language pack {#how_to_load_a_language_pack}
@@ -55,6 +53,7 @@ gitHub. Unraid users who will need to periodically download the latest
 language pack manually for new and improved translations.
 
 ### How to Activate a Language ###  
+
 Via
 Community Applications -\> Language, click the download button on the
 language pack you would like to download and use.
@@ -63,7 +62,7 @@ language pack you would like to download and use.
 ### How to Switch Back to English? {#how_to_switch_back_to_english}
 
 To switch back to English, you can always click the Switch back toggle button located in the top right of the webGui.
-![](/docs/legacy/Switch_toggle.png "Switch_toggle.png") 
+![](/docs/legacy/Switch_toggle.png "Switch_toggle.png")
 
 ### Developer Requirements for Multi-Language Support {#developer_requirements_for_multi_language_support}
 

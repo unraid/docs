@@ -11,5 +11,3 @@ Access, Server Deep Linking, Server management from the Connect UI,
 Online flash backups, Real-time monitoring, and much more!
 
 ## [**Launch Unraid Connect**](https://connect.myunraid.net)
-
-

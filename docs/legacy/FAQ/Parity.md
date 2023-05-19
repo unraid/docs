@@ -5,8 +5,8 @@ parity data to reconstruct the missing data.
 Why have parity? Because there are only two types of hard disks in the
 world:
 
--   Disks that have already failed.
--   Disks that have not yet failed\... but just need a bit more time
+- Disks that have already failed.
+- Disks that have not yet failed\... but just need a bit more time
     until they do.
 
 ## How parity works {#how_parity_works}
@@ -31,15 +31,15 @@ the summation process (using a mathematical operation called 'exclusive
 OR' or 'XOR') across that set of bits must return a value that is an
 EVEN number.
 
--   [PCGuide discussion of
+- [PCGuide discussion of
     XOR](http://www.pcguide.com/ref/hdd/perf/raid/concepts/genParity-c.html)
--   [Wikipedia on XOR](http://en.wikipedia.org/wiki/Exclusive_or)
+- [Wikipedia on XOR](http://en.wikipedia.org/wiki/Exclusive_or)
 
 Digital data is stored as a 1 or a 0. So, for example:
 
--   If you have 4 drives with bit values 1,1,1,1 the parity will be 0
+- If you have 4 drives with bit values 1,1,1,1 the parity will be 0
     (1+1+1+1+0=even).
--   If the bit values are 1,0,0,0 the parity will be 1 (1+0+0+0+1=even).
+- If the bit values are 1,0,0,0 the parity will be 1 (1+0+0+0+1=even).
 
 When a drive is added to a parity-protected unRAID array, it is first
 cleared by writing zeroes to all bits of all sectors of that drive. A
@@ -52,8 +52,8 @@ parity. Several disks can be added simultaneously in this way.
 There are only two situations that the parity data is used by unRAID to
 reconstruct data:
 
--   when a disk is being reconstructed; and
--   when a bad sector is detected.
+- when a disk is being reconstructed; and
+- when a bad sector is detected.
 
 At these times, all of the disks (including parity) are read to
 reconstruct the data to be written to the target disk. As the sum of the
@@ -63,8 +63,8 @@ correct.
 
 In the two examples above, say the 2nd drive fails.
 
--   1+x+1+1+0=even, x must equal 1
--   1+x+0+0+1=even, x must equal 0
+- 1+x+1+1+0=even, x must equal 1
+- 1+x+0+0+1=even, x must equal 0
 
 As parity is so important for data reconstruction, ensure that parity is
 correct by running parity checks periodically.
@@ -85,8 +85,8 @@ In a **parity check**, the system reads all the data disks and the
 parity disk, comparing computed parity with stored parity. This
 operation has a flag:
 
-` CORRECT - if a parity mismatch occurs, write parity disk with computed parity and report in syslog`\
-` NOCORRECT - just report in syslog`
+`CORRECT - if a parity mismatch occurs, write parity disk with computed parity and report in syslog`\
+`NOCORRECT - just report in syslog`
 
 Only the first 100 parity check errors are reported. (The messages in
 the system log are generated for each sector address where a parity
@@ -122,11 +122,11 @@ user can always deem parity invalid by un-assigning it.
 Once parity has been calculated there should only be 2 ways that there
 should be parity check errors:
 
--   a non-clean shutdown, ie, sudden power loss or system reset. What
+- a non-clean shutdown, ie, sudden power loss or system reset. What
     happens here is that there could be pending writes to the parity
     and/or data disks that don\'t get completed, leaving the
     corresponding stripe with inconsistent parity.
--   an undetected hardware fault (such as silent memory corruption).
+- an undetected hardware fault (such as silent memory corruption).
 
 ## Parity disk {#parity_disk}
 

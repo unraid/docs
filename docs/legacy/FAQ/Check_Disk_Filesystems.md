@@ -251,7 +251,7 @@ file system of a data drive, while maintaining its parity info.
     If the repairs were successful, it\'s recommended to run the
     read-only check one more time, to verify all is well now.
 
--   **For ReiserFS drives**
+- **For ReiserFS drives**
 
     :   For more info on the **reiserfsck** tool and its options, see
         [reiserfsck](Check_Disk_Filesystems#reiserfsck "wikilink").
@@ -270,14 +270,14 @@ file system of a data drive, while maintaining its parity info.
         [Drives formatted with ReiserFS using unRAID v5 or
         later](Check_Disk_Filesystems#Drives_formatted_with_ReiserFS_using_unRAID_v5_or_later "wikilink")
         section below.
--   **For XFS drives**
+- **For XFS drives**
 
     :   For more info on the **xfs_repair** tool and its options, see
         [xfs_repair](Check_Disk_Filesystems#xfs_repair "wikilink"). See
         also the [Drives formatted with
         XFS](Check_Disk_Filesystems#Drives_formatted_with_XFS "wikilink")
         section below.
--   **For BTRFS drives and pools**
+- **For BTRFS drives and pools**
 
     :   Use the **scrub** command. Use your best judgement, we have
         little experience yet. Do read the [Drives formatted with
@@ -489,17 +489,17 @@ file system of a data drive, while maintaining its parity info.
     the best we can recommend is to save the data, reformat, and restore
     the data (NOT a desirable course of action)!
 
-1.  Do your best to copy off everything you can, to a safe place. If
+1. Do your best to copy off everything you can, to a safe place. If
     something important is absolutely needed and still inaccessible, try
     [File Scavenger](http://www.quetek.com/prod02.htm) or a live CD of
     [TestDisk](http://www.cgsecurity.org/wiki/TestDisk).
-2.  Change the file system format for the drive to ReiserFS (just to
+2. Change the file system format for the drive to ReiserFS (just to
     reset the formatting, it\'s temporary and fairly quick)
-3.  Start the array and format the drive
-4.  Stop the array
-5.  Change the file system format for the drive to XFS again
-6.  Start the array and format the drive again
-7.  Copy back everything you saved
+3. Start the array and format the drive
+4. Stop the array
+5. Change the file system format for the drive to XFS again
+6. Start the array and format the drive again
+7. Copy back everything you saved
 
 :   It\'s certainly not a welcome method, but it does produce a fresh
     and clean XFS format. (*The write-up above has not been tested by
@@ -582,17 +582,17 @@ file system of a data drive, while maintaining its parity info.
     another drive and making it a drive pool, or switching to XFS,
     because**btrfs scrub**cannot fix single drives.**
 
-1.  Do your best to copy off everything you can, to a safe place. If
+1. Do your best to copy off everything you can, to a safe place. If
     something important is absolutely needed and still inaccessible, try
     [btrfs restore](http://btrfs.wiki.kernel.org/index.php/Restore)
-2.  Change the file system format for the drive to ReiserFS (just to
+2. Change the file system format for the drive to ReiserFS (just to
     reset the formatting, it\'s temporary and fairly quick)
-3.  Start the array and format the drive
-4.  Stop the array
-5.  Change the file system format for the drive to BTRFS again (if it\'s
+3. Start the array and format the drive
+4. Stop the array
+5. Change the file system format for the drive to BTRFS again (if it\'s
     a single drive, consider changing to XFS, we recommend it)
-6.  Start the array and format the drive again
-7.  Copy back everything you saved
+6. Start the array and format the drive again
+7. Copy back everything you saved
 
 :   It\'s certainly not a welcome method, but it does produce a fresh
     and clean format. (*The write-up above has not been tested by this

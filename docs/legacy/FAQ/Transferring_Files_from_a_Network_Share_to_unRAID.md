@@ -2,11 +2,11 @@ Open a [terminal session with SSH or Telnet](Terminal_Access "wikilink")
 to unRAID, and login as root. Create a temporary directory on the
 server:
 
-` mkdir /work`
+`mkdir /work`
 
 Mount a remote directory to the new directory:
 
-` mount -t cifs //workstation/share /work`
+`mount -t cifs //workstation/share /work`
 
 (Substitute name of your workstation for \'workstation\', and it will
 probably prompt you for a workstation user name/password).
@@ -14,19 +14,19 @@ probably prompt you for a workstation user name/password).
 Copy all the files and folders from the workstation\'s share to a disk
 share on the server:
 
-` cp -r /work/* /mnt/disk1`
+`cp -r /work/* /mnt/disk1`
 
 (Of course you can copy from the workstation share to any disk/share.
 Eg. /mnt/user/`<sharename>`{=html})
 
 Edit: Another option is to use rsync to get speed/progress information:
 
-` rsync -av --stats --progress /work/ /mnt/disk1/`
+`rsync -av --stats --progress /work/ /mnt/disk1/`
 
 When done:
 
-` umount /work`\
-` rmdir /work`
+`umount /work`\
+`rmdir /work`
 
 Caution: If you have directory or file names with non-English
 characters, commonly found in titles and names for media files from
@@ -54,7 +54,7 @@ will give you a garbled character when doing the copy/rsync. When this
 garbling happens, your directory will also be unlistable from a Mac
 (tested on 10.9) over AFP or SMB.
 
-`   mount -t cifs //workstation/share /work -o iocharset=utf8`
+`mount -t cifs //workstation/share /work -o iocharset=utf8`
 
 #### Permission issues after copying {#permission_issues_after_copying}
 
