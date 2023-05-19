@@ -15,13 +15,13 @@ by clicking on the
 `<span style="color:white, background-color:black;">`{=html}?`</span>`{=html}
 (Help) icon at the top right of each page.
 
-## ![<File:date-time.png>](/docs/legacy/date-time.png "File:date-time.png") Date & Time {#filedate_time.png_date_time}
+## ![](/docs/legacy/date-time.png) Date & Time
 
 From this page, you can set your time zone and toggle the use of up to 3
 NTP servers. It is recommended that you adjust Unraid to your time zone
 for accurate timekeeping.
 
-## ![<File:disk-settings.png>](/docs/legacy/disk-settings.png "File:disk-settings.png") Disk Settings {#filedisk_settings.png_disk_settings}
+## ![](/docs/legacy/disk-settings.png ) Disk Settings
 
 You can configure additional settings for your disk devices from this
 page. Enable your array to auto-start on boot, adjust disk spin-down
