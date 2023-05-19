@@ -1,3 +1,7 @@
+---
+sidebar_position: 3
+---
+
 # Storage Management
 
 ![](/docs/legacy/Configuringarray1.png "Configuringarray1.png") To assign devices to

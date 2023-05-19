@@ -1,3 +1,7 @@
+---
+sidebar_position: 8
+---
+
 # Multi-Language Support
 
 ### Introduction
@@ -5,14 +9,14 @@
 [Unraid 6.9](https://unraid.net/blog/unraid-6-9-multi-language-support)
 introduced the mechanism to [support multiple
 languages](https://unraid.net/blog/unraid-6-9-multi-language-support) in
-the Unraid GUI.
+the Unraid webGUI.
 
 You can now download, install, and use the Unraid OS in the following
 languages:
 
 **Arabic, Chinese, Dutch, French, German, Portuguese, Polish and
 Spanish.**
-There are also multiple other languages that are in the process of being translated. To check if your language is available, [see here.] (https://github.com/unraid?q=lang&type=all&language=&sort=)
+There are also multiple other languages that are in the process of being translated. To check if your language is available, [see here.](https://github.com/unraid?q=lang&type=all&language=&sort=)
 
 **A note about all translations:**
 
@@ -40,8 +44,7 @@ Applications
 plugin](https://forums.unraid.net/topic/38582-plug-in-community-applications/).
 As long as you are on Unraid 6.9.0 or later and *CA version 2020.05.12
 or later,* look for a new category along the left hand side titled
-**Language**. This will allow you to load the current language pack (if
-available).
+**Language**. This will allow you to load the current language pack selected.
 
 You can also search for languages via the Search bar in CA.
 ![](/docs/legacy/Screen_Shot_2021-06-24_at_12.38.44_PM.png "Screen_Shot_2021-06-24_at_12.38.44_PM.png")
@@ -59,17 +62,14 @@ language pack you would like to download and use.
 
 ### How to Switch Back to English? {#how_to_switch_back_to_english}
 
-![](/docs/legacy/Switch_toggle.png "Switch_toggle.png") To switch back to English,
-you can always click the Switch back toggle button located in the top
-right of the webGui.
+To switch back to English, you can always click the Switch back toggle button located in the top right of the webGui.
+![](/docs/legacy/Switch_toggle.png "Switch_toggle.png") 
 
 ### Developer Requirements for Multi-Language Support {#developer_requirements_for_multi_language_support}
 
 It is necessary for plugin developers to take appropriate action within
 their plugins to enable them to utilize the multi-language support. The
-details on what is required are covered
-
-[here](https://wiki.unraid.net/images/5/5e/Multi-language_Support_Design_Guide.pdf).
+details on what is required are covered in the design guide [here](https://wiki.unraid.net/images/5/5e/Multi-language_Support_Design_Guide.pdf).
 
 Once plugin developers have made the necessary changes within their
 plugin to add the multi-language support mechanisms provided by Unraid
@@ -78,7 +78,7 @@ for their plugin and rely on Unraid community members to provide
 appropriate translation text for languages which they know how to speak.
 
 **Note**: There is no requirement for any given plugin to support
-Multi-language.  However it is a good idea for every plugin author to at
+Multi-language.  However it is a good idea for every plugin author to at
 least consider supporting Multi-Language. Even if such support is not
 added a plugin will still work as-is on 6.9+ with no changes required
 albeit only with text in English (or whatever language the developer has
@@ -92,4 +92,4 @@ get help or help others in your mother tongue.
 
 Please see the [Multi-Language
 Section](https://forums.unraid.net/forum/75-multi-language-section/) to
-take part in these growing communities!\
+take part in these growing communities!
