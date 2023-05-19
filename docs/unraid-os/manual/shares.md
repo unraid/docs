@@ -1,3 +1,7 @@
+---
+sidebar_position: 4
+---
+
 # Shares
 
 Once you have assigned some devices to Unraid and started the array, you

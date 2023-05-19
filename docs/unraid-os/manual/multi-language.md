@@ -1,3 +1,7 @@
+---
+sidebar_position: 8
+---
+
 # Multi-Language Support
 
 ### Introduction
