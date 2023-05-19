@@ -1,0 +1,31 @@
+# Simple workflow for deploying static content to GitHub Pages
+name: Build PR
+
+on:
+  # Runs on pushes targeting the default branch
+  pull_request:
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  # Single deploy job since we're just deploying
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Install NPM
+        uses: actions/setup-node@v2.5.2
+        with: 
+          version: 19
+      - name: Cache dependencies
+        uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: npm-${{ hashFiles('package-lock.json') }}
+          restore-keys: npm-
+      - name: Install dependencies
+        run: npm ci
+      - name: NPM Build
+        run: npm run build
