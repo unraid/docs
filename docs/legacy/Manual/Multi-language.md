@@ -12,7 +12,7 @@ languages:
 
 **Arabic, Chinese, Dutch, French, German, Portuguese, Polish and
 Spanish.**
-There are also multiple other languages that are in the process of being translated. To check if your language is available, [see here.] (https://github.com/unraid?q=lang&type=all&language=&sort=)
+There are also multiple other languages that are in the process of being translated. To check if your language is available, [see here.](https://github.com/unraid?q=lang&type=all&language=&sort=)
 
 **A note about all translations:**
 
@@ -40,8 +40,7 @@ Applications
 plugin](https://forums.unraid.net/topic/38582-plug-in-community-applications/).
 As long as you are on Unraid 6.9.0 or later and *CA version 2020.05.12
 or later,* look for a new category along the left hand side titled
-**Language**. This will allow you to load the current language pack (if
-available).
+**Language**. This will allow you to load the current language pack selected.
 
 You can also search for languages via the Search bar in CA.
 ![](/docs/legacy/Screen_Shot_2021-06-24_at_12.38.44_PM.png "Screen_Shot_2021-06-24_at_12.38.44_PM.png")
@@ -59,8 +58,7 @@ language pack you would like to download and use.
 
 ### How to Switch Back to English? {#how_to_switch_back_to_english}
 
-To switch back to English, you can always click the Switch back toggle button located in the top
-right of the webGui.
+To switch back to English, you can always click the Switch back toggle button located in the top right of the webGui.
 ![](/docs/legacy/Switch_toggle.png "Switch_toggle.png") 
 
 ### Developer Requirements for Multi-Language Support {#developer_requirements_for_multi_language_support}
