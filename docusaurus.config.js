@@ -111,7 +111,7 @@ const config = {
         maxHeadingLevel: 4,
       },
       footer: {
-        style: "dark",
+        style: "light",
         links: [
           {
             title: "Documentation",
@@ -120,7 +120,7 @@ const config = {
                 label: "Home",
                 to: "/",
               },
-              { label: "Contribute on Github", to: "https://github.com/unraid/docs" },
+              { label: "Contribute on Github", href: "https://github.com/unraid/docs" },
             ],
           },
           {
@@ -141,11 +141,11 @@ const config = {
             items: [
               {
                 label: "Unraid Home",
-                to: "https://unraid.net",
+                href: "https://unraid.net",
               },
               {
                 label: "Newsletter",
-                to: "https://newsletter.unraid.net",
+                href: "https://newsletter.unraid.net",
               },
               {
                 label: "Blog",
@@ -154,7 +154,14 @@ const config = {
             ],
           },
         ],
-        copyright: `Copyright © ${new Date().getFullYear()} Unraid Inc.`,
+        logo: {
+          alt: "Unraid Logo",
+          src: "img/un-mark-gradient.svg",
+          href: "https://unraid.net",
+          target: "_blank",
+          width: 100,
+        },
+        copyright: `<small>Copyright &copy; 2005-${new Date().getFullYear()} Lime Technology, Inc.<br>Unraid&reg; is a registered trademark of Lime Technology, Inc.</small>`,
       },
       prism: {
         theme: lightCodeTheme,
