@@ -162,6 +162,8 @@ const config = {
       require.resolve("@cmfcmf/docusaurus-search-local"),
       {
         indexDocs: true,
+        indexDocSidebarParentCategories: 2,
+        language: ['en', 'zh']
       },
     ],
     [
