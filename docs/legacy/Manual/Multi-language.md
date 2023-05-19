@@ -51,10 +51,11 @@ language packs as users enhance or add to the translations held on
 gitHub. Unraid users who will need to periodically download the latest
 language pack manually for new and improved translations.
 
-### How to Activate a Language ### ![](/docs/legacy/Download.png "Download.png") 
+### How to Activate a Language ###  
 Via
 Community Applications -\> Language, click the download button on the
 language pack you would like to download and use.
+![](/docs/legacy/Download.png "Download.png")
 
 ### How to Switch Back to English? {#how_to_switch_back_to_english}
 
