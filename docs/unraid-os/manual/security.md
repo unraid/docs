@@ -679,7 +679,7 @@ connection types:
 The following diagram attempts to show these different connection types
 in a graphical format
 
-[<file:Wireguard-help.png>](file:Wireguard-help.png "wikilink")
+[](file:Wireguard-help.png "wikilink")
 
 #### Incoming VPN Connections {#incoming_vpn_connections}
 
@@ -742,14 +742,14 @@ other systems on your network.
     type of connections\" that involve the local LAN will work properly.
     As a general rule, bridging should be enabled in Unraid.
 
-[<file:enable-bridging.png>](file:enable-bridging.png "wikilink")
+[](file:enable-bridging.png "wikilink")
 
 -   If UPnP is enabled on your router and you want to use it in Unraid,
     go to Settings -\> Management Access and confirm \"Use UPnP\" is set
     to Yes
 -   On Unraid go to Settings -\> VPN Manager
 
-[<file:wg0.png>](file:wg0.png "wikilink")
+[](file:wg0.png "wikilink")
 
 -   Give the VPN Tunnel a name, such as \"MyHome VPN\"
 -   Press \"Generate Keypair\". This will generate a set of public and
@@ -765,13 +765,13 @@ other systems on your network.
 -   If Unraid detects that your router supports UPnP, it will
     automatically setup port forwarding for you:
 
-[<file:upnp-yes.png>](file:upnp-yes.png "wikilink")
+[](file:upnp-yes.png "wikilink")
 
 -   If you see a note that says \"configure your router for port
     forwarding\...\" you will need to login to your router and setup the
     port forward as directed by the note:
 
-[<file:upnp-no.png>](file:upnp-no.png "wikilink")
+[](file:upnp-no.png "wikilink")
 
 -   Some tips for setting up the port forward in your router:
     -   Both the external (source) and internal (target/local) ports
@@ -787,7 +787,7 @@ other systems on your network.
     removed from view. If you ever need to access them, click the
     \"key\" icon on the right-hand side.
 
-[<file:key.png>](file:key.png "wikilink")
+[](file:key.png "wikilink")
 
 -   Similarly, you can access other advanced settings by pressing the
     \"down chevron\" on the right-hand side. They are beyond the scope
@@ -796,7 +796,7 @@ other systems on your network.
     Active to start WireGuard. You can optionally set the tunnel to
     Autostart when Unraid boots.
 
-[<file:activate.png>](file:activate.png "wikilink")
+[](file:activate.png "wikilink")
 
 :   *There have been cases where this step has been omitted and users
     end up wondering why the WireGuard VPN link is not working!*
@@ -805,7 +805,7 @@ other systems on your network.
 
 -   Click \"Add Peer\"
 
-[<file:peer-add.png>](file:peer-add.png "wikilink")
+[](file:peer-add.png "wikilink")
 
 -   Give it a name, such as \"MyAndroid\"
 -   For the initial connection type, choose \"Remote access to LAN\".
@@ -842,9 +842,9 @@ Unraid server
     is not clickable, you need to apply or reset your unsaved changes
     first.
 
-[<file:peer-eye.png>](file:peer-eye.png "wikilink")
+[](file:peer-eye.png "wikilink")
 
-[<file:peer-view.png>](file:peer-view.png "wikilink")
+[](file:peer-view.png "wikilink")
 
 -   If you are setting up a mobile device, choose the \"Create from QR
     code\" option in the mobile app and take a picture of the QR code.

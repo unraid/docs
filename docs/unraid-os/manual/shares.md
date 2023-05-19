@@ -353,7 +353,7 @@ separate shares for the movies and the TV shows. This way, the movies
 can be set to use a split level of 2 and the TV shows can use a split
 level of 3.
 
-![<File:Split_level_2.JPG>](/docs/legacy/Split_level_2.JPG "File:Split_level_2.JPG")
+![](/docs/legacy/Split_level_2.JPG "File:Split_level_2.JPG")
 
 For Movies use a split level = 2. This allows the \"SD Movies\", \"HD
 Movies\" and \"Kids Movies\" folders to be placed on every disk and it
@@ -372,7 +372,7 @@ The second way to fix the issue is to add another folder level to the
 movies, starting first with a Movies folder in the Media share and then
 placing the different movie types below this.
 
-![<File:Split_level_3.JPG>](/docs/legacy/Split_level_3.JPG "File:Split_level_3.JPG")
+![](/docs/legacy/Split_level_3.JPG "File:Split_level_3.JPG")
 
 This user share structure must use split level = 3. SD Movies, HD
 Movies, Kids Movies and each TV series can exist on multiple disks. This
@@ -428,7 +428,7 @@ level is set to 1. The Share name is New_Movies. Each movie stored in
 this share has its own folder. Inside the movie folder is the movie file
 as well as some metadata files used by MediaBrowser.
 
-![<File:Movie> Share.jpg](/docs/legacy/Movie_Share.jpg "File:Movie Share.jpg")
+![](/docs/legacy/Movie_Share.jpg "File:Movie Share.jpg")
 
 The above Windows Explorer screen shot shows the file structure of the
 New_Movies share on the left and the contents of the `<u>`{=html}A
@@ -514,7 +514,7 @@ types of media will be stored in this share. The desired structure is;
 
 The desired structure is illustrated below.
 
-![<File:Level> 0.JPG](/docs/legacy/Level_0.JPG "File:Level 0.JPG")
+![](/docs/legacy/Level_0.JPG "File:Level 0.JPG")
 
 On the left side is how the user share will appear and on the right side
 is the folder structure on each disk. The user will go to each disk and

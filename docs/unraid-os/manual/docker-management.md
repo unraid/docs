@@ -294,7 +294,7 @@ visible on the Docker page of the unRAID web interface or on the icon
 for the docker on the dashboard page. Doing so will make a context menu
 appear with multiple options:
 
-![<File:Dockerguide-controlling.png>](/docs/legacy/Dockerguide-controlling.png "File:Dockerguide-controlling.png")
+![](/docs/legacy/Dockerguide-controlling.png "File:Dockerguide-controlling.png")
 
 -   **WebUI**
     -   Most apps added through Docker will have a web interface that
