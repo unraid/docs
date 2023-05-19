@@ -1,7 +1,6 @@
-# **Remote Access** <small>(optional)</small>
+# Remote Access
 
-<img src="/docs/legacy/Enabling_remote_access.png" title="Enabling_remote_access.png"
-width="400" alt="Enabling_remote_access.png" />
+![](./assets/Enabling_remote_access.png)
 
 The Remote Access feature
 allows you to access your Unraid webgui from the Internet. If you need
@@ -40,7 +39,7 @@ needed. This helps to prevent automated attacks.
 **Static Remote Access** enables your server to listen to WAN traffic at
 all times, allowing your server to be accessed from the internet.
 
-![](/docs/legacy/Remote_access_settings.png "Remote_access_settings.png")
+![](./assets/Remote_access_settings.png "Remote_access_settings.png")
 
 ## **Dynamic Remote Access**
 
@@ -66,7 +65,7 @@ of the Dynamic settings in the Remote Access dropdown:
     from your current
     location.
     
-    ![](/docs/legacy/Remote-access-enable-card.png "Remote-access-enable-card.png")
+    ![](./assets/Remote-access-enable-card.png "Remote-access-enable-card.png")
 3.  Clicking the button will trigger your server to enable wan access,
     and if using UPNP, create a new UPNP port forward lease on your
     router. This can take up to a minute to complete
@@ -81,7 +80,7 @@ of the Dynamic settings in the Remote Access dropdown:
       lease from your router.
       
 
-![Active Remote Access Card](/docs/legacy/Remote-access-enabled-static.png)
+![Active Remote Access Card](./assets/Remote-access-enabled-static.png)
 
 ### Configuring **UPNP** (Applies to Dynamic - UPNP / Always On - UPNP)
 
