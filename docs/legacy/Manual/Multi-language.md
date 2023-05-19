@@ -12,10 +12,11 @@ languages:
 
 **Arabic, Chinese, Dutch, French, German, Portuguese, Polish and
 Spanish.**
+There are also multiple other languages that are in the process of being translated. To check if your language is available, [see here.] (https://github.com/unraid?q=lang&type=all&language=&sort=)
 
 **A note about all translations:**
 
--   Translations are believed to be accurate to the best of Limetech\'s
+-   Translations are believed to be accurate to the best of Limetech's
     knowledge but the [English
     text](https://github.com/unraid/lang-en_US) is always the go to
     reference point.
@@ -26,7 +27,7 @@ Spanish.**
     to inform us of errors and/or participate in translation
     corrections, please write a post in the [respective language forum
     sections](https://forums.unraid.net/forum/75-multi-language-section/)
-    and tag \@SpencerJ.
+    and tag @SpencerJ. You can also submit Pull Requests in the respective public language repos.
 
 
 -   If you would like to see a new language added, please write a post
@@ -50,8 +51,8 @@ language packs as users enhance or add to the translations held on
 gitHub. Unraid users who will need to periodically download the latest
 language pack manually for new and improved translations.
 
-\
-===How to Activate a Language=== ![](/docs/legacy/Download.png "Download.png") Via
+### How to Activate a Language ### ![](/docs/legacy/Download.png "Download.png") 
+Via
 Community Applications -\> Language, click the download button on the
 language pack you would like to download and use.
 
