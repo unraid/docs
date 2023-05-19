@@ -1,4 +1,8 @@
-# Applications
+---
+sidebar_position: 7
+---
+
+# Community Applications
 
 This section discusses running applications on an Unraid server or
 extending the base capabilities. One of the great strengths of Unraid is

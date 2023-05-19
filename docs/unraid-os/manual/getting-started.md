@@ -1,3 +1,7 @@
+---
+sidebar_position: 2
+---
+
 # Getting Started
 
 In this guide, we will be covering how to prepare your flash device,

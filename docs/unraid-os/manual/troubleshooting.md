@@ -1,3 +1,7 @@
+---
+sidebar_position: 9
+---
+
 # Troubleshooting
 
 *THIS SECTION IS STILL UNDER CONSTRUCTION*

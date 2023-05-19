@@ -1,4 +1,9 @@
-# What is Unraid? {#what_is_unraid}
+---
+sidebar_position: 1
+sidebar_label: Overview
+---
+
+# What is Unraid?
 
 Unraid® is an embedded operating system that is designed to provide you
 with the ultimate control over your hardware. In addition to performing
