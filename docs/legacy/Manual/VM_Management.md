@@ -246,7 +246,7 @@ in order for you to create a VM.
     -   The **Primary vDisk** is used to store your VM\'s operating
         system
     -   **Additional vDisks** can be added by clicking
-        ![](/docs/legacy/add-device.png "add-device.png"){width="15"}
+        ![](/docs/legacy/Add-device.png){width="15"}
 -   Specify a **Graphics Card** to use to interact with the VM
     -   If you are *NOT* assigning a physical graphics card, specify
         **VNC**
@@ -259,13 +259,13 @@ in order for you to create a VM.
     -   If you assign a physical graphics device, be sure to assign a
         USB keyboard and mouse as well
     -   Additional graphics devices can be assigned by clicking
-        ![](/docs/legacy/add-device.png "add-device.png"){width="15"}
+        ![](/docs/legacy/Add-device.png){width="15"}
 -   Assign a **Sound Card** if you\'re assigning a graphics card to get
     audio support in your VM
     -   Most GPUs have their own built-in sound card as a function of
         the graphics card for HDMI audio
     -   Additional sound cards can be assigned by clicking
-        ![](/docs/legacy/add-device.png "add-device.png"){width="15"}
+        ![](/docs/legacy/Add-device.png){width="15"}
 -   **USB Devices** can be assigned to the VM that are plugged into the
     host
     -   USB hot-plugging is not currently supported, so devices must be
@@ -329,7 +329,7 @@ Settings* section bar from the *Add VM* page).
     -   You can click the blue refresh symbol to auto-generate a new MAC
         address for the virtual network interface.
     -   Additional virtual network interfaces can be assigned by
-        clicking ![](/docs/legacy/add-device.png "add-device.png"){width="15"}
+        clicking ![](/docs/legacy/Add-device.png){width="15"}
 
 # Expanding a vdisk {#expanding_a_vdisk}
 
