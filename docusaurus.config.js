@@ -37,7 +37,7 @@ const config = {
       /** @type {import('@docusaurus/preset-classic').Options} */
       ({
         docs: {
-          routeBasePath: '/',
+          routeBasePath: "/",
           sidebarPath: require.resolve("./sidebars.js"),
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
@@ -95,6 +95,10 @@ const config = {
             position: "right",
             label: "More",
           },
+          {
+            type: "localeDropdown",
+            position: "right",
+          },
         ],
       },
       footer: {
@@ -104,10 +108,8 @@ const config = {
             title: "Documentation",
             items: [
               {
-
                 label: "Home",
-                to: '/'
-
+                to: "/",
               },
             ],
           },
@@ -149,7 +151,7 @@ const config = {
         darkTheme: darkCodeTheme,
       },
     }),
-    plugins: [
+  plugins: [
     [
       require.resolve("@cmfcmf/docusaurus-search-local"),
       {
@@ -157,7 +159,7 @@ const config = {
       },
     ],
     [
-      '@docusaurus/plugin-ideal-image',
+      "@docusaurus/plugin-ideal-image",
       {
         quality: 70,
         max: 1030, // max resized image's size.
@@ -165,7 +167,7 @@ const config = {
         steps: 2, // the max number of images generated between min and max (inclusive)
         disableInDev: false,
       },
-    ]
+    ],
   ],
 };
 
