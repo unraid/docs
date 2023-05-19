@@ -282,7 +282,7 @@ share for each media type. Movies is a share and TV shows is a share. I
 combined the movies and TV shows to show the pitfalls in the split
 levels when doing this as explained after the figure.
 
-![](/docs/legacy/split_level_1.JPG)
+![](/docs/legacy/Split_level_1.JPG)
 
 Here is an explanation of the different split levels, referenced to the
 folder structure above;
