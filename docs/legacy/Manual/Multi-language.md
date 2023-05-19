@@ -65,7 +65,7 @@ To switch back to English, you can always click the Switch back toggle button lo
 
 It is necessary for plugin developers to take appropriate action within
 their plugins to enable them to utilize the multi-language support. The
-details on what is required are covered [here](https://wiki.unraid.net/images/5/5e/Multi-language_Support_Design_Guide.pdf).
+details on what is required are covered in the design guide [here](https://wiki.unraid.net/images/5/5e/Multi-language_Support_Design_Guide.pdf).
 
 Once plugin developers have made the necessary changes within their
 plugin to add the multi-language support mechanisms provided by Unraid
