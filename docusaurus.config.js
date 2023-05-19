@@ -111,6 +111,7 @@ const config = {
                 label: "Home",
                 to: "/",
               },
+              { label: "Contribute on Github", to: "https://github.com/unraid/docs" },
             ],
           },
           {
