@@ -586,9 +586,8 @@ VPN connection to an Unraid server*.
 ### WireGuard
 
 #### Overview {#overview_1}
-
-Unraid 6.8 introduces built-in support for
-![](/docs/legacy/wireguard.png "wireguard.png"){width="100"} VPN connections. The
+![](/docs/legacy/wireguard.png "wireguard.png"){width="100"}
+Unraid 6.8 introduces built-in support for Wireguard VPN connections. The
 intention is to make it as easy as possible for Unraid users to set up
 VPN connections to/from their Unraid servers.
 

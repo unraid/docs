@@ -15,7 +15,7 @@ by clicking on the
 `<span style="color:white, background-color:black;">`{=html}?`</span>`{=html}
 (Help) icon at the top right of each page.
 
-## ![](/docs/legacy/date-time.png) Date & Time
+## ![](/docs/legacy/date-time-new.png) Date & Time
 
 From this page, you can set your time zone and toggle the use of up to 3
 NTP servers. It is recommended that you adjust Unraid to your time zone
