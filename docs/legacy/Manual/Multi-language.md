@@ -59,17 +59,15 @@ language pack you would like to download and use.
 
 ### How to Switch Back to English? {#how_to_switch_back_to_english}
 
-![](/docs/legacy/Switch_toggle.png "Switch_toggle.png") To switch back to English,
-you can always click the Switch back toggle button located in the top
+To switch back to English, you can always click the Switch back toggle button located in the top
 right of the webGui.
+![](/docs/legacy/Switch_toggle.png "Switch_toggle.png") 
 
 ### Developer Requirements for Multi-Language Support {#developer_requirements_for_multi_language_support}
 
 It is necessary for plugin developers to take appropriate action within
 their plugins to enable them to utilize the multi-language support. The
-details on what is required are covered
-
-[here](https://wiki.unraid.net/images/5/5e/Multi-language_Support_Design_Guide.pdf).
+details on what is required are covered [here](https://wiki.unraid.net/images/5/5e/Multi-language_Support_Design_Guide.pdf).
 
 Once plugin developers have made the necessary changes within their
 plugin to add the multi-language support mechanisms provided by Unraid
@@ -92,4 +90,4 @@ get help or help others in your mother tongue.
 
 Please see the [Multi-Language
 Section](https://forums.unraid.net/forum/75-multi-language-section/) to
-take part in these growing communities!\
+take part in these growing communities!
