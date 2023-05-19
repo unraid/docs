@@ -1,9 +1,4 @@
----
-title: Remote Access
----
-
-
-## **Remote Access** <small>(optional)</small>
+# **Remote Access** <small>(optional)</small>
 
 <img src="/docs/legacy/Enabling_remote_access.png" title="Enabling_remote_access.png"
 width="400" alt="Enabling_remote_access.png" />
