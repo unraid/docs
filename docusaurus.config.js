@@ -65,11 +65,19 @@ const config = {
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
       announcementBar: {
-        content:
-          'Welcome to the new Unraid Documentation! 🚧 Currently Under Construction 🚧 <a href="https://wiki.unraid.net" target="_blank">Legacy Wiki</a> ',
+        id: 'underConstruction', // change this ID when you change the content so it'll show for users that previously closed the announcement
+        content: 'Welcome to the new Unraid Documentation! 🚧 Currently Under Construction 🚧 <a href="https://wiki.unraid.net" target="_blank">Legacy Wiki</a> ',
+        isCloseable: true,
+        backgroundColor: '#ff8c2f',
+        textColor: '#fff',
       },
       colorMode: { defaultMode: "dark", respectPrefersColorScheme: true },
-      image: "img/un-mark-gradient.svg",
+      image: "img/meta-unraid.png",
+      metadata: [
+        { name: "theme-color", content: "#242526", media: "(prefers-color-scheme: dark)" }, // matches docusaurus theme rather than unraid specific color
+        { name: "theme-color", content: "#ffffff", media: "(prefers-color-scheme: light)" },
+        { name: "color-scheme", content: "dark light" },
+      ],
       navbar: {
         title: "Unraid Docs",
         logo: {
@@ -157,8 +165,6 @@ const config = {
         logo: {
           alt: "Unraid Logo",
           src: "img/un-mark-gradient.svg",
-          href: "https://unraid.net",
-          target: "_blank",
           width: 100,
         },
         copyright: `<small>Copyright &copy; 2005-${new Date().getFullYear()} Lime Technology, Inc.<br>Unraid&reg; is a registered trademark of Lime Technology, Inc.</small>`,
