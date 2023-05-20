@@ -53,7 +53,7 @@ This will be the starting sector for the cache partition.
     1. Create a new, primary partition, number 1, starting at sector
         24,000,000, size +300G
     2. Create a new, primary partition, number 2, starting at sector 63
-        \[default\] (or 64) size \[accept default\]
+        [default] (or 64) size [accept default]
     3. Create a new extended partition, number 3, using the whole rest
         of the disk.
 5. Change the type of partition 2 to type 7 (NTFS)
@@ -79,7 +79,7 @@ and Linux will boot fine, but you won’t be able to use it as the cache
 drive.
 
 Before shutting down Windows, open c:\boot.ini and see if in the
-\[operating systems\] section it says:
+[operating systems] section it says:
 
 `multi(0)disk(0)rdisk(0)partition(1)\WINDOWS=.......`
 
@@ -89,8 +89,8 @@ partition. (Insert various expletives here).
 
 To fix this brain-dead move by Windows, take these steps:
 
-1. While still in Windows, duplicate the line in the \[operating
-    systems\] section of boot.ini, and change the second copy so it is
+1. While still in Windows, duplicate the line in the [operating
+    systems] section of boot.ini, and change the second copy so it is
     like this
 
 `multi(0)disk(0)rdisk(0)partition(1)\WINDOWS=.......`

@@ -6,19 +6,19 @@ The Tools section of the Unraid GUI is used to access a number of Tools
 to help with managing an Unraid server on a day-to-day basis. The list
 of tools available is often extended by 3rd party supplied plugins.
 
-# Unraid Standard Tools {#unraid_standard_tools}
+# Unraid Standard Tools
 
 This section covers tools that are supplied as standard with an Unraid
 installation. They are grouped into a number of sections for ease of
 selection.
 
-## Unraid OS {#unraid_os}
+## Unraid OS
 
 ### Diagnostics
 
-### Hardware Profile {#hardware_profile}
+### Hardware Profile
 
-### New Config {#new_config}
+### New Config
 
 **IMPORTANT:** *This tool is not part of the standard process for
 recovering from a disk failure. In most cases since the procedure
@@ -76,21 +76,21 @@ obvious feedback that anything has been done.
 - Unraid will now start building new parity based on this current set
     of assignments.
 
-### New Permissions {#new_permissions}
+### New Permissions
 
-### Archived Notifications {#archived_notifications}
+### Archived Notifications
 
 ### Processes
 
-### System Devices {#system_devices}
+### System Devices
 
-### System Log {#system_log}
+### System Log
 
 ## webGUI
 
 ### Language
 
-### Page Map {#page_map}
+### Page Map
 
 ### Vars
 
@@ -102,12 +102,9 @@ obvious feedback that anything has been done.
 
 ### Registration
 
-### Update OS {#update_os}
+### Update OS
 
-\
-Ebr\>
-
-# 3rd Party Tools {#rd_party_tools}
+# 3rd Party Tools
 
 **DISCLAMER**: The tools listed here are not provided or supported by
 Limetech. There is always a risk that installing one /f these tools can
@@ -125,17 +122,17 @@ Applications (the Apps tab). Such tools will each have a support thread
 in the Plugins Support section of the unRaid GUI and users should use
 this thread to raise queries, concerns, or suggestions for improvement.
 
-## Unraid OS {#unraid_os_1}
+## Unraid OS
 
-### Config File Editor {#config_file_editor}
+### Config File Editor
 
 CA Config Editor is a simple file editor for advanced users that will
 allow you to edit within your browser any of the Unraid configuration
 files (or any file on your server - useful for easily editing
-application\'s appdata config files without utilizing the command
+application's appdata config files without utilizing the command
 prompt)
 
-### Docker Safe New Perms {#docker_safe_new_perms}
+### Docker Safe New Perms
 
 This is part of the Fix Common Problems plugin.
 
@@ -143,6 +140,6 @@ It differs from the standard Unraid New Permissions tool in that it will
 never change permissions on the appdata folder/share that is normally
 used to store working files for docker containers.
 
-## About {#about_1}
+## About
 
-### Update Assistant {#update_assistant}
+### Update Assistant

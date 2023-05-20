@@ -14,9 +14,9 @@ original Unraid OS USB flash boot device. It is **highly recommended**
 that you always have an up-to-date backup of your Unraid USB flash
 device.
 
-- This is done via the \'Main\' tab in the Unraid webGui then clicking
-    on \'Flash\'.
-- From here you will see the option \'FLASH BACKUP\', click this and a
+- This is done via the 'Main' tab in the Unraid webGui then clicking
+    on 'Flash'.
+- From here you will see the option 'FLASH BACKUP', click this and a
     full zipped backup of your current flash drive will be downloaded to
     your Mac or PC.
 
@@ -25,7 +25,7 @@ is contained in the **config** folder on the flash drive.
 
 ![](/docs/legacy/Backup_flash_drive.png "Backup_flash_drive.png"){width="800"}
 
-### Why replace your USB Flash boot device? {#why_replace_your_usb_flash_boot_device}
+### Why replace your USB Flash boot device?
 
 **IMPORTANT:** Replacing your Unraid USB Flash Device transfers the
 license to a new USB Flash Device. Once this is done, the previous Flash
@@ -52,8 +52,8 @@ video!](https://www.youtube.com/watch?v=jjkaidlZmgs)
 Prior to replacing the current flash, it may be worthwhile to shut down
 your server, remove the flash, and insert it into a Windows or Mac
 computer. Using Windows scandisk or Disk Utilities in Mac, you should be
-able to try to \"repair\" the existing flash. If this operation works,
-you may want to consider continuing the use of the flash. If you\'ve
+able to try to "repair" the existing flash. If this operation works,
+you may want to consider continuing the use of the flash. If you've
 done this before and are still having issues with your flash, then
 replacement is probably necessary.
 
@@ -62,13 +62,13 @@ license to a new USB Flash Device. Once this is done, the previous Flash
 device is *blacklisted and cannot be used with Unraid going forward.
 This action cannot be undone.*
 
-### What if I can\'t backup my device? {#what_if_i_cant_backup_my_device}
+### What if I can't backup my device?
 
 In the event that your flash device has failed and you do not have a
 backup, you can still reconfigure Unraid onto a new flash device and
 transfer your registration key to that device. Simply install Unraid to
-a new flash drive using the normal process and then either \'Install\'
-your old key file, or equivalently, copy it to the \'config\' directory
+a new flash drive using the normal process and then either 'Install'
+your old key file, or equivalently, copy it to the 'config' directory
 on your USB flash device. The server will then notice a GUID mismatch
 and offer a Replace Key button on the Tools/Registration page.
 
@@ -77,9 +77,9 @@ sure you assign each disk to the array / cache exactly as it was prior
 to the failure. If you do not know which disks were assigned where,
 create a post in the forum for further assistance.
 
-### Changing a Flash Device Before Purchasing {#changing_a_flash_device_before_purchasing}
+### Changing a Flash Device Before Purchasing
 
-If you\'re currently using a Trial key and you\'re ready to purchase,
+If you're currently using a Trial key and you're ready to purchase,
 you may want to use a better flash drive for your paid key. Perform the
 same steps in this guide for replacing the flash and when done, purchase
 a registration key from the Tools \> Registration page.
@@ -94,7 +94,7 @@ license to a new USB Flash Device. Once this is done, the previous Flash
 device is *blacklisted and cannot be used with Unraid going forward.
 This action cannot be undone.*
 
-### Using the Flash Creator {#using_the_flash_creator}
+### Using the Flash Creator
 
 - Once you have a backup of your Unraid flash device, you will need to
     use the Unraid USB Flash Creator tool to restore your backup to the
@@ -108,10 +108,10 @@ This action cannot be undone.*
     USB2 is fine and anecdotally has proved more reliable.
 - Plug it into your computer and then run the Unraid USB Creator
     software.
-- Select the version \'Local Zip\' then browse to the location of the
+- Select the version 'Local Zip' then browse to the location of the
     backup that you created earlier and open that.
 - Next, make sure that you select your new USB Flash device for the
-    destination, then click \'**Write**\' and your backup will be
+    destination, then click '**Write**' and your backup will be
     restored to the new USB flash device.
 
 ![](/docs/legacy/Selectversion.png "Selectversion.png"){width="400"}
@@ -119,8 +119,8 @@ This action cannot be undone.*
 - Shutdown the server. Remove the original USB flash device and
     replace it with the new one created above. Power on the server.
 - Once booted the array will not start and you will see the message
-    \'Invalid, missing or expired registration Key\' Click
-    \'Registration Key\'
+    'Invalid, missing or expired registration Key' Click
+    'Registration Key'
 
 ![](/docs/legacy/Invalidkey.png "Invalidkey.png"){width="800"}
 
@@ -128,9 +128,9 @@ This action cannot be undone.*
     of your licence key file) then copy your existing licence key file
     into the 'config' folder on the flash drive so that UnRaid knows you
     want to switch your licence to this new flash drive.
-- Click on the option to \'REPLACE KEY\' \* Then enter the email
+- Click on the option to 'REPLACE KEY' \* Then enter the email
     address to which you would like to have the new key delivered to.
-- Click \'REPLACE KEY\'
+- Click 'REPLACE KEY'
 - **IMPORTANT:** Replacing your Unraid USB Flash Device transfers the
     license to a new USB Flash Device. Once this is done, the previous
     Flash device is *blacklisted and cannot be used with Unraid going
@@ -139,33 +139,33 @@ This action cannot be undone.*
 ![](/docs/legacy/Replacekey.png "Replacekey.png"){width="800"}
 
 - Once you have received the email, copy the key file URL, then paste
-    it into the box and click \'INSTALL KEY
+    it into the box and click 'INSTALL KEY
 - Finished! You have replaced the USB flash device and the
     registration key. You will see a screen showing the date this key
     was registered and the next date on which your registration key will
-    be eligible to be replaced again. Click \'DONE\'.
+    be eligible to be replaced again. Click 'DONE'.
 
-### Manual Method {#manual_method}
+### Manual Method
 
 Prepare a new flash device using the procedure documented in the
 [Getting
 Started](Articles/Getting_Started#Manual_Method_.28Legacy.29 "wikilink")
 guide.
 
-- Before removing the flash from the PC, copy the \'config\' folder
+- Before removing the flash from the PC, copy the 'config' folder
     from the backup you made into the flash drive, overwriting existing
     files.
 - Shutdown the server. Remove the original USB flash device and
     replace it with the new one created above. Power on the server.
 - Once booted the array will not start and you will see the message
-    \'Invalid, missing or expired registration Key\' Click
-    \'Registration Key\'
+    'Invalid, missing or expired registration Key' Click
+    'Registration Key'
 
 ![](/docs/legacy/Invalidkey.png "Invalidkey.png"){width="800"}
 
-- Click on the option to \'REPLACE KEY\' \* Then enter the email
+- Click on the option to 'REPLACE KEY' \* Then enter the email
     address to which you would like to have the new key delivered to.
-- Click \'REPLACE KEY\'
+- Click 'REPLACE KEY'
 
 ![](/docs/legacy/Replacekey.png "Replacekey.png"){width="800"}
 
@@ -175,13 +175,13 @@ device is *blacklisted and cannot be used with Unraid going forward.
 This action cannot be undone.*
 
 - Once you have received the email, copy the key file URL, then paste
-    it into the box and click \'INSTALL KEY
+    it into the box and click 'INSTALL KEY
 - Finished! You have replaced the USB flash device and the
     registration key. You will see a screen showing the date this key
     was registered and the next date on which your registration key will
-    be eligible to be replaced again. Click \'DONE\'
+    be eligible to be replaced again. Click 'DONE'
 
-## Notes About Replacing your Registration Key {#notes_about_replacing_your_registration_key}
+## Notes About Replacing your Registration Key
 
 You may replace your original registration key at any time. After
 replacing your license key once, you may replace your key using the
@@ -204,7 +204,7 @@ license to a new USB Flash Device . Once this done, the previous (old)
 Flash device is *blacklisted and cannot be used with Unraid going
 forward. This action cannot be undone.*
 
-## Warning on Sandisk Brand USBs {#warning_on_sandisk_brand_usbs}
+## Warning on Sandisk Brand USBs
 
 Please see the forum announcement below regarding an unfortunate level
 of counterfeit SanDisk USBs on the market:
@@ -215,7 +215,7 @@ USBs](https://forums.unraid.net/topic/119052-psa-on-sandisk-usbs/)
 At this time, we cannot officially recommend SanDisk USBs due to the
 issue of generic GUIDs found in knock off/counterfeit units.
 
-## What to do if you have no backup and do not know your disk assignments: {#what_to_do_if_you_have_no_backup_and_do_not_know_your_disk_assignments}
+## What to do if you have no backup and do not know your disk assignments:
 
 If your Unraid boot device has failed, you have no recent backup and are
 not sure of their disk assignments it is very important that you do not
@@ -279,13 +279,13 @@ Now that you have identified the parity drives then:
     correct drive(s) assigned as parity.
 - If you only had a single (parity1) drive then the order of the data
     drives is not important as far as parity is concerned so you can
-    probably safely tick the \"Parity is Valid\" checkbox. With dual
-    parity then since the parity and parity \'2 drives use different
+    probably safely tick the "Parity is Valid" checkbox. With dual
+    parity then since the parity and parity '2 drives use different
     calculations they are **not** interchangeable so you will need to
     generate parity from scratch on both drives.
 - Start the array to commit the drive assignments and you should see
     all your data drives have mounted and their contents are intact.
-- If you ticked the \"Parity is Valid\" checkbox then run a correcting
+- If you ticked the "Parity is Valid" checkbox then run a correcting
     parity check to make sure this was a valid assumption.
 
 The above process will not necessarily mean the data drives are in the

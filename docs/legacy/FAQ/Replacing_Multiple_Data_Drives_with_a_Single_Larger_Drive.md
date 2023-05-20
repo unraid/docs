@@ -32,7 +32,7 @@ Some notes before you start:
     to install **screen**.
 - Ensure that no new files will be written to the affected drives
     during this process. If user shares and caching might involve the
-    drives, don\'t write to the user shares, and run Mover before
+    drives, don't write to the user shares, and run Mover before
     starting to make sure all writes to the drives are finished.
 - Any time you change your array configuration, be very careful when
     assigning the parity drive. If you accidentally assign a data drive
@@ -45,7 +45,7 @@ with a single larger drive, the faster method, and the safer method.
 Either of these methods can be easily adapted to replace 3 or more
 drives with a larger drive.
 
-## Faster Method {#faster_method}
+## Faster Method
 
 This method disables the parity drive while transferring data from the
 smaller drives to the larger drive, and then rebuilds parity at the end.
@@ -70,7 +70,7 @@ Not having parity allows faster writing to the larger drive.
     at this point.
 9. Start array and let parity rebuild.
 
-## Safer Method {#safer_method}
+## Safer Method
 
 This method rebuilds one of the smaller drives onto the new larger drive
 then copies the data from the other smaller drives. This will maintain
@@ -94,7 +94,7 @@ the smaller drives have been removed.
 8. Start array and let parity rebuild.
 
 **Important! If any user shares are set to include/exclude specific
-disks, don\'t forget to update these settings to reflect the new drive
+disks, don't forget to update these settings to reflect the new drive
 numbering.**\
 \
 

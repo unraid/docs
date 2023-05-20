@@ -41,18 +41,18 @@ Consider the following SMART report extract:
     241 Total_LBAs_Written      0x0000   100   253   000    Old_age   Offline      -       423266408125
     242 Total_LBAs_Read         0x0000   100   253   000    Old_age   Offline      -       97907054046
 
-Looks rather intimidating, doesn\'t it, with huge scary numbers! But
+Looks rather intimidating, doesn't it, with huge scary numbers! But
 with a little knowledge from this page, you should be able to quickly
-say \"That drive looks fine! A little warm though!\"
+say "That drive looks fine! A little warm though!"
 
 \
 ==Introduction to SMART==
 
 From [SMART on Wikipedia](http://en.wikipedia.org/wiki/S.M.A.R.T),
-\"S.M.A.R.T. (Self-Monitoring, Analysis and Reporting Technology; often
+"S.M.A.R.T. (Self-Monitoring, Analysis and Reporting Technology; often
 written as SMART) is a monitoring system for computer hard disk drives
 to detect and report on various indicators of reliability, in the hope
-of anticipating failures.\" It was a laudable effort by the drive
+of anticipating failures." It was a laudable effort by the drive
 manufacturers to provide standard ways to both report current drive
 parameters and status, and also indicate issues, especially those that
 might be predictive of imminent drive failure. Unfortunately, the
@@ -81,21 +81,21 @@ all the inconsistency, but also because many drives fail with no SMART
 warnings at all. I find that once you understand the inconsistencies,
 and keep some perspective, there is much that can still be learned. For
 one example, the Seek_Error_Rate (a critical attribute) on Seagate
-drives generally starts and stays in the mid 50\'s to high 60\'s
+drives generally starts and stays in the mid 50's to high 60's
 (attribute values generally start at 100 and drop to 1). Not knowing
 this, you might immediately think there is a serious issue with your new
-Seagate drive. But now that you do know this, you won\'t be concerned
-until it drops into the low 50\'s or below. The same Seek_Error_Rate
+Seagate drive. But now that you do know this, you won't be concerned
+until it drops into the low 50's or below. The same Seek_Error_Rate
 value on any other brand would be immediately concerning. Hopefully the
-table below will help you understand what \'normal\' looks like, for the
+table below will help you understand what 'normal' looks like, for the
 different attributes on different drives by different makers.
 
 \
 ==SMART report structure== *Each section below includes an example of
-that section, in a gray box with dotted border. It\'s just an example,
+that section, in a gray box with dotted border. It's just an example,
 yours may greatly differ.*
 
-### General information section {#general_information_section}
+### General information section
 
 - Identifying information for the SMART program and the drive - its
     model, serial number, firmware, capacity/size, time of this report,
@@ -143,14 +143,14 @@ yours may greatly differ.*
 
 - These are generally of little interest to us
 - They do include the recommended polling time for the short and long
-    tests, in other words don\'t request a SMART report any sooner than
+    tests, in other words don't request a SMART report any sooner than
     this recommendation
   - Unfortunately the original standard must have stipulated using a
         single byte to store the polling times, which caps their maximum
-        value at 255. That makes the \'Extended self-test\' (the long
+        value at 255. That makes the 'Extended self-test' (the long
         test) polling time of 255 rather useless.
-- I have seen a case where an unusually long \'Total time to complete
-    Offline data collection\' for one unusually slow drive was the only
+- I have seen a case where an unusually long 'Total time to complete
+    Offline data collection' for one unusually slow drive was the only
     indication of a faulty drive. The SMART reports for other drives
     that were exactly the same model had essentially identical SMART
     reports, with no issues, except for the difference in this
@@ -233,7 +233,7 @@ yours may greatly differ.*
 
 - Column 1 is the attribute number, usually a decimal number between 1
     and 255. Some SMART tools report it in hex, from 01 to FF. These are
-    relatively standard ID\'s, except that different manufacturers will
+    relatively standard ID's, except that different manufacturers will
     occasionally introduce a new one, unused by anyone else. Generally,
     the only ones you can count on seeing are: 1, 3, 4, 5, 7, 9, 10,
     187, 190 or 194, 193, 195, 197, 198, and 199.
@@ -246,7 +246,7 @@ yours may greatly differ.*
     attribute, so its range is from 0 to 255.
   - However, the values of 0, 254, and 255 are reserved for internal
         use, so you never see them.
-  - The value of 253 usually always means \"Not Used Yet\", so when
+  - The value of 253 usually always means "Not Used Yet", so when
         you see it, you are probably looking at a brand new drive.
         Sometimes though, there can be a few attributes that take awhile
         before they are used, so may stay 253 for longer.
@@ -272,13 +272,13 @@ yours may greatly differ.*
         of the discussion.
   - The temperature attributes 190 and 194 are exceptions to the
         scaling. They are either temperatures or forms of the
-        temperature, and they don\'t scale (their WORST value may look
+        temperature, and they don't scale (their WORST value may look
         like it scales though).
   - The error rate attributes 1 and 7 are also exceptions, although
         of a different kind. Raw read and seek errors are a natural part
         of normal operation, so even in a brand new and perfect drive,
         there is a factory-determined optimal rate of read and seek
-        errors. They are nothing to worry about, they\'re the natural
+        errors. They are nothing to worry about, they're the natural
         result of temperature expansion and other things, and they are
         used to help the drive constantly recalibrate itself. But
         because these error rates are non-zero, you essentially cannot
@@ -288,16 +288,16 @@ yours may greatly differ.*
         error rate (especially when they are new) that is even better
         than the optimal one set by the manufacturer, which results in
         an error rate that is HIGHER than 100! For an example, see the
-        VALUE above of attribute 1, the Raw_Read_Error_Rate. It\'s as if
+        VALUE above of attribute 1, the Raw_Read_Error_Rate. It's as if
         the drive is performing at 111%!
 - Column 5 is WORST, the lowest VALUE ever recorded (except for a few
     unusual and uncommon cases).
-  - *\[incomplete\]*
+  - *[incomplete]*
 - Column 6 is THRESH, the manufacturer determined lowest value that
     WORST should be allowed to fall to, before reporting it as a FAILED
     quantity. Some are counters, some are informational such as
     temperature or hours used or
-  - *\[incomplete\]*
+  - *[incomplete]*
 - Column 7 is TYPE, the type of attribute. It can either be *Pre-fail*
     or *Old_age*.
   - If it is *Pre-fail*, then the attribute is considered a critical
@@ -306,7 +306,7 @@ yours may greatly differ.*
         falls below THRESH, then the drive FAILS the overall SMART
         health test, and complete failure may be imminent. The
         *Pre-fail* term means that if this attribute fails, then the
-        drive is considered \'about to fail\'.
+        drive is considered 'about to fail'.
   - If it is *Old_age*, then the attribute is considered (for SMART
         purposes) a noncritical attribute, one that does not fail the
         drive. The *Old_age* term means that the attribute is related to
@@ -318,15 +318,15 @@ yours may greatly differ.*
         be highly concerning, but there is no authoritative
         interpretation available, so no definitive conclusions can be
         made. These attributes should be considered *Experimental*.
-  - *\[incomplete\]*
+  - *[incomplete]*
 - Column 8 is UPDATED. Supposedly, this is an indicator when the
     attribute is updated, *Always* or *Offline*. If *Always*, then it is
     assumed that the attribute is updated whenever a relevant event
-    occurs. In other words, it is always \'live\'. If *Offline*, then
+    occurs. In other words, it is always 'live'. If *Offline*, then
     supposedly the attribute is only updated when offline tests are
     being performed. But in real life, our experience is that these are
     inaccurate. Just look at the example above, at attributes 241
-    and 242. They appear to be live counters of LBA\'s read and written,
+    and 242. They appear to be live counters of LBA's read and written,
     yet the test section of that particular SMART report indicates that
     there have been no offline tests performed!
 - Column 9 is WHEN_FAILED, usually and thankfully blank! If not blank,
@@ -334,13 +334,13 @@ yours may greatly differ.*
     Power_On_Hours) that this attribute failed!
 - Column 10 is RAW_VALUE, a manufacturer controlled raw number, which
     may or may not be of interest to us. From now on, we will often
-    shorten its name and refer to it only as \'the RAW\'.
-  - *\[incomplete\]*
+    shorten its name and refer to it only as 'the RAW'.
+  - *[incomplete]*
 
 \
 ===Error Log section===
 
-- *\[incomplete\]*
+- *[incomplete]*
 
 ```{=html}
 <!-- -->
@@ -349,12 +349,12 @@ yours may greatly differ.*
     SMART Error Log Version: 1
     No Errors Logged
 
-- *\[incomplete, need example with errors\]*
+- *[incomplete, need example with errors]*
 
 \
 ===Test results section===
 
-- *\[incomplete\]*
+- *[incomplete]*
 
 ```{=html}
 <!-- -->
@@ -374,7 +374,7 @@ yours may greatly differ.*
       After scanning selected spans, do NOT read-scan remainder of disk.
     If Selective self-test is pending on power-up, resume after 0 minute delay.
 
-- *\[incomplete, need example with tests\]*
+- *[incomplete, need example with tests]*
 
 \
 \
@@ -383,7 +383,7 @@ yours may greatly differ.*
 For a fuller description of each attribute, please see [Known ATA
 S.M.A.R.T. attributes on
 Wikipedia](http://en.wikipedia.org/wiki/S.M.A.R.T#Known_ATA_S.M.A.R.T._attributes).
-*\[incomplete\]*
+*[incomplete]*
 
 ### 1 Raw_Read_Error_Rate
 
@@ -401,8 +401,8 @@ Wikipedia](http://en.wikipedia.org/wiki/S.M.A.R.T#Known_ATA_S.M.A.R.T._attribute
     then the rate might be scaled to 80 (completely under manufacturer
     control, and NEVER revealed or explained to us!).
 - They are called Raw Reads to distinguish them from the more common
-    term \'read errors\', which represent a much higher level read
-    operation. What we usually refer to as a \'read error\' is an error
+    term 'read errors', which represent a much higher level read
+    operation. What we usually refer to as a 'read error' is an error
     returned by a read process, that has attempted a series of one or
     more seeks and raw reads, plus optional error corrections and
     retries. It either returns an indicator of total success plus the
@@ -421,7 +421,7 @@ Wikipedia](http://en.wikipedia.org/wiki/S.M.A.R.T#Known_ATA_S.M.A.R.T._attribute
     Hopefully now that you understand this, you will never bother a kind
     IT person with questions about the Raw_Read_Error_Rate RAW_VALUE
     again?
-- *\[incomplete?\]*
+- *[incomplete?]*
 - **Critical attribute - if its WORST falls below its THRESH, then the
     drive will be considered FAILED**
 
@@ -429,35 +429,35 @@ Wikipedia](http://en.wikipedia.org/wiki/S.M.A.R.T#Known_ATA_S.M.A.R.T._attribute
 
 ### 3 Spin_Up_Time
 
-- *\[incomplete\]*
+- *[incomplete]*
 
 \
 
 ### 4 Start_Stop_Count
 
-- *\[incomplete\]*
+- *[incomplete]*
 
 \
 
 ### 5 Reallocated_Sector_Ct
 
-- *\[incomplete\]*
+- *[incomplete]*
 
 \
 
 ### 7 Seek_Error_Rate
 
-- *\[incomplete\]*
+- *[incomplete]*
 
 \
 
 ### 9 Power_On_Hours
 
-- *\[incomplete\]*
+- *[incomplete]*
 
 \
-*\[the most important part of this whole page is completely
-incomplete!\]*\
+*[the most important part of this whole page is completely
+incomplete!]*\
 \
 ==Additional info==
 
@@ -481,7 +481,7 @@ incomplete!\]*\
   - <http://lime-technology.com/forum/index.php?topic=13054.msg53337#msg53337> -
         keeping SMART values in perspective, and how to properly
         interpret them - a series of posts to help users alarmed by the
-        very large numbers they find in a SMART report or \'diff\'
+        very large numbers they find in a SMART report or 'diff'
   - <http://lime-technology.com/forum/index.php?topic=2135.msg15733#msg15733> -
         a script for grabbing dated SMART reports for all drives
   - *\<\< old \>\>*
@@ -504,7 +504,7 @@ incomplete!\]*\
         reporting and notification of changes in SMART attributes;
         produces customizable reports, with graphing capabilities
 
-*\[incomplete\]*
+*[incomplete]*
 
 \
 \

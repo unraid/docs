@@ -23,12 +23,12 @@ of the **same** underlying file system. Every file/folder that appears
 under a User Share will also appear under the Disk Share for the
 physical drive that is storing the file/folder.
 
-## User Shares {#user_shares}
+## User Shares
 
 User Shares can be enabled/disabled via Settings-\>Global Share
 Settings.
 
-From the **Shares** tab, you can either *create* a new share or *edit\'
+From the **Shares** tab, you can either *create* a new share or *edit'
 an existing share. Click the **Help** icon in the top-right of the
 Unraid webGui when configuring shares for more information on the
 settings available.*
@@ -118,16 +118,16 @@ move existing files.
 
 **Important**: The Linux file system used by Unraid are case sensitive
 while the SMB share system is not. As an example this means that a
-folder at the Linux level a folder called \'media\' is different to one
-called \'Media\'. However at the network level case is ignored so for
-example \'media\', Media\', \'MEDIA\' would all be the same share.
+folder at the Linux level a folder called 'media' is different to one
+called 'Media'. However at the network level case is ignored so for
+example 'media', Media', 'MEDIA' would all be the same share.
 However to take this example further you would only get the content of
-one of the underlying \'media\' or \'Media\' folders to appear at the
+one of the underlying 'media' or 'Media' folders to appear at the
 network share level - and it can be non-obvious which one this would be.
 
 The following sections proved more detail on how these settings work:
 
-### Allocation method {#allocation_method}
+### Allocation method
 
 When a new User share is created, or when any object (file or directory)
 is created within a User share, the system must determine which data
@@ -140,7 +140,7 @@ The basic allocation strategy for a share is defined by the Allocation
 method configuration parameter. You may select one of three allocation
 methods for the system to use.
 
-#### High Water {#high_water}
+#### High Water
 
 The high water allocation method attempts to step fill each disk so at
 the end of each step there is an equal free space left on each disk. The
@@ -177,20 +177,20 @@ of free space remaining. 250gig of data will be stored on disk1 and then
 250gig of data will be stored on disk2 and then 250gig of data will be
 stored on disk3 and finally 250gig of data will be stored on disk4. An
 interesting note is that the 500gig disk does not get used at all until
-the third pass. Don\'t be concerned if the smaller sized disks don\'t
+the third pass. Don't be concerned if the smaller sized disks don't
 immediately get used with this method.
 
 This pattern will continue with progressively smaller high water levels
 until the disks are full.
 
-#### Most Free {#most_free}
+#### Most Free
 
 The most free allocation method simply picks the disk with the most free
 space and writes the data to that disk. Each time a file is written
 Unraid will check the free space on the disks and pick the one with the
 most free space.
 
-#### Fill-Up {#fill_up}
+#### Fill-Up
 
 The fill-up allocation method simply attempts to fill each disk in order
 from the lowest numbered disk to the highest numbered disk. The fill-up
@@ -199,10 +199,10 @@ space setting. Otherwise, Unraid will begin to give disk full errors and
 not allow any more transfers once the first disk gets close to being
 full.\
 
-### Min. Free Space {#min._free_space}
+### Min. Free Space
 
 The minimum free space setting is used with the allocation method and
-split level. The Minimum Free space setting doesn\'t control how much
+split level. The Minimum Free space setting doesn't control how much
 space is kept free, but instead it controls how much space must be free
 for a drive to be chosen for a new file. The minimum free space setting
 therefore tells Unraid to stop putting new content onto the disk when
@@ -213,14 +213,14 @@ is not enough space to fit a file you are trying to write to the array.
 
 First a brief explanation of how Unraid will typically receive a file.
 Unraid typically receives data in this manner. First, Unraid receives
-the request to store a file, named for example \"file.eg\". At this
-time, Unraid has no idea how big \"file.eg\" is so Unraid will pick a
-spot to place \"file.eg\" and begin to store the file data as the data
+the request to store a file, named for example "file.eg". At this
+time, Unraid has no idea how big "file.eg" is so Unraid will pick a
+spot to place "file.eg" and begin to store the file data as the data
 is transferred over the network. Now, this is important because Unraid
 may pick a storage disk that does not have enough space to store the
-complete \"file.eg\". Unraid doesn\'t know there is not enough space
+complete "file.eg". Unraid doesn't know there is not enough space
 when it first places the file so Unraid will only find out the disk
-doesn\'t have enough space when the disk is full. At this point, the
+doesn't have enough space when the disk is full. At this point, the
 transfer will fail with a disk full error.
 
 So, Unraid will write to a different disk if the minimum free space is
@@ -245,7 +245,7 @@ does not allow the files to be placed on another disk with more free
 space.
 
 Also note that unRAID will typically not move a file onto a new disk if
-you\'re over-writing or updating it. For example, a backup file that
+you're over-writing or updating it. For example, a backup file that
 grows in size over time could end up filling a disk and causing a disk
 full error.\
 IMPORTANT; There is also a Minkmum Free Space setting for cache pools.
@@ -258,7 +258,7 @@ should be larger than the largest file you intend to write, and some
 people like to make it significantly larger. You get to this setting by
 clicking on a pool on the Main tab.
 
-### Split level {#split_level}
+### Split level
 
 The split level setting tells unRAID how many folder levels are allowed
 to be created on multiple disks. The split level can be used to ensure
@@ -278,7 +278,7 @@ occurs for the file.
 is a more detailed description of how it works.***
 
 Here is an example showing a possible directory structure for a user
-share called \"Media\".
+share called "Media".
 
 **Note:** I (the original author of this section) consider combining
 media types into a single large share a poor way to store media. I use a
@@ -344,7 +344,7 @@ The only valid split level for the above example is 2. This causes a
 split level limitation which forces each complete TV series to a single
 disk. This can force a new TV season to be placed on a disk which is
 almost full and result in out of space errors once new episodes
-completely fill the disk. The split level can\'t be increased to 3
+completely fill the disk. The split level can't be increased to 3
 because each individual movie would not be contained to a single disk.\
 \
 \
@@ -355,8 +355,8 @@ level of 3.
 
 ![](/docs/legacy/Split_level_2.JPG "File:Split_level_2.JPG")
 
-For Movies use a split level = 2. This allows the \"SD Movies\", \"HD
-Movies\" and \"Kids Movies\" folders to be placed on every disk and it
+For Movies use a split level = 2. This allows the "SD Movies", "HD
+Movies" and "Kids Movies" folders to be placed on every disk and it
 keeps each individual movie folder on a single disk. This way, any
 single movie folder and the contents of the movie folder will remain on
 a single disk.
@@ -387,7 +387,7 @@ Some things to keep in mind.
 - The above examples are to demonstrate the use of the split level. It
     is not necessary to store your media sorted in the same format as
     the above example illustrates. You may want to use a Movies share
-    and then just place a \"Movie Name\" folder for each movie directly
+    and then just place a "Movie Name" folder for each movie directly
     into the share without sorting the movies by type.
 
 - It is completely valid to force each complete TV series to stay on a
@@ -411,7 +411,7 @@ Some things to keep in mind.
 \
 \
 
-##### **Disable Split Level** {#disable_split_level}
+##### **Disable Split Level**
 
 It is also possible to disable the split level by setting a high split
 level. A file copy or move will fail if a folder is locked to a full
@@ -419,7 +419,7 @@ disk and an attempt is made to add more files into that folder. Setting
 a high split level will ensure each file will get written to the server
 as long as a disk has space for it.
 
-##### **Split Level = 1 Example** {#split_level_1_example}
+##### **Split Level = 1 Example**
 
 The following example demonstrates how the share behaves when the split
 level is set to 1. The Share name is New_Movies. Each movie stored in
@@ -480,7 +480,7 @@ share.
 
 Take note that a share called Movies is also visible on disk2.
 
-##### **Split Level 0** {#split_level_0}
+##### **Split Level 0**
 
 this is what you have if in the GUI you select "Manual: do not
 Automatically split directories".
@@ -531,14 +531,14 @@ disk5. In other words, the folder Media and sub-folder DVD Movies must
 be created on disk5. Then, Unraid can use either disk1 or disk5 to store
 DVD Movies.
 
-##### **Split By Character** {#split_by_character}
+##### **Split By Character**
 
 Specify a character in the split level box to use this method. Then,
 Unraid will not allow any folder name containing the character to split.
-For example, set the split level to an opening square bracket ( \[ )
+For example, set the split level to an opening square bracket ( [ )
 instead of a number. Then, create each movie folder with the year
 encased in square brackets after the title in this manner - Iron Man 2
-\[2010\]. Unraid will see the opening square bracket ( \[ ) and it will
+[2010]. Unraid will see the opening square bracket ( [ ) and it will
 not split this folder or any content stored inside this folder.
 
 This type of split level can allow different levels of sub-folders to be
@@ -548,13 +548,13 @@ having a fixed split level for a share.\
 \
 \
 
-### Included and Excluded disk(s) {#included_and_excluded_disks}
+### Included and Excluded disk(s)
 
 The included disk(s) and excluded disk(s) parameters control which disks
 are allowed to be used by each user share. These parameters can be used
 separately or together to define the group of disks allowed for writing
 files to each user share. The disks are entered by disk number with a
-comma separating each disk, for example \"disk2,disk5\".
+comma separating each disk, for example "disk2,disk5".
 
 Unraid will first check the included disks(s) set and then the Excluded
 disk(s) set when deciding which disk to place a file on. Then, Unraid
@@ -572,7 +572,7 @@ The included disks(s) parameter defines the set of disks which are
 candidates for allocation to that share. All disks may be used by the
 user share when the Included disk(s) parameter is left blank. Specify
 the disks to include here. For example, set the included disk(s) to
-\"disk1,disk2,disk3\" to allow the share to only use disk1, disk2 and
+"disk1,disk2,disk3" to allow the share to only use disk1, disk2 and
 disk3.
 
 **Excluded disk(s)**
@@ -581,11 +581,11 @@ The excluded disk(s) parameter defines the set of disks which are
 excluded from use by the user share. No disks are excluded from use by
 the user share when the excluded disk(s) parameter is left blank.
 Specify the disks to exclude here. For example, set the excluded disk(s)
-to \"disk1,disk2\" to restrict a share from using disk1 and disk2.\
+to "disk1,disk2" to restrict a share from using disk1 and disk2.\
 \
 \
 
-### Default Shares {#default_shares}
+### Default Shares
 
 If you have Docker or VMs enabled then a number of default shares are
 set up to support their use. It is not mandated that you use these
@@ -605,7 +605,7 @@ The shares that fall into this category are:
 - **isos**: this is the default location for storing CD iso images for
     use with VMs.
 
-### Unraid 6.12 {#unraid_6.12}
+### Unraid 6.12
 
 The Unraid 6.12 release has introduced some new terminology to make it
 clearer to new users where files are initially placed and where they
@@ -622,9 +622,9 @@ For the Primary storage drop-down:
 
 - this option is mandatory. ie, Primary storage must be selected
 - any named pool can be selected
-- \"Array\" can be selected (meaning the unRAID array)
+- "Array" can be selected (meaning the unRAID array)
 
-#### **Secondary Storage:** {#secondary_storage}
+#### **Secondary Storage:**
 
 This is the location where files will be moved to if appropriate.
 
@@ -633,18 +633,18 @@ For the Secondary storage drop-down:
 - None: This means that there is no secondary storage set for this
     share i.e Secondary storage is optional
 - if Primary storage is a pool name, then the only options are
-    \"none\" and \"Array\"
-- if Primary storage is \"Array\", then only \"none\" appears as an
+    "none" and "Array"
+- if Primary storage is "Array", then only "none" appears as an
     option
 -
 
-### Unraid 6.11 and earlier {#unraid_6.11_and_earlier}
+### Unraid 6.11 and earlier
 
 The following settings are only found in Unraid 6.11 and earlier. They
 achieve the same functionality as the settings available in 6.12 but are
 presented differently.
 
-#### **Use Cache (and Mover Behavior with User Shares)** {#use_cache_and_mover_behavior_with_user_shares}
+#### **Use Cache (and Mover Behavior with User Shares)**
 
 **Note**: Starting with Unraid 6.9.0 multiple pools can exist and they
 can have any name the user chooses. Any of these pools can act act as a
@@ -708,7 +708,7 @@ settings operate is as follows
     typically located on the cache rather than *Only* as it caters for
     those who do not (yet) have a cache drive.
 
-##### **Moving Files from a Pool (cache) to the Array** {#moving_files_from_a_pool_cache_to_the_array}
+##### **Moving Files from a Pool (cache) to the Array**
 
 This is the more traditional usage of a pool for caching where one wants
 the files for a particular share initially written to a pool acting as a
@@ -718,7 +718,7 @@ is to set the Use Cache setting for the share to Yes and the default
 behaviour handles the rest with no further user interaction.
 
 Sometimes for one reason or another users find that the files seem to be
-\'stuck\' on a pool. The way to proceed in such a case to get the files
+'stuck' on a pool. The way to proceed in such a case to get the files
 belonging to a share from a pool onto the main array is:
 
 - Disable **Docker/VM** services if they are enabled (as files open in
@@ -731,7 +731,7 @@ belonging to a share from a pool onto the main array is:
 - (optional) change the **Use Cache** setting to *Only* to say files
     for this share can never be written to the array.
 
-##### **Moving Files from the Array to a Pool (cache)** {#moving_files_from_the_array_to_a_pool_cache}
+##### **Moving Files from the Array to a Pool (cache)**
 
 One typically wants files associated with running Docker containers or
 VMs on a pool to maximise performance. It is not unusual for one reason
@@ -752,7 +752,7 @@ array onto a pool is:
 - (optional) change the **Use Cache** setting to *No* to say files for
     this share can never be cached on a pool.
 
-## Disk Shares {#disk_shares}
+## Disk Shares
 
 These are shares that relate to individual array drives or pools within
 the Unraid system and that are visible over the network. By default if
@@ -821,7 +821,7 @@ disks. The workaround for this is to instead explicitly copy from source
 to destination so that new files get created following the user share
 settings, then deleting from the source.
 
-## Network access {#network_access}
+## Network access
 
 You can control what protocols should be supported for accessing the
 Unraid server across the network. Click on Settings-\>Network Services
@@ -852,7 +852,7 @@ labelled **Export** and has the following options:
 - **No**: With this option selected then it is not possible to access
     the share across the network.
 
-## Access Permissions {#access_permissions}
+## Access Permissions
 
 When you click on the name of a share on the Shares tab then there is a
 section that allows you to control the access rights of the share on the
@@ -866,7 +866,7 @@ labelled **Security** and has the following options:
 - **Private**: You select which of your users have access and for each
     user whether that user has read/write or read-only access.
 
-**Windows \'Gotcha\'**
+**Windows 'Gotcha'**
 
 There is an issue with the way Windows handles network shares that many
 users fall foul of:
@@ -882,6 +882,6 @@ users fall foul of:
     may connect as a guest user and make subsequent attempts to connect
     with a specific user fail.
 - A workaround that can help with avoiding this issue is the fact that
-    if you access a server both by it\'s network name and via it\'s IP
+    if you access a server both by it's network name and via it's IP
     address then Windows will treat it a two separate servers as far as
     authentication is concerned.

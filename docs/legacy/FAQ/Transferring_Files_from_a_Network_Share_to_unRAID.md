@@ -8,10 +8,10 @@ Mount a remote directory to the new directory:
 
 `mount -t cifs //workstation/share /work`
 
-(Substitute name of your workstation for \'workstation\', and it will
+(Substitute name of your workstation for 'workstation', and it will
 probably prompt you for a workstation user name/password).
 
-Copy all the files and folders from the workstation\'s share to a disk
+Copy all the files and folders from the workstation's share to a disk
 share on the server:
 
 `cp -r /work/* /mnt/disk1`
@@ -32,20 +32,20 @@ Caution: If you have directory or file names with non-English
 characters, commonly found in titles and names for media files from
 European and South American countries, I would recommend to use Windows
 Explorer. The Linux commands either skip the whole file or directory, or
-replaces the \"strange\" letter with an underscore. Also, the cp command
-may set all file attributes to system and hidden, so the files don\'t
+replaces the "strange" letter with an underscore. Also, the cp command
+may set all file attributes to system and hidden, so the files don't
 show up in Windows Explorer. This may be corrected with chmod command,
 but I found it better to avoid this altogether by sticking to the
 Explorer in Windows.
 
-#### Another method using Netcat and Tar {#another_method_using_netcat_and_tar}
+#### Another method using Netcat and Tar
 
 See also [this
 post](http://lime-technology.com/forum/index.php?topic=5045.msg47257#msg47257)
 for an alternative method of data transfer between Linux systems, such
 as unRAID.
 
-#### Unicode issues {#unicode_issues}
+#### Unicode issues
 
 If you have any kind of foreign characters in your filenames (for
 instance, an accented letter in a movie title), you want to mount the
@@ -56,10 +56,10 @@ garbling happens, your directory will also be unlistable from a Mac
 
 `mount -t cifs //workstation/share /work -o iocharset=utf8`
 
-#### Permission issues after copying {#permission_issues_after_copying}
+#### Permission issues after copying
 
 Because your SSH copy or rsync process is typically run as root, you may
-experience \'Access Denied\' messages with users writing to directories
+experience 'Access Denied' messages with users writing to directories
 that have been created as part of this job. This can be rectified by
-running the \'New Permissions\' job from the tools menu in the web admin
+running the 'New Permissions' job from the tools menu in the web admin
 after the copy process has completed.

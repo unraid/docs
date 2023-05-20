@@ -9,7 +9,7 @@ world:
 - Disks that have not yet failed\... but just need a bit more time
     until they do.
 
-## How parity works {#how_parity_works}
+## How parity works
 
 In general, a parity process is designed to detect a single bit change
 across a given set of bits, by setting the value of an added bit such
@@ -26,7 +26,7 @@ total is an EVEN number. If the value returned is not EVEN, then the
 parity bit is toggled so that the parity check WILL return an EVEN
 number.
 
-Why an EVEN number? unRAID uses \'even parity\', which simply means that
+Why an EVEN number? unRAID uses 'even parity', which simply means that
 the summation process (using a mathematical operation called 'exclusive
 OR' or 'XOR') across that set of bits must return a value that is an
 EVEN number.
@@ -47,7 +47,7 @@ zero value will not impact parity. Once the new drive is full of zeros,
 unRAID can silently slip it into the array without needing to rebuild
 parity. Several disks can be added simultaneously in this way.
 
-## Reconstructing data {#reconstructing_data}
+## Reconstructing data
 
 There are only two situations that the parity data is used by unRAID to
 reconstruct data:
@@ -76,7 +76,7 @@ needed when writing to the simulated disk. If you now install a
 replacement disk, it can be completely rebuilt from the re-constructed
 contents based on parity and all the other data drives.
 
-## Checking parity {#checking_parity}
+## Checking parity
 
 In a **parity sync**, the system reads all the data disks and writes the
 computed parity to the parity disk.
@@ -91,13 +91,13 @@ operation has a flag:
 Only the first 100 parity check errors are reported. (The messages in
 the system log are generated for each sector address where a parity
 mis-match occurs. So if you tried a parity-check on an array that
-doesn\'t have valid parity, the system log would quickly become massive;
+doesn't have valid parity, the system log would quickly become massive;
 hence the limit to 100 messages.)
 
 These parity mis-matches are called 'sync errors' or 'parity sync
 errors'. They are a count of how many block addresses were found where
 computed parity did not 'synchronize' with (i.e., match) stored parity.
-(A \'block\' is 4096 bytes. This is also the linux PAGE size - the
+(A 'block' is 4096 bytes. This is also the linux PAGE size - the
 fundamental unit of I/O.)
 
 Parity disk being **valid** means that there is a parity disk present,
@@ -108,7 +108,7 @@ can be used to reconstruct a failed data disk.
 
 (Actually, 'valid' is a status that applies to all array disks, both
 data disks and the parity disk. If all array disks are valid except for
-one of them, it means that the one that\'s not valid can be
+one of them, it means that the one that's not valid can be
 reconstructed using the data from all the other ones.)
 
 When a parity check/nocorrect produces errors, why is the Parity disk
@@ -124,11 +124,11 @@ should be parity check errors:
 
 - a non-clean shutdown, ie, sudden power loss or system reset. What
     happens here is that there could be pending writes to the parity
-    and/or data disks that don\'t get completed, leaving the
+    and/or data disks that don't get completed, leaving the
     corresponding stripe with inconsistent parity.
 - an undetected hardware fault (such as silent memory corruption).
 
-## Parity disk {#parity_disk}
+## Parity disk
 
 ### Size
 
@@ -147,12 +147,12 @@ disk head back over the sector being written.
 
 Writing to the unRAID array is also limited by the slowest (rotational
 speed) drive involved. If only the parity drive is a 7200 RPM drive,
-then you are still limited by the speed of the data drive. You\'ll see
+then you are still limited by the speed of the data drive. You'll see
 no improvement in write speed unless there are multiple slower data
 drives being written to simultaneously, and one faster 7200 RPM parity
 drive trying to keep up with both of them.
 
-## Dual parity {#dual_parity}
+## Dual parity
 
 For large arrays, 'dual parity' -- or, the facility to have a second
 parity disc is not simply a mirror of the first. This permits two
