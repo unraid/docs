@@ -41,7 +41,7 @@ and Unraid user communities respectively.*
 
 \
 
-# Concepts in Unraid Docker Implementation {#concepts_in_unraid_docker_implementation}
+# Concepts in Unraid Docker Implementation
 
 There are a number of concepts about the Unraid implementation of Docker
 support that you want to make sure you understand as it makes running
@@ -51,8 +51,8 @@ Docker containers much easier.
 
 Normally each container has a 'working storage
 
-The folder the container puts in appdata contains the \"working
-storage\" for the application. By convention the **appdata** share is
+The folder the container puts in appdata contains the "working
+storage" for the application. By convention the **appdata** share is
 used for this purpose, with each container using a container specific
 sub-folder in this location. This will be the data that the application
 itself uses to keep track of what it is doing. For example, plex keeps
@@ -81,7 +81,7 @@ command with its parameters taken from that form. The docker run command
 downloads the executable code of the docker and stores that code in the
 docker.img, then runs the container.
 
-# Adding Applications as Containers {#adding_applications_as_containers}
+# Adding Applications as Containers
 
 By default, you will have access to any and all applications that Lime
 Technology publishes to its public Docker repository. To add them to
@@ -96,7 +96,7 @@ your system, perform the following steps:
 **This method is now deprecated and the recommended way to add all
 containers is via Community Applications**
 
-## Community Applications {#community_applications}
+## Community Applications
 
 To gain access to a wider set of applications, see [this
 post](http://lime-technology.com/forum/index.php?topic=40262.0) in the
@@ -110,19 +110,19 @@ Technology. Support for community-maintained Docker containers can be
 found in the [Docker Containers
 subforum](http://lime-technology.com/forum/index.php?board=56.0).*
 
-## Configuring a container {#configuring_a_container}
+## Configuring a container
 
-### Network Type {#network_type}
+### Network Type
 
 If the Bridge type is selected, the application's network access will be
 restricted to only communicating on the ports specified in the port
 mappings section. If the Host type is selected, the application will be
-given access to communicate using **any port** on the host that isn\'t
+given access to communicate using **any port** on the host that isn't
 already mapped to another in-use application/service. Generally
 speaking, it is recommended to leave this setting to its default value
 as specified per application template.
 
-### Volume Mappings {#volume_mappings}
+### Volume Mappings
 
 Applications can be given read and write access to files on the host by
 mapping a directory path from the container to a directory path on the
@@ -184,13 +184,13 @@ Special points to note when setting up volume mappings are:
     dynamic paths nay not be seen until the docker sub-system is
     restarted.
 
-Host paths mentioned in a container\'s volume mappings are created when
+Host paths mentioned in a container's volume mappings are created when
 the container starts if they do not already exist. If you find that you
 get unexpected folders appearing at the Unraid level then this can be a
 good indication that you have got a container mapping wrong and so the
 folder gets recreated every time the container is run.
 
-### Port Mappings {#port_mappings}
+### Port Mappings
 
 While applications may internally be configured to talk to a specific
 port by default, we can remap those to different ports on our host with
@@ -215,11 +215,11 @@ expected by the container should already be specified.
 *IMPORTANT NOTE: If adjusting port mappings, do **not** modify the
 settings for the Container port as only the Host port can be adjusted.*
 
-### Environment Variables {#environment_variables}
+### Environment Variables
 
 TBD
 
-## Container Creation Process {#container_creation_process}
+## Container Creation Process
 
 With your network, volume and port mappings and environment variables
 configured, you are now ready to create your first Docker container.
@@ -234,7 +234,7 @@ things worth noting while the image is downloading:
 - When the download process completes, you can click the Done button
     to return to the Docker page and continue adding applications.
 
-# Controlling container auto-start {#controlling_container_auto_start}
+# Controlling container auto-start
 
 On the Docker page, you can set the Auto-Start option to **ON** for any
 docker container you want to always be started whenever the Array is
@@ -286,7 +286,7 @@ process to achieve the results that you want.
 
 \
 
-# Controlling Your Application {#controlling_your_application}
+# Controlling Your Application
 
 Once the download is complete, the application is started automatically.
 To interact with your application, we begin by clicking on the icon
@@ -300,7 +300,7 @@ appear with multiple options:
   - Most apps added through Docker will have a web interface that
         you can access to configure and use them, but not all.
   - Clicking this option will launch a new browser tab/window
-        directly to the application\'s web interface.
+        directly to the application's web interface.
   - For apps that do NOT have a web interface, read the description
         when adding the container for instructions on how to make use of
         the app once it's running.
@@ -329,20 +329,20 @@ appear with multiple options:
         application again later a much faster process (as it will not
         need to be redownloaded).
 
-# Accessing a Volume Mapping Inside a Container {#accessing_a_volume_mapping_inside_a_container}
+# Accessing a Volume Mapping Inside a Container
 
 One of the first things you will do after your application is running
 will be to configure it. Configuration typically will involve specifying
-storage locations from within the application\'s web interface. When
+storage locations from within the application's web interface. When
 doing so, remember to look for the volume mappings you defined when
 adding your container. For example, if I needed to specify a folder path
 in the BT Sync app that would point to my Media share, I would specify
-the path of "/unraid_media" in the application\'s interface, as depicted
+the path of "/unraid_media" in the application's interface, as depicted
 below.
 
 ![](/docs/legacy/Dockerguide-usingvolumes.png "Dockerguide-usingvolumes.png"){width="500"}
 
-# Re-Create the Docker image file {#re_create_the_docker_image_file}
+# Re-Create the Docker image file
 
 If for any reason your docker image file gets corrupted it is easy to
 recreate it from scratch. The commonest cause for this seems to be the
@@ -378,7 +378,7 @@ At his point, you will probably want to re-install your applications
 with the same settings as previously used. This is easily achieved as
 described below.
 
-# Re-Installing Docker Applications {#re_installing_docker_applications}
+# Re-Installing Docker Applications
 
 Every time an application is installed as a docker container then a
 template with the settings used is stored on the flash drive. this
@@ -396,7 +396,7 @@ this can be done by:
 - Proceed with the installation and the docker container will be
     re-downloaded and your previous settings applied.
 
-# Docker Custom Networks {#docker_custom_networks}
+# Docker Custom Networks
 
 For any Docker Custom Networks created, it is necessary to recreate
 these networks if a vDisk is deleted. They do no persist.
@@ -410,7 +410,7 @@ same subnet as the one used by the host. You can allow this under
 *Settings-\>Docker* by changing **Host access to custom networks** from
 **disabled** to **enabled**.
 
-# Starting and stopping Docker containers on a schedule {#starting_and_stopping_docker_containers_on_a_schedule}
+# Starting and stopping Docker containers on a schedule
 
 A number of users have requested a way to start and/or stop their docker
 containers on a specified schedule. This is not currently a standard

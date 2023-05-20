@@ -48,7 +48,7 @@ from reputable manufacturers such as:
 
 ## Instructions
 
-### Windows XP {#windows_xp}
+### Windows XP
 
 **Step 1** Plug the Flash into your PC and re-format it using Windows
 (right-click the Flash under **My Computer** and select **Format**):
@@ -92,7 +92,7 @@ files such as **network.cfg** and **ident.cfg**.
 select your Flash drive to be safely removed.\
 \
 
-### Windows Vista and Windows 7 {#windows_vista_and_windows_7}
+### Windows Vista and Windows 7
 
 **Step 1** Plug the Flash into your PC and re-format it using Windows
 (Right-Click the Flash under **Computer** and select **Format**):
@@ -115,27 +115,27 @@ select **Run as administrator**. Press any key to continue.
 close any open windows and eject the Flash drive.\
 \
 
-### MacOS X {#macos_x}
+### MacOS X
 
-You\'ll need to download the following:
+You'll need to download the following:
 
 - [unetbootin](http://unetbootin.sourceforge.net) - installs unRAID on
     your flash drive for you
 - [syslinux](http://www.kernel.org/pub/linux/utils/boot/syslinux/) - a
     collection of linux tools that will allow you to make the drive
     bootable
-- unRAID - don\'t unzip it\...
+- unRAID - don't unzip it\...
 
 **1. Plug in your USB Flash drive and format it using Disk Utility.**
 
 - Open Disk Utility (Applications -\> Utilities-\> Disk Utility) and
     choose your device from the list on the left - note: In recent
     versions of macOS you will need to select View \> Show All Devices.
-    Please make sure to read carefully to know when to select \"Device\"
-    or \"Partition\"
+    Please make sure to read carefully to know when to select "Device"
+    or "Partition"
 - Select Partition
 - Choose Partition Layout: 1 Partition
-- Call it \'UNRAID\' (no spaces, all caps)
+- Call it 'UNRAID' (no spaces, all caps)
 - Click Options and make sure Master Boot Record is selected
 - Click Apply and your disk will format
 
@@ -143,17 +143,17 @@ You\'ll need to download the following:
 
 - Choose the UNRAID partition from the list on the left
 - Select First Aid and Verify Disk
-- Check the \"Show Details\" box and get the device path for your
+- Check the "Show Details" box and get the device path for your
     disk, ex: /dev/disk2s1
-- Unmount the **partition** by clicking \"Unmount\" in the top menu
-- leave Disk Utility open, you\'ll need it again
+- Unmount the **partition** by clicking "Unmount" in the top menu
+- leave Disk Utility open, you'll need it again
 
 **3. Make the partition Bootable**
 
 - Open Terminal (Applications -\> Utilities -\> Terminal)
-- Now you\'ll need the raw disk device name.. so if your partition
+- Now you'll need the raw disk device name.. so if your partition
     device path was /dev/disk2s1, the raw device name is /dev/rdisk2,
-    basically you drop the s1 off the end (that\'s the partition number)
+    basically you drop the s1 off the end (that's the partition number)
     and add in a r before disk
 - Type the following command, substituting `<device>`{=html} for your
     raw deivce name ex: /dev/rdisk2 and press enter
@@ -189,7 +189,7 @@ writing, ensure you have Unmounted the partition in Disk Utility
 - Change the extension of your unRAID download from zip to iso
 - Open unetbootin (it will need your password)
 - Choose Disk Image at the bottom and browse for your unRAID iso
-- Choose the device path for your partition (it\'s probably already
+- Choose the device path for your partition (it's probably already
     selected)
 - Click OK
 
@@ -202,7 +202,7 @@ I Think this would work with Windows, Linux versions also. So if any one
 has Windows or Linux can you try this and write here if it works there
 also.
 
-## Booting unRAID Server {#booting_unraid_server}
+## Booting unRAID Server
 
 Safely remove/eject the Flash from your PC and plug it into your server.
 Power up your server and see if it immediately boots (with some
@@ -226,21 +226,21 @@ flash drive, check
 [here](http://www.weethet.nl/english/hardware_bootfromusbstick.php),
 near the bottom of the page. There may be additional information in the
 FAQ section [Flash Drives](FAQ#Flash_Drives "wikilink"), especially the
-FAQ entry, \"[How do I configure the BIOS settings to allow booting from
+FAQ entry, "[How do I configure the BIOS settings to allow booting from
 the USB flash
-drive?](FAQ#How_do_I_configure_the_BIOS_settings_to_allow_booting_from_the_USB_flash_drive.3F "wikilink")\"\
+drive?](FAQ#How_do_I_configure_the_BIOS_settings_to_allow_booting_from_the_USB_flash_drive.3F "wikilink")"\
 \
 
-## If the Flash will not boot, read over the following tips {#if_the_flash_will_not_boot_read_over_the_following_tips}
+## If the Flash will not boot, read over the following tips
 
 Unfortunately, some motherboards and BIOS versions are very picky about
 the geometry or configuration of the USB flash drive. Some combinations
 of motherboard, BIOS, and flash drive do not work, or only work after
-more advanced \'modifications\'. The following tips are what users have
+more advanced 'modifications'. The following tips are what users have
 found to work, in different situations. If one does not work for you,
 try another.
 
-- If your flash drive had pre-installed \"U3\" software, it will need
+- If your flash drive had pre-installed "U3" software, it will need
     to be removed before you format and install unRAID on it. U3
     Un-Install software is available
     [here](http://www.u3.com/uninstall/). A U3 removal tool specific to
@@ -252,9 +252,9 @@ try another.
 ```
 
 - Some instructions for loading **syslinux** on your flash drive leave
-    off the \"**-ma**\" options of the command. If your flash drive does
+    off the "**-ma**" options of the command. If your flash drive does
     not have a preloaded master boot record and a partition marked as
-    \"active\", then it is unlikely to boot unless you use the **-ma**
+    "active", then it is unlikely to boot unless you use the **-ma**
     options.
 
 ```{=html}
@@ -373,9 +373,9 @@ try another.
     from another device, which then continues the boot process from your
     unRAID USB flash drive. See
     [this](http://lime-technology.com/forum/index.php?topic=244.msg21554#msg21554)
-    post, and the following posts, for a \'kicker\' floppy disk. See
+    post, and the following posts, for a 'kicker' floppy disk. See
     [this](http://lime-technology.com/forum/index.php?topic=244.msg43236#msg43236)
-    post for a \'kicker\' CD. There are also other threads about kicker
+    post for a 'kicker' CD. There are also other threads about kicker
     disks, search **kicker**. You may be able to adapt the kicker disk
     to a bootable CD, and there are efforts under way to boot from a
     small extra hard disk or a Cache disk, see the
@@ -386,8 +386,8 @@ try another.
     to continue booting unRAID. More information can be found in the
     [UnRAID Topical Index, Kicker
     disks](UnRAID_Topical_Index#Kicker_disks "wikilink") section.
-    *\[editor note: may later move this to separate section below. this
-    needs more kicker-related links\]*
+    *[editor note: may later move this to separate section below. this
+    needs more kicker-related links]*
 
 ```{=html}
 <!-- -->

@@ -4,7 +4,7 @@ server to your Windows machine, and back again. For copying a few files,
 this is not a problem. But if you are moving a lot of data, here are
 faster methods.
 
-## Midnight Commander - Easy to Use GUI Tool {#midnight_commander___easy_to_use_gui_tool}
+## Midnight Commander - Easy to Use GUI Tool
 
 Use Midnight Commander and PuTTY instead. Type mc at the command prompt
 in a telnet/PuTTy session to start the GUI. Midnight Commander is built
@@ -17,7 +17,7 @@ console on your desktop station. For more information, see the
 [Telnet](Telnet "wikilink") page, which includes information on
 [PuTTY](Telnet#PuTTY "wikilink").
 
-## Move Files Overnight {#move_files_overnight}
+## Move Files Overnight
 
 If you go to the unRAID server and run Midnight Commander from there,
 you can use it to move a bunch of files overnight. But if you use **mc**
@@ -28,8 +28,8 @@ move operation.
 
 But with a little knowledge of Unix commands, you can easily start
 moving files around your unRAID server and then shut down Telnet and
-your workstation. The key is the \"nohup\" command (nohup means \"no
-\[don\'t\] hang up\"). If you put \"nohup\" before any command and an
+your workstation. The key is the "nohup" command (nohup means "no
+[don't] hang up"). If you put "nohup" before any command and an
 ampersand (&) afterwards, the command will run in the background until
 it is complete. Your command prompt will return immediately.
 
@@ -40,19 +40,19 @@ prompt \...
 ``**`nohup mv /mnt/disk1/Movies/* /mnt/disk2/Movies &`**
 
 Do a quick check to see that files are starting to appear in the
-destination folder to make sure you didn\'t have a typo in the command,
+destination folder to make sure you didn't have a typo in the command,
 and then exit from the Telnet session. The files will continue to be
 moved as fast as unRAID can move them, and use ZERO network bandwidth.
 Make sure it is complete before shutting down your unRAID server, as
 copying hundreds of gigs can take a long time to complete even at the
 fastest speed.
 
-nohup can also be used with the \"cp\" (copy) command (see Unix Commands
+nohup can also be used with the "cp" (copy) command (see Unix Commands
 section below)
 
-nohup creates a log file called \'nohup.out\' with the command output.
-The basic \"mv\" command doesn\'t create any output, but \"cp\" outputs
-the name of each file it copies. If you use \"cp\" to copy a LOT of
+nohup creates a log file called 'nohup.out' with the command output.
+The basic "mv" command doesn't create any output, but "cp" outputs
+the name of each file it copies. If you use "cp" to copy a LOT of
 small files (300,000+), you risk having nohup.out get quite large -
 large enough to fill up your unRAID server ramdisk - not a good thing.
 
@@ -62,9 +62,9 @@ large enough to fill up your unRAID server ramdisk - not a good thing.
 There are two effective methods available to move files from one drive
 to another from within unRAID (v4.x and later).
 
-#### Copying files {#copying_files}
+#### Copying files
 
-1\) Copy the files from disk# (where \'#\' is the number of the disk in
+1\) Copy the files from disk# (where '#' is the number of the disk in
 unRAID)
 
 `cp -r /mnt/disk# /mnt/disk#`
@@ -76,7 +76,7 @@ Example:
 Copies all contents of disk4 to disk8. All files/directories on disk4
 remain.
 
-Note the above example will create a dir named \'disk4\' on disk8 with
+Note the above example will create a dir named 'disk4' on disk8 with
 the contents underneath it. The original file date/time stamps will not
 be preserved.
 
@@ -96,7 +96,7 @@ notepad use this syntax:
 
 `cp -r -v -p /mnt/disk4/* /mnt/disk8 | todos > /boot/disk1copy.txt`
 
-#### Moving files {#moving_files}
+#### Moving files
 
 2\) Move the contents of disk1 to disk2 using the mv command
 
@@ -118,7 +118,7 @@ instead.
 #### Quotes
 
 If you want to copy or move entire folders from one drive to another,
-and the folder names have spaces in them, you need to use \"quotes\"
+and the folder names have spaces in them, you need to use "quotes"
 around the folder name, as in this example:
 
 `mv /mnt/disk2/"The Empire Strikes Back" /mnt/disk3`

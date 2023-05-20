@@ -10,7 +10,7 @@ Unraid 6 currently supports the virtualization of nearly any 64-bit
 operating system. Not all OSes have been tested, but those that have are
 listed on this page.
 
-## Microsoft Windows {#microsoft_windows}
+## Microsoft Windows
 
 A few notes on virtualizing Windows on Unraid before you begin:
 
@@ -50,7 +50,7 @@ with various OSes, QEMU machine types, and BIOSes.
   Windows Server 2016 TP3   i440fx, Q35       SeaBIOS   Not Yet Tested
   Windows Server 2016 TP3   i440fx            OVMF      Not Yet Tested
 
-## Updating VirtIO Drivers {#updating_virtio_drivers}
+## Updating VirtIO Drivers
 
 From time to time, the Fedora project will release new versions of the
 [VirtIO
@@ -81,10 +81,10 @@ Serial).
 
 8\. Let Windows automatically search for and find the new drivers.
 
-## Using Hibernation {#using_hibernation}
+## Using Hibernation
 
 Hibernation was originally designed as a feature for laptops to allow
-users to maintain a system\'s state without consuming power. This
+users to maintain a system's state without consuming power. This
 basically involved dumping the RAM of the system to local storage and
 then powering down the system. Then when the system powers back on,
 instead of going through a normal Windows boot process, the system would
@@ -93,7 +93,7 @@ is a useful way to save the state of a VM when you need to either power
 down or reboot the host. In order to make correct use of hibernation,
 you must first do two things.
 
-### Install the QEMU Guest Agent {#install_the_qemu_guest_agent}
+### Install the QEMU Guest Agent
 
 To install the guest agent, perform the following steps:
 
@@ -107,9 +107,9 @@ media.
 4\. Double-click the file *qemu-ga-x64* to install the guest agent.
 
 There is no confirmation when complete, but a command box may appear
-briefly while it\'s installing.
+briefly while it's installing.
 
-### Enable Hibernation in Windows {#enable_hibernation_in_windows}
+### Enable Hibernation in Windows
 
 To enable hibernation support in Windows, perform the following steps:
 
@@ -125,14 +125,14 @@ To enable hibernation support in Windows, perform the following steps:
 
 6\. Click *Save changes*
 
-## Performance Tuning {#performance_tuning}
+## Performance Tuning
 
 After the installation of a Windows VM, there are several things you can
-do to optimize your VM\'s performance and flexibility. None of these are
+do to optimize your VM's performance and flexibility. None of these are
 required, but should you run into performance issues with your Windows
 VMs, following these guides may improve things for you.
 
-### Disable Fast Startup {#disable_fast_startup}
+### Disable Fast Startup
 
 Fast Startup is a feature introduced with Windows 8 that can improve
 boot times on physical PCs. However, as a VM, this can cause problems
@@ -153,10 +153,10 @@ settings to High-performance mode.
 
 ![](/docs/legacy/Disable_fast_startup_-_step_3.png "Disable_fast_startup_-_step_3.png"){width="800"}\
 
-### Disable Hiberfil.sys {#disable_hiberfil.sys}
+### Disable Hiberfil.sys
 
 Even with fast startup disabled, technically the system is still able to
-\"hibernate\" as a user-controllable function. Hibernation suspends the
+"hibernate" as a user-controllable function. Hibernation suspends the
 Windows OS to RAM so that on resume, the entire system state returns as
 it was. The trade-off, however, is that a hidden file called
 Hiberfil.sys will be created on the root of your C:\\ drive that can
@@ -169,7 +169,7 @@ inside the VM.
 
 `2) Reboot your VM and the hiberfil.sys file should no longer remain (this step may not be necessary for certain versions of Windows).`
 
-### Disable Windows Indexing {#disable_windows_indexing}
+### Disable Windows Indexing
 
 The Windows indexing service (aka Windows Search) can cause unnecessary
 disk IO inside your VM. To improve overall VM performance, it is
@@ -187,7 +187,7 @@ recommended to disable this service from running in Windows.
 
 ![](/docs/legacy/Disable_windows_indexing_-_step_3.png "Disable_windows_indexing_-_step_3.png")
 
-### Disable Automatic Disk Defragmenting {#disable_automatic_disk_defragmenting}
+### Disable Automatic Disk Defragmenting
 
 If the Windows disk defragmenter is set to automatically run on a
 schedule, you should disable it. This is not necessary for VMs and can
@@ -209,7 +209,7 @@ cause unnecessary wear and tear on your physical storage devices.
 
 ![](/docs/legacy/Disable_disk_defrag_-_step_4.png "Disable_disk_defrag_-_step_4.png")\
 
-### Enable High Performance Power Mode {#enable_high_performance_power_mode}
+### Enable High Performance Power Mode
 
 Because Windows is a virtual machine, there is little to no benefit in
 leveraging its power management features. In fact, these features can
@@ -225,7 +225,7 @@ inactivity.
 
 ![](/docs/legacy/High_performance_power_mode_-_step_2.png "High_performance_power_mode_-_step_2.png"){width="800"}\
 
-### Enable Remote Desktop Access {#enable_remote_desktop_access}
+### Enable Remote Desktop Access
 
 *NOTE: YOUR USER ACCOUNT MUST HAVE A PASSWORD SET IN ORDER TO CONNECT TO
 YOUR VM USING RDP.*
@@ -257,16 +257,16 @@ using GPU pass through:
 
 `4) You can now connect using a Microsoft RDP client, but you will need to connect to the IP address of the virtual machine,`*`not Unraid itself`*`.`
 
-### Enable MSI for Interrupts to Fix HDMI Audio Support {#enable_msi_for_interrupts_to_fix_hdmi_audio_support}
+### Enable MSI for Interrupts to Fix HDMI Audio Support
 
 If you are assigning a graphics device to your Windows guest that uses
 an HDMI connection and you wish to push audio through that connection,
 you *may* need to perform a registry modification in Windows to ensure
 the audio driver remains working properly (this is most prevalent with
 NVIDIA devices). For a comprehensive explanation of MSI and VFIO
-interrupts, you can visit Alex Williamson\'s
+interrupts, you can visit Alex Williamson's
 blog[1](http://vfio.blogspot.com/2014/09/vfio-interrupts-and-how-to-coax-windows.html).
-Here\'s the procedure for doing this:
+Here's the procedure for doing this:
 
 - Shut down your VM and make a copy of your virtual disk before
     proceeding (as a backup).
@@ -288,15 +288,15 @@ this means your device claims it is MSI capable, but that the guest VM
 is NOT using it. The procedure for enabling MSI support from Windows is
 documented here: <http://forums.guru3d.com/showthread.php?t=378044>
 
-## Upgrading a VM to Windows 10 {#upgrading_a_vm_to_windows_10}
+## Upgrading a VM to Windows 10
 
 If you have a Windows 7 or 8.1 virtual machine and wish to upgrade to
 Windows 10, there are some special considerations. This guide will
 assist you in making the upgrade process as painless as possible.
 
-### Do NOT Use the Upgrade Assistant {#do_not_use_the_upgrade_assistant}
+### Do NOT Use the Upgrade Assistant
 
-![](/docs/legacy/Dont_use_windows_upgrade_assistant.png "Dont_use_windows_upgrade_assistant.png"){width="200"}Microsoft\'s
+![](/docs/legacy/Dont_use_windows_upgrade_assistant.png "Dont_use_windows_upgrade_assistant.png"){width="200"}Microsoft's
 website suggests that if you want to upgrade to Windows 10, use the
 upgrade assistant in the bottom right corner to perform your upgrade.
 This is known to be buggy and potentially cause issues (even on
@@ -304,14 +304,14 @@ traditional Windows PCs). The preferred mechanism to upgrade is to
 download the Windows 10 ISO directly and attach it to your virtual
 machine, then use that to perform the upgrade itself.
 
-### Upgrade VirtIO Drivers to 0.1.109 or later {#upgrade_virtio_drivers_to_0.1.109_or_later}
+### Upgrade VirtIO Drivers to 0.1.109 or later
 
 If you used the 0.1.102 drivers for your Windows 7 or 8.1 VM, you will
 want to upgrade these drivers to 0.1.109 or later before performing the
 upgrade. The process to update the drivers is located
 [here](#Updating_VirtIO_Drivers "wikilink"):
 
-### Obtaining the Installation Media {#obtaining_the_installation_media}
+### Obtaining the Installation Media
 
 The process for obtaining Windows 10 installation media for the purpose
 of an upgrade is the same as it is for performing a new installation.
@@ -320,7 +320,7 @@ download the installation media. If given an option, make sure you
 select **ISO**. Once the download is finished, make sure you copy the
 ISO to the ISOs share on your server.
 
-### Performing the Upgrade {#performing_the_upgrade}
+### Performing the Upgrade
 
 With your VM powered off, edit the VM and perform the following steps:
 
@@ -343,7 +343,7 @@ setup wizard.
 7\. Once completed, you can shutdown and edit the VM, increasing the
 number of CPUs assigned as desired.
 
-## Upgrading a VM to Windows 11 {#upgrading_a_vm_to_windows_11}
+## Upgrading a VM to Windows 11
 
 If you have a Windows 10 VM that you want to upgrade to Windows 11,
 there are a number of steps to ensure the upgrade process completes
@@ -371,7 +371,7 @@ within your Windows 10 VM:
     compatibility.
 - Upgrade to Windows 11.
 
-## Unraid as a VM {#unraid_as_a_vm}
+## Unraid as a VM
 
 There are times when it can be useful to have another instance of Unraid
 running as a VM hosted on an Unraid server.
@@ -397,8 +397,8 @@ questions.
 
 **Prerequisites**
 
-- You will need a valid license key for the Unraid VM. Also, the VM\'s
-    flash drive has to be a different manufacturer than the host\'s
+- You will need a valid license key for the Unraid VM. Also, the VM's
+    flash drive has to be a different manufacturer than the host's
     flash drive.
 - Unraid 6.4.0 (or later) in the VM. If for any reason you want to run
     an earlier release then see the forum thread mentioned above for
@@ -409,25 +409,25 @@ questions.
 - On your Windows or Mac desktop, use the Unraid USB creator tool tool
     to create your flash drive (or see the manual instructions in the
     next post)
-  - Note that the VM\'s flash drive has to be a different
-        manufacturer than the host\'s flash drive.
-  - If your main system is named \"Tower\", be sure to specify a
-        different name for the VM. Perhaps \"TowerVM\".
-  - Click the option to \"Allow EFI boot\"
-  - Write the image to the VM\'s flash drive
+  - Note that the VM's flash drive has to be a different
+        manufacturer than the host's flash drive.
+  - If your main system is named "Tower", be sure to specify a
+        different name for the VM. Perhaps "TowerVM".
+  - Click the option to "Allow EFI boot"
+  - Write the image to the VM's flash drive
 - Make a few edits
-  - Change the label of the flash drive from \"UNRAID\" to
-        \"UNRAID-VM\"
+  - Change the label of the flash drive from "UNRAID" to
+        "UNRAID-VM"
   - Edit syslinux/syslinux.cfg on the flash drive and add
-        unraidlabel=UNRAID-VM to the \"append\" line, like this:
+        unraidlabel=UNRAID-VM to the "append" line, like this:
 
 `label Unraid OS`\
 `menu default`\
 `kernel /bzimage`\
 `append unraidlabel=UNRAID-VM initrd=/bzroot`
 
-- You may wish to make the same change to the \"label Unraid OS GUI
-    Mode\" and \"label Unraid OS Safe Mode\" areas as well
+- You may wish to make the same change to the "label Unraid OS GUI
+    Mode" and "label Unraid OS Safe Mode" areas as well
 - On the same flash drive, copy the newly updated
     syslinux/syslinux.cfg over the existing EFI/boot/syslinux.cfg
 - Create a file called startup.nsh in the root of the flash drive
@@ -437,11 +437,11 @@ questions.
 `\EFI\boot\bootx64.efi`
 
 - Make note of the manufacturer of the flash drive while it is still
-    accessible. You\'ll need it later.
+    accessible. You'll need it later.
 - Insert the flash drive into your server and reboot. If the system
-    tries to boot from the new \"UNRAID-VM\" flash drive, you\'ll need
+    tries to boot from the new "UNRAID-VM" flash drive, you'll need
     to adjust settings in the bios to get it to consistently boot from
-    the original \"UNRAID\" flash drive instead. Once that is done, boot
+    the original "UNRAID" flash drive instead. Once that is done, boot
     the host into Unraid.
 
 **Setup the VM on the host**
@@ -461,7 +461,7 @@ questions.
 - Set the CPUs and RAM for the VM. Something like 2 CPUs and 3GB of
     RAM (initial and max should be the same) should be enough.
 - Choose the highest level Q35 Machine type
-- Leave the BIOS at OVMF and the USB Controller at \"2.0 (EHCI)\"
+- Leave the BIOS at OVMF and the USB Controller at "2.0 (EHCI)"
 - Set up the disk configuration that you want the VM to use:
   - Typically you add a vdisk for a cache drive and at least one
         data drive. Parity is optional, depending on what kind of
@@ -476,9 +476,9 @@ questions.
         are not part of the cache or array.
 - Leave the graphics/sound/network settings at their defaults.
 - In the USB Devices area, put a checkmark next to the UNRAID-VM flash
-    drive. Unfortunately, you can\'t see the label here so you\'ll have
-    to identify it by manufacturer. If the VM\'s flash drive and the
-    host\'s flash drive have the same manufacturer, the VM\'s drive will
+    drive. Unfortunately, you can't see the label here so you'll have
+    to identify it by manufacturer. If the VM's flash drive and the
+    host's flash drive have the same manufacturer, the VM's drive will
     not be visible (which is why the license for the VM must use a URB
     drive that is from a different manufacturer to that used for the
     host).
@@ -489,7 +489,7 @@ Create and start the VM
     after creation.
 - Click the **Create** button
 - Back on the VMs -\> Virtual Machines page you can click the unRAID
-    icon and then choose \"VNC Remote\" to watch the VM boot. Note the
+    icon and then choose "VNC Remote" to watch the VM boot. Note the
     IP address is displayed right before the login prompt.
 
 **Configure the VM**
@@ -502,18 +502,18 @@ Create and start the VM
     this VM.
 - Go to *Settings-\>Identification* and make sure set the *Server
     Name* is set to be different to the host. It can also be a good idea
-    to set the *Description* to something like \"Unraid as guest\"
+    to set the *Description* to something like "Unraid as guest"
 - (Optional) Go to *Settings-\>Display Settings* and choose a
     different Dynamix color theme to that used on the host. This will
     help with making it more obvious
-- Since this is a test system, you\'ll probably want to go to
+- Since this is a test system, you'll probably want to go to
     *Settings-\>SMB Settings-\>Workgroup Settings* and set Local Master
     to No.
 - If you have a UPS on the host system (and you do, right?) go to
-    Settings -\> UPS (on the VM) and set the UPS cable to \"Ether\", UPS
-    type to \"net\" and Device to the IP address of your host. Configure
+    Settings -\> UPS (on the VM) and set the UPS cable to "Ether", UPS
+    type to "net" and Device to the IP address of your host. Configure
     the runtime settings so the VM turns off before the host, and set
-    \"Turn off UPS\" to no. Then start the UPS daemon.
+    "Turn off UPS" to no. Then start the UPS daemon.
 - Add the array devices and cache drive that were setup previously and
     start the array
 - Add Community Applications plugin
@@ -541,7 +541,7 @@ Create and start the VM
   - Click Apply to commit the change
   - The VM should now start without the Execution Error.
 
-## OpenELEC / LibreELEC {#openelec_libreelec}
+## OpenELEC / LibreELEC
 
 OpenELEC and LibreELEC have been made available as pre-configured VM
 templates. This enables users to quickly add the robust media player

@@ -15,14 +15,14 @@ would you want to do that? Any number of reasons -**
 **Important Notes**
 
 - If you have purchased a replacement drive, we always recommend
-    Preclearing the replacement drive first, to make sure it\'s a good
-    drive that won\'t fail for a few years at least. The Preclearing is
-    not strictly necessary, as replacement drives don\'t have to be
+    Preclearing the replacement drive first, to make sure it's a good
+    drive that won't fail for a few years at least. The Preclearing is
+    not strictly necessary, as replacement drives don't have to be
     cleared, they are going to be completely overwritten. But
     Preclearing new drives one to three times provides a thorough test
-    of the drive, eliminates \'infant mortality\' failures.
+    of the drive, eliminates 'infant mortality' failures.
 
-:   ***It\'s always good to have a prepared and tested replacement drive
+:   ***It's always good to have a prepared and tested replacement drive
     already on hand!***
 
 - **Important! You cannot replace a drive with one that is LARGER than
@@ -33,8 +33,8 @@ would you want to do that? Any number of reasons -**
 :   unRAID does not require the replacement drive to be the same size as
     the old drive being replaced. It CANNOT be smaller, but it CAN be a
     larger drive, up to the size of the parity drive. If too large,
-    unRAID has a special two-step \'Parity Swap\' procedure (often
-    called the \'swap-disable\') that will use a larger than parity
+    unRAID has a special two-step 'Parity Swap' procedure (often
+    called the 'swap-disable') that will use a larger than parity
     drive to first upgrade the parity drive then replace the old drive
     with the old parity drive.
 
@@ -42,13 +42,13 @@ would you want to do that? Any number of reasons -**
     already checked the syslog and SMART report (or got instruction from
     the unRAID forums), and are SURE that the drive is good, then you
     can use the procedures below to rebuild it onto itself (below,
-    consider the \'old drive\' to be the \'new drive\'). There is a
+    consider the 'old drive' to be the 'new drive'). There is a
     similar procedure just for this though -\> [Re-enable the
     drive](Manual/Storage_Management#Rebuilding_a_drive_onto_itself "wikilink").
 
 \
 
-## The procedure {#the_procedure}
+## The procedure
 
 :   *If you are running a very old version of unRAID, such as v4.7 or
     older, skip down to the next section.*
@@ -57,13 +57,13 @@ would you want to do that? Any number of reasons -**
 2. Unassign the old drive if still assigned *(to unassign, set it to
     **No Device**)*
 3. Power down
-4. \[ Optional \] Pull the old drive *(you may want to leave it
+4. [ Optional ] Pull the old drive *(you may want to leave it
     installed for Preclearing or testing)*
 5. Install the new drive
 6. Power on
 7. Assign the new drive in the slot of the old drive
 8. Go to the **Main** -\> **Array Operation** section
-9. Put a check in the **Yes, I\'m sure** checkbox (next to the
+9. Put a check in the **Yes, I'm sure** checkbox (next to the
     information indicating the drive will be rebuilt), and click the
     **Start** button
 10. The rebuild will begin, with hefty disk activity on all drives, lots
@@ -75,7 +75,7 @@ would you want to do that? Any number of reasons -**
 
 \
 
-## The procedure for unRAID v4 {#the_procedure_for_unraid_v4}
+## The procedure for unRAID v4
 
 :   *This section is only for old versions of unRAID, such as v4.7 or
     older. If you are running v5 or v6 of unRAID, then go back to the
@@ -86,11 +86,11 @@ would you want to do that? Any number of reasons -**
 3. Replace hard drive with new drive.
 4. Turn on
 5. Replaced drive appears with blue dot
-6. Tick the \"I\'m sure\" checkbox, and press \"Start will bring the
+6. Tick the "I'm sure" checkbox, and press "Start will bring the
     array on-line, start Data-Rebuild, and then expand the file
-    system.\"
-7. Hefty disk activity and main page will show lots of reading on \"the
-    other\" disks and writing on new disk as data is being rebuilt.
+    system."
+7. Hefty disk activity and main page will show lots of reading on "the
+    other" disks and writing on new disk as data is being rebuilt.
 8. End
 
 \

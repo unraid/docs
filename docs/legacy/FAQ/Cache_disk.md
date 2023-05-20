@@ -1,13 +1,6 @@
-\
-\
-
-```{=html}
-<hr>
-```
-
 :   **Important!** This page is a basic introduction to the unRAID Cache
     drive, but was written for v4 and v5. There is no mention of
-    Dockers, VM\'s, or Cache Pools. For v6 users, this page serves as an
+    Dockers, VM's, or Cache Pools. For v6 users, this page serves as an
     introduction, but you should also check these resources:
     -   [FAQ](http://lime-technology.com/forum/index.php?topic=48508) -
         look for the *Cache Drive/Pool* section, has a number of related
@@ -17,11 +10,6 @@
         pool](http://lime-technology.com/forum/index.php?topic=56005) -
         a nice video guide
 
-```{=html}
-<hr>
-```
-
-\
 The cache disk feature of unRAID greatly increases the perceived
 performance of the system when writing data to a parity-protected array.
 It is particularly useful for users who write data to the array on a
@@ -56,18 +44,18 @@ disk, and when they are moved to the array, it may be desirable to
 disable the cache disk for certain shares. Each user share therefore has
 the option to disable the use of the cache disk for that share.
 
-## Adding a cache disk to the array {#adding_a_cache_disk_to_the_array}
+## Adding a cache disk to the array
 
 In order to create a cache disk using the GUI:
 
 1. Stop the array
-2. Click on \"Disk\" at the top.
+2. Click on "Disk" at the top.
 3. Look at the very bottom of the page in the Disk Devices section for
-    a disk \'slot\' labeled Cache (the very last slot).
+    a disk 'slot' labeled Cache (the very last slot).
 4. Select any disk not in the array into that slot.
 5. Start the array
 
-## Cache settings {#cache_settings}
+## Cache settings
 
 This section is present on the Share Settings page when user shares are
 enabled, and a cache disk is present and formatted.
@@ -82,15 +70,15 @@ free space then the object will be created on the array instead.
 
 ## Speed
 
-### Perceived write speed increases {#perceived_write_speed_increases}
+### Perceived write speed increases
 
-The emphasis here is on \'perceived\'. The real, behind-the-scenes write
+The emphasis here is on 'perceived'. The real, behind-the-scenes write
 speed of your unRAID server is unchanged by the addition of a cache
 drive. A cache drive simply grants you the fastest transfer that your
 hardware will allow by deferring the inevitable parity calculation until
 a later time (3:40 am server time, by default).
 
-### Actual write speed increases {#actual_write_speed_increases}
+### Actual write speed increases
 
 How much of a write speed improvement can you expect to see from using a
 cache drive? That depends on your hardware. Slower hardware will of
@@ -105,11 +93,11 @@ unRAID:
 
 **Without a cache drive:** unRAID 4.5.3 - average 20-30 MB/s, peak
 reported [40
-MB/s](http://lime-technology.com/forum/index.php?topic=5496.msg51190#msg51190)\*
+MB/s](http://lime-technology.com/forum/index.php?topic=5496.msg51190#msg51190)*
 
 **With a cache drive:** unRAID 4.5.3 - average 50-60 MB/s, peak reported
 [101
-MB/s](http://lime-technology.com/forum/index.php?topic=5754.msg120084#msg120084)\*
+MB/s](http://lime-technology.com/forum/index.php?topic=5754.msg120084#msg120084)*
 
 So generally speaking, a server with a cache drive has write speeds
 **2-3x faster** than the same server without a cache drive.
@@ -118,7 +106,7 @@ So generally speaking, a server with a cache drive has write speeds
     personal observations by Rajahal and upon reports from other
     reputable sources in these forums.
 
-## The Mover {#the_mover}
+## The Mover
 
 The Mover is a utility that runs periodically to move files off the
 cache disk and onto parity-protected data disk(s). If Mover logging is
@@ -136,34 +124,25 @@ they are no longer open.
     Settings](Plugin/webGui/Mover_Settings "wikilink")*
 
 - The mover will not move any top-level directories which begin with a
-    \'.\' character. Such directories will not exist in normal use, but
+    '.' character. Such directories will not exist in normal use, but
     an advanced user may use this knowledge to create directories which
-    won\'t get moved.
-
-```{=html}
-<!-- -->
-```
+    won't get moved.
 
 - The mover will not move any files that exist in the root of the
     cache disk. Such files will not exist in normal use, but an advanced
-    user may use this knowledge to create files which won\'t get moved
+    user may use this knowledge to create files which won't get moved
     (for example, a swap file).
-
-```{=html}
-<!-- -->
-```
-
 - The mover is just a script called '/usr/local/sbin/mover' which
-    invokes \'find\' to traverse the cache disk and move files to the
-    array using the \'mv\' command. Advanced users may edit this script
-    to fine-tune the mover. For example, it\'s possible to set
+    invokes 'find' to traverse the cache disk and move files to the
+    array using the 'mv' command. Advanced users may edit this script
+    to fine-tune the mover. For example, it's possible to set
     conditions such as 'move only files older than N days', or 'only
     move files greater than N bytes in size', etc. Refer to the script
-    itself and the \'man\' page of the \'find\' command.
+    itself and the 'man' page of the 'find' command.
 
-## Other uses for a cache disk {#other_uses_for_a_cache_disk}
+## Other uses for a cache disk
 
-### Warm spare {#warm_spare}
+### Warm spare
 
 The purpose of a 'warm spare' is to minimize the amount of time that
 your array is without parity protection after a drive failure. A warm
@@ -190,7 +169,7 @@ for another drive to fail? This application will of course add a bit of
 wear and tear to your warm spare, but nothing outside the scope of
 ordinary use.
 
-### Running other software on top of unRAID {#running_other_software_on_top_of_unraid}
+### Running other software on top of unRAID
 
 As a cache drive is outside of the parity-protected array, it can be
 used for alternate software and unRAID add-ons that need to read and
@@ -201,24 +180,24 @@ write data often. Examples include:
 - Multi-boot into a full Windows OS from the HDD,
 - Use as a swap drive/partition for Linux.
 
-:   *Read more: [Forum
+   *Read more: [Forum
     discussion](http://lime-technology.com/forum/index.php?topic=3899.0)*
 
-### Scratch space {#scratch_space}
+### Scratch space
 
 The cache disk can be used as scratch space for torrent client(s), news
 clients or web servers. The advantage here is that, for most of the day,
 only the one cache disk in the array needs to be spun up. Otherwise, at
 least two drives - parity and one data -- will be spun up.
 
-## Disadvantages of a cache disk {#disadvantages_of_a_cache_disk}
+## Disadvantages of a cache disk
 
-### \'Wasted\' HDD and HDD slot {#wasted_hdd_and_hdd_slot}
+### 'Wasted' HDD and HDD slot
 
 One of your hard drives and SATA/PATA slots is dedicated to your cache
 drive, instead of long-term data storage
 
-### Short-term risk of data loss {#short_term_risk_of_data_loss}
+### Short-term risk of data loss
 
 If your cache drive dies, it will take all of the data currently
 residing on it to the grave. While it is possible to run ReiserFS data
@@ -240,11 +219,11 @@ cache disk are:
 ### Purpose
 
 **Increased perceived write speed:** You will want a drive that is as
-fast as possible. For the fastest possible speed, you\'ll want an SSD
+fast as possible. For the fastest possible speed, you'll want an SSD
 (which has the added benefit of being low power) or a 10,000 rpm drive.
 If you are on a tighter budget, a 7200 rpm drive such as a WD Black will
 do fine. Unless you write a lot of very small files, the size of the
-hard drive\'s cache (8, 16, 32, 64 mb etc.) won\'t matter much. You can
+hard drive's cache (8, 16, 32, 64 mb etc.) won't matter much. You can
 also eek a bit more performance out of a slower drive by short stroking
 it (meaning confine it to only the outside sectors, which are higher
 density and can therefore be written to and read from faster), but this
@@ -256,7 +235,7 @@ just remember that in the event of a parity rebuild (if your parity disk
 dies) or a rebuild from parity (if a data disk dies), the process will
 proceed at the speed of your slowest disk.
 
-### Amount of data {#amount_of_data}
+### Amount of data
 
 The final consideration in choosing a cache drive is to think about the
 amount of data you expect to pass through it. If you write \~10 GBs per
