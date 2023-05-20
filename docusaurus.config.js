@@ -9,7 +9,7 @@ const { sortSidebarItems } = require("./sitebar-semver-sort");
 const config = {
   title: "Unraid Docs",
   tagline: "Documentation for Unraid",
-  favicon: "img/favicon.ico",
+  favicon: "img/favicon.svg",  // https://dev.to/masakudamatsu/favicon-nightmare-how-to-maintain-sanity-3al7
 
   // Set the production url of your site here
   url: "https://docs.unraid.net",
