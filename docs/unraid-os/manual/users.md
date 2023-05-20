@@ -10,8 +10,8 @@ systems. Instead the users defined in unRaid can be divided into:
 - Share permissions Users:
 - Other Users:
 
-# Admin User (root) {#admin_user_root}
+# Admin User (root)
 
-# Share permissions Users {#share_permissions_users}
+# Share permissions Users
 
-# Other Users {#other_users}
+# Other Users

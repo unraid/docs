@@ -1,15 +1,15 @@
 \
 **This page is designed to help you obtain your CPU and motherboard
 temperatures, and hopefully keep them current and visible. If you
-aren\'t using unRAID v6 with the Dynamix System Temp plugin, then skip
-down to the \'older versions\' section.**\
+aren't using unRAID v6 with the Dynamix System Temp plugin, then skip
+down to the 'older versions' section.**\
 \
 
-## Setting up sensing for v6 {#setting_up_sensing_for_v6}
+## Setting up sensing for v6
 
 :   *This section is only for unRAID v6 with the Dynamix System Temp
     plugin installed. These instructions are lifted directly from the
-    author\'s words
+    author's words
     [here](http://lime-technology.com/forum/index.php?topic=31172.msg473847#msg473847).*
 
 1. Preparation
@@ -18,7 +18,7 @@ down to the \'older versions\' section.**\
         [NerdPack
         plugin](http://lime-technology.com/forum/index.php?topic=37541.0),
         then in the plugin enabling perl to install. Perl is only needed
-        by the script \"sensors-detect\", which will be run in the
+        by the script "sensors-detect", which will be run in the
         background by the Detect function of Step 2. Once you have
         completed System Temp setup, perl is no longer needed and can be
         disabled, uninstalled.
@@ -55,7 +55,7 @@ down to the \'older versions\' section.**\
 
 \
 
-## Setting up sensing for older versions {#setting_up_sensing_for_older_versions}
+## Setting up sensing for older versions
 
 To pass system sensor data (such as temps, voltages, and fan speeds) to
 3rd-party addons such as
@@ -122,17 +122,17 @@ example, **temp1** is the motherboard and **temp2** is the CPU.\
 Create your **sensors.conf** file. This will contain the sensor
 device(s) and labels (optional) for the temperatures you wish to
 monitor. For Dynamix and Simple Features, it must establish the 2 labels
-\'MB Temp\' and \'CPU Temp\'.
+'MB Temp' and 'CPU Temp'.
 
 - To be used by Dynamix, save this file to your flash drive, in the
     path **/boot/config/plugins/dynamix**. In Windows, this path would
     be something like **\\\\tower\\flash\\config\\plugins\\dynamix**.
 - If not for Dynamix, save this file into a persistent location on the
     flash drive, e.g. **/boot/config** or **/boot/custom**. Later, you
-    will probably need a copy command in your \'go\' file, to copy it to
+    will probably need a copy command in your 'go' file, to copy it to
     its correct location in the UnRAID system.
 
-In the sample **sensors.conf** file below, I\'m only using data from the
+In the sample **sensors.conf** file below, I'm only using data from the
 2nd sensor device.
 
 `# lines starting with "#" are comments and ignored`\
@@ -146,23 +146,23 @@ In the sample **sensors.conf** file below, I\'m only using data from the
 **Step 6: Prepare sensors-detect**\
 The **sensors-detect** tool is a long script that should detect all of
 your sensors, and help you get the right sensor driver names. A copy is
-included with UnRAID, but it\'s not the latest, and if you have a new
+included with UnRAID, but it's not the latest, and if you have a new
 motherboard (recent manufacture), you will want to use the latest
 version, as it is occasionally updated with the newest drivers and
 sensors. ~~Go to the [lm-sensors
 Devices](http://www.lm-sensors.org/wiki/Devices) page, and look for the
-link \"**latest version of sensors-detect**\", in the 3rd paragraph
+link "**latest version of sensors-detect**", in the 3rd paragraph
 currently.~~ *The lm-sensors site is down currently!* Download and copy
-it to your flash drive. To run it (assuming it\'s in the root folder of
+it to your flash drive. To run it (assuming it's in the root folder of
 the flash), you will need to either change to the flash drive (**cd
 /boot**), or run the command as **/boot/sensors-detect**.
 
 The **sensors-detect** tool requires [Perl](http://www.perl.org/) to be
-installed, at least temporarily.\
-\* If it isn\'t already installed, you will need to download an
+installed, at least temporarily.
+* If it isn't already installed, you will need to download an
 appropriate version for your UnRAID release:
 
-  - -   For UnRAID v4 series, get it from
+  - For UnRAID v4 series, get it from
         [here](http://slackware.cs.utah.edu/pub/slackware/slackware-12.2/slackware/d/perl-5.10.0-i486-1.tgz)
   - For UnRAID v5 series, get it from
         [here](http://slackware.cs.utah.edu/pub/slackware/slackware-13.1/slackware/d/perl-5.10.1-i486-1.txz)
@@ -182,16 +182,16 @@ appropriate version for your UnRAID release:
     re-install.
 
 - Or for Dynamix, you can modify the Dynamix System Temp plugin itself
-    (currently for v5 it\'s
+    (currently for v5 it's
     **/boot/config/plugins/dynamix.system.temp-2.1.0-noarch-bergware.plg**),
-    by locating the line ending with \"# perl scripting\" and replacing
-    \"no-install\" with \"do-install\". Then re-install the plugin or
-    reboot. Change it back to \"no-install\" when you are done with this
+    by locating the line ending with "# perl scripting" and replacing
+    "no-install" with "do-install". Then re-install the plugin or
+    reboot. Change it back to "no-install" when you are done with this
     whole procedure.
 
 **Step 7: Run sensors-detect**\
-Run **sensors-detect**. Enter \[YES\] for the various scans. Enter
-\[NO\] to automatically generate the config file (last prompt). The
+Run **sensors-detect**. Enter [YES] for the various scans. Enter
+[NO] to automatically generate the config file (last prompt). The
 output should be similar to:
 
 `root@Skynet:~# sensors-detect`\
@@ -308,7 +308,7 @@ output should be similar to:
 Make note of the driver name(s) listed in the summary. In the above
 example, they are **w83627ehf** and **coretemp**.\
 **Step 9: Add modprobes to go**\
-Edit your \'go\' file and add in the **modprobe** command for each
+Edit your 'go' file and add in the **modprobe** command for each
 sensor driver that is required.
 
 `# modprobe for each sensor`\
@@ -318,7 +318,7 @@ sensor driver that is required.
 
 **Step 10: Add the copy instruction to go**\
 If you are configuring for Dynamix, this step is not needed, so skip to
-Step 11. Otherwise, add another line in your \'go\' file to copy your
+Step 11. Otherwise, add another line in your 'go' file to copy your
 persistent sensors.conf file (from where you created/saved it in Step 5)
 into the appropriate location on each boot.
 

@@ -35,7 +35,7 @@ There are also multiple other languages that are in the process of being transla
 - If you would like to see a new language added, please write a post
     in [this forum thread](https://forums.unraid.net/forum/77-general/).
 
-### How to Load a Language pack {#how_to_load_a_language_pack}
+### How to Load a Language pack
 
 Language packs are downloaded and installed via the [Community
 Applications
@@ -59,12 +59,12 @@ Community Applications -\> Language, click the download button on the
 language pack you would like to download and use.
 ![](/docs/legacy/Download.png "Download.png")
 
-### How to Switch Back to English? {#how_to_switch_back_to_english}
+### How to Switch Back to English?
 
 To switch back to English, you can always click the Switch back toggle button located in the top right of the webGui.
 ![](/docs/legacy/Switch_toggle.png "Switch_toggle.png")
 
-### Developer Requirements for Multi-Language Support {#developer_requirements_for_multi_language_support}
+### Developer Requirements for Multi-Language Support
 
 It is necessary for plugin developers to take appropriate action within
 their plugins to enable them to utilize the multi-language support. The
@@ -83,7 +83,7 @@ added a plugin will still work as-is on 6.9+ with no changes required
 albeit only with text in English (or whatever language the developer has
 embedded into the plugin).
 
-### Multi-Language Forums {#multi_language_forums}
+### Multi-Language Forums
 
 In the Unraid forum, there are also many active [language-specific
 forums](https://forums.unraid.net/forum/75-multi-language-section/) to

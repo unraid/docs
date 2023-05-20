@@ -1,6 +1,6 @@
 # Apple Time Machine
 
-## Guide: Setting up a Time Machine Share on your Unraid Server {#guide_setting_up_a_time_machine_share_on_your_unraid_server}
+## Guide: Setting up a Time Machine Share on your Unraid Server
 
 Apple's Time Machine is a built-in backup feature for your Mac that will
 automatically backup all of your files, apps, music, photos, emails,
@@ -12,7 +12,7 @@ store your Time Machine backups on your Unraid server!
 
 **Note: This guide works with MacOS High Sierra.**
 
-## Create a Time Machine Backup on your Unraid Server {#create_a_time_machine_backup_on_your_unraid_server}
+## Create a Time Machine Backup on your Unraid Server
 
 To create backups with Time Machine and store them on your Unraid
 server, all you'll need to do is connect it to your Unraid server and
@@ -29,7 +29,7 @@ Editor](https://tclementdev.com/timemachineeditor/) so you can customize
 when backups are made and select a host of other options not available
 in Time Machine itself.
 
-## Unraid and Time Machine Setup {#unraid_and_time_machine_setup}
+## Unraid and Time Machine Setup
 
 Before you begin, make sure **SMB** is enabled in the Unraid webgui by
 going to:
@@ -43,7 +43,7 @@ going to:
 
 Now:
 
-1. In the Unraid webGUI, go to \"Shares\" and click \"Add Share".
+1. In the Unraid webGUI, go to "Shares" and click "Add Share".
 2. Name the share (Ex: Time Machine).
 3. Set your minimum free space or leave default. This is the minimum
     free space available to allow writing to any disk belonging to the
@@ -58,7 +58,7 @@ Now:
 1. Under "Export" select "Yes (Time Machine)"
 2. Set your "TimeMachine volume size limit". This limits the reported
     volume size, preventing Time Machine from using the entire real disk
-    space for backup. Example: setting this value to \"1024\" would
+    space for backup. Example: setting this value to "1024" would
     limit the reported disk space to 1GB.
 3. Set your Security parameters to what you prefer.
 4. Click Apply/Done.
@@ -93,7 +93,7 @@ That's it. Now, all of your Time Machine backups will be stored on your
 Unraid server and if something bad happens to your Mac, you will be able
 to restore files, settings, and apps from these backups!
 
-## Creating Multiple Time Machine Shares for Different People/Macs {#creating_multiple_time_machine_shares_for_different_peoplemacs}
+## Creating Multiple Time Machine Shares for Different People/Macs
 
 So, say you want to create multiple time machine backups for different
 people/Macs in the house? You will need to create a separate share for

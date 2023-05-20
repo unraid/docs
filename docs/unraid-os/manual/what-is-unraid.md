@@ -28,18 +28,18 @@ you download or create.
 The capabilities of Unraid are separated into three core parts:
 software-defined NAS, application server, and localized virtualization
 
-## Network Attached Storage {#network_attached_storage}
+## Network Attached Storage
 
 At its core, Unraid is a hardware-agnostic solution that can turn almost
 any 64-bit capable system into a NAS. Unraid can manage an array of
 drives (connected via IDE, SATA, or SAS) that vary in size, speed,
 brand, and filesystem. In addition, by eliminating the use of
 traditional RAID-based technologies, we can scale on-demand by adding
-more drives and without needing to rebalance existing data. Unraid\'s
+more drives and without needing to rebalance existing data. Unraid's
 NAS functionality consists of a parity-protected array, user shares, and
 an optional cache pool.
 
-### Parity-Protected Array {#parity_protected_array}
+### Parity-Protected Array
 
 The primary purpose of an Unraid array is to manage and protect the data
 of any group of drives (JBOD) by adding a dedicated *parity drive*. A
@@ -57,7 +57,7 @@ of the nth bit on every drive and determine whether that sum is even or
 odd, then you can force the corresponding nth parity bit to also be even
 or odd (zero or one). If a data drive fails, that parity information can
 now be used to deduce the exact bit values of the failed drive, and
-perfectly rebuild it on a replacement drive. Here\'s an example:
+perfectly rebuild it on a replacement drive. Here's an example:
 
 ![](/docs/legacy/No_parity@2x.png "No_parity@2x.png")
 
@@ -69,12 +69,12 @@ parity. The parity disk must be of equal or greater size than the
 largest data disk. To calculate the value of each bit on the parity
 disk, we only need to know the sum total for each column. If the sum of
 a column is an even number, the parity bit should be a 0. If the sum of
-a column is an odd number, the parity bit should be a 1. Here\'s the
+a column is an odd number, the parity bit should be a 1. Here's the
 same image as before, but with parity calculated per frame:
 
 ![](/docs/legacy/Parity@2x.png "Parity@2x.png")
 
-Now let\'s pretend that drive 2 in our example has suffered a failure
+Now let's pretend that drive 2 in our example has suffered a failure
 and a new drive has been purchased to replace it:
 
 ![](/docs/legacy/Drive_failure@2x.png "Drive_failure@2x.png")
@@ -90,7 +90,7 @@ loss. Parity protection also provides fault-tolerance by allowing full
 usage of the system while keeping all data accessible, even when a drive
 has failed.
 
-### User Shares {#user_shares}
+### User Shares
 
 Unlike most RAID systems, Unraid saves data to individual drives. To
 simplify manageability, users can create *shares* that allow files
@@ -135,7 +135,7 @@ capacity expansion of RAID 0.
 
 ![](/docs/legacy/Cache-pool.gif "Cache-pool.gif")
 
-## Application Server {#application_server}
+## Application Server
 
 Traditional NAS solutions to application support come with three primary
 limitations:
@@ -161,7 +161,7 @@ Docker addresses these problems in a number of key ways:
 Docker is made up of three primary components: the Engine, the Hub, and
 Containers.
 
-### The Engine {#the_engine}
+### The Engine
 
 The Docker Engine represents the management component that is built into
 Unraid 6. Using the engine, we can control application access to vital
@@ -186,7 +186,7 @@ do not replicate those shared resources and instead, leverage the
 efficiency of Linux and a copy-on-write filesystem to minimize the
 overhead. ![](/docs/legacy/Docker-vs-VM@2x.png "Docker-vs-VM@2x.png")\
 
-### The Hub {#the_hub}
+### The Hub
 
 One of biggest advantages Docker provides over both traditional Linux
 containers (LXCs) and virtual machines (VMs) is in its application
@@ -236,7 +236,7 @@ performance.
 
 ![](/docs/legacy/Docker@2x.png "Docker@2x.png")
 
-## Virtualization Host {#virtualization_host}
+## Virtualization Host
 
 Virtualization technology has advanced greatly since it was first
 introduced and provides a wealth of benefits to users. By supporting the
@@ -257,7 +257,7 @@ benefits of isolated access to those resources. This enables Unraid
 servers to handle a variety of other tasks, more than just
 network-attached storage.
 
-### Assignable Devices {#assignable_devices}
+### Assignable Devices
 
 Our implementation of KVM includes modern versions of QEMU, libvirt,
 VFIO\*, VirtIO, and VirtFS. We also support Open Virtual Machine
@@ -272,7 +272,7 @@ impacting the reliability of the host operating system.
 
 ![](/docs/legacy/KVM@2x.png "KVM@2x.png")
 
-## Simplified Management {#simplified_management}
+## Simplified Management
 
 Management of your Unraid system is accomplished through an intuitive
 web interface that offers basic controls for common tasks as well as

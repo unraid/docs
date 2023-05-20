@@ -20,7 +20,7 @@ specified, all packages and steps are deprecated.`</font>`{=html}***
 :   If you update a section of this *Configuration Tutorial* for unRAID
     v6, please make a note next to the header link. *Be cautious though,
     as headers may be linked from elsewhere, so if you change a header,
-    it will break external links. It\'s better to add a note immediately
+    it will break external links. It's better to add a note immediately
     below the header.*
 
 ------------------------------------------------------------------------
@@ -44,7 +44,7 @@ drive to a usable array.
 
 The following assumptions are made:
 
-- You have \'installed\' unRAID to your flash drive. If you have not,
+- You have 'installed' unRAID to your flash drive. If you have not,
     please see the [Official installation
     guide](http://www.lime-technology.com/support/unraid-server-installation)
     and do so now.
@@ -53,14 +53,14 @@ The following assumptions are made:
     console](Terminal_Access "wikilink").
 - You know what a command prompt is and how to access it.
 - You have a **basic** understanding of computer networking concepts.
-    You don\'t need to be a network administrator, but if you don\'t
+    You don't need to be a network administrator, but if you don't
     know what an IP address is you should spend some time on google!
 
 If you are unclear about any of those, read the linked articles/guides,
 perform your own research, and ask questions in the
 [Forums](http://lime-technology.com/forum/index.php).
 
-## Pre Boot {#pre_boot}
+## Pre Boot
 
 `Note: If you are in a hurry you may skip copying the`*`preclear_disk.sh`*\
 `and the`*`unmenu_install`*`scripts to your flash drive.  The preclear`\
@@ -100,7 +100,7 @@ unzip the file on your PC. Create a folder named *unmenu* in the root of
 your flash drive. Copy *unmenu_install* to the *unmenu* folder on your
 flash drive.
 
-## First Boot {#first_boot}
+## First Boot
 
 Now that you have the required files on your flash drive, use it to boot
 your UnRAID system. When the system has been booted you will be greeted
@@ -116,7 +116,7 @@ change to
 
 which is hereafter referred to as *the prompt*.
 
-### Verifying Network Connectivity {#verifying_network_connectivity}
+### Verifying Network Connectivity
 
 To verify that your UnRAID system is connected to the network, at the
 prompt type enter
@@ -138,12 +138,12 @@ need to set your network settings manually. Note your IP address now,
 you may need it shortly, and skip to the next section, or continue to
 the next section to set a static IP address.
 
-### Setting a static IP address {#setting_a_static_ip_address}
+### Setting a static IP address
 
 If you do not have a DHCP server on your network, you must manually set
 an IP address for your UnRAID server. By default, the only two text
-editors installed with UnRAID are \"vi\" and \"mcedit.\" If you are not
-**already** familiar with \"vi\" it is suggested you use \"mcedit\" as
+editors installed with UnRAID are "vi" and "mcedit." If you are not
+**already** familiar with "vi" it is suggested you use "mcedit" as
 it is much easier for a beginner. If you wish, the editing can be done
 on your windows PC instead. To do that, shutdown the UnRAID server by
 typing
@@ -152,7 +152,7 @@ typing
 
 at the prompt and pressing *enter*.
 
-**Note: the \"shutdown -h\" command DOES NOT cleanly stop the array. If
+**Note: the "shutdown -h" command DOES NOT cleanly stop the array. If
 you type this on an array with a configured parity drive it will force a
 full parity calculation when you reboot.**
 
@@ -164,8 +164,8 @@ type
 `mcedit /boot/config/network.cfg`
 
 If using [PuTTY](Terminal_Access#PuTTY "wikilink") as your telnet client
-program on your PC, the function keys and mouse will work in \"mcedit\"
-If not using \"putty\", you can use The Escape key followed by the
+program on your PC, the function keys and mouse will work in "mcedit"
+If not using "putty", you can use The Escape key followed by the
 number 1 through 0 to simulate function keys 1 through 10. You will need
 to use function key F2 to save your edited file, and F10 to quit the
 editor. (or Escape 2, Escape 0)
@@ -219,7 +219,7 @@ to reboot the system.
 If you edited the file on another computer. Remove the flash drive and
 re-attach it to the unRAID server and power it back up.
 
-### Verifying SATA Hard Drives are Detected {#verifying_sata_hard_drives_are_detected}
+### Verifying SATA Hard Drives are Detected
 
 `Note: This section assumes all SATA hard drives!`\
 ``**`If you are using older hardware,`\
@@ -246,10 +246,10 @@ In this example there are 6 SATA controllers with 5 drives connected at
 drives connected, make sure you see 5 drives here and the link speeds
 are correct.
 
-## Configuration With the Server Management Utility {#configuration_with_the_server_management_utility}
+## Configuration With the Server Management Utility
 
 Now that you have verified your UnRAID server can see the network and
-its hard drives are connected correctly it\'s time to log into the web
+its hard drives are connected correctly it's time to log into the web
 interface and continue setup.\
 \
 Using another system that is connected to your network, open a web
@@ -299,7 +299,7 @@ changed the server name and were connected to the Server Management
 Utility using //tower you may need to type //NEW_SERVER_NAME to
 re-connect.
 
-### Network Settings {#network_settings}
+### Network Settings
 
 - Obtain IP Address Automatically - When set to yes the server will
     obtain an IP address from a DHCP server on the network. This has the
@@ -335,7 +335,7 @@ the new IP address. If you are using Windows and were connected using
 to clear the resolver cache and force the computer to re-query the
 network for the new name.
 
-### Date and time {#date_and_time}
+### Date and time
 
 - Time zone - Sets the time zone for the server.
   - Set as appropriate for your location.
@@ -352,14 +352,14 @@ network for the new name.
   - If Use NTP is set to Yes, this is irrelevant and NTP will set
         everything.
   - IF you are not using NTP you need to set your time and date here
-        in UTC time (FIX ME IF I\'M WRONG!!!!!)
+        in UTC time (FIX ME IF I'M WRONG!!!!!)
 
 If you made any changes here, click Apply. One thing I noticed was that
 the time did not update and display correctly until after I rebooted the
-server so if things don\'t look quite right, wait until after the next
+server so if things don't look quite right, wait until after the next
 reboot to panic.
 
-### Disk Settings {#disk_settings}
+### Disk Settings
 
 - Default spin down delay - Set the amount of time without activity to
     wait before spinning down disks to save power.
@@ -370,10 +370,10 @@ reboot to panic.
   - Recommend leaving this as yes.
   - Disable NCQ on all disk devices that support NCQ. This typically
         results in much better write throughput. A setting called
-        \"Force NCQ disabled \[yes/no\]\" is also available in the Disk
+        "Force NCQ disabled [yes/no]" is also available in the Disk
         section of the Settings page of the System Management Utility to
-        override this new behavior. That is, if this setting is \'yes\',
-        then we force NCQ off; if setting is \'no\', we leave NCQ
+        override this new behavior. That is, if this setting is 'yes',
+        then we force NCQ off; if setting is 'no', we leave NCQ
         queue_depth as-is, ie, whatever linux driver sets it to.
         [Source](http://lime-technology.com/forum/index.php?topic=3764.0)
 - Enable spinup groups - Allow disks to be spun up/down in appropriate
@@ -386,7 +386,7 @@ If you made any changes here, click Apply. At this point it is
 recommended that you reboot the server. To do so, click Main then click
 the reboot button to restart the server.
 
-## Install UnMENU for Screen and Email Notifications {#install_unmenu_for_screen_and_email_notifications}
+## Install UnMENU for Screen and Email Notifications
 
 ***In unRAID v6, most of the facilities offered by UnMENU are now part
 of the standard Web GUI, so you may well decide that you no longer need
@@ -405,12 +405,12 @@ bypass the GUI and facilitate a clean shutdown. For unRAID v6, install
 the
 [**Powerdown**](http://lime-technology.com/forum/index.php?topic=31735)
 plugin. For earlier versions, install the
-\[<http://lime-technology.com/forum/index.php?topic=6078.msg261527#msg261527>\|
-clean powerdown script\] in the same way as
+[<http://lime-technology.com/forum/index.php?topic=6078.msg261527#msg261527>\|
+clean powerdown script] in the same way as
 [screen](Configuration_Tutorial#Install_Screen "wikilink") is installed
 below.
 
-### Install UnMENU {#install_unmenu}
+### Install UnMENU
 
 [UnMENU](UnRAID_Add_Ons#UnMENU "wikilink") is an enhanced Web management
 page for unRAID that provides a number of user-requested features, and
@@ -456,7 +456,7 @@ You will be dumped right back to a prompt, this is normal.\
 
 `echo "/boot/unmenu/uu" >> /boot/config/go`
 
-### Install Screen {#install_screen}
+### Install Screen
 
 ***Note: For unRAID v6, install the
 [NerdPack](http://lime-technology.com/forum/index.php?topic=37541)
@@ -471,7 +471,7 @@ navigate to
 
 `//tower:8080`
 
-*Substitute your server\'s name or IP address for tower.*\
+*Substitute your server's name or IP address for tower.*\
 \
 **Step 3** At the top of the screen select *Pkg Manager*.
 
@@ -479,21 +479,21 @@ navigate to
 screen-4.03-i486-1.tgz*.
 
 **Step 5** Click *Download screen-4.03-i486-1.tgz*. The status will
-change to \"Package downloaded, but not yet installed\".
+change to "Package downloaded, but not yet installed".
 
 **Step 6** Click *Install screen-4.03-i486-1.tgz*. You will see a report
 of the commands run and the status will change to
-\"screen-4.0.3-i486-1.tgz is now installed\".
+"screen-4.0.3-i486-1.tgz is now installed".
 
 **Step 7** Click *Enable Re-Install on Re-Boot* so screen will be
 re-installed on every reboot.
 
-### Configure SMTP Settings (unRaid v6) {#configure_smtp_settings_unraid_v6}
+### Configure SMTP Settings (unRaid v6)
 
 Go to main unRaid GUI \> Settings \> Notification Settings. Scroll down
-to \"SMTP Settings\" enter settings there.
+to "SMTP Settings" enter settings there.
 
-If you haven\'t already, you need to turn on access to SMTP in Gmail
+If you haven't already, you need to turn on access to SMTP in Gmail
 [instructions](https://support.google.com/mail/troubleshooter/1668960?hl=en&rd=2)
 
 Here are settings that work with Gmail
@@ -526,7 +526,7 @@ username: <myname@gmail.com>
 
 password: mypassword
 
-## Install Screen without using UnMENU {#install_screen_without_using_unmenu}
+## Install Screen without using UnMENU
 
 It is also possible to easily install screen without first installing
 UnMENU by downloading the slackware packages required and following the
@@ -570,12 +570,12 @@ steps below:
 
 `installpkg`*`name_of_package_file`*
 
-## Install Screen on unRAID V6. + as a plugin {#install_screen_on_unraid_v6._as_a_plugin}
+## Install Screen on unRAID V6. + as a plugin
 
 Screen is now available as a standard plugin on the forum
 [HERE](http://lime-technology.com/forum/index.php?topic=37541.0)
 
-## Preclear Hard Drives {#preclear_hard_drives}
+## Preclear Hard Drives
 
 Preclearing is a process for carrying out confidence checks on drives,
 and speeding up adding new drives to an existing parity protected array.
@@ -594,7 +594,7 @@ has a number of important benefits.
     then unRAID takes the array offline while the drive is cleared. This
     can take a long time with large drives. The preclear process allows
     this to be done before you add the drive to the array, and on
-    completion it writes a special \'signature\' to the drive that
+    completion it writes a special 'signature' to the drive that
     unRAID recognizes as meaning it can skip the clear phase when adding
     the drive to the array.
 
@@ -610,7 +610,7 @@ script](http://lime-technology.com/forum/index.php?topic=2817).
 
 sdX drives are SATA and SCSI. hdX drives are IDE.
 
-### Preclearing via Web GUI with unRAID v6 {#preclearing_via_web_gui_with_unraid_v6}
+### Preclearing via Web GUI with unRAID v6
 
 unRAID v6 has the [preclear
 plugin](http://lime-technology.com/forum/index.php?topic=39985.0) that
@@ -621,7 +621,7 @@ recommended way to do this in v6 systems.
 If you prefer to use the Linux command line then that option can still
 be used.
 
-### Preclearing With Screen {#preclearing_with_screen}
+### Preclearing With Screen
 
 This is the preferred method if you are using a telnet session. The
 reason is that if you are running pre-clear via a telnet session then if
@@ -656,13 +656,13 @@ If you see
 
 `Cannot find terminfo entry for 'vt100'`
 
-it indicates your telnet client\'s emulation is not compatible with
+it indicates your telnet client's emulation is not compatible with
 screen. Try a different emulation type or use Putty, which works well
 with screen.
 
 If you invoke screen and it shows an introductory page, press Space or
 Return to continue and you will be returned to the prompt. Now that you
-are running inside a \"Screen\" you can create multiple prompts and even
+are running inside a "Screen" you can create multiple prompts and even
 disconnect from your telnet session and processes will continue to run
 in the background.
 
@@ -682,7 +682,7 @@ The -l is a L as in LIST. The output will look like this:
     ========================================
          /dev/sda = ata-ST3000DM001-1CH166_W1F293RJ
 
-Make a note of the /dev/sdX or /dev/hdX. This is the drive you\'re going
+Make a note of the /dev/sdX or /dev/hdX. This is the drive you're going
 to be clearing.
 
 **Step 5** To begin the preclear on a drive, at the prompt type
@@ -711,7 +711,7 @@ is the number of cycles you want to run.
 `For ALL other drives, or the WD EARS without a jumper, use the "-A" option.`
 
 If you are pre-clearing multiple drives it is recommended you also use
-the optional \"-r\" \"-w\" and \"-b\" options. These set the size and
+the optional "-r" "-w" and "-b" options. These set the size and
 number of blocks of data read and written to the disks during
 processing. Although not needed when clearing a single drive, If you do
 not use these options the preclear script may run out of memory when
@@ -719,8 +719,8 @@ concurrently processing multiple large drives. Suggested values are
 
 `preclear_disk.sh -r 65536 -w 65536 -b 2000 -A /dev/sdX`
 
-\"-r NNNNNN\" sets the size of the read blocks, \"-w NNNNNN\" sets the
-size of the written blocks, and \"-b NNNNN\" sets the number of blocks
+"-r NNNNNN" sets the size of the read blocks, "-w NNNNNN" sets the
+size of the written blocks, and "-b NNNNN" sets the number of blocks
 read in each operation.
 
 If you installed [mail and
@@ -765,16 +765,16 @@ This will present you with a screen similar to
 `(Answer Yes to continue. Capital 'Y', lower case 'es'):`
 
 Double check to make sure the Drive model and/or serial number are what
-you expect. If everything is copacetic type \"Yes\" and press enter like
-the box tells you too. When you do, ***EVERYTHING**\'\' on the drive
-will be***DELETED**\'\'.
+you expect. If everything is copacetic type "Yes" and press enter like
+the box tells you too. When you do, ***EVERYTHING**'' on the drive
+will be***DELETED**''.
 
-The screen will clear when you respond with \'Yes\' and be replaced with
+The screen will clear when you respond with 'Yes' and be replaced with
 one showing progress and automatically updating at regular intervals.
 This will allow you to track the progress of the clearing of the drive.
 
 **Step 6** You can preclear multiple drives at once using multiple
-Screen sessions. Once you\'ve gotten the first drive preclearing, start
+Screen sessions. Once you've gotten the first drive preclearing, start
 up the next one by pushing
 
 `CTRL-A c`
@@ -826,8 +826,8 @@ about your result the appropriate place to ask them is in
 [this](http://lime-technology.com/forum/index.php?topic=4068.0) thread.
 See below for instructions on saving the results.
 
-Specifically look for increases of the \"raw\" count of re-allocated
-sectors and sectors pending re-allocation. Most of the other \"raw\"
+Specifically look for increases of the "raw" count of re-allocated
+sectors and sectors pending re-allocation. Most of the other "raw"
 values are meaningful only to the manufacturer of the disk drive.
 
 If your diff report is long some of it may have scrolled off the screen.
@@ -870,9 +870,9 @@ preclear_results.txt file on your flash drive. You can then copy this
 file to another computer and peruse your results or post them to the
 forum.
 
-### Preclearing Without Screen {#preclearing_without_screen}
+### Preclearing Without Screen
 
-Don\'t preclear without screen.
+Don't preclear without screen.
 
 If you did not install screen, you can preclear your hard drives from
 the console. Linux provides 6 Virtual Terminals (V-Terms) that you can
@@ -935,9 +935,9 @@ This will present you with a screen similar to
 `(Answer Yes to continue. Capital 'Y', lower case 'es'):`
 
 Double check to make sure the Drive model and/or serial number are what
-you expect. If everything is copacetic type \"Yes\" and press enter like
-the box tells you too. When you do, ***EVERYTHING**\'\' on the drive
-will be***DELETED**\'\'.
+you expect. If everything is copacetic type "Yes" and press enter like
+the box tells you too. When you do, ***EVERYTHING**'' on the drive
+will be***DELETED**''.
 
 **Step 4** Now that the first preclear is running, to start the next one
 press
@@ -963,7 +963,7 @@ about your result the appropriate place to ask them is in
 [this](http://lime-technology.com/forum/index.php?topic=4068.0) thread.
 See below for instructions on saving the results.\
 If your diff report is long some of it may have scrolled off the screen.
-To \"scroll up\" to see it you can use *Shift-Page up* and *Shift-Page
+To "scroll up" to see it you can use *Shift-Page up* and *Shift-Page
 down* to scroll around in the buffer.
 
 **Step 6** As your drives finish preclearing, you can close their Vterms
@@ -989,7 +989,7 @@ preclear_results.txt file on your flash drive. You can then copy this
 file to another computer and peruse your results or post them to the
 forum.
 
-## Add Drives to the Array {#add_drives_to_the_array}
+## Add Drives to the Array
 
 Adding drives to the array is simply a matter of telling UnRAID which
 drive to place where during initial setup. Later as you add drives to
@@ -1047,7 +1047,7 @@ the array.
 
 When initially adding a parity drive to an array, a parity sync must be
 performed. For an array containing a large amount of data, this can be a
-time-consuming process, and the array\'s performance may degraded during
+time-consuming process, and the array's performance may degraded during
 the entire sync as the process involves reading every sector of the data
 drives and writing the entire parity drive. You may use the array during
 this initial parity calculation.
@@ -1066,7 +1066,7 @@ the unRAID forum.`</font>`{=html}
 Formatting typically only takes a few minutes per drive if they have
 been
 [pre-cleared](Configuration_Tutorial#Preclearing_With_Screen "wikilink").
-If the data disks are not pre-cleared, and you\'ve already assigned a
+If the data disks are not pre-cleared, and you've already assigned a
 parity drive, unRAID will proceed to clear the new data drives prior to
 formatting them. This can take 8 or more hours ([maybe 25
 hours\...](User_Benchmarks#Preclear_Times "wikilink")) for a 2TB drive.
@@ -1094,11 +1094,11 @@ At this point skip over the next section and configure your User shares,
 but be sure to come back to it if you are waiting until your array is
 populated to add the parity drive.
 
-### Adding a Parity Drive to an Existing Array {#adding_a_parity_drive_to_an_existing_array}
+### Adding a Parity Drive to an Existing Array
 
 When adding a parity drive to an un-protected array, a parity sync must
 be performed. For an array containing a large amount of data this can be
-a time consuming process and the array\'s performance will degraded
+a time consuming process and the array's performance will degraded
 during the entire sync as the process involves reading every sector of
 the data drives and writing the entire parity drive. You may use the
 array during this initial parity calculation.
@@ -1110,7 +1110,7 @@ array during this initial parity calculation.
 **Step 3** Select the drive to be used for parity from the drop down
 menu next to *parity device*.
 
-**Step 4** Click main, place a check in the box next to *I\'m sure I
+**Step 4** Click main, place a check in the box next to *I'm sure I
 want to do this*, and then click *Start*.
 
 **Step 5** Click refresh after a few moments to see the status. This
@@ -1135,11 +1135,11 @@ over time.
 
 You can copy data to either configured shares or disk shares during the
 parity rebuild process. Parity will be updated on the fly for new files
-that are written to the array. It\'s important to note, however, that
+that are written to the array. It's important to note, however, that
 until the parity rebuild process is complete, data existing on the array
 is not protected.
 
-## Create User Shares {#create_user_shares}
+## Create User Shares
 
 Shares are the primary, and coolest method of accessing data stored on
 the UnRAID server. This abstracts your data from specific drive mappings
@@ -1154,7 +1154,7 @@ Shares disabled and access your data using only the *disk1..diskn*
 mappings configured in the [Export Settings
 Configuration](Configuration_Tutorial#Export_Settings "wikilink") below.
 
-### Enable User Shares {#enable_user_shares}
+### Enable User Shares
 
 **Step 1** On another computer (not your UnRAID system) open a web
 browser and navigate to the [Server Management
@@ -1168,13 +1168,13 @@ apply.
 
 **Step 4** Click *Shares* to edit the shares properties.
 
-### Share Export Modes {#share_export_modes}
+### Share Export Modes
 
 Each share can be set to one of five different SMB export modes.
 [SMB](http://en.wikipedia.org/wiki/Server_Message_Block) is the type of
 share used in most Windows networks.
 
-- Don\'t export
+- Don't export
   - The share will not be visible or accessible on the network.
 - Export read only
   - The share will be visible on the network (shown in My Network
@@ -1207,7 +1207,7 @@ shares; however they will not be covered in this tutorial. See [the
 FAQ](FAQ#How_do_I_configure_NFS_mounts.3F "wikilink") for more
 information on using NFS.
 
-### Export Settings {#export_settings}
+### Export Settings
 
 Set the following properties as appropriate for your environment.
 
@@ -1218,7 +1218,7 @@ Set the following properties as appropriate for your environment.
 
 Click the *Apply* button in the *Export settings* frame.
 
-### User shares {#user_shares}
+### User shares
 
 As previously mentioned, shares are the way UnRAID abstracts your data
 from the underlying file system. When a share named *foo* is created,
@@ -1266,7 +1266,7 @@ Set the following options as appropriate for the share and click
 Once the share is created, there will be a new section below where you
 can create the next share.
 
-## Copy Files to the Array {#copy_files_to_the_array}
+## Copy Files to the Array
 
 `Note: If parity is already enabled the bottleneck will be parity writes;`\
 `pick whichever method is easiest for you`*`without`*`considering`\
@@ -1286,7 +1286,7 @@ drive, this is a moot point because access will be limited to USB2
 speeds, therefore, it makes sense to mount the drive directly on the
 UnRAID server.
 
-### Copying Files Across the Network {#copying_files_across_the_network}
+### Copying Files Across the Network
 
 `Note: These instructions are for copying files from a Windows system.`
 
@@ -1305,7 +1305,7 @@ begin the copy.
 **Step 5** Once the copy is complete, the files are now stored on the
 array.
 
-### Copying Files From an Internal or External Hard Drive {#copying_files_from_an_internal_or_external_hard_drive}
+### Copying Files From an Internal or External Hard Drive
 
 `Note: The NTFS driver included with the UnRAID distribution does not support`\
 `Unicode characters correctly and using this method`**`WILL`**`corrupt`\
@@ -1440,7 +1440,7 @@ to return to the */root* directory then unmount the hard drive by typing
 It is now safe to power down the system and remove the hard drive, or
 you can preclear it and add it to your array!
 
-## Users and Share Security {#users_and_share_security}
+## Users and Share Security
 
 `Note: User level security is only available on UnRAID Pro and Plus`
 
@@ -1450,7 +1450,7 @@ network - depending on your network topology this may include
 ***anyone*** on your wireless network! - having access to your shares as
 they are presently configured then user level security is not necessary.
 
-### Enable User Level Share Security {#enable_user_level_share_security}
+### Enable User Level Share Security
 
 **Step 1** Connect to the [Server Management
 Utility](Un-Official_UnRAID_Manual#Connecting_To_the_Server_Management_Utility "wikilink")
@@ -1464,7 +1464,7 @@ and stop the array.
 
 **Step 5** Start the array.
 
-### Add Users {#add_users}
+### Add Users
 
 **Step 1** Connect to the [Server Management
 Utility](Un-Official_UnRAID_Manual#Connecting_To_the_Server_Management_Utility "wikilink")
@@ -1491,7 +1491,7 @@ See the [Un-Official UnRAID
 Manual](Un-Official_UnRAID_Manual#Users_2 "wikilink") for more
 information including removing users and changing passwords.
 
-### Share Security Settings {#share_security_settings}
+### Share Security Settings
 
 The applicable settings for share security are *Exceptions*, *Valid
 users*, and *Invalid Users*. This information is also available in the
@@ -1500,7 +1500,7 @@ Manual](Un-Official_UnRAID_Manual#Exceptions "wikilink")
 
 - Exceptions
   - This is a comma separated list of users that get the
-        \"opposite\" of the *Export (SMB)* setting. If Export is set to
+        "opposite" of the *Export (SMB)* setting. If Export is set to
         *read-only*, users in the Exceptions list get *read/write*
         access. If Export is set to *read/write*, users in the
         Exceptions list get *read only* access.
@@ -1554,7 +1554,7 @@ your unRAID server. What you choose to implement should be based on your
 environment, users that are granted access, and users who could
 potentially take access of your server.
 
-### Setting a root Password {#setting_a_root_password}
+### Setting a root Password
 
 In a Linux system root is the super user. root can see everything,
 change everything, and even delete everything. By default unRAID leaves
@@ -1574,17 +1574,17 @@ Utility](Un-Official_UnRAID_Manual#Connecting_To_the_Server_Management_Utility "
 **Step 3** Enter the new password in the *Password* and *Retype
 password* boxes for root and click apply.
 
-### Use Proper User Share Policies {#use_proper_user_share_policies}
+### Use Proper User Share Policies
 
-Be sure to grant *just enough* access to user shares. It\'s easy to just
+Be sure to grant *just enough* access to user shares. It's easy to just
 give everyone read/write access to everything, but that can lead to
 friends or family accidentally deleting or overwriting files. Parity can
-protect you from a hard drive failure, but it can\'t protect you from
+protect you from a hard drive failure, but it can't protect you from
 your friends and family. The trouble is quantifying what is *just
 enough* and that is a question that only you can answer. Think through
 your usage scenarios, and be stingy with permissions!
 
-### Disable Flash Share {#disable_flash_share}
+### Disable Flash Share
 
 It is convenient to be able to drag and drop files to the flash drive,
 but setting the flash share export to disabled in [Export
@@ -1592,7 +1592,7 @@ Settings](Configuration_Tutorial#Export_Settings "wikilink") makes it
 harder for someone to hijack your server by modifying the startup
 sequence.
 
-### Limit External Access {#limit_external_access}
+### Limit External Access
 
 Do not allow **ANY** external access to your unRAID server that is not
 required. Definitely do not allow external console access via telnet; it
@@ -1609,7 +1609,7 @@ to store their files! Allowing external access to your shared files can
 be done via ftp, sftp, or VPN. Search the wiki and/or forums for more
 information.
 
-## Final Notes {#final_notes}
+## Final Notes
 
 Congratulations, you now have a working UnRAID server!
 
@@ -1623,7 +1623,7 @@ your UnRAID server if you have not done so already. This will add a
 layer of security to your server and prevent anyone from logging into
 the web interface and nosing around or worse.
 
-### More Sources of Information {#more_sources_of_information}
+### More Sources of Information
 
 - [Official UnRAID Manual](UnRAID_Manual "wikilink")
 - [Un-Official UnRAID Manual](Un-Official_UnRAID_Manual "wikilink")

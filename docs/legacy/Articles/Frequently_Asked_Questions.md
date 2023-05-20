@@ -105,10 +105,8 @@ elapsed, [you need to contact us](https://unraid.net/contact) and we
 will transfer your license manually. Please provide the old and new USB
 GUIDs [with your support ticket.](https://unraid.net/contact)
 
-**IMPORTANT:** Please ensure you routinely back up your USB device! To
-do so, [download the My Servers
-Plugin](My_Servers#Automated_Flash_Backup "wikilink") via Community Apps
-and/or [see this video](https://youtu.be/NEkgAhFI_GM?t=695).
+**IMPORTANT:** Please ensure you routinely back up your USB device!
+We recommend using [Unraid Connect](/connect/Connect.mdx) for this.
 
 ## How do I Manually Install my License keyfile to my USB Flash?
 
@@ -241,12 +239,10 @@ wish to continue where you left off.*
 
 ## What is an Unraid.net Account?
 
-An [Unraid.net account](https://forums.unraid.net/register/) is the
+An [Unraid.net account](https://account.unraid.net/) is the
 account you create to use the [Unraid
 forums](https://forums.unraid.net/) and the account used to sign in to
-your Unraid server's [user profile
-component](My_Servers#Navigating_the_User_Profile_Component "wikilink")
-and the [My Servers Plugin](My_Servers "wikilink"). This account is *not
+[Unraid Connect](/connect/Connect.mdx). This account is *not
 the same* as your server's root password that you use to login to the
 Unraid webgui.
 
@@ -387,16 +383,16 @@ the Tools \> System Devices page.
 2\. Notate the vendor and product IDs indicated in the brackets.
 Example:
 
-\[10de:1f08\] 02:00.0 VGA compatible controller: NVIDIA Corporation
+[10de:1f08] 02:00.0 VGA compatible controller: NVIDIA Corporation
 Device 1f08 (rev a1)
 
-\[10de:10f9\] 02:00.1 Audio device: NVIDIA Corporation Device 10f9 (rev
+[10de:10f9] 02:00.1 Audio device: NVIDIA Corporation Device 10f9 (rev
 a1)
 
-**\[10de:1ada\]** 02.00.2 USB controller: NVIDIA Corporation Device 1ada
+**[10de:1ada]** 02.00.2 USB controller: NVIDIA Corporation Device 1ada
 (rev a1)
 
-**\[10de:1adb\]** 03:00.3 Serial bus controller \[0c80\]: NVIDIA
+**[10de:1adb]** 03:00.3 Serial bus controller [0c80]: NVIDIA
 Corporation Device 1adb (rev a1)
 
 3\. Navigate to the flash device settings page (on the Main tab).
@@ -405,7 +401,7 @@ Corporation Device 1adb (rev a1)
 
 5\. Edit the Syslinux configuration by adding the following to the
 append line on the boot mode selected:
-vfio-pci.ids=\[####:####\],\[####:####\]. Example:
+vfio-pci.ids=[####:####],[####:####]. Example:
 
 append vfio-pci.ids=10de:1ada,10de:1adb initrd=/bzroot,/bzroot-gui
 
