@@ -9,7 +9,7 @@ extending the base capabilities. One of the great strengths of Unraid is
 the ability for it to easily be made to function as more than a basic
 NAS system.
 
-## Overview {#overview_1}
+## Overview
 
 A number of mechanisms are provided by which the capability of an Unraid
 server can be extended.
@@ -23,7 +23,7 @@ functionality that can be implemented using these Mechanisms. it is up
 to the end-user to satisfy themselves to the suitability of any
 particular application.*
 
-## Community Applications (CA) {#community_applications_ca}
+## Community Applications (CA)
 
 Although it is not part of the standard Unraid distribution the
 Community Applications (CA) plugin has become the recommended way for
@@ -36,23 +36,23 @@ new Unraid users.
 Install Community Applications by visiting this page on the forum:
 <https://forums.unraid.net/topic/38582-plug-in-community-applications/>
 
-### Finding applications {#finding_applications}
+### Finding applications
 
 NOTE: CA only provides a way of installing applications that are
 available as plugins or Docker containers - it does not provide any
 support for installing VMs.
 
-### Installing Applications {#installing_applications}
+### Installing Applications
 
-From any given app\'s tile, click the download icon
+From any given app's tile, click the download icon
 ![](/docs/legacy/CA_Tile1.png "CA_Tile1.png")
 
-### Removing Applications / Showing Installed Applications {#removing_applications_showing_installed_applications}
+### Removing Applications / Showing Installed Applications
 
 From the **Installed Applications** Category, you will see all of your
-installed applications. Click the \"x\" to uninstall them.
+installed applications. Click the "x" to uninstall them.
 
-### Re-Installing Applications {#re_installing_applications}
+### Re-Installing Applications
 
 If you ever need to re-install any plugins or docker container then this
 can be easily achieved via Community applications.
@@ -69,7 +69,7 @@ can be used to reinstall applications using their saved settings. These
 are retrieved automatically from the saved XML templates so it is a
 relatively painless process.
 
-### Support for applications {#support_for_applications}
+### Support for applications
 
 It is normal for each Plugin or docker container to have a forum thread
 that is dedicated to proving support and answering questions from
@@ -123,7 +123,7 @@ particular application.*
         the release of Unraid on which it is being installed.
   - Unraid has the ability to boot a system in Safe Mode that
         suppresses plugins loading to help with diagnosing problems
-        caused by plugins. \'This should be one of the first things to
+        caused by plugins. 'This should be one of the first things to
         try if a system becomes unstable after installing a new Unraid
         release.
   - If there is a choice between a plugin and a docker
@@ -151,7 +151,7 @@ to new releases. It also provides the ability to install plugins from
 this tab, but it is recommended that if the plugin is known to Community
 applications that plugins are instead installed from the **Apps** tab.
 
-As part of improving core sometimes a plugin\'s functionality gets
+As part of improving core sometimes a plugin's functionality gets
 incorporated into a new Unraid release making the plugin superfluous
 (and possibly even harmful to system stability). If you are using
 Community Applications to install plugins (recommended) then CA will
@@ -160,7 +160,7 @@ that release. It will not, however, remove plugins that are already
 installed but are n/ longer known to be compatible with the current
 release.
 
-## Docker Containers {#docker_containers}
+## Docker Containers
 
 Unraid includes support for the technology known as
 [Docker](https://www.docker.com/) for allowing Linux-based applications.
@@ -207,7 +207,7 @@ Key points of the Unraid implementation are:
 - Unraid does **not** have built in support for the **docker compose**
     command line utility.
 
-## Virtual Machines {#virtual_machines}
+## Virtual Machines
 
 *THIS SECTION IS STILL BEING WORKED ON AND MORE DETAIL NEEDS ADDING*
 
@@ -231,7 +231,7 @@ as guests on an Unraid server.
 - VMs are far more resource-heavy than a docker container as they
     require much more in the way of dedicated resources to run.
 
-### Technology Stack {#technology_stack}
+### Technology Stack
 
 Unraid 6 features a number of key technologies to simplify the creation
 and management of localized VMs running on an Unraid host:
@@ -265,11 +265,11 @@ and management of localized VMs running on an Unraid host:
   - QEMU is responsible for the emulation of hardware components
         such as a motherboard, CPU, and various controllers that make up
         a virtual machine.
-  - KVM can\'t work without QEMU, so you\'ll often times see KVM
+  - KVM can't work without QEMU, so you'll often times see KVM
         referred to as KVM/QEMU.
 - **HVM**
   - When virtual machine technology was first starting to grow in
-        adoption, it wasn\'t directly supported by the chipset
+        adoption, it wasn't directly supported by the chipset
         manufacturers directly. As such, there was a significant amount
         of overhead associated with virtual machines due to software
         emulation. Later, Intel and AMD built support for virtualization
@@ -287,7 +287,7 @@ and management of localized VMs running on an Unraid host:
         systems will have HVM support. You can see if your Unraid server
         has HVM support by clicking on the *info* button at the top
         right of the Unraid GUI. If it shows as disabled then you might
-        want to check your motherboard\'s BIOS to see if it needs to be
+        want to check your motherboard's BIOS to see if it needs to be
         enabled there.
 - **VFIO**
   - [VFIO](https://www.linux-kvm.org/images/b/b4/2012-forum-VFIO.pdf)
@@ -313,7 +313,7 @@ and management of localized VMs running on an Unraid host:
         Unraid. You can see if your Unraid server has IOMMU support by
         clicking on the *info* button at the top right of the Unraid
         GUI. If it shows as disabled then you might want to check your
-        motherboard\'s BIOS to see if it needs to be enabled there.
+        motherboard's BIOS to see if it needs to be enabled there.
     - IOMMU support requires support in the CPU, motherboard, and
             BIOS to all be present.
     - IOMMU is often referred to as *hardware pass-through* in the
@@ -325,7 +325,7 @@ and management of localized VMs running on an Unraid host:
 - **VirtIO**
   - [VirtIO](https://www.linux-kvm.org/page/Virtio) is a
         virtualization standard for network and disk device drivers
-        where just the guest\'s device driver \"knows\" it is running in
+        where just the guest's device driver "knows" it is running in
         a virtual environment and cooperates with the hypervisor.
   - This enables guests to get high-performance network and disk
         operations, and gives most of the performance benefits of

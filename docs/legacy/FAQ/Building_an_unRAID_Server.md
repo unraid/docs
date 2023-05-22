@@ -1,20 +1,16 @@
-\
-\-\-\--
 
-:   `<font color=red>`{=html}**Important Warning! This wiki page has not
+   **Important Warning! This wiki page has not
     been updated for v6! Some information is
-    out-of-date!**`</font>`{=html}
+    out-of-date!**
 
 ------------------------------------------------------------------------
-
-\
 
 ## Introduction
 
 unRAID is a file server system, based upon the Slackware distribution of
 Linux.
 
-unRAID allows you to build an \'array\' of hard drives and share those
+unRAID allows you to build an 'array' of hard drives and share those
 drives across the local network for all users to access the files on
 those drives. In order to help combat physical drive failure, unRAID
 allows for the inclusion of a parity drive, which is used to contain
@@ -28,10 +24,10 @@ The benefits of unRAID versus other systems such as FreeNAS are:
     requires you to have all drives in the system be of the same
     physical size)
 - Ability to dynamically add drives to the array as they are
-    acquired - most RAID arrays are very sensitive to \"growing\" the
+    acquired - most RAID arrays are very sensitive to "growing" the
     array and the operation typically involves a full backup before
-    attempting to grow the array. If you\'ve got 5 TB of data, this
-    likely isn\'t something you\'re going to attempt!
+    attempting to grow the array. If you've got 5 TB of data, this
+    likely isn't something you're going to attempt!
 - Non-striping of the data or parity - normally, the data and parity
     information in a RAID is striped across the disks, meaning portions
     of each file are stored on various drives. In unRAID, files are
@@ -43,14 +39,13 @@ Of course there are some drawbacks to unRAID:
 
 - Some limitations in hardware support - see the [Hardware
     Compatibility](Hardware_Compatibility "wikilink") page
-- It\'s not free (for more than 3 drives) or open source
-- Since the data is not \"striped\" across multiple drives, read
+- It's not free (for more than 3 drives) or open source
+- Since the data is not "striped" across multiple drives, read
     performance is limited to the speed of the individual drive. In most
     RAID implementations, data can be read much faster than an
-    individual drive\'s performance because various drives are accessed
+    individual drive's performance because various drives are accessed
     simultaneously, thus aggregating the read performance.
 
-\
 == Hardware ==
 
 :   *Main article: [Designing an unRAID
@@ -70,7 +65,7 @@ Of course there are some drawbacks to unRAID:
     controller cards).
 - Hard drives: either PATA or SATA drives of your choice. Remember
     though, that the largest will be used for parity, and those old
-    drives you\'ve got laying around probably will die as soon as you
+    drives you've got laying around probably will die as soon as you
     put something important on them! SATA drives will be faster and also
     will be easier to route cables since their cables are much smaller.
     Also remember that they tend to take different power supply
@@ -83,20 +78,20 @@ Of course there are some drawbacks to unRAID:
     for these has increased with each unRAID release, but it still boils
     down to:
 - Onboard SATA: Intel ICHx, nVidia nForce, AMD or ATI SB600+, possibly
-    some VIA chipsets? (and a couple more I\'m sure)
+    some VIA chipsets? (and a couple more I'm sure)
 - Onboard LAN (preferably gigabit only): Intel, Marvell, some VIA
     (slow) and Realtek
 - PCI or PCIe SATA Cards: The Promise TX4 is the most widely trusted
-    PCI SATA controller card, but it is slow by today\'s standards.
+    PCI SATA controller card, but it is slow by today's standards.
     Avoid using the PCI bus at all if possible. Look for a SATA
     controller card that uses PCIe. Note that PCI-X is different from
     PCIe. You will not be able to use PCI-X unless your motherboard
     specifically supports it.
 - USB Memory Stick: at least 512 MB, though 1-2 GB is cheap and
     readily available.
-- Power Supply (PSU): If you\'re going to be building a server that\'s
+- Power Supply (PSU): If you're going to be building a server that's
     powered on for long periods, and that has a lot of hard drives, then
-    you will need a good quality power supply, so don\'t skimp on this
+    you will need a good quality power supply, so don't skimp on this
     part! Look for a power supply that has a single 12+ volt rail and
     that is 80plus efficient or better. Also make sure that your PSU is
     compatible with your motherboard, since some motherboards require 8
@@ -105,15 +100,14 @@ Of course there are some drawbacks to unRAID:
 - Case: Almost any case will do for a small array. Bigger arrays will
     need more thought. You will need to think about ventilation. Hard
     drives get hot and they are very susceptible to heat (most are rated
-    to 55\*C). There are 5-in-3 drive cages and backplanes that allow
-    for 5 hard drives to be placed into 3 5.25\" drive bays. Consider
+    to 55*C). There are 5-in-3 drive cages and backplanes that allow
+    for 5 hard drives to be placed into 3 5.25" drive bays. Consider
     potential heat issues with drives that close together (though many
     backplanes have dedicated fans), and also the extra expense of these
     drive cages. Fans and airflow are very important. Please see the
     [UnRAID Topical Index, Fans](UnRAID_Topical_Index#Fans "wikilink")
     section.
 
-\
 == Assembly==
 
 Fitting the components together is usually straightforward, and requires
@@ -134,7 +128,7 @@ the following steps:
     through the server.
 5. With the motherboard outside of the case, install the processor.
     Lift the arm on the socket, align the processor and gently place it
-    in (align the pins - one corner doesn\'t have a pin, so make those
+    in (align the pins - one corner doesn't have a pin, so make those
     match. Close the socket with the arm and latch it.
 6. Align the CPU heat sink and attach to the socket. Heat sinks are
     often supplied with thermal paste already applied, so there is no
@@ -147,7 +141,7 @@ the following steps:
     not completely tighten one screw before putting in any others.
 9. Connect the rear fan and processor fan to the motherboard.
 10. Connect the front panel cables to their respective connectors on the
-    motherboard. These wires are small and don\'t lock into place.
+    motherboard. These wires are small and don't lock into place.
     Certain plugs are mandatory -- PWR (power switch) and RST (reset
     switch), for example. Other plugs, such as PWR_LED and HDD_LED, are
     optional, although PWR_LED will be useful, showing when the server
@@ -161,7 +155,6 @@ the following steps:
 15. Connect a monitor and keyboard (usually required only for the first
     boot).
 
-\
 ==Prepare the USB Flash drive== *Formatting the USB Flash drive and
 installing the unRAID distribution files on it*
 
@@ -178,8 +171,8 @@ On any Windows or Linux PC:
     **UNRAID** as the label.
 - Get syslinux.exe from <http://www.lime-technology.com/dnlds/>
 - Run **syslinux -ma x:** (where x: is the drive letter for your
-    memory stick) \*\*Note for Vista and Windows 7 users: To run it,
-    right-click the file and choose \'Run as administrator\'\*\*
+    memory stick) **Note for Vista and Windows 7 users: To run it,
+    right-click the file and choose 'Run as administrator'**
 - Download the distribution you want from
     <http://www.lime-technology.com/dnlds/> and extract all the files to
     the memory stick, preserving the folder structure (there should be a
@@ -194,7 +187,6 @@ On any Windows or Linux PC:
     comprehensive guide to USB flash preparation, with many tips and
     alternative steps to try.
 
-\
 ==Starting the server== *Verifying the BIOS settings, the memory, and
 the networking*
 
@@ -212,7 +204,7 @@ the networking*
     motherboard manual.
 2. Check that all of the drives are recognized by the BIOS and/or add
     on controllers. However there are exceptions where some drives and
-    controllers won\'t appear in the BIOS, but will still be available
+    controllers won't appear in the BIOS, but will still be available
     to unRAID later in the boot process.
 3. Power down the server, install the USB stick, reboot, and again go
     into the BIOS settings.
@@ -223,13 +215,13 @@ the networking*
     menu with at least 2 choices, **unRAID** and **memtest**.
 6. Boot into **memtest** and let it run for 2 complete cycles. Later
     you might want to come back and run it overnight, but 2 cycles
-    should give you pretty good confidence that you don\'t have any
+    should give you pretty good confidence that you don't have any
     memory errors.
 7. Press the \<Esc\> key to reboot, and this time let unRAID start.
 
 You will first see a command line prompt on the monitor. Type **root**
 and press the `<Enter>`{=html} key, no password will be needed.
-\'\'(Later, you may want to set a root password on the **Users** tab of
+''(Later, you may want to set a root password on the **Users** tab of
 the unRAID Web Management pages.)
 
 Verify that you have an IP address by typing **ifconfig** and pressing
@@ -256,14 +248,13 @@ On a computer that is on the same network, open a browser and go to:
 
 :   **<http://tower>**
 
-This should take you to the unRAID Web Management \'Main\' page, where
+This should take you to the unRAID Web Management 'Main' page, where
 almost all unRAID setup and management of your server is handled.
 
-If you are using a Mac, you may initially need to use your server\'s IP
-address instead of \'tower\'. For further instruction, please see the
+If you are using a Mac, you may initially need to use your server's IP
+address instead of 'tower'. For further instruction, please see the
 [FAQ, Apple Mac Questions](FAQ#Apple_Mac_Questions "wikilink") section.
 
-\
 ==Configuring and starting the array== *Preparing the drives and setting
 up the array*
 
@@ -298,41 +289,34 @@ There are two optional but recommended steps that may alter this order:
     For more information, see the [#Preclear
     Disk](UnRAID_Add_Ons#Preclear_Disk "wikilink") addon.
 
-```{=html}
-<!-- -->
-```
-
 - If you have a lot of data to transfer over, you can copy it faster
     if the parity drive has not been installed yet. But make sure you
     install and build parity before you delete backups of anything you
     transfer to the array.
 
-\
 == Shares ==
 
 By default, unRAID creates a share for each disk in the array (eg.
 \\\\tower\\disk1, \\\\tower\\disk2, etc). However, unRAID also supports
 the concept of User Shares. You can create folders in each of the disk
-shares, and then a user folder will \"aggregate\" all of the content
+shares, and then a user folder will "aggregate" all of the content
 from each share into one share with that folder name. So, if you have
 \\\\tower\\disk1\\DVD and \\\\tower\\disk2\\DVD, a user share can be
 created for \\\\tower\\DVD. To turn on user shares, go to the Shares
 menu item. Select an option from the User Shares dropdown. If you want
-the shares to be read-only, select \"Export read-only.\"
+the shares to be read-only, select "Export read-only."
 
-\
 == Security ==
 
-You can set passwords for \"root\" and any other user you define. You
+You can set passwords for "root" and any other user you define. You
 can limit specific shares to specific users, and restrict specific users
 from write permission while granting write permission to others. This is
-all configured per share on the Share page. Basic \"root\" security is
+all configured per share on the Share page. Basic "root" security is
 available on all versions of unRAID, but User Security is only available
 with an unRAID Plus or Pro license. All security settings can be changed
-on the Security page. To delete a user, delete the user\'s name and
+on the Security page. To delete a user, delete the user's name and
 password and press Save.
 
-\
 == Helpful Info ==
 
 You can [Telnet](Telnet "wikilink") into the server, either using the
@@ -363,8 +347,6 @@ such as:
     consoles and using Linux in the [unRAID Console and Addon
     Questions](FAQ#unRAID_Console_and_Addon_Questions "wikilink")
     section of the [FAQ](FAQ "wikilink").
-
-\
 
 [Category: Getting started](Category:_Getting_started "wikilink")
 [Category: How To](Category:_How_To "wikilink")

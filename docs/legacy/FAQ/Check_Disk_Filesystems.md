@@ -1,6 +1,6 @@
-# Checking and fixing file systems {#checking_and_fixing_file_systems}
+# Checking and fixing file systems
 
-### Is this the right page? {#is_this_the_right_page}
+### Is this the right page?
 
 :   If you suspect or have been told you may have file system
     corruption, then you are on the right page! If you were told you
@@ -42,9 +42,9 @@
     tools and instructions are ONLY for data drives formatted with
     ReiserFS, XFS, or BTRFS.
 
-### Drive names and symbols {#drive_names_and_symbols}
+### Drive names and symbols
 
-:   If you will be using the v6 webGui, you don\'t have to worry about
+:   If you will be using the v6 webGui, you don't have to worry about
     using the right drive symbol, as it will be automatically and
     correctly selected for you.
 
@@ -74,7 +74,7 @@
 <!-- -->
 ```
 
-:   To get a little more technical, we don\'t actually store data on
+:   To get a little more technical, we don't actually store data on
     **drives**, we store it in file systems on **partitions** of those
     drives. **NEVER run a file system repair tool on the drive symbol,
     always run it on the partition symbol.** Which one is the partition
@@ -97,7 +97,7 @@
     **Disk 5**, then there are 2 ways to check/repair its file system.
 
 :\* **reiserfsck \--fix-fixable /dev/sdj1** *will fix the file system of
-the first partition of the drive, but parity won\'t be updated, parity
+the first partition of the drive, but parity won't be updated, parity
 will become invalid*
 
 :\* **reiserfsck \--fix-fixable /dev/md5** *will do exactly the same
@@ -124,7 +124,7 @@ maintained, parity will stay valid*
     and you want to preserve parity protection. Adapt the instructions
     as needed for non-array drives.
 
-### Which section? {#which_section}
+### Which section?
 
 :   Because the instructions are different depending on how your drive
     is formatted AND which version of unRAID you are running, this page
@@ -170,15 +170,15 @@ maintained, parity will stay valid*
 
 \
 
-## Checking and fixing drives in the webGui {#checking_and_fixing_drives_in_the_webgui}
+## Checking and fixing drives in the webGui
 
 The instructions here are designed to check and fix the integrity of the
 file system of a data drive, while maintaining its parity info.
 
-### Preparing to test {#preparing_to_test}
+### Preparing to test
 
 :   The first step is to identify the file system of the drive you wish
-    to test or repair. If you don\'t know for sure, then go to the Main
+    to test or repair. If you don't know for sure, then go to the Main
     page of the webGui, and click on the name of the drive (Disk 3,
     Cache, etc). Look for **File system type**, and you will see the
     file system format for your drive (should be **xfs**, **reiserfs**,
@@ -196,7 +196,7 @@ file system of a data drive, while maintaining its parity info.
     mode.*
 :   From the Main screen of the webGui, click the name of the disk that
     you want to test or repair. For example, if the drive of concern is
-    Disk 5, then click on **Disk 5**. If it\'s the Cache drive, then
+    Disk 5, then click on **Disk 5**. If it's the Cache drive, then
     click on **Cache**.
 :   You should see a page of options for that drive, beginning with
     various partition, file system format, and spin down settings. The
@@ -210,7 +210,7 @@ file system of a data drive, while maintaining its parity info.
     a read-only check of the file system. For more help, click the
     **Help** button in the upper right.
 
-### Running the test {#running_the_test}
+### Running the test
 
 :   The default for most file system formats (**XFS** and **ReiserFS**)
     is a read-only check of the file system, with no changes made to the
@@ -222,7 +222,7 @@ file system of a data drive, while maintaining its parity info.
     -   If the file system is **XFS**, then the options box will contain
         the **-n** option (it means check only, **n**o modification
         yet). We recommend adding the **-v** option (it means
-        \"**v**erbose\" for greater message display), so add a **v** to
+        "**v**erbose" for greater message display), so add a **v** to
         the **-n**, making it **-nv**.
     -   If the file system is **BTRFS**, then you want the **scrub**
         command, not the **Balance** command. The options box should
@@ -232,12 +232,12 @@ file system of a data drive, while maintaining its parity info.
 :   The progress and results will be displayed, and you will review
     them, and decide what action to take next. It is necessary to
     refresh the screen periodically, using the **Refresh** button
-    underneath it or your browser\'s refresh button or keystroke, until
+    underneath it or your browser's refresh button or keystroke, until
     the display indicates the test or repair is complete.
 :   If the results display a successful test, with no corruptions found,
     then you are done! Skip down to **After the test and repair**.
 
-### Running the repair {#running_the_repair}
+### Running the repair
 
 :   If however issues were found, the display of results will indicate
     the recommended action to take. Typically, that will involve
@@ -246,9 +246,9 @@ file system of a data drive, while maintaining its parity info.
     leading hyphens).
 :   Then (if not **BTRFS**) click the **Check** button again to run the
     repair.
-:   Progress and results will again be displayed, and it\'s possible
+:   Progress and results will again be displayed, and it's possible
     that you will have to run it again, with perhaps a different option.
-    If the repairs were successful, it\'s recommended to run the
+    If the repairs were successful, it's recommended to run the
     read-only check one more time, to verify all is well now.
 
 - **For ReiserFS drives**
@@ -290,7 +290,7 @@ file system of a data drive, while maintaining its parity info.
         to go to the [Redoing a drive formatted with
         BTRFS](Check_Disk_Filesystems#Redoing_a_drive_formatted_with_BTRFS "wikilink")
         section.
-    :   If it\'s a drive pool, the **scrub** command can fix certain but
+    :   If it's a drive pool, the **scrub** command can fix certain but
         not all errors. So far there is not a reliable BTRFS tool that
         can fix ALL possible errors. If the result indicates that there
         are still uncorrectable errors, then you will have to copy off
@@ -304,7 +304,7 @@ file system of a data drive, while maintaining its parity info.
 :   During and at the conclusion of the command, a report will be
     displayed, in the command output box. If errors are detected, this
     report may specify additional actions to take. For XFS and BTRFS, we
-    don\'t yet have much expertise to advise you. Use your best
+    don't yet have much expertise to advise you. Use your best
     judgement. Most of us will probably do whatever it suggests we do.
 
 ```{=html}
@@ -326,13 +326,13 @@ file system of a data drive, while maintaining its parity info.
 :   Note: If the repair command performs write operations to repair the
     file system, parity **will** be maintained.
 
-### After the test and repair {#after_the_test_and_repair}
+### After the test and repair
 
 :   If you are in Maintenance mode, you can resume normal operations by
     stopping the array, then restarting the array with the Maintenance
     mode check box unchecked.
 
-### Additional comments {#additional_comments}
+### Additional comments
 
 :   These test and repair tools may take a long time on a full file
     system (several minutes to a half hour, or more).
@@ -351,7 +351,7 @@ file system of a data drive, while maintaining its parity info.
     **lost+found** folder. Dealing with this folder does not have to be
     done immediately. This is similar to running **chkdsk** or
     **scandisk** within Windows, and finding lost clusters, and dealing
-    with files named File0000.chk or similar. You may find one user\'s
+    with files named File0000.chk or similar. You may find one user's
     [story](http://lime-technology.com/forum/index.php?topic=1483) very
     helpful, plus his later
     [tale](http://lime-technology.com/forum/index.php?topic=3367.msg29056#msg29056)
@@ -359,7 +359,7 @@ file system of a data drive, while maintaining its parity info.
 
 \
 
-## Drives formatted with XFS {#drives_formatted_with_xfs}
+## Drives formatted with XFS
 
 :   *Note: for more info on the xfs_repair tool and its options, see
     [xfs_repair](Check_Disk_Filesystems#xfs_repair "wikilink").*
@@ -367,13 +367,13 @@ file system of a data drive, while maintaining its parity info.
     the integrity of the XFS file system of a data drive, while
     maintaining its parity info.
 
-### Preparing to run xfs_repair {#preparing_to_run_xfs_repair}
+### Preparing to run xfs_repair
 
 :   Start the array in Maintenance mode, by clicking the Maintenance
     mode check box before clicking the Start button. This starts the
     unRAID driver but does not mount any of the drives.
 
-### Running xfs_repair {#running_xfs_repair}
+### Running xfs_repair
 
 :   Now you are ready to run the XFS file system test. At the console or
     in a [terminal session with SSH or
@@ -397,7 +397,7 @@ file system of a data drive, while maintaining its parity info.
 
 :   During and at the conclusion of the **xfs_repair** command, a report
     will be output. If errors are detected, this report may specify an
-    additional action to take. We don\'t yet have much expertise to
+    additional action to take. We don't yet have much expertise to
     advise you about this. Use your best judgement. Most of us will
     probably do whatever it suggests we do.
 
@@ -420,13 +420,13 @@ file system of a data drive, while maintaining its parity info.
 :   Note: If **xfs_repair** performs write operations to repair the file
     system, parity **will** be maintained.
 
-### After running xfs_repair {#after_running_xfs_repair}
+### After running xfs_repair
 
 :   If you are in Maintenance mode, you can resume normal operations by
     stopping the array, then restarting the array with the Maintenance
     mode check box unchecked.
 
-### Additional comments {#additional_comments_1}
+### Additional comments
 
 :   The **xfs_repair** tool may take a long time on a full file system
     (several minutes to a half hour, or more).
@@ -435,11 +435,11 @@ file system of a data drive, while maintaining its parity info.
 <!-- -->
 ```
 
-:   If the **xfs_repair** command fails, and we\'re hearing numerous
+:   If the **xfs_repair** command fails, and we're hearing numerous
     reports of this(!), then you will have no recourse but to redo the
     drive. Use the instructions in the [Redoing a drive formatted with
     XFS](Check_Disk_Filesystems#Redoing_a_drive_formatted_with_XFS "wikilink")
-    section below. *We\'re sorry, we hope there will be better XFS
+    section below. *We're sorry, we hope there will be better XFS
     repair tools some day!*
 
 ```{=html}
@@ -456,7 +456,7 @@ file system of a data drive, while maintaining its parity info.
     **lost+found** folder. Dealing with this folder does not have to be
     done immediately. This is similar to running **chkdsk** or
     **scandisk** within Windows, and finding lost clusters, and dealing
-    with files named File0000.chk or similar. You may find one user\'s
+    with files named File0000.chk or similar. You may find one user's
     [story](http://lime-technology.com/forum/index.php?topic=1483) very
     helpful, plus his later
     [tale](http://lime-technology.com/forum/index.php?topic=3367.msg29056#msg29056)
@@ -471,7 +471,7 @@ file system of a data drive, while maintaining its parity info.
     system check on the wrong device name. For almost all repairs, you
     would use /dev/md1, /dev/md2, /dev/md3, /dev/md4, etc. If operating
     on the cache drive (which is not protected by parity), you would use
-    /dev/sdX1 (note the trailing \"1\" indicating the first partition on
+    /dev/sdX1 (note the trailing "1" indicating the first partition on
     the cache drive).
 
 ```{=html}
@@ -479,11 +479,11 @@ file system of a data drive, while maintaining its parity info.
 ```
 
 :   If you want to test and repair a non-array drive, you would use the
-    drive\'s partition symbol (e.g. sdc1, sdj1, sdx1, etc), not the
+    drive's partition symbol (e.g. sdc1, sdj1, sdx1, etc), not the
     array device symbol (e.g. md1, md13, etc). So the device name would
     be something like /dev/sdj1, /dev/sdx1, etc.
 
-### Redoing a drive formatted with XFS {#redoing_a_drive_formatted_with_xfs}
+### Redoing a drive formatted with XFS
 
 :   If you are here because the XFS repair tool has failed you(!), then
     the best we can recommend is to save the data, reformat, and restore
@@ -494,23 +494,23 @@ file system of a data drive, while maintaining its parity info.
     [File Scavenger](http://www.quetek.com/prod02.htm) or a live CD of
     [TestDisk](http://www.cgsecurity.org/wiki/TestDisk).
 2. Change the file system format for the drive to ReiserFS (just to
-    reset the formatting, it\'s temporary and fairly quick)
+    reset the formatting, it's temporary and fairly quick)
 3. Start the array and format the drive
 4. Stop the array
 5. Change the file system format for the drive to XFS again
 6. Start the array and format the drive again
 7. Copy back everything you saved
 
-:   It\'s certainly not a welcome method, but it does produce a fresh
+:   It's certainly not a welcome method, but it does produce a fresh
     and clean XFS format. (*The write-up above has not been tested by
     this author. If corrections are needed, please do them, or PM RobJ
     with the corrections or suggestions.*)
 
 \
 
-## Drives formatted with BTRFS {#drives_formatted_with_btrfs}
+## Drives formatted with BTRFS
 
-:   We\'re sorry, but we don\'t have enough experience yet with the
+:   We're sorry, but we don't have enough experience yet with the
     **scrub** command. We recommend reading through this section, then
     either using the
     [webGui](Check_Disk_Filesystems#Checking_and_fixing_drives_in_the_webGui "wikilink")
@@ -525,7 +525,7 @@ file system of a data drive, while maintaining its parity info.
     to the [Redoing a drive formatted with
     BTRFS](Check_Disk_Filesystems#Redoing_a_drive_formatted_with_BTRFS "wikilink")
     section.
-:   If it\'s a drive pool, the **scrub** command can fix certain but not
+:   If it's a drive pool, the **scrub** command can fix certain but not
     all errors. So far there is not a reliable BTRFS tool that can fix
     ALL possible errors. If the result indicates that there are still
     uncorrectable errors, then you will have to copy off all data and
@@ -535,7 +535,7 @@ file system of a data drive, while maintaining its parity info.
     once better tools are ready, they will be available here too.
 :   *\-\-- work in progress \-\--*
 
-### Experimental BTRFS recovery {#experimental_btrfs_recovery}
+### Experimental BTRFS recovery
 
 :   If you consider yourself an advanced user (or desperate!), here are
     some advanced tools that \*may\* help (or may make things worse!)
@@ -559,7 +559,7 @@ file system of a data drive, while maintaining its parity info.
         safe to use. Please see the [btrfs
         restore](http://btrfs.wiki.kernel.org/index.php/Restore) wiki
         page.
-    -   The very last resort tool is **btrfs check \--repair**. It\'s
+    -   The very last resort tool is **btrfs check \--repair**. It's
         reported to fix some issues some of the time, but with a good
         chance it will make others worse! You have been warned! Please
         see the [btrfs check
@@ -569,12 +569,12 @@ file system of a data drive, while maintaining its parity info.
         to completely fix everything, then redo the drive using the
         following procedure, using **btrfs restore** if needed.
 
-### Redoing a drive formatted with BTRFS {#redoing_a_drive_formatted_with_btrfs}
+### Redoing a drive formatted with BTRFS
 
 :   ***Note: the following is for a single drive formatted in BTRFS, not
     for a drive pool. For a pool, you will have to adapt it, until we
     add adapted instructions. Sorry!***
-:   BTRFS repair tools aren\'t very good yet. If you give up on the
+:   BTRFS repair tools aren't very good yet. If you give up on the
     **scrub** command mentioned above, then the best we can recommend is
     to save the data, reformat, and restore the data (NOT a desirable
     course of action)!
@@ -586,22 +586,22 @@ file system of a data drive, while maintaining its parity info.
     something important is absolutely needed and still inaccessible, try
     [btrfs restore](http://btrfs.wiki.kernel.org/index.php/Restore)
 2. Change the file system format for the drive to ReiserFS (just to
-    reset the formatting, it\'s temporary and fairly quick)
+    reset the formatting, it's temporary and fairly quick)
 3. Start the array and format the drive
 4. Stop the array
-5. Change the file system format for the drive to BTRFS again (if it\'s
+5. Change the file system format for the drive to BTRFS again (if it's
     a single drive, consider changing to XFS, we recommend it)
 6. Start the array and format the drive again
 7. Copy back everything you saved
 
-:   It\'s certainly not a welcome method, but it does produce a fresh
+:   It's certainly not a welcome method, but it does produce a fresh
     and clean format. (*The write-up above has not been tested by this
     author. If corrections are needed, please do them, or PM RobJ with
     the corrections or suggestions.*)
 
 \
 
-## Drives formatted with ReiserFS using unRAID v5 or later {#drives_formatted_with_reiserfs_using_unraid_v5_or_later}
+## Drives formatted with ReiserFS using unRAID v5 or later
 
 :   *Note: for more info on the **reiserfsck** tool and its options, see
     [reiserfsck](Check_Disk_Filesystems#reiserfsck "wikilink").*
@@ -635,13 +635,13 @@ file system of a data drive, while maintaining its parity info.
     example, if it is your Disk 5 that you are testing, then substitute
     **md5** for **md1**, in all of the instructions below.*
 
-### Preparing to run reiserfsck {#preparing_to_run_reiserfsck}
+### Preparing to run reiserfsck
 
 :   Start the array in Maintenance mode, by clicking the Maintenance
     mode check box before clicking the Start button. This starts the
     unRAID driver but does not mount any of the drives.
 
-### Running reiserfsck {#running_reiserfsck}
+### Running reiserfsck
 
 :   Now you are ready to run the Reiser file system test. (Note:
     \--check is the default option, not strictly required, but included
@@ -654,9 +654,9 @@ file system of a data drive, while maintaining its parity info.
 
 :
 
-    :   **reiserfsck \--check /dev/md1** *\[answer with the word **Yes**
+    :   **reiserfsck \--check /dev/md1** *[answer with the word **Yes**
         when prompted, do not type **yes** or **YES**, but **Yes**
-        (capital **Y** and lower case **es**)\]*
+        (capital **Y** and lower case **es**)]*
 
 ```{=html}
 <!-- -->
@@ -674,8 +674,8 @@ file system of a data drive, while maintaining its parity info.
 
 :
 
-    :   **reiserfsck \--fix-fixable /dev/md1** *\[answer with **Yes**
-        when prompted. (capital **Y** and lower case **es**)\]*
+    :   **reiserfsck \--fix-fixable /dev/md1** *[answer with **Yes**
+        when prompted. (capital **Y** and lower case **es**)]*
 
 ```{=html}
 <!-- -->
@@ -695,7 +695,7 @@ file system of a data drive, while maintaining its parity info.
     last-resort options, to repair a severely damaged Reiser file
     system, and recover as much as possible. They rarely repair the
     system to perfection, and there may be a little data loss. They do a
-    great job, and make the drive usable again, but it\'s possible files
+    great job, and make the drive usable again, but it's possible files
     may be lost or damaged, or moved into the **lost+found** folder. The
     **\--rebuild-tree** option will almost always create a
     **lost+found** folder and place in it the files, folders, and parts
@@ -724,13 +724,13 @@ file system of a data drive, while maintaining its parity info.
 :   Note: If **reiserfsck** performs write operations to repair the file
     system, parity **will** be maintained.
 
-### After running reiserfsck {#after_running_reiserfsck}
+### After running reiserfsck
 
 :   If you are in Maintenance mode, you can resume normal operations by
     stopping the array, then restarting the array with the Maintenance
     mode check box unchecked.
 
-### Additional comments {#additional_comments_2}
+### Additional comments
 
 :   The **reiserfsck** tool may take a long time on a full file system
     (several minutes to a half hour, or more). Also re-mounting the disk
@@ -752,7 +752,7 @@ file system of a data drive, while maintaining its parity info.
     not have to be done immediately. This is similar to running
     **chkdsk** or **scandisk** within Windows, and finding lost
     clusters, and dealing with files named File0000.chk or similar. You
-    may find one user\'s
+    may find one user's
     [story](http://lime-technology.com/forum/index.php?topic=1483) very
     helpful, plus his later
     [tale](http://lime-technology.com/forum/index.php?topic=3367.msg29056#msg29056)
@@ -768,7 +768,7 @@ file system of a data drive, while maintaining its parity info.
     system check on the wrong device name. For almost all repairs, you
     would use /dev/md1, /dev/md2, /dev/md3, /dev/md4, etc. If operating
     on the cache drive (which is not protected by parity), you would use
-    /dev/sdX1 (note the trailing \"1\" indicating the first partition on
+    /dev/sdX1 (note the trailing "1" indicating the first partition on
     the cache drive).
 
 ```{=html}
@@ -776,13 +776,13 @@ file system of a data drive, while maintaining its parity info.
 ```
 
 :   If you want to test and repair a non-array drive, you would use the
-    drive\'s partition symbol (e.g. sdc1, sdj1, sdx1, etc), not the
+    drive's partition symbol (e.g. sdc1, sdj1, sdx1, etc), not the
     array device symbol (e.g. md1, md13, etc). So the device name would
     be something like /dev/sdj1, /dev/sdx1, etc.
 
 \
 
-## Drives formatted with ReiserFS using unRAID v4 {#drives_formatted_with_reiserfs_using_unraid_v4}
+## Drives formatted with ReiserFS using unRAID v4
 
 :   *Note: for more info on the **reiserfsck** tool and its options, see
     [reiserfsck](Check_Disk_Filesystems#reiserfsck "wikilink").*
@@ -817,7 +817,7 @@ file system of a data drive, while maintaining its parity info.
     **md5** for **md1**, and **disk5** for **disk1**, in all of the
     instructions below.*
 
-### Preparing to run reiserfsck {#preparing_to_run_reiserfsck_1}
+### Preparing to run reiserfsck
 
 :   Start the array, then from the console or in a [terminal session
     with SSH or Telnet](Terminal_Access "wikilink"), type this:
@@ -828,24 +828,24 @@ file system of a data drive, while maintaining its parity info.
 
 :
 
-    :   **cd** *\[this will make sure you are in the /root directory\]*
-    :   **samba stop** *\[all your shares will disappear from network\]*
-    :   **umount /dev/md1** *\[\'md1\' corresponds to disk1, \'md2\' to
-        disk2, etc. note: it is \'umount\', not \'unmount\'\]*
+    :   **cd** *[this will make sure you are in the /root directory]*
+    :   **samba stop** *[all your shares will disappear from network]*
+    :   **umount /dev/md1** *['md1' corresponds to disk1, 'md2' to
+        disk2, etc. note: it is 'umount', not 'unmount']*
 
 ```{=html}
 <!-- -->
 ```
 
 :   ***Note:** you will not be able to unmount the disk if it is
-    \"busy.\" A disk is busy if any processes are using it, or
-    referencing files/folders on it. If the \"umount\" command is not
+    "busy." A disk is busy if any processes are using it, or
+    referencing files/folders on it. If the "umount" command is not
     successful, you will need to stop any add-on process you might have
     running that are referencing the disk before you can unmount it. If
-    you have \"changed directory\" to it, you must log off, or \"cd\"
-    elsewhere (off the disk) before the \"umount\" will succeed.*
+    you have "changed directory" to it, you must log off, or "cd"
+    elsewhere (off the disk) before the "umount" will succeed.*
 
-### Running reiserfsck {#running_reiserfsck_1}
+### Running reiserfsck
 
 :   Now you are ready to run the Reiser file system test. (Note:
     \--check is the default option, not strictly required, but included
@@ -858,9 +858,9 @@ file system of a data drive, while maintaining its parity info.
 
 :
 
-    :   **reiserfsck \--check /dev/md1** *\[answer with the word **Yes**
+    :   **reiserfsck \--check /dev/md1** *[answer with the word **Yes**
         when prompted, do not type **yes** or **YES**, but **Yes**
-        (capital **Y** and lower case **es**)\]*
+        (capital **Y** and lower case **es**)]*
 
 ```{=html}
 <!-- -->
@@ -878,8 +878,8 @@ file system of a data drive, while maintaining its parity info.
 
 :
 
-    :   **reiserfsck \--fix-fixable /dev/md1** *\[answer with **Yes**
-        when prompted. (capital **Y** and lower case **es**)\]*
+    :   **reiserfsck \--fix-fixable /dev/md1** *[answer with **Yes**
+        when prompted. (capital **Y** and lower case **es**)]*
 
 ```{=html}
 <!-- -->
@@ -899,7 +899,7 @@ file system of a data drive, while maintaining its parity info.
     last-resort options, to repair a severely damaged Reiser file
     system, and recover as much as possible. They rarely repair the
     system to perfection, and there may be a little data loss. They do a
-    great job, and make the drive usable again, but it\'s possible files
+    great job, and make the drive usable again, but it's possible files
     may be lost or damaged, or moved into the **lost+found** folder. The
     **\--rebuild-tree** option will almost always create a
     **lost+found** folder and place in it the files, folders, and parts
@@ -928,7 +928,7 @@ file system of a data drive, while maintaining its parity info.
 :   Note: If **reiserfsck** performs write operations to repair the file
     system, parity **will** be maintained.
 
-### After running reiserfsck {#after_running_reiserfsck_1}
+### After running reiserfsck
 
 :   You can resume normal operations by, from the console or in a
     [terminal session with SSH or Telnet](Terminal_Access "wikilink"),
@@ -940,11 +940,11 @@ file system of a data drive, while maintaining its parity info.
 
 :
 
-    :   **mount /dev/md1 /mnt/disk1** *\[important to match up the
-        \'md1\' with \'disk1\', \'md2\' with \'disk2\', etc.\]*
-    :   **samba start** *\[all shares should again be visible\]*
+    :   **mount /dev/md1 /mnt/disk1** *[important to match up the
+        'md1' with 'disk1', 'md2' with 'disk2', etc.]*
+    :   **samba start** *[all shares should again be visible]*
 
-### Additional comments {#additional_comments_3}
+### Additional comments
 
 :   The **reiserfsck** tool may take a long time on a full file system
     (several minutes to a half hour, or more). Also re-mounting the disk
@@ -966,7 +966,7 @@ file system of a data drive, while maintaining its parity info.
     not have to be done immediately. This is similar to running
     **chkdsk** or **scandisk** within Windows, and finding lost
     clusters, and dealing with files named File0000.chk or similar. You
-    may find one user\'s
+    may find one user's
     [story](http://lime-technology.com/forum/index.php?topic=1483) very
     helpful, plus his later
     [tale](http://lime-technology.com/forum/index.php?topic=3367.msg29056#msg29056)
@@ -982,7 +982,7 @@ file system of a data drive, while maintaining its parity info.
     system check on the wrong device name. For almost all repairs, you
     would use /dev/md1, /dev/md2, /dev/md3, /dev/md4, etc. If operating
     on the cache drive (which is not protected by parity), you would use
-    /dev/sdX1 (note the trailing \"1\" indicating the first partition on
+    /dev/sdX1 (note the trailing "1" indicating the first partition on
     the cache drive).
 
 ```{=html}
@@ -990,7 +990,7 @@ file system of a data drive, while maintaining its parity info.
 ```
 
 :   If you want to test and repair a non-array drive, you would use the
-    drive\'s partition symbol (e.g. sdc1, sdj1, sdx1, etc), not the
+    drive's partition symbol (e.g. sdc1, sdj1, sdx1, etc), not the
     array device symbol (e.g. md1, md13, etc). So the device name would
     be something like /dev/sdj1, /dev/sdx1, etc.
 
@@ -1010,7 +1010,7 @@ file system of a data drive, while maintaining its parity info.
 <!-- -->
 ```
 
-:   xfs_repair \[ -dnvLP \] device
+:   xfs_repair [ -dnvLP ] device
 :   xfs_repair -V
 :   *Source: derived from [Linux man
     page](http://linux.die.net/man/8/xfs_repair) (there are many more
@@ -1105,12 +1105,12 @@ file system of a data drive, while maintaining its parity info.
 
 \
 
-## btrfs scrub {#btrfs_scrub}
+## btrfs scrub
 
 :   For a full description, please see the [man page for
     scrub](https://btrfs.wiki.kernel.org/index.php/Manpage/btrfs-scrub).
 
-##### Syntax {#syntax_1}
+##### Syntax
 
 :   **The filesystem to be repaired must be mounted first.** For unRAID,
     start the array as normal, NOT in Maintenance mode!
@@ -1119,7 +1119,7 @@ file system of a data drive, while maintaining its parity info.
 <!-- -->
 ```
 
-:   btrfs scrub start \[-BdqrR\] `<path>`{=html}\|`<device>`{=html}
+:   btrfs scrub start [-BdqrR] `<path>`{=html}\|`<device>`{=html}
 
     :   Start a scrub on all devices of the filesystem identified by
         `<path>`{=html} or on a single `<device>`{=html}.
@@ -1131,7 +1131,7 @@ file system of a data drive, while maintaining its parity info.
         to go to the [Redoing a drive formatted with
         BTRFS](Check_Disk_Filesystems#Redoing_a_drive_formatted_with_BTRFS "wikilink")
         section.
-    :   If it\'s a drive pool, the **scrub** command can fix certain but
+    :   If it's a drive pool, the **scrub** command can fix certain but
         not all errors. So far there is not a reliable BTRFS tool that
         can fix ALL possible errors. If the result indicates that there
         are still uncorrectable errors, then you will have to copy off
@@ -1139,7 +1139,7 @@ file system of a data drive, while maintaining its parity info.
         drive formatted with
         BTRFS](Check_Disk_Filesystems#Redoing_a_drive_formatted_with_BTRFS "wikilink")).
 
-##### Options {#options_1}
+##### Options
 
 :   -B
 
@@ -1158,7 +1158,7 @@ file system of a data drive, while maintaining its parity info.
 
     :   Raw print mode. Print full data instead of summary.
 
-##### Examples {#examples_1}
+##### Examples
 
 :   **Important Note! These are untested yet!**
 
@@ -1187,13 +1187,13 @@ file system of a data drive, while maintaining its parity info.
 :   For a full description, please see the [About.com page for
     reiserfsck](http://linux.about.com/library/cmd/blcmdl8_reiserfsck.htm).
 
-##### Description {#description_1}
+##### Description
 
 :   The **reiserfsck** tool checks for a Reiser file system (must be a
     partition like /dev/md3 or /dev/sdc1, not a drive like /dev/sdc),
     replays any transactions, and checks or repairs it.
 
-##### Syntax examples {#syntax_examples}
+##### Syntax examples
 
 :   **The filesystem to be repaired must be unmounted.** For unRAID,
     start the array in Maintenance mode.
@@ -1225,7 +1225,7 @@ file system of a data drive, while maintaining its parity info.
 
 :   *\-\-- work in progress \-\--*
 
-##### Rebuilding the superblock {#rebuilding_the_superblock}
+##### Rebuilding the superblock
 
 :   This is an example of the questions and correct answers, when you
     attempt to rebuild a ReiserFS superblock, using the
@@ -1278,7 +1278,7 @@ file system of a data drive, while maintaining its parity info.
 :
 
     :   Will check superblock and rebuild it if needed
-    :   Will put log info to \'stdout\'
+    :   Will put log info to 'stdout'
 
 ```{=html}
 <!-- -->
@@ -1286,7 +1286,7 @@ file system of a data drive, while maintaining its parity info.
 
 :
 
-    :   Do you want to run this program?\[N/Yes\] (note need to type Yes
+    :   Do you want to run this program?[N/Yes] (note need to type Yes
         if you do):**Yes**
 
 ```{=html}
@@ -1304,14 +1304,14 @@ file system of a data drive, while maintaining its parity info.
 
 :
 
-    :   what the version of ReiserFS do you use\[1-4\]
+    :   what the version of ReiserFS do you use[1-4]
 
         :   \(1\) 3.6.x
         :   \(2\) \>=3.5.9 (introduced in the middle of 1999) (if you
             use linux 2.2, choose this one)
-        :   \(3\) \< 3.5.9 converted to new format (don\'t choose if
+        :   \(3\) \< 3.5.9 converted to new format (don't choose if
             unsure)
-        :   \(4\) \< 3.5.9 (this is very old format, don\'t choose if
+        :   \(4\) \< 3.5.9 (this is very old format, don't choose if
             unsure)
         :   \(X\) exit
     :   **1**
@@ -1322,7 +1322,7 @@ file system of a data drive, while maintaining its parity info.
 
 :
 
-    :   Enter block size \[4096\]:
+    :   Enter block size [4096]:
     :   **4096**
 
 ```{=html}
@@ -1333,7 +1333,7 @@ file system of a data drive, while maintaining its parity info.
 
     :   No journal device was specified. (If journal is not available,
         re-run with \--no-journal-available option specified).
-    :   Is journal default? (y/n)\[y\]: **y**
+    :   Is journal default? (y/n)[y]: **y**
 
 ```{=html}
 <!-- -->
@@ -1341,7 +1341,7 @@ file system of a data drive, while maintaining its parity info.
 
 :
 
-    :   Did you use resizer(y/n)\[n\]: **n**
+    :   Did you use resizer(y/n)[n]: **n**
     :   rebuild-sb: no uuid found, a new uuid was generated
         (b0894fe9-3850-4d57-b70b-a419cbf3823e)
 
@@ -1355,14 +1355,14 @@ file system of a data drive, while maintaining its parity info.
         changed the start of the partition with some partition table
         editor. If you are sure that the start of the partition is ok,
         rebuild the journal header.
-    :   Do you want to rebuild the journal header? (y/n)\[n\]: **y**
+    :   Do you want to rebuild the journal header? (y/n)[n]: **y**
     :   Reiserfs super block in block 16 on 0x906 of format 3.6 with
         standard journal
     :   Count of blocks on the device: 97677824
     :   Number of bitmaps: 2981
     :   Blocksize: 4096
-    :   Free blocks (count of blocks - used \[journal, bitmaps, data,
-        reserved\] blocks): 0
+    :   Free blocks (count of blocks - used [journal, bitmaps, data,
+        reserved] blocks): 0
     :   Root block: 0
     :   Filesystem is NOT clean
     :   Tree height: 0
@@ -1370,8 +1370,8 @@ file system of a data drive, while maintaining its parity info.
     :   Objectid map size 0, max 972
     :   Journal parameters:
 
-        :   Device \[0x0\]
-        :   Magic \[0x0\]
+        :   Device [0x0]
+        :   Magic [0x0]
         :   Size 8193 blocks (including 1 for journal header) (first
             block 18)
         :   Max transaction length 1024 blocks
@@ -1386,7 +1386,7 @@ file system of a data drive, while maintaining its parity info.
     :   UUID: b0894fe9-3850-4d57-b70b-a419cbf3823e
     :   LABEL:
     :   Set flags in SB:
-    :   Is this ok ? (y/n)\[n\]: **y**
+    :   Is this ok ? (y/n)[n]: **y**
 
 ------------------------------------------------------------------------
 

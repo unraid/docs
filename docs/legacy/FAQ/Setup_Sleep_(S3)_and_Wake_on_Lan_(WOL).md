@@ -1,6 +1,6 @@
 The following are my notes for setting up my unRAID server to sleep to
-S3 state and then wake up to Magic Packet. This is a \'For Beginners, By
-Beginners\' effort - there\'s very little original work here. I just
+S3 state and then wake up to Magic Packet. This is a 'For Beginners, By
+Beginners' effort - there's very little original work here. I just
 tried to piece together whatever I needed from various threads on the
 unRAID forums. My server uses a Foxconn A7GM-S AMD 780G/SB700 based
 motherboard, and I am running unRAID 4.4.2. In general, I think the
@@ -29,8 +29,8 @@ OS. The following assumes the use of a Windows machine.
     the upper right corner, or fall-back to [SSH](SSH "wikilink") or if
     absolutely neccesary [Telnet](Telnet "wikilink")) and type **ethtool
     eth0** from the command line
--   You\'re looking to confirm that the setting for "Wake-on" includes
-    \'g\' . . . which is the option for allowing Wake on Magic Packet.
+-   You're looking to confirm that the setting for "Wake-on" includes
+    'g' . . . which is the option for allowing Wake on Magic Packet.
     We're essentially confirming the BIOS settings from Step 2 above.
 -   The results of my **ethtool eth0** command are as follows:
 
@@ -56,19 +56,19 @@ OS. The following assumes the use of a Windows machine.
 `       Current message level: 0x00000033 (51)`\
 `       Link detected: yes`
 
--   If the wake-on setting does not include \'g\', you can set it
+-   If the wake-on setting does not include 'g', you can set it
     manually by typing the following at the server command line:
 
 **`ethtool -s eth0 wol g`**
 
--   If necessary, you can add the above line to your \'go\' script, but
-    I\'ve not had a problem with my machine keeping the setting once it
+-   If necessary, you can add the above line to your 'go' script, but
+    I've not had a problem with my machine keeping the setting once it
     is set and the appropriate Wake on LAN setting is enabled in BIOS.
 
 4\. Download **wolcmd** executable
 
--   Go to [Depicus \'Wake on
-    Lan\'](http://www.depicus.com/wake-on-lan/wake-on-lan-cmd.aspx)
+-   Go to [Depicus 'Wake on
+    Lan'](http://www.depicus.com/wake-on-lan/wake-on-lan-cmd.aspx)
     page, select **Download** button near the bottom
 -   I placed the file in *C:\\Program Files\\WOLcmd* (location becomes
     important in next step)
@@ -82,7 +82,7 @@ OS. The following assumes the use of a Windows machine.
     -   Change folder directory as necessary depending on where you
         saved wolcmd.exe.
     -   Enter the MAC address of your unRAID server in the second line
-        instead of \'MAC\'
+        instead of 'MAC'
 
 `    `**`cd c:\program files\wolcmd`**\
 `    `**`wolcmd MAC 255.255.255.255 255.255.255.255`**
@@ -93,9 +93,9 @@ OS. The following assumes the use of a Windows machine.
 
 6\. Manually test sleep and WOL
 
--   Spin-down drives (I\'m not certain that this is required. I did
+-   Spin-down drives (I'm not certain that this is required. I did
     force sleep from the active state (spinning) once before and got a
-    parity check on wake-up. I\'ll test some more.)
+    parity check on wake-up. I'll test some more.)
 -   Telnet to server and enter **echo 3 \>/proc/acpi/sleep**
     -   Ensure server sleeps
 -   Execute **Wakeup.bat** file
@@ -120,7 +120,7 @@ little more work to do -- I'm guessing a Linux driver issue?
 8\. Generate sleep script, or download mine from
 [here](http://lime-technology.com/forum/index.php?topic=3657.msg39076#msg39076)
 
--   I copied OMV\'s sleep script verbatim from [this unRAID forum
+-   I copied OMV's sleep script verbatim from [this unRAID forum
     thread](http://lime-technology.com/forum/index.php?topic=3657), and
     then edited the lines shown below in bold:
 
@@ -159,7 +159,7 @@ little more work to do -- I'm guessing a Linux driver issue?
 
 -   timeout=5 and count=5 are programmable timers to set the delay from
     spin-down until sleep. This sets the delay to five minutes after
-    spin down, OMV\'s original script was 15 minutes.
+    spin down, OMV's original script was 15 minutes.
 -   drives= line needs to be edited to reflect the drives that you want
     to be checked for status (idle or spinning). Again, my server only
     has two drives (**sda** and **sdb**), so I edited accordingly. Be
@@ -175,9 +175,9 @@ little more work to do -- I'm guessing a Linux driver issue?
 
 -   I titled my sleep script **s3.sh** and saved in **/boot/custom/bin**
 
-**IMPORTANT:** \"boot\" is *already* the name of the root directory of
+**IMPORTANT:** "boot" is *already* the name of the root directory of
 your flash device. So, if you save your script as per this example, do
-**not** create another \"boot\" directory. Doing so will cause unRAID to
+**not** create another "boot" directory. Doing so will cause unRAID to
 lose track of your config directory and your entire configuration will
 be lost (unless previously backed up elsewhere.)
 
@@ -196,7 +196,7 @@ be lost (unless previously backed up elsewhere.)
 
 Good luck!
 
-### Additional Information {#additional_information}
+### Additional Information
 
 -   See the [Wake On LAN](UnRAID_Topical_Index#Wake_On_LAN "wikilink")
     topic for many links to related discussions

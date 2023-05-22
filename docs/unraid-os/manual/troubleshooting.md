@@ -44,9 +44,9 @@ required:
     about a problem you are encountering you are frequently going to be
     asked to provide your system diagnostics file. You need to do so
     BEFORE YOU REBOOT so that the logs show went wrong BEFORE the reboot
-    (because once you reboot, it\'s lost)!
+    (because once you reboot, it's lost)!
 
-## Capturing Diagnostic Information {#capturing_diagnostic_information}
+## Capturing Diagnostic Information
 
 When you encounter any sort of problem it is always recommended that you
 attempt to capture as much information as possible to help with
@@ -54,7 +54,7 @@ pinpointing the cause. If you want to ask questions in the forum such
 information will typically be requested as it will speed up the process
 of getting meaningful and accurate feedback.
 
-### System Diagnostics {#system_diagnostics}
+### System Diagnostics
 
 Unraid has a GUI option under ***Tools-\>Diagnostics*** to capture a lot
 of information about the state of your system that can be helpful when
@@ -116,7 +116,7 @@ disabled by default and recommended practice is to only have it enabled
 when investigating why mover is not giving the expected results this is
 probably acceptable?
 
-### Persistent Logs (Syslog server) {#persistent_logs_syslog_server}
+### Persistent Logs (Syslog server)
 
 The main system log is the ***syslog*** file and it is the contents of
 this file that is displayed when you click the ![](/docs/legacy/Log-icon.png) icon at
@@ -133,11 +133,11 @@ support
 
 - Go to *Settings-\>Network Services-\>Syslog Server*
 
-:   You can click on the \'Help\' icon on the Toolbar and get more
+:   You can click on the 'Help' icon on the Toolbar and get more
     information for all of the options.
 
 - **Mirror to Flash**: This is the simplest to set up. You select
-    \'Yes\' from the dropdown box and click on the \'Apply\' button and
+    'Yes' from the dropdown box and click on the 'Apply' button and
     the syslog will be mirrored to the logs folder/directory of the
     flash drive and is appended to on a reboot. There is one principal
     disadvantage to this method. If the condition, that you are trying
@@ -156,7 +156,7 @@ support
     server `<Operating system>`{=html} After you have set up the
     computer/server, you fill in the computer/server name or the IP
     address. (I prefer to use the IP address as there is never any
-    confusion about what it is.) Then click on the \'Apply\' button and
+    confusion about what it is.) Then click on the 'Apply' button and
     your syslog will be mirrored to the other computer.
 
 :   The other computer has to be left on continuously until the problem
@@ -172,8 +172,8 @@ support
     enabled then some extra options are offered. The built-in Help gives
     guidance /n suitable settings.
   - **Local syslog folder**: This will be a share on your server but
-        chose it with care. Ideally, it will be a \'cache only\' or a
-        \'cache preferred\' share. This will minimize the spinning up of
+        chose it with care. Ideally, it will be a 'cache only' or a
+        'cache preferred' share. This will minimize the spinning up of
         disks due to the continuous writing of new lines to the syslog.
         A cache SSD drive would be the ideal choice here using a *cache
         preferred* share. The syslog will be in the root of that
@@ -183,7 +183,7 @@ support
     - **Local syslog maximum file size**:
     - **Local syslog number of files**:
 
-:   If you click the \'Apply button at this point, you will have this
+:   If you click the 'Apply button at this point, you will have this
     server setup to serve as a Remote Syslog Server. It can now capture
     syslogs from several computers if the need should arise.
 
@@ -218,11 +218,9 @@ diagnosing issues with specific VMs.
 
 *MORE DETAIL NEEDED*
 
-\
+## Boot Issues
 
-## Boot Issues {#boot_issues}
-
-### Preparing the flash drive {#preparing_the_flash_drive}
+### Preparing the flash drive
 
 This is covered under the [Getting
 Started](Articles/Getting_Started "wikilink") section of the
@@ -235,7 +233,7 @@ licence key) are held in the **config** folder on the flash drive.
 Copying the **config** folder (and all its contents) back to the flash
 drive after redoing it will preserve all current settings.
 
-### Enabling UEFI boot {#enabling_uefi_boot}
+### Enabling UEFI boot
 
 You get asked if you want UEFI mode boot support when using initially
 creating the flash drive. However it is always possible to enable UEFI
@@ -243,7 +241,7 @@ mode booting at a later stage by renaming the folder on the flash drive
 called **efi\~** to **efi** (i.e. removing the trailing **\~**
 character).
 
-### Boot Process {#boot_process}
+### Boot Process
 
 Most of the time the Unraid boot process runs seamlessly and the user
 needs no awareness of the various stages involved. However, when things
@@ -261,11 +259,11 @@ The boot process for Unraid proceeds through a number of stages
     recognizes the presence of the Unraid bootable flash drive
     - The way that the Unraid flash drive is set as the default boot
         device is BIOS dependent so you may need to consult your
-        motherboard\'s User Manual to determine the correct way to do
+        motherboard's User Manual to determine the correct way to do
         this.
     - The Unraid flash drive supports booting in Legacy mode (also
-        sometimes known as CSM mode) for older BiOS\'s and UEFI for more
-        recent ones. Many recent BIOS\'s support both modes.
+        sometimes known as CSM mode) for older BiOS's and UEFI for more
+        recent ones. Many recent BIOS's support both modes.
     - If you want UEFI boot mode to be used then the EFI folder on the
         flash drive must not have trailing tilde (\~) character.
 2. **Syslinux loader**:
@@ -362,9 +360,7 @@ The boot process for Unraid proceeds through a number of stages
 
 By this stage, the Unraid server will be fully operational.
 
-\
-
-### Boot Failures {#boot_failures}
+### Boot Failures
 
 The following are some actions that can be taken to try and pin down the
 cause of a boot failure:
@@ -406,16 +402,14 @@ cause of a boot failure:
             then a plugin is causing problems
 6. If the original flash drive cannot be made to boot try a brand new
     flash drive and clean copy of Unraid (with the default configs)
-    - This can determine if something is wrong with the server\'s
+    - This can determine if something is wrong with the server's
         hardware (mobo, cpu, ram, usb port, etc.)
 7. Install a clean/new copy of Unraid on a new flash drive and then
     copy the *config* folder over from the old one.
     - If this works then the licence will need to be transferred to
         this new flash drive.
 
-\
-
-### Lost root Password {#lost_root_password}
+### Lost root Password
 
 Occasionally users lose their password for managing Unraid via the
 Unraid webGUI or console. This may be that they simply forgot the
@@ -456,7 +450,7 @@ the root password (but is a little more prone to error):
     :   root::15477:0:99999:7:::
 5. Plug flash back into server and start up again.
 
-### Lost boot drive and do not know which are the parity drives {#lost_boot_drive_and_do_not_know_which_are_the_parity_drives}
+### Lost boot drive and do not know which are the parity drives
 
 Occasionally users get the scenario where they have the following
 combination of circumstances:
@@ -491,7 +485,7 @@ The basic approach is:
     point but be aware this will always invalidate parity2
 - Start the array to commit the drive assignments. If you have used an
     approach that has not invalidated parity you can now tick the
-    \"Parity is Already Valid\" checkbox to avoid rebuilding parity. If
+    "Parity is Already Valid" checkbox to avoid rebuilding parity. If
     in doubt do **not** tick this checkbox.
 - Make any corrections that assume a specific array drive order. For
     instance If you had any includes/excludes set for a User Share you
@@ -547,7 +541,7 @@ The process is:
     contents if the order of the data drives matters to you to see if
     you can identify the order for the data drives.
 
-### Backing Up Boot Drive {#backing_up_boot_drive}
+### Backing Up Boot Drive
 
 Since the Unraid boot dtive contains all user specific settings in the
 'config' folder You should ideally always make a backup of the Unraid
@@ -557,17 +551,17 @@ There are various ways of achieving this:
 
 - From the Unraid GUI via Main -\> Boot -\> Device -\> Flash -\> Flash
     Backup. This will create a zip file that you then download.
-- by Installing the My Servers plugin that provides for automated
+- by Installing [Unraid Connect](/connect/Connect.mdx), which provides for automated
     backups to cloud servers managed by Limetech.
 - by plugging the flash drive into a PC/Mac and copying the full
     contents to a local folder on the PC/Mac
 
-### Manually Upgrading (or Downgrading) an Unraid release. {#manually_upgrading_or_downgrading_an_unraid_release.}
+### Manually Upgrading (or Downgrading) an Unraid release.
 
 Follow the same process as laid out in the section below for handling
 bzimage checksum errors.
 
-### Bzimage checksum error/failure reading flash drive {#bzimage_checksum_errorfailure_reading_flash_drive}
+### Bzimage checksum error/failure reading flash drive
 
 Sometimes when booting you get a message displayed on a locally attached
 monitor indicating that something has gone wrong when trying to load the
@@ -614,7 +608,7 @@ The normal recovery action is:
 If the above does not help then it is advisable to post in the Unraid
 forums stating what you have tried and what are your current symptoms.\
 
-## Unclean Shutdowns {#unclean_shutdowns}
+## Unclean Shutdowns
 
 Sometimes on booting up the system and starting the array a parity check
 is automatically started due to an *Unclean Shutdown*. An Unclean
@@ -638,8 +632,8 @@ wide variety of issues:
      After the overall shutdown timer runs out, the server is forced to
     shutdown.  If you have the ***Tips and Tweaks*** plugin installed,
     you can specify that any **bash** or **ssh** sessions be terminated
-    so Unraid can be gracefully shutdown and won\'t hang waiting for
-    them to terminate (which they won\'t without human intervention).
+    so Unraid can be gracefully shutdown and won't hang waiting for
+    them to terminate (which they won't without human intervention).
 
 There are various timeouts that are started when a shutdown of the array
 is started that run in parallel ang many users find the defaults are too
@@ -681,8 +675,8 @@ power button.  This will initiate a shutdown that will attempt a
 graceful shutdown of the server.  If you have to hold the power button
 to do a hard power off, you will get an unclean shutdown.
 
-If an unclean shutdown does occur because the overall \"Shutdown
-time-out\" was exceeded, Unraid will attempt to write diagnostics to the
+If an unclean shutdown does occur because the overall "Shutdown
+time-out" was exceeded, Unraid will attempt to write diagnostics to the
 **/log** folder on the flash drive.  When you ask for help in the Unraid
 forums with an unclean shutdown, post the **/log/diagnostics.zip** file.
  There is information in the log that shows why the unclean shutdown
@@ -692,11 +686,11 @@ It can also be good idea to activate the *Settings-\>***Syslog Server**
 to get logs that can survive a reboot as by default the syslog is only
 in RAM and lost after a reboot.
 
-## Crash Issues {#crash_issues}
+## Crash Issues
 
 *THIS SECTION IS STILL UNDER CONSTRUCTION*
 
-### RAM Issues {#ram_issues}
+### RAM Issues
 
 It is not unknown for RAM to degrade over time. RAM issues can be
 elusive to track down and cause unpredictable errors. A not uncommon
@@ -707,13 +701,13 @@ version will only work if booting in Legacy mode. If you try to run this
 when running in UEFI mode it will immediately reboot again.
 
 If you want a version that can be used in UEFI mode then you can
-download a newer version from memtest\'s website. Note that the version
-of memtest built into Unraid is a much older version that doesn\'t have
+download a newer version from memtest's website. Note that the version
+of memtest built into Unraid is a much older version that doesn't have
 the newer testing capabilities of the current version located on
-memtest\'s website. This is no fault of Unraid, the people behind
-memtest won\'t allow anything newer to be installed by 3rd parties.
+memtest's website. This is no fault of Unraid, the people behind
+memtest won't allow anything newer to be installed by 3rd parties.
 
-### Over-clocking RAM {#over_clocking_ram}
+### Over-clocking RAM
 
 Many people want to run their RAM at the maximum rated speed quoted in
 the specification of the RAM they have purchased. They tend to forget
@@ -721,9 +715,7 @@ that many motherboard/CPU combinations have a max speed at which they
 can reliably drive RAM regardless of the fact that the RAM may be rated
 for a higher theoretical maximum clock rate.
 
-\
-
-## Windows Connection Issues {#windows_connection_issues}
+## Windows Connection Issues
 
 *THIS SECTION IS STILL UNDER CONSTRUCTION*
 
@@ -740,15 +732,13 @@ near the end.
 
 *COMMONEST ISSUES AND SOLUTIONS TO BE ADDED HERE*
 
-### Name Resolution {#name_resolution}
+### Name Resolution
 
-### Stored Credentials {#stored_credentials}
+### Stored Credentials
 
-### Multiple Sign-ons {#multiple_sign_ons}
+### Multiple Sign-ons
 
-\
-
-## Data Recovery {#data_recovery}
+## Data Recovery
 
 *THIS SECTION IS STILL UNDER CONSTRUCTION*
 
@@ -781,7 +771,7 @@ data(
         there should be at least one copy of critical files that cannot
         be accessed online and corrupted if you are unfortunate enough
         to suffer from such an attack!
-- *\'Be proactive* about resolving any issues that are detected by
+- *'Be proactive* about resolving any issues that are detected by
     Unraid. Make sure that notifications are enabled under
     *Settings-\>Notifications* so that you get told as soon as issues
     are detected. For many users, Unraid operates in a *fire-and-forget*
@@ -796,13 +786,13 @@ data(
         inappropriate steps to recover their data after a failure
         occurs.
 
-### Unmountable Disk(s) {#unmountable_disks}
+### Unmountable Disk(s)
 
 If a disk that was previously mounting fine suddenly starts showing as
 **unmountable** then this normally means that there is some sort of
 corruption at the file system level. This most commonly occurs after an
 unclean shutdown but could happen any time a write to a drive fails or
-if the drive ends up being marked as \'disabled\' (i.e. with a red \',\'
+if the drive ends up being marked as 'disabled' (i.e. with a red ','
 in the Unraid GUI).
 
 **IMPORTANT:** At this point, the Unraid GUI will be offering an option
@@ -819,7 +809,7 @@ that was preciously showing as unmountable and now it will mount
 correctly and all your data will be intact. If you are not sure how to
 proceed then ask a question in the Unraid forums.
 
-### Lost Array Configuration {#lost_array_configuration}
+### Lost Array Configuration
 
 If you have lost the array configuration and do not have a current
 backup of the flash drive the data will still be intact on the drives.
@@ -871,9 +861,7 @@ drive on the Main tab and selecting the option to download a backup of
 the flash drive. It is always good practice to do this any time you make
 a significant change.
 
-\
-
-### Using *ddrescue* to recover data from a failing disk {#using_ddrescue_to_recover_data_from_a_failing_disk}
+### Using *ddrescue* to recover data from a failing disk
 
 In normal use, a tailed/disabled disk is recovered under Unraid using
 the [Replacing
@@ -894,13 +882,13 @@ clone the old disk to, using the console/SSH type:
 
 `ddrescue -f /dev/sdX /dev/sdY /boot/ddrescue.log`
 
-Both source and destination disks can\'t be mounted, replace X with
+Both source and destination disks can't be mounted, replace X with
 source disk, Y with destination disk, always triple-check these, if the
 wrong disk is used as destination it will be overwritten deleting all
 data.
 
-It\'s also possible to use an array disk as the destination, though only
-if it\'s the same size as the original, but to maintain parity you can
+It's also possible to use an array disk as the destination, though only
+if it's the same size as the original, but to maintain parity you can
 only clone the partition, so the existing array disk needs to be a
 formatted Unraid disk already in any filesystem, still to maintain
 parity you need to use the md# device and the array needs to be started
@@ -945,7 +933,7 @@ data to the array, some files will likely be corrupt and if you have
 checksums or are using BTRFS you can easily find out which ones, if not
 see below.
 
-If you don\'t have checksums for your files (or use btrfs) there\'s a
+If you don't have checksums for your files (or use btrfs) there's a
 way you can still check which files were affected:
 
 Create a temporary text file with a text string not present on your
@@ -966,12 +954,10 @@ search for that string:
 `find /mnt/path/to/disk -type f -exec grep -l "Unraid" '{}' ';'`
 
 Replace /path/to/disk with the correct mount point, all files containing
-the string \"Unraid\" will be output and those are your corrupt files,
+the string "Unraid" will be output and those are your corrupt files,
 this will take some time as all files on the disks will be scanned, the
-output is only displayed in the end, and if there\'s no output then the
+output is only displayed in the end, and if there's no output then the
 bad sectors were in areas without any files.
-
-\
 
 ## Docker
 
@@ -979,7 +965,7 @@ bad sectors were in areas without any files.
 
 *A lot more detail still needs to be added*
 
-### Docker Image Full {#docker_image_full}
+### Docker Image Full
 
 Unraid expects docker containers to be configured so that only the
 binaries for the container are held in the *docker.img* file. All
@@ -1024,7 +1010,7 @@ If that is not enough to identify the culprit then:
     is consuming space when it runs.
 - Repeat the above step until you track down the rogue container(s)
 
-### How do I move docker.img? {#how_do_i_move_docker.img}
+### How do I move docker.img?
 
 The normal reason for wanting to move the *docker.img* file is because
 it has ended up on a drive that is not the the you want it to use.
@@ -1045,7 +1031,7 @@ The way to move *docker.img* is:
 - Set Enable Docker back to Yes, and click the Apply button again
      (re-enabling Docker support)
 
-### How do I recreate docker.img? {#how_do_i_recreate_docker.img}
+### How do I recreate docker.img?
 
 The commonest reason for wanting to recreate the *docker.img* file is
 because it has been corrupted. This is typically indicated by seeing
@@ -1065,7 +1051,7 @@ change its location.
     button again  (re-enabling Docker support) and a new empty
     *docker.img* file will be created.
 
-### Restoring your Docker Applications {#restoring_your_docker_applications}
+### Restoring your Docker Applications
 
 It is very easy to reinstall the binaries for all your Docker containers
 and get back your containers with their settings intact if you have
@@ -1079,17 +1065,13 @@ installed them via Community Applications.
 This will download the binaries for all of your Docker containers into
 the *docker.img* file and reinstate them with their settings intact.
 
-\
-
-### Further Information {#further_information}
+### Further Information
 
 A wealth of further information and some common problems with docker
 (and the solutions) can be found in the [Docker
 FAQ](https://forums.unraid.net/topic/57181-docker-faq/) on the forum
 
-\
-
-## UDMA CRC Errors {#udma_crc_errors}
+## UDMA CRC Errors
 
 Users frequently see that they are getting UDMA CRC errors (SMART
 attribute 199) reported for some drives.
@@ -1106,17 +1088,17 @@ If the recovery attempt fails then after several retries Unraid will
 decide it has a Read error on the drive. If the array is parity
 protected this will then trigger Unraid to attempt to rewrite the
 problem sector with the correct data based on the parity data and the
-corresponding sector on all the \'good\' data drives. If this write
+corresponding sector on all the 'good' data drives. If this write
 succeeds then Unraid will continue as normal, but if the write fails
 Unraid will disable the drive and stop using it. This disabled state is
 indicated in the GUI by the fact that the drive is flagged with a red
-\'x\'.
+'x'.
 
 Possible causes of such errors are:
 
 - Badly seated SATA cables. The SATA connector is not a very robust
     connector and can easily work slightly loose due to vibration or
-    tension on the cables. It is also a good idea to avoid \'bundling\'
+    tension on the cables. It is also a good idea to avoid 'bundling'
     the cables together in an attempt to tidy up the cabling as this can
     result in cross-talk interference between the cables.
 - Bad SATA cables.
@@ -1141,23 +1123,21 @@ Points to note are:
     errors. This is more of a cause for concern as it means these
     sectors may not be read reliably if another disk fails and a
     recovery action needs to be performed as error-free recovery
-    requires all \'non-failed\' drives to be read without error.
-- The CRC count is stored internally in the drive\'s SMART information
+    requires all 'non-failed' drives to be read without error.
+- The CRC count is stored internally in the drive's SMART information
     and never resets to zero - it can only ever increase.
 - A CRC error will result in the Dashboard page indicating a SMART
-    related issue has happened by an orange \'thumbs-down\' symbol
+    related issue has happened by an orange 'thumbs-down' symbol
     against the drive.
 - The user can acknowledge they have seen such an error by clicking on
-    the orange symbol and choosing the \'Acknowledge\' option from the
+    the orange symbol and choosing the 'Acknowledge' option from the
     resulting menu that is displayed. This will result in the icon
     turning green again and Unraid will only prompt you again if the
     value of the CRC count increases.
 
-\
+## Cache/Pool issues
 
-## Cache/Pool issues {#cachepool_issues}
-
-### Mover is not moving files {#mover_is_not_moving_files}
+### Mover is not moving files
 
 The commonest cause for this is simply new users misunderstanding the
 *Use* *Cache* setting for a share and getting the **Yes** and **Prefer**
@@ -1181,15 +1161,15 @@ allow such files to be moved.
 ===Files end up on a pool (cache) despite Use Cache=No setting for a
 share=== This behaviour is the one that new users find most perplexing.
 
-It arises when a \'move\' action is attempted at the Linux level (this
+It arises when a 'move' action is attempted at the Linux level (this
 can be either from the command line or within a container (since all
 container are Linux based). It arises from the fact that Linux is not
 aware of *User Shares* combined with the way that Linux implements a
-\'move\' operation. If Linux thinks that both source and target are on
+'move' operation. If Linux thinks that both source and target are on
 the same mount point (and all *User Shares* are under the **/mnt/user**
 mount point) then it first tries a *rename* command and for speed and
 only if that fails does it revert to trying a *copy + delete* operation.
-In the case of a cache/pool this \'rename\' succeeds so the file is left
+In the case of a cache/pool this 'rename' succeeds so the file is left
 on the same drive but under a new folder name corresponding to the
 target share name. Since User Shares are simply an amalgamated view of
 the top level folders on all drives this means that suddenly the file(s)
@@ -1220,5 +1200,3 @@ Workarounds to this issue are by doing any of the following:
 - Make sure the mount points for source and target appear to be
     different at the Linux level.
 - Move between physical drives rather than at the User Share level.
-
-\
