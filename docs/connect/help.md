@@ -251,7 +251,7 @@ please see our [policies](https://unraid.net/policies) page.
 When a server signs in to Unraid.net, it opens a secure connection to
 our hosted infrastructure and sends just enough data so we can give you
 a meaningful overview of your servers in the [Unraid Connect
-Dashboard](https://forums.unraid.net/my-servers). We do not keep
+Dashboard](https://connect.myunraid.net). We do not keep
 historical data, just the most recent update from your server which
 includes:
 

@@ -304,7 +304,7 @@ try the following:
 - Try Switching on or off *USB keyboard* support.
 
 If you still are unable to boot the OS, please post a message in our
-[general support](http://lime-technology.com/forum/index.php?board=71.0)
+[general support](https://forums.unraid.net/forum/index.php?board=71.0)
 forum.
 
 *NOTE: Many motherboards support only up to 12 hard drives for purposes
@@ -359,7 +359,7 @@ stability issues on your system.
 
 If you suspect faulty RAM on your system, you can use Memtest86+ to test
 it. Please post in the [general
-support](http://lime-technology.com/forum/index.php?board=71.0) forum
+support](https://forums.unraid.net/forum/index.php?board=71.0) forum
 for assistance in using this tool.
 
 The *memtest86+* tool supplied with Unraid will only work correctly if

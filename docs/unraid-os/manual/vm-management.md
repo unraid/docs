@@ -525,7 +525,7 @@ for Windows-based guests.
     [completed these preparation
     steps](http://lime-technology.com/wiki/index.php/UnRAID_Manual_6#System_Preparation)
     or may not meet the hardware requirements; post in [general
-    support](http://lime-technology.com/forum/index.php?board=71.0) for
+    support](https://forums.unraid.net/forum/index.php?board=71.0) for
     further assistance)
 - Click the **Add VM** button.
 - Follow [this
@@ -707,7 +707,7 @@ the same thing if you have an issue with that.
     [completed these preparation
     steps](http://lime-technology.com/wiki/index.php/UnRAID_Manual_6#System_Preparation)
     or may not meet the hardware requirements; post in [general
-    support](http://lime-technology.com/forum/index.php?board=71.0) for
+    support](https://forums.unraid.net/forum/index.php?board=71.0) for
     further assistance)
 - Click the **Add VM** button.
 - Follow [this

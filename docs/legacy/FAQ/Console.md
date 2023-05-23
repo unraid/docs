@@ -115,11 +115,11 @@ Speed](Check_Harddrive_Speed.md).
 To obtain the SMART info for a drive, including some identity and
 configuration information, and physical statistics and error history.
 For more information about SMART and `smartctl`, see
-[here](http://lime-technology.com/forum/index.php?topic=1521) and
+[here](https://forums.unraid.net/forum/index.php?topic=1521) and
 [here](/unraid-os/manual/troubleshooting#data-recovery) and
-[here](http://lime-technology.com/forum/index.php?topic=1845.msg13042#msg13042)
-and [here](http://lime-technology.com/forum/index.php?topic=2097) and
-[here](http://lime-technology.com/forum/index.php?topic=2074.0).
+[here](https://forums.unraid.net/forum/index.php?topic=1845.msg13042#msg13042)
+and [here](https://forums.unraid.net/forum/index.php?topic=2097) and
+[here](https://forums.unraid.net/forum/index.php?topic=2074.0).
 
 `smartctl  -a  -d  ata  /dev/sdx`
 
@@ -205,7 +205,7 @@ about its connection statistics.
 
 Note: The ethtool utility is included in some but not all Unraid
 distributions. See
-[here](http://lime-technology.com/forum/index.php?topic=2109.msg15568#msg15568)
+[here](https://forums.unraid.net/forum/index.php?topic=2109.msg15568#msg15568)
 for more information about ethtool, and a download link.
 
 - `lsmod` - [usage](http://linux.die.net/man/8/lsmod)
@@ -277,13 +277,13 @@ for more information about ethtool, and a download link.
 
 For excellent descriptions and examples of the use of `screen`
 ([usage](http://linux.die.net/man/1/screen)), see
-[here](http://lime-technology.com/forum/index.php?topic=72.msg27984#msg27984)
+[here](https://forums.unraid.net/forum/index.php?topic=72.msg27984#msg27984)
 and
-[here](http://lime-technology.com/forum/index.php?topic=2817.msg32232#msg32232).
+[here](https://forums.unraid.net/forum/index.php?topic=2817.msg32232#msg32232).
 The `screen` tool allows you to 'detach' a terminal session, to keep
 it running even if you log out of the terminal session. An interesting
 example using `screen` is in the
-[rtorrent](http://lime-technology.com/forum/index.php?topic=4029)
+[rtorrent](https://forums.unraid.net/forum/index.php?topic=4029)
 thread.
 
 ### To cleanly Stop the array from the command line

@@ -9,13 +9,13 @@ down to the 'older versions' section.**\
 :   *This section is only for Unraid v6 with the Dynamix System Temp
     plugin installed. These instructions are lifted directly from the
     author's words
-    [here](http://lime-technology.com/forum/index.php?topic=31172.msg473847#msg473847).*
+    [here](https://forums.unraid.net/forum/index.php?topic=31172.msg473847#msg473847).*
 
 1. Preparation
 
     :   Install the perl package, easiest done by installing the
         [NerdPack
-        plugin](http://lime-technology.com/forum/index.php?topic=37541.0),
+        plugin](https://forums.unraid.net/forum/index.php?topic=37541.0),
         then in the plugin enabling perl to install. Perl is only needed
         by the script "sensors-detect", which will be run in the
         background by the Detect function of Step 2. Once you have
@@ -58,10 +58,10 @@ down to the 'older versions' section.**\
 
 To pass system sensor data (such as temps, voltages, and fan speeds) to
 3rd-party addons such as
-[Dynamix](http://lime-technology.com/forum/index.php?topic=30939) (using
+[Dynamix](https://forums.unraid.net/forum/index.php?topic=30939) (using
 its [System Temp
-plugin](http://lime-technology.com/forum/index.php?topic=31172)) or
-[SimpleFeatures](http://lime-technology.com/forum/index.php?topic=12698.2685),
+plugin](https://forums.unraid.net/forum/index.php?topic=31172)) or
+[SimpleFeatures](https://forums.unraid.net/forum/index.php?topic=12698.2685),
 you need to load the required drivers and setup your sensor
 configuration file **sensors.conf**.
 
@@ -176,7 +176,7 @@ appropriate version for your UnRAID release:
     **installpkg /boot/packages/perl-5.18.1-x86_64-1.txz**).
 
 - Or you can use
-    [UnMENU](http://lime-technology.com/forum/index.php?topic=27051) to
+    [UnMENU](https://forums.unraid.net/forum/index.php?topic=27051) to
     download and install Perl. It does not need to be set for
     re-install.
 

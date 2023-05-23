@@ -477,14 +477,14 @@ incomplete!]*\
         Page for smartmontools
 - UnRAID related (some are marked *\<\< old \>\>*, meaning some part
     may be obsolete or incompatible with current releases of UnRAID)
-  - <http://lime-technology.com/forum/index.php?topic=13054.msg53337#msg53337> -
+  - <https://forums.unraid.net/forum/index.php?topic=13054.msg53337#msg53337> -
         keeping SMART values in perspective, and how to properly
         interpret them - a series of posts to help users alarmed by the
         very large numbers they find in a SMART report or 'diff'
-  - <http://lime-technology.com/forum/index.php?topic=2135.msg15733#msg15733> -
+  - <https://forums.unraid.net/forum/index.php?topic=2135.msg15733#msg15733> -
         a script for grabbing dated SMART reports for all drives
   - [Data Recovery](/unraid-os/manual/troubleshooting#data-recovery)
-  - <http://lime-technology.com/forum/index.php?topic=2708> - the
+  - <https://forums.unraid.net/forum/index.php?topic=2708> - the
         MyMain thread; an UnMENU plugin; after installing UnMENU,
         install this next; has a Smart View that provides color-coded
         SMART info for all drives

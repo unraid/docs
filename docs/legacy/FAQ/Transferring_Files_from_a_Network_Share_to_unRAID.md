@@ -43,7 +43,7 @@ Explorer in Windows.
 ## Another method using Netcat and Tar
 
 See also [this
-post](http://lime-technology.com/forum/index.php?topic=5045.msg47257#msg47257)
+post](https://forums.unraid.net/forum/index.php?topic=5045.msg47257#msg47257)
 for an alternative method of data transfer between Linux systems, such
 as Unraid.
 

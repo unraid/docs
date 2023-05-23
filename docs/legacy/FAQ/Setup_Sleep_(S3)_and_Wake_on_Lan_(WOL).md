@@ -81,7 +81,7 @@ OS. The following assumes the use of a Windows machine.
   I found simple to deal with.
 
 5\. Generate **Wakeup.bat** batch file (or download mine from
-[here](http://lime-technology.com/forum/index.php?topic=3657.msg39076#msg39076))
+[here](https://forums.unraid.net/forum/index.php?topic=3657.msg39076#msg39076))
 
 - My batch file is simply two lines
   - Change folder directory as necessary depending on where you
@@ -96,7 +96,7 @@ OS. The following assumes the use of a Windows machine.
 
 - Place the batch file on your desktop for easy access.
 - Copy of my batch file attached to [this Unraid forum
-  post](http://lime-technology.com/forum/index.php?topic=3657.msg39076#msg39076)
+  post](https://forums.unraid.net/forum/index.php?topic=3657.msg39076#msg39076)
 
 6\. Manually test sleep and WOL
 
@@ -125,10 +125,10 @@ little more work to do -- I'm guessing a Linux driver issue?
     references are: **sda** and **sdb**
 
 8\. Generate sleep script, or download mine from
-[here](http://lime-technology.com/forum/index.php?topic=3657.msg39076#msg39076)
+[here](https://forums.unraid.net/forum/index.php?topic=3657.msg39076#msg39076)
 
 - I copied OMV's sleep script verbatim from [this Unraid forum
-  thread](http://lime-technology.com/forum/index.php?topic=3657), and
+  thread](https://forums.unraid.net/forum/index.php?topic=3657), and
   then edited the lines shown below in bold:
 
 ```bash
@@ -178,7 +178,7 @@ done
   boot, but **sdd** on the next boot, with one of your hard drives
   assigned to **sdd** the first time, and **sdc** the next time.
 - Copy of my **s3.sh** sleep script attached to [this Unraid forum
-  post](http://lime-technology.com/forum/index.php?topic=3657.msg39076#msg39076)
+  post](https://forums.unraid.net/forum/index.php?topic=3657.msg39076#msg39076)
 
 9\. Save script onto flash drive in specified location
 

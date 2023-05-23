@@ -12,7 +12,7 @@ Use Midnight Commander and PuTTY instead. Type mc at the command prompt
 in a telnet/PuTTy session to start the GUI. Midnight Commander is built
 into Unraid v4.3 and up. For earlier versions, and a link to PuTTY (an
 alternative to Telnet that allows use of a mouse within **mc**), see
-[this thread](http://lime-technology.com/forum/index.php?topic=1341.0)).
+[this thread](https://forums.unraid.net/forum/index.php?topic=1341.0)).
 Midnight Commander is a Linux console tool, and needs to be run from
 either the physical console on your Unraid server, or from a Telnet
 console on your desktop station. For more information, see the

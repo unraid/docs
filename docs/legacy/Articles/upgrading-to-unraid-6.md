@@ -115,7 +115,7 @@ boot your VM:
 
 If this doesn't work, try changing the first command from fs0: to fs1:.
 If that doesn't work, please post in the
-[forums](http://lime-technology.com/forum) for further assistance. This
+[forums](https://forums.unraid.net/) for further assistance. This
 procedure should only need to be performed the first time you boot OVMF
 VMs that were previously created using Unraid 6.1 or earlier.
 
@@ -220,7 +220,7 @@ appropriately, type the following commands in order to boot your VM:
 
 If this doesn't work, try changing the first command from fs0: to fs1:.
 If that doesn't work, please post in the
-[forums](http://lime-technology.com/forum) for further assistance. This
+[forums](https://forums.unraid.net/) for further assistance. This
 procedure should only need to be performed the first time you boot OVMF
 VMs under version 6.2 that were previously created using Unraid 6.1 or
 earlier.
@@ -228,5 +228,5 @@ earlier.
 # From version 5.x or earlier
 
 Please see [this forum
-post](http://lime-technology.com/forum/index.php?topic=41061.0) for
+post](https://forums.unraid.net/forum/index.php?topic=41061.0) for
 information on upgrading.
