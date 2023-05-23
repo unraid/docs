@@ -93,13 +93,8 @@ const config = {
         },
         items: [
           {
-            type: "docSidebar",
-            sidebarId: "unraidSidebar",
-            position: "left",
-            label: "Documentation",
-          },
-          {
             items: [
+              
               {
                 href: "https://unraid.net",
                 label: "Unraid Home",
@@ -108,6 +103,7 @@ const config = {
                 href: "https://forums.unraid.net",
                 label: "Forums",
               },
+              { label: "Docs Github", href: "https://github.com/unraid/docs" },
             ],
             position: "right",
             label: "More",
@@ -154,6 +150,10 @@ const config = {
               {
                 label: "Unraid Home",
                 href: "https://unraid.net",
+              },
+              {
+                label: "Unraid Connect",
+                href: "https://connect.myunraid.net",
               },
               {
                 label: "Newsletter",
