@@ -551,7 +551,7 @@ There are various ways of achieving this:
 
 - From the Unraid GUI via Main -\> Boot -\> Device -\> Flash -\> Flash
     Backup. This will create a zip file that you then download.
-- by Installing [Unraid Connect](/connect/Connect.mdx), which provides for automated
+- by Installing [Unraid Connect](/connect/about.md), which provides for automated
     backups to cloud servers managed by Limetech.
 - by plugging the flash drive into a PC/Mac and copying the full
     contents to a local folder on the PC/Mac

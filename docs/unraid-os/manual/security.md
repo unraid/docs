@@ -57,7 +57,7 @@ should be extra careful with when forwarding:
     webGui remotely, but without SSL securing the connection, devices in
     between your browser and the server could "sniff" the packets to
     see what you're doing. If you want to make the webGui remotely
-    accessible, install the [Unraid Connect](/connect/Connect.mdx) plugin, which can provide a
+    accessible, install the [Unraid Connect](/connect/about.md) plugin, which can provide a
     secure remote access solution that utilizes SSL to ensure your
     connection is fully encrypted.
 
@@ -65,10 +65,10 @@ should be extra careful with when forwarding:
     better than port 80 if you have a root password set. If no root
     password is set and you forward this port, unauthorized users can
     connect to your webGui and have full access to your server. In
-    addition, if you forward this port without using the [Unraid Connect](/connect/Connect.mdx)
+    addition, if you forward this port without using the [Unraid Connect](/connect/about.md)
     plugin, attempts to connect to the webGui through a browser will
     present a security warning due to the lack of an SSL certificate.
-    Consider making life easier for yourself and utilize the [Unraid Connect](/connect/Connect.mdx)
+    Consider making life easier for yourself and utilize the [Unraid Connect](/connect/about.md)
     plugin to enable simple, safe, and secure remote access to your
     Unraid systems.
 
@@ -97,7 +97,7 @@ should be extra careful with when forwarding:
 - **Ports in the 57xx range:** These ports are generally used by VMs
     for VNC access. While you can forward these ports to enable VNC
     access remotely for your VMs, the better and easier way to do this
-    is through installing the [Unraid Connect](/connect/Connect.mdx) plugin.
+    is through installing the [Unraid Connect](/connect/about.md) plugin.
     This ensures that those connections
     are secure via SSL and does not require individual ports to be
     forwarded for each VM.
@@ -170,7 +170,7 @@ Docker container is also available. In addition many routers have built
 in VPN support which can be used.
 
 An alternative for making the webGui remotely accessible is to install
-the [Unraid Connect](/connect/Connect.mdx) plugin, which can provide a secure remote access solution
+the [Unraid Connect](/connect/about.md) plugin, which can provide a secure remote access solution
 that utilizes SSL to ensure your connection is fully encrypted.
 
 ## Securing webGui connections (SSL)
@@ -255,7 +255,7 @@ acknowledge the browser warning.
     `https://[lan-ip].[hash].myunraid.net` (example:
     `https://192-168-100-1.a1b2c3d4e5.myunraid.net`). This personal link
     is shown in the Certificate subject field on the Management Access
-    page. If you install the optional [Unraid Connect](/connect/Connect.mdx) plugin it will also be
+    page. If you install the optional [Unraid Connect](/connect/about.md) plugin it will also be
     shown on the Connect dashboard ( <https://connect.myunraid.net/> )
 - All traffic will be encrypted if using https.
 - Unraid will manage the certificates for you.
@@ -277,7 +277,7 @@ acknowledge the browser warning.
 - Your URL will be `https://[lan-ip].[hash].myunraid.net`
     (example: `https://192-168-100-1.a1b2c3d4e5.myunraid.net`) This
     personal link is shown in the Certificate subject field on the
-    Management Access page. If you install the optional [Unraid Connect](/connect/Connect.mdx) plugin it will also be
+    Management Access page. If you install the optional [Unraid Connect](/connect/about.md) plugin it will also be
     shown on the Connect dashboard ( <https://connect.myunraid.net/> )
 - All traffic will be encrypted
 - Unraid will manage the certificates for you.
@@ -316,7 +316,7 @@ urls.
 
 ### Unraid Connect Remote Access
 
-- Install the [Unraid Connect](/connect/Connect.mdx) plugin
+- Install the [Unraid Connect](/connect/about.md) plugin
 - Navigate to the Settings -\> Management Access page
 - Click **Provision** if you haven't already
 - Regardless of the value of **Use SSL/TLS**, you will have the option

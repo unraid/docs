@@ -102,7 +102,7 @@ page.*
 
 ## Utilizing Unraid Connect
 
-Once you have installed the [Unraid Connect](/connect/Connect.mdx) plugin
+Once you have installed the [Unraid Connect](/connect/about.md) plugin
 and signed in with your Unraid.net account, you will be able to manage
 your server through the [Unraid Connect Dashboard](https://connect.myunraid.net/).
 
@@ -203,7 +203,7 @@ highly recommended:
 - On the **Main** tab, click on your Flash and Click **Flash Backup**.
   Please make sure to store your backups off of your Unraid array so it
   is easily accessible even if the array is not operational.
-- If you are running Unraid 6.10.0 (or later) install the [Unraid Connect](/connect/Connect.mdx)
+- If you are running Unraid 6.10.0 (or later) install the [Unraid Connect](/connect/about.md)
   plugin which provides for automated backups of the flash drive to
   LimeTech cloud-based servers.
 
