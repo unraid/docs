@@ -1,12 +1,12 @@
 # FAQ
 
-# Pre-Sales Questions
+## Pre-Sales Questions
 
-## Is Pricing for Unraid OS "one time"? Are There Additional Fees for OS Updates?
+### Is Pricing for Unraid OS "one time"? Are There Additional Fees for OS Updates?
 
 Unraid OS license pricing is a one-time fee and updates are included.
 
-## How do I Purchase Unraid?
+### How do I Purchase Unraid?
 
 Unraid OS can be purchased from within the OS via the Tools-\>
 Registration page or, in OS version 6.10 and beyond, via the top right
@@ -52,7 +52,7 @@ Video](https://www.loom.com/share/3ceb40440240474aaa80a0b7e3e69cb2)
 
 ### [购买并收到激活码后如何兑换您的激活码](购买并收到激活码后如何兑换您的激活码 "wikilink")
 
-## How do I Upgrade my Unraid License?
+### How do I Upgrade my Unraid License?
 
 If you want or need to upgrade your license to a higher tier, upgrades
 are done from within the OS WebGUI via the Tools → Registration page or
@@ -77,7 +77,7 @@ Basic license → Pro license: *\$79 USD*
 
 Plus license → Pro license: *\$49 USD*
 
-<sup>*1*</sup>*Attached storage devices* refer to the total number of
+<sup>1</sup> <b>Attached storage devices</b> refer to the total number of
 storage devices you are allowed to have attached to the server before
 starting the array, not counting the USB Flash boot device. There are
 *no other limitations* in the software based on license type.
