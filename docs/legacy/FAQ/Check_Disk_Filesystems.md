@@ -19,7 +19,7 @@
     drives.
   * If hardware or drive issues and running Unraid v6, please see
         [Need help? Read me
-        first!](http://lime-technology.com/forum/index.php?topic=39257).
+        first!](https://forums.unraid.net/forum/index.php?topic=39257).
   * If hardware or drive issues  please see the
         [Troubleshooting](/unraid-os/manual/troubleshooting)
         page.
@@ -305,9 +305,9 @@ file system of a data drive, while maintaining its parity info.
     done immediately. This is similar to running **chkdsk** or
     **scandisk** within Windows, and finding lost clusters, and dealing
     with files named File0000.chk or similar. You may find one user's
-    [story](http://lime-technology.com/forum/index.php?topic=1483) very
+    [story](https://forums.unraid.net/forum/index.php?topic=1483) very
     helpful, plus his later
-    [tale](http://lime-technology.com/forum/index.php?topic=3367.msg29056#msg29056)
+    [tale](https://forums.unraid.net/forum/index.php?topic=3367.msg29056#msg29056)
     of the problems of sifting through the recovered files.
 
 ## Drives formatted with XFS
@@ -384,9 +384,9 @@ xfs_repair -v /dev/md1
     done immediately. This is similar to running **chkdsk** or
     **scandisk** within Windows, and finding lost clusters, and dealing
     with files named File0000.chk or similar. You may find one user's
-    [story](http://lime-technology.com/forum/index.php?topic=1483) very
+    [story](https://forums.unraid.net/forum/index.php?topic=1483) very
     helpful, plus his later
-    [tale](http://lime-technology.com/forum/index.php?topic=3367.msg29056#msg29056)
+    [tale](https://forums.unraid.net/forum/index.php?topic=3367.msg29056#msg29056)
     of the problems of sifting through the recovered files.
 
 * If you get an error indicating something like trouble opening the
@@ -623,9 +623,9 @@ xfs_repair -v /dev/md1
     **chkdsk** or **scandisk** within Windows, and finding lost
     clusters, and dealing with files named File0000.chk or similar. You
     may find one user's
-    [story](http://lime-technology.com/forum/index.php?topic=1483) very
+    [story](https://forums.unraid.net/forum/index.php?topic=1483) very
     helpful, plus his later
-    [tale](http://lime-technology.com/forum/index.php?topic=3367.msg29056#msg29056)
+    [tale](https://forums.unraid.net/forum/index.php?topic=3367.msg29056#msg29056)
     of the problems of sifting through the recovered files.
 
 * If you get an error that says **reiserfs_open: the reiserfs
@@ -769,9 +769,9 @@ xfs_repair -v /dev/md1
     **chkdsk** or **scandisk** within Windows, and finding lost
     clusters, and dealing with files named File0000.chk or similar. You
     may find one user's
-    [story](http://lime-technology.com/forum/index.php?topic=1483) very
+    [story](https://forums.unraid.net/forum/index.php?topic=1483) very
     helpful, plus his later
-    [tale](http://lime-technology.com/forum/index.php?topic=3367.msg29056#msg29056)
+    [tale](https://forums.unraid.net/forum/index.php?topic=3367.msg29056#msg29056)
     of the problems of sifting through the recovered files.
 
 * If you get an error that says **reiserfs_open: the reiserfs
@@ -988,8 +988,8 @@ The **reiserfsck** tool checks for a Reiser file system (must be a
     numbers reported will be different for your file system. The UUID
     will be different too.
 * This is based on the experiences of two users, found
-    [here](http://lime-technology.com/forum/index.php?topic=1483) and
-    [here](http://lime-technology.com/forum/index.php?topic=4021). We
+    [here](https://forums.unraid.net/forum/index.php?topic=1483) and
+    [here](https://forums.unraid.net/forum/index.php?topic=4021). We
     recommend you read both, for more details.
 * *You may want to print this out ahead of time.*
 

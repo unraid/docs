@@ -68,7 +68,7 @@ a part of most operating systems, and generally immediately
 available, but in Windows Vista and Windows 7 and probably later
 versions too, it needs to be 'turned on' through the "Turn
 Windows features on or off" tool. Please see [this
-thread](http://lime-technology.com/forum/index.php?topic=4092) for
+thread](https://forums.unraid.net/forum/index.php?topic=4092) for
 comments on Telnet usage in Vista, Windows 7, and the Mac. Instead
 of the built-in Telnet tool, we recommend installing PuTTY, with
 enhanced Telnet services.
@@ -110,9 +110,9 @@ with a hat) where line drawing characters should be. In your PuTTY
 configuration, go to Window-\>Translation and set Remote Character
 Set to something like UTF-8, then restart MC (thanks to Wody for
 this tip, see
-[this](http://lime-technology.com/forum/index.php?topic=18157)).
+[this](https://forums.unraid.net/forum/index.php?topic=18157)).
 Wody has an additional PuTTY tip in [this
-post](http://lime-technology.com/forum/index.php?topic=18157.msg162943#msg162943).*
+post](https://forums.unraid.net/forum/index.php?topic=18157.msg162943#msg162943).*
 
 PuTTY has a number of settings, but the defaults are usually fine.
 On the **Window** tab, I set **Columns** to 120, **Rows** to 60, and
@@ -172,7 +172,7 @@ right-clicking the title bar. Notes regarding the command shell:
 ## Related links
 
 * [SSH vs
-Telnet](http://lime-technology.com/forum/index.php?topic=30273) -
+Telnet](https://forums.unraid.net/forum/index.php?topic=30273) -
 discussion of the merits of both, why many want Telnet disabled
 * [Google search of "how to secure your ssh
 server"](http://www.google.com/search?q=how+to+secure+your+ssh+server)

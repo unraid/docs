@@ -2,12 +2,12 @@
     drive, but was written for v4 and v5. There is no mention of
     Dockers, VM's, or Cache Pools. For v6 users, this page serves as an
     introduction, but you should also check these resources:
-    -   [FAQ](http://lime-technology.com/forum/index.php?topic=48508) -
+    -   [FAQ](https://forums.unraid.net/forum/index.php?topic=48508) -
         look for the *Cache Drive/Pool* section, has a number of related
         procedures
     -   [How to add a cache drive, replace a cache drive, and create a
         cache
-        pool](http://lime-technology.com/forum/index.php?topic=56005) -
+        pool](https://forums.unraid.net/forum/index.php?topic=56005) -
         a nice video guide
 
 The cache disk feature of Unraid greatly increases the perceived
@@ -92,11 +92,11 @@ Unraid:
 
 **Without a cache drive:** Unraid 4.5.3 - average 20-30 MB/s, peak
 reported [40
-MB/s](http://lime-technology.com/forum/index.php?topic=5496.msg51190#msg51190)*
+MB/s](https://forums.unraid.net/forum/index.php?topic=5496.msg51190#msg51190)*
 
 **With a cache drive:** Unraid 4.5.3 - average 50-60 MB/s, peak reported
 [101
-MB/s](http://lime-technology.com/forum/index.php?topic=5754.msg120084#msg120084)*
+MB/s](https://forums.unraid.net/forum/index.php?topic=5754.msg120084#msg120084)*
 
 So generally speaking, a server with a cache drive has write speeds
 **2-3x faster** than the same server without a cache drive.

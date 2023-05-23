@@ -24,7 +24,7 @@ Some notes before you start:
     recommended that the linux **screen** command be used, so the
     session can be resumed if there is any disconnect or timeout. In
     Unraid v6, install the
-    **[NerdPack](http://lime-technology.com/forum/index.php?topic=37541)**
+    **[NerdPack](https://forums.unraid.net/forum/index.php?topic=37541)**
     to obtain **screen** (see the NerdPack notes
     [here](http://lime-technology.com/wiki/index.php/Upgrading_to_UnRAID_v6#Plugins)).
 - Ensure that no new files will be written to the affected drives

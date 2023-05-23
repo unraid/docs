@@ -980,9 +980,9 @@ The procedure is as follows:
 7. Create a single folder on the drive with the name **clear-me** -
     exactly 7 lowercase letters and one hyphen
 8. Run the [clear an array
-    drive](http://lime-technology.com/forum/index.php?topic=50416.msg494968#msg494968)
+    drive](https://forums.unraid.net/forum/index.php?topic=50416.msg494968#msg494968)
     script from the [User
-    Scripts](http://lime-technology.com/forum/index.php?topic=49992)
+    Scripts](https://forums.unraid.net/forum/index.php?topic=49992)
     plugin (or run it standalone, at a command prompt).
     - If you prepared the drive correctly, it will completely and
         safely zero out the drive. If you didn't prepare the drive

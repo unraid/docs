@@ -18,6 +18,6 @@ Convenient way of testing all drives read performance is provided by
 script **diskspeed.sh**, listed on this [Wiki
 page](http://lime-technology.com/wiki/index.php?title=UnRAID_Add_Ons#Disk_Speed)
 and downloadable from this [forum
-thread](http://lime-technology.com/forum/index.php?topic=31073). The
+thread](https://forums.unraid.net/forum/index.php?topic=31073). The
 script creates reports and graphs of drive read speeds, at multiple
 points across the surface of each drive.

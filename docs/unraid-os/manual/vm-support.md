@@ -627,7 +627,7 @@ guides:
 
 Additional support can be requested for this VM template within the
 [OpenELEC VM Template
-Support](http://lime-technology.com/forum/index.php?topic=42473.0)
+Support](https://forums.unraid.net/forum/index.php?topic=42473.0)
 thread in the [VM
-Templates](http://lime-technology.com/forum/index.php?board=54.0)
+Templates](https://forums.unraid.net/forum/index.php?board=54.0)
 message board.

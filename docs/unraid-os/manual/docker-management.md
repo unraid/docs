@@ -99,7 +99,7 @@ containers is via Community Applications**
 ## Community Applications
 
 To gain access to a wider set of applications, see [this
-post](http://lime-technology.com/forum/index.php?topic=40262.0) in the
+post](https://forums.unraid.net/forum/index.php?topic=40262.0) in the
 Lime Technology forums for information on installing the Community
 Applications plugin. This plugin will allow you to add more applications
 to your system through an app store interface.
@@ -108,7 +108,7 @@ to your system through an app store interface.
 (containers and plugins) and are not directly supported by Lime
 Technology. Support for community-maintained Docker containers can be
 found in the [Docker Containers
-subforum](http://lime-technology.com/forum/index.php?board=56.0).*
+subforum](https://forums.unraid.net/forum/index.php?board=56.0).*
 
 ## Configuring a container
 
@@ -477,4 +477,4 @@ experience:
     Docker page or adding applications to see additional configuration
     options.
 - Learn more about Docker containers from our [helpful user
-    community](http://lime-technology.com/forum/index.php?board=56.0).
+    community](https://forums.unraid.net/forum/index.php?board=56.0).

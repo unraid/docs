@@ -203,7 +203,7 @@ Note: You may need to check
 [here](http://www.lime-technology.com/joomla/unraid-os) for more *BIOS
 Setup Tips* and *Other BIOS Suggestions*. For machines with an AMI BIOS,
 check
-[here](http://lime-technology.com/forum/index.php?topic=2302.msg17664#msg17664).
+[here](https://forums.unraid.net/forum/index.php?topic=2302.msg17664#msg17664).
 For more general BIOS suggestions on getting a machine to boot the USB
 flash drive, check
 [here](http://www.weethet.nl/english/hardware_bootfromusbstick.php),
@@ -240,9 +240,9 @@ try another.
     The alternate geometry will often will make it possible to use your
     flash drive as a boot disk when your BIOS does not work with the
     existing geometry. For more info, see
-    [here](http://lime-technology.com/forum/index.php?topic=359.0) and
-    [here](http://lime-technology.com/forum/index.php?topic=366.0) and
-    [here](http://lime-technology.com/forum/index.php?topic=2703.0).
+    [here](https://forums.unraid.net/forum/index.php?topic=359.0) and
+    [here](https://forums.unraid.net/forum/index.php?topic=366.0) and
+    [here](https://forums.unraid.net/forum/index.php?topic=2703.0).
 
 - Apparently, there is more than one version of the **HP format
     tool**. The version of the **HP USB Format Tool** that works best
@@ -271,7 +271,7 @@ try another.
     [downloads](http://lime-technology.com/dnlds) folder at
     Lime-Technology. Use of **syslinux version 3.63** in combination
     with the **-ma** option was the solution in [this
-    thread](http://lime-technology.com/forum/index.php?topic=1176.msg15666#msg15666).
+    thread](https://forums.unraid.net/forum/index.php?topic=1176.msg15666#msg15666).
     (After downloading [syslinux
     3.63.zip](http://download.lime-technology.com/syslinux%203.63.zip),
     extract **syslinux.exe** from the zip file.) A number of users
@@ -283,18 +283,18 @@ try another.
     process but reboots when loading **bzroot**, one user found that he
     fixed it be replacing his graphics card with an older (possibly more
     basic) graphics card.
-    [1](http://lime-technology.com/forum/index.php?topic=4769)
+    [1](https://forums.unraid.net/forum/index.php?topic=4769)
 
 - A user has created another procedure based on the **makebootfat**
     tool. This procedure seems especially useful for newer Intel boards,
     such as boards based on the P965, P35, and P45 chipsets and their G
     variants. See
-    [this](http://lime-technology.com/forum/index.php?topic=2407.0)
+    [this](https://forums.unraid.net/forum/index.php?topic=2407.0)
     post. It worked when nothing else would, on his Intel P965-based
     board.
 
 - Also see
-    [this](http://lime-technology.com/forum/index.php?topic=922.0)
+    [this](https://forums.unraid.net/forum/index.php?topic=922.0)
     thread (uses a Knoppix installation or Live CD), if you have a board
     that will only boot from a flash drive as a USB-ZIP drive. Similar
     instructions, using Ubuntu or similar, can be found here:
