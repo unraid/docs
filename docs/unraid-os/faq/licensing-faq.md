@@ -38,6 +38,7 @@ via the top right [User Profile Component
 (UPC)](My_Servers#Navigating_the_User_Profile_Component "wikilink"):
 
 ![](/docs/legacy/Upgrade-UPC.png "Upgrade-UPC.png")
+
 **Unraid Basic** allows for up to *6 attached storage
 devices<sup>1</sup>.*
 
@@ -49,11 +50,11 @@ devices<sup>1</sup>.*
 
 License upgrades are priced as follows:
 
-Basic license → Plus license: *\$39 USD*
+Basic license → Plus license: *$39 USD*
 
-Basic license → Pro license: *\$79 USD*
+Basic license → Pro license: *$79 USD*
 
-Plus license → Pro license: *\$49 USD*
+Plus license → Pro license: *$49 USD*
 
 <sup>1</sup> <b>Attached storage devices</b> refer to the total number of
 storage devices you are allowed to have attached to the server before
