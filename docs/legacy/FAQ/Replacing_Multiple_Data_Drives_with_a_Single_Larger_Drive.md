@@ -23,7 +23,7 @@ Some notes before you start:
     [telnet](Terminal_Access.md) session to transfer data, it is
     recommended that the linux **screen** command be used, so the
     session can be resumed if there is any disconnect or timeout. In
-    unRAID v6, install the
+    Unraid v6, install the
     **[NerdPack](http://lime-technology.com/forum/index.php?topic=37541)**
     to obtain **screen** (see the NerdPack notes
     [here](http://lime-technology.com/wiki/index.php/Upgrading_to_UnRAID_v6#Plugins)).
@@ -81,7 +81,7 @@ the smaller drives have been removed.
 2. Replace one of the smaller drives with the new larger drive and
    power up.
 3. Assign new larger drive to replace missing smaller drive, and start
-   the array, to let unRAID rebuild onto it.
+   the array, to let Unraid rebuild onto it.
 4. Copy all files from the other smaller drive(s) to the larger drive.
    For example, if a smaller drive is Disk 2 and the larger drive is
    Disk 3, then you could use this command in console or telnet:

@@ -244,7 +244,7 @@ Note that unRAID will still place files on the disk if the split level
 does not allow the files to be placed on another disk with more free
 space.
 
-Also note that unRAID will typically not move a file onto a new disk if
+Also note that Unraid will typically not move a file onto a new disk if
 you're over-writing or updating it. For example, a backup file that
 grows in size over time could end up filling a disk and causing a disk
 full error.\
@@ -260,7 +260,7 @@ clicking on a pool on the Main tab.
 
 ### Split level
 
-The split level setting tells unRAID how many folder levels are allowed
+The split level setting tells Unraid how many folder levels are allowed
 to be created on multiple disks. The split level can be used to ensure
 that the contents of a folder are kept on the same disk. The split level
 numbering starts with the user share being the top level and given the
@@ -270,7 +270,7 @@ number 1.
 various settings for a share over which array drive to select for a file
 the Split Level setting always takes precedence. This means the
 Allocation Method and Minimum Free Space settings end up being
-over-ridden. This can mean unRAID chooses a drive which does not have
+over-ridden. This can mean Unraid chooses a drive which does not have
 enough space for the file so that an out-of-space error subsequently
 occurs for the file.
 
@@ -437,7 +437,7 @@ means:
 - A New_Movies folder can be created on each disk allowed by the
     include and exclude disk settings. A new New_Movies folder will be
     created on the next disk in line when the allocation method calls
-    for unRAID to begin filling the next disk. Note that the New_Movies
+    for Unraid to begin filling the next disk. Note that the New_Movies
     folder will only be created on the next disk in line when it is
     necessary and not when the share is created.
 
@@ -622,7 +622,7 @@ For the Primary storage drop-down:
 
 - this option is mandatory. ie, Primary storage must be selected
 - any named pool can be selected
-- "Array" can be selected (meaning the unRAID array)
+- "Array" can be selected (meaning the Unraid array)
 
 #### **Secondary Storage:**
 

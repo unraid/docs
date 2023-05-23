@@ -1,6 +1,6 @@
 # Parity
 
-Parity is used by unRAID to protect against data loss. If a drive in the
+Parity is used by Unraid to protect against data loss. If a drive in the
 array fails, the data on the other drives can be combined with the
 parity data to reconstruct the missing data.
 
@@ -18,7 +18,7 @@ across a given set of bits, by setting the value of an added bit such
 that a summation across that set of bits is forced to a known value. The
 added bit is known as a **parity bit**.
 
-In unRAID, the parity bits are stored on a **parity drive** independent
+In Unraid, the parity bits are stored on a **parity drive** independent
 of the data drives. This parity bit works across the set of bits in the
 same relative bit position on each drive. So the 57th bit of the parity
 drive is the parity bit for the 57th bit of all of the data drives. A
@@ -28,7 +28,7 @@ total is an EVEN number. If the value returned is not EVEN, then the
 parity bit is toggled so that the parity check WILL return an EVEN
 number.
 
-Why an EVEN number? unRAID uses 'even parity', which simply means that
+Why an EVEN number? Unraid uses 'even parity', which simply means that
 the summation process (using a mathematical operation called 'exclusive
 OR' or 'XOR') across that set of bits must return a value that is an
 EVEN number.
@@ -43,15 +43,15 @@ Digital data is stored as a 1 or a 0. So, for example:
     (1+1+1+1+0=even).
 - If the bit values are 1,0,0,0 the parity will be 1 (1+0+0+0+1=even).
 
-When a drive is added to a parity-protected unRAID array, it is first
+When a drive is added to a parity-protected Unraid array, it is first
 cleared by writing zeroes to all bits of all sectors of that drive. A
 zero value will not impact parity. Once the new drive is full of zeros,
-unRAID can silently slip it into the array without needing to rebuild
+Unraid can silently slip it into the array without needing to rebuild
 parity. Several disks can be added simultaneously in this way.
 
 ## Reconstructing data
 
-There are only two situations that the parity data is used by unRAID to
+There are only two situations that the parity data is used by Unraid to
 reconstruct data:
 
 - when a disk is being reconstructed; and
@@ -59,7 +59,7 @@ reconstruct data:
 
 At these times, all of the disks (including parity) are read to
 reconstruct the data to be written to the target disk. As the sum of the
-bits is always even, unRAID can reconstruct any ONE missing piece of
+bits is always even, Unraid can reconstruct any ONE missing piece of
 data (the parity or a data disk), as long as the other pieces are
 correct.
 
@@ -142,12 +142,12 @@ data drive.
 Using parity to protect your data inevitably has an impact on
 performance when you are writing data to the array. Any time a data disk
 is written to, the parity disk needs to be updated as well. Each write
-to a parity-protected unRAID data disk results in 4 disk operations: a
+to a parity-protected Unraid data disk results in 4 disk operations: a
 read and write for parity, and a read and write for data. The platter of
 each disk has to make a full revolution after reading to position the
 disk head back over the sector being written.
 
-Writing to the unRAID array is also limited by the slowest (rotational
+Writing to the Unraid array is also limited by the slowest (rotational
 speed) drive involved. If only the parity drive is a 7200 RPM drive,
 then you are still limited by the speed of the data drive. You'll see
 no improvement in write speed unless there are multiple slower data
@@ -162,7 +162,7 @@ simultaneous drive failures without losing data.
 
 In a P + Q redundancy system (as in a RAID-6 system), there would be two
 redundancy disks: 'P', which is the ordinary XOR parity, and 'Q', which
-is a Reed-Solomon code. This allows unRAID to recover from any 2 disk
+is a Reed-Solomon code. This allows Unraid to recover from any 2 disk
 errors, with minimal impact on performance.(Requires Clarification that
 this is actually used)
 

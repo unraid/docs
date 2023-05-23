@@ -1,12 +1,12 @@
 
 **This page is designed to help you obtain your CPU and motherboard
 temperatures, and hopefully keep them current and visible. If you
-aren't using unRAID v6 with the Dynamix System Temp plugin, then skip
+aren't using Unraid v6 with the Dynamix System Temp plugin, then skip
 down to the 'older versions' section.**\
 
 ## Setting up sensing for v6
 
-:   *This section is only for unRAID v6 with the Dynamix System Temp
+:   *This section is only for Unraid v6 with the Dynamix System Temp
     plugin installed. These instructions are lifted directly from the
     author's words
     [here](http://lime-technology.com/forum/index.php?topic=31172.msg473847#msg473847).*

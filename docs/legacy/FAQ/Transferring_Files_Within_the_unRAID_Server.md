@@ -1,7 +1,7 @@
 # Transferring Files Within the Unraid Server
 
 If you are using Windows Explorer to move files between drives, you are
-actually copying the files TWICE across the network, from the unRAID
+actually copying the files TWICE across the network, from the Unraid
 server to your Windows machine, and back again. For copying a few files,
 this is not a problem. But if you are moving a lot of data, here are
 faster methods.
@@ -10,18 +10,18 @@ faster methods.
 
 Use Midnight Commander and PuTTY instead. Type mc at the command prompt
 in a telnet/PuTTy session to start the GUI. Midnight Commander is built
-into unRAID v4.3 and up. For earlier versions, and a link to PuTTY (an
+into Unraid v4.3 and up. For earlier versions, and a link to PuTTY (an
 alternative to Telnet that allows use of a mouse within **mc**), see
 [this thread](http://lime-technology.com/forum/index.php?topic=1341.0)).
 Midnight Commander is a Linux console tool, and needs to be run from
-either the physical console on your unRAID server, or from a Telnet
+either the physical console on your Unraid server, or from a Telnet
 console on your desktop station. For more information, see the
 [Telnet](Terminal_Access.md#telnet) page, which includes information on
 [PuTTY](Terminal_Access.md#PuTTY).
 
 ## Move Files Overnight
 
-If you go to the unRAID server and run Midnight Commander from there,
+If you go to the Unraid server and run Midnight Commander from there,
 you can use it to move a bunch of files overnight. But if you use **mc**
 from a Telnet prompt from your Windows (or other) workstation, you will
 have to leave the computer on and the Telnet session open until the disk
@@ -29,7 +29,7 @@ operations are complete. If the Telnet session ends, so does the copy or
 move operation.
 
 But with a little knowledge of Unix commands, you can easily start
-moving files around your unRAID server and then shut down Telnet and
+moving files around your Unraid server and then shut down Telnet and
 your workstation. The key is the "nohup" command (nohup means "no
 [don't] hang up"). If you put "nohup" before any command and an
 ampersand (&) afterwards, the command will run in the background until
@@ -44,8 +44,8 @@ prompt \...
 Do a quick check to see that files are starting to appear in the
 destination folder to make sure you didn't have a typo in the command,
 and then exit from the Telnet session. The files will continue to be
-moved as fast as unRAID can move them, and use ZERO network bandwidth.
-Make sure it is complete before shutting down your unRAID server, as
+moved as fast as Unraid can move them, and use ZERO network bandwidth.
+Make sure it is complete before shutting down your Unraid server, as
 copying hundreds of gigs can take a long time to complete even at the
 fastest speed.
 
@@ -56,17 +56,17 @@ nohup creates a log file called 'nohup.out' with the command output.
 The basic "mv" command doesn't create any output, but "cp" outputs
 the name of each file it copies. If you use "cp" to copy a LOT of
 small files (300,000+), you risk having nohup.out get quite large -
-large enough to fill up your unRAID server ramdisk - not a good thing.
+large enough to fill up your Unraid server ramdisk - not a good thing.
 
 ## Unix Commands=
 
 There are two effective methods available to move files from one drive
-to another from within unRAID (v4.x and later).
+to another from within Unraid (v4.x and later).
 
 ### Copying files
 
 1\) Copy the files from disk# (where '#' is the number of the disk in
-unRAID)
+Unraid)
 
 `cp -r /mnt/disk# /mnt/disk#`
 

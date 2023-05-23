@@ -14,7 +14,7 @@ shuffle"?
 **Why would you want to do this? To replace a data drive with a larger
 one, that is even larger than the Parity drive.**
 
-* unRAID does not require a replacement drive to be the same size as
+* Unraid does not require a replacement drive to be the same size as
     the drive being replaced. The replacement drive CANNOT be smaller
     than the old drive, but it CAN be larger, much larger in fact. If
     the replacement drive is the same size or larger, UP TO the same
@@ -45,7 +45,7 @@ one, that is even larger than the Parity drive.**
     current Parity drive, then you don't need this procedure. Proceed
     with the [Replacing a Data Drive](Replacing_a_Data_Drive.md)
     procedure.**
-* This procedure is strictly for replacing data drives in an unRAID
+* This procedure is strictly for replacing data drives in an Unraid
     array. If all you want to do is replace your Parity drive with a
     larger one, then you don't need the Parity Swap procedure. Just
     remove the old parity drive and add the new one, and start the
@@ -57,11 +57,11 @@ one, that is even larger than the Parity drive.**
     ball), then it is already 'disabled', but if the drive is OK but
     you want to replace it anyway, then you have to force it to be
     'failed', by unassigning it and starting and stopping the array.
-    unRAID only forgets a drive when the array is started without the
+    Unraid only forgets a drive when the array is started without the
     drive, otherwise it still associates it with the slot (but
     'Missing'). The array must be started once with the drive
     unassigned or disabled. Yes, it may seem odd, but is required before
-    unRAID will recognize that you are trying to do a 'Parity Swap'.
+    Unraid will recognize that you are trying to do a 'Parity Swap'.
     It needs to see a disabled data disk with forgotten ID, a new disk
     assigned to its slot that used to be the parity disk, and a new disk
     assigned to the parity slot.
@@ -75,18 +75,18 @@ one, that is even larger than the Parity drive.**
     drive), and is 'assumed' to be correct for all versions. (You know
     what happens when you 'assume'!) If you see any improvements or
     corrections, please add them, or suggest them to us, either on the
-    'discussion' page for this page, or on the unRAID forums. By the
-    way, if you are NOT running the latest unRAID v6 release, we
+    'discussion' page for this page, or on the Unraid forums. By the
+    way, if you are NOT running the latest Unraid v6 release, we
     strongly urge you to Upgrade to Unraid v6!*
 
 ## The procedure
 
-:   *If you are running a very old version of unRAID, such as v4.7 or
+:   *If you are running a very old version of Unraid, such as v4.7 or
     older, skip down to the next section.*
 
 :   Note: these steps are the general steps needed. The steps you take
     may differ depending on your situation. If the drive to be replaced
-    has failed and unRAID has disabled it, then you may not need steps 1
+    has failed and Unraid has disabled it, then you may not need steps 1
     and 2, and possibly not steps 3 and 4. If you have already installed
     the new replacement drive (perhaps because you have been Preclearing
     it), then you would skip steps 5 through 8. Revise the steps as
@@ -152,10 +152,10 @@ one, that is even larger than the Parity drive.**
 :   *Note: many users like to follow up with a parity check, just to
     check everything. It's a good confidence builder!*
 
-## The procedure for unRAID v4
+## The procedure for Unraid v4
 
-:   *This section is only for old versions of unRAID, such as v4.7 or
-    older. If you are running v5 or v6 of unRAID, then go back to the
+:   *This section is only for old versions of Unraid, such as v4.7 or
+    older. If you are running v5 or v6 of Unraid, then go back to the
     previous section.*
 
 :   Note: these steps are taken from the old manual, and they assume the

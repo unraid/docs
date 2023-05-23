@@ -1,4 +1,4 @@
-:   **Important!** This page is a basic introduction to the unRAID Cache
+:   **Important!** This page is a basic introduction to the Unraid Cache
     drive, but was written for v4 and v5. There is no mention of
     Dockers, VM's, or Cache Pools. For v6 users, this page serves as an
     introduction, but you should also check these resources:
@@ -10,7 +10,7 @@
         pool](http://lime-technology.com/forum/index.php?topic=56005) -
         a nice video guide
 
-The cache disk feature of unRAID greatly increases the perceived
+The cache disk feature of Unraid greatly increases the perceived
 performance of the system when writing data to a parity-protected array.
 It is particularly useful for users who write data to the array on a
 regular basis, and can also be used as a scratch disc for certain
@@ -72,7 +72,7 @@ free space then the object will be created on the array instead.
 ### Perceived write speed increases
 
 The emphasis here is on 'perceived'. The real, behind-the-scenes write
-speed of your unRAID server is unchanged by the addition of a cache
+speed of your Unraid server is unchanged by the addition of a cache
 drive. A cache drive simply grants you the fastest transfer that your
 hardware will allow by deferring the inevitable parity calculation until
 a later time (3:40 am server time, by default).
@@ -83,18 +83,18 @@ How much of a write speed improvement can you expect to see from using a
 cache drive? That depends on your hardware. Slower hardware will of
 course result in slower transfer speeds. Assuming that you have Gigabit
 LAN (GigE) capable network controllers on both sides of the transfer
-(the client PC and the unRAID server), a Gigabit LAN router or switch,
+(the client PC and the Unraid server), a Gigabit LAN router or switch,
 appropriate network cables (Cat5e or Cat6), and modern SATA I or better
 hard drives, then you should see write speeds in the following ranges:
 
 These numbers represent average transfer speeds when writing data to
-unRAID:
+Unraid:
 
-**Without a cache drive:** unRAID 4.5.3 - average 20-30 MB/s, peak
+**Without a cache drive:** Unraid 4.5.3 - average 20-30 MB/s, peak
 reported [40
 MB/s](http://lime-technology.com/forum/index.php?topic=5496.msg51190#msg51190)*
 
-**With a cache drive:** unRAID 4.5.3 - average 50-60 MB/s, peak reported
+**With a cache drive:** Unraid 4.5.3 - average 50-60 MB/s, peak reported
 [101
 MB/s](http://lime-technology.com/forum/index.php?topic=5754.msg120084#msg120084)*
 
@@ -160,17 +160,17 @@ time (though performance will likely be degraded).
 In the classic application, a Warm Spare sits in your server
 pre-installed (therefore taking up a SATA/PATA slot and using a small
 amount of power), but constantly spun down and unused (as it is not
-assigned to a disk slot in unRAID).
+assigned to a disk slot in Unraid).
 
 However, why not use a warm spare as a cache drive while you wait around
 for another drive to fail? This application will of course add a bit of
 wear and tear to your warm spare, but nothing outside the scope of
 ordinary use.
 
-### Running other software on top of unRAID
+### Running other software on top of Unraid
 
 As a cache drive is outside of the parity-protected array, it can be
-used for alternate software and unRAID add-ons that need to read and
+used for alternate software and Unraid add-ons that need to read and
 write data often.
 
 ### Scratch space

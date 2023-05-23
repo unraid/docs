@@ -488,7 +488,7 @@ Create and start the VM
 - Optional) Remove the checkmark for automatically starting the VM
     after creation.
 - Click the **Create** button
-- Back on the VMs -\> Virtual Machines page you can click the unRAID
+- Back on the VMs -\> Virtual Machines page you can click the Unraid
     icon and then choose "VNC Remote" to watch the VM boot. Note the
     IP address is displayed right before the login prompt.
 
