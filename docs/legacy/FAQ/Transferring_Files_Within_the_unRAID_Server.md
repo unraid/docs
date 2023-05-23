@@ -1,3 +1,5 @@
+# Transferring Files Within the Unraid Server
+
 If you are using Windows Explorer to move files between drives, you are
 actually copying the files TWICE across the network, from the unRAID
 server to your Windows machine, and back again. For copying a few files,
@@ -14,8 +16,8 @@ alternative to Telnet that allows use of a mouse within **mc**), see
 Midnight Commander is a Linux console tool, and needs to be run from
 either the physical console on your unRAID server, or from a Telnet
 console on your desktop station. For more information, see the
-[Telnet](Telnet "wikilink") page, which includes information on
-[PuTTY](Telnet#PuTTY "wikilink").
+[Telnet](Terminal_Access.md#telnet) page, which includes information on
+[PuTTY](Terminal_Access.md#PuTTY).
 
 ## Move Files Overnight
 
@@ -56,13 +58,12 @@ the name of each file it copies. If you use "cp" to copy a LOT of
 small files (300,000+), you risk having nohup.out get quite large -
 large enough to fill up your unRAID server ramdisk - not a good thing.
 
-\
-==Unix Commands==
+## Unix Commands=
 
 There are two effective methods available to move files from one drive
 to another from within unRAID (v4.x and later).
 
-#### Copying files
+### Copying files
 
 1\) Copy the files from disk# (where '#' is the number of the disk in
 unRAID)
@@ -96,7 +97,7 @@ notepad use this syntax:
 
 `cp -r -v -p /mnt/disk4/* /mnt/disk8 | todos > /boot/disk1copy.txt`
 
-#### Moving files
+### Moving files
 
 2\) Move the contents of disk1 to disk2 using the mv command
 
@@ -115,7 +116,7 @@ delete your data file(s) from the source drive. In the interest of
 maximum safety, you may want to use `<b>`{=html}copy`</b>`{=html}
 instead.
 
-#### Quotes
+### Quotes
 
 If you want to copy or move entire folders from one drive to another,
 and the folder names have spaces in them, you need to use "quotes"
@@ -127,7 +128,7 @@ In the above example, the entire folder called **The Empire Strikes
 Back** would be moved from Disk 2 to Disk 3 with the same sub-folder
 structure.
 
-#### Wildcards
+### Wildcards
 
 Wildcards are available as well. For example, if you want to copy all of
 the files from Disk 2 over to Disk 3, use the **mv** command like this:
@@ -136,5 +137,3 @@ the files from Disk 2 over to Disk 3, use the **mv** command like this:
 
 In this example, all files and folders on Disk 2 would be relocated over
 to Disk 3 in the exact same folder structure as it was on Disk 2.
-
-[Category: How To](Category:_How_To "wikilink")

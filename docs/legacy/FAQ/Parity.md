@@ -1,3 +1,5 @@
+# Parity
+
 Parity is used by unRAID to protect against data loss. If a drive in the
 array fails, the data on the other drives can be combined with the
 parity data to reconstruct the missing data.
@@ -166,5 +168,3 @@ this is actually used)
 
 Further discussion:
 [1](http://lime-technology.com/forum/index.php?topic=2634.msg21695#msg21695)
-
-[Category: Key concepts](Category:_Key_concepts "wikilink")

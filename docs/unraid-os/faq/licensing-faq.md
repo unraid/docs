@@ -9,8 +9,7 @@ Unraid OS license pricing is a one-time fee and updates are included.
 
 Unraid OS can be purchased from within the OS via the Tools-\>
 Registration page or, in OS version 6.10 and beyond, via the top right
-[User Profile Component
-(UPC)](My_Servers#Navigating_the_User_Profile_Component "wikilink").
+corner of the page.
 
 You can also purchase a [license activation code directly from our
 website](https://unraid.net/pricing) and redeem the code for a license
@@ -34,8 +33,7 @@ If you have any issues or questions with the above, there is also a walk through
 
 If you want or need to upgrade your license to a higher tier, upgrades
 are done from within the OS WebGUI via the Tools → Registration page or
-via the top right [User Profile Component
-(UPC)](My_Servers#Navigating_the_User_Profile_Component "wikilink"):
+via the top right corner of the page.
 
 ![](/docs/legacy/Upgrade-UPC.png "Upgrade-UPC.png")
 
@@ -66,16 +64,16 @@ starting the array, not counting the USB Flash boot device. There are
 Unraid OS Pro supports up to 30 storage devices in the parity-protected
 array (28 data and 2 parity) and up to 35 named pools, of up to 30
 storage devices in the [cache
-pool(s)](Manual/Release_Notes/Unraid_OS_6.9.0#Multiple%20Pools "wikilink").
+pool(s)](/unraid-os/release-notes/6.9.0.md#multiple-pools).
 Additional storage devices can still be utilized directly with other
 Unraid features such as [Virtual
-Machines](Manual/VM_Management "wikilink") or the unassigned devices
+Machines](/manual/vm-management.md) or the unassigned devices
 plugin.
 
 ## What Happens if my USB Fails? Do I Have to Repurchase a License?
 
 If your USB Flash boot device fails, you can [transfer
-your](Manual/Changing_The_Flash_Device "wikilink") license to a new USB
+your](/unraid-os/manual/changing-the-flash-device.md) license to a new USB
 Flash device initially at any time, and subsequently using the automated
 transfer system once per 12 months.
 
@@ -135,7 +133,7 @@ a new USB flash device without purchasing.
 ### How Do I Extend My Unraid Trial?
 
 Did you know that you can extend the [30 day free
-trial](Unraid.net/download "wikilink") of Unraid? Hardware can be
+trial](https://unraid.net/download) of Unraid? Hardware can be
 ill-suited. Things break. Life happens. We get it. To try out Unraid a
 little longer, once your original trial shows "expired" in the upper
 left of the header, *Stop the array*.
@@ -151,7 +149,7 @@ wish to continue where you left off.*
 ## I'm a Reseller/OEM that needs to Purchase a License on Behalf of my Customer: How do I do that?
 
 You will need to [purchase a license either via the Unraid
-webGui](Articles/Frequently_Asked_Questions#How_do_I_purchase_Unraid.3F "wikilink")
+webGui](#how-do-i-purchase-unraid)
 or you can [purchase an activation code via the
 website](https://unraid.net/pricing).
 

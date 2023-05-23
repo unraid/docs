@@ -29,9 +29,8 @@ page](https://unraid.net/product).
 
 - Insert a quality USB flash device into your Mac or PC.
 - Download the [USB Flash Creator](https://unraid.net/download) and use
-  it to install Unraid OS onto your USB flash device, or use the [Manual
-  Install
-  method](Articles/Getting_Started#Manual_Install_Method "wikilink").
+  it to install Unraid OS onto your USB flash device, or use the
+  [Manual Install method](#manual-install-method).
 - Remove the flash device from your PC and plug it into your server.
 - Boot into your server's BIOS settings and make the following changes:
   - Configure the system to boot from the USB flash device.
@@ -76,16 +75,12 @@ need to sign in to Unraid.net and obtain a key.
 
 - Sign in or Sign up under the Get Started section in the top-right of
   the webGui.
-
-<figure>
-<img src="/docs/legacy/Upc_get_started.png" title="Upc_get_started.png" />
-<figcaption>Upc_get_started.png</figcaption>
-</figure>
+  ![UPC getting started](/docs/legacy/Upc_get_started.png)
 
 - Upon signing in, a registration key will be downloaded and installed
   to your system automatically.
 
-![](/docs/legacy/Upc_install_trial_key.png "Upc_install_trial_key.png") The purpose
+![UPC installing a trial key](/docs/legacy/Upc_install_trial_key.png) The purpose
 of the sign-in is to provide a way for you to manage your registration
 keys for Unraid OS (obtain a Trial key, purchase a paid key, recover a
 lost key, replace your key with a new flash device, or upgrade a keybo
@@ -226,7 +221,7 @@ up-to-date than any documentation.
 
 Your Unraid server is likely to end up containing data that is valuable
 to you so it can be a good idea to review the [Security Good
-Practices](Manual/Security "wikilink") part of the documentation to
+Practices](security.md) part of the documentation to
 ensure you are not doing something that may leave your system open to
 attack while leaving your valuable data at risk.
 
@@ -468,7 +463,7 @@ of the webGui not displaying correctly.
 **How Do I Extend My Unraid Trial?**
 
 Did you know that you can extend the [30 day free
-trial](Unraid.net/download "wikilink") of Unraid? Hardware can be
+trial](https://unraid.net/download) of Unraid? Hardware can be
 ill-suited. Things break. Life happens. We get it. To try out Unraid a
 little longer, once your original trial shows "expired" in the upper
 left of the header, *Stop the array*.

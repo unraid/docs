@@ -455,11 +455,10 @@ Wikipedia](http://en.wikipedia.org/wiki/S.M.A.R.T#Known_ATA_S.M.A.R.T._attribute
 
 - *[incomplete]*
 
-\
 *[the most important part of this whole page is completely
 incomplete!]*\
-\
-==Additional info==
+
+## Additional info
 
 - also known more accurately as **S.M.A.R.T.** or **Self-Monitoring,
     Analysis and Reporting Technology**
@@ -484,30 +483,8 @@ incomplete!]*\
         very large numbers they find in a SMART report or 'diff'
   - <http://lime-technology.com/forum/index.php?topic=2135.msg15733#msg15733> -
         a script for grabbing dated SMART reports for all drives
-  - *\<\< old \>\>*
-        [FAQ#How_can_I_find_out_more_information_about_a_hard_drive.3F](FAQ#How_can_I_find_out_more_information_about_a_hard_drive.3F "wikilink") -
-        intro to obtaining the SMART info for a drive
-  - *\<\< old \>\>*
-        [FAQ#Why_is_a_temp_not_showing_for_a_drive.3F](FAQ#Why_is_a_temp_not_showing_for_a_drive.3F "wikilink") -
-        enabling SMART so temps can be accessed and displayed
-  - [Troubleshooting#Hard_drive_failures](Troubleshooting#Hard_drive_failures "wikilink") -
-        has a section on smartctl commands for getting SMART reports,
-        and running tests
-  - [UnRAID_Add_Ons#UnMENU](UnRAID_Add_Ons#UnMENU "wikilink") - the
-        Disk Management plugin has buttons for SMART reports and tests
+  - [Data Recovery](/unraid-os/manual/troubleshooting#data-recovery)
   - <http://lime-technology.com/forum/index.php?topic=2708> - the
         MyMain thread; an UnMENU plugin; after installing UnMENU,
         install this next; has a Smart View that provides color-coded
         SMART info for all drives
-  - [SmartHistory](UnRAID_Add_Ons#SmartHistory "wikilink") - a tool
-        for monitoring the SMART parameters of your drives, and provide
-        reporting and notification of changes in SMART attributes;
-        produces customizable reports, with graphing capabilities
-
-*[incomplete]*
-
-\
-\
-
-[Category: How To](Category:_How_To "wikilink") [Category:
-Troubleshooting](Category:_Troubleshooting "wikilink")

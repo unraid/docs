@@ -1,26 +1,30 @@
+# The Parity Swap Procedure
+
 ***`First release, tested only on v6.1 & 6.7.2`***
 
 **This page describes how to do the 'Parity Swap' procedure, often
-known as the 'Swap Disable' procedure.**\
-: Historically, it was better known as the 'Swap Disable' procedure,
+known as the 'Swap Disable' procedure.**
+
+Historically, it was better known as the 'Swap Disable' procedure,
 probably because it requires the data drive to be disabled first, then
 involves a swap of the parity drive, the disabled drive, and the new
 replacement drive. Perhaps it should be called the "3 drive parity
-shuffle"?\
+shuffle"?
+
 **Why would you want to do this? To replace a data drive with a larger
 one, that is even larger than the Parity drive.**
 
-:   unRAID does not require a replacement drive to be the same size as
+* unRAID does not require a replacement drive to be the same size as
     the drive being replaced. The replacement drive CANNOT be smaller
     than the old drive, but it CAN be larger, much larger in fact. If
     the replacement drive is the same size or larger, UP TO the same
     size as the parity drive, then there is a simple procedure for that,
-    called [Replacing a Data Drive](Replacing_a_Data_Drive "wikilink").
+    called [Replacing a Data Drive](Replacing_a_Data_Drive.md).
     But if the replacement drive is LARGER than the Parity drive, then a
     special two-step procedure is required, described on this page. It
     will use the larger-than-parity drive to first upgrade the parity
     drive then use the old parity drive to replace the old data drive.
-:   An example, you have a 1TB data drive that you want to replace (the
+* An example, you have a 1TB data drive that you want to replace (the
     reason does not matter). You have a 2TB parity drive. You buy a 4TB
     drive as a replacement. The 'Parity Swap' procedure will copy the
     parity info from the current 2TB parity drive to the 4TB drive, zero
@@ -28,28 +32,27 @@ one, that is even larger than the Parity drive.**
     drive to replace the 1TB data drive. Now you can do as you wish with
     the removed 1TB drive.
 
-\
-**Important Notes**
+## Important Notes
 
-- If you have purchased a replacement drive, we always recommend
+* If you have purchased a replacement drive, we always recommend
     Preclearing the replacement drive first, to make sure it's a good
     drive that won't fail for a few years at least. The Preclearing is
     not strictly necessary, as replacement drives don't have to be
     cleared, they are going to be completely overwritten. But
     Preclearing new drives one to three times provides a thorough test
     of the drive, eliminates 'infant mortality' failures.
-- **If your replacement drive is the same size or smaller than your
+* **If your replacement drive is the same size or smaller than your
     current Parity drive, then you don't need this procedure. Proceed
-    with the [Replacing a Data Drive](Replacing_a_Data_Drive "wikilink")
+    with the [Replacing a Data Drive](Replacing_a_Data_Drive.md)
     procedure.**
-- This procedure is strictly for replacing data drives in an unRAID
+* This procedure is strictly for replacing data drives in an unRAID
     array. If all you want to do is replace your Parity drive with a
     larger one, then you don't need the Parity Swap procedure. Just
     remove the old parity drive and add the new one, and start the
     array. The process of building parity will immediately begin. (If
     something goes wrong, you still have the old parity drive that you
     can put back!)
-- **IMPORTANT!!!** This procedure REQUIRES that the data drive being
+* **IMPORTANT!!!** This procedure REQUIRES that the data drive being
     replaced MUST be disabled first. If the drive failed (has a red
     ball), then it is already 'disabled', but if the drive is OK but
     you want to replace it anyway, then you have to force it to be
@@ -62,30 +65,24 @@ one, that is even larger than the Parity drive.**
     It needs to see a disabled data disk with forgotten ID, a new disk
     assigned to its slot that used to be the parity disk, and a new disk
     assigned to the parity slot.
-- Obviously, it's very important to identify the drives for
+* Obviously, it's very important to identify the drives for
     assignment correctly! Have a list of the drive models that will be
     taking part in this procedure, with the last 4 characters of their
     serial numbers. If the drives are recent Toshiba models, then they
     may all end in **GS** or **S**, so you will want to note the
     preceding 4 characters instead.
-- *Lastly, this page was only tested with v6 (and not with a disabled
+* *Lastly, this page was only tested with v6 (and not with a disabled
     drive), and is 'assumed' to be correct for all versions. (You know
     what happens when you 'assume'!) If you see any improvements or
     corrections, please add them, or suggest them to us, either on the
     'discussion' page for this page, or on the unRAID forums. By the
     way, if you are NOT running the latest unRAID v6 release, we
-    strongly urge you to [upgrade](Upgrading_to_UnRAID_v6 "wikilink")!*
-
-\
+    strongly urge you to Upgrade to Unraid v6!*
 
 ## The procedure
 
 :   *If you are running a very old version of unRAID, such as v4.7 or
     older, skip down to the next section.*
-
-```{=html}
-<!-- -->
-```
 
 :   Note: these steps are the general steps needed. The steps you take
     may differ depending on your situation. If the drive to be replaced
@@ -155,17 +152,11 @@ one, that is even larger than the Parity drive.**
 :   *Note: many users like to follow up with a parity check, just to
     check everything. It's a good confidence builder!*
 
-\
-
 ## The procedure for unRAID v4
 
 :   *This section is only for old versions of unRAID, such as v4.7 or
     older. If you are running v5 or v6 of unRAID, then go back to the
     previous section.*
-
-```{=html}
-<!-- -->
-```
 
 :   Note: these steps are taken from the old manual, and they assume the
     data drive has failed and been disabled. If not, then (just as
@@ -181,9 +172,3 @@ one, that is even larger than the Parity drive.**
 7. When you start the array, the system will first copy the parity
     information to the new parity disk, and then reconstruct the
     contents of the failed disk.
-
-\
-
-[Category: How To](Category:_How_To "wikilink") [Category: Hard
-drives](Category:_Hard_drives "wikilink") [Category:
-Hardware](Category:_Hardware "wikilink")

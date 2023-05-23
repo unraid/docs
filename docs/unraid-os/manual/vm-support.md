@@ -309,7 +309,7 @@ machine, then use that to perform the upgrade itself.
 If you used the 0.1.102 drivers for your Windows 7 or 8.1 VM, you will
 want to upgrade these drivers to 0.1.109 or later before performing the
 upgrade. The process to update the drivers is located
-[here](#Updating_VirtIO_Drivers "wikilink"):
+[here](#updating-virtio-drivers):
 
 ### Obtaining the Installation Media
 
@@ -448,7 +448,7 @@ questions.
 
 - On the host system, go to *Settings-\>VM* and make sure VMs are
     enabled. For more details see the [VM
-    Management](Manual/VM_Management "wikilink") in the Unraid manual.
+    Management](vm-management.md) in the Unraid manual.
 - Go to the VMs tab and click the **Add VM** button. This will display
     a list of standard templates.
 - Select the Slackware option to load the template.

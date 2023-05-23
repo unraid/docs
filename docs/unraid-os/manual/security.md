@@ -177,7 +177,7 @@ that utilizes SSL to ensure your connection is fully encrypted.
 
 Using wildcard SSL Certificates provisioned by [Let's
 Encrypt](https://letsencrypt.org/), Unraid OS 6.10 improves the security
-of the SSL implementation for both local access and [Unraid Connect Remote Access](/connect/remote-access.mdx).
+of the SSL implementation for both local access and [Unraid Connect Remote Access](/connect/remote-access.md).
 
 ### A few details before we begin
 

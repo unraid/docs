@@ -8,10 +8,6 @@ use. The tool can be found [here.](https://unraid.net/download)
 
 ------------------------------------------------------------------------
 
-\
-\
-\
-\
 \-\-\-\-- Important version note: This document is no longer for
 **WINDOWS** users. In general, you should use [Unraid Server
 Installation](https://unraid.net/download) instead. With the advent of
@@ -25,12 +21,6 @@ tips below.\>
 
 ------------------------------------------------------------------------
 
-\
-\
-**Be sure to review the [Hardware
-Compatibility](Hardware_Compatibility "wikilink") page when designing
-your server.**
-
 The Unraid Server OS is designed to be installed on, and boot from a USB
 Flash storage device, 512MB or larger. Use a high quality Flash drive
 from reputable manufacturers such as:
@@ -39,12 +29,7 @@ from reputable manufacturers such as:
 - PNY
 - Samsung
 - Kingston
-- And many more listed in the [Hardware Compatibility#USB Flash
-    Drives](Hardware_Compatibility#USB_Flash_Drives "wikilink") section
-
-`Note: If you are upgrading from a pre-3.0 release of unRAID Server, please read the`[`Pre-3.0 Upgrade Instructions`](Pre-3.0_Upgrade_Instructions "wikilink")`first.`
-
-\
+- And many more 
 
 ## Instructions
 
@@ -90,7 +75,6 @@ files such as **network.cfg** and **ident.cfg**.
 
 **Step 4** Click on the **Safely Remove Hardware** tool tray icon and
 select your Flash drive to be safely removed.\
-\
 
 ### Windows Vista and Windows 7
 
@@ -112,8 +96,7 @@ the zip archive to your Flash.
 select **Run as administrator**. Press any key to continue.
 
 **Step 4** The process takes only a moment to complete. You can then
-close any open windows and eject the Flash drive.\
-\
+close any open windows and eject the Flash drive.
 
 ### MacOS X
 
@@ -224,12 +207,8 @@ check
 For more general BIOS suggestions on getting a machine to boot the USB
 flash drive, check
 [here](http://www.weethet.nl/english/hardware_bootfromusbstick.php),
-near the bottom of the page. There may be additional information in the
-FAQ section [Flash Drives](FAQ#Flash_Drives "wikilink"), especially the
-FAQ entry, "[How do I configure the BIOS settings to allow booting from
-the USB flash
-drive?](FAQ#How_do_I_configure_the_BIOS_settings_to_allow_booting_from_the_USB_flash_drive.3F "wikilink")"\
-\
+near the bottom of the page. Also see 
+[here](/unraid-os/manual/getting-started.md#advanced-bios-configuration-guide)
 
 ## If the Flash will not boot, read over the following tips
 
@@ -247,25 +226,13 @@ try another.
     SanDisk drives can be found
     [here](http://u3.sandisk.com/launchpadremoval.htm).
 
-```{=html}
-<!-- -->
-```
-
 - Some instructions for loading **syslinux** on your flash drive leave
     off the "**-ma**" options of the command. If your flash drive does
     not have a preloaded master boot record and a partition marked as
     "active", then it is unlikely to boot unless you use the **-ma**
     options.
 
-```{=html}
-<!-- -->
-```
-
 - Try formatting the USB drive as FAT instead of FAT32
-
-```{=html}
-<!-- -->
-```
 
 - You may need to use the **HP formatting tool** to make your flash
     drive bootable on your BIOS. It sets the Cylinders/Heads/Sector
@@ -277,10 +244,6 @@ try another.
     [here](http://lime-technology.com/forum/index.php?topic=366.0) and
     [here](http://lime-technology.com/forum/index.php?topic=2703.0).
 
-```{=html}
-<!-- -->
-```
-
 - Apparently, there is more than one version of the **HP format
     tool**. The version of the **HP USB Format Tool** that works best
     has a file name of **SP27213.exe**. Some have had problems with the
@@ -288,10 +251,6 @@ try another.
     Amicroe 32GB). HP seems to have removed both from their downloads
     section of their website, but Google **HP SP27213.exe** and you
     should be able to find it easily.
-
-```{=html}
-<!-- -->
-```
 
 - If it appears as if the flash drive tries to boot, but hangs while
     decompressing the **bzroot** or **bzimage** files on the flash, it
@@ -301,19 +260,10 @@ try another.
     into your PC. The file would only have been partially written to the
     flash drive.
 
-```{=html}
-<!-- -->
-```
-
 - If it appears as if the flash drive tries to boot, but only gets
     part way before hanging, you may need to add additional options to
     your **syslinux.cfg** file on your flash drive to boot your
-    motherboard. Tips on how to proceed are here: [USB Boot
-    Issues](Best_of_the_Forums#USB_Boot_Issues "wikilink")
-
-```{=html}
-<!-- -->
-```
+    motherboard.
 
 - If it appears as if the flash drive gets part way through the boot
     process but stops when loading **bzroot**, you may need to use the
@@ -329,19 +279,11 @@ try another.
     new **syslinux** is necessary, even though their flash drive had
     worked fine with v4.2.
 
-```{=html}
-<!-- -->
-```
-
 - If it appears as if the flash drive gets part way through the boot
     process but reboots when loading **bzroot**, one user found that he
     fixed it be replacing his graphics card with an older (possibly more
     basic) graphics card.
     [1](http://lime-technology.com/forum/index.php?topic=4769)
-
-```{=html}
-<!-- -->
-```
 
 - A user has created another procedure based on the **makebootfat**
     tool. This procedure seems especially useful for newer Intel boards,
@@ -351,10 +293,6 @@ try another.
     post. It worked when nothing else would, on his Intel P965-based
     board.
 
-```{=html}
-<!-- -->
-```
-
 - Also see
     [this](http://lime-technology.com/forum/index.php?topic=922.0)
     thread (uses a Knoppix installation or Live CD), if you have a board
@@ -362,40 +300,5 @@ try another.
     instructions, using Ubuntu or similar, can be found here:
     <http://www.pendrivelinux.com/booting-linux-from-usb-zip-on-older-systems/>.
 
-```{=html}
-<!-- -->
-```
-
-- With some older motherboards, it may not be possible to boot from a
-    USB drive. Sometimes, upgrading to the latest BIOS for your board
-    will add support. But if not, there are still other choices. The
-    best may be to find a newer motherboard! There also are ways to boot
-    from another device, which then continues the boot process from your
-    unRAID USB flash drive. See
-    [this](http://lime-technology.com/forum/index.php?topic=244.msg21554#msg21554)
-    post, and the following posts, for a 'kicker' floppy disk. See
-    [this](http://lime-technology.com/forum/index.php?topic=244.msg43236#msg43236)
-    post for a 'kicker' CD. There are also other threads about kicker
-    disks, search **kicker**. You may be able to adapt the kicker disk
-    to a bootable CD, and there are efforts under way to boot from a
-    small extra hard disk or a Cache disk, see the
-    [PLoP](UnRAID_Topical_Index#PLoP_Boot_Manager "wikilink") topic for
-    one method. The unRAID system still requires a valid USB flash drive
-    installed, and labeled correctly, but a kicker disk can handle the
-    initial booting, and then transfer control to the unRAID flash drive
-    to continue booting unRAID. More information can be found in the
-    [UnRAID Topical Index, Kicker
-    disks](UnRAID_Topical_Index#Kicker_disks "wikilink") section.
-    *[editor note: may later move this to separate section below. this
-    needs more kicker-related links]*
-
-```{=html}
-<!-- -->
-```
-
 - And last of all, try upgrading the BIOS of your motherboard. A later
     BIOS may have better support for booting from USB.
-
-[Category: Getting started](Category:_Getting_started "wikilink")
-[Category: Troubleshooting](Category:_Troubleshooting "wikilink")
-[Category: How To](Category:_How_To "wikilink")

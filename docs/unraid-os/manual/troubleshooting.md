@@ -223,7 +223,7 @@ diagnosing issues with specific VMs.
 ### Preparing the flash drive
 
 This is covered under the [Getting
-Started](Articles/Getting_Started "wikilink") section of the
+Started](getting-started.md) section of the
 documentation.
 
 If for any reason you decide that you need to redo the flash drive then
@@ -803,7 +803,7 @@ lose the contents of the drive.
 
 The correct way to proceed in such a case is to follow the procedure for
 [checking and
-repairing](Manual/Storage_Management#Checking_a_File_System "wikilink")
+repairing](storage-management.md#checking-a-file-system)
 the file system. The vast majority of the time this will repair the disk
 that was preciously showing as unmountable and now it will mount
 correctly and all your data will be intact. If you are not sure how to
@@ -865,7 +865,7 @@ a significant change.
 
 In normal use, a tailed/disabled disk is recovered under Unraid using
 the [Replacing
-Disks](Manual/Storage_Management#Replacing_disks "wikilink") procedure.
+Disks](storage-management.md#replacing-disks) procedure.
 
 Occasionally it can happen due to a variety of reasons, like a disk
 failing while parity is invalid or two disks failing with single parity,

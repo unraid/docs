@@ -1,5 +1,7 @@
-**This page describes how to replace an unRAID array data drive. Why
-would you want to do that? Any number of reasons -**
+# Replacing a Data Drive
+
+This page describes how to replace an unRAID array data drive. Why
+would you want to do that? Any number of reasons...
 
 - *The drive has failed*
 - *The drive has been acting strange or reporting errors, and you
@@ -11,8 +13,7 @@ would you want to do that? Any number of reasons -**
 - *You just bought a new monster of a drive, and want it in the array*
 - *Any other reason you can think of*
 
-\
-**Important Notes**
+## Important Notes
 
 - If you have purchased a replacement drive, we always recommend
     Preclearing the replacement drive first, to make sure it's a good
@@ -22,15 +23,15 @@ would you want to do that? Any number of reasons -**
     Preclearing new drives one to three times provides a thorough test
     of the drive, eliminates 'infant mortality' failures.
 
-:   ***It's always good to have a prepared and tested replacement drive
+- ***It's always good to have a prepared and tested replacement drive
     already on hand!***
 
 - **Important! You cannot replace a drive with one that is LARGER than
     the parity drive!** If your replacement drive is larger than the
     parity drive, then proceed to [The parity swap
-    procedure](The_parity_swap_procedure "wikilink").
+    procedure](The_parity_swap_procedure.md).
 
-:   unRAID does not require the replacement drive to be the same size as
+- unRAID does not require the replacement drive to be the same size as
     the old drive being replaced. It CANNOT be smaller, but it CAN be a
     larger drive, up to the size of the parity drive. If too large,
     unRAID has a special two-step 'Parity Swap' procedure (often
@@ -44,9 +45,7 @@ would you want to do that? Any number of reasons -**
     can use the procedures below to rebuild it onto itself (below,
     consider the 'old drive' to be the 'new drive'). There is a
     similar procedure just for this though -\> [Re-enable the
-    drive](Manual/Storage_Management#Rebuilding_a_drive_onto_itself "wikilink").
-
-\
+    drive](/unraid-os/manual/storage-management.md#rebuilding-a-drive-onto-itself).
 
 ## The procedure
 
@@ -73,8 +72,6 @@ would you want to do that? Any number of reasons -**
     drive, making it an exact replacement, except possibly with more
     capacity than the old drive.*
 
-\
-
 ## The procedure for unRAID v4
 
 :   *This section is only for old versions of unRAID, such as v4.7 or
@@ -92,9 +89,3 @@ would you want to do that? Any number of reasons -**
 7. Hefty disk activity and main page will show lots of reading on "the
     other" disks and writing on new disk as data is being rebuilt.
 8. End
-
-\
-
-[Category: How To](Category:_How_To "wikilink") [Category: Hard
-drives](Category:_Hard_drives "wikilink") [Category:
-Hardware](Category:_Hardware "wikilink")

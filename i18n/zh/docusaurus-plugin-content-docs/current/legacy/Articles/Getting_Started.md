@@ -18,7 +18,7 @@ Creator Tool。
 
 更多 Unraid BIOS 和启动的相关信息，敬请参阅 :
 
-[<https://wiki.unraid.net/Articles/Getting_Started#BIOS_and_Booting_Up>](Articles/Getting_Started#BIOS%20and%20Booting%20Up "wikilink")
+[Advanced BIOS Configuration Guide](/unraid-os/manual/getting-started.md#advanced-bios-configuration-guide)
 
 ## **查找您的局域网 IP** {#查找您的局域网_ip}
 

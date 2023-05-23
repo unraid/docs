@@ -21,5 +21,3 @@ and downloadable from this [forum
 thread](http://lime-technology.com/forum/index.php?topic=31073). The
 script creates reports and graphs of drive read speeds, at multiple
 points across the surface of each drive.
-
-[Category: Hard drives](Category:_Hard_drives "wikilink")

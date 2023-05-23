@@ -1,9 +1,8 @@
-\
+
 **This page is designed to help you obtain your CPU and motherboard
 temperatures, and hopefully keep them current and visible. If you
 aren't using unRAID v6 with the Dynamix System Temp plugin, then skip
 down to the 'older versions' section.**\
-\
 
 ## Setting up sensing for v6
 
@@ -72,8 +71,8 @@ SuperMicro C2SEE/C2SEA)*
 **Step 1: Open a console**\
 You can either use the command console on the UnRAID server itself (if
 you have a keyboard and monitor attached), or you can login from another
-computer and use [SSH or Telnet](Terminal_Access "wikilink"). On
-Windows, the [PuTTY](Terminal_Access#PuTTY "wikilink") client for SSH
+computer and use [SSH or Telnet](Terminal_Access.md). On
+Windows, the [PuTTY](Terminal_Access.md#putty) client for SSH
 and Telnet is preferred, because it allows you to use cut and paste, to
 save generated lines for your own sensors configuration file.\
 **Step 2: Run sensors**\
@@ -330,6 +329,3 @@ Reboot to load up the changes, and check whether the temps are correct.
 If wrong, you may have to select different sensors or
 [customize](http://linux.die.net/man/5/sensors.conf) the
 **sensors.conf** file.
-
-[Category: Customising unRAID](Category:_Customising_unRAID "wikilink")
-[Category: How To](Category:_How_To "wikilink")
