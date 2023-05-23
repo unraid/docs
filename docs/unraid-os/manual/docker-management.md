@@ -290,7 +290,7 @@ process to achieve the results that you want.
 
 Once the download is complete, the application is started automatically.
 To interact with your application, we begin by clicking on the icon
-visible on the Docker page of the unRAID web interface or on the icon
+visible on the Docker page of the Unraid web interface or on the icon
 for the docker on the dashboard page. Doing so will make a context menu
 appear with multiple options:
 
@@ -312,7 +312,7 @@ appear with multiple options:
 - **Logs**
   - If you are having difficulties with your application, useful
         information may be present in the application's log.
-  - Logs for applications are stored separately from unRAID's system
+  - Logs for applications are stored separately from Unraid's system
         log itself.
 - **Edit**
   - Container settings such as port and volume mappings can be

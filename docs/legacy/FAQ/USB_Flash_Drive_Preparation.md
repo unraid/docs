@@ -13,9 +13,9 @@ use. The tool can be found [here.](https://unraid.net/download)
 Installation](https://unraid.net/download) instead. With the advent of
 the all-in-one releases (as of v4.6 Final), a **make_bootable.bat**
 batch installation file is included, that replaces the use of the
-**syslinux** utility in preparing the flash drives for booting unRAID.
+**syslinux** utility in preparing the flash drives for booting Unraid.
 The instructions below do still work, and are necessary for installing
-versions of unRAID earlier than v4.6 Final, and for preparing a flash
+versions of Unraid earlier than v4.6 Final, and for preparing a flash
 drive on a Mac. And there is still value in the advanced troubleshooting
 tips below.\>
 
@@ -64,7 +64,7 @@ The **syslinux** tool will create a hidden system file named
 version and a complete distribution of **syslinux** is available
 [here](http://syslinux.zytor.com/).
 
-**Step 3** Download the latest [unRAID
+**Step 3** Download the latest [Unraid
 Server](http://lime-technology.com/download), and extract the files from
 the zip archive to your Flash. When extracting the files, make sure that
 the option to preserve the folder structure is selected. There is a
@@ -88,7 +88,7 @@ select your Flash drive to be safely removed.\
 If you determine that the Windows formatting did not succeed in creating
 a bootable USB drive, then see the Advanced tips at the bottom.
 
-**Step 2** Download the latest [unRAID
+**Step 2** Download the latest [Unraid
 Server](http://lime-technology.com/download), and extract the files from
 the zip archive to your Flash.
 
@@ -102,12 +102,12 @@ close any open windows and eject the Flash drive.
 
 You'll need to download the following:
 
-- [unetbootin](http://unetbootin.sourceforge.net) - installs unRAID on
+- [unetbootin](http://unetbootin.sourceforge.net) - installs Unraid on
     your flash drive for you
 - [syslinux](http://www.kernel.org/pub/linux/utils/boot/syslinux/) - a
     collection of linux tools that will allow you to make the drive
     bootable
-- unRAID - don't unzip it\...
+- Unraid - don't unzip it\...
 
 **1. Plug in your USB Flash drive and format it using Disk Utility.**
 
@@ -167,11 +167,11 @@ writing, ensure you have Unmounted the partition in Disk Utility
 
 `dd conv=notrunc bs=440 count=1 if=mbr.bin of=``<device>`{=html}
 
-**4. Install unRAID on your prepared Flash Drive**
+**4. Install Unraid on your prepared Flash Drive**
 
-- Change the extension of your unRAID download from zip to iso
+- Change the extension of your Unraid download from zip to iso
 - Open unetbootin (it will need your password)
-- Choose Disk Image at the bottom and browse for your unRAID iso
+- Choose Disk Image at the bottom and browse for your Unraid iso
 - Choose the device path for your partition (it's probably already
     selected)
 - Click OK
@@ -179,18 +179,18 @@ writing, ensure you have Unmounted the partition in Disk Utility
 Note: if you get an error about overwriting menu.c32, click Yes To All
 
 - When it finishes, you can eject your USB Flash Drive and put it in
-    your unRAID server and power it up
+    your Unraid server and power it up
 
 I Think this would work with Windows, Linux versions also. So if any one
 has Windows or Linux can you try this and write here if it works there
 also.
 
-## Booting unRAID Server
+## Booting Unraid Server
 
 Safely remove/eject the Flash from your PC and plug it into your server.
 Power up your server and see if it immediately boots (with some
-motherboards it will). If it does not boot to the unRAID boot screen
-that displays a choice of starting unRAID or Memtest, reboot your server
+motherboards it will). If it does not boot to the Unraid boot screen
+that displays a choice of starting Unraid or Memtest, reboot your server
 and enter the BIOS setup. Navigate to the appropriate screen(s) and
 select your USB Flash device as the boot device. In some BIOS, the flash
 drive may show up in the list of hard disks, and you may have to select
@@ -220,7 +220,7 @@ found to work, in different situations. If one does not work for you,
 try another.
 
 - If your flash drive had pre-installed "U3" software, it will need
-    to be removed before you format and install unRAID on it. U3
+    to be removed before you format and install Unraid on it. U3
     Un-Install software is available
     [here](http://www.u3.com/uninstall/). A U3 removal tool specific to
     SanDisk drives can be found

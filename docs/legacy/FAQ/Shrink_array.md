@@ -16,7 +16,7 @@ but is still fairly new.**`</font>`{=html}
     array, intact with all its data.
 
 In general, the best choice is to replace an unwanted or disabled drive
-by assigning a replacement drive, and allowing unRAID to rebuild it.
+by assigning a replacement drive, and allowing Unraid to rebuild it.
 This way, parity protection for the array is maintained. The following
 methods are for those who do not want to replace the drive, and are OK
 with a temporary loss of parity protection. (There is a method below
@@ -32,13 +32,13 @@ your drive is disabled or not.
 
 ## For Unraid v6.2 and later
 
-There are 2 methods here for removing drives from an unRAID v6.2 array.
+There are 2 methods here for removing drives from an Unraid v6.2 array.
 Check the conditions and comments at the top of each method, to know
 which one will work best for your situation.
 
 ### The "Remove Drives Then Rebuild Parity" Method
 
--   *For removing one or more drives from an unRAID array - this is the
+-   *For removing one or more drives from an Unraid array - this is the
     tried and true method*
 -   *Note: this section has been tested for 6.2, but is still fairly
     new*
@@ -84,7 +84,7 @@ which one will work best for your situation.
 
 ### The "Clear Drive Then Remove Drive" Method
 
-:   *For removing a drive from an unRAID array, while maintaining the
+:   *For removing a drive from an Unraid array, while maintaining the
     parity protection - this is a new method*
 :   *Note: this section has been tested but is still fairly new*
 
@@ -200,8 +200,8 @@ which one will work best for your situation.
 - **Notice: This section has been partially rewritten, is not well
     tested yet. But it's based on the old tried and true method for
     removing drives**
-- *These instructions assume you are using unRAID v6, but may work for
-    unRAID v5 also.*
+- *These instructions assume you are using Unraid v6, but may work for
+    Unraid v5 also.*
 - *This procedure starts by removing all drive assignments. You will
     then need to reenter all of them from your notes, making any changes
     you desire.*
@@ -233,7 +233,7 @@ which one will work best for your situation.
     Parity" method rather than the "Parity is already valid" option.
     And you won't have any progress info at all during the clearing! It
     will be finished when it finishes!
--   In unRAID v6.0 and v6.1 (not v5), you can turn on "reconstruct
+-   In Unraid v6.0 and v6.1 (not v5), you can turn on "reconstruct
     write" (sometimes known as "turbo write" because it runs
     significantly faster) with the following command at the command line
     *after* the array is started:

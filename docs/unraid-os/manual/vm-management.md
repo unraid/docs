@@ -19,7 +19,7 @@ Unraid Server OS, please see the [VM Support](/unraid-os/manual/vm-support.md) w
 
 ## Prerequisites
 
-To create virtual machines on unRAID, you will need HVM hardware support
+To create virtual machines on Unraid, you will need HVM hardware support
 (Intel VT-x or AMD-V). To assign host-based PCI devices to those VMs,
 your hardware must also support IOMMU (Intel VT-d or AMD-Vi). Lastly,
 all virtualization features must be enabled in your motherboard BIOS
@@ -57,9 +57,9 @@ primary methods available:
 - Motherboard support for virtualization is usually available as part
     of the product documentation or user manual.
 
-#### Through the unRAID webGui
+#### Through the Unraid webGui
 
-- When accessing your unRAID system through the web interface, you can
+- When accessing your Unraid system through the web interface, you can
     determine if your system is virtualization compatible by clicking
     the **Info** button on the right side of the top menu bar.
   - **HVM Support** refers to Intel VT-x or AMD-V
@@ -82,10 +82,10 @@ primary methods available:
 ### Assigning Graphics Devices
 
 Unlike other PCI devices, graphics devices can be more difficult to pass
-through to a VM for control. With unRAID 6, we've implemented a number
+through to a VM for control. With Unraid 6, we've implemented a number
 of tweaks to maximize success with graphics pass through for our users.
 Here are the currently known limitations associated with GPU pass
-through on unRAID 6:
+through on Unraid 6:
 
 - NVIDIA GTX-series GPUs should work fine as of the 600 series or
     newer, but not all models have been tested.
@@ -487,7 +487,7 @@ again to see if the GPU assignment works properly.
 ## Physical to Virtual Machine Conversion
 
 If you have an existing physical PC or server that you wish to convert
-to a virtual machine for use on unRAID 6, the process is fairly simple.
+to a virtual machine for use on Unraid 6, the process is fairly simple.
 Steps 1-3 apply for almost any modern Linux-based guest. Steps 4-6 apply
 for Windows-based guests.
 
@@ -689,7 +689,7 @@ the same thing if you have an issue with that.
     take a second or two.
 - Shutdown once that is done and boot back into Unraid
 
-### Step 2: Identify the physical disk to be used in the unRAID webGui
+### Step 2: Identify the physical disk to be used in the Unraid webGui
 
 - Login to your Unraid webGui (`http://tower` or `http://tower.local`)
 - Click the **Main** tab.

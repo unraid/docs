@@ -1,7 +1,7 @@
 # Transferring Files from a Network Share to Unraid
 
 Open a [terminal session with SSH or Telnet](Terminal_Access)
-to unRAID, and login as root. Create a temporary directory on the
+to Unraid, and login as root. Create a temporary directory on the
 server:
 
 `mkdir /work`
@@ -45,7 +45,7 @@ Explorer in Windows.
 See also [this
 post](http://lime-technology.com/forum/index.php?topic=5045.msg47257#msg47257)
 for an alternative method of data transfer between Linux systems, such
-as unRAID.
+as Unraid.
 
 ## Unicode issues
 

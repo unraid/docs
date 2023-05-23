@@ -10,7 +10,7 @@ USB flash device. You can do this by copying the entire contents of the
 
 1. Boot your server up and login to the web interface
 2. Click the *Plugins* tab
-3. Click the "Update" button next to unRAID Server OS
+3. Click the "Update" button next to Unraid Server OS
 4. Once the upgrade is complete, reboot your server for it to take
     affect
 
@@ -19,7 +19,7 @@ USB flash device. You can do this by copying the entire contents of the
 1. Boot your server up and login to the web interface
 2. Click the *Plugins* tab
 3. Click the *Check for Updates* button
-4. Click the "Update" button next to unRAID Server OS
+4. Click the "Update" button next to Unraid Server OS
 5. Once the upgrade is complete, reboot your server for it to take
     affect
 
@@ -90,7 +90,7 @@ of 'br0'. To fix this, perform the following steps:
 
 ### VNC access to my VMs is not working or performing poorly
 
-VMs created in earlier releases of unRAID Server OS may be set to use an
+VMs created in earlier releases of Unraid Server OS may be set to use an
 outdated graphics device driver for VNC access. To fix this, perform the
 following steps:
 
@@ -117,7 +117,7 @@ If this doesn't work, try changing the first command from fs0: to fs1:.
 If that doesn't work, please post in the
 [forums](http://lime-technology.com/forum) for further assistance. This
 procedure should only need to be performed the first time you boot OVMF
-VMs that were previously created using unRAID 6.1 or earlier.
+VMs that were previously created using Unraid 6.1 or earlier.
 
 ### Trying to start my VM gives a "Invalid Machine Type" error
 
@@ -156,7 +156,7 @@ Please ensure your system meets these requirements before upgrading:
 
 ## Checking your existing version
 
-To check which version of unRAID is presently running on your server,
+To check which version of Unraid is presently running on your server,
 simply log into the web interface and look in the top right corner of
 the browser.
 
@@ -222,7 +222,7 @@ If this doesn't work, try changing the first command from fs0: to fs1:.
 If that doesn't work, please post in the
 [forums](http://lime-technology.com/forum) for further assistance. This
 procedure should only need to be performed the first time you boot OVMF
-VMs under version 6.2 that were previously created using unRAID 6.1 or
+VMs under version 6.2 that were previously created using Unraid 6.1 or
 earlier.
 
 # From version 5.x or earlier

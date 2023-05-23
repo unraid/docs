@@ -1,32 +1,32 @@
 # Setup Sleep (S3) and Wake on Lan (WOL)
 
-The following are my notes for setting up my unRAID server to sleep to
+The following are my notes for setting up my Unraid server to sleep to
 S3 state and then wake up to Magic Packet. This is a 'For Beginners, By
 Beginners' effort - there's very little original work here. I just
 tried to piece together whatever I needed from various threads on the
-unRAID forums. My server uses a Foxconn A7GM-S AMD 780G/SB700 based
-motherboard, and I am running unRAID 4.4.2. In general, I think the
+Unraid forums. My server uses a Foxconn A7GM-S AMD 780G/SB700 based
+motherboard, and I am running Unraid 4.4.2. In general, I think the
 below is procedurally correct - although different motherboards will
 have different capabilities and driver concerns. Also - all computers
-with access to my unRAID server are Windows machines, I do not know how
+with access to my Unraid server are Windows machines, I do not know how
 any of this would change if accessing from a machine with a different
 OS. The following assumes the use of a Windows machine.
 
 1\. BIOS settings for S1 / S3 sleep state
 
-- Review BIOS settings on unRAID server for allowable sleep states.
+- Review BIOS settings on Unraid server for allowable sleep states.
 - On my motherboard, the setting is "ACPI Suspend Type" and provides
   option to either suspend to S1 or S3 sleep state. Select S3.
 
 2\. BIOS settings for WOL
 
-- Review BIOS settings on unRAID server for "Resume by" options.
+- Review BIOS settings on Unraid server for "Resume by" options.
 - My motherboard has a setting for "Resume by LAN". It can be enabled
   or disabled. You need to enable "Resume by LAN".
 
 3\. Double check NIC WOL settings
 
-- Boot unRAID server.
+- Boot Unraid server.
 - Use the Terminal on the WebUI (present in v6, one of the buttons in
   the upper right corner, or fall-back to [SSH or Telnet](Terminal_Access.md) and type `ethtool
   eth0` from the command line
@@ -86,7 +86,7 @@ OS. The following assumes the use of a Windows machine.
 - My batch file is simply two lines
   - Change folder directory as necessary depending on where you
       saved wolcmd.exe.
-  - Enter the MAC address of your unRAID server in the second line
+  - Enter the MAC address of your Unraid server in the second line
         instead of 'MAC'
 
     ```shell
@@ -95,7 +95,7 @@ OS. The following assumes the use of a Windows machine.
     ```
 
 - Place the batch file on your desktop for easy access.
-- Copy of my batch file attached to [this unRAID forum
+- Copy of my batch file attached to [this Unraid forum
   post](http://lime-technology.com/forum/index.php?topic=3657.msg39076#msg39076)
 
 6\. Manually test sleep and WOL
@@ -118,7 +118,7 @@ little more work to do -- I'm guessing a Linux driver issue?
 
 7\. Record hard drive references (sda, sdb, etc)
 
-- From unRAID 'Devices' page, make note of the hard drive references
+- From Unraid 'Devices' page, make note of the hard drive references
   in your system. You're building a list of hard drives in the system
   for use in the sleep script.
   - I am currently only using two SATA drives, so my drive
@@ -127,7 +127,7 @@ little more work to do -- I'm guessing a Linux driver issue?
 8\. Generate sleep script, or download mine from
 [here](http://lime-technology.com/forum/index.php?topic=3657.msg39076#msg39076)
 
-- I copied OMV's sleep script verbatim from [this unRAID forum
+- I copied OMV's sleep script verbatim from [this Unraid forum
   thread](http://lime-technology.com/forum/index.php?topic=3657), and
   then edited the lines shown below in bold:
 
@@ -172,12 +172,12 @@ done
 - drives= line needs to be edited to reflect the drives that you want
   to be checked for status (idle or spinning). Again, my server only
   has two drives (**sda** and **sdb**), so I edited accordingly. Be
-  aware that this drive list can change when upgrading unRAID or
+  aware that this drive list can change when upgrading Unraid or
   modifying your hardware. It can even change from one boot to the
   next. For example, your flash drive may be assigned **sdc** on one
   boot, but **sdd** on the next boot, with one of your hard drives
   assigned to **sdd** the first time, and **sdc** the next time.
-- Copy of my **s3.sh** sleep script attached to [this unRAID forum
+- Copy of my **s3.sh** sleep script attached to [this Unraid forum
   post](http://lime-technology.com/forum/index.php?topic=3657.msg39076#msg39076)
 
 9\. Save script onto flash drive in specified location
@@ -186,7 +186,7 @@ done
 
 **IMPORTANT:** "boot" is *already* the name of the root directory of
 your flash device. So, if you save your script as per this example, do
-**not** create another "boot" directory. Doing so will cause unRAID to
+**not** create another "boot" directory. Doing so will cause Unraid to
 lose track of your config directory and your entire configuration will
 be lost (unless previously backed up elsewhere.)
 

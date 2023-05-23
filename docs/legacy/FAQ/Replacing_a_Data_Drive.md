@@ -1,6 +1,6 @@
 # Replacing a Data Drive
 
-This page describes how to replace an unRAID array data drive. Why
+This page describes how to replace an Unraid array data drive. Why
 would you want to do that? Any number of reasons...
 
 - *The drive has failed*
@@ -31,17 +31,17 @@ would you want to do that? Any number of reasons...
     parity drive, then proceed to [The parity swap
     procedure](The_parity_swap_procedure.md).
 
-- unRAID does not require the replacement drive to be the same size as
+- Unraid does not require the replacement drive to be the same size as
     the old drive being replaced. It CANNOT be smaller, but it CAN be a
     larger drive, up to the size of the parity drive. If too large,
-    unRAID has a special two-step 'Parity Swap' procedure (often
+    Unraid has a special two-step 'Parity Swap' procedure (often
     called the 'swap-disable') that will use a larger than parity
     drive to first upgrade the parity drive then replace the old drive
     with the old parity drive.
 
 - If you are here because you have a disabled drive, and you have
     already checked the syslog and SMART report (or got instruction from
-    the unRAID forums), and are SURE that the drive is good, then you
+    the Unraid forums), and are SURE that the drive is good, then you
     can use the procedures below to rebuild it onto itself (below,
     consider the 'old drive' to be the 'new drive'). There is a
     similar procedure just for this though -\> [Re-enable the
@@ -49,7 +49,7 @@ would you want to do that? Any number of reasons...
 
 ## The procedure
 
-:   *If you are running a very old version of unRAID, such as v4.7 or
+:   *If you are running a very old version of Unraid, such as v4.7 or
     older, skip down to the next section.*
 
 1. Stop the array
@@ -72,10 +72,10 @@ would you want to do that? Any number of reasons...
     drive, making it an exact replacement, except possibly with more
     capacity than the old drive.*
 
-## The procedure for unRAID v4
+## The procedure for Unraid v4
 
-:   *This section is only for old versions of unRAID, such as v4.7 or
-    older. If you are running v5 or v6 of unRAID, then go back to the
+:   *This section is only for old versions of Unraid, such as v4.7 or
+    older. If you are running v5 or v6 of Unraid, then go back to the
     previous section.*
 
 1. Stop the array

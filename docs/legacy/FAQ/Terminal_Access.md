@@ -16,11 +16,11 @@ prompt. It's very similar to an MS-DOS command prompt in Windows, a
 Linux terminal sessions usually always require a login with
 password.
 
-If you have a monitor attached to your unRAID server, then when you
+If you have a monitor attached to your Unraid server, then when you
 boot normally (not the boot GUI), you end up at the console with a
 login prompt. This console is a terminal session.
 
-For terminal access from other machines, unRAID includes both Telnet
+For terminal access from other machines, Unraid includes both Telnet
 and SSH support. Telnet is no longer recommended however, because it
 is older and easier to attack. SSH is recommended instead as more
 secure. There are instructions below for disabling Telnet, but
@@ -37,17 +37,17 @@ below. Another recommendation, for Windows or Mac, is
 similar to PuTTY.
 
 **Naturally, you should already have entered a password for 'root'
-on your unRAID server!**
+on your Unraid server!**
 
-*Note: this page assumes you are running unRAID v6. The Telnet
-sections should work for all versions of unRAID, but the SSH
+*Note: this page assumes you are running Unraid v6. The Telnet
+sections should work for all versions of Unraid, but the SSH
 sections are only useful for systems with SSH installed and working.
 SSH is included and set up in v6, but it will only work with earlier
 versions if you install an SSH package.*
 
 ## SSH
 
-unRAID v6 and later automatically sets up the SSH keys necessary for
+Unraid v6 and later automatically sets up the SSH keys necessary for
 SSH access
 
 For terminal access from a Windows station, use the PuTTY
@@ -60,7 +60,7 @@ connection
 
 ### Using Telnet
 
-The unRAID Server software includes a built-in Telnet server, which
+The Unraid Server software includes a built-in Telnet server, which
 may be used to open a command window (also called a *shell* or
 *console*) on your server. Access to this console is through a
 Telnet program from your desktop station. The Telnet tool is usually
@@ -82,7 +82,7 @@ turned on. For Windows, we strongly recommend the **PuTTY** program
 package. It's free and includes enhanced support for both Telnet
 and SSH. Unlike Windows Telnet, PuTTY allows you to use the mouse
 and advanced keys, such as the arrow and function keys. PuTTY can
-also be setup with your unRAID server name or IP and SSH host key.
+also be setup with your Unraid server name or IP and SSH host key.
 
 * [PuTTY web site](http://www.chiark.greenend.org.uk/~sgtatham/putty/)
 
@@ -96,12 +96,12 @@ installer version
 
 Because PuTTY is just an enhanced Telnet and SSH program, it can be
 used instead of Windows Telnet anywhere that Telnet or SSH is
-mentioned, such as anywhere in the Wiki or the unRAID forums. It is
+mentioned, such as anywhere in the Wiki or the Unraid forums. It is
 used the same way as Windows Telnet, but because it supports the
 mouse and arrow and function keys, it is much easier to use in
 programs like MC (Midnight Commander, a dual pane commander-like
 file manager). For an example, see [Transferring Files Within the
-unRAID
+Unraid
 Server](/legacy/FAQ/Transferring_Files_Within_the_unRAID_Server).
 
 *Note for UnRAID v5 and v6 users: some have found that Midnight
@@ -120,7 +120,7 @@ On the **Window** tab, I set **Columns** to 120, **Rows** to 60, and
 **Remote character set** to UTF-8.
 
 First time SSH connection: set **Connection type** to SSH, then
-enter your exact unRAID server name or IP (if static), then enter a
+enter your exact Unraid server name or IP (if static), then enter a
 **Saved Session** name (such as *SSH Tower*), then click the
 **Save** button. You are ready to click your session name and
 connect! When you do this the first time, you will be informed about
@@ -133,7 +133,7 @@ password and the `<Enter>` key again. You are now in a Linux
 terminal session at a command prompt! Type *exit* to quit.
 
 First time Telnet connection: set **Connection type** to Telnet,
-then enter your exact unRAID server name or IP (if static), then
+then enter your exact Unraid server name or IP (if static), then
 enter a **Saved Session** name (such as *Telnet Tower*), then click
 the **Save** button. You are ready to click your session name and
 connect! When you do, a Telnet terminal session box will open up

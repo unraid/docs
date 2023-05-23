@@ -45,7 +45,7 @@ if you can!**
   - `ls -l` is a common way to list complete directory entries
   - see the [Command Macros](#command-macros)
         section for more complex examples
-  - *Note: in the default setup of unRAID, `v` is an alias for
+  - *Note: in the default setup of Unraid, `v` is an alias for
         `ls -l`, so you can replace the `ls -l` above with just
         `v`. It is OK to use the alias, but it is far better to learn
         the actual `ls -l` command in case you are ever in a situation
@@ -133,7 +133,7 @@ would then be
 
 `smartctl -a /dev/sdx`
 
-To copy the SMART report to a file called **smart.txt** on your unRAID
+To copy the SMART report to a file called **smart.txt** on your Unraid
 flash drive, that you can copy elsewhere and post to the forums, use the
 following command. Of course, you can change the file name to what ever
 you like, for example, **smart_Seagate320_2008-12-15.txt**.
@@ -155,7 +155,7 @@ hours depending on size of drive)
 `smartctl  -d  ata  -tshort  /dev/sdx`\
 `smartctl  -d  ata  -tlong  /dev/sdx`
 
-As of unRAID v4.3 final, **smartctl** is included with unRAID. Prior to
+As of Unraid v4.3 final, **smartctl** is included with Unraid. Prior to
 this, it needed to be copied to the flash drive, see
 [this](http://lime-technology.com/wiki/index.php?title=Best_of_the_Forums#unRAID_Addons_and_Tools)
 for links to obtaining it. If you had to copy it to your flash drive,
@@ -189,12 +189,12 @@ device ID (sda, hdc, etc) linked to each
 
 Lists the drive devices that have "volume labels", and device ID
 linked to each. Typically, only the flash drive will have an entry here
-and it MUST have a volume label of "UNRAID" for unRAID to start up
+and it MUST have a volume label of "UNRAID" for Unraid to start up
 properly
 
 `ls  -l  /dev/disk/by-label`
 
-*Note: in the default setup of unRAID, `v` is an alias for `ls -l`,
+*Note: in the default setup of Unraid, `v` is an alias for `ls -l`,
 so you can replace the `ls -l` above with just `v`.*
 
 ## Console Commands for Networking
@@ -203,7 +203,7 @@ Here are a few networking commands that will provide more info about the
 driver, about the card, about its configured parameters and speed, and
 about its connection statistics.
 
-Note: The ethtool utility is included in some but not all unRAID
+Note: The ethtool utility is included in some but not all Unraid
 distributions. See
 [here](http://lime-technology.com/forum/index.php?topic=2109.msg15568#msg15568)
 for more information about ethtool, and a download link.
@@ -298,7 +298,7 @@ powerdown
 
 To cleanly stop the array from the linux command line prior to a reboot
 requires the use of several commands in turn. They will stop SAMBA,
-unmount the disks, and then stop the unRAID server. These commands can
+unmount the disks, and then stop the Unraid server. These commands can
 be performed on the linux command line as follows:
 
 `/root/samba stop`

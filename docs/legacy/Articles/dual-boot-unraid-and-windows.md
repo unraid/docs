@@ -2,7 +2,7 @@
 
 This procedure is intended to help someone with moderate Linux
 experience set up a dual boot environment for Linux, Windows, and
-unRAID.
+Unraid.
 
 ## Why do this?
 
@@ -19,8 +19,8 @@ on the motherboard.
 
 ## Preparation
 
-The trick to multiboot Windows and unRAID on a cache drive is that
-unRAID requires the cache partition to be the first one in the partition
+The trick to multiboot Windows and Unraid on a cache drive is that
+Unraid requires the cache partition to be the first one in the partition
 table, but Windows insists on reordering the partitions when Windows in
 installed, to put the Windows partition first. This is complicated by
 the fact that different versions and service packs of Windows have
@@ -124,7 +124,7 @@ Finally, format the cache partition (partition1) with ReiserFS.
 
 ## Finish
 
-Now start unRAID by booting the flash, and assigning the cache drive.
+Now start Unraid by booting the flash, and assigning the cache drive.
 
 You can boot Windows or Linux by changing the BIOS settings, or using
 the appropriate key at boot time key to get a boot menu, or you can also

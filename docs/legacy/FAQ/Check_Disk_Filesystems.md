@@ -17,7 +17,7 @@
     missing, dropped, or red-balled drive), then this is NOT the right
     page! You need a syslog for the errors, and SMART reports for the
     drives.
-  * If hardware or drive issues and running unRAID v6, please see
+  * If hardware or drive issues and running Unraid v6, please see
         [Need help? Read me
         first!](http://lime-technology.com/forum/index.php?topic=39257).
   * If hardware or drive issues  please see the
@@ -45,16 +45,16 @@
     success here will depend on using the right one. When the kernel
     identifies a drive and sets it up, it may assign SCSI symbols (e.g.
     **sd 2:0:1:0**), ATA symbols (e.g. **ata7.00**), drive device
-    symbols (e.g. **sdj**, full path **/dev/sdj**), and unRAID managed
+    symbols (e.g. **sdj**, full path **/dev/sdj**), and Unraid managed
     drive device symbols (e.g. **md5**, full path **/dev/md5**), all of
     which may refer to the same drive. The SCSI, ATA, and drive device
     symbols will usually be different from each other, but the disk
-    number, path name, and unRAID managed drive device name will be
+    number, path name, and Unraid managed drive device name will be
     directly connected. **Disk 7** will always be **/mnt/disk7** and
     will always be **/dev/md7**. However they are not interchangeable,
     each has to be used in the correct context. **Disk 7** is a
     human-readable label, **/mnt/disk7** is a folder, and **/dev/md7**
-    is an unRAID managed partition.
+    is an Unraid managed partition.
 
 * To get a little more technical, we don't actually store data on
     **drives**, we store it in file systems on **partitions** of those
@@ -63,13 +63,13 @@
     symbol? If **Disk 3** is a data disk associated with **sdj**, then
     the drive symbol is **/dev/sdj**, and the 2 partition symbols are
     **/dev/sdj1** (add a digit one for the first partition, two for the
-    second, etc) and **/dev/md3** (for the unRAID managed drive
+    second, etc) and **/dev/md3** (for the Unraid managed drive
     partition). Both partition symbols refer to exactly the same
     partition, however I/O access to **sdj1** is direct, access to
-    **md3** goes through the unRAID parity management.
+    **md3** goes through the Unraid parity management.
 
 * Why is this important for us to understand? Parity protection is
-    preserved when the unRAID managed device symbols are used, NOT when
+    preserved when the Unraid managed device symbols are used, NOT when
     the Linux device symbols are used. If a drive is **sdj** and has a
     ReiserFS formatted partition on it at **sdj1** and its array name is
     **Disk 5**, then there are 2 ways to check/repair its file system.
@@ -87,9 +87,9 @@ maintained, parity will stay valid*
         **/dev/sdj1** or **/dev/md5**.
 
 * These file system repair tools can be run against any partition with
-    the appropriate file system, not just unRAID data drives. So if the
+    the appropriate file system, not just Unraid data drives. So if the
     drive you want to check or repair is the Cache drive or any other
-    drive that is not part of the unRAID array, then parity is
+    drive that is not part of the Unraid array, then parity is
     irrelevant, and you would run the repair tool on the normal
     partition device symbol, e.g **/dev/sdj1**. The examples in the
     sections below however will assume the drive is part of the array
@@ -99,29 +99,29 @@ maintained, parity will stay valid*
 ### Which section?
 
 * Because the instructions are different depending on how your drive
-    is formatted AND which version of unRAID you are running, this page
+    is formatted AND which version of Unraid you are running, this page
     is divided into 5 sections. Please follow only the instructions in
     the correct section for your drive.
 
-* If you are running unRAID v6, you can use the webGui to check and
+* If you are running Unraid v6, you can use the webGui to check and
     fix the file system of any data drive. Unless you prefer to work at
     the command line, go to [Checking and fixing drives in the
     webGui](#checking-and-fixing-drives-in-the-webgui).
 
-* If you are running unRAID v4 or v5 or prefer working at the command
+* If you are running Unraid v4 or v5 or prefer working at the command
     line -
   * `<font color=red>`{=html}**It is vitally important that you know
         the file system format of your drive!**`</font>`{=html} **If you
         use the wrong repair tool on your drive, you may severely damage
         it, even worse than it may now be!**
-  * If you are running any version of unRAID prior to v5.0-beta8d,
-        then go to [Drives formatted with ReiserFS using unRAID
+  * If you are running any version of Unraid prior to v5.0-beta8d,
+        then go to [Drives formatted with ReiserFS using Unraid
         v4](#drives-formatted-with-reiserfs-using-unraid-v4).
-  * If you are running any other v5 version of unRAID, then go to
-        [Drives formatted with ReiserFS using unRAID v5 or later](#drives-formatted-with-reiserfs-using-unraid-v5-or-later).
-  * If you are running any v6 version of unRAID and the drive is
+  * If you are running any other v5 version of Unraid, then go to
+        [Drives formatted with ReiserFS using Unraid v5 or later](#drives-formatted-with-reiserfs-using-unraid-v5-or-later).
+  * If you are running any v6 version of Unraid and the drive is
         formatted with ReiserFS, then go to [Drives formatted with
-        ReiserFS using unRAID v5 or
+        ReiserFS using Unraid v5 or
         later](#drives-formatted-with-reiserfs-using-unraid-v5-or-later).
   * If the drive is formatted with XFS, then go to [Drives formatted
         with
@@ -147,7 +147,7 @@ file system of a data drive, while maintaining its parity info.
 * If the file system is **XFS** or **ReiserFS** (but NOT **BTRFS**),
     then you must start the array in Maintenance mode, by clicking the
     Maintenance mode check box before clicking the Start button. This
-    starts the unRAID driver but does not mount any of the drives.
+    starts the Unraid driver but does not mount any of the drives.
 * If the file system is **BTRFS**, then make sure the array is
     started, and NOT in Maintenance mode.
 * *Important note! Drives formatted with **XFS** or **ReiserFS** must
@@ -228,7 +228,7 @@ file system of a data drive, while maintaining its parity info.
 * **Important!** If you are instructed to rerun the repair with
         the **\--rebuild-sb** option, then **you cannot continue here in
         the webGui!** You will have to follow the instructions in the
-        [Drives formatted with ReiserFS using unRAID v5 or
+        [Drives formatted with ReiserFS using Unraid v5 or
         later](#drives-formatted-with-reiserfs-using-unraid-v5-or-later)
         section below.
 
@@ -260,7 +260,7 @@ file system of a data drive, while maintaining its parity info.
         all data and reformat the drive or pool anew (see [Redoing a
         drive formatted with
         BTRFS](#redoing-a-drive-formatted-with-btrfs)).
-* unRAID is committed to staying up-to-date with BTRFS
+* Unraid is committed to staying up-to-date with BTRFS
         development, so once better tools are ready, they will be
         available here too.
 
@@ -322,7 +322,7 @@ file system of a data drive, while maintaining its parity info.
 
 * Start the array in Maintenance mode, by clicking the Maintenance
     mode check box before clicking the Start button. This starts the
-    unRAID driver but does not mount any of the drives.
+    Unraid driver but does not mount any of the drives.
 
 ### Running xfs_repair
 
@@ -448,7 +448,7 @@ xfs_repair -v /dev/md1
     uncorrectable errors, then you will have to copy off all data and
     reformat the drive or pool anew (see [Redoing a drive formatted with
     BTRFS](#redoing-a-drive-formatted-with-btrfs)).
-* unRAID is committed to staying up-to-date with BTRFS development, so
+* Unraid is committed to staying up-to-date with BTRFS development, so
     once better tools are ready, they will be available here too.
 * *\-\-- work in progress \-\--*
 
@@ -515,17 +515,17 @@ xfs_repair -v /dev/md1
     author. If corrections are needed, please do them, or PM RobJ with
     the corrections or suggestions.*)
 
-## Drives formatted with ReiserFS using unRAID v5 or later
+## Drives formatted with ReiserFS using Unraid v5 or later
 
 * *Note: for more info on the **reiserfsck** tool and its options, see
     [reiserfsck](#reiserfsck).*
-* *Note2: unRAID data disks formatted with ReiserFS use [ReiserFS
+* *Note2: Unraid data disks formatted with ReiserFS use [ReiserFS
     version 3.6](http://en.wikipedia.org/wiki/ReiserFS).*
 
-* This section is only for users who are running unRAID v5.0-beta8d or
-    later. If you are running an earlier version, including all unRAID
+* This section is only for users who are running Unraid v5.0-beta8d or
+    later. If you are running an earlier version, including all Unraid
     v4, please go to the next section, [Drives formatted with ReiserFS
-    using unRAID
+    using Unraid
     v4](#drives-formatted-with-reiserfs-using-unraid-v4).
 
 * The **reiserfsck** instructions here are designed to check and fix
@@ -541,7 +541,7 @@ xfs_repair -v /dev/md1
 
 * Start the array in Maintenance mode, by clicking the Maintenance
     mode check box before clicking the Start button. This starts the
-    unRAID driver but does not mount any of the drives.
+    Unraid driver but does not mount any of the drives.
 
 ### Running reiserfsck
 
@@ -593,7 +593,7 @@ xfs_repair -v /dev/md1
     section below, and follow its instructions **VERY CAREFULLY**.
     The **\--rebuild-sb** option requires
     answers that must be **PERFECT**! If you are unsure
-    about anything, consider asking for assistance on the unRAID forums.
+    about anything, consider asking for assistance on the Unraid forums.
 
 * Note: If **reiserfsck** performs write operations to repair the file
     system, parity **will** be maintained.
@@ -642,17 +642,17 @@ xfs_repair -v /dev/md1
     array device symbol (e.g. md1, md13, etc). So the device name would
     be something like /dev/sdj1, /dev/sdx1, etc.
 
-## Drives formatted with ReiserFS using unRAID v4
+## Drives formatted with ReiserFS using Unraid v4
 
 * *Note: for more info on the **reiserfsck** tool and its options, see
     [reiserfsck](#reiserfsck).*
-* *Note2: unRAID data disks formatted with ReiserFS use [ReiserFS
+* *Note2: Unraid data disks formatted with ReiserFS use [ReiserFS
     version 3.6](http://en.wikipedia.org/wiki/ReiserFS).*
 
-* This section is only for users who are running any version of unRAID
-    prior to v5.0-beta8d, including all unRAID v4 versions. If you are
+* This section is only for users who are running any version of Unraid
+    prior to v5.0-beta8d, including all Unraid v4 versions. If you are
     running a later version, please go to the previous section, [Drives
-    formatted with ReiserFS using unRAID v5 or
+    formatted with ReiserFS using Unraid v5 or
     later](#drives-formatted-with-reiserfs-using-unraid-v5-or-later).
 
 * The **reiserfsck** instructions here are designed to check and fix
@@ -734,7 +734,7 @@ xfs_repair -v /dev/md1
     section below, and follow its instructions **VERY CAREFULLY**.
     `<font color=red>`{=html}The **\--rebuild-sb** option requires
     answers that must be **PERFECT**!`</font>`{=html} If you are unsure
-    about anything, consider asking for assistance on the unRAID forums.
+    about anything, consider asking for assistance on the Unraid forums.
 
 * Note: If **reiserfsck** performs write operations to repair the file
     system, parity **will** be maintained.
@@ -795,7 +795,7 @@ xfs_repair -v /dev/md1
 ##### Syntax
 
 * **The filesystem to be repaired must be unmounted**, otherwise, the
-    resulting filesystem may be inconsistent or corrupt. For unRAID,
+    resulting filesystem may be inconsistent or corrupt. For Unraid,
     start the array in Maintenance mode.
 
 ```shell
@@ -886,7 +886,7 @@ Source: derived from [Linux man
 
 ##### Syntax
 
-* **The filesystem to be repaired must be mounted first.** For unRAID,
+* **The filesystem to be repaired must be mounted first.** For Unraid,
     start the array as normal, NOT in Maintenance mode!
 
 ```shell
@@ -951,7 +951,7 @@ The **reiserfsck** tool checks for a Reiser file system (must be a
 
 ##### Syntax examples
 
-**The filesystem to be repaired must be unmounted.** For unRAID,
+**The filesystem to be repaired must be unmounted.** For Unraid,
     start the array in Maintenance mode.
 
 *Note: in the following examples, the option is preceded by 2
