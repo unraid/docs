@@ -1,4 +1,4 @@
-# Help
+# Unraid Connect Help
 
 ## [**How to Install**](https://connect.myunraid.net/help)
 

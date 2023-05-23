@@ -14,7 +14,7 @@ it sufficiently complex? Update your root password on the Users page.**
 Also note: **Remote Access is an optional feature**, and is not required
 to use the rest of Unraid Connect.
 
-### Remote Access - **Initial Setup**
+## Remote Access - **Initial Setup**
 
 1. From Unraid webGUI Navigate to **Settings** → **Management Access**
 2. Note the **HTTPS port**, it defaults to port 443. If you have Docker

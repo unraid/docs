@@ -106,7 +106,7 @@ will transfer your license manually. Please provide the old and new USB
 GUIDs [with your support ticket.](https://unraid.net/contact)
 
 **IMPORTANT:** Please ensure you routinely back up your USB device!
-We recommend using [Unraid Connect](/connect/Connect.mdx) for this.
+We recommend using [Unraid Connect](../connect/Connect.md) for this.
 
 ## How do I Manually Install my License keyfile to my USB Flash?
 
