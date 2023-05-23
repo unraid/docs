@@ -1,4 +1,6 @@
-Open a [terminal session with SSH or Telnet](Terminal_Access "wikilink")
+# Transferring Files from a Network Share to Unraid
+
+Open a [terminal session with SSH or Telnet](Terminal_Access)
 to unRAID, and login as root. Create a temporary directory on the
 server:
 
@@ -38,14 +40,14 @@ show up in Windows Explorer. This may be corrected with chmod command,
 but I found it better to avoid this altogether by sticking to the
 Explorer in Windows.
 
-#### Another method using Netcat and Tar
+## Another method using Netcat and Tar
 
 See also [this
 post](http://lime-technology.com/forum/index.php?topic=5045.msg47257#msg47257)
 for an alternative method of data transfer between Linux systems, such
 as unRAID.
 
-#### Unicode issues
+## Unicode issues
 
 If you have any kind of foreign characters in your filenames (for
 instance, an accented letter in a movie title), you want to mount the
@@ -56,7 +58,7 @@ garbling happens, your directory will also be unlistable from a Mac
 
 `mount -t cifs //workstation/share /work -o iocharset=utf8`
 
-#### Permission issues after copying
+## Permission issues after copying
 
 Because your SSH copy or rsync process is typically run as root, you may
 experience 'Access Denied' messages with users writing to directories

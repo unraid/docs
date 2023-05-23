@@ -1,4 +1,3 @@
-\
 **Problem: You want to consolidate several smaller drives onto a new and
 larger drive.**
 
@@ -21,15 +20,13 @@ Some notes before you start:
     prevent other disks from being recovered if they have a problem.
 - Writing the large amount of data that may be involved with very
     large drives can take many hours. When using a
-    [telnet](telnet "wikilink") session to transfer data, it is
+    [telnet](Terminal_Access.md) session to transfer data, it is
     recommended that the linux **screen** command be used, so the
     session can be resumed if there is any disconnect or timeout. In
     unRAID v6, install the
     **[NerdPack](http://lime-technology.com/forum/index.php?topic=37541)**
     to obtain **screen** (see the NerdPack notes
     [here](http://lime-technology.com/wiki/index.php/Upgrading_to_UnRAID_v6#Plugins)).
-    In unRAID v5, you can use [UnMENU](UnRAID_Add_Ons#UnMENU "wikilink")
-    to install **screen**.
 - Ensure that no new files will be written to the affected drives
     during this process. If user shares and caching might involve the
     drives, don't write to the user shares, and run Mover before
@@ -61,8 +58,11 @@ Not having parity allows faster writing to the larger drive.
     drive is Disk 3, then you could use these commands in console or
     telnet:
 
-    :   **rsync -avX /mnt/disk1/ /mnt/disk3**
-    :   **rsync -avX /mnt/disk2/ /mnt/disk3**
+    ```shell
+    rsync -avX /mnt/disk1/ /mnt/disk3
+    rsync -avX /mnt/disk2/ /mnt/disk3
+    ```
+
 6. Stop array and power down.
 7. Remove smaller drives and power up.
 8. Use New Config to unassign removed drives and assign parity. You can
@@ -79,14 +79,17 @@ the smaller drives have been removed.
 
 1. Stop array and power down.
 2. Replace one of the smaller drives with the new larger drive and
-    power up.
+   power up.
 3. Assign new larger drive to replace missing smaller drive, and start
-    the array, to let unRAID rebuild onto it.
+   the array, to let unRAID rebuild onto it.
 4. Copy all files from the other smaller drive(s) to the larger drive.
-    For example, if a smaller drive is Disk 2 and the larger drive is
-    Disk 3, then you could use this command in console or telnet:
+   For example, if a smaller drive is Disk 2 and the larger drive is
+   Disk 3, then you could use this command in console or telnet:
 
-    :   **rsync -avX /mnt/disk2/ /mnt/disk3**
+   ```shell
+   rsync -avX /mnt/disk2/ /mnt/disk3
+   ```
+
 5. Stop array and power down.
 6. Remove the remaining smaller drive(s) and power up.
 7. Use New Config to unassign removed drive(s). You can also change the
@@ -95,8 +98,4 @@ the smaller drives have been removed.
 
 **Important! If any user shares are set to include/exclude specific
 disks, don't forget to update these settings to reflect the new drive
-numbering.**\
-\
-
-[Category: How To](Category:_How_To "wikilink") [Category: Hard
-drives](Category:_Hard_drives "wikilink")
+numbering.**

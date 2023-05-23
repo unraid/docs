@@ -1,20 +1,14 @@
+# Console
+
 **Knowledgeable authors and editors are heartily welcomed! Please help
 if you can!**
 
 **`page under construction, needs your help`**
 
-==Basics of Console Usage==
+## Basics of Console Usage
 
-- If you are new to Linux, as many of us Windows users are, please
-    start by reading the [Console
-    section](FAQ#unRAID_Console_Questions "wikilink") of the
-    [FAQ](FAQ "wikilink"), and then read [Terminal
-    Access](Terminal_Access "wikilink"). They discuss what a console is,
-    how to use [SSH](Terminal_Access#SSH "wikilink"),
-    [Telnet](Terminal_Access#Telnet "wikilink"), and
-    [PuTTY](Terminal_Access#PuTTY "wikilink"), how to get a console and
-    use it, and what are some of the differences between a Windows
-    console and a Linux one.
+- If you are new to Linux, start by reading the [Terminal
+    Access](Terminal_Access.md) page.
 - The commands below usually list a usage note, which is a link to a
     'man page'. In Linux, man pages describe the syntax of command
     usage, including all options for the command. Linux splits all of
@@ -49,7 +43,7 @@ if you can!**
         displaying directories in different ways, but the syntax is very
         different.
   - `ls -l` is a common way to list complete directory entries
-  - see the [Command Macros](Console#Command_Macros "wikilink")
+  - see the [Command Macros](#command-macros)
         section for more complex examples
   - *Note: in the default setup of unRAID, `v` is an alias for
         `ls -l`, so you can replace the `ls -l` above with just
@@ -89,14 +83,13 @@ if you can!**
 ## Console Commands for Hard Drives
 
 The following commands require the Device ID, which you can get from
-[UnMENU](UnRAID_Add_Ons#UnMENU "wikilink") (an UnRAID Add On) or the
-**unRAID Web Management** page (in UnRAID v4, it is on the **Devices**
-tab). Locate your drive, then look for the Device ID in parentheses. It
+the "Main" tab of your webgui. Locate your drive, then look for the Device ID in parentheses. It
 is always 3 lowercase letters, beginning with either **hd** or **sd**,
 eg. *sda*, *sdk*, *hdc*, *hdg*. For simplicity, *sdx* will be used
 below, and you will substitute the appropriate Device ID for your drive.
 (Extra spaces are added for clarity only, only one space is needed.)\
-====hdparm====
+
+### hdparm
 
 - Instruction manual (a Linux MAN page) =\>
     <http://linux.die.net/man/8/hdparm>
@@ -110,21 +103,20 @@ To determine the read speed of a hard drive, the following command can
 be used. The very last number in MB/sec is the one you want, ignore the
 rest. Although one run will give you a decent result, for better
 accuracy, take the average of at least 5 runs. See also [Check Harddrive
-Speed](Check_Harddrive_Speed "wikilink").
+Speed](Check_Harddrive_Speed.md).
 
 `hdparm  -tT  /dev/sdx`
 
-====smartctl====
+### smartctl
 
 - Instruction manual (a Linux MAN page) =\>
     <http://smartmontools.sourceforge.net/man/smartctl.8.html>
 
 To obtain the SMART info for a drive, including some identity and
 configuration information, and physical statistics and error history.
-For more information about SMART and `smartctl`, see the [UnRAID
-Topical Index, SMART](UnRAID_Topical_Index#SMART "wikilink") section,
-also [here](http://lime-technology.com/forum/index.php?topic=1521) and
-[here](Troubleshooting#Hard_drive_failures "wikilink") and
+For more information about SMART and `smartctl`, see
+[here](http://lime-technology.com/forum/index.php?topic=1521) and
+[here](/unraid-os/manual/troubleshooting#data-recovery) and
 [here](http://lime-technology.com/forum/index.php?topic=1845.msg13042#msg13042)
 and [here](http://lime-technology.com/forum/index.php?topic=2097) and
 [here](http://lime-technology.com/forum/index.php?topic=2074.0).
@@ -172,7 +164,7 @@ then the command to execute would be **/boot/smartctl** instead of just
 
 `/boot/smartctl  -a  -d  ata  /dev/sdx`
 
-#### other hard drive commands
+### other hard drive commands
 
 To view the partitioning of a drive, the drive geometry, and the total
 number of sectors
@@ -343,12 +335,12 @@ or you can individually terminate individual process IDs by typing
 `kill PID`
 
 (where PID = the numeric process ID as printed by the prior `fuser -mv` command)\
-\--[Joe L.](User:Joe_L. "wikilink") 16:54, 3 January 2011 (UTC)
+\--[Joe L.](https://forums.unraid.net/profile/6-joe-l/) 16:54, 3 January 2011 (UTC)
 
 ## Console Commands for Files and Folders
 
 Many more file and folder commands can be found in the [Basics of
-Console Usage](Console#Basics_of_Console_Usage "wikilink") section
+Console Usage](#basics-of-bonsole-usage) section
 above.
 
 - `df` - [usage](http://linux.die.net/man/1/df)
@@ -367,7 +359,7 @@ above.
 
 In the commands below, `cat` is often used to display info, but
 `more` and `less` can be used instead (see [Basics of Console
-Usage](Console#Basics_of_Console_Usage "wikilink") section above).
+Usage](#basics-of-bonsole-usage) section above).
 
 ### CPU Info
 
@@ -389,7 +381,7 @@ Usage](Console#Basics_of_Console_Usage "wikilink") section above).
 - `egrep --color 'lm\|vmx\|svm' /proc/cpuinfo`
   - quick way to test all 3 above *(thanks WeeboTech!)*
 
-===Memory Info===
+### Memory Info
 
 - `free` - [usage](http://linux.die.net/man/1/free)
   - abbreviated summary of general memory info
@@ -410,7 +402,7 @@ Usage](Console#Basics_of_Console_Usage "wikilink") section above).
 - `vmstat -m`
   - detailed memory usage
 
-===Sensor Info===
+### Sensor Info
 
 - `sensors` - [usage](http://linux.die.net/man/1/sensors)
   - displays some of available sensor info, may include system, CPU,
@@ -423,13 +415,14 @@ Usage](Console#Basics_of_Console_Usage "wikilink") section above).
         [`sensors.conf`](http://linux.die.net/man/5/sensors.conf),
         requires Perl installed first
 
-===Network Info===
+### Network Info
 
 - Please see the [Network
-    section](Console#Console_Commands_for_Networking "wikilink") above
+    section](#console-commands-for-networking) above
 
-===Other Hardware Info=== *Note: the following commands may or may not
-be installed in your release*
+### Other Hardware Info
+
+*Note: the following commands may or may not be installed in your release*
 
 - `lspci` - [usage](http://linux.die.net/man/8/lspci)
   - displays information about PCI buses and devices
@@ -469,7 +462,7 @@ be installed in your release*
 - `openssl version` - [usage](http://linux.die.net/man/1/openssl)
   - displays the version of OpenSSL, if installed
 
-==Command Macros==
+## Command Macros
 
 Typing commands at the console command prompt can get tiresome,
 especially when repetitive. You can use the up and down keys to repeat
@@ -502,7 +495,4 @@ When these macros are added to `/etc/profile`, they are available in
 any console you open, whether by SSH or Telnet or at the physical
 console on the UnRAID machine.
 
-UnRAID already includes one macro - `v` is aliased to `ls -l`.\
-
-[Category: Troubleshooting](Category:_Troubleshooting "wikilink")
-[Category: How To](Category:_How_To "wikilink")
+UnRAID already includes one macro - `v` is aliased to `ls -l`.

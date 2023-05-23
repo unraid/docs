@@ -3,7 +3,7 @@
 ## Overview
 
 If you've followed the steps outlined in [this
-article](Manual/VM_Management#Expanding_a_vdisk "wikilink") to expand a
+article](/unraid-os/manual/vm-management.md#expanding-a-vdisk) to expand a
 vdisk for your Windows installation, this article will teach you how to
 expand your partition in Windows so you can take advantage of that extra
 space. Windows has this pesky habit of adding a recovery partition to
@@ -17,7 +17,7 @@ to extend the C:\\ partition.
 
 ![](/docs/legacy/Resize_vdisk_2_(using_diskpart_to_delete_recovery_partition).PNG "Resize_vdisk_2_(using_diskpart_to_delete_recovery_partition).PNG")
 Perform the following steps *after* completing the steps in [this
-article](Manual/VM_Management#Expanding_a_vdisk "wikilink") to expand
+article](/unraid-os/manual/vm-management.md#expanding-a-vdisk) to expand
 the vdisk itself:
 
 - Start your Windows VM.

@@ -65,8 +65,7 @@ exist on the Cache disk in order for the user share file system to
 create objects on the Cache disk. If there is less than this amount of
 free space then the object will be created on the array instead.
 
-:   *Main article: [Plugin/webGui/Cache
-    Settings](Plugin/webGui/Cache_Settings "wikilink")*
+:   Main article: [Storage Management](/unraid-os/manual/storage-management.md)
 
 ## Speed
 
@@ -120,8 +119,7 @@ disks will not spin up. Conversely, file(s) will only be moved if they
 are not open for reading/writing -- they will move the next night, when
 they are no longer open.
 
-:   *Main article: [Plugin/webGui/Mover
-    Settings](Plugin/webGui/Mover_Settings "wikilink")*
+:   Main article: [Storage Management](/unraid-os/manual/storage-management.md)
 
 - The mover will not move any top-level directories which begin with a
     '.' character. Such directories will not exist in normal use, but
@@ -173,15 +171,7 @@ ordinary use.
 
 As a cache drive is outside of the parity-protected array, it can be
 used for alternate software and unRAID add-ons that need to read and
-write data often. Examples include:
-
-- [Installing unRAID on a full Slackware
-    distro](Installing_unRAID_on_a_full_Slackware_distro "wikilink")
-- Multi-boot into a full Windows OS from the HDD,
-- Use as a swap drive/partition for Linux.
-
-   *Read more: [Forum
-    discussion](http://lime-technology.com/forum/index.php?topic=3899.0)*
+write data often.
 
 ### Scratch space
 
@@ -244,5 +234,3 @@ fit in this case). If you write 100 GB in one day every few weeks, then
 you will want a cache drive that is larger than 100 GB. If you attempt a
 data transfer that is larger than the size of your cache drive, the
 transfer will fail.
-
-[Category: Key concepts](Category:_Key_concepts "wikilink")

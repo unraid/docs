@@ -594,7 +594,7 @@ one to three times provides a thorough test of the drive, eliminates
 other ways such as running an extended SMART test or using tools
 supplied by the disk manufacturer that run on Windows or macOS.
 
-#### **Normal replacement**
+#### Normal replacement
 
 This is a normal case of replacing a failed drive where the replacement
 drive is **not** larger than your current parity drive(s).
@@ -650,7 +650,7 @@ To replace a failed disk or disks:
     *unmountable* after the rebuild as the rebuild process simply makes
     the physical disk match the emulated one.
 
-#### **Rebuilding a drive onto itself**
+#### Rebuilding a drive onto itself
 
 There can be cases where it is determined that the reason a disk was
 disabled is due to an external factor and the disk drive appears to be
@@ -736,7 +736,7 @@ one, that is even larger than the Parity drive.**
     mortality' failures.
 - **If your replacement drive is the same size or smaller than your
     current Parity drive, then you don't need this procedure. Proceed
-    with the [Replacing a Data Drive](Replacing_a_Data_Drive "wikilink")
+    with the [Replacing a Data Drive](/legacy/FAQ/Replacing_a_Data_Drive.md)
     procedure.**
 - This procedure is strictly for replacing data drives in an Unraid
     array. If all you want to do is replace your Parity drive with a
@@ -1790,7 +1790,7 @@ level and is not even aware of the file system that is in use on any
 particular drive.
 
 In addition drives can be
-[encrypted](Manual/Security#Data_Encryption "wikilink"). ***A point to
+[encrypted](/unraid-os/manual/security#data-encryption.md). ***A point to
 note about using encryption is that if you get any sort of file system
 corruption then encryption can make it harder (and sometimes impossible0
 to recover data on the corrupted file system.***
@@ -2049,7 +2049,7 @@ A BTRFS file systems will automatically check the data as part of
 reading it so often there is no need to explicitly run a check. If you
 do need to run a check you do it with the array started in *Normal* mode
 using the **scrub** command that is covered in more detail in the
-[Scrub](Manual/Storage_Management "wikilink") section.
+[Scrub](/unraid-os/manual/storage-management.md#scrub) section.
 
 You can run the file system check from the command line for BTRFS as
 shown below if the array is started in Maintenance mode by using
@@ -2290,8 +2290,9 @@ sometimes the *\--repair* option can damage a BTRFS system even further.
 #### ZFS
 
 This section should be completed once Unraid 6.12 has been released with
-ZFS support included as a standard feature.\
-==Changing a File System type==
+ZFS support included as a standard feature.
+
+## Changing a File System type
 
 There may be times when you wish to change the file system type on a
 particular drive. The steps are outlined below.
@@ -2364,8 +2365,7 @@ keeping the existing file system type then many users find that it may
 not be obvious how to do this from the Unraid GUI.
 
 The way to do this is to follow the above process for [changing the file
-system
-type](Manual/Storage_Management#Changing_a_File_System_type "wikilink")
+system type](#changing-a-file-system-type)
 twice. The first time you change it to any other type, and then once it
 has been formatted to the new type repeat the process this time setting
 the type back to the one you started with.

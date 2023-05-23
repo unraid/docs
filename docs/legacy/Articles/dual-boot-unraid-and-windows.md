@@ -129,5 +129,3 @@ Now start unRAID by booting the flash, and assigning the cache drive.
 You can boot Windows or Linux by changing the BIOS settings, or using
 the appropriate key at boot time key to get a boot menu, or you can also
 edit the syslinux config on the flash to give you multi-boot options.
-
-[Category: Customising unRAID](Category:_Customising_unRAID "wikilink")

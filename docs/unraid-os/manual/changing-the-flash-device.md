@@ -7,7 +7,7 @@ experience.
 
 Alternatively, if you are using a Linux system or if the USB Flash
 Creator tool is not working for some reason, [please use the legacy
-method](Articles/Getting_Started#Manual_Install_Method "wikilink").
+method](getting-started.md#manual-install-method).
 
 In either case, you will first need to have a full backup of your
 original Unraid OS USB flash boot device. It is **highly recommended**
@@ -148,9 +148,7 @@ This action cannot be undone.*
 ### Manual Method
 
 Prepare a new flash device using the procedure documented in the
-[Getting
-Started](Articles/Getting_Started#Manual_Method_.28Legacy.29 "wikilink")
-guide.
+[Getting Started](getting-started.md#manual-install-method) guide.
 
 - Before removing the flash from the PC, copy the 'config' folder
     from the backup you made into the flash drive, overwriting existing
@@ -215,7 +213,7 @@ USBs](https://forums.unraid.net/topic/119052-psa-on-sandisk-usbs/)
 At this time, we cannot officially recommend SanDisk USBs due to the
 issue of generic GUIDs found in knock off/counterfeit units.
 
-## What to do if you have no backup and do not know your disk assignments:
+## What to do if you have no backup and do not know your disk assignments
 
 If your Unraid boot device has failed, you have no recent backup and are
 not sure of their disk assignments it is very important that you do not
@@ -241,11 +239,7 @@ back without data loss:
 
 - Create a fresh install of the Unraid flash drive as shown earlier.
 - Edit the file *config/disk.cfg* on the flash drive and if necessary
-    change the
-
-:   `startArray="yes"`
-:   entry to
-:   `startArray="no"`
+    change the `startArray="yes"` entry to `startArray="no"`
 
 This is to avoid any accidents that might result in a data drive getting over-written with parity information.
 :   You can also achieve the same effect from the Unraid GUI via the
@@ -256,14 +250,14 @@ This is to avoid any accidents that might result in a data drive getting over-wr
 
 At this point there are two ways to proceed:
 
-**Option 1**
+### Option 1
 
 - Assign ALL drives as data drives.
 - Start the array
 - Make a note of the serial numbers of drives showing as unmountable
     as these are probably our parity drives.
 
-**Option 2** If you have the Unassigned Devices plugin installed then:
+### Option 2 If you have the Unassigned Devices plugin installed
 
 - Try to Mount each drive in turn to see which ones fail to mount.
 - Make a note of the serial numbers of drives showing as unmountable
@@ -274,7 +268,7 @@ Now that you have identified the parity drives then:
 - Go to Tools -\> New Config and select the option to create a new
     array configuration. This time it is advisable to use the option to
     retain all currently configured drives as this avoids the need to
-    rearrange all drives (and thus reduces the chances of error.
+    rearrange all drives (and thus reduces the chances of error).
 - Go to the Main tab and assign the drives as required with the
     correct drive(s) assigned as parity.
 - If you only had a single (parity1) drive then the order of the data
@@ -293,5 +287,3 @@ same order so you have any shares that have specific drive
 include/exclude then you will need to look at the contents of the
 individual data drives to make sure these are as you want them (and
 correct them if not)
-
-\

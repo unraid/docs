@@ -4,7 +4,7 @@ sidebar_position: 6
 
 # Managing VMs
 
-# Overview
+## Overview
 
 While Docker Containers are the preferred mechanism for running
 Linux-based applications such as media servers, backup software, and
@@ -15,10 +15,9 @@ Virtualization* is our method of supporting VMs where all resources
 assigned to the guest are local to the host.
 
 For information on what operating systems have been tested for use with
-Unraid Server OS, please see the [VM Guest
-Support](Manual/VM_Guest_Support "wikilink") wiki page.
+Unraid Server OS, please see the [VM Support](/unraid-os/manual/vm-support.md) wiki page.
 
-# Prerequisites
+## Prerequisites
 
 To create virtual machines on unRAID, you will need HVM hardware support
 (Intel VT-x or AMD-V). To assign host-based PCI devices to those VMs,
@@ -45,7 +44,7 @@ requirements in terms of peak concurrent usage on your system.
 To determine if hardware has support for HVM or IOMMU, there are two
 primary methods available:
 
-**Online Research**
+#### Online Research
 
 - To check if your Intel processor has support for VT-x or VT-d, visit
     <http://ark.intel.com/Search/Advanced>.  On the left hand filter
@@ -58,7 +57,7 @@ primary methods available:
 - Motherboard support for virtualization is usually available as part
     of the product documentation or user manual.
 
-**Through the unRAID webGui**
+#### Through the unRAID webGui
 
 - When accessing your unRAID system through the web interface, you can
     determine if your system is virtualization compatible by clicking
@@ -96,20 +95,13 @@ through on unRAID 6:
     operating systems.
 - With OVMF-based virtual machines, if your GPU has UEFI support, it
     should work fine, but some users still report card-specific issues.
-- In addition to the [Lime Technology Tested
-    Components](UnRAID_Manual_6#Lime_Technology_Tested_Components "wikilink"),
-    you can review a [community-maintained
-    spreadsheet](https://docs.google.com/spreadsheets/d/1LnGpTrXalwGVNy0PWJDURhyxa3sgqkGXmvNCIvIMenk/edit#gid=0)
-    of tested hardware configurations for GPU assignment.
-- More information on assigning graphics devices to VMs can be found
-    [here](UnRAID_Manual_6#Assigning_Graphics_Devices_to_Virtual_Machines_.28GPU_Pass_Through.29 "wikilink").
 
-# System Preparation
+## System Preparation
 
 Before you can get started with creating virtual machines, there are a
 few preparatory tasks that must be completed.
 
-## Adjust BIOS Settings
+### Adjust BIOS Settings
 
 In order to utilize all the virtualization features of Unraid 6, you
 must ensure your BIOS is configured properly for hardware-assisted
@@ -126,7 +118,7 @@ your BIOS settings, look for anything marked with **Virtualization**,
 *examples of where virtualization settings can be found from various
 motherboard BIOS screens.*
 
-## Configure a Network Bridge
+### Configure a Network Bridge
 
 There are two methods by which your virtual machines can get access to
 host-based networking: through a private NAT bridge managed by libvirt
@@ -160,7 +152,7 @@ Bridge* on the **VM Settings** page. You may have to enable the
 ***Advanced*** view using the toggle at the top right before this
 setting is visible.
 
-## User Shares for Virtualization
+### User Shares for Virtualization
 
 By default, Unraid will create two user shares for use with
 virtualization on Unraid. One share to store your installation media
@@ -169,7 +161,7 @@ files (ISOs) and another to store your virtual machines themselves
 might consider adding one as well to use for backing up your virtual
 machines.
 
-**Recommendations for Share Configuration**
+#### Recommendations for Share Configuration
 
 - Virtual machines will perform best when their primary vDisk is
     stored on a cache-only share.
@@ -182,7 +174,7 @@ machines.
 the*Use Cache*setting is set to **Yes**. Doing so will cause your VMs to
 be moved to the array when the mover is invoked.*
 
-## Setup Virtualization Preferences
+### Setup Virtualization Preferences
 
 Before you can get started creating virtual machines, we need to perform
 a few configuration steps:
@@ -222,12 +214,12 @@ a few configuration steps:
   - `MEDIADIR="/mnt/user/system/"`
   - `VIRTIOISO="/mnt/user/system"` (the share with virtio image)
 
-# Creating Your Own Virtual Machines
+## Creating Your Own Virtual Machines
 
 With the preparation steps completed, you can create your first VM by
 clicking **Add VM** from the *Virtual Machines* page.
 
-## Basic VM Creation
+### Basic VM Creation
 
 The webGui will by default present the minimum number of fields required
 in order for you to create a VM.
@@ -282,7 +274,7 @@ in order for you to create a VM.
     which will start automatically unless you unchecked the **Start VM
     after creation** checkbox.
 
-## Advanced Options
+### Advanced Options
 
 If you wish to toggle other advanced settings for the VM, you can toggle
 from **Basic** to **Advanced View** (switch located on the *Template
@@ -334,7 +326,7 @@ Settings* section bar from the *Add VM* page).
   - Additional virtual network interfaces can be assigned by
         clicking ![](/docs/legacy/Add-device.png){width="15"}
 
-# Expanding a vdisk
+## Expanding a vdisk
 
 In the event that you need to increase the size of your virtual disk
 device, you can do so with the following procedure:
@@ -353,20 +345,22 @@ After doing this, you can start your VM and the new storage will be
 available, though you will need to either create a new partition out of
 that space or extend an existing partition to make use of it. For
 instructions on how to expand your Windows partition, please see [this
-article](Articles/Expanding_Windows_VM_vdisk_partitions "wikilink").
+article](/legacy/Articles/Expanding_Windows_VM_vdisk_partitions).
 
-# Troubleshooting Stuck at UEFI Shell
+## Troubleshooting Stuck at UEFI Shell
 
 In the event you are stuck at the UEFI shell after booting your VM, you
 can enter a few commands to manually trigger the boot sequence:
 
-`fs0:`\
-`cd efi/boot`\
-`bootx64.efi`
+```shell
+fs0:
+cd efi/boot
+bootx64.efi
+```
 
 This will manually trigger your VM to boot.
 
-# Assigning Graphics Devices to Virtual Machines (GPU Pass Through)
+## Assigning Graphics Devices to Virtual Machines (GPU Pass Through)
 
 The ability to assign a GPU to a virtual machine for direct I/O control
 comes with some additional provisions:
@@ -386,7 +380,7 @@ pass through can be found in [the following F.A.Q from Alex
 Williamson](http://vfio.blogspot.com/2014/08/vfiovga-faq.html), the
 project's maintainer.
 
-## Warning: Passing through a GPU to a SeaBIOS-based VM will disable console VGA access
+### Warning: Passing through a GPU to a SeaBIOS-based VM will disable console VGA access
 
 If you rely upon a locally-attached monitor and keyboard to interact
 with the Unraid terminal directly, you will lose this ability once you
@@ -401,7 +395,7 @@ therefore arbitration isn't needed and therefore your console graphics
 will remain intact. Note that not all GPUs support OVMF as OVMF requires
 UEFI support on your GPU.
 
-## Help! Failed to set iommu for container: Operation not permitted
+### Help! Failed to set iommu for container: Operation not permitted
 
 If you are getting the above message when trying to assign a graphics
 device to a VM, it is most likely that your device is in an IOMMU group
@@ -426,12 +420,14 @@ purchase hardware that offers interrupt remapping support. To enable the
 workaround, you will need to modify your syslinux.cfg file, adding the
 bolded bit below:
 
-`label Unraid OS`\
-`menu default`\
-`kernel /bzimage`\
-`append`**`vfio_iommu_type1.allow_unsafe_interrupts=1`**`initrd=/bzroot`
+```shell
+label Unraid OS
+menu default
+kernel /bzimage
+append vfio_iommu_type1.allow_unsafe_interrupts=1 initrd=/bzroot
+```
 
-## Help! I can start my VM with a GPU assigned but all I get is a black screen on my monitor!
+### Help! I can start my VM with a GPU assigned but all I get is a black screen on my monitor!
 
 If you aren't receiving an error message, but the display doesn't
 "light up" when your VM is started, it means that while the device is
@@ -453,7 +449,7 @@ things you can do to try to fix this:
     for your video card by editing the XML for your VM (see below
     procedure).
 
-### Edit XML for VM to supply GPU ROM manually
+#### Edit XML for VM to supply GPU ROM manually
 
 - From another PC, navigate to this webpage:
     <http://www.techpowerup.com/vgabios/>
@@ -463,39 +459,24 @@ things you can do to try to fix this:
     file on any user share in Unraid.
 - With your VM stopped, click the icon for your VM, then select **Edit
     XML** from the context menu.
-- Scroll to the bottom of the XML and locate this section (the
-    `<code>`{=html}
+- Scroll to the bottom of the XML and locate this section (the `<address>`
+ parts may look different for you than from the example below):
 
-    ```{=html}
-    <address>
-    ```
-
-    `</code>`{=html} parts may look different for you than from the
-    example below):
-
-`<code>`{=html}
-
-` ``<hostdev mode='subsystem' type='pci' managed='yes'>`{=html}\
-` ``<driver name='vfio'/>`{=html}\
-``
-
-            <address domain='0x0000' bus='0x02' slot='0x00' function='0x0'/>
-
-```{=html}
-<address type='pci' domain='0x0000' bus='0x00' slot='0x05' function='0x0'/>
+```xml
+<hostdev mode='subsystem' type='pci' managed='yes'>
+  <driver name='vfio'/>
+  <source>
+    <address domain='0x0000' bus='0x02' slot='0x00' function='0x0'/>
+  </source>
+  <address type='pci' domain='0x0000' bus='0x00' slot='0x05' function='0x0'/>
+</hostdev>
 ```
 
-` ``</hostdev>`{=html}`</code>`{=html}
+- After the `</source>` tag, add the following code:
 
-- After the `<code>`{=html}
-
-    ```{=html}
-    </source>
-    ```
-
-    `</code>`{=html} tag, add the following code:
-
-`<rom file='/mnt/user/sharename/foldername/rom.bin'/>`{=html}
+```xml
+<rom file='/mnt/user/sharename/foldername/rom.bin'/>
+```
 
 - Change the path after /mnt/user/ to the actual user share /
     sub-folder path to your romfile.
@@ -503,14 +484,14 @@ things you can do to try to fix this:
 Once done editing the XML, click **Update** and try starting your VM
 again to see if the GPU assignment works properly.
 
-# Physical to Virtual Machine Conversion
+## Physical to Virtual Machine Conversion
 
 If you have an existing physical PC or server that you wish to convert
 to a virtual machine for use on unRAID 6, the process is fairly simple.
 Steps 1-3 apply for almost any modern Linux-based guest. Steps 4-6 apply
 for Windows-based guests.
 
-## Prerequisites
+### Prerequisites
 
 - Your system must meet the hardware requirements and complete these
     preparation steps before utilizing virtual machines on Unraid Server
@@ -521,12 +502,11 @@ for Windows-based guests.
 - It is highly encouraged to make a complete backup of your most
     important files before attempting a conversion.
 
-## Step 1: Identify the disk to be converted using the Unraid webGui
+### Step 1: Identify the disk to be converted using the Unraid webGui
 
 - With the array stopped, attach the physical disk you wish to convert
     to your server (SATA and power)
-- Login to your webGui for unRAID 6 using a browser (<http://tower> or
-    <http://tower.local> from a Mac OS X device by default)
+- Login to your Unraid webGui (`http://tower` or `http://tower.local`)
 - Click the **Main** tab.
 - If the array hasn't been started yet, start it by clicking
     **Start**.
@@ -538,10 +518,9 @@ for Windows-based guests.
     space free on an available array device or the cache (pool) to
     create your new virtual disk.
 
-## Step 2: Add a new Virtual Machine from the VMs tab
+### Step 2: Add a new Virtual Machine from the VMs tab
 
-- Login to your webGui for Unraid 6 using a browser (<http://tower> or
-    <http://tower.local> from a Mac OS X device by default)
+- Login to your Unraid webGui (`http://tower` or `http://tower.local`)
 - Click on the **VMs** tab (if the tab isn't visible, you haven't
     [completed these preparation
     steps](http://lime-technology.com/wiki/index.php/UnRAID_Manual_6#System_Preparation)
@@ -550,7 +529,7 @@ for Windows-based guests.
     further assistance)
 - Click the **Add VM** button.
 - Follow [this
-    guide](Manual/VM_Management#Creating_Your_Own_Virtual_Machines "wikilink")
+    guide](#creating-your-own-virtual-machines)
     to create your VM, making sure to adhere to these specific settings:
   - Leave the **BIOS** setting to SeaBIOS.
   - Leave **OS Install ISO** blank.
@@ -564,7 +543,7 @@ for Windows-based guests.
     - Make the size of this second virtual disk **1M**.
     - *Uncheck* the option to **Start VM after creation**
 
-## Step 3: Convert disk to image
+### Step 3: Convert disk to image
 
 - Utilizing a telnet or SSH capable client, connect to your Unraid
     system over a Local Area Network. The default username is root and
@@ -572,7 +551,9 @@ for Windows-based guests.
 - Enter the following command to begin the conversion of your physical
     disk to a virtual image:
 
-`qemu-img convert -p -O raw /dev/sdX /mnt/user/vdisk_share/vmname/vdisk1.img`
+```shell
+qemu-img convert -p -O raw /dev/sdX /mnt/user/vdisk_share/vmname/vdisk1.img
+```
 
 - Replace **sdX** with the device letter handle you noted in step 1,
     replace **vdisk_share** with the share you created to store your
@@ -581,56 +562,43 @@ for Windows-based guests.
 - The **-p** tag will output progress in the form of a percentage
     while the conversion is occurring.
 
-## Step 4: Edit the XML for your virtual machine (Windows Guests Only)
+### Step 4: Edit the XML for your virtual machine (Windows Guests Only)
 
 - From the VMs tab, click the VM icon and select Edit XML from the
     context menu.
-- Scroll down the XML and locate the **`<target>`{=html}** tag for the
-    **`<disk>`{=html}** with a '''
+- Scroll down the XML and locate the `<target>` tag for the
+    `<disk>` with a `<source>` file set to vdisk1.img, which will look like such:
 
-`<code>`{=html}
-
-` ``<disk type='file' device='disk'>`{=html}\
-` ``<driver name='qemu' type='raw' cache='writeback'/>`{=html}\
-``
-
-` ``<backingStore/>`{=html}\
-` ``<target dev='hda' bus='virtio'/>`{=html}\
-` ``<boot order='1'/>`{=html}\
-` ``<alias name='virtio-disk0'/>`{=html}\
-``
-
-```{=html}
-<address type='pci' domain='0x0000' bus='0x00' slot='0x05' function='0x0'/>
+```xml
+<disk type='file' device='disk'>
+  <driver name='qemu' type='raw' cache='writeback'/>
+  <source file='/mnt/cache/vdisk_share/vmname/vdisk1.img'/>
+  <backingStore/>
+  <target dev='hda' bus='virtio'/>
+  <boot order='1'/>
+  <alias name='virtio-disk0'/>
+  <address type='pci' domain='0x0000' bus='0x00' slot='0x05' function='0x0'/>
+</disk>
 ```
 
-` ``</disk>`{=html}`</code>`{=html}
-
 - Adjust vdisk1.img by changing the **bus** attribute to the
-    **`<target>`{=html}** tag to **ide**.
-- Delete the entire '''
-
-    ```{=html}
-    <address>
-    ```
-
-    **line for that**`<disk>`{=html}'''.
+    `<target>` tag to **ide**.
+- Delete the entire `<address>` line for that `<disk>`.
 - Corrected XML example below:
 
-`<code>`{=html}
-
-` ``<disk type='file' device='disk'>`{=html}\
-` ``<driver name='qemu' type='raw' cache='writeback'/>`{=html}\
-``
-
-` ``<backingStore/>`{=html}\
-` ``<target dev='hda' bus='ide'/>`{=html}\
-` ``<boot order='1'/>`{=html}\
-` ``</disk>`{=html}`</code>`{=html}
+```xml
+<disk type='file' device='disk'>
+  <driver name='qemu' type='raw' cache='writeback'/>
+  <source file='/mnt/cache/vdisk_share/vmname/vdisk1.img'/>
+  <backingStore/>
+  <target dev='hda' bus='ide'/>
+  <boot order='1'/>
+</disk>
+```
 
 - Click **Update** to update the virtual machine XML.
 
-## Step 5: Install the VirtIO drivers from inside the VM (Windows Guests Only)
+### Step 5: Install the VirtIO drivers from inside the VM (Windows Guests Only)
 
 - Using **Windows File Explorer**, navigate to the VirtIO virtual
     cd-rom to browse its contents.
@@ -650,7 +618,7 @@ for Windows-based guests.
 - Double-click on **qemu-ga-x64.msi** to install the QEMU/KVM guest
     agent.
 
-## Step 6: Remove the secondary vdisk from your VM (Windows Guests Only)
+### Step 6: Remove the secondary vdisk from your VM (Windows Guests Only)
 
 - **Shutdown** your VM if it isn't already.
 - From the **VMs** tab, click the VM icon and select **Edit** from the
@@ -659,7 +627,7 @@ for Windows-based guests.
 - Click **Update** to update the VM.
 - Start your newly converted virtual machine!
 
-## Extra: HELP! Stuck at SeaBIOS with "Booting from Hard Disk"
+### Extra: HELP! Stuck at SeaBIOS with "Booting from Hard Disk"
 
 If your OS was installed using UEFI (as opposed to traditional VGA
 BIOS), start over from step 3, but select OVMF as the BIOS type instead
@@ -667,7 +635,7 @@ of SeaBIOS. Most OS installations install using a traditional VGA BIOS,
 but it is possible to have a UEFI installation, in which case SeaBIOS
 will not work. The remainder of the conversion procedure is identical.
 
-# Using a physical disk in a VM, including one with an OS already installed
+## Using a physical disk in a VM, including one with an OS already installed
 
 The steps for creating a VM using a physical disk are similar to that of
 using a virtual disk. However, there are two use cases for which one
@@ -677,7 +645,7 @@ no OS installed (new install) and one that already has an OS installed
 as the other should be straightforward enough. You can use a physical
 disk with any OS but this conversion guide only covers Windows.
 
-## Prerequisites
+### Prerequisites
 
 - A spare USB flash drive
 - Acronis Universal Restore (or similar tool):
@@ -688,7 +656,7 @@ disk with any OS but this conversion guide only covers Windows.
     case. I recommend just using dd in the command line. It's very easy
     to use, just Google it.
 
-## Step 1: Preparing the disk
+### Step 1: Preparing the disk
 
 Moving a hard drive with a Windows installation on it from one machine
 to another can be problematic and cause blue screens if not prepped
@@ -721,10 +689,9 @@ the same thing if you have an issue with that.
     take a second or two.
 - Shutdown once that is done and boot back into Unraid
 
-## Step 2: Identify the physical disk to be used in the unRAID webGui
+### Step 2: Identify the physical disk to be used in the unRAID webGui
 
-- Login to your webGui for unRAID 6 using a browser (<http://tower> or
-    <http://tower.local> from a Mac OS X device by default)
+- Login to your Unraid webGui (`http://tower` or `http://tower.local`)
 - Click the **Main** tab.
 - If the array hasn't been started yet, start it by clicking
     **Start**.
@@ -733,10 +700,9 @@ the same thing if you have an issue with that.
 - Under the identification column, notate the disk id by **letter
     handle** (e.g. sdb, sdc, sdd, sde, ...)
 
-## Step 3: Add a new Virtual Machine from the VMs tab
+### Step 3: Add a new Virtual Machine from the VMs tab
 
-- Login to your webGui for Unraid 6 using a browser (<http://tower> or
-    <http://tower.local> from a Mac OS X device by default)
+- Login to your Unraid webGui (`http://tower` or `http://tower.local`)
 - Click on the **VMs** tab (if the tab isn't visible, you haven't
     [completed these preparation
     steps](http://lime-technology.com/wiki/index.php/UnRAID_Manual_6#System_Preparation)
@@ -745,7 +711,7 @@ the same thing if you have an issue with that.
     further assistance)
 - Click the **Add VM** button.
 - Follow [this
-    guide](Manual/VM_Management#Creating_Your_Own_Virtual_Machines "wikilink")
+    guide](#creating-your-own-virtual-machines)
     to create your VM, making sure to adhere to these specific settings:
   - Leave the **BIOS** setting to SeaBIOS. (If you have trouble
         starting your VM using SeaBIOS recreate it using OVMF)
@@ -758,48 +724,41 @@ the same thing if you have an issue with that.
         it a little easier to edit later.
   - *Uncheck* the option to **Start VM after creation**
 
-## Step 4: Edit the XML for your virtual machine
+### Step 4: Edit the XML for your virtual machine
 
 - From the VMs tab, click the VM icon and select Edit XML from the
     context menu.
 - Scroll down the XML and locate the the primary virtual disk you
     assigned. It will look similar to this:
 
-`<code>`{=html}
-
-` ``<disk type='file' device='disk'>`{=html}\
-` ``<driver name='qemu' type='raw' cache='writeback'/>`{=html}\
-``
-
-` ``<backingStore/>`{=html}\
-` ``<target dev='hda' bus='virtio'/>`{=html}\
-` ``<boot order='1'/>`{=html}\
-` ``<alias name='virtio-disk0'/>`{=html}\
-``
-
-```{=html}
-<address type='pci' domain='0x0000' bus='0x00' slot='0x05' function='0x0'/>
+```xml
+<disk type='file' device='disk'>
+  <driver name='qemu' type='raw' cache='writeback'/>
+  <source file='/mnt/cache/vdisk_share/vmname/vdisk1.img'/>
+  <backingStore/>
+  <target dev='hda' bus='virtio'/>
+  <boot order='1'/>
+  <alias name='virtio-disk0'/>
+  <address type='pci' domain='0x0000' bus='0x00' slot='0x05' function='0x0'/>
+</disk>
 ```
-
-` ``</disk>`{=html}`</code>`{=html}
 
 - Replace it with this, where "sdX" is the location of the disk from
     step 2:
 
-`<code>`{=html}
-
-` ``<disk type='block' device='disk'>`{=html}\
-` ``<driver name='qemu' type='raw' cache='writeback'/>`{=html}\
-``
-
-` ``<target dev='hdd' bus='sata'/>`{=html}\
-` ``</disk>`{=html}`</code>`{=html}
+```xml
+<disk type='block' device='disk'>
+  <driver name='qemu' type='raw' cache='writeback'/>
+  <source dev='/dev/sdX'/>
+  <target dev='hdd' bus='sata'/>
+</disk>
+```
 
 - If your physical disk is IDE and not SATA, replace the bus from
     "sata" to "ide" and re-evaluate your life choices.
 - Click **Update** to update the virtual machine XML.
 
-## Step 5: Installing drivers
+### Step 5: Installing drivers
 
 - Start your VM
 - Once in Windows go to the device manager in the control panel
@@ -812,7 +771,7 @@ the same thing if you have an issue with that.
         some anti-virus programs do, you may need to reinstall those
         programs
 
-## Extra: HELP! Stuck at SeaBIOS with "Booting from Hard Disk"
+### Extra: HELP! Stuck at SeaBIOS with "Booting from Hard Disk"
 
 If your OS was installed using UEFI (as opposed to traditional VGA
 BIOS), start over from step 3, but select OVMF as the BIOS type instead
@@ -820,7 +779,7 @@ of SeaBIOS. Most OS installations install using a traditional VGA BIOS,
 but it is possible to have a UEFI installation, in which case SeaBIOS
 will not work. The remainder of the conversion procedure is identical.
 
-# Converting from Xen to KVM
+## Converting from Xen to KVM
 
 Virtual machines that were running in Xen to KVM will require different
 procedures depending on whether they were created as paravirtualized or
@@ -835,7 +794,7 @@ hardware-virtualization extensions, which makes their process for
 converting slightly more involved than Xen HVM guests to KVM (it is not
 documented at the time of this writing).
 
-## Windows Conversion Procedure
+### Windows Conversion Procedure
 
 To convert a Windows virtual machine from Xen to KVM, the process is
 fairly simple and takes about 10 minutes to perform. Remove any PCI
@@ -843,7 +802,7 @@ device pass through that you are doing via your Xen domain cfg file
 before you begin. These devices can be re-added after the conversion
 process is complete.
 
-### Step 1: Determine if your VM is using Xen's GPLPV drivers
+#### Step 1: Determine if your VM is using Xen's GPLPV drivers
 
 1. From within your Xen VM, open **Windows Device Manager** (click
     **Start** -\> right-click on **Computer** -\> click **Manage**)
@@ -854,7 +813,7 @@ process is complete.
 NOTE: IF YOU ARE NOT USING GPLPV DRIVERS, YOU CAN SKIP THE NEXT SEVERAL
 STEPS AND RESUME THE PROCEDURE FROM REBOOTING INTO KVM MODE.
 
-### Step 2: Prepare Windows for GPLPV driver removal
+#### Step 2: Prepare Windows for GPLPV driver removal
 
 1. Open a command prompt, running it as administrator (click **Start**
     -\> click **All Programs** -\> click **Accessories** -\> right-click
@@ -863,7 +822,7 @@ STEPS AND RESUME THE PROCEDURE FROM REBOOTING INTO KVM MODE.
     `bcdedit -set loadoptions nogplpv`
 3. Reboot your VM
 
-### Step 3: Download the uninstaller and remove the GPLPV drivers
+#### Step 3: Download the uninstaller and remove the GPLPV drivers
 
 1. Once rebooted, open a browser and download the following zip file:
     [gplpv_uninstall_bat.zip](https://drive.google.com/file/d/0BwGv31twDcCeNElTTWFLbXEycWs/view?usp=sharing)
@@ -878,7 +837,7 @@ STEPS AND RESUME THE PROCEDURE FROM REBOOTING INTO KVM MODE.
     device**.
 7. Shut down the VM
 
-### Step 4: Create a new VM with the VM Manager
+#### Step 4: Create a new VM with the VM Manager
 
 1. If you haven't already, follow the procedure documented **here** to
     enable VM Manager
@@ -895,19 +854,13 @@ STEPS AND RESUME THE PROCEDURE FROM REBOOTING INTO KVM MODE.
     symbol from the VMs page)
 9. Click the \</\> symbol from the VMs page next to the VM to edit the
     XML
-10. Locate the `<disk>`{=html} section for your primary virtual disk.
-11. Remove the `<code>`{=html}
-
-    ```{=html}
-    <address>
-    ```
-
-    `</code>`{=html} line completely.
-12. Change the `bus='virtio'` from the `<target>`{=html} section to
+10. Locate the `<disk>` section for your primary virtual disk.
+11. Remove the `<address>` line completely.
+12. Change the `bus='virtio'` from the `<target>` section to
     `bus='ide'`
 13. Click **Update**
 
-### Step 5: Starting your new VM and loading the VirtIO drivers
+#### Step 5: Starting your new VM and loading the VirtIO drivers
 
 1. From the VMs page, click the **VM icon**, then click **Start**.
 2. Once the VM is started, click the icon again, then click **VNC
@@ -928,7 +881,7 @@ STEPS AND RESUME THE PROCEDURE FROM REBOOTING INTO KVM MODE.
     file to install the QEMU guest agent.
 7. Shut down your VM.
 
-### Step 6: Remove the temporary vdisk and start the VM
+#### Step 6: Remove the temporary vdisk and start the VM
 
 1. Click to edit the VM using the form-based editor (the pencil symbol)
 2. Remove the secondary vdisk

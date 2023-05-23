@@ -37,7 +37,7 @@ in how they work within a VM.
 
 ## My USB Flash Has Failed and I Don't Have a Backup. How do I Restore my Configuration?
 
-[Unraid Connect](../../connect/about) has support for Flash Backups to help resolve some of the pain points of a broken flash drive.
+[Unraid Connect](/connect/about.md) has support for Flash Backups to help resolve some of the pain points of a broken flash drive.
 
 First, you'll need to get a new flash device. Remember to get a quality
 device from manufacturers such as Kingston, PNY, Lexar, or Samsung.
@@ -63,7 +63,7 @@ Support)](https://forums.unraid.net/forum/55-general-support/).
 ## What Should I do if I have Forgotten my Root Password?
 
 To reset your [root
-password](Articles/Getting_Started#Connecting_to_the_Unraid_webGui "wikilink"):
+password](/manual/getting-started#connecting-to-the-unraid-webgui.md):
 
 1. Shutdown your server.
 2. Plug your USB flash into a laptop or another computer.
@@ -146,7 +146,9 @@ when you set up the server (if no password was set, leave it blank and
 press enter again). From the command line now, type the following
 command:
 
+```shell
 tail /var/log/syslog -f
+```
 
 This will begin printing the system log to the monitor directly. Now go
 about using the server as you normally would. When the crash occurs,
@@ -185,6 +187,7 @@ the Tools \> System Devices page.
 2\. Notate the vendor and product IDs indicated in the brackets.
 Example:
 
+```shell
 [10de:1f08] 02:00.0 VGA compatible controller: NVIDIA Corporation
 Device 1f08 (rev a1)
 
@@ -196,6 +199,7 @@ a1)
 
 **[10de:1adb]** 03:00.3 Serial bus controller [0c80]: NVIDIA
 Corporation Device 1adb (rev a1)
+```
 
 3\. Navigate to the flash device settings page (on the Main tab).
 
@@ -203,9 +207,16 @@ Corporation Device 1adb (rev a1)
 
 5\. Edit the Syslinux configuration by adding the following to the
 append line on the boot mode selected:
-vfio-pci.ids=[####:####],[####:####]. Example:
 
+```shell
+vfio-pci.ids=[####:####],[####:####]
+```
+
+Example:
+
+```shell
 append vfio-pci.ids=10de:1ada,10de:1adb initrd=/bzroot,/bzroot-gui
+```
 
 6\. Apply the change and reboot your server.
 

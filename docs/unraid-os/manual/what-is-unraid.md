@@ -48,7 +48,7 @@ drive onto a replacement. Amazing as it seems, a single parity drive can
 add protection for all of the others! In Unraid parity is always
 maintained in real-time and a bit more detail on the access pattern to
 the drives is described under [Manual/Storage
-Management](Manual/Storage_Management "wikilink") with their performance
+Management](storage-management.md) with their performance
 implications.
 
 The contents of a hard drive can be thought of as a very long stream of

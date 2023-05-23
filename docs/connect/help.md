@@ -19,8 +19,10 @@
 
 ## **Unraid Connect Dashboard**
 
-Once you are signed-in, you will see the Connect Dashboard: a
-comprehensive overview of your Unraid server's online/offline status,
+Sign in to the Unraid Connect Dashboard:
+> <https://connect.myunraid.net>
+
+for a comprehensive overview of your Unraid server's online/offline status,
 available storage, license type, uptime, Unraid OS version, and more.
 
 If you have multiple servers, you will see each one listed in the
@@ -118,7 +120,7 @@ it to a new flash drive using the USB Flash Creator.
 Note: Flash Backup is an optional feature, not required to use the rest
 of Unraid Connect.
 
-### Enabling Flash Backup <small>(optional)</small>
+### Enabling Flash Backup (optional)
 
 Until we are able to fully encrypt the flash backups on our servers, we
 exclude all sensitive data owned by the OS from the backups, including
@@ -225,8 +227,7 @@ registration key(s).
 
 Note: if your goal is to change your url from
 `https://yourpersonalhash.unraid.net` back to `http://computername`, see
-[How to disable SSL for local
-access](My_Servers#How_to_disable_SSL_for_local_access "wikilink").
+[How to disable SSL for local access](#how-to-disable-ssl-for-local-access).
 Uninstalling the plugin will have no effect on your url!
 
 Uninstalling the plugin will automatically:

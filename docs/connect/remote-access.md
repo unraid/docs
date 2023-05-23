@@ -58,7 +58,7 @@ of the Dynamic settings in the Remote Access dropdown:
 
 #### Dynamic Remote Access Usage
 
-1. Navigate to [Unraid Connect](Connect#Connect "wikilink"), then to
+1. Navigate to [Unraid Connect](/connect/help.md#unraid-connect-dashboard), then to
     either the management page or the server details view
 2. You will be presented with a new **Dynamic Remote Access** card,
     with a button that will be enabled if your server is not accessible
@@ -94,7 +94,7 @@ of the Dynamic settings in the Remote Access dropdown:
     - Note: When using Dynamic forwarding, you will not be able to
       access your server from this manual port forward unless you click
       the Enable Dynamic Remote access button in [Unraid
-      Connect](Connect#Connect "wikilink").
+      Connect](/connect/help.md#unraid-connect-dashboard).
 5. Note: If the setting changes from UPnP to "Manual Port Forward" when
     you reload the page, then we were not able to communicate with your
     router to enable UPnP. It may need to be enabled on your router, or
@@ -118,9 +118,9 @@ of the Dynamic settings in the Remote Access dropdown:
     - Note: When using Dynamic forwarding, you will not be able to
       access your server from this manual port forward unless you click
       the Enable Dynamic Remote access button in [Unraid
-      Connect](Connect#Connect "wikilink")
+      Connect](/connect/help.md#unraid-connect-dashboard)
 5. To access your server using Remote Access, login to [Unraid
-    Connect](Connect#Connect "wikilink") and click the Manage link
+    Connect](/connect/help.md#unraid-connect-dashboard) and click the Manage link
 
 ===Optional step for secure local access=== If you want to use secure
 https for local access to your server as well, navigate to Settings -\>
@@ -128,10 +128,10 @@ Management Access. In the CA-signed certificate area, if there are no
 warnings about DNS Rebinding then go ahead and set **Use SSL/TLS** to
 **Strict**. If there are warnings about DNS Rebinding see [A note
 regarding DNS Rebinding
-Protection](My_Servers#A_note_regarding_DNS_Rebinding_Protection "wikilink").
+Protection](/connect/help.md#a-note-regarding-dns-rebinding-protection).
 
 Note that once SSL is set to Strict, your client computers will need
 access to DNS in order to access your server. This means if your
 Internet connection drops you will likely lose access to your server's
 webgui. See [How to access your server when DNS is
-down](My_Servers#How_to_access_your_server_when_DNS_is_down "wikilink").
+down](/connect/help.md#how-to-access-your-server-when-dns-is-down).

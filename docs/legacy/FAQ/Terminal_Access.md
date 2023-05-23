@@ -58,7 +58,7 @@ connection
 
 ## Telnet
 
-##### Using Telnet
+### Using Telnet
 
 The unRAID Server software includes a built-in Telnet server, which
 may be used to open a command window (also called a *shell* or
@@ -102,7 +102,7 @@ mouse and arrow and function keys, it is much easier to use in
 programs like MC (Midnight Commander, a dual pane commander-like
 file manager). For an example, see [Transferring Files Within the
 unRAID
-Server](Transferring_Files_Within_the_unRAID_Server "wikilink").
+Server](/legacy/FAQ/Transferring_Files_Within_the_unRAID_Server).
 
 *Note for UnRAID v5 and v6 users: some have found that Midnight
 Commander looks funny, with accented letters (mostly a little 'a'
@@ -171,21 +171,11 @@ right-clicking the title bar. Notes regarding the command shell:
 
 ## Related links
 
--   [SSH vs
+* [SSH vs
 Telnet](http://lime-technology.com/forum/index.php?topic=30273) -
 discussion of the merits of both, why many want Telnet disabled
--   [Google search of "how to secure your ssh
+* [Google search of "how to secure your ssh
 server"](http://www.google.com/search?q=how+to+secure+your+ssh+server)
--   [FAQ, How is a Linux console different from a Windows
-console?](FAQ#How_is_a_Linux_console_different_from_a_Windows_console.3F "wikilink")
--   [FAQ, What commands can I use at the unRAID
-console?](FAQ#What_commands_can_I_use_at_the_unRAID_console.3F "wikilink")
--   [Console](Console "wikilink") - basics of console usage, plus
+* [Console](Console.md) - basics of console usage, plus
 commands for drives, networking, system management, files and
 folders, and system information
--   [Introduction to the linux
-shell](Introduction_to_the_linux_shell "wikilink") - *helpful but
-needs updating for v6*
-
-[Category: Getting started](Category:_Getting_started "wikilink")
-[Category: How To](Category:_How_To "wikilink")
