@@ -60,8 +60,8 @@ There are two methods to connect to the webGui in Unraid:
 
 Once you are connected to the webGui, you will immediately be prompted
 to set a strong root password (as of version 6.10):
-![](/docs/legacy/Set_root_password.png "Set_root_password.png") Strong passwords are
-unique (not reused), have at least 8 characters (the more the better),
+![](/docs/legacy/Set_root_password.png "Set_root_password.png") 
+Strong passwords are unique (not reused), have at least 8 characters (the more the better),
 are a combination of alphabetic, numeric, and special characters, and
 are not common dictionary words. Better yet, use a password manager.
 
@@ -80,13 +80,13 @@ need to sign in to Unraid.net and obtain a key.
 - Upon signing in, a registration key will be downloaded and installed
   to your system automatically.
 
-![UPC installing a trial key](/docs/legacy/Upc_install_trial_key.png) The purpose
-of the sign-in is to provide a way for you to manage your registration
+![UPC installing a trial key](/docs/legacy/Upc_install_trial_key.png) 
+The purpose of the sign-in is to provide a way for you to manage your registration
 keys for Unraid OS (obtain a Trial key, purchase a paid key, recover a
 lost key, replace your key with a new flash device, or upgrade a keybo
 from one edition to another).
 
-When signing up w*e **highly recommend*** you enable 2FA for your
+When signing up we **highly recommend*** you enable 2FA for your
 Unraid.net Account. Click
 [here](https://forums.unraid.net/topic/104007-enhanced-forum-account-security-2fa/)
 for how to set this up.
@@ -235,10 +235,9 @@ attack while leaving your valuable data at risk.
 
 ### [手动方式](手动方式 "wikilink")
 
-![](/docs/legacy/Sdcruzerfit.jpg "Sdcruzerfit.jpg")If for some reason the USB Flash
-Creator tool cannot be used, or your USB flash device is not detected,
-it is possible to manually format and prepare a bootable USB flash
-device. **Note: this method only works for devices 32GB and *smaller*.**
+If for some reason the USB Flash Creator tool cannot be used, or your USB flash device is not detected,
+it is possible to manually format and prepare a bootable USB flash device. 
+**Note: this method only works for devices 32GB and *smaller*.**
 
 - Plug the USB flash device into your Mac or PC.
 - Format the device using the FAT32 file system. It must **not** be
@@ -277,8 +276,8 @@ this is expected behavior.
 
 ## Advanced BIOS Configuration Guide
 
-![](/docs/legacy/Booting.jpg "Booting.jpg") Configuring your motherboard BIOS (as
-well as your storage controller) correctly is an important step to
+![](/docs/legacy/Booting.jpg "Booting.jpg") 
+Configuring your motherboard BIOS (as well as your storage controller) correctly is an important step to
 ensuring a solid experience using Unraid. The basic guidelines are as
 follows:
 
