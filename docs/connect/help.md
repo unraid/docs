@@ -302,5 +302,3 @@ UPC please open a terminal window and type:
 If you have other Unraid Connect Support related questions, please see
 our [Unraid Connect user forum](https://forums.unraid.net/) or [contact
 us](https://unraid.net/contact) to open a support ticket.
-
--
