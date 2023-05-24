@@ -5,6 +5,7 @@ const lightCodeTheme = require("prism-react-renderer/themes/github");
 const darkCodeTheme = require("prism-react-renderer/themes/dracula");
 const { sortSidebarItems } = require("./sitebar-semver-sort");
 
+const locales = ["en", "zh", "es", 'fr', 'de']
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: "Unraid Docs",
@@ -29,7 +30,7 @@ const config = {
   // to replace "en" with "zh-Hans".
   i18n: {
     defaultLocale: "en",
-    locales: ["en", "zh", "es"],
+    locales,
   },
 
   presets: [
@@ -184,7 +185,7 @@ const config = {
       {
         indexDocs: true,
         indexDocSidebarParentCategories: 2,
-        language: ['en', 'zh']
+        language: locales
       },
     ],
     [
