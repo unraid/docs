@@ -74,11 +74,11 @@
     ReiserFS formatted partition on it at **sdj1** and its array name is
     **Disk 5**, then there are 2 ways to check/repair its file system.
 
-* \* **reiserfsck \--fix-fixable /dev/sdj1** *will fix the file system of
+* `reiserfsck --fix-fixable /dev/sdj1` *will fix the file system of
 the first partition of the drive, but parity won't be updated, parity
 will become invalid*
 
-* \* **reiserfsck \--fix-fixable /dev/md5** *will do exactly the same
+* `reiserfsck --fix-fixable /dev/md5` *will do exactly the same
 thing as the command above, EXCEPT the parity protection will be
 maintained, parity will stay valid*
 
@@ -110,8 +110,9 @@ maintained, parity will stay valid*
 
 * If you are running Unraid v4 or v5 or prefer working at the command
     line -
-  * `<font color=red>`{=html}**It is vitally important that you know
-        the file system format of your drive!**`</font>`{=html} **If you
+  * It is vitally important that you know
+        the file system format of your drive!**` 
+        **If you
         use the wrong repair tool on your drive, you may severely damage
         it, even worse than it may now be!**
   * If you are running any version of Unraid prior to v5.0-beta8d,
@@ -328,7 +329,7 @@ file system of a data drive, while maintaining its parity info.
 
 * Now you are ready to run the XFS file system test. At the console or
     in a [terminal session with SSH or
-    Telnet](Terminal_Access.md), type this: (*Note: the
+    Telnet](terminal-access.md), type this: (*Note: the
     following example refers to Disk 1, as **/dev/md1**. You will need
     to substitute the correct drive for your case. For example, if it is
     your Disk 5 that you are testing, then substitute **md5** for
@@ -548,13 +549,13 @@ xfs_repair -v /dev/md1
 * Now you are ready to run the Reiser file system test. (Note:
     \--check is the default option, not strictly required, but included
     here for clarification.) At the console or in a [terminal session
-    with SSH or Telnet](Terminal_Access.md), type this:
+    with SSH or Telnet](terminal-access.md), type this:
 
-```shell
-   **reiserfsck \--check /dev/md1** *[answer with the word **Yes**
+  ```shell
+  reiserfsck --check /dev/md1 [answer with the word **Yes**
    when prompted, do not type **yes** or **YES**, but **Yes**
    (capital **Y** and lower case **es**)]*
-```
+  ```
 
 * At the conclusion of the **reiserfsck \--check** command, a report
     will be output. If errors are detected, this report may specify an
@@ -563,8 +564,8 @@ xfs_repair -v /dev/md1
     **\--rebuild-tree** switch, for example:
 
 ```shell
-    **reiserfsck \--fix-fixable /dev/md1** *[answer with **Yes**
-    when prompted. (capital **Y** and lower case **es**)]*
+    reiserfsck --fix-fixable /dev/md1 [answer with **Yes**
+     when prompted. (capital **Y** and lower case **es**)]
 ```
 
 * If your file system has only minor issues, then running **reiserfsck
@@ -668,7 +669,7 @@ xfs_repair -v /dev/md1
 ### Preparing to run reiserfsck
 
 * Start the array, then from the console or in a [terminal session
-    with SSH or Telnet](Terminal_Access.md), type this:
+    with SSH or Telnet](terminal-access.md), type this:
 
 ```shell
     cd [this will make sure you are in the /root directory]
@@ -689,12 +690,12 @@ xfs_repair -v /dev/md1
 * Now you are ready to run the Reiser file system test. (Note:
     \--check is the default option, not strictly required, but included
     here for clarification.) At the console or in a [terminal session
-    with SSH or Telnet](Terminal_Access.md), type this:
+    with SSH or Telnet](terminal-access.md), type this:
 
 ```shell
-    reiserfsck \--check /dev/md1 
-    [answer with the word **Yes** when prompted, do not type **yes** or **YES**, 
-    but **Yes** (capital **Y** and lower case **es**)]
+    reiserfsck --check /dev/md1 
+      [answer with the word **Yes** when prompted, do not type **yes** or **YES**, 
+      but **Yes** (capital **Y** and lower case **es**)]
 ```
 
 *  At the conclusion of the **reiserfsck \--check** command, a report
@@ -704,17 +705,18 @@ xfs_repair -v /dev/md1
     **\--rebuild-tree** switch, for example:
 
 ```shell
-   reiserfsck \--fix-fixable /dev/md1
-   [answer with **Yes** when prompted. (capital **Y** and lower case **es**)]
+   reiserfsck --fix-fixable /dev/md1
+     [answer with **Yes** when prompted. (capital **Y** and lower case **es**)]
 ```
 
 * If your file system has only minor issues, then running **reiserfsck
     \--fix-fixable** should be all that is necessary.
 
-* `<font color=red>`{=html}**Important Note!!!** Do NOT run
+* **Important Note!!!** Do NOT run
     **reiserfsck** with the **\--rebuild-sb** or **\--rebuild-tree**
     options, unless you are instructed to by the output of a previous
-    run of **reiserfsck** or by an expert user!`</font>`{=html} They are
+    run of **reiserfsck** or by an expert user!
+    They are
     last-resort options, to repair a severely damaged Reiser file
     system, and recover as much as possible. They rarely repair the
     system to perfection, and there may be a little data loss. They do a
@@ -727,13 +729,13 @@ xfs_repair -v /dev/md1
     times, it will be possible to identify them by their contents and
     size.
 
-* `<font color=red>`{=html}**Important Note #2!!!**`</font>`{=html} If
+* **Important Note #2!!!** If
     the option **\--rebuild-sb** is suggested, then please see the
     [Rebuilding the
     superblock](#rebuilding-the-superblock)
     section below, and follow its instructions **VERY CAREFULLY**.
-    `<font color=red>`{=html}The **\--rebuild-sb** option requires
-    answers that must be **PERFECT**!`</font>`{=html} If you are unsure
+    The **\--rebuild-sb** option requires
+    answers that must be **PERFECT**! If you are unsure
     about anything, consider asking for assistance on the Unraid forums.
 
 * Note: If **reiserfsck** performs write operations to repair the file
@@ -742,7 +744,7 @@ xfs_repair -v /dev/md1
 ### After running reiserfsck
 
 * You can resume normal operations by, from the console or in a
-    [terminal session with SSH or Telnet](Terminal_Access.md),
+    [terminal session with SSH or Telnet](terminal-access.md),
     typing this:
 
 ```shell

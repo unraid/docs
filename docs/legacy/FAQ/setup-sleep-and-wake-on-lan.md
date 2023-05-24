@@ -28,7 +28,7 @@ OS. The following assumes the use of a Windows machine.
 
 - Boot Unraid server.
 - Use the Terminal on the WebUI (present in v6, one of the buttons in
-  the upper right corner, or fall-back to [SSH or Telnet](Terminal_Access.md) and type `ethtool
+  the upper right corner, or fall-back to [SSH or Telnet](terminal-access.md) and type `ethtool
   eth0` from the command line
 - You're looking to confirm that the setting for "Wake-on" includes
   'g' . . . which is the option for allowing Wake on Magic Packet.

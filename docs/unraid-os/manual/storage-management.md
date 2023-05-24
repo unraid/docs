@@ -736,7 +736,7 @@ one, that is even larger than the Parity drive.**
     mortality' failures.
 - **If your replacement drive is the same size or smaller than your
     current Parity drive, then you don't need this procedure. Proceed
-    with the [Replacing a Data Drive](/legacy/FAQ/Replacing_a_Data_Drive.md)
+    with the [Replacing a Data Drive](/legacy/FAQ/replacing-a-data-drive.md)
     procedure.**
 - This procedure is strictly for replacing data drives in an Unraid
     array. If all you want to do is replace your Parity drive with a

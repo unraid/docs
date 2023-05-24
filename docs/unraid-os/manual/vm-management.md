@@ -345,7 +345,7 @@ After doing this, you can start your VM and the new storage will be
 available, though you will need to either create a new partition out of
 that space or extend an existing partition to make use of it. For
 instructions on how to expand your Windows partition, please see [this
-article](/legacy/Articles/Expanding_Windows_VM_vdisk_partitions).
+article](/legacy/Articles/expanding-windows-vm-vdisk-partitions.md).
 
 ## Troubleshooting Stuck at UEFI Shell
 

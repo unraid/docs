@@ -1,5 +1,7 @@
-`<font color="blue">`{=html}**Note: this page has been tested for v6,
-but is still fairly new.**`</font>`{=html}
+# Shrink Array
+
+**Note: this page has been tested for v6,
+but is still fairly new.**
 
 **Why would you want to shrink your array?**
 
@@ -38,13 +40,13 @@ which one will work best for your situation.
 
 ### The "Remove Drives Then Rebuild Parity" Method
 
--   *For removing one or more drives from an Unraid array - this is the
+ *For removing one or more drives from an Unraid array - this is the
     tried and true method*
--   *Note: this section has been tested for 6.2, but is still fairly
+ *Note: this section has been tested for 6.2, but is still fairly
     new*
 
-- This method `<font color="red">`{=html}does not keep the drive's
-    data within the array`</font>`{=html}. If the drive to be removed
+- This method does not keep the drive's
+    data within the array. If the drive to be removed
     has data you want to stay in the array, you must move it yourself to
     the other data drives. Parity will be built based entirely and only
     on the remaining drives and their contents.
@@ -84,9 +86,9 @@ which one will work best for your situation.
 
 ### The "Clear Drive Then Remove Drive" Method
 
-:   *For removing a drive from an Unraid array, while maintaining the
+*For removing a drive from an Unraid array, while maintaining the
     parity protection - this is a new method*
-:   *Note: this section has been tested but is still fairly new*
+*Note: this section has been tested but is still fairly new*
 
 - This method preserves parity protection at all times.
 - This method can only be used if it's a good drive that is
@@ -180,17 +182,18 @@ which one will work best for your situation.
 
 ##### Alternate Procedure for Linux proficient users
 
-:   It's actually the same procedure as above, except that you can
-    replace steps 7 and 8 by performing the clearing commands yourself
-    at a command prompt. (Clearing takes just as long though!) If you
-    would rather do that, than run the script in steps 7 and 8, then
-    here are the 2 commands to perform:
+It's actually the same procedure as above, except that you can
+replace steps 7 and 8 by performing the clearing commands yourself
+at a command prompt. (Clearing takes just as long though!) If you
+would rather do that, than run the script in steps 7 and 8, then
+here are the 2 commands to perform:
 
-    :   **umount /mnt/diskX**
-    :   **dd bs=1M if=/dev/zero of=/dev/mdX status=progress**
-    :   *(where X in both lines is the number of the data drive being
-        removed)*
-:   **Important!!! It is VITAL you use the correct drive number, or you
+```shell
+umount /mnt/diskX
+dd bs=1M if=/dev/zero of=/dev/mdX status=progress
+(where X in both lines is the number of the data drive being removed)
+```
+**Important!!! It is VITAL you use the correct drive number, or you
     will wipe clean the wrong drive!** That's why using the script is
     recommended, because it's designed to protect you from accidentally
     clearing the wrong drive.
@@ -214,8 +217,8 @@ which one will work best for your situation.
     removed from any inclusions or exclusions for all shares, including
     in the global share settings.
 3. Stop the array (if it is started)
-4. Go to `<Tools>`{=html} and click `<New config>`{=html}, then
-    `<Apply>`{=html}, then `<Done>`{=html}
+4. Go to `<Tools>` and click `<New config>`, then
+    `<Apply>`, then `<Done>`
 5. Reassign all disks except the ones you are removing, using your
     notes or screen shot
 6. Double check that your Parity disk(s) are assigned correctly!
@@ -226,16 +229,18 @@ which one will work best for your situation.
 
 ##### Alternate procedure that maintains parity protection
 
--   If you wish, the "Clear Drive Then Remove Drive" method in the 6.2
+* If you wish, the "Clear Drive Then Remove Drive" method in the 6.2
     section above can be carefully adapted for use. You won't have the
     "Retain" option, or the "reconstruct write" tunable option, or
     the User Scripts plugin. v5 users may have to use the "Trust
     Parity" method rather than the "Parity is already valid" option.
     And you won't have any progress info at all during the clearing! It
     will be finished when it finishes!
--   In Unraid v6.0 and v6.1 (not v5), you can turn on "reconstruct
+* *In Unraid v6.0 and v6.1 (not v5), you can turn on "reconstruct
     write" (sometimes known as "turbo write" because it runs
     significantly faster) with the following command at the command line
     *after* the array is started:
 
-       **mdcmd set md_write_method 1**
+  ```shell
+  mdcmd set md_write_method 1
+  ```

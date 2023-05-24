@@ -102,7 +102,7 @@ mouse and arrow and function keys, it is much easier to use in
 programs like MC (Midnight Commander, a dual pane commander-like
 file manager). For an example, see [Transferring Files Within the
 Unraid
-Server](/legacy/FAQ/Transferring_Files_Within_the_unRAID_Server).
+Server](transferring-files-within-the-unraid-server.md).
 
 *Note for UnRAID v5 and v6 users: some have found that Midnight
 Commander looks funny, with accented letters (mostly a little 'a'
@@ -176,6 +176,6 @@ Telnet](https://forums.unraid.net/forum/index.php?topic=30273) -
 discussion of the merits of both, why many want Telnet disabled
 * [Google search of "how to secure your ssh
 server"](http://www.google.com/search?q=how+to+secure+your+ssh+server)
-* [Console](Console.md) - basics of console usage, plus
+* [Console](console.md) - basics of console usage, plus
 commands for drives, networking, system management, files and
 folders, and system information

@@ -16,8 +16,8 @@ alternative to Telnet that allows use of a mouse within **mc**), see
 Midnight Commander is a Linux console tool, and needs to be run from
 either the physical console on your Unraid server, or from a Telnet
 console on your desktop station. For more information, see the
-[Telnet](Terminal_Access.md#telnet) page, which includes information on
-[PuTTY](Terminal_Access.md#PuTTY).
+[Telnet](terminal-access.md#telnet) page, which includes information on
+[PuTTY](terminal-access.md#PuTTY).
 
 ## Move Files Overnight
 
@@ -39,7 +39,7 @@ So, for example, if you wanted to move a bunch of movies from Disk1 to
 Disk2, you could use this command from a Telnet (PuTTY or otherwise)
 prompt \...
 
-``**`nohup mv /mnt/disk1/Movies/* /mnt/disk2/Movies &`**
+`nohup mv /mnt/disk1/Movies/* /mnt/disk2/Movies &`
 
 Do a quick check to see that files are starting to appear in the
 destination folder to make sure you didn't have a typo in the command,
@@ -58,7 +58,7 @@ the name of each file it copies. If you use "cp" to copy a LOT of
 small files (300,000+), you risk having nohup.out get quite large -
 large enough to fill up your Unraid server ramdisk - not a good thing.
 
-## Unix Commands=
+## Unix Commands
 
 There are two effective methods available to move files from one drive
 to another from within Unraid (v4.x and later).

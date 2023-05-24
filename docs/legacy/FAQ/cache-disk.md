@@ -1,14 +1,15 @@
-:   **Important!** This page is a basic introduction to the Unraid Cache
-    drive, but was written for v4 and v5. There is no mention of
-    Dockers, VM's, or Cache Pools. For v6 users, this page serves as an
-    introduction, but you should also check these resources:
-    -   [FAQ](https://forums.unraid.net/forum/index.php?topic=48508) -
-        look for the *Cache Drive/Pool* section, has a number of related
-        procedures
-    -   [How to add a cache drive, replace a cache drive, and create a
-        cache
-        pool](https://forums.unraid.net/forum/index.php?topic=56005) -
-        a nice video guide
+# Cache Disk
+
+**Important!** This page is a basic introduction to the Unraid Cache
+  drive, but was written for v4 and v5. There is no mention of
+  Dockers, VM's, or Cache Pools. For v6 users, this page serves as an
+  introduction, but you should also check these resources:
+* [FAQ](https://forums.unraid.net/forum/index.php?topic=48508) -
+  look for the *Cache Drive/Pool* section, has a number of related
+  procedures
+* [How to add a cache drive, replace a cache drive, and create a
+  cache pool](https://forums.unraid.net/forum/index.php?topic=56005) -
+  a nice video guide
 
 The cache disk feature of Unraid greatly increases the perceived
 performance of the system when writing data to a parity-protected array.

@@ -93,8 +93,10 @@ To fix this brain-dead move by Windows, take these steps:
     systems] section of boot.ini, and change the second copy so it is
     like this
 
-`multi(0)disk(0)rdisk(0)partition(1)\WINDOWS=.......`
-`multi(0)disk(0)rdisk(0)partition(2)\WINDOWS=.......`
+  ```shell
+  multi(0)disk(0)rdisk(0)partition(1)\WINDOWS=.......
+  multi(0)disk(0)rdisk(0)partition(2)\WINDOWS=.......
+  ```
 
 1. Boot Slackware DVD
 2. Run sfdisk -luS and write down the starting and ending sectors for

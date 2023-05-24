@@ -1,3 +1,5 @@
+# Replacing Multiple Data Drives with a Single Larger Drive
+
 **Problem: You want to consolidate several smaller drives onto a new and
 larger drive.**
 
@@ -20,7 +22,7 @@ Some notes before you start:
     prevent other disks from being recovered if they have a problem.
 - Writing the large amount of data that may be involved with very
     large drives can take many hours. When using a
-    [telnet](Terminal_Access.md) session to transfer data, it is
+    [telnet](terminal-access.md) session to transfer data, it is
     recommended that the linux **screen** command be used, so the
     session can be resumed if there is any disconnect or timeout. In
     Unraid v6, install the
