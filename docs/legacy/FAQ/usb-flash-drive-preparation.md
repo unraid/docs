@@ -1,10 +1,10 @@
-\
-==USB Flash Drives==\
-\
-\-\-\-\-- `<font color="blue">`{=html} There is now an USB Creator tool
+# USB Flash Drive Preparation
+
+## USB Flash Drives
+
+\-\-\-\-- There is now an USB Creator tool
 from Limetech, for both Windows and macOS that users are encouraged to
 use. The tool can be found [here.](https://unraid.net/download)
-`</font>`{=html}
 
 ------------------------------------------------------------------------
 

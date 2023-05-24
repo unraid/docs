@@ -19,7 +19,7 @@ one, that is even larger than the Parity drive.**
     than the old drive, but it CAN be larger, much larger in fact. If
     the replacement drive is the same size or larger, UP TO the same
     size as the parity drive, then there is a simple procedure for that,
-    called [Replacing a Data Drive](Replacing_a_Data_Drive.md).
+    called [Replacing a Data Drive](replacing-a-data-drive.md).
     But if the replacement drive is LARGER than the Parity drive, then a
     special two-step procedure is required, described on this page. It
     will use the larger-than-parity drive to first upgrade the parity
@@ -43,7 +43,7 @@ one, that is even larger than the Parity drive.**
     of the drive, eliminates 'infant mortality' failures.
 * **If your replacement drive is the same size or smaller than your
     current Parity drive, then you don't need this procedure. Proceed
-    with the [Replacing a Data Drive](Replacing_a_Data_Drive.md)
+    with the [Replacing a Data Drive](replacing-a-data-drive.md)
     procedure.**
 * This procedure is strictly for replacing data drives in an Unraid
     array. If all you want to do is replace your Parity drive with a
@@ -81,10 +81,10 @@ one, that is even larger than the Parity drive.**
 
 ## The procedure
 
-:   *If you are running a very old version of Unraid, such as v4.7 or
+*If you are running a very old version of Unraid, such as v4.7 or
     older, skip down to the next section.*
 
-:   Note: these steps are the general steps needed. The steps you take
+Note: these steps are the general steps needed. The steps you take
     may differ depending on your situation. If the drive to be replaced
     has failed and Unraid has disabled it, then you may not need steps 1
     and 2, and possibly not steps 3 and 4. If you have already installed
@@ -93,72 +93,101 @@ one, that is even larger than the Parity drive.**
     needed.
 
 1. Stop the array *(if it's started)*
+
 2. Unassign the old drive *(if it's still assigned)*
+
     *If the drive was a good drive and notifications are enabled, you
     will get error notifications for a missing drive! This is normal.*
 3. Start the array (put a check in the **Yes I want to do this**
     checkbox if it appears (older versions: **Yes, I'm sure**))
+
     *Yes, you need to do this. Your data drive should be showing as
+
     **Not installed**.*
+
 4. Stop the array again
+
 5. Power down
+
 6. *[ Optional ]* Pull the old drive
+
     *You may want to leave it installed, for Preclearing or testing or
     reassignment.*
+
 7. Install the new drive (preclear STRONGLY suggested, but formatting
     not needed)
+
 8. Power on
-9. Stop the array\
+
+9. Stop the array
+
     **If you get an "Array Stopping•Retry unmounting disk
     share(s)..." message, try disabling Docker and/or VM in Settings
     and stopping the array again after rebooting.*
+
 10. Unassign the parity drive
 11. Assign the new drive in the parity slot
+
     *You may see more error notifications! This is normal.*
 12. Assign the old parity drive in the slot of the old data drive being
     replaced
+
     *You should now have blue drive status indicators for both the
     parity drive and the drive being replaced.*
+
 13. Go to the **Main** -\> **Array Operation** section
+
     *You should now have a **Copy** button, with a statement indicating
+
     "**Copy** will copy the parity information to the new parity
     disk".*
+
 14. Put a check in the **Yes I want to do this** checkbox (older
     versions: **Yes, I'm sure**), and click the **Copy** button
-    *Now patiently watch the copy progress, takes a long time (\~20
+
+    Now patiently watch the copy progress, takes a long time (\~20
     hours for 4TB on a 3GHz Core 2 Duo). All of the contents of the old
     parity drive are being copied onto the new drive, then the remainder
-    of the new parity drive will be zeroed.\
-    **The array will NOT be available during this operation!**\
-    **If you disabled Docker and/or VM in settings earlier, go ahead
-    and re-enable now.*\
+    of the new parity drive will be zeroed.
+
+    **The array will NOT be available during this operation!**
+
+    If you disabled Docker and/or VM in settings earlier, go ahead
+    and re-enable now.
+
     When the copy completes, the array will still be stopped
-    ("**Stopped**. Upgrading disk/swapping parity.").\
+    ("**Stopped**. Upgrading disk/swapping parity.").
+
     The **Start** button will now be present, and the description will
-    now indicate that it is ready to start a Data-Rebuild.*
+    now indicate that it is ready to start a Data-Rebuild.
+
 15. Put a check in the **Yes I want to do this** checkbox (older
     versions: **Yes, I'm sure**), and click the **Start** button
-    *The data drive rebuild begins. Parity is now valid, and the array
-    is started.\
+
+    The data drive rebuild begins. Parity is now valid, and the array
+    is started.
+
     Because the array is started, you can use the array as normal, but
-    for best performance, we recommend you limit your usage.\
+    for best performance, we recommend you limit your usage.
+
     Once again, you can patiently watch the progress, takes a long time
     too! All of the contents of the old data drive are now being
     reconstructed on what used to be your parity drive, but is now
-    assigned as the replacement data drive.*
+    assigned as the replacement data drive.
 
-:   **That's it!** Once done, you have an array with a larger parity
+**That's it!** Once done, you have an array with a larger parity
     drive and a replaced data drive that may also be larger!
-:   *Note: many users like to follow up with a parity check, just to
+
+*Note: many users like to follow up with a parity check, just to
     check everything. It's a good confidence builder!*
 
 ## The procedure for Unraid v4
 
-:   *This section is only for old versions of Unraid, such as v4.7 or
+*This section is only for old versions of Unraid, such as v4.7 or
     older. If you are running v5 or v6 of Unraid, then go back to the
     previous section.*
 
-:   Note: these steps are taken from the old manual, and they assume the
+Note: these steps are taken from the old manual, and they assume the
     data drive has failed and been disabled. If not, then (just as
     above) you may have to 'fail' the drive by removing the drive, and
     starting and stopping the array one time.

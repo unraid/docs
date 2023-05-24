@@ -8,7 +8,7 @@ if you can!**
 ## Basics of Console Usage
 
 - If you are new to Linux, start by reading the [Terminal
-    Access](Terminal_Access.md) page.
+    Access](terminal-access.md) page.
 - The commands below usually list a usage note, which is a link to a
     'man page'. In Linux, man pages describe the syntax of command
     usage, including all options for the command. Linux splits all of
@@ -103,7 +103,7 @@ To determine the read speed of a hard drive, the following command can
 be used. The very last number in MB/sec is the one you want, ignore the
 rest. Although one run will give you a decent result, for better
 accuracy, take the average of at least 5 runs. See also [Check Harddrive
-Speed](Check_Harddrive_Speed.md).
+Speed](check-harddrive-speed.md).
 
 `hdparm  -tT  /dev/sdx`
 

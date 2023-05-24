@@ -1,3 +1,5 @@
+# Check Harddrive Speed
+
 The native Linux command **hdparm** (Hard Disk Parameters) can be used
 to determine your hard disk drive read speed.
 

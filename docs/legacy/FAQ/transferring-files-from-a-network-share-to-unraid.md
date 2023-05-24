@@ -1,6 +1,6 @@
 # Transferring Files from a Network Share to Unraid
 
-Open a [terminal session with SSH or Telnet](Terminal_Access)
+Open a [terminal session with SSH or Telnet](terminal-access.md)
 to Unraid, and login as root. Create a temporary directory on the
 server:
 
@@ -27,8 +27,10 @@ Edit: Another option is to use rsync to get speed/progress information:
 
 When done:
 
-`umount /work`\
-`rmdir /work`
+```shell
+umount /work
+rmdir /work
+```
 
 Caution: If you have directory or file names with non-English
 characters, commonly found in titles and names for media files from

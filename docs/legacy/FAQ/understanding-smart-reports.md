@@ -1,4 +1,6 @@
-`under construction, only slightly usable so far, please report errors in the talk page`
+# Understanding SMART Reports
+
+`under construction, only slightly usable so far`
 
 ***Disclaimer: this page is based on personal experience gained from
 examining numerous SMART reports, therefore it should not be considered
@@ -45,8 +47,7 @@ Looks rather intimidating, doesn't it, with huge scary numbers! But
 with a little knowledge from this page, you should be able to quickly
 say "That drive looks fine! A little warm though!"
 
-\
-==Introduction to SMART==
+## Introduction to SMART
 
 From [SMART on Wikipedia](http://en.wikipedia.org/wiki/S.M.A.R.T),
 "S.M.A.R.T. (Self-Monitoring, Analysis and Reporting Technology; often
@@ -90,8 +91,9 @@ value on any other brand would be immediately concerning. Hopefully the
 table below will help you understand what 'normal' looks like, for the
 different attributes on different drives by different makers.
 
-\
-==SMART report structure== *Each section below includes an example of
+## SMART report structure
+
+*Each section below includes an example of
 that section, in a gray box with dotted border. It's just an example,
 yours may greatly differ.*
 
@@ -101,10 +103,7 @@ yours may greatly differ.*
     model, serial number, firmware, capacity/size, time of this report,
     and SMART support status
 
-```{=html}
-<!-- -->
-```
-
+    ```shell
     smartctl 5.39.1 2010-01-28 r3054 [i486-slackware-linux-gnu] (local build)
     Copyright (C) 2002-10 by Bruce Allen, http://smartmontools.sourceforge.net
 
@@ -119,9 +118,9 @@ yours may greatly differ.*
     Local Time is:    Fri Nov 18 16:11:43 2011 EST
     SMART support is: Available - device has SMART capability.
     SMART support is: Enabled
+    ```
 
-\
-===SMART overall health test===
+### SMART overall health test
 
 - Basic overall health test of the drive, only 2 choices - PASSED or
     FAILED
@@ -132,20 +131,17 @@ yours may greatly differ.*
     next most important files, then the next, and so on, because the
     drive may completely quit before you finish copying.
 
-```{=html}
-<!-- -->
-```
-
+    ```shell
     SMART overall-health self-assessment test result: PASSED
+    ```
 
-\
-===SMART parameters section===
+### SMART parameters section
 
 - These are generally of little interest to us
 - They do include the recommended polling time for the short and long
     tests, in other words don't request a SMART report any sooner than
     this recommendation
-  - Unfortunately the original standard must have stipulated using a
+- Unfortunately the original standard must have stipulated using a
         single byte to store the polling times, which caps their maximum
         value at 255. That makes the 'Extended self-test' (the long
         test) polling time of 255 rather useless.
@@ -156,10 +152,7 @@ yours may greatly differ.*
     reports, with no issues, except for the difference in this
     parameter.
 
-```{=html}
-<!-- -->
-```
-
+    ```shell
     Offline data collection status:  (0x82) Offline data collection activity
                         was completed without error.
                         Auto Offline Data Collection: Enabled.
@@ -188,9 +181,10 @@ yours may greatly differ.*
     recommended polling time:    ( 255) minutes.
     Conveyance self-test routine
     recommended polling time:    (   2) minutes.
+    ```
 
-\
-===SMART attributes section===
+
+### SMART attributes section
 
 - This is the table of SMART attributes for this drive. The columns
     are described below the example. Yours may greatly differ from this
@@ -198,10 +192,7 @@ yours may greatly differ.*
     report considerably fewer. The newest drives often introduce new
     attributes.
 
-```{=html}
-<!-- -->
-```
-
+    ```shell
     SMART Attributes Data Structure revision number: 10
     Vendor Specific SMART Attributes with Thresholds:
     ID# ATTRIBUTE_NAME          FLAG     VALUE WORST THRESH TYPE      UPDATED  WHEN_FAILED RAW_VALUE
@@ -230,6 +221,7 @@ yours may greatly differ.*
     240 Head_Flying_Hours       0x0000   100   253   000    Old_age   Offline      -       172868138696723
     241 Total_LBAs_Written      0x0000   100   253   000    Old_age   Offline      -       2919100768
     242 Total_LBAs_Read         0x0000   100   253   000    Old_age   Offline      -       572998840
+    ```
 
 - Column 1 is the attribute number, usually a decimal number between 1
     and 255. Some SMART tools report it in hex, from 01 to FF. These are
@@ -337,29 +329,22 @@ yours may greatly differ.*
     shorten its name and refer to it only as 'the RAW'.
   - *[incomplete]*
 
-\
-===Error Log section===
+### Error Log section
 
 - *[incomplete]*
 
-```{=html}
-<!-- -->
-```
-
-    SMART Error Log Version: 1
-    No Errors Logged
+  ```shell
+  SMART Error Log Version: 1
+  No Errors Logged
+  ```
 
 - *[incomplete, need example with errors]*
 
-\
-===Test results section===
+### Test results section
 
 - *[incomplete]*
 
-```{=html}
-<!-- -->
-```
-
+    ```shell
     SMART Self-test log structure revision number 1
     No self-tests have been logged.  [To run self-tests, use: smartctl -t]
 
@@ -373,12 +358,11 @@ yours may greatly differ.*
     Selective self-test flags (0x0):
       After scanning selected spans, do NOT read-scan remainder of disk.
     If Selective self-test is pending on power-up, resume after 0 minute delay.
+    ```
 
 - *[incomplete, need example with tests]*
 
-\
-\
-==Table of attributes==
+## Table of attributes
 
 For a fuller description of each attribute, please see [Known ATA
 S.M.A.R.T. attributes on
@@ -425,38 +409,28 @@ Wikipedia](http://en.wikipedia.org/wiki/S.M.A.R.T#Known_ATA_S.M.A.R.T._attribute
 - **Critical attribute - if its WORST falls below its THRESH, then the
     drive will be considered FAILED**
 
-\
-
 ### 3 Spin_Up_Time
 
 - *[incomplete]*
-
-\
 
 ### 4 Start_Stop_Count
 
 - *[incomplete]*
 
-\
-
 ### 5 Reallocated_Sector_Ct
 
 - *[incomplete]*
 
-\
-
 ### 7 Seek_Error_Rate
 
 - *[incomplete]*
-
-\
 
 ### 9 Power_On_Hours
 
 - *[incomplete]*
 
 *[the most important part of this whole page is completely
-incomplete!]*\
+incomplete!]*
 
 ## Additional info
 

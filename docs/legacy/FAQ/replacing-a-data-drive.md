@@ -29,7 +29,7 @@ would you want to do that? Any number of reasons...
 - **Important! You cannot replace a drive with one that is LARGER than
     the parity drive!** If your replacement drive is larger than the
     parity drive, then proceed to [The parity swap
-    procedure](The_parity_swap_procedure.md).
+    procedure](parity-swap-procedure.md).
 
 - Unraid does not require the replacement drive to be the same size as
     the old drive being replaced. It CANNOT be smaller, but it CAN be a
