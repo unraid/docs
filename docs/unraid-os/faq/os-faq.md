@@ -63,7 +63,7 @@ Support)](https://forums.unraid.net/forum/55-general-support/).
 ## What Should I do if I have Forgotten my Root Password?
 
 To reset your [root
-password](/manual/getting-started#connecting-to-the-unraid-webgui.md):
+password](/unraid-os/manual/getting-started.md#connecting-to-the-unraid-webgui):
 
 1. Shutdown your server.
 2. Plug your USB flash into a laptop or another computer.

@@ -20,11 +20,11 @@ your receipt.
 
 First, buy an activation code via [our website.](https://unraid.net/pricing) Your unique activation code will be listed on your purchase receipt.
 
-Next, follow our [Getting Started guide](https://docs.unraid.net/unraid-os/manual/getting-started) to set up an Unraid server.
+Next, follow our [Getting Started guide](/unraid-os/manual/getting-started.md) to set up an Unraid server.
 
 Once your server is up and running:
 
-Login to your Unraid server's webgui. (http://tower or http://tower.local from Mac by default)
+Login to your Unraid server's webgui. (`http://tower` or `http://tower.local` from Mac by default)
 For Unraid 6.10 and newer, Sign in to your Unraid.net account (or create one) from the top-right of the webgui and select "Redeem Activation Code" and enter the activation code to activate your license. For Unraid 6.9 and older, navigate to the Tools -> Registration page in the webGui and click "Purchase Key."
 Select the corresponding license you purchased via activation code and enter the activation code in the "Your Activation Code" box to complete the activation process. Your registration key will be emailed to you with instructions for installation! Note: Activation Codes are one-time use for generating your Unraid license keyfile.
 If you have any issues or questions with the above, there is also a walk through video: [Activation Code Instructional Video](https://www.loom.com/share/3ceb40440240474aaa80a0b7e3e69cb2)
@@ -67,7 +67,7 @@ storage devices in the [cache
 pool(s)](/unraid-os/release-notes/6.9.0.md#multiple-pools).
 Additional storage devices can still be utilized directly with other
 Unraid features such as [Virtual
-Machines](/manual/vm-management.md) or the unassigned devices
+Machines](/unraid-os/manual/vm-management.md) or the unassigned devices
 plugin.
 
 ## What Happens if my USB Fails? Do I Have to Repurchase a License?
