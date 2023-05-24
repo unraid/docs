@@ -227,17 +227,9 @@ attack while leaving your valuable data at risk.
 
 ## Manual Install Method
 
-### [Método Manual - Español](https://wiki.unraid.net/M%C3%A9todo_Manual)
-
-### [Méthode Manuelle - Français](Méthode_Manuelle_-_Français "wikilink")
-
-### [Manuelle Methode - Deutsch](Manuelle_Methode_-_Deutsch "wikilink")
-
-### [手动方式](手动方式 "wikilink")
-
 If for some reason the USB Flash Creator tool cannot be used, or your USB flash device is not detected,
-it is possible to manually format and prepare a bootable USB flash device. 
-**Note: this method only works for devices 32GB and *smaller*.**
+it is possible to manually format and prepare a bootable USB flash device.
+device. **Note: this method only works for devices 32GB and *smaller*.**
 
 - Plug the USB flash device into your Mac or PC.
 - Format the device using the FAT32 file system. It must **not** be
