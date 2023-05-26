@@ -31,7 +31,7 @@ then on, you will be required to authenticate anytime you attempt to
 login to the webGui.
 
 In addition, there is a plugin available in Community Apps called
-*Dynamix Password Validator*. This plugin will provide guidance on how
+_Dynamix Password Validator_. This plugin will provide guidance on how
 strong of a password you're creating based on complexity rules (how
 many capital vs. lowercase letters, numbers, symbols, and overall
 password length are used to judge this). Consider installing this for
@@ -52,55 +52,55 @@ your server to significant security risk. Here are just a few ports you
 should be extra careful with when forwarding:
 
 - **Port 80**: Used to access the webGui without SSL (unless you've
-    rebound access to another port on the Management Access settings
-    page). Forwarding this port by default will allow you to access the
-    webGui remotely, but without SSL securing the connection, devices in
-    between your browser and the server could "sniff" the packets to
-    see what you're doing. If you want to make the webGui remotely
-    accessible, install the [Unraid Connect](/connect/about.md) plugin, which can provide a
-    secure remote access solution that utilizes SSL to ensure your
-    connection is fully encrypted.
+  rebound access to another port on the Management Access settings
+  page). Forwarding this port by default will allow you to access the
+  webGui remotely, but without SSL securing the connection, devices in
+  between your browser and the server could "sniff" the packets to
+  see what you're doing. If you want to make the webGui remotely
+  accessible, install the [Unraid Connect](/connect/about.md) plugin, which can provide a
+  secure remote access solution that utilizes SSL to ensure your
+  connection is fully encrypted.
 
 - **Port 443**: Used to access the webGui with SSL. This is only
-    better than port 80 if you have a root password set. If no root
-    password is set and you forward this port, unauthorized users can
-    connect to your webGui and have full access to your server. In
-    addition, if you forward this port without using the [Unraid Connect](/connect/about.md)
-    plugin, attempts to connect to the webGui through a browser will
-    present a security warning due to the lack of an SSL certificate.
-    Consider making life easier for yourself and utilize the [Unraid Connect](/connect/about.md)
-    plugin to enable simple, safe, and secure remote access to your
-    Unraid systems.
+  better than port 80 if you have a root password set. If no root
+  password is set and you forward this port, unauthorized users can
+  connect to your webGui and have full access to your server. In
+  addition, if you forward this port without using the [Unraid Connect](/connect/about.md)
+  plugin, attempts to connect to the webGui through a browser will
+  present a security warning due to the lack of an SSL certificate.
+  Consider making life easier for yourself and utilize the [Unraid Connect](/connect/about.md)
+  plugin to enable simple, safe, and secure remote access to your
+  Unraid systems.
 
 - **Port 445**: Used for SMB (shares). If you forward this port to
-    your server, any public shares can be connected to by any user over
-    the internet. Generally speaking, it is never advisable to expose
-    SMB shares directly over the internet. If you need the ability to
-    access your shares remotely, we suggest utilizing a WireGuard VPN to
-    create a secure tunnel between your device and the server. In
-    addition, if the flash device itself is exported using SMB and this
-    port is forwarded, its contents can easily be deleted and your paid
-    key could easily be stolen. Just don't do this.
+  your server, any public shares can be connected to by any user over
+  the internet. Generally speaking, it is never advisable to expose
+  SMB shares directly over the internet. If you need the ability to
+  access your shares remotely, we suggest utilizing a WireGuard VPN to
+  create a secure tunnel between your device and the server. In
+  addition, if the flash device itself is exported using SMB and this
+  port is forwarded, its contents can easily be deleted and your paid
+  key could easily be stolen. Just don't do this.
 
 - **Port 111/2049:** Used for NFS (shares). While NFS is disabled by
-    default, if you are making use of this protocol, just make sure you
-    aren't forwarding these ports through your router. Similar to SMB,
-    just utilize WireGuard to create a secure tunnel from any remote
-    devices that need to connect to the server over NFS.
+  default, if you are making use of this protocol, just make sure you
+  aren't forwarding these ports through your router. Similar to SMB,
+  just utilize WireGuard to create a secure tunnel from any remote
+  devices that need to connect to the server over NFS.
 
 - **Port 22/23:** Used by Telnet and SSH for console access.
-    Especially dangerous for users that don't have a root password set.
-    Similar to SMB, we don't recommend forwarding these ports at all,
-    but rather, suggest users leverage a WireGuard VPN connection for
-    the purposes of connecting using either of these protocols.
+  Especially dangerous for users that don't have a root password set.
+  Similar to SMB, we don't recommend forwarding these ports at all,
+  but rather, suggest users leverage a WireGuard VPN connection for
+  the purposes of connecting using either of these protocols.
 
 - **Ports in the 57xx range:** These ports are generally used by VMs
-    for VNC access. While you can forward these ports to enable VNC
-    access remotely for your VMs, the better and easier way to do this
-    is through installing the [Unraid Connect](/connect/about.md) plugin.
-    This ensures that those connections
-    are secure via SSL and does not require individual ports to be
-    forwarded for each VM.
+  for VNC access. While you can forward these ports to enable VNC
+  access remotely for your VMs, the better and easier way to do this
+  is through installing the [Unraid Connect](/connect/about.md) plugin.
+  This ensures that those connections
+  are secure via SSL and does not require individual ports to be
+  forwarded for each VM.
 
 Generally speaking, you really shouldn't need to forward many ports to
 your server. If you see a forwarding rule you don't understand,
@@ -184,25 +184,25 @@ of the SSL implementation for both local access and [Unraid Connect Remote Acces
 Some terms:
 
 - **servername** can be changed on the Settings -\> Identification
-    page. It defaults to "tower".
+  page. It defaults to "tower".
 - **localTLD** can be changed on the Settings -\> Management Access
-    page. It defaults to "local".
+  page. It defaults to "local".
 - **Use SSL/TLS** can be changed on the Settings -\> Management Access
-    page. It defaults to "No".
+  page. It defaults to "No".
 - **HTTP port** can be changed on the Settings -\> Management Access
-    page. It defaults to "80". If you change this, add `:[HTTP port]` to any of the http URLs in the scenarios below. (example:
-    `http://tower.local:8080`)
+  page. It defaults to "80". If you change this, add `:[HTTP port]` to any of the http URLs in the scenarios below. (example:
+  `http://tower.local:8080`)
 - **HTTPS port** can be changed on the Settings -\> Management Access
-    page. It defaults to "443". If you change this, add `:[HTTPS port]` to any of the https URLs in the scenarios below. (example:
-    `https://tower.local:3443`)
+  page. It defaults to "443". If you change this, add `:[HTTPS port]` to any of the https URLs in the scenarios below. (example:
+  `https://tower.local:3443`)
 - **certificate** refers to either a self-signed SSL Certificate, or a
-    SSL certificate issued by a Certificate Authority (Let's Encrypt)
+  SSL certificate issued by a Certificate Authority (Let's Encrypt)
 - **lan-ip** is your servers LAN IP address with dots changed to
-    dashes (example 192-168-100-1)
+  dashes (example 192-168-100-1)
 - **wan-ip** is your internet-facing IP address with dots changed to
-    dashes (example 136-26-144-139)
+  dashes (example 136-26-144-139)
 - **hash** is a random 40 character hex string (160 bits) uniquely
-    assigned to your server when a certificate is first issued
+  assigned to your server when a certificate is first issued
 
 **Caveats of using a self-signed certificate**: Note that browsers will
 show a certificate error because they cannot verify the authenticity of
@@ -216,7 +216,7 @@ acknowledge the browser warning.
 - Navigate to the Settings -\> Management Access page
 - Set **Use SSL/TLS** to No
 - **LocalTLD** should be kept at the default of "local" unless you
-    can provide your own DNS name resolution
+  can provide your own DNS name resolution
 - Your URLs:
   - `http://[servername].[localTLD]` (example: `http://tower.local`)
   - `http://[ipaddress]` (example: `http://192.168.100.1`)
@@ -227,71 +227,71 @@ acknowledge the browser warning.
 - Navigate to the Settings -\> Management Access page
 - Set **Use SSL/TLS** to Yes
 - **LocalTLD** should be kept at the default of "local" unless you
-    can provide your own DNS name resolution
+  can provide your own DNS name resolution
 - Your URLs:
   - `https://[servername].[localTLD]` (example: `https://tower.local`)
-  - `https://[ipaddress]`  (example: `https://192.168.100.1`)
+  - `https://[ipaddress]` (example: `https://192.168.100.1`)
 - All traffic will be encrypted
 - Unraid will manage the certificate for you. See "Caveats of using a
-    self-signed certificate" above.
+  self-signed certificate" above.
 
 #### Https with Myunraid.net certificate - with fallback URL if DNS is unavailable
 
 - Navigate to the Settings -\> Management Access page
 - **LocalTLD** should be kept at the default of "local" unless you
-    can provide your own DNS name resolution (this is used for the
-    fallback certificate)
+  can provide your own DNS name resolution (this is used for the
+  fallback certificate)
 - Leave **Use SSL/TLS** set to either No or Yes
 - Press **Provision**
 - Your primary URLs when **Use SSL/TLS** set to No:
   - `http://[servername].[localTLD]` (example: `http://tower.local`)
   - `https//[ipaddress]` (example: `http://192.168.100.1`)
 - Your primary URLs when **Use SSL/TLS** set to Yes. Note that these
-    URLs use a self-signed certificate (See "Caveats of using a
-    self-signed certificate" above)
+  URLs use a self-signed certificate (See "Caveats of using a
+  self-signed certificate" above)
   - `https://[servername].[localTLD]` (example: `https://tower.local`)
-  - `https://[ipaddress]`  (example: `https://192.168.100.1`)
+  - `https://[ipaddress]` (example: `https://192.168.100.1`)
 - Your alternate URL will be
-    `https://[lan-ip].[hash].myunraid.net` (example:
-    `https://192-168-100-1.a1b2c3d4e5.myunraid.net`). This personal link
-    is shown in the Certificate subject field on the Management Access
-    page. If you install the optional [Unraid Connect](/connect/about.md) plugin it will also be
-    shown on the Connect dashboard ( <https://connect.myunraid.net/> )
+  `https://[lan-ip].[hash].myunraid.net` (example:
+  `https://192-168-100-1.a1b2c3d4e5.myunraid.net`). This personal link
+  is shown in the Certificate subject field on the Management Access
+  page. If you install the optional [Unraid Connect](/connect/about.md) plugin it will also be
+  shown on the Connect dashboard ( <https://connect.myunraid.net/> )
 - All traffic will be encrypted if using https.
 - Unraid will manage the certificates for you.
 - If at any point DNS resolution becomes unavailable, the alternate
-    URL may not resolve. In this case use the primary URL as a fallback.
+  URL may not resolve. In this case use the primary URL as a fallback.
 
 #### Https with Myunraid.net certificate - with no fallback URL
 
 - Navigate to the Settings -\> Management Access page
 - **LocalTLD** should be kept at the default of "local" unless you
-    can provide your own DNS name resolution (this is used for the
-    fallback certificate if you run the `use_ssl` command mentioned
-    below)
+  can provide your own DNS name resolution (this is used for the
+  fallback certificate if you run the `use_ssl` command mentioned
+  below)
 - Press **Provision**
 - If DNS Rebinding is not an issue, the "Strict" option for **Use
-    SSL/TLS** will be available.
+  SSL/TLS** will be available.
 - Set **Use SSL/TLS** to Strict (this was previously called "Auto",
-    but "Strict" is more descriptive)
+  but "Strict" is more descriptive)
 - Your URL will be `https://[lan-ip].[hash].myunraid.net`
-    (example: `https://192-168-100-1.a1b2c3d4e5.myunraid.net`) This
-    personal link is shown in the Certificate subject field on the
-    Management Access page. If you install the optional [Unraid Connect](/connect/about.md) plugin it will also be
-    shown on the Connect dashboard ( <https://connect.myunraid.net/> )
+  (example: `https://192-168-100-1.a1b2c3d4e5.myunraid.net`) This
+  personal link is shown in the Certificate subject field on the
+  Management Access page. If you install the optional [Unraid Connect](/connect/about.md) plugin it will also be
+  shown on the Connect dashboard ( <https://connect.myunraid.net/> )
 - All traffic will be encrypted
 - Unraid will manage the certificates for you.
 - Note: If at any point DNS resolution becomes unavailable (e.g., your
-    Internet goes down), use telnet, SSH or local keyboard/monitor to
-    login. Then:
+  Internet goes down), use telnet, SSH or local keyboard/monitor to
+  login. Then:
   - type `use_ssl no` to access the webgui via
-        `http://[servername].[localTLD]` or `http://[ipaddress]`
+    `http://[servername].[localTLD]` or `http://[ipaddress]`
   - type `use_ssl yes` to access the webgui via
-        `https://[servername].[localTLD]` or `https://[ipaddress]`
-        using a self-signed certificate (See
-        "Caveats of using a self-signed certificate" above)
+    `https://[servername].[localTLD]` or `https://[ipaddress]`
+    using a self-signed certificate (See
+    "Caveats of using a self-signed certificate" above)
   - Once DNS resolution is available again, change **Use SSL/TLS**
-        back to Strict
+    back to Strict
 
 ### Redirects
 
@@ -300,16 +300,16 @@ When accessing `http://[ipaddress]` or
 depending on the value of the **Use SSL/TLS** setting:
 
 - If **Use SSL/TLS** is set to Strict, you will be redirected to
-    `https://[lan-ip].[hash].myunraid.net` However, this behavior
-    makes it more difficult to access your server when DNS is
-    unavailable (i.e. your Internet goes down). If that happens see the
-    note under `HTTPS with Myunraid.net certificate - with no fallback
-    URL` above.
+  `https://[lan-ip].[hash].myunraid.net` However, this behavior
+  makes it more difficult to access your server when DNS is
+  unavailable (i.e. your Internet goes down). If that happens see the
+  note under `HTTPS with Myunraid.net certificate - with no fallback
+URL` above.
 - If **Use SSL/TLS** is set to Yes, you will be redirected to
-    `https://[ipaddress]` or  `https://[servername].[localTLD]`
-    as that will likely work even if your Internet goes down.
+  `https://[ipaddress]` or `https://[servername].[localTLD]`
+  as that will likely work even if your Internet goes down.
 - If **Use SSL/TLS** is set to No, then the http url will load
-    directly.
+  directly.
 
 Note: for the redirects to work, you must start from http urls not https
 urls.
@@ -320,25 +320,25 @@ urls.
 - Navigate to the Settings -\> Management Access page
 - Click **Provision** if you haven't already
 - Regardless of the value of **Use SSL/TLS**, you will have the option
-    to access the server using
-    `https://[lan-ip].[hash].myunraid.net:[wan-port]` (example:
-    `https://192-168-100-1.a1b2c3d4e5.myunraid.net`).
+  to access the server using
+  `https://[lan-ip].[hash].myunraid.net:[wan-port]` (example:
+  `https://192-168-100-1.a1b2c3d4e5.myunraid.net`).
 - Navigate to Settings -\> Management Access -\> Unraid Connect page
 - Set **Allow Remote Access** to yes
 - Set the **WAN port** you want to use. For added security we
-    recommend you choose a random port over 1000 rather than using the
-    default of 443. i.e. something like 13856, 48653, etc
+  recommend you choose a random port over 1000 rather than using the
+  default of 443. i.e. something like 13856, 48653, etc
 - Click **Apply**
 - Setup your router to port forward the **WAN port** you specified to
-    the LAN IP address and **HTTPS port** used by the server. There is a
-    note on the screen telling you the exact port and IP to use.
+  the LAN IP address and **HTTPS port** used by the server. There is a
+  note on the screen telling you the exact port and IP to use.
 - Press the **Check** button. If the port is forwarded correctly you
-    will see a message saying "Your Unraid Server is reachable from the
-    Internet"
+  will see a message saying "Your Unraid Server is reachable from the
+  Internet"
 - To access your server using Remote Access, login to the Unraid Connect
-    Dashboard and click the Remote Access link. The URL will be
-    `https://[wan-ip].[hash].myunraid.net:[wan-port]` (example:
-    `https://136-26-144-139.a1b2c3d4e5.myunraid.net:13856`).
+  Dashboard and click the Remote Access link. The URL will be
+  `https://[wan-ip].[hash].myunraid.net:[wan-port]` (example:
+  `https://136-26-144-139.a1b2c3d4e5.myunraid.net:13856`).
 
 ### Custom Certificates
 
@@ -347,23 +347,23 @@ urls.
 - Navigate to the Settings -\> Management Access page
 - Set **Use SSL/TLS** to Yes
 - Set the **LocalTLD** to the domain name used in the "Subject" of
-    the certificate.
+  the certificate.
 - Your URL will be `https://[servername].[localTLD]` (example:
-    `https://tower.mydomain.com`). You are responsible for managing DNS
-    for this URL.
+  `https://tower.mydomain.com`). You are responsible for managing DNS
+  for this URL.
 - You are responsible for managing the certificate. Upload it to
-    `/boot/config/ssl/certs/[servername]_unraid_bundle.pem`
+  `/boot/config/ssl/certs/[servername]_unraid_bundle.pem`
 - The certificate must be valid for `[servername].[localTLD]`
-    (example: `tower.mydomain.com`). For a wildcard cert it must be
-    `*.[localTLD]` (example: `*.mydomain.com`). This url can be
-    specified in either the "Subject" of the certificate or one of the
-    "Subject Alternative Name" fields (prior to 6.10.3, only the
-    "Subject" field was used). If you find that Unraid deletes your
-    certificate, it is because the server's url is not specified in the
-    certificate.
+  (example: `tower.mydomain.com`). For a wildcard cert it must be
+  `*.[localTLD]` (example: `*.mydomain.com`). This url can be
+  specified in either the "Subject" of the certificate or one of the
+  "Subject Alternative Name" fields (prior to 6.10.3, only the
+  "Subject" field was used). If you find that Unraid deletes your
+  certificate, it is because the server's url is not specified in the
+  certificate.
 - All traffic will be encrypted
 - (optional) If desired, see the Unraid Connect Remote Access section
-    above
+  above
 
 ## Data Encryption
 
@@ -402,9 +402,9 @@ drive).
 - click Apply to commit the change
 - click Done to return to the Main tab
 - the drive will now show as unmountable and the option to format
-    unmountable drives will be present. Check that the drive is the one
-    you are expecting to be encrypted and if it is correct go ahead and
-    format it.
+  unmountable drives will be present. Check that the drive is the one
+  you are expecting to be encrypted and if it is correct go ahead and
+  format it.
 
 Once you have set up encryption then it will necessary to provide the
 encryption key when starting the array. Once this has been done and the
@@ -434,14 +434,14 @@ significant configuration change.
 You easily achieve this from the Unraid GUI by:
 
 1. Click on the flash drive on the Main tab in the GUI.
-2. In the *Flash Device Settings* section click on the **Flash Backup**
-    button.
+2. In the _Flash Device Settings_ section click on the **Flash Backup**
+   button.
 3. The system will now start creating a zip file that is a backup of
-    the contents of the flash drive
+   the contents of the flash drive
 4. When the zip file has been created your browser should prompt you to
-    provide the location where you want the backup saved to. It is
-    recommended that this is a location off the Unraid server so that it
-    is available even when the Unraid server is not operational.
+   provide the location where you want the backup saved to. It is
+   recommended that this is a location off the Unraid server so that it
+   is available even when the Unraid server is not operational.
 
 If you later need to recreate your flash drive for any reason this
 backup can be used as input to the Limetech USB Creator tool.
@@ -451,14 +451,14 @@ backup can be used as input to the Limetech USB Creator tool.
 The flash drive can have similar settings applied to it to control
 access over the network as is the case for other shares on an Unraid
 system. The difference is that you set this up by clicking on the
-**flash** device on the *Main* tab in the GUI rather than doing it via
+**flash** device on the _Main_ tab in the GUI rather than doing it via
 the Shares tab.
 
 - **Network visibility**: You can specify whether the flash drive
-    should even be accessible via the network, and if it is accessible
-    whether it should be hidden or visible to everyone.
+  should even be accessible via the network, and if it is accessible
+  whether it should be hidden or visible to everyone.
 - **Access rights**: If network access is allowed you can specify any
-    access permissions that you want applied.
+  access permissions that you want applied.
 
 ### Permissions
 
@@ -471,35 +471,35 @@ The implication of this is that if a user has their own custom scripts
 from that location. There are a number of ways to handle this:
 
 - Copy the files to a location from which they can be executed
-  - The location */usr/local/bin* is a good choice if you want the
-        files on the default search path.
+  - The location _/usr/local/bin_ is a good choice if you want the
+    files on the default search path.
   - You can copy the files into position when booting by adding
-        appropriate commands to the config/go file on the flash drive.
+    appropriate commands to the config/go file on the flash drive.
   - Remember to give the files execute permission after copying
-        them.
+    them.
 - For scripts precede the script name with the command that runs the
-    script (e.g. *bash path-to-script*)
+  script (e.g. _bash path-to-script_)
 
 ## VPN
 
 **Unraid servers are not hardened against attack via the network so
-should *NEVER* be exposed directly to the internet.**
+should _NEVER_ be exposed directly to the internet.**
 
 - One exception is the WireGuard VPN service introduced in Unraid 6.8
-    explicitly to address secure access to/from the internet.
+  explicitly to address secure access to/from the internet.
 - If running Docker container or are exposed to the internet then the
-    security of these needs to be assessed on a case-by-case basis.
+  security of these needs to be assessed on a case-by-case basis.
 
-:   You may need to contact the developer of the container to determine
-    how safe it is to expose it to the internet.
-:   There is a level of protection as a docker container runs in a
-    'sandboxed' environment so the level of access to the content of
-    your disks is constrained to what you allow in the path mapping
-    settings for the container.
+: You may need to contact the developer of the container to determine
+how safe it is to expose it to the internet.
+: There is a level of protection as a docker container runs in a
+'sandboxed' environment so the level of access to the content of
+your disks is constrained to what you allow in the path mapping
+settings for the container.
 
 - If running VMs that are exposed to the internet then you need to
-    apply the same security to these that you would apply to a physical
-    PC attached to the local LAN.
+  apply the same security to these that you would apply to a physical
+  PC attached to the local LAN.
 
 if you want to make secure connections between an Unraid server and the
 Internet then you want to use a technology known as VPN (Virtual Private
@@ -518,19 +518,19 @@ article](https://en.wikipedia.org/wiki/Virtual_private_network)
 There are 2 common Use Cases that Unraid users are likely to have:
 
 - **Remote Access to Unraid from the Internet**: This is by far the
-    commonest Use Case and many users want to. be able to safely access
-    their Unraid servers (and potentially their whole home LAN) when
-    away from home. When running in this mode the server end of the VPN
-    link will either be running on the user's router (if it supports
-    such a feature) or will be hosted on the Unraid server.
+  commonest Use Case and many users want to. be able to safely access
+  their Unraid servers (and potentially their whole home LAN) when
+  away from home. When running in this mode the server end of the VPN
+  link will either be running on the user's router (if it supports
+  such a feature) or will be hosted on the Unraid server.
 - **Remote Access from Unraid to the Internet**: This is used when you
-    want applications running on Unraid to access the internet. This
-    could be to access generic internet content or to access another
-    server located remotely to the Unraid server. If in is generic
-    access to the internet then it is highly likely that the server end
-    of such connection will be via a commercial VPN provider. When
-    running in this mode Unraid will be acting as the client end of any
-    VPN link.
+  want applications running on Unraid to access the internet. This
+  could be to access generic internet content or to access another
+  server located remotely to the Unraid server. If in is generic
+  access to the internet then it is highly likely that the server end
+  of such connection will be via a commercial VPN provider. When
+  running in this mode Unraid will be acting as the client end of any
+  VPN link.
 
 There are a wide variety of VPN solutions available both free and
 commercial.
@@ -558,9 +558,9 @@ container that meets your requirements. You may also find the
 video](https://www.youtube.com/watch?v=fpkLvnAKen0) of use in setting it
 up.
 
-*It is expected that with the introduction of WireGuard support in
+_It is expected that with the introduction of WireGuard support in
 Unraid 6.8 that WireGuard will become the favored way of setting up a
-VPN connection to an Unraid server*.
+VPN connection to an Unraid server_.
 
 ### WireGuard
 
@@ -574,12 +574,12 @@ VPN connections to/from their Unraid servers.
 Some points to note about the Unraid WireGuard implementation are:
 
 - The WireGuard service is built into Unraid so there is no need to
-    add 3rd party software to achieve a VPN connection.
+  add 3rd party software to achieve a VPN connection.
 - The WireGuard service can be set to auto-start as part of the Unraid
-    boot process.
+  boot process.
 - The WireGuard service is available even if the array is not started.
 - WireGuard uses a light-weight protocol so performance tends to be
-    better than OpenVPN.
+  better than OpenVPN.
 
 More information about WireGuard can be found on the [WireGuard web
 site](https://www.wireguard.com/). It should be noted that WireGuard is
@@ -598,7 +598,7 @@ Unraid in the future. This approach allows for quick updates and
 enhancements without dependency on Unraid version releases. The Unraid
 WireGuard GUI plugin can be installed via Community Applications, and
 when it is installed you will find that an entry called **VPN Manager**
-is added to the GUI under *Settings-\>Network Services*
+is added to the GUI under _Settings-\>Network Services_
 
 Note that the Unraid WireGuard plugin is still evolving so in the event
 of a discrepancy between what is described here and the following forum
@@ -607,47 +607,48 @@ updating to bring it inline. These threads are also the appropriate
 place to ask questions regarding Unraid's WireGuard implementation.
 
 - [forum
-    thread](https://forums.unraid.net/topic/84229-dynamix-wireguard-vpn/)
-    on the Dynamix WireGuard plugin
+  thread](https://forums.unraid.net/topic/84229-dynamix-wireguard-vpn/)
+  on the Dynamix WireGuard plugin
 - [forum
-    thread](https://forums.unraid.net/topic/84226-wireguard-quickstart/)
-    covering setting up incoming connections.
+  thread](https://forums.unraid.net/topic/84226-wireguard-quickstart/)
+  covering setting up incoming connections.
 - [Forum
-    thread](https://forums.unraid.net/topic/84316-wireguard-vpn-tunneled-access/)
-    covering setting up outgoing connections.
+  thread](https://forums.unraid.net/topic/84316-wireguard-vpn-tunneled-access/)
+  covering setting up outgoing connections.
 
 What can you do with WireGuard? Let's walk through each of the
 connection types:
 
 - **Remote access to server**: Use your phone or computer to remotely
-    access your Unraid server, including:
+  access your Unraid server, including:
+
   - Unraid administration via the webgui
   - Access dockers, VMs, and network shares as though you were
-        physically connected to the network
+    physically connected to the network
 
 - **Remote access to LAN**: Builds on "Remote access to server",
-    allowing you to access your entire LAN as well.
+  allowing you to access your entire LAN as well.
 
 - **Server to server access**: Allows two Unraid servers to connect to
-    each other.
+  each other.
 
 - **LAN to LAN access**: Builds on "Server to server access",
-    allowing two entire networks to communicate. May require additional
-    settings, TBD.
+  allowing two entire networks to communicate. May require additional
+  settings, TBD.
 
 - **Server hub & spoke access**: Builds on "Remote access to
-    server", except that all of the VPN clients can connect to each
-    other as well. Note that all traffic passes through the server.
+  server", except that all of the VPN clients can connect to each
+  other as well. Note that all traffic passes through the server.
 
 - **LAN hub & spoke access**: Builds on "Server hub & spoke access",
-    allowing you to access your entire LAN as well.
+  allowing you to access your entire LAN as well.
 
 - **VPN tunneled access**: Route traffic for specific Dockers and VMs
-    through a commercial WireGuard VPN provider (see this guide)
+  through a commercial WireGuard VPN provider (see this guide)
 
 - **Remote tunneled access**: Securely access the Internet from
-    untrusted networks by routing all of your traffic through the VPN
-    and out Unraid's Internet connection
+  untrusted networks by routing all of your traffic through the VPN
+  and out Unraid's Internet connection
 
 The following diagram attempts to show these different connection types
 in a graphical format
@@ -663,110 +664,110 @@ other systems on your network.
 **Prerequisites**
 
 - You must be running Unraid 6.8 with the Dynamix WireGuard plugin
-    installed via the **Apps** tab (Community Applications).
+  installed via the **Apps** tab (Community Applications).
 
 - Be aware that WireGuard is technically classified as experimental.
-    It has not gone through a full security audit yet and has not
-    reached 1.0 status. But it is the first open-source VPN solution
-    that is extremely simple to install, fast, and designed from the
-    ground up to be secure.
+  It has not gone through a full security audit yet and has not
+  reached 1.0 status. But it is the first open-source VPN solution
+  that is extremely simple to install, fast, and designed from the
+  ground up to be secure.
 
 - Understand that giving someone VPN access to your LAN is just like
-    giving them physical access to your LAN, except they have it 24x7
-    when you aren't around to supervise. Only give access to people and
-    devices that you trust, and make certain that the configuration
-    details (particularly the private keys) are not passed around
-    insecurely. Regardless of the "connection type" you choose, assume
-    that anyone who gets access to this configuration information will
-    be able to get full access to your network.
+  giving them physical access to your LAN, except they have it 24x7
+  when you aren't around to supervise. Only give access to people and
+  devices that you trust, and make certain that the configuration
+  details (particularly the private keys) are not passed around
+  insecurely. Regardless of the "connection type" you choose, assume
+  that anyone who gets access to this configuration information will
+  be able to get full access to your network.
 
 - This guide works great for simple networks. But if you have Dockers
-    with custom IPs or VMs with strict networking requirements, please
-    see the "Complex Networks" section below.
+  with custom IPs or VMs with strict networking requirements, please
+  see the "Complex Networks" section below.
 
 - Unraid will automatically configure your WireGuard clients to
-    connect to Unraid using your current public IP address, which will
-    work until that IP address changes. To future-proof the setup, you
-    can use Dynamic DNS instead. There are many ways to do this,
-    probably the easiest is described in this [2 minute video from
-    SpaceInvaderOne](https://www.youtube.com/watch?v=9FkQ0wYpCV0).
+  connect to Unraid using your current public IP address, which will
+  work until that IP address changes. To future-proof the setup, you
+  can use Dynamic DNS instead. There are many ways to do this,
+  probably the easiest is described in this [2 minute video from
+  SpaceInvaderOne](https://www.youtube.com/watch?v=9FkQ0wYpCV0).
 
 - If your router has UPnP enabled, Unraid will be able to
-    automatically forward the port for you. If not, you will need to
-    know how to configure your router to forward a port.
+  automatically forward the port for you. If not, you will need to
+  know how to configure your router to forward a port.
 
 - You will need to install WireGuard on a client system. It is
-    available for many operating systems as mentioned at [WireGuard
-    clients](https://www.wireguard.com/install/). Android or iOS make
-    good first client systems because you can get all the details via QR
-    code.
+  available for many operating systems as mentioned at [WireGuard
+  clients](https://www.wireguard.com/install/). Android or iOS make
+  good first client systems because you can get all the details via QR
+  code.
 
 **Setting up the Unraid side of the VPN tunnel**
 
 - First, go to Settings -\> Network Settings -\> Interface eth0. If
-    "Enable bridging" is "Yes", then WireGuard will work as
-    described below. If bridging is disabled, then none of the "Peer
-    type of connections" that involve the local LAN will work properly.
-    As a general rule, bridging should be enabled in Unraid.
+  "Enable bridging" is "Yes", then WireGuard will work as
+  described below. If bridging is disabled, then none of the "Peer
+  type of connections" that involve the local LAN will work properly.
+  As a general rule, bridging should be enabled in Unraid.
 
 [](file:enable-bridging.png "wikilink")
 
 - If UPnP is enabled on your router and you want to use it in Unraid,
-    go to Settings -\> Management Access and confirm "Use UPnP" is set
-    to Yes
+  go to Settings -\> Management Access and confirm "Use UPnP" is set
+  to Yes
 - On Unraid go to Settings -\> VPN Manager
 
 [](file:wg0.png "wikilink")
 
 - Give the VPN Tunnel a name, such as "MyHome VPN"
 - Press "Generate Keypair". This will generate a set of public and
-    private keys for Unraid. Take care not to inadvertently share the
-    private key with anyone (such as in a screenshot like this)
+  private keys for Unraid. Take care not to inadvertently share the
+  private key with anyone (such as in a screenshot like this)
 - By default, the local endpoint will be configured with your current
-    public IP address. If you chose to setup DDNS earlier, change the IP
-    address to the DDNS address.
+  public IP address. If you chose to setup DDNS earlier, change the IP
+  address to the DDNS address.
 - Unraid will recommend a port to use. You typically won't need to
-    change this unless you already have WireGuard running elsewhere on
-    your network.
+  change this unless you already have WireGuard running elsewhere on
+  your network.
 - Hit Apply
 - If Unraid detects that your router supports UPnP, it will
-    automatically setup port forwarding for you:
+  automatically setup port forwarding for you:
 
 [](file:upnp-yes.png "wikilink")
 
 - If you see a note that says "configure your router for port
-    forwarding\..." you will need to login to your router and setup the
-    port forward as directed by the note:
+  forwarding\..." you will need to login to your router and setup the
+  port forward as directed by the note:
 
 [](file:upnp-no.png "wikilink")
 
 - Some tips for setting up the port forward in your router:
   - Both the external (source) and internal (target/local) ports
-        should be set to the value Unraid provides. If your router
-        interface asks you to put in a range, use the same port for both
-        the starting and ending values. Be sure to specify that it is a
-        UDP port and not a TCP port.
+    should be set to the value Unraid provides. If your router
+    interface asks you to put in a range, use the same port for both
+    the starting and ending values. Be sure to specify that it is a
+    UDP port and not a TCP port.
   - For the internal (target/local) address, use the IP address of
-        your Unraid system shown in the note.
+    your Unraid system shown in the note.
   - Google can help you find instructions for your specific router,
-        i.e. "how to port forward Asus RT-AC68U"
+    i.e. "how to port forward Asus RT-AC68U"
 - Note that after hitting Apply, the public and private keys are
-    removed from view. If you ever need to access them, click the
-    "key" icon on the right-hand side.
+  removed from view. If you ever need to access them, click the
+  "key" icon on the right-hand side.
 
 [](file:key.png "wikilink")
 
 - Similarly, you can access other advanced settings by pressing the
-    "down chevron" on the right-hand side. They are beyond the scope
-    of this guide, but you can turn on help to see what they do.
+  "down chevron" on the right-hand side. They are beyond the scope
+  of this guide, but you can turn on help to see what they do.
 - In the upper right corner of the page, change the Inactive slider to
-    Active to start WireGuard. You can optionally set the tunnel to
-    Autostart when Unraid boots.
+  Active to start WireGuard. You can optionally set the tunnel to
+  Autostart when Unraid boots.
 
 [](file:activate.png "wikilink")
 
-:   *There have been cases where this step has been omitted and users
-    end up wondering why the WireGuard VPN link is not working!*
+: _There have been cases where this step has been omitted and users
+end up wondering why the WireGuard VPN link is not working!_
 
 **Defining a Peer (client)**
 
@@ -776,26 +777,26 @@ other systems on your network.
 
 - Give it a name, such as "MyAndroid"
 - For the initial connection type, choose "Remote access to LAN".
-    This will give your device access to Unraid and other items on your
-    network.
+  This will give your device access to Unraid and other items on your
+  network.
 - Click "Generate Keypair" to generate public and private keys for
-    the client. The private key will be given to the client/peer, but
-    take care not to share it with anyone else (such as in a screenshot
-    like this)
+  the client. The private key will be given to the client/peer, but
+  take care not to share it with anyone else (such as in a screenshot
+  like this)
 - For an additional layer of security, click "Generate Key" to
-    generate a preshared key. Again, this should only be shared with
-    this client/peer.
+  generate a preshared key. Again, this should only be shared with
+  this client/peer.
 - Click Apply.
 - **Note:** Technically, the peer should generate these keys and not
-    give the private key to Unraid. You are welcome to do that, but it
-    is less convenient as the config files Unraid generates will not be
-    complete and you will have to finish configuring the client
-    manually.
+  give the private key to Unraid. You are welcome to do that, but it
+  is less convenient as the config files Unraid generates will not be
+  complete and you will have to finish configuring the client
+  manually.
 
 **Caution:**\
 It can be a little risky to add a new client ("peer") to WireGuard if
 you are already connected remotely using WireGuard as adding a new peer
-*sometimes* toggles the WireGuard tunnel off which will render you
+_sometimes_ toggles the WireGuard tunnel off which will render you
 unable to reconnect. This is because a configuration change is made
 effective by inactivating the tunnel with the current (old)
 configuration and next activating it with the updated (new)
@@ -806,25 +807,25 @@ Unraid server
 **Configuring a Peer (client)**
 
 - Click the "eye" icon to view the peer configuration. If the button
-    is not clickable, you need to apply or reset your unsaved changes
-    first.
+  is not clickable, you need to apply or reset your unsaved changes
+  first.
 
 [](file:peer-eye.png "wikilink")
 
 [](file:peer-view.png "wikilink")
 
 - If you are setting up a mobile device, choose the "Create from QR
-    code" option in the mobile app and take a picture of the QR code.
-    Give it a name and make the connection. The VPN tunnel starts almost
-    instantaneously, once it is up you can open a browser and connect to
-    Unraid or another system on your network. Be careful not to share
-    screenshots of the QR code with anyone, or they will be able to use
-    it to access your VPN.
+  code" option in the mobile app and take a picture of the QR code.
+  Give it a name and make the connection. The VPN tunnel starts almost
+  instantaneously, once it is up you can open a browser and connect to
+  Unraid or another system on your network. Be careful not to share
+  screenshots of the QR code with anyone, or they will be able to use
+  it to access your VPN.
 - If you are setting up another type of device, download the file and
-    transfer it to the remote computer via trusted email or dropbox,
-    etc. Then unzip it and load the configuration into the client.
-    Protect this file, anyone who has access to it will be able to
-    access your VPN.
+  transfer it to the remote computer via trusted email or dropbox,
+  etc. Then unzip it and load the configuration into the client.
+  Protect this file, anyone who has access to it will be able to
+  access your VPN.
 
 **About DNS**
 
@@ -861,14 +862,14 @@ A partial solution is:
 
 - In the WireGuard config, set "Use NAT" to No
 - In your router, add a static route that lets your network access the
-    WireGuard "Local tunnel network pool" through the IP address of
-    your Unraid system. For instance, for the default pool of
-    10.253.0.0/24 you should add this static route:
+  WireGuard "Local tunnel network pool" through the IP address of
+  your Unraid system. For instance, for the default pool of
+  10.253.0.0/24 you should add this static route:
   - Network: 10.253.0.0/16 (aka 10.253.0.0 with subnet 255.255.0.0)
   - Gateway: `<IP address of your Unraid system>`
 - Note that this covers the entire class B 10.253.x.x network, so you
-    can add other WireGuard tunnels without having to modify your router
-    setup again.
+  can add other WireGuard tunnels without having to modify your router
+  setup again.
 
 With these changes, your network should work normally. However, your
 WireGuard clients still may not be able to access Dockers on custom IPs
@@ -887,14 +888,14 @@ your work:
 
 - Confirm that the tunnel is active (!)
 - Confirm that your DDNS is pointed at your current public IP address,
-    and is assigned to your "Local endpoint"
+  and is assigned to your "Local endpoint"
 - Confirm that you forwarded the correct UDP port through your router
-    to Unraid, and assigned that same port to the "Local endpoint"
+  to Unraid, and assigned that same port to the "Local endpoint"
 - If you made any changes to your configuration after setting up your
-    clients, you will need to set the clients up again so they have the
-    latest config.
+  clients, you will need to set the clients up again so they have the
+  latest config.
 - Be sure you save your changes before you press "View Peer Config",
-    otherwise your QR codes/files will not have the latest data.
+  otherwise your QR codes/files will not have the latest data.
 
 A few other ideas:
 
@@ -908,28 +909,28 @@ throttled. See this post.
 `* If your "Peer type of connection" includes one of the LAN options but you can only access Unraid, go to Settings -> Network Settings and see whether "Enable bridging" is yes.  If bridging is disabled, you will not be able to access your LAN over WireGuard.`
 
 - If you are connecting from another network over the Internet, be
-    sure that the networks on both sides use different subnets. You
-    can't connect two networks that both use 192.168.1.0/24, for
-    instance.
+  sure that the networks on both sides use different subnets. You
+  can't connect two networks that both use 192.168.1.0/24, for
+  instance.
 - If you can connect from some locations but not others, keep in mind
-    that the "broken" remote locations may have a firewall that blocks
-    UDP traffic. Hopefully, WireGuard will support TCP in the future,
-    but currently, there is no workaround for this.
+  that the "broken" remote locations may have a firewall that blocks
+  UDP traffic. Hopefully, WireGuard will support TCP in the future,
+  but currently, there is no workaround for this.
 - If nothing is working properly, switch to advanced mode and confirm
-    that the "Local tunnel network pool" is not already in use on your
-    network or on one of the networks you are connecting to. If there is
-    a conflict you will need to change it to a different private network
-    (10.0.0.0 to 10.255.255.255 \| 172.16.0.0 to 172.31.255.255 \|
-    192.168.0.0 to 192.168.255.255)
+  that the "Local tunnel network pool" is not already in use on your
+  network or on one of the networks you are connecting to. If there is
+  a conflict you will need to change it to a different private network
+  (10.0.0.0 to 10.255.255.255 \| 172.16.0.0 to 172.31.255.255 \|
+  192.168.0.0 to 192.168.255.255)
 - If you can't reach the Unraid webgui for some reason and you need
-    to prevent a WireGuard tunnel from automatically starting, delete
-    this file from your flash drive and reboot:
+  to prevent a WireGuard tunnel from automatically starting, delete
+  this file from your flash drive and reboot:
 
 `/boot/config/wireguard/autostart`
 
 - Note that if you have Dockers with custom IPs or VMs with strict
-    networking requirements, you will likely have issues. Please see the
-    "Complex Networks" section above.
+  networking requirements, you will likely have issues. Please see the
+  "Complex Networks" section above.
 
 #### Outgoing VPN Connections
 
@@ -953,8 +954,8 @@ needs.
 - [IVPN](https://www.ivpn.net/setup/gnu-linux-wireguard.html)
 - [TorGuard VPN](https://torguard.net/blog/what-is-wireguard-vpn/)
 - [NordVPN](https://nordvpn.com/blog/nordlynx-protocol-wireguard/) Not
-    sure this works without using the NordLynx client so may not be
-    compatible with the Unraid implementation.
+  sure this works without using the NordLynx client so may not be
+  compatible with the Unraid implementation.
 
 Note that with the current state of WireGuard, VPN providers cannot
 guarantee the same amount of privacy as they can with OpenVPN. See
@@ -966,32 +967,32 @@ that it is harder for them to guarantee that they cannot track you.
 
 - Download a config file from your preferred commercial VPN provider
 - On the Settings -\> VPN Manager page, click the "Import Config"
-    button and select the file on your hard drive. This will create a
-    new tunnel specific to this provider.
+  button and select the file on your hard drive. This will create a
+  new tunnel specific to this provider.
 - There are no settings to change, except perhaps to give it a name.
-    Click Apply.
+  Click Apply.
 - Note: You do not need to forward any ports through your router for
-    this type of connection
+  this type of connection
 - Change the Inactive slider to Active
 - Now ALL of your Unraid traffic will go through the commercial VPN
-    tunnel.
+  tunnel.
   - In the future it may be possible to restrict it so that only
-        specific Dockers use the VPN tunnel. Until then, you may need to
-        disable the tunnel in order to check for plugin updates or
-        perform other Unraid administrative tasks.
+    specific Dockers use the VPN tunnel. Until then, you may need to
+    disable the tunnel in order to check for plugin updates or
+    perform other Unraid administrative tasks.
   - Note that currently, Unraid will ignore any DNS server that is
-        specified in the downloaded config file. Unraid's DNS should be
-        set to something that will work whether the tunnel is up or
-        down, such as 8.8.8.8 and 8.8.4.4
+    specified in the downloaded config file. Unraid's DNS should be
+    set to something that will work whether the tunnel is up or
+    down, such as 8.8.8.8 and 8.8.4.4
 
 **Testing the tunnel**
 
 - Using Community Applications, install a browser such as the
-    jlesage/Firefox Docker container
+  jlesage/Firefox Docker container
 - Accept all defaults
 - Launch Firefox and visit <https://whatismyipaddress.com/> you should
-    see that your IP address is in the country you selected when you
-    signed up with the provider
+  see that your IP address is in the country you selected when you
+  signed up with the provider
 
 #### Support
 
@@ -1000,13 +1001,13 @@ the ask questions and get the most up-to-date information on using
 WireGuard with Unraid. The threads most likely to be of interest are:
 
 - [forum
-    thread](https://forums.unraid.net/topic/84229-dynamix-wireguard-vpn/)
-    on the Dynamix WireGuard plugin
+  thread](https://forums.unraid.net/topic/84229-dynamix-wireguard-vpn/)
+  on the Dynamix WireGuard plugin
 - [forum
-    thread](https://forums.unraid.net/topic/84226-wireguard-quickstart/)
-    covering setting up incoming connections.
+  thread](https://forums.unraid.net/topic/84226-wireguard-quickstart/)
+  covering setting up incoming connections.
 - [Forum
-    thread](https://forums.unraid.net/topic/84316-wireguard-vpn-tunneled-access/)
-    covering setting up outgoing connections.
+  thread](https://forums.unraid.net/topic/84316-wireguard-vpn-tunneled-access/)
+  covering setting up outgoing connections.
 
 ["WireGuard" and the "WireGuard" logo are registered trademarks of Jason A. Donenfeld.](https://www.wireguard.com/)

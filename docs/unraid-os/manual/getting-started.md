@@ -43,7 +43,7 @@ page](https://unraid.net/product).
 ## Initial Setup
 
 Once Unraid OS has booted, you can now bring up the browser-based
-Management Utility, a.k.a., the *webGui*, and complete the process of
+Management Utility, a.k.a., the _webGui_, and complete the process of
 configuring your system.
 
 ### Connecting to the Unraid webGui
@@ -60,7 +60,7 @@ There are two methods to connect to the webGui in Unraid:
 
 Once you are connected to the webGui, you will immediately be prompted
 to set a strong root password (as of version 6.10):
-![](/docs/legacy/Set_root_password.png "Set_root_password.png") 
+![](/docs/legacy/Set_root_password.png "Set_root_password.png")
 Strong passwords are unique (not reused), have at least 8 characters (the more the better),
 are a combination of alphabetic, numeric, and special characters, and
 are not common dictionary words. Better yet, use a password manager.
@@ -80,20 +80,20 @@ need to sign in to Unraid.net and obtain a key.
 - Upon signing in, a registration key will be downloaded and installed
   to your system automatically.
 
-![UPC installing a trial key](/docs/legacy/Upc_install_trial_key.png) 
+![UPC installing a trial key](/docs/legacy/Upc_install_trial_key.png)
 The purpose of the sign-in is to provide a way for you to manage your registration
 keys for Unraid OS (obtain a Trial key, purchase a paid key, recover a
 lost key, replace your key with a new flash device, or upgrade a keybo
 from one edition to another).
 
-When signing up we **highly recommend*** you enable 2FA for your
+When signing up we **highly recommend\*** you enable 2FA for your
 Unraid.net Account. Click
 [here](https://forums.unraid.net/topic/104007-enhanced-forum-account-security-2fa/)
 for how to set this up.
 
-*Note: On versions 6.9 and earlier, registering for a Trial, installing
+_Note: On versions 6.9 and earlier, registering for a Trial, installing
 a key, or purchasing a key is done from the webGui Tools \> Registration
-page.*
+page._
 
 ## Utilizing Unraid Connect
 
@@ -154,8 +154,8 @@ these guidelines when assigning disks:
   pool for the ultimate combination of functionality, performance, and
   protection.
 
-*NOTE: Your array will not start if you have attached more storage
-devices than your license key allows.*
+_NOTE: Your array will not start if you have attached more storage
+devices than your license key allows._
 
 ## Starting the Array and Formatting Your Devices
 
@@ -166,13 +166,13 @@ array. New devices added to disk or cache device slots will appear as
 them. Unraid 6 defaults to using the XFS filesystem for all devices, but
 if you define a cache pool then BTRFS will automatically be used for
 those devices (you can change the default file system under
-*Settings-\>System Settings-\>Disk Settings*).
+_Settings-\>System Settings-\>Disk Settings_).
 
 To format your devices for use, you must click the check box under
 ‘Array Operation’ that says **Format**, acknowledge the resulting prompt
 (read it carefully), and then click the **Format** button.
 
-Even before the devices are formatted, a *parity sync* will be performed
+Even before the devices are formatted, a _parity sync_ will be performed
 in the background to initialize the protection of the array. Until the
 sync is completed, the array will operate but in an unprotected state.
 It is recommended to wait until the initial parity sync completes before
@@ -181,7 +181,7 @@ adding data to the array.
 ## Stopping Array, Shutting Down, and Rebooting
 
 In order to perform one of these operations, visit the **Main** tab and
-scroll down to the section titled *Array Operation* and click on the
+scroll down to the section titled _Array Operation_ and click on the
 button appropriate to the operation you wish to carry out.
 
 ## Important Considerations
@@ -229,7 +229,7 @@ attack while leaving your valuable data at risk.
 
 If for some reason the USB Flash Creator tool cannot be used, or your USB flash device is not detected,
 it is possible to manually format and prepare a bootable USB flash device.
-device. **Note: this method only works for devices 32GB and *smaller*.**
+device. **Note: this method only works for devices 32GB and _smaller_.**
 
 - Plug the USB flash device into your Mac or PC.
 - Format the device using the FAT32 file system. It must **not** be
@@ -246,12 +246,12 @@ device. **Note: this method only works for devices 32GB and *smaller*.**
 - Browse to the USB flash device to see the newly extracted contents
   from your Mac or PC.
 - If you need to enable UEFI boot, rename the `EFI-` directory to `EFI`
-- Run the *make bootable* script appropriate to the OS you are using:
+- Run the _make bootable_ script appropriate to the OS you are using:
   - **Windows XP**
     - double-click the **make_bootable** file.
   - **Windows 7 or later**
-    - right-click the **make_bootable** file and select *Run as
-      Administrator*.
+    - right-click the **make_bootable** file and select _Run as
+      Administrator_.
   - **Mac**
     - double-click the file **make_bootable_mac** file and enter your
       admin password when prompted.
@@ -268,7 +268,7 @@ this is expected behavior.
 
 ## Advanced BIOS Configuration Guide
 
-![](/docs/legacy/Booting.jpg "Booting.jpg") 
+![](/docs/legacy/Booting.jpg "Booting.jpg")
 Configuring your motherboard BIOS (as well as your storage controller) correctly is an important step to
 ensuring a solid experience using Unraid. The basic guidelines are as
 follows:
@@ -291,19 +291,19 @@ try the following:
 
 - Set the boot order to as follows: Forced-FDD, USB-HDD, USB-ZIP
 - Try disabling USB 2.0/3.0 support (this will default to USB 1.1).
-- Try switching on or off any *Fast Boot* feature.
-- Try Switching on or off *USB keyboard* support.
+- Try switching on or off any _Fast Boot_ feature.
+- Try Switching on or off _USB keyboard_ support.
 
 If you still are unable to boot the OS, please post a message in our
 [general support](https://forums.unraid.net/forum/index.php?board=71.0)
 forum.
 
-*NOTE: Many motherboards support only up to 12 hard drives for purposes
+_NOTE: Many motherboards support only up to 12 hard drives for purposes
 of boot selection. This is normally not an issue for Unraid® OS;
 however, if your Flash device is recognized by the bios as a hard drive,
 you may not be able to boot from the Flash after installing your 12th
 “real” hard drive. To avoid this, if possible set up your bios so that
-the Flash is treated as a removable device.*
+the Flash is treated as a removable device._
 
 ## Boot Mode Selector (Syslinux)
 
@@ -331,7 +331,7 @@ to diagnose network connectivity problems or for users that don't have a
 separate device to use for connecting to the webGui.
 
 The management interface presented in this mode is the same one that is
-displayed when running the system in *headless* mode and accessing the
+displayed when running the system in _headless_ mode and accessing the
 server remotely using a web browser.
 
 - **Unraid OS Safe Mode (no plugins, no GUI)**
@@ -353,7 +353,7 @@ it. Please post in the [general
 support](https://forums.unraid.net/forum/index.php?board=71.0) forum
 for assistance in using this tool.
 
-The *memtest86+* tool supplied with Unraid will only work correctly if
+The _memtest86+_ tool supplied with Unraid will only work correctly if
 you are booting in non-UEFI (legacy) mode. If you want a version that
 can be run when booting in UEFI mode then you need to download your own
 copy from the memtest86+ [web site](http://www.memtest.org/).
@@ -364,9 +364,9 @@ feature in the BIOS (since the EEC feature automatically corrects any
 RAM error it detects).
 
 The user can change the boot menu to add additional options or amend
-existing ones by editing the *syslinux/syslinux.cfg* file on the flash
-drive or by clicking on the *flash* drive on the Main tab within the
-Management interface and using the *Syslinux Configuration* section on
+existing ones by editing the _syslinux/syslinux.cfg_ file on the flash
+drive or by clicking on the _flash_ drive on the Main tab within the
+Management interface and using the _Syslinux Configuration_ section on
 the resulting dialog.
 
 ## Privacy
@@ -427,7 +427,7 @@ do?**
 In the event this tool doesn't work for you, we have additionally
 documented a manual process by which you can also create your flash
 device. As an FYI, the manual method only works for devices 32GB and
-*smaller*.
+_smaller_.
 
 USB flash devices and the Flash Creator tool are discussed further in
 this New Users Blog.
@@ -457,11 +457,11 @@ Did you know that you can extend the [30 day free
 trial](https://unraid.net/download) of Unraid? Hardware can be
 ill-suited. Things break. Life happens. We get it. To try out Unraid a
 little longer, once your original trial shows "expired" in the upper
-left of the header, *Stop the array*.
+left of the header, _Stop the array_.
 
-Next, go to the *Registration* page, and now a button shows up where you
+Next, go to the _Registration_ page, and now a button shows up where you
 can click for a 15 day extension. You can do this a total of two times
 before you must decide if you would like to purchase Unraid or not.
 
-*Note: You cannot change the USB flash device for Unraid Trials if you
-wish to continue where you left off.*
+_Note: You cannot change the USB flash device for Unraid Trials if you
+wish to continue where you left off._

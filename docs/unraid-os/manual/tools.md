@@ -1,6 +1,6 @@
 # Tools
 
-*THIS SECTION IS STILL UNDER CONSTRUCTION*
+_THIS SECTION IS STILL UNDER CONSTRUCTION_
 
 The Tools section of the Unraid GUI is used to access a number of Tools
 to help with managing an Unraid server on a day-to-day basis. The list
@@ -20,10 +20,10 @@ selection.
 
 ### New Config
 
-**IMPORTANT:** *This tool is not part of the standard process for
+**IMPORTANT:** _This tool is not part of the standard process for
 recovering from a disk failure. In most cases since the procedure
 normally invalidates parity it will have the opposite effect and stop
-you being able to recover the contents of a failed disk intact.*
+you being able to recover the contents of a failed disk intact._
 
 This option is used to put the array back into a state where disk drives
 can be assigned as wanted and then parity rebuilt to match the new
@@ -44,37 +44,37 @@ The basic process is therefore:
 - Select the New Config tool from the Tools tab in the Unraid GUI
 - Click the Check box that says you want to proceed to use this tool.
 - Set the level of assignments you initially want to keep. In most
-    cases selecting the option to keep all assignments is the best
-    choice as it puts you in a state where you just need make any
-    desired changes from your current assignments.
+  cases selecting the option to keep all assignments is the best
+  choice as it puts you in a state where you just need make any
+  desired changes from your current assignments.
 
 Press the **Apply** button to run the tool. After doing this there is no
 obvious feedback that anything has been done.
 
 - Return to the Main tab and change the drive assignments to how you
-    now want them to be set. This can involve adding new drives,
-    removing drives or changing the slots to which drives are assigned.
+  now want them to be set. This can involve adding new drives,
+  removing drives or changing the slots to which drives are assigned.
 - Make sure you have not accidentally assigned a drive containing data
-    to a parity slot as if you do so when you start the array the
-    contents will be destroyed.
+  to a parity slot as if you do so when you start the array the
+  contents will be destroyed.
 - There is a checkbox next to the Start button to allow you to say
-    that parity is already valid. You should **not** check this box
-    unless advised to do so by a knowledgeable Unraid user as in most
-    cases making changes to the drive assignments will invalidate
-    parity. There are special cases where using this option can be
-    sensible after something has gone wrong with the array but only the
-    more experienced Unraid users will know what these are.
+  that parity is already valid. You should **not** check this box
+  unless advised to do so by a knowledgeable Unraid user as in most
+  cases making changes to the drive assignments will invalidate
+  parity. There are special cases where using this option can be
+  sensible after something has gone wrong with the array but only the
+  more experienced Unraid users will know what these are.
 - There is also a checkbox option to start the array in Maintenance
-    mode. You probably only need this if you have been advised to use it
-    as part of a non-standard data recovery action.
+  mode. You probably only need this if you have been advised to use it
+  as part of a non-standard data recovery action.
 - Press the Start button to commit the new drive assignments.
 - If you have encrypted file systems the array will not start at this
-    point, but instead change to allow you to enter your encryption
-    details. Enter these and press Start again to start the array.
+  point, but instead change to allow you to enter your encryption
+  details. Enter these and press Start again to start the array.
 - If you were starting in normal mode (i.e. not Maintenance mode) then
-    the drives will now be mounted.
+  the drives will now be mounted.
 - Unraid will now start building new parity based on this current set
-    of assignments.
+  of assignments.
 
 ### New Permissions
 

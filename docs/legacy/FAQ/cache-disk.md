@@ -1,13 +1,14 @@
 # Cache Disk
 
 **Important!** This page is a basic introduction to the Unraid Cache
-  drive, but was written for v4 and v5. There is no mention of
-  Dockers, VM's, or Cache Pools. For v6 users, this page serves as an
-  introduction, but you should also check these resources:
-* [FAQ](https://forums.unraid.net/forum/index.php?topic=48508) -
-  look for the *Cache Drive/Pool* section, has a number of related
+drive, but was written for v4 and v5. There is no mention of
+Dockers, VM's, or Cache Pools. For v6 users, this page serves as an
+introduction, but you should also check these resources:
+
+- [FAQ](https://forums.unraid.net/forum/index.php?topic=48508) -
+  look for the _Cache Drive/Pool_ section, has a number of related
   procedures
-* [How to add a cache drive, replace a cache drive, and create a
+- [How to add a cache drive, replace a cache drive, and create a
   cache pool](https://forums.unraid.net/forum/index.php?topic=56005) -
   a nice video guide
 
@@ -52,7 +53,7 @@ In order to create a cache disk using the GUI:
 1. Stop the array
 2. Click on "Disk" at the top.
 3. Look at the very bottom of the page in the Disk Devices section for
-    a disk 'slot' labeled Cache (the very last slot).
+   a disk 'slot' labeled Cache (the very last slot).
 4. Select any disk not in the array into that slot.
 5. Start the array
 
@@ -66,7 +67,7 @@ exist on the Cache disk in order for the user share file system to
 create objects on the Cache disk. If there is less than this amount of
 free space then the object will be created on the array instead.
 
-:   Main article: [Storage Management](/unraid-os/manual/storage-management.md)
+: Main article: [Storage Management](/unraid-os/manual/storage-management.md)
 
 ## Speed
 
@@ -93,18 +94,18 @@ Unraid:
 
 **Without a cache drive:** Unraid 4.5.3 - average 20-30 MB/s, peak
 reported [40
-MB/s](https://forums.unraid.net/forum/index.php?topic=5496.msg51190#msg51190)*
+MB/s](https://forums.unraid.net/forum/index.php?topic=5496.msg51190#msg51190)\*
 
 **With a cache drive:** Unraid 4.5.3 - average 50-60 MB/s, peak reported
 [101
-MB/s](https://forums.unraid.net/forum/index.php?topic=5754.msg120084#msg120084)*
+MB/s](https://forums.unraid.net/forum/index.php?topic=5754.msg120084#msg120084)\*
 
 So generally speaking, a server with a cache drive has write speeds
 **2-3x faster** than the same server without a cache drive.
 
 - Note: These figures (especially the averages) are based upon
-    personal observations by Rajahal and upon reports from other
-    reputable sources in these forums.
+  personal observations by Rajahal and upon reports from other
+  reputable sources in these forums.
 
 ## The Mover
 
@@ -120,24 +121,24 @@ disks will not spin up. Conversely, file(s) will only be moved if they
 are not open for reading/writing -- they will move the next night, when
 they are no longer open.
 
-:   Main article: [Storage Management](/unraid-os/manual/storage-management.md)
+: Main article: [Storage Management](/unraid-os/manual/storage-management.md)
 
 - The mover will not move any top-level directories which begin with a
-    '.' character. Such directories will not exist in normal use, but
-    an advanced user may use this knowledge to create directories which
-    won't get moved.
+  '.' character. Such directories will not exist in normal use, but
+  an advanced user may use this knowledge to create directories which
+  won't get moved.
 
 - The mover will not move any files that exist in the root of the
-    cache disk. Such files will not exist in normal use, but an advanced
-    user may use this knowledge to create files which won't get moved
-    (for example, a swap file).
+  cache disk. Such files will not exist in normal use, but an advanced
+  user may use this knowledge to create files which won't get moved
+  (for example, a swap file).
 - The mover is just a script called '/usr/local/sbin/mover' which
-    invokes 'find' to traverse the cache disk and move files to the
-    array using the 'mv' command. Advanced users may edit this script
-    to fine-tune the mover. For example, it's possible to set
-    conditions such as 'move only files older than N days', or 'only
-    move files greater than N bytes in size', etc. Refer to the script
-    itself and the 'man' page of the 'find' command.
+  invokes 'find' to traverse the cache disk and move files to the
+  array using the 'mv' command. Advanced users may edit this script
+  to fine-tune the mover. For example, it's possible to set
+  conditions such as 'move only files older than N days', or 'only
+  move files greater than N bytes in size', etc. Refer to the script
+  itself and the 'man' page of the 'find' command.
 
 ## Other uses for a cache disk
 
