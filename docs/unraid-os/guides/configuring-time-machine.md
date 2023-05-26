@@ -36,7 +36,7 @@ going to:
 
 1. Settings \--\> SMB under "Network Services"
 2. Set "Enable SMB" to "Yes" and click "Apply" (Array must be stopped
-    to change this).
+   to change this).
 3. Also, set "Enhanced macOS interoperability" to Yes as well.
 
 ![](/docs/legacy/SMBSettings.png "File:SMBSettings.png")
@@ -46,46 +46,46 @@ Now:
 1. In the Unraid webGUI, go to "Shares" and click "Add Share".
 2. Name the share (Ex: Time Machine).
 3. Set your minimum free space or leave default. This is the minimum
-    free space available to allow writing to any disk belonging to the
-    share.
+   free space available to allow writing to any disk belonging to the
+   share.
 4. Under "Included disk(s)" select the disk in the array that you'd
-    like to use for your Time Machine share. You can still use this same
-    disk for other shares.
+   like to use for your Time Machine share. You can still use this same
+   disk for other shares.
 5. Keep "Enable Copy-on-write" on "Auto".
 
 - Under SMB Security Settings.
 
 1. Under "Export" select "Yes (Time Machine)"
 2. Set your "TimeMachine volume size limit". This limits the reported
-    volume size, preventing Time Machine from using the entire real disk
-    space for backup. Example: setting this value to "1024" would
-    limit the reported disk space to 1GB.
+   volume size, preventing Time Machine from using the entire real disk
+   space for backup. Example: setting this value to "1024" would
+   limit the reported disk space to 1GB.
 3. Set your Security parameters to what you prefer.
 4. Click Apply/Done.
 
 From here, there are just a few more steps:
 
 - Connect to your Time Machine share by connecting to it through the
-    Finder.
+  Finder.
 
 1. Next: go to Time Machine Preferences on your Mac and "Select Disk".
 2. Your newly mounted Time Machine share should show up. Select this
-    share, enable encryption if desired and click "Use Disk".
+   share, enable encryption if desired and click "Use Disk".
 3. Now, Time Machine will say it's trying to connect to your share.
-    *Before clicking connect, it's recommended to eject your mounted
-    share from your desktop and then connect.*
+   _Before clicking connect, it's recommended to eject your mounted
+   share from your desktop and then connect._
 4. Time Machine immediately begins making periodic
-    backups---automatically and without further action by you.
+   backups---automatically and without further action by you.
 
-*Note: The first backup may take a long time, depending on how many
-files you have and the size of your Mac's harddrive.* Thereafter, Time
+_Note: The first backup may take a long time, depending on how many
+files you have and the size of your Mac's harddrive._ Thereafter, Time
 Machine backs up only the files that changed since the previous backup,
 so future backups should be faster.
 
-*Reminder: We suggest you use a 3rd party tool such as [Time Machine
+_Reminder: We suggest you use a 3rd party tool such as [Time Machine
 Editor](https://tclementdev.com/timemachineeditor/) so you can customize
 when backups are made and select a host of other options not available
-in the Time Machine program itself.*
+in the Time Machine program itself._
 
 ![](/docs/legacy/TimeMachineEditor.png "File:TimeMachineEditor.png")
 

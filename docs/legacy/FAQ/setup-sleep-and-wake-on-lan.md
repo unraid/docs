@@ -29,35 +29,35 @@ OS. The following assumes the use of a Windows machine.
 - Boot Unraid server.
 - Use the Terminal on the WebUI (present in v6, one of the buttons in
   the upper right corner, or fall-back to [SSH or Telnet](terminal-access.md) and type `ethtool
-  eth0` from the command line
+eth0` from the command line
 - You're looking to confirm that the setting for "Wake-on" includes
   'g' . . . which is the option for allowing Wake on Magic Packet.
   We're essentially confirming the BIOS settings from Step 2 above.
 - The results of my **ethtool eth0** command are as follows:
 
-    ```shell
-    root@Tower:~# ethtool eth0
-    Settings for eth0:
-    Supported ports: [ TP MII ]
-    Supported link modes:   10baseT/Half 10baseT/Full
-                            100baseT/Half 100baseT/Full
-                            1000baseT/Half 1000baseT/Full
-    Supports auto-negotiation: Yes
-    Advertised link modes:  10baseT/Half 10baseT/Full
-                            100baseT/Half 100baseT/Full
-                            1000baseT/Half 1000baseT/Full
-    Advertised auto-negotiation: Yes
-    Speed: 1000Mb/s
-    Duplex: Full
-    Port: MII
-    PHYAD: 0
-    Transceiver: internal
-    Auto-negotiation: on
-    Supports Wake-on: pumbg
-    Wake-on: g
-    Current message level: 0x00000033 (51)
-    Link detected: yes
-    ```
+  ```shell
+  root@Tower:~# ethtool eth0
+  Settings for eth0:
+  Supported ports: [ TP MII ]
+  Supported link modes:   10baseT/Half 10baseT/Full
+                          100baseT/Half 100baseT/Full
+                          1000baseT/Half 1000baseT/Full
+  Supports auto-negotiation: Yes
+  Advertised link modes:  10baseT/Half 10baseT/Full
+                          100baseT/Half 100baseT/Full
+                          1000baseT/Half 1000baseT/Full
+  Advertised auto-negotiation: Yes
+  Speed: 1000Mb/s
+  Duplex: Full
+  Port: MII
+  PHYAD: 0
+  Transceiver: internal
+  Auto-negotiation: on
+  Supports Wake-on: pumbg
+  Wake-on: g
+  Current message level: 0x00000033 (51)
+  Link detected: yes
+  ```
 
 - If the wake-on setting does not include 'g', you can set it
   manually by typing the following at the server command line:
@@ -75,7 +75,7 @@ OS. The following assumes the use of a Windows machine.
 - Go to [Depicus 'Wake on
   Lan'](http://www.depicus.com/wake-on-lan/wake-on-lan-cmd.aspx)
   page, select **Download** button near the bottom
-- I placed the file in *C:\\Program Files\\WOLcmd* (location becomes
+- I placed the file in _C:\\Program Files\\WOLcmd_ (location becomes
   important in next step)
 - There are other Magic Packet tools available, this is just one that
   I found simple to deal with.
@@ -84,10 +84,11 @@ OS. The following assumes the use of a Windows machine.
 [here](https://forums.unraid.net/forum/index.php?topic=3657.msg39076#msg39076))
 
 - My batch file is simply two lines
+
   - Change folder directory as necessary depending on where you
-      saved wolcmd.exe.
+    saved wolcmd.exe.
   - Enter the MAC address of your Unraid server in the second line
-        instead of 'MAC'
+    instead of 'MAC'
 
     ```shell
     cd c:\program files\wolcmd
@@ -184,7 +185,7 @@ done
 
 - I titled my sleep script **s3.sh** and saved in **/boot/custom/bin**
 
-**IMPORTANT:** "boot" is *already* the name of the root directory of
+**IMPORTANT:** "boot" is _already_ the name of the root directory of
 your flash device. So, if you save your script as per this example, do
 **not** create another "boot" directory. Doing so will cause Unraid to
 lose track of your config directory and your entire configuration will
@@ -193,7 +194,7 @@ be lost (unless previously backed up elsewhere.)
 10\. Edit 'go' file to call script
 
 - I added the following lines to my go script to initiate the sleep
-    script during boot:
+  script during boot:
 
 ```shell
 # Execute s3.sh sleep script

@@ -1,4 +1,3 @@
-
 # Licensing
 
 ## Is Pricing for Unraid OS "one time"? Are There Additional Fees for OS Updates?
@@ -37,27 +36,27 @@ via the top right corner of the page.
 
 ![](/docs/legacy/Upgrade-UPC.png "Upgrade-UPC.png")
 
-**Unraid Basic** allows for up to *6 attached storage
-devices<sup>1</sup>.*
+**Unraid Basic** allows for up to _6 attached storage
+devices<sup>1</sup>._
 
-**Unraid Plus** allows for up to *12 attached storage
-devices<sup>1</sup>.*
+**Unraid Plus** allows for up to _12 attached storage
+devices<sup>1</sup>._
 
-**Unraid Pro** allows for *unlimited<sup>2</sup> attached storage
-devices<sup>1</sup>.*
+**Unraid Pro** allows for _unlimited<sup>2</sup> attached storage
+devices<sup>1</sup>._
 
 License upgrades are priced as follows:
 
-Basic license → Plus license: *$39 USD*
+Basic license → Plus license: _$39 USD_
 
-Basic license → Pro license: *$79 USD*
+Basic license → Pro license: _$79 USD_
 
-Plus license → Pro license: *$49 USD*
+Plus license → Pro license: _$49 USD_
 
 <sup>1</sup> <b>Attached storage devices</b> refer to the total number of
 storage devices you are allowed to have attached to the server before
 starting the array, not counting the USB Flash boot device. There are
-*no other limitations* in the software based on license type.
+_no other limitations_ in the software based on license type.
 
 ## What does "Unlimited" mean for trial and Pro licenses?
 
@@ -96,12 +95,12 @@ to a different PC/Mac.
 Next:
 
 1. Shutdown the server, remove the USB flash and install the USB into
-    the other computer.
+   the other computer.
 2. Open the USB folder and drag and drop the .key file into the /config
-    folder. Please ensure this is the only .key file present (delete any
-    others).
+   folder. Please ensure this is the only .key file present (delete any
+   others).
 3. Then, safely eject/remove the flash and reinstall in your server and
-    reboot.
+   reboot.
 
 Alternately, if your server is running and your flash share is visible
 on the network, navigate to the flash share under Network, and drag the
@@ -136,15 +135,15 @@ Did you know that you can extend the [30 day free
 trial](https://unraid.net/download) of Unraid? Hardware can be
 ill-suited. Things break. Life happens. We get it. To try out Unraid a
 little longer, once your original trial shows "expired" in the upper
-left of the header, *Stop the array*.
+left of the header, _Stop the array_.
 
-Next, go to the Tools-\> *Registration* page, and now a button shows up
+Next, go to the Tools-\> _Registration_ page, and now a button shows up
 where you can click for a 15 day extension. Please remember that you are
 only allotted up to two extensions, each for two weeks. No further
 extensions can be issued thereafter.
 
-*Note: You cannot change the USB flash device for Unraid Trials if you
-wish to continue where you left off.*
+_Note: You cannot change the USB flash device for Unraid Trials if you
+wish to continue where you left off._
 
 ## I'm a Reseller/OEM that needs to Purchase a License on Behalf of my Customer: How do I do that?
 

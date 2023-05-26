@@ -15,8 +15,8 @@ to extend the C:\\ partition.
 
 ## Guide
 
-![](/docs/legacy/Resize_vdisk_2_(using_diskpart_to_delete_recovery_partition).PNG "Resize_vdisk_2_(using_diskpart_to_delete_recovery_partition).PNG")
-Perform the following steps *after* completing the steps in [this
+![](</docs/legacy/Resize_vdisk_2_(using_diskpart_to_delete_recovery_partition).PNG> "Resize_vdisk_2_(using_diskpart_to_delete_recovery_partition).PNG")
+Perform the following steps _after_ completing the steps in [this
 article](/unraid-os/manual/vm-management.md#expanding-a-vdisk) to expand
 the vdisk itself:
 

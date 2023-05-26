@@ -68,16 +68,16 @@ password](/unraid-os/manual/getting-started.md#connecting-to-the-unraid-webgui):
 1. Shutdown your server.
 2. Plug your USB flash into a laptop or another computer.
 3. Open the USB folder and delete the files "config/shadow" and
-    "config/smbpasswd". *(DO NOT delete "config/passwd).* This will
-    reset all user passwords, including the root user to blank.
+   "config/smbpasswd". _(DO NOT delete "config/passwd)._ This will
+   reset all user passwords, including the root user to blank.
 4. Now, safely eject your USB and reboot it on your Unraid server and
-    you’re in. You can then set a new password in the Users tab of the
-    Unraid webgui.
+   you’re in. You can then set a new password in the Users tab of the
+   Unraid webgui.
 
-*Important: this process only works for user passwords. If you encrypt
+_Important: this process only works for user passwords. If you encrypt
 your drives and forget this password, unfortunately you are hosed. There
 is no way for Lime Technology or anyone to recover this password. Please
-remember it or write it down in a secure, locked place!*
+remember it or write it down in a secure, locked place!_
 
 ## How do I completely start Unraid OS from scratch? How do I wipe my existing configuration / filesystems?
 
@@ -85,15 +85,15 @@ remember it or write it down in a secure, locked place!*
 2. Stop the array and shut down the server.
 3. Remove the USB flash device.
 4. Using a Windows or Mac computer, reformat the flash using the USB
-    Flash Creator tool from our website.
+   Flash Creator tool from our website.
 5. Reinstall the flash in the server and boot it up.
 6. Click on the "terminal" icon in the top right corner of the webGui.
 7. From the command line, type: lsblk
 8. Note all the devices present excluding your USB flash device.
 9. Now for each device in the list (excluding the USB flash device),
-    type the following command: wipefs /dev/sdX (replacing X with the
-    letter of the device from the previous steps). This will remove the
-    filesystem from the device so it can be reformatted by Unraid OS.
+   type the following command: wipefs /dev/sdX (replacing X with the
+   letter of the device from the previous steps). This will remove the
+   filesystem from the device so it can be reformatted by Unraid OS.
 10. Now continue reconfiguring Unraid OS per the normal procedure.
 
 ## Whenever I Shutdown my Windows 10 VM with my AMD GPU Assigned, if I try to restart it, it doesn't work. What do I do?
