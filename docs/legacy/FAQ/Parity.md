@@ -9,7 +9,7 @@ world:
 
 - Disks that have already failed.
 - Disks that have not yet failed\... but just need a bit more time
-    until they do.
+  until they do.
 
 ## How parity works
 
@@ -34,13 +34,13 @@ OR' or 'XOR') across that set of bits must return a value that is an
 EVEN number.
 
 - [PCGuide discussion of
-    XOR](http://www.pcguide.com/ref/hdd/perf/raid/concepts/genParity-c.html)
+  XOR](http://www.pcguide.com/ref/hdd/perf/raid/concepts/genParity-c.html)
 - [Wikipedia on XOR](http://en.wikipedia.org/wiki/Exclusive_or)
 
 Digital data is stored as a 1 or a 0. So, for example:
 
 - If you have 4 drives with bit values 1,1,1,1 the parity will be 0
-    (1+1+1+1+0=even).
+  (1+1+1+1+0=even).
 - If the bit values are 1,0,0,0 the parity will be 1 (1+0+0+0+1=even).
 
 When a drive is added to a parity-protected Unraid array, it is first
@@ -125,9 +125,9 @@ Once parity has been calculated there should only be 2 ways that there
 should be parity check errors:
 
 - a non-clean shutdown, ie, sudden power loss or system reset. What
-    happens here is that there could be pending writes to the parity
-    and/or data disks that don't get completed, leaving the
-    corresponding stripe with inconsistent parity.
+  happens here is that there could be pending writes to the parity
+  and/or data disks that don't get completed, leaving the
+  corresponding stripe with inconsistent parity.
 - an undetected hardware fault (such as silent memory corruption).
 
 ## Parity disk

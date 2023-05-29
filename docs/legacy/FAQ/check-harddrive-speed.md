@@ -7,7 +7,7 @@ Here is an example of the command:
 
 `hdparm -tT /dev/hda`
 
-You will need to change *hda* to match the disk you want to check. You
+You will need to change _hda_ to match the disk you want to check. You
 will see a two line report with various numbers and timings, but the
 only one you are interested in is the very last number, in MB/sec.
 

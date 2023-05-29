@@ -42,7 +42,7 @@ an optional cache pool.
 ### Parity-Protected Array
 
 The primary purpose of an Unraid array is to manage and protect the data
-of any group of drives (JBOD) by adding a dedicated *parity drive*. A
+of any group of drives (JBOD) by adding a dedicated _parity drive_. A
 parity drive provides a way to reconstruct all of the data from a failed
 drive onto a replacement. Amazing as it seems, a single parity drive can
 add protection for all of the others! In Unraid parity is always
@@ -93,7 +93,7 @@ has failed.
 ### User Shares
 
 Unlike most RAID systems, Unraid saves data to individual drives. To
-simplify manageability, users can create *shares* that allow files
+simplify manageability, users can create _shares_ that allow files
 written to them to be spread across multiple drives. Each share can be
 thought of as a top-level folder on a drive. When browsing through a
 share, all data from all drives that participate in that share will be
@@ -128,7 +128,7 @@ With a single cache drive, data captured there is at risk, as a parity
 drive only protects the array, not the cache. However, you can build a
 cache with multiple drives both to increase your cache capacity as well
 as to add protection for that data. The grouping of multiple drives in a
-cache is referred to as building a *cache pool*. The Unraid cache pool
+cache is referred to as building a _cache pool_. The Unraid cache pool
 is created through a unique twist on traditional RAID 1, using a BTRFS
 feature that provides both the data redundancy of RAID 1 plus the
 capacity expansion of RAID 0.
@@ -141,22 +141,22 @@ Traditional NAS solutions to application support come with three primary
 limitations:
 
 1. They cannot support applications written for other operating
-    systems.
+   systems.
 2. They can be cumbersome to install and even more difficult to remove.
 3. They don't always "play nice" with other applications in the same
-    OS.
+   OS.
 
 Docker addresses these problems in a number of key ways:
 
 - It allows for the use of any Linux operating system to empower a
-    given application (no longer limited by the operating system of the
-    host itself).
+  given application (no longer limited by the operating system of the
+  host itself).
 - It removes the "installation" process that applications have to go
-    through by providing pre-installed *images* that ensure a consistent
-    run-time experience for the user and making them easier to remove
-    when the user is done with them.
+  through by providing pre-installed _images_ that ensure a consistent
+  run-time experience for the user and making them easier to remove
+  when the user is done with them.
 - It enables applications that would normally have issues with
-    coexistence to live in harmony in the same operating environment.
+  coexistence to live in harmony in the same operating environment.
 
 Docker is made up of three primary components: the Engine, the Hub, and
 Containers.
@@ -191,10 +191,10 @@ overhead. ![](/docs/legacy/Docker-vs-VM@2x.png "Docker-vs-VM@2x.png")\
 One of biggest advantages Docker provides over both traditional Linux
 containers (LXCs) and virtual machines (VMs) is in its application
 repository: the Docker Hub. Many traditional Linux operating systems
-nowadays come with a component in their framework known as a *package
-manager*. The job of the package manager is to let people easily install
+nowadays come with a component in their framework known as a _package
+manager_. The job of the package manager is to let people easily install
 applications written for a particular operating system from catalogs
-that are known as *repositories*. While package managers do their job
+that are known as _repositories_. While package managers do their job
 fairly well, they come with all the limitations mentioned earlier. Linux
 containers and virtual machines, while competent at providing a way to
 control resources allocated to an application, still rely on traditional
@@ -282,28 +282,28 @@ also allows you to tweak settings to your liking. This makes Unraid
 intuitive where you want it, and tunable where you need it.
 
 - **Dashboard View**. With indicators for disk health, temperatures,
-    resource utilization, and application states, the dashboard provides
-    a 50,000 foot view of what's happening on your system.
+  resource utilization, and application states, the dashboard provides
+  a 50,000 foot view of what's happening on your system.
 - **Array Operation**. Assign devices for use in either the array or
-    cache, spin up and down individual disks, start and stop the array,
-    and even perform an on-the-fly parity check, all from a single page.
+  cache, spin up and down individual disks, start and stop the array,
+  and even perform an on-the-fly parity check, all from a single page.
 - **Share Management**. Setting up shares on Unraid is easy. Give the
-    share a name, optionally apply policies to access and distribution
-    controls, and click create!
+  share a name, optionally apply policies to access and distribution
+  controls, and click create!
 - **Disk Tuning**. Control how and when devices spin down, the default
-    file system format, and other advanced settings.
+  file system format, and other advanced settings.
 - **Network Controls**. Enable NIC bonding and bridging, set time
-    servers, and more.
+  servers, and more.
 - **APC UPS Safe Shutdown**. When connected to an APC UPS, Unraid can
-    safely shut down the system in the event of a power loss.
+  safely shut down the system in the event of a power loss.
 - **System Notifications**. Unraid can alert you to important events
-    happening on your system through the web management console as well
-    as e-mail and other notification systems.
+  happening on your system through the web management console as well
+  as e-mail and other notification systems.
 - **Task Scheduler**. Choose if and when you want to have an automatic
-    parity check occur as well how often the mover script should
-    transfer files from the cache to the array.
+  parity check occur as well how often the mover script should
+  transfer files from the cache to the array.
 - **Docker Containers**. Manage application controls from a single
-    pane of glass. Add applications with minimal effort using
-    community-provided templates.
+  pane of glass. Add applications with minimal effort using
+  community-provided templates.
 - **Virtual Machines**. Choose between pre-created virtual machine
-    images or create your own custom VM from scratch.
+  images or create your own custom VM from scratch.

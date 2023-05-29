@@ -7,52 +7,54 @@ down to the 'older versions' section.**
 
 ## Setting up sensing for v6
 
-*This section is only for Unraid v6 with the Dynamix System Temp
-    plugin installed. These instructions are lifted directly from the
-    author's words
-    [here](https://forums.unraid.net/forum/index.php?topic=31172.msg473847#msg473847).*
+_This section is only for Unraid v6 with the Dynamix System Temp
+plugin installed. These instructions are lifted directly from the
+author's words
+[here](https://forums.unraid.net/forum/index.php?topic=31172.msg473847#msg473847)._
 
 1. Preparation
 
-       Install the perl package, easiest done by installing the
-        [NerdPack
-        plugin](https://forums.unraid.net/forum/index.php?topic=37541.0),
-        then in the plugin enabling perl to install. Perl is only needed
-        by the script "sensors-detect", which will be run in the
-        background by the Detect function of Step 2. Once you have
-        completed System Temp setup, perl is no longer needed and can be
-        disabled, uninstalled.
+   Install the perl package, easiest done by installing the
+   [NerdPack
+   plugin](https://forums.unraid.net/forum/index.php?topic=37541.0),
+   then in the plugin enabling perl to install. Perl is only needed
+   by the script "sensors-detect", which will be run in the
+   background by the Detect function of Step 2. Once you have
+   completed System Temp setup, perl is no longer needed and can be
+   disabled, uninstalled.
+
 2. Detection
 
-       Press the `<Detect>` button to search and automatically
-        fill in the required drivers, or alternatively - if you know the
-        name of the driver(s) - you can fill them in manually.
+   Press the `<Detect>` button to search and automatically
+   fill in the required drivers, or alternatively - if you know the
+   name of the driver(s) - you can fill them in manually.
+
 3. Saving and activation
 
-       Press the `<Save>` button to save and activate (load) the
-        driver(s). *This will create the file
-        **/config/plugins/dynamix.system.temp/drivers.conf** on your
-        flash device.*
+   Press the `<Save>` button to save and activate (load) the
+   driver(s). _This will create the file
+   **/config/plugins/dynamix.system.temp/drivers.conf** on your
+   flash device._
+
 4. Sensor assignment and display
 
-       Use the dropdown menus under sensors to assign the appropriate
-        sensor for CPU and motherboard readings. You may need to consult
-        the user guide of your motherboard to find out which sensor
-        needs to be selected here. Once a sensor selection is done, the
-        corresponding item will be displayed at the right side of the
-        footer. Click the `<Apply>` button to confirm your
-        selection. *This will create the file
-        **/config/plugins/dynamix.system.temp/sensors.conf** on your
-        flash device.*
-5. You are done! You no longer need perl installed, and can remove it.
+   Use the dropdown menus under sensors to assign the appropriate
+   sensor for CPU and motherboard readings. You may need to consult
+   the user guide of your motherboard to find out which sensor
+   needs to be selected here. Once a sensor selection is done, the
+   corresponding item will be displayed at the right side of the
+   footer. Click the `<Apply>` button to confirm your
+   selection. _This will create the file
+   **/config/plugins/dynamix.system.temp/sensors.conf** on your
+   flash device._
 
+5. You are done! You no longer need perl installed, and can remove it.
 
 **Last but not least: see also the online Help for System Temp!**
 
-*Note: to unassign or remove a sensor just unselect it from the
-    dropdown menu. This will also allow you to make new assignments (for
-    example when the wrong sensor was chosen).*
-
+_Note: to unassign or remove a sensor just unselect it from the
+dropdown menu. This will also allow you to make new assignments (for
+example when the wrong sensor was chosen)._
 
 ## Setting up sensing for older versions
 
@@ -65,17 +67,20 @@ plugin](https://forums.unraid.net/forum/index.php?topic=31172)) or
 you need to load the required drivers and setup your sensor
 configuration file **sensors.conf**.
 
-The following steps should work for most motherboards. *(tested on a
-SuperMicro C2SEE/C2SEA)*
+The following steps should work for most motherboards. _(tested on a
+SuperMicro C2SEE/C2SEA)_
 
 ### Step 1: Open a console
+
 You can either use the command console on the UnRAID server itself (if
 you have a keyboard and monitor attached), or you can login from another
 computer and use [SSH or Telnet](terminal-access.md). On
 Windows, the [PuTTY](terminal-access.md#putty) client for SSH
 and Telnet is preferred, because it allows you to use cut and paste, to
 save generated lines for your own sensors configuration file.
+
 ### Step 2: Run sensors
+
 At the command prompt, run **sensors**. Even without loading drivers,
 you will probably see a sensor or two, with temps and other info. The
 output should appear similar to:
@@ -110,6 +115,7 @@ intrusion0:  ALARM
 ```
 
 ### Step 3: Note the devices
+
 Make note of the sensor device(s). In the above example, they are
 **w83627dhg-isa-0290** and **coretemp-isa-0000**. (**Note:** for
 coretemp you should run **sensors -u coretemp-isa-0000** again to see
@@ -118,22 +124,24 @@ temp1_input, just use temp1 as a label for your sensors.conf - see
 below)
 
 ### Step 4: Note the sensors
+
 Make note of the specific sensors you wish to display. In the above
 example, **temp1** is the motherboard and **temp2** is the CPU.
 
 ### Step 5: Create sensors.conf
+
 Create your **sensors.conf** file. This will contain the sensor
 device(s) and labels (optional) for the temperatures you wish to
 monitor. For Dynamix and Simple Features, it must establish the 2 labels
 'MB Temp' and 'CPU Temp'.
 
 - To be used by Dynamix, save this file to your flash drive, in the
-    path **/boot/config/plugins/dynamix**. In Windows, this path would
-    be something like **\\\\tower\\flash\\config\\plugins\\dynamix**.
+  path **/boot/config/plugins/dynamix**. In Windows, this path would
+  be something like **\\\\tower\\flash\\config\\plugins\\dynamix**.
 - If not for Dynamix, save this file into a persistent location on the
-    flash drive, e.g. **/boot/config** or **/boot/custom**. Later, you
-    will probably need a copy command in your 'go' file, to copy it to
-    its correct location in the UnRAID system.
+  flash drive, e.g. **/boot/config** or **/boot/custom**. Later, you
+  will probably need a copy command in your 'go' file, to copy it to
+  its correct location in the UnRAID system.
 
 In the sample **sensors.conf** file below, I'm only using data from the
 2nd sensor device.
@@ -149,6 +157,7 @@ label temp2 "CPU Temp"
 ```
 
 ### Step 6: Prepare sensors-detect
+
 The **sensors-detect** tool is a long script that should detect all of
 your sensors, and help you get the right sensor driver names. A copy is
 included with UnRAID, but it's not the latest, and if you have a new
@@ -157,39 +166,41 @@ version, as it is occasionally updated with the newest drivers and
 sensors. ~~Go to the [lm-sensors
 Devices](http://www.lm-sensors.org/wiki/Devices) page, and look for the
 link "**latest version of sensors-detect**", in the 3rd paragraph
-currently.~~ *The lm-sensors site is down currently!* Download and copy
+currently.~~ _The lm-sensors site is down currently!_ Download and copy
 it to your flash drive. To run it (assuming it's in the root folder of
 the flash), you will need to either change to the flash drive (**cd
 /boot**), or run the command as **/boot/sensors-detect**.
 
 The **sensors-detect** tool requires [Perl](http://www.perl.org/) to be
 installed, at least temporarily.
-* If it isn't already installed, you will need to download an
-appropriate version for your UnRAID release:
+
+- If it isn't already installed, you will need to download an
+  appropriate version for your UnRAID release:
 
   - For UnRAID v4 series, get it from
-        [here](http://slackware.cs.utah.edu/pub/slackware/slackware-12.2/slackware/d/perl-5.10.0-i486-1.tgz)
+    [here](http://slackware.cs.utah.edu/pub/slackware/slackware-12.2/slackware/d/perl-5.10.0-i486-1.tgz)
   - For UnRAID v5 series, get it from
-        [here](http://slackware.cs.utah.edu/pub/slackware/slackware-13.1/slackware/d/perl-5.10.1-i486-1.txz)
-        *May need updated/corrected perl links.*
+    [here](http://slackware.cs.utah.edu/pub/slackware/slackware-13.1/slackware/d/perl-5.10.1-i486-1.txz)
+    _May need updated/corrected perl links._
   - For UnRAID v6 series, get it from
-        [here](http://slackware.cs.utah.edu/pub/slackware/slackware64-14.1/slackware64/d/perl-5.18.1-x86_64-1.txz)
+    [here](http://slackware.cs.utah.edu/pub/slackware/slackware64-14.1/slackware64/d/perl-5.18.1-x86_64-1.txz)
 
-- Copy it to the **packages** folder on your flash drive, creating
-    that folder if it does not already exist (**md /boot/packages**).
+* Copy it to the **packages** folder on your flash drive, creating
+  that folder if it does not already exist (**md /boot/packages**).
 
-- Then use **installpkg** and the perl package name to install it (eg.
-    **installpkg /boot/packages/perl-5.18.1-x86_64-1.txz**).
+* Then use **installpkg** and the perl package name to install it (eg.
+  **installpkg /boot/packages/perl-5.18.1-x86_64-1.txz**).
 
-- Or for Dynamix, you can modify the Dynamix System Temp plugin itself
-    (currently for v5 it's
-    **/boot/config/plugins/dynamix.system.temp-2.1.0-noarch-bergware.plg**),
-    by locating the line ending with "# perl scripting" and replacing
-    "no-install" with "do-install". Then re-install the plugin or
-    reboot. Change it back to "no-install" when you are done with this
-    whole procedure.
+* Or for Dynamix, you can modify the Dynamix System Temp plugin itself
+  (currently for v5 it's
+  **/boot/config/plugins/dynamix.system.temp-2.1.0-noarch-bergware.plg**),
+  by locating the line ending with "# perl scripting" and replacing
+  "no-install" with "do-install". Then re-install the plugin or
+  reboot. Change it back to "no-install" when you are done with this
+  whole procedure.
 
 ### Step 7: Run sensors-detect
+
 Run **sensors-detect**. Enter [YES] for the various scans. Enter
 [NO] to automatically generate the config file (last prompt). The
 output should be similar to:
@@ -260,7 +271,7 @@ monitoring devices. This is the most risky part, and while it works
 reasonably well on most systems, it has been reported to cause trouble
 on some systems.
 Do you want to probe the I2C/SMBus adapters now? (YES/no): YES
-Using driver `i2c-i801' for device 0000:00:1f.3: Intel ICH10 
+Using driver `i2c-i801' for device 0000:00:1f.3: Intel ICH10
 Module i2c-dev loaded successfully.
 
 Next adapter: SMBus I801 adapter at 0400 (i2c-0)
@@ -307,10 +318,12 @@ Unloading i2c-dev... OK
 ```
 
 ### Step 8: Note the drivers
+
 Make note of the driver name(s) listed in the summary. In the above
 example, they are **w83627ehf** and **coretemp**.\
 
 ### Step 9: Add modprobes to go
+
 Edit your 'go' file and add in the **modprobe** command for each
 sensor driver that is required.
 
@@ -322,6 +335,7 @@ modprobe <sensor3>
 ```
 
 ### Step 10: Add the copy instruction to go
+
 If you are configuring for Dynamix, this step is not needed, so skip to
 Step 11. Otherwise, add another line in your 'go' file to copy your
 persistent sensors.conf file (from where you created/saved it in Step 5)
@@ -333,6 +347,7 @@ cp /boot/config/sensors.conf /etc/sensors.d
 ```
 
 ### Step 11: Reboot and check
+
 Reboot to load up the changes, and check whether the temps are correct.
 If wrong, you may have to select different sensors or
 [customize](http://linux.die.net/man/5/sensors.conf) the

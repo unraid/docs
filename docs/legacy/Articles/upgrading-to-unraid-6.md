@@ -9,34 +9,34 @@ USB flash device. You can do this by copying the entire contents of the
 # From version 6.3
 
 1. Boot your server up and login to the web interface
-2. Click the *Plugins* tab
+2. Click the _Plugins_ tab
 3. Click the "Update" button next to Unraid Server OS
 4. Once the upgrade is complete, reboot your server for it to take
-    affect
+   affect
 
 # From version 6.2
 
 1. Boot your server up and login to the web interface
-2. Click the *Plugins* tab
-3. Click the *Check for Updates* button
+2. Click the _Plugins_ tab
+3. Click the _Check for Updates_ button
 4. Click the "Update" button next to Unraid Server OS
 5. Once the upgrade is complete, reboot your server for it to take
-    affect
+   affect
 
-Note: if *Check for Updates* shows no update, see below.
+Note: if _Check for Updates_ shows no update, see below.
 
 ## Possible upgrade issues
 
 Having problems after the update? See below for common issues and
 solutions.
 
-### The new release does not show up after clicking *Check for Updates* button
+### The new release does not show up after clicking _Check for Updates_ button
 
 In this case, manually install the update as follows:
 
 1. Navigate to Plugins/Install Plugin tab
 2. Select/copy this text
-    [`https://raw.githubusercontent.com/limetech/unRAIDServer/master/unRAIDServer.plg`](https://raw.githubusercontent.com/limetech/unRAIDServer/master/unRAIDServer.plg)
+   [`https://raw.githubusercontent.com/limetech/unRAIDServer/master/unRAIDServer.plg`](https://raw.githubusercontent.com/limetech/unRAIDServer/master/unRAIDServer.plg)
 3. Paste into URL field and click Install
 
 ### My array / docker apps are taking a really long time to start after the upgrade
@@ -63,15 +63,15 @@ completes (such as the "layers from manifest don't match image
 configuration" error), you will need to rebuild your docker image file.
 To do this:
 
-1. Stop Docker from the *Settings* \> *Docker* page
+1. Stop Docker from the _Settings_ \> _Docker_ page
 2. Click the checkbox and then click the button to delete the image
 3. Start Docker again and the image will be recreated
-4. Go to the *Docker* tab and click *Add Container*
-5. From the *Template* drop down, select one of your previous templates
-    (prefixed with "my-") and then click *Apply*
+4. Go to the _Docker_ tab and click _Add Container_
+5. From the _Template_ drop down, select one of your previous templates
+   (prefixed with "my-") and then click _Apply_
 6. Repeat the previous step for each of your containers
 7. You will **not** need to reconfigure your apps after this is
-    complete
+   complete
 
 ### My VMs get an error of "cannot get interface MTU..."
 
@@ -81,12 +81,12 @@ bridge name set will need to fix their VMs to point to the new default
 of 'br0'. To fix this, perform the following steps:
 
 1. Navigate to the VMs tab.
-2. Edit each VM and turn on *Advanced View* mode.
+2. Edit each VM and turn on _Advanced View_ mode.
 3. Locate the network section and from the dropdown, select br0 and
-    then click apply.
-4. Once all VMs are set to use the 'br0' bridge, go to the *Settings*
-    -\> *VM Manager* page, turn on *Advanced View*, and set the default
-    network bridge on this page to also be 'br0' and click apply.
+   then click apply.
+4. Once all VMs are set to use the 'br0' bridge, go to the _Settings_
+   -\> _VM Manager_ page, turn on _Advanced View_, and set the default
+   network bridge on this page to also be 'br0' and click apply.
 
 ### VNC access to my VMs is not working or performing poorly
 
@@ -95,10 +95,10 @@ outdated graphics device driver for VNC access. To fix this, perform the
 following steps:
 
 1. For each affected VM, go to the VMs tab, click the VM's icon, and
-    select the Edit option
+   select the Edit option
 2. Turn on "Advanced View" in the top right of the Edit VM page
 3. If you are using VNC for the primary graphics card, adjust the VNC
-    Video Driver field to QXL
+   Video Driver field to QXL
 4. Click Apply
 
 ### My OVMF VM doesn't boot correctly
@@ -150,9 +150,9 @@ Please ensure your system meets these requirements before upgrading:
 1. Your server must be running version 6.1 or later.
 2. Your USB flash device must have at least 128MB of free space.
 3. If you have customized your network bridge name previously, it must
-    be changed back to the default of 'br0' before upgrading.
+   be changed back to the default of 'br0' before upgrading.
 4. VMs set to use a custom-named bridge will also need to be edited to
-    point to the 'br0' prior to the upgrade.
+   point to the 'br0' prior to the upgrade.
 
 ## Checking your existing version
 
@@ -164,12 +164,12 @@ the browser.
 
 The upgrade process will check for this automatically, but if you wish
 to be proactive, you can review your boot device's free space under the
-Flash section on the *Main* tab of the web interface.
+Flash section on the _Main_ tab of the web interface.
 
 ## Checking your network bridge name
 
-To see if you have a customized network bridge, open the *Settings* -\>
-*Network Settings* page of the web interface. If the bridge name is
+To see if you have a customized network bridge, open the _Settings_ -\>
+_Network Settings_ page of the web interface. If the bridge name is
 anything other than 'br0', change it back to 'br0' and click apply.
 
 ## Checking your VM network bridge settings
@@ -181,19 +181,19 @@ To do this, you will need to perform the following steps after you have
 restored the default network bridge name:
 
 1. Shutdown all VMs running on the system.
-2. Edit each VM and turn on *Advanced View* mode.
+2. Edit each VM and turn on _Advanced View_ mode.
 3. Locate the network section and from the dropdown, select br0 and
-    then click apply.
-4. Once all VMs are set to use the 'br0' bridge, go to the *Settings*
-    -\> *Network Settings* page, turn on *Advanced View*, and set the
-    default network bridge on this page to also be 'br0' and click
-    apply.
+   then click apply.
+4. Once all VMs are set to use the 'br0' bridge, go to the _Settings_
+   -\> _Network Settings_ page, turn on _Advanced View_, and set the
+   default network bridge on this page to also be 'br0' and click
+   apply.
 
 Your VMs should now be ready for use under the latest version.
 
 1. Boot your server up and login to the web interface
-2. Click the *Plugins* tab
-3. Click the *Install Plugin* tab
+2. Click the _Plugins_ tab
+3. Click the _Install Plugin_ tab
 4. Copy and paste the below link into the field and click install
 5. Once the upgrade plugin has been installed, reboot your server
 

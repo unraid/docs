@@ -2,8 +2,8 @@
 
 **What is "Terminal access"?**
 
-*Synonyms for 'terminal': console, shell, command window, DOS box,
-command prompt, Windows cmd shell, Telnet window*
+_Synonyms for 'terminal': console, shell, command window, DOS box,
+command prompt, Windows cmd shell, Telnet window_
 
 It's the opening of a terminal session and obtaining a command line
 prompt, at which you can enter commands directly on the system,
@@ -39,11 +39,11 @@ similar to PuTTY.
 **Naturally, you should already have entered a password for 'root'
 on your Unraid server!**
 
-*Note: this page assumes you are running Unraid v6. The Telnet
+_Note: this page assumes you are running Unraid v6. The Telnet
 sections should work for all versions of Unraid, but the SSH
 sections are only useful for systems with SSH installed and working.
 SSH is included and set up in v6, but it will only work with earlier
-versions if you install an SSH package.*
+versions if you install an SSH package._
 
 ## SSH
 
@@ -54,15 +54,15 @@ For terminal access from a Windows station, use the PuTTY
 instructions below to install, configure, and set up the SSH
 connection
 
-*more help needed? ssh setup help? (WIP)*
+_more help needed? ssh setup help? (WIP)_
 
 ## Telnet
 
 ### Using Telnet
 
 The Unraid Server software includes a built-in Telnet server, which
-may be used to open a command window (also called a *shell* or
-*console*) on your server. Access to this console is through a
+may be used to open a command window (also called a _shell_ or
+_console_) on your server. Access to this console is through a
 Telnet program from your desktop station. The Telnet tool is usually
 a part of most operating systems, and generally immediately
 available, but in Windows Vista and Windows 7 and probably later
@@ -84,15 +84,15 @@ and SSH. Unlike Windows Telnet, PuTTY allows you to use the mouse
 and advanced keys, such as the arrow and function keys. PuTTY can
 also be setup with your Unraid server name or IP and SSH host key.
 
-* [PuTTY web site](http://www.chiark.greenend.org.uk/~sgtatham/putty/)
+- [PuTTY web site](http://www.chiark.greenend.org.uk/~sgtatham/putty/)
 
-* [Direct download of PuTTY for
-Windows](http://the.earth.li/~sgtatham/putty/latest/x86/putty.exe)
+- [Direct download of PuTTY for
+  Windows](http://the.earth.li/~sgtatham/putty/latest/x86/putty.exe)
 
-* [PuTTY downloads
-page](http://www.chiark.greenend.org.uk/~sgtatham/putty/download.html) -
-for other downloads, such as other OS's, beta versions, or a Windows
-installer version
+- [PuTTY downloads
+  page](http://www.chiark.greenend.org.uk/~sgtatham/putty/download.html) -
+  for other downloads, such as other OS's, beta versions, or a Windows
+  installer version
 
 Because PuTTY is just an enhanced Telnet and SSH program, it can be
 used instead of Windows Telnet anywhere that Telnet or SSH is
@@ -104,7 +104,7 @@ file manager). For an example, see [Transferring Files Within the
 Unraid
 Server](transferring-files-within-the-unraid-server.md).
 
-*Note for UnRAID v5 and v6 users: some have found that Midnight
+_Note for UnRAID v5 and v6 users: some have found that Midnight
 Commander looks funny, with accented letters (mostly a little 'a'
 with a hat) where line drawing characters should be. In your PuTTY
 configuration, go to Window-\>Translation and set Remote Character
@@ -112,7 +112,7 @@ Set to something like UTF-8, then restart MC (thanks to Wody for
 this tip, see
 [this](https://forums.unraid.net/forum/index.php?topic=18157)).
 Wody has an additional PuTTY tip in [this
-post](https://forums.unraid.net/forum/index.php?topic=18157.msg162943#msg162943).*
+post](https://forums.unraid.net/forum/index.php?topic=18157.msg162943#msg162943)._
 
 PuTTY has a number of settings, but the defaults are usually fine.
 On the **Window** tab, I set **Columns** to 120, **Rows** to 60, and
@@ -121,33 +121,33 @@ On the **Window** tab, I set **Columns** to 120, **Rows** to 60, and
 
 First time SSH connection: set **Connection type** to SSH, then
 enter your exact Unraid server name or IP (if static), then enter a
-**Saved Session** name (such as *SSH Tower*), then click the
+**Saved Session** name (such as _SSH Tower_), then click the
 **Save** button. You are ready to click your session name and
 connect! When you do this the first time, you will be informed about
 the host key and whether you trust this server and want to cache its
 host key. Click **Yes** and the host key will be saved, and you
 won't be asked again. (This creates a secure connection that can't
 be spoofed.) Then a terminal session box will open up with a login
-prompt. Enter *root* and press `<Enter>`, then enter your
+prompt. Enter _root_ and press `<Enter>`, then enter your
 password and the `<Enter>` key again. You are now in a Linux
-terminal session at a command prompt! Type *exit* to quit.
+terminal session at a command prompt! Type _exit_ to quit.
 
 First time Telnet connection: set **Connection type** to Telnet,
 then enter your exact Unraid server name or IP (if static), then
-enter a **Saved Session** name (such as *Telnet Tower*), then click
+enter a **Saved Session** name (such as _Telnet Tower_), then click
 the **Save** button. You are ready to click your session name and
 connect! When you do, a Telnet terminal session box will open up
-with a login prompt. Enter *root* and press `<Enter>`, then
+with a login prompt. Enter _root_ and press `<Enter>`, then
 enter your password and the `<Enter>` key again. You are now
-in a Linux terminal session at a command prompt! Type *exit* to
+in a Linux terminal session at a command prompt! Type _exit_ to
 quit.
 
 On subsequent uses, just start PuTTY and click the session name you
 want to use, and you will immediately be at the login prompt.
 
-*Note: [Xshell](http://www.netsarang.com/products/xsh_overview.html)
+_Note: [Xshell](http://www.netsarang.com/products/xsh_overview.html)
 is a commercial alternative to PuTTY, similar and possibly more
-powerful, free for home use.*
+powerful, free for home use._
 
 ## Opening a terminal session with the Windows Telnet tool
 
@@ -159,23 +159,23 @@ dialog box type:
 If you renamed your server from tower, enter that name instead.
 Also, you may enter the server's IP address instead of its name. A
 command window will open and you will be presented with a login
-prompt. The login name is *root*, and by default, there is no
+prompt. The login name is _root_, and by default, there is no
 password. To terminate the session, just close the window. You may
 have multiple Telnet sessions to the same server. You can
 select/copy/paste the text from a Windows Telnet window by
 right-clicking the title bar. Notes regarding the command shell:
 
-* commands and arguments are case-sensitive
-* commands and arguments must be separated with spaces
-* commands are executed after pressing the Enter key
+- commands and arguments are case-sensitive
+- commands and arguments must be separated with spaces
+- commands are executed after pressing the Enter key
 
 ## Related links
 
-* [SSH vs
-Telnet](https://forums.unraid.net/forum/index.php?topic=30273) -
-discussion of the merits of both, why many want Telnet disabled
-* [Google search of "how to secure your ssh
-server"](http://www.google.com/search?q=how+to+secure+your+ssh+server)
-* [Console](console.md) - basics of console usage, plus
-commands for drives, networking, system management, files and
-folders, and system information
+- [SSH vs
+  Telnet](https://forums.unraid.net/forum/index.php?topic=30273) -
+  discussion of the merits of both, why many want Telnet disabled
+- [Google search of "how to secure your ssh
+  server"](http://www.google.com/search?q=how+to+secure+your+ssh+server)
+- [Console](console.md) - basics of console usage, plus
+  commands for drives, networking, system management, files and
+  folders, and system information
