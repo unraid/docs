@@ -3,23 +3,24 @@
 ## [**How to Install**](https://connect.myunraid.net/help)
 
 1. Please make a local backup of your USB flash drive. This can be done
-    from the Main \> Flash page. In the event you need to revert to your
-    previous stable installation, you can use the USB Flash Creator from
-    our website to restore this backup zip file to your flash drive.
+   from the Main \> Flash page. In the event you need to revert to your
+   previous stable installation, you can use the USB Flash Creator from
+   our website to restore this backup zip file to your flash drive.
 2. Download Connect from Community Applications
 3. Sign In With Your Unraid.net Account Credentials - Click the top
-    right corner of your Unraid server, and click Sign In. Follow the
-    prompts to sign in with your Unraid.net credentials, or create a new
-    account.
-    ![](./assets/Sign-in-up-connect-975a8554.png "Sign-in-up-connect-975a8554.png")
+   right corner of your Unraid server, and click Sign In. Follow the
+   prompts to sign in with your Unraid.net credentials, or create a new
+   account.
+   ![](./assets/Sign-in-up-connect-975a8554.png "Sign-in-up-connect-975a8554.png")
 4. Register Your Server with Unraid Connect by following the
-    prompts![](./assets/Register-a-server-7f35552e.png "Register-a-server-7f35552e.png")
+   prompts![](./assets/Register-a-server-7f35552e.png "Register-a-server-7f35552e.png")
 5. Come Back to [This Page](https://connect.myunraid.net/help) and
-    Click Continue.
+   Click Continue.
 
 ## **Unraid Connect Dashboard**
 
 Sign in to the Unraid Connect Dashboard:
+
 > <https://connect.myunraid.net>
 
 for a comprehensive overview of your Unraid server's online/offline status,
@@ -40,8 +41,8 @@ from within the Connect web UI.
 You can even manage multiple servers from your phone, tablet, laptop, or
 PC in the same browser window.
 
-To install a myunraid.net certificate, head to the *Settings -\>
-Management Access* page of the Unraid webgui and click "Provision" in
+To install a myunraid.net certificate, head to the _Settings -\>
+Management Access_ page of the Unraid webgui and click "Provision" in
 the Certificate section, if applicable.
 
 ### A note regarding DNS Rebinding Protection
@@ -53,7 +54,7 @@ work, keep reading.
 
 Many routers have a security feature known as DNS Rebinding Protection.
 This feature prevents public DNS entries from pointing to local IP
-addresses on your network. Unfortunately, this *feature* prevents us
+addresses on your network. Unfortunately, this _feature_ prevents us
 from providing proper SSL access when connecting to the webGui locally.
 As such, users must either disable this feature on their router or set
 their router to allow DNS rebinding for the myunraid.net domain (if the
@@ -70,7 +71,7 @@ for DNS records to propagate once provisioned.
 Once you enable local SSL per the instructions above, you will access
 your server through a Fully Qualified Domain Name:
 
- `https://ip.yourpersonalhash.myunraid.net` or
+`https://ip.yourpersonalhash.myunraid.net` or
 `https://ip.yourpersonalhash.myunraid.net:`<https_port> (if your https
 port is not the default of 443)
 
@@ -130,9 +131,9 @@ application-specific passwords and other private data. We are actively
 working on solutions to encrypt the backups.
 
 1. Navigate to Settings -\> Management Access -\> Connect and under
-    **Flash backup** click the **Activate** button.
+   **Flash backup** click the **Activate** button.
 2. Wait for the activation and initial backup job to complete (once
-    done, it will show **Activated: Up-to-date**.
+   done, it will show **Activated: Up-to-date**.
 
 Once activated, any changes to the OS configuration will automatically
 be replicated to the backup in our cloud servers (within 1-2 minutes of
@@ -157,30 +158,30 @@ downloaded when you reboot.
 2. Select Details.
 3. Click **Generate flash backup** from the Flash backup tile.
 4. This will combine your OS configuration data with the OS release
-    version you were running and put them both into a zip file that can
-    be used with our flash creator tool to restore the backup to a new
-    flash device.
+   version you were running and put them both into a zip file that can
+   be used with our flash creator tool to restore the backup to a new
+   flash device.
 5. After the backup has been generated, you can click **Download flash
-    backup** to obtain it.
+   backup** to obtain it.
 6. Use the Unraid USB Flash Creator to restore your backup to a new
-    flash drive.
+   flash drive.
 
 ===Additional Steps Required=== Once you boot the OS, there are only a
 few things you will need to reconfigure:
 
 1. On the Settings -\> Management Access -\> Unraid.net page, click to
-    Activate your flash backup again.
+   Activate your flash backup again.
 2. On the Users page, for each user (including root), you will need to
-    reset your passwords.
+   reset your passwords.
 3. On the Settings \> VPN Manager page, for each tunnel and peer:
-    - Click the key icon. Click "Generate Keypair" and "Generate Key",
-      start each tunnel, then download the new client configuration to
-      each associated client device.
+   - Click the key icon. Click "Generate Keypair" and "Generate Key",
+     start each tunnel, then download the new client configuration to
+     each associated client device.
 4. If your server does not have Internet access when you reboot then
-    you will need to go to Community Apps -\> Previous Apps and
-    reinstall your plugins once you have Internet access. The
-    configuration files will be on your system ready to use once the
-    application files have been installed.
+   you will need to go to Community Apps -\> Previous Apps and
+   reinstall your plugins once you have Internet access. The
+   configuration files will be on your system ready to use once the
+   application files have been installed.
 
 ## **Server Deep Linking**
 

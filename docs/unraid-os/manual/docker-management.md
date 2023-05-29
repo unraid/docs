@@ -28,16 +28,16 @@ Unraid that might lead to system instability
 **Prerequisites**
 
 - A system up and running with Unraid 6 and you are connected via a
-    web browser to the Unraid webGui
+  web browser to the Unraid webGui
 - A share created called "appdata" that will be used to store
-    application metadata (also often referred to as an applications
-    *working set*). Strictly speaking you could use any name for the
-    share to store application metadata but it is wise to stick to the
-    recommended name as it simplifies any support questions/issues if
-    you conform to the recommended name.
+  application metadata (also often referred to as an applications
+  _working set_). Strictly speaking you could use any name for the
+  share to store application metadata but it is wise to stick to the
+  recommended name as it simplifies any support questions/issues if
+  you conform to the recommended name.
 
-*NOTE: Applications are made available and supported by both the Docker
-and Unraid user communities respectively.*
+_NOTE: Applications are made available and supported by both the Docker
+and Unraid user communities respectively._
 
 \
 
@@ -88,10 +88,10 @@ Technology publishes to its public Docker repository. To add them to
 your system, perform the following steps:
 
 - Click **Add Container** on the **Docker** tab in the webGui.
-- Click the *Template* drop-down and select an application.
+- Click the _Template_ drop-down and select an application.
 - Read the description and instructions for using this application.
 - Click **Create** to begin downloading the application to your system
-    as a Docker container.
+  as a Docker container.
 
 **This method is now deprecated and the recommended way to add all
 containers is via Community Applications**
@@ -104,11 +104,11 @@ Lime Technology forums for information on installing the Community
 Applications plugin. This plugin will allow you to add more applications
 to your system through an app store interface.
 
-*NOTE: The applications available on this store come in multiple forms
+_NOTE: The applications available on this store come in multiple forms
 (containers and plugins) and are not directly supported by Lime
 Technology. Support for community-maintained Docker containers can be
 found in the [Docker Containers
-subforum](https://forums.unraid.net/forum/index.php?board=56.0).*
+subforum](https://forums.unraid.net/forum/index.php?board=56.0)._
 
 ## Configuring a container
 
@@ -131,13 +131,13 @@ host.
 When looking at the volume mappings section
 
 - The Container volume represents the path from the container that
-    will be mapped.
+  will be mapped.
 - The Host path represents the path the Container volume will map to
-    on your Unraid system.
+  on your Unraid system.
 - The Access Mode specifier what the container can do with the
-    files/folders to which it has been given access. It is good practice
-    to give the most restrictive access that is consistent with the
-    container being able to run successfully.
+  files/folders to which it has been given access. It is good practice
+  to give the most restrictive access that is consistent with the
+  container being able to run successfully.
 
 Clicking on the **Edit** button brings up a dialog allowing you to alter
 a volume mapping. Clicking inside the resulting fields provides a
@@ -147,8 +147,8 @@ For applications that are installed via Community Applications (i.e. the
 Apps tab) then you are typically provided with many of the settings for
 a particular container pre-set to sensible values. You should review
 these as being what you actually want on your system. Additional
-mappings can be manually created by clicking the *Add another Path,
-Port, Variable, Label or Device* option.
+mappings can be manually created by clicking the _Add another Path,
+Port, Variable, Label or Device_ option.
 
 Note that this means that the path to any particular file/folder can be
 different when viewed from insides the container to that when viewed
@@ -168,21 +168,21 @@ with Plex Media Server, you should specify an additional mapping to give
 it access to your media files). It is important that when naming
 Container volumes that you specify a path that won't conflict with
 already existing folders present in the container. If unfamiliar with
-Linux, using a prefix such as "unraid_" for the volume name is a safe
+Linux, using a prefix such as "unraid\_" for the volume name is a safe
 bet (e.g., "/unraid_media" is a valid Container volume name).
 
 Special points to note when setting up volume mappings are:
 
 - Path names are case significant both at the host level and the
-    container level.
+  container level.
 - Container paths should start with a / character. If this is omitted
-    the path is a realize path so it will not be clear where inside the
-    container the path can be found.
+  the path is a realize path so it will not be clear where inside the
+  container the path can be found.
 - If you are setting up a mapping that will use an Unassigned Device
-    at the host level then it is important that you set the Access Mode
-    to use on if the Slave access modes. If you do not do this then
-    dynamic paths nay not be seen until the docker sub-system is
-    restarted.
+  at the host level then it is important that you set the Access Mode
+  to use on if the Slave access modes. If you do not do this then
+  dynamic paths nay not be seen until the docker sub-system is
+  restarted.
 
 Host paths mentioned in a container's volume mappings are created when
 the container starts if they do not already exist. If you find that you
@@ -212,8 +212,8 @@ although this is not typically necessary when working with containers
 using templates provided through Community Applications as port mappings
 expected by the container should already be specified.
 
-*IMPORTANT NOTE: If adjusting port mappings, do **not** modify the
-settings for the Container port as only the Host port can be adjusted.*
+_IMPORTANT NOTE: If adjusting port mappings, do **not** modify the
+settings for the Container port as only the Host port can be adjusted._
 
 ### Environment Variables
 
@@ -227,12 +227,12 @@ Click the **Create** button and the download process will begin. A few
 things worth noting while the image is downloading:
 
 - After clicking Create, do not close your browser window or attempt
-    to navigate to other tabs using the browser until the download is
-    complete.
+  to navigate to other tabs using the browser until the download is
+  complete.
 - Initial downloads per template repository may take longer than
-    subsequent downloads per repository.
+  subsequent downloads per repository.
 - When the download process completes, you can click the Done button
-    to return to the Docker page and continue adding applications.
+  to return to the Docker page and continue adding applications.
 
 # Controlling container auto-start
 
@@ -250,36 +250,33 @@ timing with relation to other containers becomes important.
 Example cases that spring to mind are:
 
 - Starting a container running a database before any application that
-    attempts to use it is started.
+  attempts to use it is started.
 - Starting a container that runs a specialist network link (e.g. a
-    VPN) before any other container attempts to use it.
+  VPN) before any other container attempts to use it.
 
 You can alter the container start-up behavior from the default in the
 following ways:
 
 - **Changing the order**:
 
-:   The simplest capability is to simply change the order in which the
-    docker containers are listed on the Docker tab. If you use a mouse
-    to click-and-hold on the container name then you will find that you
-    can use drag-and-drop to move the container to another position in
-    the list.
+: The simplest capability is to simply change the order in which the
+docker containers are listed on the Docker tab. If you use a mouse
+to click-and-hold on the container name then you will find that you
+can use drag-and-drop to move the container to another position in
+the list.
 
 - **Adding wait times**:
 
-:   If simply changing the startup order is not sufficient because some
-    containers take a while to finish their startup process then you can
-    also add delays into the start-up sequence. You can do this by the
-    following steps.
-    -   Switch to Advanced View using the toggle at the top right.
-    -   A *wait* field will appear in the *AutoStart* column. It will
-        initially be set to 0 indicating no delay before starting the
-        next container.
-    -   Enter a value into the *wait* field indicating the delay (in
-        seconds) to be used before attempting to start the **next**
-        container in the list. That gives this container time to finish
-        its startup process. You may have to do some trial-and-error to
-        determine what are appropriate values for this wait time.
+: If simply changing the startup order is not sufficient because some
+containers take a while to finish their startup process then you can
+also add delays into the start-up sequence. You can do this by the
+following steps. - Switch to Advanced View using the toggle at the top right. - A _wait_ field will appear in the _AutoStart_ column. It will
+initially be set to 0 indicating no delay before starting the
+next container. - Enter a value into the _wait_ field indicating the delay (in
+seconds) to be used before attempting to start the **next**
+container in the list. That gives this container time to finish
+its startup process. You may have to do some trial-and-error to
+determine what are appropriate values for this wait time.
 
 Using these mechanisms should allow you to control the container startup
 process to achieve the results that you want.
@@ -298,36 +295,36 @@ appear with multiple options:
 
 - **WebUI**
   - Most apps added through Docker will have a web interface that
-        you can access to configure and use them, but not all.
+    you can access to configure and use them, but not all.
   - Clicking this option will launch a new browser tab/window
-        directly to the application's web interface.
+    directly to the application's web interface.
   - For apps that do NOT have a web interface, read the description
-        when adding the container for instructions on how to make use of
-        the app once it's running.
+    when adding the container for instructions on how to make use of
+    the app once it's running.
 - **Update**
   - This option only appears after clicking Check for Updates (if
-        available).
+    available).
 - **Start/Stop**
   - This will toggle the active state of the container.
 - **Logs**
   - If you are having difficulties with your application, useful
-        information may be present in the application's log.
+    information may be present in the application's log.
   - Logs for applications are stored separately from Unraid's system
-        log itself.
+    log itself.
 - **Edit**
   - Container settings such as port and volume mappings can be
-        changed by clicking this option.
+    changed by clicking this option.
   - Once changes are applied, the container will start
-        automatically, even if it is stopped initially.
+    automatically, even if it is stopped initially.
 - **Enable/Disable autostart**
   - Toggling this will change the default behavior of the
-        application when the Docker service is started.
+    application when the Docker service is started.
 - **Remove**
   - Allows you to remove either the entire application or just the
-        container.
+    container.
   - Removing a container without its "image" will make adding the
-        application again later a much faster process (as it will not
-        need to be redownloaded).
+    application again later a much faster process (as it will not
+    need to be redownloaded).
 
 # Accessing a Volume Mapping Inside a Container
 
@@ -360,19 +357,19 @@ The steps to recreate the docker image file are:
 
 - Go to Settings-\>Docker in the Unraid GUI
 - Set the **Enable Docker** option to **No** and click **Apply** to
-    stop the docker service
+  stop the docker service
 - Select the option to delete the Docker vdisk file and click apply
-    (you can also delete this file manually if you prefer).
+  (you can also delete this file manually if you prefer).
 - Check that the location for the docker vdisk file points to where
-    you want the new file to be placed. Note that this setting includes
-    the filename for the vdisk file not just the path to the folder
-    where it is to be located.
+  you want the new file to be placed. Note that this setting includes
+  the filename for the vdisk file not just the path to the folder
+  where it is to be located.
 - Check that the amount of space to be allocated to the disk file is
-    what you want. Unless you are an exceptionally heavy user of docker
-    applications the default value is likely to be fine.
+  what you want. Unless you are an exceptionally heavy user of docker
+  applications the default value is likely to be fine.
 - Set the **Enable Docker** option to **Yes** and click **Apply** to
-    start the docker service. A new vdisk file will be created and
-    formatted internally to BTRFS as part of starting the service.
+  start the docker service. A new vdisk file will be created and
+  formatted internally to BTRFS as part of starting the service.
 
 At his point, you will probably want to re-install your applications
 with the same settings as previously used. This is easily achieved as
@@ -391,10 +388,10 @@ this can be done by:
 
 - Go to the **Apps** tab in the Unraid GUI.
 - Go to the **Previous Apps** section. Any apps you have installed
-    previously that are not currently installed will be displayed.
+  previously that are not currently installed will be displayed.
 - Indicate which apps you want to re-install
 - Proceed with the installation and the docker container will be
-    re-downloaded and your previous settings applied.
+  re-downloaded and your previous settings applied.
 
 # Docker Custom Networks
 
@@ -407,7 +404,7 @@ to re-adding the containers.
 
 Normally Docker does not allow Docker containers to directly access the
 same subnet as the one used by the host. You can allow this under
-*Settings-\>Docker* by changing **Host access to custom networks** from
+_Settings-\>Docker_ by changing **Host access to custom networks** from
 **disabled** to **enabled**.
 
 # Starting and stopping Docker containers on a schedule
@@ -420,17 +417,17 @@ plugin.
 The basic process is:
 
 - Install the [User
-    Scripts](https://forums.unraid.net/topic/48286-plugin-ca-user-scripts/)
-    plugin via the *Apps* tab if you do not already have it installed.
-- Go to *Settings -\> User Scripts* to setup and control your scripts.
+  Scripts](https://forums.unraid.net/topic/48286-plugin-ca-user-scripts/)
+  plugin via the _Apps_ tab if you do not already have it installed.
+- Go to _Settings -\> User Scripts_ to setup and control your scripts.
 - Create a new script for each separate time you want to schedule. A
-    single script can be used to start and/or stop multiple Docker
-    containers if you want them on the same schedule point.
+  single script can be used to start and/or stop multiple Docker
+  containers if you want them on the same schedule point.
 - Set the schedule at which the script is to be run. If (as is likely)
-    the simple scheduling options available via the dropdown list then
-    you can set up a Custom schedule by creating an entry in
-    [crontab](https://en.wikipedia.org/wiki/Cron#Overview) format as
-    this provides far more precise control.
+  the simple scheduling options available via the dropdown list then
+  you can set up a Custom schedule by creating an entry in
+  [crontab](https://en.wikipedia.org/wiki/Cron#Overview) format as
+  this provides far more precise control.
 - Hit **Apply** to activate the new script together with its schedule.
 
 **Command to start a docker**
@@ -439,15 +436,15 @@ In most cases this is the simply a command of the form:
 
 `docker start "container-name"`
 
-where *container-name* is the name you gave the container on the Docker
+where _container-name_ is the name you gave the container on the Docker
 tab. This starts an existing docker container that you have previously
 set up.
 
-You can also see the *container-name* in the *docker run* command that
+You can also see the _container-name_ in the _docker run_ command that
 unRaid uses to both create a container (if it does not exist) and also
 start it with the parameters provided via the docker template for that
-container. The *container-name* is that provided via the *name*
-parameter to the *docker run* command. You can see what the d*ocker run*
+container. The _container-name_ is that provided via the _name_
+parameter to the _docker run_ command. You can see what the d*ocker run*
 command that unRaid will use when you install / edit the application
 (you can always make any change and then change it back and hit Apply to
 get the docker run command to appear). The following is an example of
@@ -461,7 +458,7 @@ This is the simply a command of the form:
 
 `docker stop "container-name"`
 
-where *container-name* is the name you gave the container on the Docker
+where _container-name_ is the name you gave the container on the Docker
 tab.\
 =Other Tips and Tricks=
 
@@ -470,11 +467,11 @@ and very powerful. Here are some additional tips to improve your
 experience:
 
 - Using a cache device or pool for storing your Docker virtual disk
-    image and application data can improve performance.
+  image and application data can improve performance.
 - Run multiple instances of the same app at the same time, which is
-    useful for testing out alternate versions before upgrading.
+  useful for testing out alternate versions before upgrading.
 - Click the **Advanced View** toggle on the top right when viewing the
-    Docker page or adding applications to see additional configuration
-    options.
+  Docker page or adding applications to see additional configuration
+  options.
 - Learn more about Docker containers from our [helpful user
-    community](https://forums.unraid.net/forum/index.php?board=56.0).
+  community](https://forums.unraid.net/forum/index.php?board=56.0).

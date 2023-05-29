@@ -18,10 +18,10 @@ to use the rest of Unraid Connect.
 
 1. From Unraid webGUI Navigate to **Settings** → **Management Access**
 2. Note the **HTTPS port**, it defaults to port 443. If you have Docker
-    containers running on this port, choose an unused port over 1000
-    such as 3443, 4443, 5443, etc.
+   containers running on this port, choose an unused port over 1000
+   such as 3443, 4443, 5443, etc.
 3. If you changed any of the above settings, hit **Apply** for them to
-    take effect.
+   take effect.
 4. In the **CA-signed certificate file** area, click **Provision**
 
 ### Remote Access - **Choose Remote Access Type**
@@ -48,36 +48,37 @@ in the **Management Access → Unraid Connect** settings page. Choose one
 of the Dynamic settings in the Remote Access dropdown:
 
 1. **Dynamic - UPNP**
-    - This option enables dynamic access through the Connect dashboard,
-      as well as automatically opening and closing a random port on
-      network with UPNP. To use this option your router must have UPNP
-      enabled.
+   - This option enables dynamic access through the Connect dashboard,
+     as well as automatically opening and closing a random port on
+     network with UPNP. To use this option your router must have UPNP
+     enabled.
 2. **Dynamic - Manual Port Forward**
-    - This option enables dynamic access through the Connect dashboard,
-      but requires manual port forwarding.
+   - This option enables dynamic access through the Connect dashboard,
+     but requires manual port forwarding.
 
 #### Dynamic Remote Access Usage
 
 1. Navigate to [Unraid Connect](/connect/help.md#unraid-connect-dashboard), then to
-    either the management page or the server details view
+   either the management page or the server details view
 2. You will be presented with a new **Dynamic Remote Access** card,
-    with a button that will be enabled if your server is not accessible
-    from your current
-    location.
+   with a button that will be enabled if your server is not accessible
+   from your current
+   location.
 
-    ![](./assets/Remote-access-enable-card.png "Remote-access-enable-card.png")
+   ![](./assets/Remote-access-enable-card.png "Remote-access-enable-card.png")
+
 3. Clicking the button will trigger your server to enable wan access,
-    and if using UPNP, create a new UPNP port forward lease on your
-    router. This can take up to a minute to complete
-    - When using UPNP, a 30 minute lease will be created, which will be
-      renewed automatically while Dynamic Remote Access is enabled.
+   and if using UPNP, create a new UPNP port forward lease on your
+   router. This can take up to a minute to complete
+   - When using UPNP, a 30 minute lease will be created, which will be
+     renewed automatically while Dynamic Remote Access is enabled.
 4. After enabling, the card will report the status of the enabling
-    process, and what the current state of UPNP is.
+   process, and what the current state of UPNP is.
 5. After ten minutes of inactivity, or clicking "Disable Remote
-    Access", your server will automatically turn off access from WAN
-    traffic.
-    - When using UPNP, your server will also attempt to remove the UPNP
-      lease from your router.
+   Access", your server will automatically turn off access from WAN
+   traffic.
+   - When using UPNP, your server will also attempt to remove the UPNP
+     lease from your router.
 
 ![Active Remote Access Card](./assets/Remote-access-enabled-static.png)
 
@@ -85,42 +86,42 @@ of the Dynamic settings in the Remote Access dropdown:
 
 1. Ensure your router supports UPNP and has it enabled.
 2. Navigate to Settings -\> Management Access and set "Use UPnP" to
-    Yes.
+   Yes.
 3. On the Unraid Connect settings page, set the remote access option to
-    UPNP (either Dynamic or Always On) and Apply.
+   UPNP (either Dynamic or Always On) and Apply.
 4. **(Always on Forwarding Only)** : Press the **Check** button. If the
-    port is forwarded correctly you will see a message saying "Your
-    Unraid Server is reachable from the Internet"
-    - Note: When using Dynamic forwarding, you will not be able to
-      access your server from this manual port forward unless you click
-      the Enable Dynamic Remote access button in [Unraid
-      Connect](/connect/help.md#unraid-connect-dashboard).
+   port is forwarded correctly you will see a message saying "Your
+   Unraid Server is reachable from the Internet"
+   - Note: When using Dynamic forwarding, you will not be able to
+     access your server from this manual port forward unless you click
+     the Enable Dynamic Remote access button in [Unraid
+     Connect](/connect/help.md#unraid-connect-dashboard).
 5. Note: If the setting changes from UPnP to "Manual Port Forward" when
-    you reload the page, then we were not able to communicate with your
-    router to enable UPnP. It may need to be enabled on your router, or
-    perhaps the router needs a firmware update to use it.
+   you reload the page, then we were not able to communicate with your
+   router to enable UPnP. It may need to be enabled on your router, or
+   perhaps the router needs a firmware update to use it.
 
 ### Configuring **Manual Port Forwarding** (Applies to Dynamic - Manual Port Forward / Always On - Manual Port Forward)
 
 1. Set the **WAN port** you want to use. We highly recommend you choose
-    a random port over 1000 rather than using the default of 443. i.e.
-    something like 13856, 48653, etc
+   a random port over 1000 rather than using the default of 443. i.e.
+   something like 13856, 48653, etc
 2. Click **Apply**
 3. Setup your router to port forward the **WAN port** you specified to
-    the **HTTPS port** used by the server. There is a note on the screen
-    telling you the exact ports and IP to use.
-    - Note: some routers require that the **WAN port** match the **HTTPS
-      port**. In that case, we'd recommend setting both to the same high
-      random number.
+   the **HTTPS port** used by the server. There is a note on the screen
+   telling you the exact ports and IP to use.
+   - Note: some routers require that the **WAN port** match the **HTTPS
+     port**. In that case, we'd recommend setting both to the same high
+     random number.
 4. **(Always on Forwarding Only)** : Press the **Check** button. If the
-    port is forwarded correctly you will see a message saying "Your
-    Unraid Server is reachable from the Internet"
-    - Note: When using Dynamic forwarding, you will not be able to
-      access your server from this manual port forward unless you click
-      the Enable Dynamic Remote access button in [Unraid
-      Connect](/connect/help.md#unraid-connect-dashboard)
+   port is forwarded correctly you will see a message saying "Your
+   Unraid Server is reachable from the Internet"
+   - Note: When using Dynamic forwarding, you will not be able to
+     access your server from this manual port forward unless you click
+     the Enable Dynamic Remote access button in [Unraid
+     Connect](/connect/help.md#unraid-connect-dashboard)
 5. To access your server using Remote Access, login to [Unraid
-    Connect](/connect/help.md#unraid-connect-dashboard) and click the Manage link
+   Connect](/connect/help.md#unraid-connect-dashboard) and click the Manage link
 
 ===Optional step for secure local access=== If you want to use secure
 https for local access to your server as well, navigate to Settings -\>
