@@ -13,6 +13,6 @@ Unraid Docs are built using Docusaurus which uses [Markdown](https://docs.unraid
 
 **Creating a New Docs Page**
 
-To create a new Docs page, for example an Unraid Guide, in github, go to [docs/unraid-os/guides](https://github.com/unraid/docs/tree/main/docs/unraid-os/guides) and click "Add file" on the right to add a new Guides page. From there, name your file/guide and ensure it ends with ".md". Next, add the guide info and styling and then commit your changes. Then, a LimeTech employee will review and merge if everything looks good.
+To create a new Docs page, for example an Unraid Guide, in github, go to [docs/unraid-os/guides](https://github.com/unraid/docs/tree/main/docs/unraid-os/guides) and click "Add file" on the right to add a new Guides page. From there, name your file/guide and ensure it ends with ".md". Also, please ensure filenames are *lower case* and have *dashes separating-any-words* (Ex: wake-on-lan.md) Next, add the guide info and styling and then commit your changes. Then, a LimeTech employee will review and merge if everything looks good.
 
 Thank you in advance for any and all submissions and edits. Making living technical documentation would be impossible without community involvement!
