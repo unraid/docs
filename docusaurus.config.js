@@ -5,12 +5,12 @@ const lightCodeTheme = require("prism-react-renderer/themes/github");
 const darkCodeTheme = require("prism-react-renderer/themes/dracula");
 const { sortSidebarItems } = require("./sitebar-semver-sort");
 
-const locales = ["en", "zh", "es", 'fr', 'de']
+const locales = ["en", "zh", "es", "fr", "de"];
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: "Unraid Docs",
   tagline: "Documentation for Unraid",
-  favicon: "img/favicon.svg",  // https://dev.to/masakudamatsu/favicon-nightmare-how-to-maintain-sanity-3al7
+  favicon: "img/favicon.svg", // https://dev.to/masakudamatsu/favicon-nightmare-how-to-maintain-sanity-3al7
 
   // Set the production url of your site here
   url: "https://docs.unraid.net",
@@ -45,10 +45,13 @@ const config = {
           // Remove this to remove the "edit this page" links.
           editUrl: "https://github.com/unraid/docs/tree/main/",
           editLocalizedFiles: true,
-          async sidebarItemsGenerator({ defaultSidebarItemsGenerator, ...args}) {
+          async sidebarItemsGenerator({
+            defaultSidebarItemsGenerator,
+            ...args
+          }) {
             const sidebarItems = await defaultSidebarItemsGenerator(args);
             return sortSidebarItems(sidebarItems);
-          }
+          },
         },
         /* blog: {
           showReadingTime: true,
@@ -56,13 +59,14 @@ const config = {
           // Remove this to remove the "edit this page" links.
           editUrl: "https://github.com/unraid/docs/tree/main/",
         }, */
+
         theme: {
           customCss: require.resolve("./src/css/custom.css"),
         },
         gtag: {
-          trackingID: 'G-CZENQ1ZPEH',
-          anonymizeIP: true
-        }
+          trackingID: "G-CZENQ1ZPEH",
+          anonymizeIP: true,
+        },
       }),
     ],
   ],
@@ -71,18 +75,28 @@ const config = {
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
       announcementBar: {
-        id: 'underConstruction', // change this ID when you change the content so it'll show for users that previously closed the announcement
-        content: 'Welcome to the new Unraid Documentation! 🚧 Currently Under Construction 🚧 <a href="https://legacy.wiki.unraid.net" target="_blank">Legacy Wiki</a> ',
+        id: "underConstruction", // change this ID when you change the content so it'll show for users that previously closed the announcement
+        content:
+          'Welcome to the new Unraid Documentation! 🚧 Currently Under Construction 🚧 <a href="https://legacy.wiki.unraid.net" target="_blank">Legacy Wiki</a> ',
         isCloseable: true,
-        backgroundColor: '#ff8c2f',
-        textColor: '#fff',
+        backgroundColor: "#ff8c2f",
+        textColor: "#fff",
       },
       colorMode: { defaultMode: "dark", respectPrefersColorScheme: true },
       image: "img/meta-unraid.png",
       metadata: [
-        { name: "theme-color", content: "#242526", media: "(prefers-color-scheme: dark)" }, // matches docusaurus theme rather than unraid specific color
-        { name: "theme-color", content: "#ffffff", media: "(prefers-color-scheme: light)" },
+        {
+          name: "theme-color",
+          content: "#242526",
+          media: "(prefers-color-scheme: dark)",
+        }, // matches docusaurus theme rather than unraid specific color
+        {
+          name: "theme-color",
+          content: "#ffffff",
+          media: "(prefers-color-scheme: light)",
+        },
         { name: "color-scheme", content: "dark light" },
+        { name: "keywords", content: "Unraid, server, storage, NAS, Docker, virtualization, array, parity, data protection, file sharing, plugins, management, GUI, disk management, caching, SSD, disk encryption, security, RAID, network configuration, backups, media server, transcoding, monitoring, VMs, GPU passthrough, hardware compatibility" },
       ],
       navbar: {
         title: "Unraid Docs",
@@ -96,7 +110,6 @@ const config = {
         items: [
           {
             items: [
-              
               {
                 href: "https://unraid.net",
                 label: "Unraid Home",
@@ -130,7 +143,10 @@ const config = {
                 label: "Home",
                 to: "/",
               },
-              { label: "Contribute on Github", href: "https://github.com/unraid/docs" },
+              {
+                label: "Contribute on Github",
+                href: "https://github.com/unraid/docs",
+              },
             ],
           },
           {
@@ -186,7 +202,7 @@ const config = {
       {
         indexDocs: true,
         indexDocSidebarParentCategories: 2,
-        language: locales
+        language: locales,
       },
     ],
     [
