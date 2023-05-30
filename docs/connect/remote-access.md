@@ -6,7 +6,7 @@ The Remote Access feature
 allows you to access your Unraid webgui from the Internet. If you need
 access to Docker containers, network drives, or other devices on your
 network, you'll want to [setup a
-VPN](https://wiki.unraid.net/Manual/Security#VPN) instead.
+VPN](/unraid-os/manual/security.md#vpn) instead.
 
 **Note: Before enabling remote access, consider your root password. Is
 it sufficiently complex? Update your root password on the Users page.**

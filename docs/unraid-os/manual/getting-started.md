@@ -391,7 +391,7 @@ the device, it could be for one of many reasons. The simplest solution
 would be to try an alternate device, but if that is not an option for
 you, you can try installing Unraid using the legacy [manual method
 documented
-here](https://wiki.unraid.net/Articles/Getting_Started#Manual_Install_Method).
+here](#manual-install-method).
 
 **I can't seem to connect to the webGui using <http://tower> or
 <http://tower.local>. What do I do?**

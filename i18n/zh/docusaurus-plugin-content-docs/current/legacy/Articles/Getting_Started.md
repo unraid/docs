@@ -12,7 +12,7 @@
 要开始使用 Unraid，请[下载试用版](https://unraid.net/zh/下载) 并使用 USB
 Creator Tool。
 
-您也[可以通过手动方式](https://wiki.unraid.net/Articles/Getting_Started#Manual_Method_.28Legacy.29)来准备您的闪存设备\
+您也[可以通过手动方式](/unraid-os/manual/getting-started.md#manual-install-method)来准备您的闪存设备\
 
 ### 如果您需要帮助，请访问[我们的中文论坛](https://forums.unraid.net/forum/88-chinese-%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87/)!
 
