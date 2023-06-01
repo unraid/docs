@@ -612,8 +612,9 @@ The shares that fall into this category are:
 The Unraid 6.12 release has introduced some new terminology to make it
 clearer to new users where files are initially placed and where they
 will end up. The same functionality is present in earlier releases, but
-has often been misunderstood by new users.\
-**Primary Storage:**
+has often been misunderstood by new users.
+
+#### **Primary Storage:**
 
 This is the location to which **new** files will be written.
 
