@@ -899,7 +899,7 @@ To remove a disk from your array, perform the following steps:
    (for both the array and cache; some find it helpful to take a
    screenshot)
 3. Perform the [Reset the array
-   configuration](http://lime-technology.com/wiki/index.php/UnRAID_6_2/Storage_Management#Reset_the_array_configuration)
+   configuration](https://docs.unraid.net/unraid-os/manual/storage-management/#reset-the-array-configuration)
    procedure. When doing this it is a good idea to use the option to
    preserve all current assignments to avoid you having to re-enter
    them (and possibly make a mistake doing so).
