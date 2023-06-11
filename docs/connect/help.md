@@ -11,9 +11,9 @@
    right corner of your Unraid server, and click Sign In. Follow the
    prompts to sign in with your Unraid.net credentials, or create a new
    account.
-   ![](./assets/Sign-in-up-connect-975a8554.png "Sign-in-up-connect-975a8554.png")
+   ![](./assets/Sign-in-up-connect-975a8554.png)
 4. Register Your Server with Unraid Connect by following the
-   prompts![](./assets/Register-a-server-7f35552e.png "Register-a-server-7f35552e.png")
+   prompts![](./assets/Register-a-server-7f35552e.png)
 5. Come Back to [This Page](https://connect.myunraid.net/help) and
    Click Continue.
 
@@ -28,7 +28,7 @@ available storage, license type, uptime, Unraid OS version, and more.
 
 If you have multiple servers, you will see each one listed in the
 left-side pane and a tile for each server.
-![](./assets/Screenshot_2023-04-24_at_1.01.20_PM.png "Screenshot_2023-04-24_at_1.01.20_PM.png")
+![](./assets/Screenshot_2023-04-24_at_1.01.20_PM.png)
 
 From here, you can get more details about each server by clicking on
 "Details".
@@ -47,7 +47,7 @@ the Certificate section, if applicable.
 
 ### A note regarding DNS Rebinding Protection
 
-![](./assets/Dns_rebinding_error.png "Dns_rebinding_error.png")If you see this
+![](./assets/Dns_rebinding_error.png)If you see this
 message after clicking the **Provision** button, click **OK**, try
 waiting 2-5 minutes, then click **Provision** again. If that doesn't
 work, keep reading.
@@ -188,7 +188,7 @@ few things you will need to reconfigure:
 Deep linking allows you to manage relevant sections of the Unraid webgui
 in one click. Click any of the circled link buttons to take you right to
 the relevant page in the Unraid webgui:
-![](./assets/Deep-linking.png "Deep-linking.png")
+![](./assets/Deep-linking.png)
 
 ## **Customizable Dashboard, Server Banner Image and Themes**
 
@@ -200,19 +200,19 @@ drag and drop arranging.
 
 To toggle between dark and light mode, click the Sun or Moon icon in the
 far right of the Connect UI.
-![](./assets/Screenshot_2023-04-24_at_1.44.03_PM.png "Screenshot_2023-04-24_at_1.44.03_PM.png")
+![](./assets/Screenshot_2023-04-24_at_1.44.03_PM.png)
 
 ## **License Management**
 
 Manage your license keys at any time via the My Keys section. You can
 even upgrade right from the Connect UI.
-![](./assets/Screenshot_2023-04-24_at_1.39.53_PM.png "Screenshot_2023-04-24_at_1.39.53_PM.png")
+![](./assets/Screenshot_2023-04-24_at_1.39.53_PM.png)
 
 ## **Language Localization**
 
 Unraid OS has a global user base so be sure to enjoy Unraid Connect in
 English, German, French, Spanish or Chinese!
-![](./assets/Screenshot_2023-04-24_at_1.44.16_PM.png "Screenshot_2023-04-24_at_1.44.16_PM.png")
+![](./assets/Screenshot_2023-04-24_at_1.44.16_PM.png)
 
 ## Signing Out
 

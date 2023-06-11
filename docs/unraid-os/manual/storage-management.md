@@ -4,7 +4,7 @@ sidebar_position: 3
 
 # Storage Management
 
-![](../assets/Configuringarray1.png "Configuringarray1.png")
+![](../assets/Configuringarray1.png)
 
 To assign devices to
 the array and/or cache, first login to the server's webGui. Click on
@@ -1464,7 +1464,7 @@ You can change the BTRFS raid levels for a pool from the Unraid GUI by:
 As an example, the following screenshot shows how you might convert
 the pool from the RAID1 to the SINGLE profile.
 
-![](file:Btrfs-raid1.jpg "wikilink")
+![](file:Btrfs-raid1.jpg)
 
 - **If using UnRaid 6.9.0 or later** this has been made even easier by
   giving you a drop-down list of the available options so simply

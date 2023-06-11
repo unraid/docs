@@ -291,7 +291,7 @@ visible on the Docker page of the Unraid web interface or on the icon
 for the docker on the dashboard page. Doing so will make a context menu
 appear with multiple options:
 
-![](../assets/Dockerguide-controlling.png "File:Dockerguide-controlling.png")
+![](../assets/Dockerguide-controlling.png)
 
 - **WebUI**
   - Most apps added through Docker will have a web interface that
@@ -337,7 +337,7 @@ in the BT Sync app that would point to my Media share, I would specify
 the path of "/unraid_media" in the application's interface, as depicted
 below.
 
-![](../assets/Dockerguide-usingvolumes.png "Dockerguide-usingvolumes.png")
+![](../assets/Dockerguide-usingvolumes.png)
 
 # Re-Create the Docker image file
 
@@ -450,7 +450,7 @@ command that unRaid will use when you install / edit the application
 get the docker run command to appear). The following is an example of
 what this might look like:
 
-![](../assets/Docker_run.png "Docker_run.png")
+![](../assets/Docker_run.png)
 
 **Command to stop a docker**
 

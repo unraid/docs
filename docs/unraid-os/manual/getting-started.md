@@ -60,7 +60,7 @@ There are two methods to connect to the webGui in Unraid:
 
 Once you are connected to the webGui, you will immediately be prompted
 to set a strong root password (as of version 6.10):
-![](../assets/Set_root_password.png "Set_root_password.png")
+![](../assets/Set_root_password.png)
 Strong passwords are unique (not reused), have at least 8 characters (the more the better),
 are a combination of alphabetic, numeric, and special characters, and
 are not common dictionary words. Better yet, use a password manager.
@@ -103,7 +103,7 @@ your server through the [Unraid Connect Dashboard](https://connect.myunraid.net/
 
 ## Assigning Devices to the Array and Pool(s)
 
-![](../assets/Configuringarray1.png "Configuringarray1.png") After installing a
+![](../assets/Configuringarray1.png) After installing a
 registration key, you are ready to begin assigning devices for Unraid to
 manage. Click on the **Main** tab from the Unraid webGui and follow
 these guidelines when assigning disks:
@@ -268,7 +268,7 @@ this is expected behavior.
 
 ## Advanced BIOS Configuration Guide
 
-![](../assets/Booting.jpg "Booting.jpg")
+![](../assets/Booting.jpg)
 Configuring your motherboard BIOS (as well as your storage controller) correctly is an important step to
 ensuring a solid experience using Unraid. The basic guidelines are as
 follows:

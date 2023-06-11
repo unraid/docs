@@ -153,7 +153,7 @@ largest disk. A new high water level is again set to one-half of the
 previous high level once all the disks have less free space than the
 current high water level.
 
-![](../assets/High-Water_Allocation_Method.JPG "File:High-Water Allocation Method.JPG")
+![](../assets/High-Water_Allocation_Method.JPG)
 
 The above example shows what will occur when there is a mix of 4 disks
 varying is size from 500gig to 2T in size.
@@ -355,7 +355,7 @@ separate shares for the movies and the TV shows. This way, the movies
 can be set to use a split level of 2 and the TV shows can use a split
 level of 3.
 
-![](../assets/Split_level_2.JPG "File:Split_level_2.JPG")
+![](../assets/Split_level_2.JPG)
 
 For Movies use a split level = 2. This allows the "SD Movies", "HD
 Movies" and "Kids Movies" folders to be placed on every disk and it
@@ -374,7 +374,7 @@ The second way to fix the issue is to add another folder level to the
 movies, starting first with a Movies folder in the Media share and then
 placing the different movie types below this.
 
-![](../assets/Split_level_3.JPG "File:Split_level_3.JPG")
+![](../assets/Split_level_3.JPG)
 
 This user share structure must use split level = 3. SD Movies, HD
 Movies, Kids Movies and each TV series can exist on multiple disks. This
@@ -428,7 +428,7 @@ level is set to 1. The Share name is New_Movies. Each movie stored in
 this share has its own folder. Inside the movie folder is the movie file
 as well as some metadata files used by MediaBrowser.
 
-![](../assets/Movie_Share.jpg "File:Movie Share.jpg")
+![](../assets/Movie_Share.jpg)
 
 The above Windows Explorer screen shot shows the file structure of the
 New_Movies share on the left and the contents of the `<u>`{=html}A
@@ -458,7 +458,7 @@ You will notice that the movie folders `<u>`{=html}500 Days of Summer
 both appear in the New_Movies share. The next screen shot will show how
 each of these files is stored on a separate disk.
 
-![](../assets/Movies_Share_Disk_View.JPG "File:Movies Share Disk View.JPG")
+![](../assets/Movies_Share_Disk_View.JPG)
 
 The above screen shot shows side by side Window Explorer views of the
 file structure stored on disk1 and disk2. On the left is disk1 and on
@@ -513,7 +513,7 @@ types of media will be stored in this share. The desired structure is;
 
 The desired structure is illustrated below.
 
-![](../assets/Level_0.JPG "File:Level 0.JPG")
+![](../assets/Level_0.JPG)
 
 On the left side is how the user share will appear and on the right side
 is the folder structure on each disk. The user will go to each disk and

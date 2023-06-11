@@ -34,7 +34,7 @@ If you want or need to upgrade your license to a higher tier, upgrades
 are done from within the OS WebGUI via the Tools → Registration page or
 via the top right corner of the page.
 
-![](../assets/Upgrade-UPC.png "Upgrade-UPC.png")
+![](../assets/Upgrade-UPC.png)
 
 **Unraid Basic** allows for up to _6 attached storage
 devices<sup>1</sup>._

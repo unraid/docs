@@ -75,7 +75,7 @@ that you attach them to a new post if you have already started a thread
 on your issue so that other forum users are notified that there has been
 something added to the thread.
 
-![](../assets/Diagnostics.jpg "Diagnostics.jpg")
+![](../assets/Diagnostics.jpg)
 
 These system diagnostics include configuration information, state
 information, and key system logs. When creating the diagnostics from the
@@ -129,7 +129,7 @@ being rebooted. If you are investigating a system crash then as long as
 you are running Unraid 6.7.2 or later there is built-in syslog server
 support
 
-![](../assets/Syslog-server-setup.jpg "Syslog-server-setup.jpg")
+![](../assets/Syslog-server-setup.jpg)
 
 - Go to _Settings-\>Network Services-\>Syslog Server_
 
@@ -165,7 +165,7 @@ occurs.
 syslog daemon is started during the boot process thus missing the
 very start of the boot process.
 
-![](../assets/Syslog-server.jpg "Syslog-server.jpg")
+![](../assets/Syslog-server.jpg)
 
 - **Local Syslog Server**: Set this to **Enabled** to setup this
   Unraid server to act as a network syslog server. When this is
