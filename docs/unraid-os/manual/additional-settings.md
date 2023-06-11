@@ -27,14 +27,14 @@ page. Enable your array to auto-start on boot, adjust disk spin-down
 timers, and even adjust advanced driver settings such as SMART polling
 frequency.
 
-## ![](../assets/Dynamix.docker.manager.png) Docker {#filedynamix.docker.manager.png_docker}
+## ![](../assets/Dynamix.docker.manager.png) Docker
 
 Docker containers allow users to add a variety of pre-configured Linux
 applications to their systems. See the [Docker
 Management](docker-management.md) page for more
 information on setting up applications using Docker.
 
-## ![](../assets/Ident.png) Identification {#fileident.png_identification}
+## ![](../assets/Ident.png) Identification
 
 Unraid automatically uses the hostname of `tower`, but you can adjust
 that from this page. You can also give your system a description / model
@@ -42,7 +42,7 @@ number (useful for system builders). In addition, this page also allows
 you to enable or disable SSL support, change what port the webGui uses,
 and even provision an SSL certificate for your server.
 
-## ![](../assets/Network-settings.png) Network Settings {#filenetwork_settings.png_network_settings}
+## ![](../assets/Network-settings.png) Network Settings
 
 By default, Unraid will attempt to get an IP address from a DHCP server
 present on your local network (typically by your router). From this
@@ -50,7 +50,7 @@ page, you can configure a static IP address, set up bonding / bridging,
 or other options. Setting a static IP is recommended, but not required
 to use Unraid.
 
-## ![](../assets/Share-settings.png) Global Share Settings {#fileshare_settings.png_global_share_settings}
+## ![](../assets/Share-settings.png) Global Share Settings
 
 As described earlier, user shares can vastly simplify how content can be
 organized and accessed across multiple disks in the array. You can
@@ -58,7 +58,7 @@ specify what disks are allowed to participate in user shares (global
 inclusion/exclusion) and if a cache device/pool is present, you can
 configure its use with user shares from here.
 
-## ![](../assets/Apcupsd.png) UPS Settings {#fileapcupsd.png_ups_settings}
+## ![](../assets/Apcupsd.png) UPS Settings
 
 Unraid can be connected to an APC UPS (uninterruptable power supply) so
 that in the event of a power loss, the system can be commanded to shut
@@ -67,7 +67,7 @@ can configure the connection to your specific UPS and define policies
 for when the shutdown command should be issued. For a complete manual,
 visit: <http://apcupsd.org/manual/manual.html>
 
-## ![](../assets/Dynamix.vm.manager.png) VM Manager {#filedynamix.vm.manager.png_vm_manager}
+## ![](../assets/Dynamix.vm.manager.png) VM Manager
 
 Virtual machines can be used to turn your server into a desktop, a media
 player, or just to run applications that weren't designed for Linux.
@@ -75,26 +75,26 @@ See [VM Management](vm-management.md) and [VM Guest
 Support](vm-support.md) for more information on
 creating and managing VMs on Unraid.
 
-## ![](../assets/Apple-logo.png) AFP (Apple File Protocol) {#fileapple_logo.png_afp_apple_file_protocol}
+## ![](../assets/Apple-logo.png) AFP (Apple File Protocol)
 
 From this page you can enable user shares for use with the Apple File
 Protocol, allowing them to be used as valid Time Machine backup targets
 for your Mac OS X devices.
 
-## ![](../assets/Linux-logo.png) NFS (Network File System) {#filelinux_logo.png_nfs_network_file_system}
+## ![](../assets/Linux-logo.png) NFS (Network File System)
 
 NFSv4 support has been included in Unraid 6. You can enable or disable
 its use with user shares from this page, as well as adjust the
 `fuse_remember` tunable which can help with resolving _NFS Stale File
 Handles_ error messages.
 
-## ![](../assets/Windows-logo.png) SMB (Server Message Block) {#filewindows_logo.png_smb_server_message_block}
+## ![](../assets/Windows-logo.png) SMB (Server Message Block)
 
 The SMB protocol is the standard used by Microsoft Windows-based
 clients. From this page, you can enable its use, define a Windows
 workgroup, or even join an active directory domain.
 
-## ![](../assets/Ftp-server.png) FTP (File Transfer Protocol) {#fileftp_server.png_ftp_file_transfer_protocol}
+## ![](../assets/Ftp-server.png) FTP (File Transfer Protocol)
 
 Users can connect via FTP if they are added to the **FTP user(s)** field
 on this page. If no users are added, the FTP service will not be
@@ -112,32 +112,32 @@ Users can set up a VPN connection using
 [WireGuard](security.md#wireguard") for secure connections
 to/from the internet
 
-## <img src="/docs/legacy/Confirmations.png" width="50px" height="50px" /> Confirmations {#confirmations.png_confirmations}
+## <img src="/docs/legacy/Confirmations.png" width="50px" height="50px" /> Confirmations
 
 From here, you can disable the need for confirmations to perform various
 tasks.
 
-## ![](../assets/Display-settings.png) Display Settings {#filedisplay_settings.png_display_settings}
+## ![](../assets/Display-settings.png) Display Settings
 
 Customize the appearance of the Unraid webGui from this page. This
 includes adjusting the date and time format, number format, toggles for
 tabbed/non-tabbed view modes, temperature unit, and much more. You can
 also toggle between various themes for how the UI itself is presented.
 
-## <img src="/docs/legacy/Notifications.png" width="50px" height="50px" /> Notifications Settings {#notifications.png_notifications_settings}
+## <img src="/docs/legacy/Notifications.png" width="50px" height="50px" /> Notifications Settings
 
 Browser and e-mail-based system notifications can be configured from
 this page. You can subscribe to different types of notifications for
 each method and even add custom alerts for SMART values attribute
 monitoring.
 
-## <img src="/docs/legacy/Scheduler.png" width="50px" height="50px" /> Scheduler {#scheduler.png_scheduler}
+## <img src="/docs/legacy/Scheduler.png" width="50px" height="50px" /> Scheduler
 
 The scheduler settings page allows you as standard to configure the
 frequency for two types of automated system tasks: parity checks and the
 cache mover.
 
-### Parity Checks (Read Checks) {#parity_checks_read_checks}
+### Parity Checks (Read Checks)
 
 The parity disk contents need to be correct for Unraid to be able to
 recover a failed drive successfully without any data loss or corruption.
