@@ -205,14 +205,14 @@ Notes:
   do so to provide the logs captured by the syslog server as these are
   not included in the standard system diagnostics.
 
-**Docker Containers**
+### Docker Containers
 
 The standard system diagnostics do not contain much that will help with
 diagnosing issues with specific docker containers.
 
 _MORE DETAIL NEEDED_
 
-**VMs**
+### VMs
 
 The standard system diagnostics do not contain much that will help with
 diagnosing issues with specific VMs.
@@ -267,9 +267,9 @@ The boot process for Unraid proceeds through a number of stages
      recent ones. Many recent BIOS's support both modes.
    - If you want UEFI boot mode to be used then the EFI folder on the
      flash drive must not have trailing tilde (\~) character.
-2. **Syslinux loader**:
+2. **Syslinux loader**
 
-   : ![Boot Menu](../assets/BootMenu.jpg)
+   ![Boot Menu](../assets/BootMenu.jpg)
 
    - The entries that appear on the boot menu are specified by the
      _syslinux/syslinux.cfg_ file on the flash drive. Although in
@@ -323,44 +323,48 @@ The boot process for Unraid proceeds through a number of stages
    - Standard Linux services are started. Examples would be
      networking and (if enabled) WireGuard VPN.
 
-5. **Plugins**:
+5. **Plugins**
    - If the user has installed plugins then they are normally loaded
      at this stage.
    - If one of the Safe Boot options was selected from the Unraid
      Boot menu then the loading of plugins is suppressed.
-6. **Web GUI**:
+
+6. **Web GUI**
    - The Unraid web GUI is started.
    - The webGUI is actually done via an entry in the _config/go_ file
      on the flash drive so it is possible for user-supplied commands
      to also be run from there either before starting the webGUI or
      just after doing so.
+
 7. **Array**
 
-   : If the user has set the array to be auto-mounted then the
+   If the user has set the array to be auto-mounted then the
    following will start. If array auto-start is not set then they
    happen when the user elects to start the array.
 
    - **Drives mounted**
 
-   : Mount points will now be created of the form _/dev/diskX_ and
-   _/mnt/cache_ (if you have a cache).
+     Mount points will now be created of the form _/dev/diskX_ and
+     _/mnt/cache_ (if you have a cache).
 
    - **File Share Services**
 
-   : Shares will now become available on the network.
-   : At the Linux level the shares will now appear as paths like
-   _/mnt/user/sharename_
+     Shares will now become available on the network.
+
+     At the Linux level the shares will now appear as paths like
+     _/mnt/user/sharename_
 
    - **Docker Containers**
 
-   : If the user has enabled the docker services then the Docker
-   containers will be started using the order on the Docker tab.
-   : The order of the containers and delays between starting the
-   containers can be set on the Docker tab.
+     If the user has enabled the docker services then the Docker
+     containers will be started using the order on the Docker tab.
+
+     The order of the containers and delays between starting the
+     containers can be set on the Docker tab.
 
    - **VMs**
 
-   : Any VMs the user has set to auto-start will now be started
+     Any VMs the user has set to auto-start will now be started
 
 By this stage, the Unraid server will be fully operational.
 
@@ -429,10 +433,9 @@ To reset the management password use the following process:
 2. While there it is a good idea to run a check on the flash drive and
    make a backup of its contents
 3. Delete these files:
-
-   : config/passwd
-   : config/shadow
-   : config/smbpasswd
+   - config/passwd
+   - config/shadow
+   - config/smbpasswd
 
 4. Plug the flash back into the server and start up again.
 
@@ -445,16 +448,16 @@ the root password (but is a little more prone to error):
 1. Plug the USB drive into another computer
 2. Bing up an editor (such as Notepad++) on the following file:
 
-   : /boot/config/shadow
+   - /boot/config/shadow
 
 3. On the first line you should see something such as:
 
-   : root:\$&\$&%\*1112233484847648DHD\$%.:15477:0:99999:7:::
+   `root:\$&\$&%\*1112233484847648DHD\$%.:15477:0:99999:7:::`
 
 4. Change that line to the following (essentially delete the content
    between the first and second colons):
 
-   : root::15477:0:99999:7:::
+   `root::15477:0:99999:7:::`
 
 5. Plug flash back into server and start up again.
 
@@ -507,7 +510,7 @@ The basic approach is:
 
 **Identifying the parity Drives**
 
-There are 2 slightly different approaches that can be used to identify
+There are two slightly different approaches that can be used to identify
 the parity drives. If you get unexpected results then you should ask for
 help in the forums before proceeding.
 
@@ -564,7 +567,7 @@ There are various ways of achieving this:
 - by plugging the flash drive into a PC/Mac and copying the full
   contents to a local folder on the PC/Mac
 
-### Manually Upgrading (or Downgrading) an Unraid release.
+### Manually Upgrading (or Downgrading) an Unraid release
 
 Follow the same process as laid out in the section below for handling
 bzimage checksum errors.

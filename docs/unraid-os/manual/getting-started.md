@@ -86,7 +86,7 @@ keys for Unraid OS (obtain a Trial key, purchase a paid key, recover a
 lost key, replace your key with a new flash device, or upgrade a keybo
 from one edition to another).
 
-When signing up we **highly recommend\*** you enable 2FA for your
+When signing up we **highly recommend** you enable 2FA for your
 Unraid.net Account. Click
 [here](https://forums.unraid.net/topic/104007-enhanced-forum-account-security-2fa/)
 for how to set this up.

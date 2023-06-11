@@ -111,6 +111,7 @@ to protect from anonymous access, user accounts can be created and
 policies defined to limit access to only trusted individuals.
 ![](../assets/User_shares_-_distribution@2x.png)
 ![](../assets/User_shares_-_access@2x.png)
+
 ### Cache
 
 The cache-drive feature of Unraid provides faster data capture.

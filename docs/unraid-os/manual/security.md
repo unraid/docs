@@ -490,9 +490,10 @@ should _NEVER_ be exposed directly to the internet.**
 - If running Docker container or are exposed to the internet then the
   security of these needs to be assessed on a case-by-case basis.
 
-: You may need to contact the developer of the container to determine
+You may need to contact the developer of the container to determine
 how safe it is to expose it to the internet.
-: There is a level of protection as a docker container runs in a
+
+There is a level of protection as a docker container runs in a
 'sandboxed' environment so the level of access to the content of
 your disks is constrained to what you allow in the path mapping
 settings for the container.
@@ -661,7 +662,7 @@ This section will walk through how to setup WireGuard so that your
 trusted devices can VPN into your home network to access Unraid and the
 other systems on your network.
 
-**Prerequisites**
+##### Prerequisites
 
 - You must be running Unraid 6.8 with the Dynamix WireGuard plugin
   installed via the **Apps** tab (Community Applications).
@@ -702,7 +703,7 @@ other systems on your network.
   good first client systems because you can get all the details via QR
   code.
 
-**Setting up the Unraid side of the VPN tunnel**
+##### Setting up the Unraid side of the VPN tunnel
 
 - First, go to Settings -\> Network Settings -\> Interface eth0. If
   "Enable bridging" is "Yes", then WireGuard will work as
@@ -766,10 +767,10 @@ other systems on your network.
 
 ![](../assets/activate.png)
 
-: _There have been cases where this step has been omitted and users
+_There have been cases where this step has been omitted and users
 end up wondering why the WireGuard VPN link is not working!_
 
-**Defining a Peer (client)**
+##### Defining a Peer (client)
 
 - Click "Add Peer"
 
@@ -793,7 +794,7 @@ end up wondering why the WireGuard VPN link is not working!_
   complete and you will have to finish configuring the client
   manually.
 
-**Caution:**
+###### Caution
 
 It can be a little risky to add a new client ("peer") to WireGuard if
 you are already connected remotely using WireGuard as adding a new peer
@@ -805,7 +806,7 @@ configuration. If there is any sort of configuration conflict at this
 point the tunnel stays inactive, and you can no longer connect to the
 Unraid server
 
-**Configuring a Peer (client)**
+##### Configuring a Peer (client)
 
 - Click the "eye" icon to view the peer configuration. If the button
   is not clickable, you need to apply or reset your unsaved changes
@@ -828,7 +829,7 @@ Unraid server
   Protect this file, anyone who has access to it will be able to
   access your VPN.
 
-**About DNS**
+##### About DNS
 
 The Dynamix WireGuard plugin includes a "Peer DNS Server" option
 
@@ -849,7 +850,7 @@ lose name resolution on the client's local network in the process. The
 simplest solution is to add a hosts file on the client that provides
 name resolution for both networks.
 
-**Complex Networks**
+##### Complex Networks
 
 The instructions above should work out of the box for simple networks.
 With "Use NAT" defaulted to Yes, all network traffic on Unraid uses
@@ -877,7 +878,7 @@ WireGuard clients still may not be able to access Dockers on custom IPs
 or VMs. If you find a solution to this, please ask questions in the
 forum threads mentioned earlier.
 
-**Troubleshooting WireGuard**
+##### Troubleshooting WireGuard
 
 WireGuard is not a chatty protocol, in fact, it is designed to be
 invisible! There aren't really any error messages if things aren't
@@ -942,7 +943,7 @@ making inbound connections. There is a [forum
 thread](https://forums.unraid.net/topic/84316-wireguard-vpn-tunneled-access/)
 discussing making an outbound VPN connection using WireGuard
 
-**Commercial VPN Providers**
+##### Commercial VPN Providers
 
 Several commercial VPN providers now support WireGuard. A few are listed
 below but this is not intended to be an exhaustive list. No endorsement
@@ -964,7 +965,7 @@ guarantee the same amount of privacy as they can with OpenVPN. See
 Typically the objections are not around security, but around the fact
 that it is harder for them to guarantee that they cannot track you.
 
-**Configuring VPN tunneled access**
+##### Configuring VPN tunneled access
 
 - Download a config file from your preferred commercial VPN provider
 - On the Settings -\> VPN Manager page, click the "Import Config"
@@ -986,7 +987,7 @@ that it is harder for them to guarantee that they cannot track you.
     set to something that will work whether the tunnel is up or
     down, such as 8.8.8.8 and 8.8.4.4
 
-**Testing the tunnel**
+##### Testing the tunnel
 
 - Using Community Applications, install a browser such as the
   jlesage/Firefox Docker container

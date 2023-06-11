@@ -1,12 +1,12 @@
 # Upgrading Unraid
 
-# Prerequisites
+## Prerequisites
 
 Before upgrading, we highly recommend making a complete backup of your
 USB flash device. You can do this by copying the entire contents of the
 "flash" share to a separate computer.
 
-# From version 6.4
+## From version 6.4
 
 1. Boot your server up and login to the web interface
 2. Click the _Tools_ tab
@@ -20,7 +20,7 @@ _Note: You can optionally install releases from the "Next" branch as
 well, but those releases are not considered fully "Stable", so only do
 so at your own risk._
 
-# From version 6.3
+## From version 6.3
 
 1. Boot your server up and login to the web interface
 2. Click the _Plugins_ tab
@@ -28,7 +28,7 @@ so at your own risk._
 4. Once the upgrade is complete, reboot your server for it to take
    effect
 
-# From version 6.2
+## From version 6.2
 
 1. Boot your server up and login to the web interface
 2. Click the _Plugins_ tab
@@ -39,12 +39,12 @@ so at your own risk._
 
 Note: if _Check for Updates_ shows no update, see below.
 
-## Possible upgrade issues
+### Possible upgrade issues
 
 Having problems after the update? See below for common issues and
 solutions.
 
-### The new release does not show up after clicking _Check for Updates_ button
+#### The new release does not show up after clicking _Check for Updates_ button
 
 In this case, manually install the update as follows:
 
@@ -53,7 +53,7 @@ In this case, manually install the update as follows:
    <https://s3.amazonaws.com/dnld.lime-technology.com/stable/unRAIDServer.plg>
 3. Paste into URL field and click Install
 
-### My array/docker apps are taking a really long time to start after the upgrade
+#### My array/docker apps are taking a really long time to start after the upgrade
 
 There is a one-time update procedure that each container will need to go
 through in order to point it towards the new Docker Hub API going
@@ -70,7 +70,7 @@ this:
 See [here](https://github.com/docker/docker/releases/tag/v1.10.0) for
 more information from Docker on this.
 
-### My containers aren't working right after the upgrade
+#### My containers aren't working right after the upgrade
 
 If you run into any issues with your containers after this procedure
 completes (such as the "layers from manifest don't match image
@@ -87,7 +87,7 @@ To do this:
 7. You will **not** need to reconfigure your apps after this is
    complete
 
-### My VMs get an error of "cannot get interface MTU\..."
+#### My VMs get an error of "cannot get interface MTU\..."
 
 A change that was made in version 6.2 eliminated the customization of
 the bridge name used for virtual machines. Users that have a custom
@@ -102,7 +102,7 @@ of 'br0'. To fix this, perform the following steps:
    -\> _VM Manager_ page, turn on _Advanced View_, and set the default
    network bridge on this page to also be 'br0' and click apply.
 
-### VNC access to my VMs is not working or performing poorly
+#### VNC access to my VMs is not working or performing poorly
 
 VMs created in earlier releases of Unraid Server OS may be set to use an
 outdated graphics device driver for VNC access. To fix this, perform the
@@ -115,7 +115,7 @@ following steps:
    Video Driver field to QXL
 4. Click Apply
 
-### My OVMF VM doesn't boot correctly
+#### My OVMF VM doesn't boot correctly
 
 OVMF-based virtual machines that were created under version 6.1 or
 earlier will most likely require a one-time process to boot up properly
@@ -133,14 +133,14 @@ If that doesn't work, please post in the
 procedure should only need to be performed the first time you boot OVMF
 VMs that were previously created using Unraid 6.1 or earlier.
 
-### Trying to start my VM gives a "Invalid Machine Type" error
+#### Trying to start my VM gives a "Invalid Machine Type" error
 
 If you receive this error, simply edit your VM in the webGui, and
 without making any changes, click "Apply". This will update the VM's
 machine type to the latest version and your VM should start without the
 error.
 
-### Poor VM performance after upgrading
+#### Poor VM performance after upgrading
 
 Some users have replied that their VMs perform poorly after updating to
 6.3. One possible solution could be to update the machine type version
@@ -151,14 +151,14 @@ not change the prefix selected, only the version; e.g. if previously you
 were on i440fx-2.5, try changing to i440fx-2.7, but don't change to
 Q35-2.7). Try starting your VM and see if performance improves.
 
-### Poor VNC performance after upgrading
+#### Poor VNC performance after upgrading
 
 If your VM has poor VNC performance after upgrading, please try changing
 the VNC Video Driver. You can do this from the Edit VM page. It is
 recommended to first try Cirrus, then vmvga (if available for your VM
 type).
 
-# From version 6.1 or earlier
+## From version 6.1 or earlier
 
 Please ensure your system meets these requirements before upgrading:
 
@@ -240,7 +240,7 @@ procedure should only need to be performed the first time you boot OVMF
 VMs under version 6.2 that were previously created using Unraid 6.1 or
 earlier.
 
-# From version 5.x or earlier
+## From version 5.x or earlier
 
 Please see [this forum
 post](https://forums.unraid.net/forum/index.php?topic=41061.0) for

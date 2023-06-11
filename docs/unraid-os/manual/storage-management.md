@@ -722,7 +722,8 @@ Parity drive, then a special two-step procedure is required as
 described here. It works in two phases: - The larger-than-existing-parity drive is first upgraded to
 become the new the parity drive - The old parity drive replaces the old data drive and the data of
 the failed drive is rebuilt onto it.
-: As an example, you have a 1TB data drive that you want to replace
+
+As an example, you have a 1TB data drive that you want to replace
 (the reason does not matter). You have a 2TB parity drive. You buy a
 4TB drive as a replacement. The 'Parity Swap' procedure will copy
 the parity info from the current 2TB parity drive to the 4TB drive,
@@ -906,7 +907,7 @@ To remove a disk from your array, perform the following steps:
    (for both the array and cache; some find it helpful to take a
    screenshot)
 3. Perform the [Reset the array
-   configuration](https://docs.unraid.net/unraid-os/manual/storage-management/#reset-the-array-configuration)
+   configuration](#reset-the-array-configuration)
    procedure. When doing this it is a good idea to use the option to
    preserve all current assignments to avoid you having to re-enter
    them (and possibly make a mistake doing so).
@@ -1888,7 +1889,7 @@ A drive can show as **unmountable** in the Unraid GUI for two reasons:
   any reason and Unraid marks the disk as disabled, although it can
   occur at other times as well.
 
-: **Note:** If a disk is showing as both **unmountable and disabled**
+**Note:** If a disk is showing as both **unmountable and disabled**
 (has a red 'x' against in in the GUI) then the check/repair
 process can be carried out on the disk that is being 'emulated' by
 Unraid prior to carrying out any rebuild process. It is always worth
@@ -1901,7 +1902,8 @@ there is not much point in wasting time on a rebuild if the repair
 is not going to work. Also if there are any problems running the
 repair process on the emulated disk then the physical disk is still
 untouched giving a fall back data recovery path.
-: **IMPORTANT**: You do **not** want to format the drive in this case
+
+**IMPORTANT**: You do **not** want to format the drive in this case
 as this will write an empty file system to the drive update parity
 accordingly and you would therefore lose the contents of the drive.
 
@@ -2335,12 +2337,12 @@ Notes:
 
 - For SSDs you can erase the current contents using
 
-`blkdiscard /dev/sdX`
+  `blkdiscard /dev/sdX`
 
-: at the console where 'X' corresponds to what is currently shown in
-the Unraid GUI for the device. Be careful that you get it right as
-you do not want to accidentally erase the contents of the wrong
-drive.
+  at the console where 'X' corresponds to what is currently shown in
+  the Unraid GUI for the device. Be careful that you get it right as
+  you do not want to accidentally erase the contents of the wrong
+  drive.
 
 ## Converting to a new File System type
 

@@ -79,23 +79,21 @@ is controlled by a number of settings for the share:
     next one. The aim is to allow related files do be kept together
     on the same drive and to let unused drives be spun down.
 
-:
-
-    :   It works with switch points based by continually halving the
-        size of the largest drive in the array.
-    :   Many people find this confusing (particularly in an array with
-        drives of varying size). so as an example if you had an array
-        consisting of drives of 8TB, 3Tb and 2TB
-        -   The largest drive is 8TB so the switch points are 4TB, 2TB,
-            1Tb etc.
-        -   The 4TB switch point is active so The 8TB Drive one would be
-            filled to 4TB free space left.
-        -   The 2TB switch point becomes active so the 8TB and 3TB
-            drives each gets used in disk order until it they have 2TB
-            free space
-        -   The 1TB switch point becomes active so each drive now gets
-            used in disk order until it only has 1TB free space.
-        -   etc
+    - It works with switch points based by continually halving the
+      size of the largest drive in the array.
+    - Many people find this confusing (particularly in an array with
+      drives of varying size). so as an example if you had an array
+      consisting of drives of 8TB, 3Tb and 2TB
+      - The largest drive is 8TB so the switch points are 4TB, 2TB,
+        1Tb etc.
+      - The 4TB switch point is active so The 8TB Drive one would be
+        filled to 4TB free space left.
+      - The 2TB switch point becomes active so the 8TB and 3TB
+        drives each gets used in disk order until it they have 2TB
+        free space
+      - The 1TB switch point becomes active so each drive now gets
+        used in disk order until it only has 1TB free space.
+      - etc
 
 - **Included** or **excluded** drives: These settings allow you to
   control which array drives can hold files for the share. Never set
@@ -104,7 +102,7 @@ is controlled by a number of settings for the share:
   under _Settings \>\> Global Share settings_ are allowed.
 - **Split level**: This setting controls how files should be grouped.
 
-: **Important**: in the event of there being contentions between the
+**Important**: in the event of there being contentions between the
 **Minimum free space**, **Split Level** and the **Allocation
 method** settings in deciding which would be an appropriate drive to
 use the **Split level** setting always wins. This means that you can
@@ -406,7 +404,7 @@ Some things to keep in mind.
   single disk or it would keep all the music by an artist on a single
   disk.
 
-##### **Disable Split Level**
+#### Disable Split Level
 
 It is also possible to disable the split level by setting a high split
 level. A file copy or move will fail if a folder is locked to a full
@@ -414,7 +412,7 @@ disk and an attempt is made to add more files into that folder. Setting
 a high split level will ensure each file will get written to the server
 as long as a disk has space for it.
 
-##### **Split Level = 1 Example**
+#### Split Level = 1 Example
 
 The following example demonstrates how the share behaves when the split
 level is set to 1. The Share name is New_Movies. Each movie stored in
@@ -475,7 +473,7 @@ share.
 
 Take note that a share called Movies is also visible on disk2.
 
-##### **Split Level 0**
+##### Split Level 0
 
 this is what you have if in the GUI you select "Manual: do not
 Automatically split directories".
@@ -494,7 +492,7 @@ not allow the share to split automatically across disks
 **NOTE:** If you create the same folder structure on multiple disks then
 Unraid will apply the other share settings to decide which disk to use.
 
-**Example**
+###### Example
 
 The server has 4 disks. A user share called Media is desired. Different
 types of media will be stored in this share. The desired structure is;
@@ -526,7 +524,7 @@ disk5. In other words, the folder Media and sub-folder DVD Movies must
 be created on disk5. Then, Unraid can use either disk1 or disk5 to store
 DVD Movies.
 
-##### **Split By Character**
+##### Split By Character
 
 Specify a character in the split level box to use this method. Then,
 Unraid will not allow any folder name containing the character to split.
@@ -559,7 +557,7 @@ only control which disks new files can be written to. Files on other
 disks that are in a folder corresponding to the share name will still
 show up under that share for read purposes.
 
-**Included disk(s)**
+#### Included disk(s)
 
 The included disks(s) parameter defines the set of disks which are
 candidates for allocation to that share. All disks may be used by the
@@ -568,7 +566,7 @@ the disks to include here. For example, set the included disk(s) to
 "disk1,disk2,disk3" to allow the share to only use disk1, disk2 and
 disk3.
 
-**Excluded disk(s)**
+#### Excluded disk(s)
 
 The excluded disk(s) parameter defines the set of disks which are
 excluded from use by the user share. No disks are excluded from use by
@@ -603,7 +601,7 @@ clearer to new users where files are initially placed and where they
 will end up. The same functionality is present in earlier releases, but
 has often been misunderstood by new users.
 
-#### **Primary Storage:**
+#### Primary Storage
 
 This is the location to which **new** files will be written.
 
@@ -616,7 +614,7 @@ For the Primary storage drop-down:
 - any named pool can be selected
 - "Array" can be selected (meaning the Unraid array)
 
-#### **Secondary Storage:**
+#### Secondary Storage
 
 This is the location where files will be moved to if appropriate.
 
@@ -636,7 +634,7 @@ The following settings are only found in Unraid 6.11 and earlier. They
 achieve the same functionality as the settings available in 6.12 but are
 presented differently.
 
-#### **Use Cache (and Mover Behavior with User Shares)**
+#### Use Cache (and Mover Behavior with User Shares)
 
 **Note**: Starting with Unraid 6.9.0 multiple pools can exist and they
 can have any name the user chooses. Any of these pools can act act as a
@@ -653,7 +651,7 @@ settings operate is as follows
   is below that then by-pass the cache and write the files directly to
   the main array.
 
-: When _mover_ runs it will attempt to move files to the main array as
+  When _mover_ runs it will attempt to move files to the main array as
 long as they are not currently open. Which array drive will get the
 file is controlled by the combination of the _Allocation method_,
 _Split level_, and Minimum Free Space setting for the share.
@@ -663,7 +661,7 @@ _Split level_, and Minimum Free Space setting for the share.
   _Allocation method_, _Split level_, and Minimum Free Space setting
   for the share.
 
-: When _mover_ runs it will take **no** action on files for this share
+  When _mover_ runs it will take **no** action on files for this share
 even if there are files on the cache that logically belong to this
 share.
 
@@ -671,7 +669,7 @@ share.
   on the cache is below the _Minimum free space_ setting for the cache
   then the write will fail with an out-of-space error.
 
-: When _mover_ runs it will take **no** action on files for this share
+  When _mover_ runs it will take **no** action on files for this share
 even if there are files on the main array that logically belong to
 this share.
 
@@ -680,18 +678,20 @@ this share.
   if the free space falls below that value then write the files to the
   main array instead.
 
-: When _mover_ runs it will attempt to move any files for this share
+  When _mover_ runs it will attempt to move any files for this share
 that are on the main array back to the cache as long as the free
 space on the cache is above the _Minimum free space_ setting for the
 cache
-: It is the default setting for the _appdata_ and _System_ Shares that
+
+  It is the default setting for the _appdata_ and _System_ Shares that
 are used to support the Docker and VM sub-systems. In typical use
 you want the files/folders belonging to these shares to reside on
 the cache as you get much better performance from Docker containers
 and VMs if their files are not on the main array (due to the cost of
 maintaining parity on the main array significantly slowing down
 write operations).
-: This setting works for a share even if you do not have (yet) a
+
+  This setting works for a share even if you do not have (yet) a
 physical cache drive(s) as then files will simply be written
 directly to the array. If at a later date you add a cache drive
 mover will now automatically try and move the files in any share set
@@ -700,7 +700,7 @@ performance. This is why it is the default for shares that are
 typically located on the cache rather than _Only_ as it caters for
 those who do not (yet) have a cache drive.
 
-##### **Moving Files from a Pool (cache) to the Array**
+##### Moving Files from a Pool (cache) to the Array
 
 This is the more traditional usage of a pool for caching where one wants
 the files for a particular share initially written to a pool acting as a
@@ -723,7 +723,7 @@ belonging to a share from a pool onto the main array is:
 - (optional) change the **Use Cache** setting to _Only_ to say files
   for this share can never be written to the array.
 
-##### **Moving Files from the Array to a Pool (cache)**
+##### Moving Files from the Array to a Pool (cache)
 
 One typically wants files associated with running Docker containers or
 VMs on a pool to maximise performance. It is not unusual for one reason
@@ -777,26 +777,21 @@ a Disk Share. If you want it visible on the network then you can click
 on it in the Main tab and set it to appear at the network level as the
 '_flash_' share. At the Linux level it is mounted at /_boot_
 
-+----------------------------------------------------------------------+
-| **IMPORTANT** |
-+======================================================================+
-| If you have both _Disk Shares_ and _User Shares_ enabled then there |
-| is an important restriction that you must observe if you want to |
-| avoid potential data loss. What you must **NEVER** do is copy |
-| between a **User Share** and a **Disk Share** in the same copy |
-| operation where the folder name on the Disk Share corresponds to the |
-| User Share name. This is because at the base system level Linux does |
-| not understand _User Shares_ and therefore that a file on a _Disk |
-| Share_ and a _User Share_ can be different views of the **same** |
-| file. If you mix the share types in the same copy command you can |
-| end up trying to copy the file to itself which results in the file |
-| being truncated to zero length and its content thus being lost.\ |
-| \ |
-| There is no problem if the copy is between shares of the same type, |
-| or copying to/from a disk mounted as an Unassigned Device.. |
-+----------------------------------------------------------------------+
-| |
-+----------------------------------------------------------------------+
+**IMPORTANT**
+If you have both _Disk Shares_ and _User Shares_ enabled then there
+is an important restriction that you must observe if you want to
+avoid potential data loss. What you must **NEVER** do is copy
+between a **User Share** and a **Disk Share** in the same copy
+operation where the folder name on the Disk Share corresponds to the
+User Share name. This is because at the base system level Linux does
+not understand _User Shares_ and therefore that a file on a _Disk
+Share_ and a _User Share_ can be different views of the **same**
+file. If you mix the share types in the same copy command you can
+end up trying to copy the file to itself which results in the file
+being truncated to zero length and its content thus being lost.
+
+There is no problem if the copy is between shares of the same type,
+or copying to/from a disk mounted as an Unassigned Device..
 
 There is another quirk of the interaction between Linux and the Unraid
 User Share system that users can encounter if they are working at the
@@ -856,7 +851,7 @@ labelled **Security** and has the following options:
 - **Private**: You select which of your users have access and for each
   user whether that user has read/write or read-only access.
 
-**Windows 'Gotcha'**
+### Windows 'Gotcha'
 
 There is an issue with the way Windows handles network shares that many
 users fall foul of:

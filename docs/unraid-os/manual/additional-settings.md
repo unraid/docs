@@ -112,6 +112,8 @@ Users can set up a VPN connection using
 [WireGuard](security.md#wireguard") for secure connections
 to/from the internet
 
+["WireGuard" and the "WireGuard" logo are registered trademarks of Jason A. Donenfeld.](https://www.wireguard.com/)
+
 ## <img src="/docs/legacy/Confirmations.png" width="50px" height="50px" /> Confirmations
 
 From here, you can disable the need for confirmations to perform various

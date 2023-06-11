@@ -170,9 +170,8 @@ machines.
 - For your ISO library share (containing your installation media),
   cache usage is optional.
 
-*IMPORTANT: Do NOT store your active virtual machines on a share where
-the*Use Cache*setting is set to **Yes**. Doing so will cause your VMs to
-be moved to the array when the mover is invoked.*
+_IMPORTANT: Do NOT store your active virtual machines on a share where
+the **Use Cache** setting is set to **Yes**. Doing so will cause your VMs to be moved to the array when the mover is invoked._
 
 ### Setup Virtualization Preferences
 
