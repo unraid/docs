@@ -1464,7 +1464,7 @@ You can change the BTRFS raid levels for a pool from the Unraid GUI by:
 As an example, the following screenshot shows how you might convert
 the pool from the RAID1 to the SINGLE profile.
 
-![](file:Btrfs-raid1.jpg)
+![](../assets/Btrfs-raid1.jpg)
 
 - **If using UnRaid 6.9.0 or later** this has been made even easier by
   giving you a drop-down list of the available options so simply
