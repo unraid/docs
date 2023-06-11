@@ -337,7 +337,7 @@ in the BT Sync app that would point to my Media share, I would specify
 the path of "/unraid_media" in the application's interface, as depicted
 below.
 
-![](../assets/Dockerguide-usingvolumes.png "Dockerguide-usingvolumes.png"){width="500"}
+![](../assets/Dockerguide-usingvolumes.png "Dockerguide-usingvolumes.png")
 
 # Re-Create the Docker image file
 
@@ -450,7 +450,7 @@ command that unRaid will use when you install / edit the application
 get the docker run command to appear). The following is an example of
 what this might look like:
 
-![](../assets/Docker_run.png "Docker_run.png"){width="800" height="60"}
+![](../assets/Docker_run.png "Docker_run.png")
 
 **Command to stop a docker**
 

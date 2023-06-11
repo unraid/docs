@@ -151,11 +151,11 @@ settings to High-performance mode.
 
 `2) Click the`**`Change settings that are currently unavailable`**`link near the top of the next window:`
 
-![](../assets/Disable_fast_startup_-_step_2.png "Disable_fast_startup_-_step_2.png"){width="800"}
+![](../assets/Disable_fast_startup_-_step_2.png "Disable_fast_startup_-_step_2.png")
 
 `3) Uncheck`**`Turn on fast startup`**`from under the`_`Shutdown settings`_`section:`
 
-![](../assets/Disable_fast_startup_-_step_3.png "Disable_fast_startup_-_step_3.png"){width="800"}\
+![](../assets/Disable_fast_startup_-_step_3.png "Disable_fast_startup_-_step_3.png")\
 
 ### Disable Hiberfil.sys
 
@@ -185,7 +185,7 @@ recommended to disable this service from running in Windows.
 
 `2) Right-click the`**`Windows Search`**`service from the next window and then click`**`Stop`**`:`
 
-![](../assets/Disable_windows_indexing_-_step_2.png "Disable_windows_indexing_-_step_2.png"){width="800"}
+![](../assets/Disable_windows_indexing_-_step_2.png "Disable_windows_indexing_-_step_2.png")
 
 `3) Double-click the`**`Windows Search`**`item from the list and in the next window, change the`_`Startup type`_`to`**`Disabled`**`:`
 
@@ -199,7 +199,7 @@ cause unnecessary wear and tear on your physical storage devices.
 
 `1) Use Windows Explorer to browse to where you can see the C:\ drive, then right-click on the device and select`**`Properties`**`:`
 
-![](../assets/Disable_disk_defrag_-_step_1.PNG "Disable_disk_defrag_-_step_1.PNG"){width="600"}
+![](../assets/Disable_disk_defrag_-_step_1.PNG "Disable_disk_defrag_-_step_1.PNG")
 
 `2) Click on the`**`Tools`**`tab at the top, then click`**`Optimize`**`:`
 
@@ -227,7 +227,7 @@ inactivity.
 
 `2) Select`**`High performance`**`from the options available under`_`Preferred plans`_`:`
 
-![](../assets/High_performance_power_mode_-_step_2.png "High_performance_power_mode_-_step_2.png"){width="800"}\
+![](../assets/High_performance_power_mode_-_step_2.png "High_performance_power_mode_-_step_2.png")\
 
 ### Enable Remote Desktop Access
 
@@ -249,15 +249,15 @@ using GPU pass through:
 
 `1) Open the`**`System`**`panel by right-clicking on the Windows start button in the lower-right corner of your desktop.`
 
-![](../assets/Enable_rdp_-_step_1.png "Enable_rdp_-_step_1.png"){width="800"}
+![](../assets/Enable_rdp_-_step_1.png "Enable_rdp_-_step_1.png")
 
 `2) Click on`**`Remote settings`**
 
-![](../assets/Enable_rdp_-_step_2.png "Enable_rdp_-_step_2.png"){width="800"}
+![](../assets/Enable_rdp_-_step_2.png "Enable_rdp_-_step_2.png")
 
 `3) Click on`**`Allow remote connections to this computer`**`and click`**`OK`**`.`
 
-![](../assets/Enable_rdp_-_step_3.png "Enable_rdp_-_step_3.png"){width="800"}
+![](../assets/Enable_rdp_-_step_3.png "Enable_rdp_-_step_3.png")
 
 `4) You can now connect using a Microsoft RDP client, but you will need to connect to the IP address of the virtual machine,`_`not Unraid itself`_`.`
 
@@ -300,7 +300,7 @@ assist you in making the upgrade process as painless as possible.
 
 ### Do NOT Use the Upgrade Assistant
 
-![](../assets/Dont_use_windows_upgrade_assistant.png "Dont_use_windows_upgrade_assistant.png"){width="200"}Microsoft's
+![](../assets/Dont_use_windows_upgrade_assistant.png "Dont_use_windows_upgrade_assistant.png")Microsoft's
 website suggests that if you want to upgrade to Windows 10, use the
 upgrade assistant in the bottom right corner to perform your upgrade.
 This is known to be buggy and potentially cause issues (even on
@@ -329,11 +329,11 @@ ISO to the ISOs share on your server.
 With your VM powered off, edit the VM and perform the following steps:
 
 1\. Reduce the number of **CPUs** assigned to only 1.
-![](../assets/Only_1_cpu_core_assigned.png "Only_1_cpu_core_assigned.png"){width="300"}
+![](../assets/Only_1_cpu_core_assigned.png "Only_1_cpu_core_assigned.png")
 
 2\. Change the **OS Install ISO** field to point to the Windows 10
 installation media you downloaded earlier.
-![](../assets/Change_install_iso.png "Change_install_iso.png"){width="300"}
+![](../assets/Change_install_iso.png "Change_install_iso.png")
 
 3\. Click **Update**.
 
