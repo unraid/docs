@@ -186,7 +186,7 @@ do not replicate those shared resources and instead, leverage the
 efficiency of Linux and a copy-on-write filesystem to minimize the
 overhead.
 
-![](../assets/Docker-vs-VM@2x.png)\
+![](../assets/Docker-vs-VM@2x.png)
 
 ### The Hub
 

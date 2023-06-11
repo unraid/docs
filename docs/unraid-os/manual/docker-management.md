@@ -39,8 +39,6 @@ Unraid that might lead to system instability
 _NOTE: Applications are made available and supported by both the Docker
 and Unraid user communities respectively._
 
-\
-
 # Concepts in Unraid Docker Implementation
 
 There are a number of concepts about the Unraid implementation of Docker
@@ -281,8 +279,6 @@ determine what are appropriate values for this wait time.
 Using these mechanisms should allow you to control the container startup
 process to achieve the results that you want.
 
-\
-
 # Controlling Your Application
 
 Once the download is complete, the application is started automatically.
@@ -459,7 +455,8 @@ This is the simply a command of the form:
 `docker stop "container-name"`
 
 where _container-name_ is the name you gave the container on the Docker
-tab.\
+tab.
+
 =Other Tips and Tricks=
 
 Using Docker containers to run applications on Unraid is incredibly easy

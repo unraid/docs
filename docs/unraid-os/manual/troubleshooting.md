@@ -104,7 +104,8 @@ that single diagnostics zip file in your downloads and attach that
 single diagnostics zip file to your NEXT post in the relevant forum
 thread.
 
-**_Note on anonymization of the diagnostics_**\
+**_Note on anonymization of the diagnostics_**
+
 It has been pointed out that the diagnostics are not completely
 anonymized if you have enabled _mover_ logging under _Settings-\>Mover
 Settings_ as the _syslog_ will give details of files that mover is
@@ -613,7 +614,7 @@ The normal recovery action is:
 - Boot the Unraid server of the freshly written flash drive.
 
 If the above does not help then it is advisable to post in the Unraid
-forums stating what you have tried and what are your current symptoms.\
+forums stating what you have tried and what are your current symptoms.
 
 ## Unclean Shutdowns
 

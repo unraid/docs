@@ -197,7 +197,7 @@ from the lowest numbered disk to the highest numbered disk. The fill-up
 allocation method must be used in conjunction with the minimum free
 space setting. Otherwise, Unraid will begin to give disk full errors and
 not allow any more transfers once the first disk gets close to being
-full.\
+full.
 
 ### Min. Free Space
 
@@ -249,7 +249,8 @@ space.
 Also note that Unraid will typically not move a file onto a new disk if
 you're over-writing or updating it. For example, a backup file that
 grows in size over time could end up filling a disk and causing a disk
-full error.\
+full error.
+
 IMPORTANT; There is also a Minkmum Free Space setting for cache pools.
 This is used to determine when a new file for a User Share with the Use
 Cache setting having a value of Yes or Prefer should be written to the
@@ -347,9 +348,8 @@ split level limitation which forces each complete TV series to a single
 disk. This can force a new TV season to be placed on a disk which is
 almost full and result in out of space errors once new episodes
 completely fill the disk. The split level can't be increased to 3
-because each individual movie would not be contained to a single disk.\
-\
-\
+because each individual movie would not be contained to a single disk.
+
 The first way to fix this split level mismatch issue is to create
 separate shares for the movies and the TV shows. This way, the movies
 can be set to use a split level of 2 and the TV shows can use a split
@@ -367,9 +367,8 @@ For TV_Shows use a split level of either 1 or 2. A split level of 1 will
 keep each TV series on a single disk and split level of 2 will keep each
 season on a single disk. The split level of 2 means that the complete TV
 series can be stored on multiple disks, however each individual season
-of that TV series will be on a single disk.\
-\
-\
+of that TV series will be on a single disk.
+
 The second way to fix the issue is to add another folder level to the
 movies, starting first with a Movies folder in the Media share and then
 placing the different movie types below this.
@@ -381,9 +380,8 @@ Movies, Kids Movies and each TV series can exist on multiple disks. This
 structure means each TV season can be on a different disk. This has the
 opposite issue compared to the first example. You can not use split
 level 2 to force each complete TV series to remain on a single disk
-without messing up the ability of the movies to split to every disk.\
-\
-\
+without messing up the ability of the movies to split to every disk.
+
 Some things to keep in mind.
 
 - The above examples are to demonstrate the use of the split level. It
@@ -407,11 +405,6 @@ Some things to keep in mind.
   cases, a split level of 1 would keep a whole year of pictures on a
   single disk or it would keep all the music by an artist on a single
   disk.
-
-\
-\
-\
-\
 
 ##### **Disable Split Level**
 
@@ -546,9 +539,7 @@ not split this folder or any content stored inside this folder.
 This type of split level can allow different levels of sub-folders to be
 specified as not splitting simply by inserting the character into the
 folder name which should not split. This can overcome the limitation of
-having a fixed split level for a share.\
-\
-\
+having a fixed split level for a share.
 
 ### Included and Excluded disk(s)
 
@@ -583,9 +574,7 @@ The excluded disk(s) parameter defines the set of disks which are
 excluded from use by the user share. No disks are excluded from use by
 the user share when the excluded disk(s) parameter is left blank.
 Specify the disks to exclude here. For example, set the excluded disk(s)
-to "disk1,disk2" to restrict a share from using disk1 and disk2.\
-\
-\
+to "disk1,disk2" to restrict a share from using disk1 and disk2.
 
 ### Default Shares
 
@@ -787,8 +776,6 @@ settings is also a physical device, but is not normally considered to be
 a Disk Share. If you want it visible on the network then you can click
 on it in the Main tab and set it to appear at the network level as the
 '_flash_' share. At the Linux level it is mounted at /_boot_
-
-\
 
 +----------------------------------------------------------------------+
 | **IMPORTANT** |

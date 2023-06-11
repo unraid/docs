@@ -793,7 +793,8 @@ end up wondering why the WireGuard VPN link is not working!_
   complete and you will have to finish configuring the client
   manually.
 
-**Caution:**\
+**Caution:**
+
 It can be a little risky to add a new client ("peer") to WireGuard if
 you are already connected remotely using WireGuard as adding a new peer
 _sometimes_ toggles the WireGuard tunnel off which will render you
@@ -959,7 +960,7 @@ needs.
 
 Note that with the current state of WireGuard, VPN providers cannot
 guarantee the same amount of privacy as they can with OpenVPN. See
-[here](https://restoreprivacy.com/wireguard/) for more detail\
+[here](https://restoreprivacy.com/wireguard/) for more detail.
 Typically the objections are not around security, but around the fact
 that it is harder for them to guarantee that they cannot track you.
 

@@ -155,7 +155,7 @@ settings to High-performance mode.
 
 `3) Uncheck`**`Turn on fast startup`**`from under the`_`Shutdown settings`_`section:`
 
-![](../assets/Disable_fast_startup_-_step_3.png)\
+![](../assets/Disable_fast_startup_-_step_3.png)
 
 ### Disable Hiberfil.sys
 
@@ -211,7 +211,7 @@ cause unnecessary wear and tear on your physical storage devices.
 
 `4) Uncheck`**`Run on a schedule`**`from the next window:`
 
-![](../assets/Disable_disk_defrag_-_step_4.png)\
+![](../assets/Disable_disk_defrag_-_step_4.png)
 
 ### Enable High Performance Power Mode
 
@@ -227,7 +227,7 @@ inactivity.
 
 `2) Select`**`High performance`**`from the options available under`_`Preferred plans`_`:`
 
-![](../assets/High_performance_power_mode_-_step_2.png)\
+![](../assets/High_performance_power_mode_-_step_2.png)
 
 ### Enable Remote Desktop Access
 

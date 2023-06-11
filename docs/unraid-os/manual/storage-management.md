@@ -797,7 +797,8 @@ needed.
 7. Install the new drive (preclear STRONGLY suggested, but formatting
    not needed)
 8. Power on
-9. Stop the array\
+9. Stop the array
+
    _\*If you get an "Array Stopping•Retry unmounting disk
    share(s)\..." message, try disabling Docker and/or VM in Settings
    and stopping the array again after rebooting._
@@ -817,20 +818,26 @@ needed.
     _Now patiently watch the copy progress, takes a long time (\~20
     hours for 4TB on a 3GHz Core 2 Duo). All of the contents of the old
     parity drive are being copied onto the new drive, then the remainder
-    of the new parity drive will be zeroed.\
-    **The array will NOT be available during this operation!**\
+    of the new parity drive will be zeroed.
+
+    **The array will NOT be available during this operation!**
+
     _\*If you disabled Docker and/or VM in settings earlier, go ahead
-    and re-enable now._\
+    and re-enable now._
+
     When the copy completes, the array will still be stopped
-    ("**Stopped**. Upgrading disk/swapping parity.").\
+    ("**Stopped**. Upgrading disk/swapping parity.").
+
     The **Start** button will now be present, and the description will
     now indicate that it is ready to start a Data-Rebuild._
 15. Put a check in the **Yes I want to do this** checkbox (older
     versions: **Yes, I'm sure**), and click the **Start** button
     _The data drive rebuild begins. Parity is now valid, and the array
-    is started.\
+    is started.
+
     Because the array is started, you can use the array as normal, but
-    for best performance, we recommend you limit your usage.\
+    for best performance, we recommend you limit your usage.
+
     Once again, you can patiently watch the progress, takes a long time
     too! All of the contents of the old data drive are now being
     reconstructed on what used to be your parity drive, but is now
@@ -1834,7 +1841,8 @@ desired type needs to be created on the disk. This is the operation
 commonly known as "format" and it **erases** any existing content on
 the disk.
 
-**WARNING:**\
+**WARNING:**
+
 If a drive has already been formatted by Unraid then if it now shows as
 **unmountable** you probably do **NOT** want to format it again unless
 you want to **erase** its contents. In such cases, the appropriate

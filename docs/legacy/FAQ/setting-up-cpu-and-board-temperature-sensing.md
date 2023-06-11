@@ -320,7 +320,7 @@ Unloading i2c-dev... OK
 ### Step 8: Note the drivers
 
 Make note of the driver name(s) listed in the summary. In the above
-example, they are **w83627ehf** and **coretemp**.\
+example, they are **w83627ehf** and **coretemp**.
 
 ### Step 9: Add modprobes to go
 
