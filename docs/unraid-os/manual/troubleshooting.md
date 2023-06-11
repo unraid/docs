@@ -20,7 +20,7 @@ required:
   Help for most fields in the GUI. This can be accessed at the
   individual field level by clicking on the field name, or toggled
   on/off for the whole page by clicking on the
-  ![Help](/docs/legacy/Help-icon.jpg "Help") icon at the top right of the GUI.
+  ![Help](../assets/Help-icon.jpg "Help") icon at the top right of the GUI.
 - **Use the online documentation**: There is extensive online
   documentation that can be accessed via the **Manual** link at the
   bottom of the Unraid webGUI.
@@ -75,7 +75,7 @@ that you attach them to a new post if you have already started a thread
 on your issue so that other forum users are notified that there has been
 something added to the thread.
 
-![](/docs/legacy/Diagnostics.jpg "Diagnostics.jpg"){width="250"}
+![](../assets/Diagnostics.jpg "Diagnostics.jpg"){width="250"}
 
 These system diagnostics include configuration information, state
 information, and key system logs. When creating the diagnostics from the
@@ -119,7 +119,7 @@ probably acceptable?
 ### Persistent Logs (Syslog server)
 
 The main system log is the **_syslog_** file and it is the contents of
-this file that is displayed when you click the ![](/docs/legacy/Log-icon.png) icon at
+this file that is displayed when you click the ![](../assets/Log-icon.png) icon at
 the top right of the Unraid GUI. Note that when posting to the forums
 extracted fragments of the syslog are rarely helpful as they do not show
 what lead up to a problem occurring.
@@ -129,7 +129,7 @@ being rebooted. If you are investigating a system crash then as long as
 you are running Unraid 6.7.2 or later there is built-in syslog server
 support
 
-![](/docs/legacy/Syslog-server-setup.jpg "Syslog-server-setup.jpg"){width="200"}
+![](../assets/Syslog-server-setup.jpg "Syslog-server-setup.jpg"){width="200"}
 
 - Go to _Settings-\>Network Services-\>Syslog Server_
 
@@ -165,7 +165,7 @@ occurs.
 syslog daemon is started during the boot process thus missing the
 very start of the boot process.
 
-![](/docs/legacy/Syslog-server.jpg "Syslog-server.jpg"){width="200"}
+![](../assets/Syslog-server.jpg "Syslog-server.jpg"){width="200"}
 
 - **Local Syslog Server**: Set this to **Enabled** to setup this
   Unraid server to act as a network syslog server. When this is
@@ -268,7 +268,7 @@ The boot process for Unraid proceeds through a number of stages
      flash drive must not have trailing tilde (\~) character.
 2. **Syslinux loader**:
 
-   : ![Boot Menu](/docs/legacy/BootMenu.jpg "Boot Menu")
+   : ![Boot Menu](../assets/BootMenu.jpg "Boot Menu")
 
    - The entries that appear on the boot menu are specified by the
      _syslinux/syslinux.cfg_ file on the flash drive. Although in

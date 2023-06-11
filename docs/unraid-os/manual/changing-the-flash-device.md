@@ -23,7 +23,7 @@ device.
 NOTE: All the information that is specific to your Unraid installation
 is contained in the **config** folder on the flash drive.
 
-![](/docs/legacy/Backup_flash_drive.png "Backup_flash_drive.png"){width="800"}
+![](../assets/Backup_flash_drive.png "Backup_flash_drive.png"){width="800"}
 
 ### Why replace your USB Flash boot device?
 
@@ -101,7 +101,7 @@ This action cannot be undone._
   new USB flash device. This can be downloaded for Windows or macOS
   here \-\--\> [Download USB Creator](https://unraid.net/download)
 
-![](/docs/legacy/Usbcreator.png "Usbcreator.png"){width="300"}
+![](../assets/Usbcreator.png "Usbcreator.png"){width="300"}
 
 - Obtain a new good quality USB flash device. This should be at least
   1 GB and a max of 32GB (8GB or 16GB seem to be popular choices).
@@ -114,7 +114,7 @@ This action cannot be undone._
   destination, then click '**Write**' and your backup will be
   restored to the new USB flash device.
 
-![](/docs/legacy/Selectversion.png "Selectversion.png"){width="400"}
+![](../assets/Selectversion.png "Selectversion.png"){width="400"}
 
 - Shutdown the server. Remove the original USB flash device and
   replace it with the new one created above. Power on the server.
@@ -122,7 +122,7 @@ This action cannot be undone._
   'Invalid, missing or expired registration Key' Click
   'Registration Key'
 
-![](/docs/legacy/Invalidkey.png "Invalidkey.png"){width="800"}
+![](../assets/Invalidkey.png "Invalidkey.png"){width="800"}
 
 - if you are not restoring from a backup (which would contain a copy
   of your licence key file) then copy your existing licence key file
@@ -136,7 +136,7 @@ This action cannot be undone._
   Flash device is _blacklisted and cannot be used with Unraid going
   forward. This action cannot be undone._
 
-![](/docs/legacy/Replacekey.png "Replacekey.png"){width="800"}
+![](../assets/Replacekey.png "Replacekey.png"){width="800"}
 
 - Once you have received the email, copy the key file URL, then paste
   it into the box and click 'INSTALL KEY
@@ -159,13 +159,13 @@ Prepare a new flash device using the procedure documented in the
   'Invalid, missing or expired registration Key' Click
   'Registration Key'
 
-![](/docs/legacy/Invalidkey.png "Invalidkey.png"){width="800"}
+![](../assets/Invalidkey.png "Invalidkey.png"){width="800"}
 
 - Click on the option to 'REPLACE KEY' \* Then enter the email
   address to which you would like to have the new key delivered to.
 - Click 'REPLACE KEY'
 
-![](/docs/legacy/Replacekey.png "Replacekey.png"){width="800"}
+![](../assets/Replacekey.png "Replacekey.png"){width="800"}
 
 **IMPORTANT:** Replacing your Unraid USB Flash Device transfers the
 license to a new USB Flash Device. Once this is done, the previous Flash

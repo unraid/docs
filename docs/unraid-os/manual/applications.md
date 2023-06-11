@@ -45,7 +45,7 @@ support for installing VMs.
 ### Installing Applications
 
 From any given app's tile, click the download icon
-![](/docs/legacy/CA_Tile1.png "CA_Tile1.png")
+![](../assets/CA_Tile1.png "CA_Tile1.png")
 
 ### Removing Applications / Showing Installed Applications
 

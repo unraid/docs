@@ -110,10 +110,10 @@ your BIOS settings, look for anything marked with **Virtualization**,
 **Intel VT-x**, **Intel VT-d**, **AMD-V**, or **AMD-Vi** and set it to
 **Enabled**.
 
-![](/docs/legacy/Bios-virtualization1.png){width="150"}
-![](/docs/legacy/Bios-virtualization2.jpg){width="150"}
-![](/docs/legacy/Bios-virtualization3.JPG){width="150"}
-![](/docs/legacy/Bios-virtualization4.png){width="150"}
+![](../assets/Bios-virtualization1.png){width="150"}
+![](../assets/Bios-virtualization2.jpg){width="150"}
+![](../assets/Bios-virtualization3.JPG){width="150"}
+![](../assets/Bios-virtualization4.png){width="150"}
 
 _examples of where virtualization settings can be found from various
 motherboard BIOS screens._
@@ -241,7 +241,7 @@ in order for you to create a VM.
   - The **Primary vDisk** is used to store your VM's operating
     system
   - **Additional vDisks** can be added by clicking
-    ![](/docs/legacy/Add-device.png){width="15"}
+    ![](../assets/Add-device.png){width="15"}
 - Specify a **Graphics Card** to use to interact with the VM
   - If you are _NOT_ assigning a physical graphics card, specify
     **VNC**
@@ -254,13 +254,13 @@ in order for you to create a VM.
   - If you assign a physical graphics device, be sure to assign a
     USB keyboard and mouse as well
   - Additional graphics devices can be assigned by clicking
-    ![](/docs/legacy/Add-device.png){width="15"}
+    ![](../assets/Add-device.png){width="15"}
 - Assign a **Sound Card** if you're assigning a graphics card to get
   audio support in your VM
   - Most GPUs have their own built-in sound card as a function of
     the graphics card for HDMI audio
   - Additional sound cards can be assigned by clicking
-    ![](/docs/legacy/Add-device.png){width="15"}
+    ![](../assets/Add-device.png){width="15"}
 - **USB Devices** can be assigned to the VM that are plugged into the
   host
   - USB hot-plugging is not currently supported, so devices must be
@@ -324,7 +324,7 @@ Settings_ section bar from the _Add VM_ page).
   - You can click the blue refresh symbol to auto-generate a new MAC
     address for the virtual network interface.
   - Additional virtual network interfaces can be assigned by
-    clicking ![](/docs/legacy/Add-device.png){width="15"}
+    clicking ![](../assets/Add-device.png){width="15"}
 
 ## Expanding a vdisk
 

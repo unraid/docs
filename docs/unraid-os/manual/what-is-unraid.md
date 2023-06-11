@@ -59,7 +59,7 @@ or odd (zero or one). If a data drive fails, that parity information can
 now be used to deduce the exact bit values of the failed drive, and
 perfectly rebuild it on a replacement drive. Here's an example:
 
-![](/docs/legacy/No_parity@2x.png "No_parity@2x.png")
+![](../assets/No_parity@2x.png "No_parity@2x.png")
 
 In the picture above, we have three drives and each has a stream of bits
 that vary in count based on the device size. By themselves, these
@@ -72,12 +72,12 @@ a column is an even number, the parity bit should be a 0. If the sum of
 a column is an odd number, the parity bit should be a 1. Here's the
 same image as before, but with parity calculated per frame:
 
-![](/docs/legacy/Parity@2x.png "Parity@2x.png")
+![](../assets/Parity@2x.png "Parity@2x.png")
 
 Now let's pretend that drive 2 in our example has suffered a failure
 and a new drive has been purchased to replace it:
 
-![](/docs/legacy/Drive_failure@2x.png "Drive_failure@2x.png")
+![](../assets/Drive_failure@2x.png "Drive_failure@2x.png")
 
 To rebuild the data on the newly replaced disk, we use the same method
 as before, but instead of solving for the parity bit, we solve for the
@@ -109,7 +109,7 @@ toggle protocols for both individual shares as well as at a global
 setting level. Should you have private data on your system that you wish
 to protect from anonymous access, user accounts can be created and
 policies defined to limit access to only trusted individuals.
-![](/docs/legacy/User_shares_-_distribution@2x.png "User_shares_-_distribution@2x.png")![](/docs/legacy/User_shares_-_access@2x.png "User_shares_-_access@2x.png")
+![](../assets/User_shares_-_distribution@2x.png "User_shares_-_distribution@2x.png")![](../assets/User_shares_-_access@2x.png "User_shares_-_access@2x.png")
 
 ### Cache
 
@@ -133,7 +133,7 @@ is created through a unique twist on traditional RAID 1, using a BTRFS
 feature that provides both the data redundancy of RAID 1 plus the
 capacity expansion of RAID 0.
 
-![](/docs/legacy/Cache-pool.gif "Cache-pool.gif")
+![](../assets/Cache-pool.gif "Cache-pool.gif")
 
 ## Application Server
 
@@ -184,7 +184,7 @@ machine is therefore much higher than the equivalent overhead for a
 container. Docker containers that feature common libraries and binaries
 do not replicate those shared resources and instead, leverage the
 efficiency of Linux and a copy-on-write filesystem to minimize the
-overhead. ![](/docs/legacy/Docker-vs-VM@2x.png "Docker-vs-VM@2x.png")\
+overhead. ![](../assets/Docker-vs-VM@2x.png "Docker-vs-VM@2x.png")\
 
 ### The Hub
 
@@ -234,7 +234,7 @@ machines, containers do not require hardware emulation, which eliminates
 overhead, hardware requirements, and provides near bare-metal
 performance.
 
-![](/docs/legacy/Docker@2x.png "Docker@2x.png")
+![](../assets/Docker@2x.png "Docker@2x.png")
 
 ## Virtualization Host
 
@@ -270,7 +270,7 @@ advanced (full PCI / USB devices). We can emulate multiple machine types
 Best of all, these virtualization technologies prevent their use from
 impacting the reliability of the host operating system.
 
-![](/docs/legacy/KVM@2x.png "KVM@2x.png")
+![](../assets/KVM@2x.png "KVM@2x.png")
 
 ## Simplified Management
 

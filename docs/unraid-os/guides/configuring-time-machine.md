@@ -39,7 +39,7 @@ going to:
    to change this).
 3. Also, set "Enhanced macOS interoperability" to Yes as well.
 
-![](/docs/legacy/SMBSettings.png "File:SMBSettings.png")
+![](../assets/SMBSettings.png "File:SMBSettings.png")
 
 Now:
 
@@ -87,7 +87,7 @@ Editor](https://tclementdev.com/timemachineeditor/) so you can customize
 when backups are made and select a host of other options not available
 in the Time Machine program itself._
 
-![](/docs/legacy/TimeMachineEditor.png "File:TimeMachineEditor.png")
+![](../assets/TimeMachineEditor.png "File:TimeMachineEditor.png")
 
 That's it. Now, all of your Time Machine backups will be stored on your
 Unraid server and if something bad happens to your Mac, you will be able

@@ -45,7 +45,7 @@ or later,_ look for a new category along the left hand side titled
 **Language**. This will allow you to load the current language pack selected.
 
 You can also search for languages via the Search bar in CA.
-![](/docs/legacy/Screen_Shot_2021-06-24_at_12.38.44_PM.png "Screen_Shot_2021-06-24_at_12.38.44_PM.png")
+![](../assets/Screen_Shot_2021-06-24_at_12.38.44_PM.png "Screen_Shot_2021-06-24_at_12.38.44_PM.png")
 
 **Note:** There is currently no automated mechanism for updating
 language packs as users enhance or add to the translations held on
@@ -57,13 +57,13 @@ language pack manually for new and improved translations.
 Via
 Community Applications -\> Language, click the download button on the
 language pack you would like to download and use.
-![](/docs/legacy/Download.png "Download.png")
+![](../assets/Download.png "Download.png")
 
 ### How to Switch Back to English?
 
 To switch back to English, you can always click the Switch back toggle button located in the top right of the webGui.
 
-![](/docs/legacy/Switch_toggle.png "Switch_toggle.png")
+![](../assets/Switch_toggle.png "Switch_toggle.png")
 
 ### Developer Requirements for Multi-Language Support
 

@@ -60,7 +60,7 @@ There are two methods to connect to the webGui in Unraid:
 
 Once you are connected to the webGui, you will immediately be prompted
 to set a strong root password (as of version 6.10):
-![](/docs/legacy/Set_root_password.png "Set_root_password.png")
+![](../assets/Set_root_password.png "Set_root_password.png")
 Strong passwords are unique (not reused), have at least 8 characters (the more the better),
 are a combination of alphabetic, numeric, and special characters, and
 are not common dictionary words. Better yet, use a password manager.
@@ -75,12 +75,12 @@ need to sign in to Unraid.net and obtain a key.
 
 - Sign in or Sign up under the Get Started section in the top-right of
   the webGui.
-  ![UPC getting started](/docs/legacy/Upc_get_started.png)
+  ![UPC getting started](../assets/Upc_get_started.png)
 
 - Upon signing in, a registration key will be downloaded and installed
   to your system automatically.
 
-![UPC installing a trial key](/docs/legacy/Upc_install_trial_key.png)
+![UPC installing a trial key](../assets/Upc_install_trial_key.png)
 The purpose of the sign-in is to provide a way for you to manage your registration
 keys for Unraid OS (obtain a Trial key, purchase a paid key, recover a
 lost key, replace your key with a new flash device, or upgrade a keybo
@@ -103,7 +103,7 @@ your server through the [Unraid Connect Dashboard](https://connect.myunraid.net/
 
 ## Assigning Devices to the Array and Pool(s)
 
-![](/docs/legacy/Configuringarray1.png "Configuringarray1.png") After installing a
+![](../assets/Configuringarray1.png "Configuringarray1.png") After installing a
 registration key, you are ready to begin assigning devices for Unraid to
 manage. Click on the **Main** tab from the Unraid webGui and follow
 these guidelines when assigning disks:
@@ -268,7 +268,7 @@ this is expected behavior.
 
 ## Advanced BIOS Configuration Guide
 
-![](/docs/legacy/Booting.jpg "Booting.jpg")
+![](../assets/Booting.jpg "Booting.jpg")
 Configuring your motherboard BIOS (as well as your storage controller) correctly is an important step to
 ensuring a solid experience using Unraid. The basic guidelines are as
 follows:
