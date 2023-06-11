@@ -20,7 +20,7 @@ required:
   Help for most fields in the GUI. This can be accessed at the
   individual field level by clicking on the field name, or toggled
   on/off for the whole page by clicking on the
-  ![Help](../assets/Help-icon.jpg "Help") icon at the top right of the GUI.
+  ![Help](../assets/Help-icon.jpg) icon at the top right of the GUI.
 - **Use the online documentation**: There is extensive online
   documentation that can be accessed via the **Manual** link at the
   bottom of the Unraid webGUI.
@@ -269,7 +269,7 @@ The boot process for Unraid proceeds through a number of stages
      flash drive must not have trailing tilde (\~) character.
 2. **Syslinux loader**:
 
-   : ![Boot Menu](../assets/BootMenu.jpg "Boot Menu")
+   : ![Boot Menu](../assets/BootMenu.jpg)
 
    - The entries that appear on the boot menu are specified by the
      _syslinux/syslinux.cfg_ file on the flash drive. Although in

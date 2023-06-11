@@ -106,7 +106,7 @@ will be reported under the _Array Operation_ section:
 
 ### Too many disks missing from the array
 
-![indication that you have too many devices missing or incorrectly assigned](../assets/Toomanywrong.png "Toomanywrong.png")
+![indication that you have too many devices missing or incorrectly assigned](../assets/Toomanywrong.png)
 
 If you have no parity disks, this message won't appear.
 
@@ -122,7 +122,7 @@ failure, you will need to perform the New Config procedure.
 
 ### Too many attached devices
 
-![indication that you have too many storage devices attached](../assets/Toomanydevices.png "Toomanydevices.png") 
+![indication that you have too many storage devices attached](../assets/Toomanydevices.png)
 
 Storage devices are any
 devices that present themselves as a block storage device EXCLUDING the
@@ -148,7 +148,7 @@ software, not the license policy._
 
 ### Invalid or missing key
 
-![indication that your key is missing or invalid](../assets/Invalidormissingkey.png "Invalidormissingkey.png")
+![indication that your key is missing or invalid](../assets/Invalidormissingkey.png)
 
 #### Missing key
 
@@ -497,9 +497,9 @@ To perform the upgrade proceed as follows:
 
 ### Replacing failed/disabled disk(s)
 
-![a red X indicates that a disk has suffered a write error and should be replaced](../assets/Diskfailureindicator.png "Diskfailureindicator.png")
+![a red X indicates that a disk has suffered a write error and should be replaced](../assets/Diskfailureindicator.png)
 
-![if notifications are enabled, this additional alert will appear](../assets/Diskfailurenotification.png "Diskfailurenotification.png")
+![if notifications are enabled, this additional alert will appear](../assets/Diskfailurenotification.png)
 
 As noted previously, with a single parity disk, you can replace up to
 one disk at a time, but during the replacement process, you are at risk
@@ -515,11 +515,11 @@ Another way to visualize the previous chart:
 | **A single disk failure** | Data from that disk is lost | Data is still available and the disk can be replaced | Data is still available and the disk can be replaced |
 | **A dual disk failure** | Data on both disks are lost | Data on both disks are lost | Data is still available and the disks can be replaced |
 
-![confirming you wish to start the array and rebuild the contents of the failed disk on a new disk](../assets/Confirmrebuild.png "Confirmrebuild.png")
+![confirming you wish to start the array and rebuild the contents of the failed disk on a new disk](../assets/Confirmrebuild.png)
 
-![notification indicating that a disk rebuild is occurring](../assets/Diskrebuildnotification.png "Diskrebuildnotification.png")
+![notification indicating that a disk rebuild is occurring](../assets/Diskrebuildnotification.png)
 
-![the progress and time remaining for the rebuild will be displayed under the array operation section](../assets/Timeremaining.png "Timeremaining.png")
+![the progress and time remaining for the rebuild will be displayed under the array operation section](../assets/Timeremaining.png)
 
 _NOTE: If more disk failures have occurred than your parity protection
 can allow for, you are advised to post in the General Support forum for
@@ -1047,7 +1047,7 @@ clearing the wrong drive.
 
 ## Checking array devices
 
-![the check button lets you perform parity and read checks](../assets/Check_button.PNG "Check_button.PNG")
+![the check button lets you perform parity and read checks](../assets/Check_button.PNG)
 
 When the array is started,
 there is a button under **Array Operations** labelled _Check_. Depending
@@ -1103,7 +1103,7 @@ ask questions in the forum.
 
 ### Read check
 
-![history lets you review stats on your preview check operations](../assets/History_button.PNG "History_button.PNG") 
+![history lets you review stats on your preview check operations](../assets/History_button.PNG)
 
 If you configure an array
 without any parity devices assigned, the _Check_ option will start a
@@ -1135,7 +1135,7 @@ temperature through the webGui.
 
 ## Reset the array configuration
 
-![you can reset your disk configuration from the new config page](../assets/Newconfig.png "Newconfig.png")
+![you can reset your disk configuration from the new config page](../assets/Newconfig.png)
 
 If you wish to remove a disk from the array or you simply wish to start
 from scratch to build your array configuration, there is a tool in
@@ -2134,7 +2134,7 @@ contents of the emulated drive that is used by the rebuild process.
      and does not result in data loss.
    - When asking a question in the forum and when including the
      output from the repair attempt as part of your post use
-     ![Code](../assets/Code-icon.jpg "Code") option to preserve the formatting
+     ![Code](../assets/Code-icon.jpg) option to preserve the formatting
      as otherwise it becomes difficult to read
 5. If the repair completes without error then stop the array and
    restart in normal mode. The drive should now mount correctly.
