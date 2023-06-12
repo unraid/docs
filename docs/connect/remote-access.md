@@ -39,7 +39,7 @@ needed. This helps to prevent automated attacks.
 **Static Remote Access** enables your server to listen to WAN traffic at
 all times, allowing your server to be accessed from the internet.
 
-![](./assets/Remote_access_settings.png "Remote_access_settings.png")
+![](./assets/Remote_access_settings.png)
 
 ## **Dynamic Remote Access**
 
@@ -65,7 +65,7 @@ of the Dynamic settings in the Remote Access dropdown:
    from your current
    location.
 
-   ![](./assets/Remote-access-enable-card.png "Remote-access-enable-card.png")
+   ![](./assets/Remote-access-enable-card.png)
 
 3. Clicking the button will trigger your server to enable wan access,
    and if using UPNP, create a new UPNP port forward lease on your

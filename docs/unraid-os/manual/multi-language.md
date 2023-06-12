@@ -4,7 +4,7 @@ sidebar_position: 8
 
 # Multi-Language Support
 
-### Introduction
+## Introduction
 
 [Unraid 6.9](https://unraid.net/blog/unraid-6-9-multi-language-support)
 introduced the mechanism to [support multiple
@@ -14,11 +14,11 @@ the Unraid webGUI.
 You can now download, install, and use the Unraid OS in the following
 languages:
 
-**Arabic, Chinese, Dutch, French, German, Portuguese, Polish and
-Spanish.**
+  **Arabic, Chinese, Dutch, French, German, Portuguese, Polish and Spanish.**
+
 There are also multiple other languages that are in the process of being translated. To check if your language is available, [see here.](https://github.com/unraid?q=lang&type=all&language=&sort=)
 
-**A note about all translations:**
+### A note about all translations
 
 - Translations are believed to be accurate to the best of Limetech's
   knowledge but the [English
@@ -30,12 +30,12 @@ There are also multiple other languages that are in the process of being transla
   to inform us of errors and/or participate in translation
   corrections, please write a post in the [respective language forum
   sections](https://forums.unraid.net/forum/75-multi-language-section/)
-  and tag @SpencerJ. You can also submit Pull Requests in the respective public language repos.
+  and tag `@SpencerJ`. You can also submit Pull Requests in the respective public language repos.
 
 - If you would like to see a new language added, please write a post
   in [this forum thread](https://forums.unraid.net/forum/77-general/).
 
-### How to Load a Language pack
+## How to Load a Language pack
 
 Language packs are downloaded and installed via the [Community
 Applications
@@ -45,27 +45,27 @@ or later,_ look for a new category along the left hand side titled
 **Language**. This will allow you to load the current language pack selected.
 
 You can also search for languages via the Search bar in CA.
-![](/docs/legacy/Screen_Shot_2021-06-24_at_12.38.44_PM.png "Screen_Shot_2021-06-24_at_12.38.44_PM.png")
+![](../assets/Screen_Shot_2021-06-24_at_12.38.44_PM.png)
 
 **Note:** There is currently no automated mechanism for updating
 language packs as users enhance or add to the translations held on
 gitHub. Unraid users who will need to periodically download the latest
 language pack manually for new and improved translations.
 
-### How to Activate a Language
+## How to Activate a Language
 
-Via
-Community Applications -\> Language, click the download button on the
+Via Community Applications -\> Language, click the download button on the
 language pack you would like to download and use.
-![](/docs/legacy/Download.png "Download.png")
 
-### How to Switch Back to English?
+![](../assets/Download.png)
+
+## How to Switch Back to English?
 
 To switch back to English, you can always click the Switch back toggle button located in the top right of the webGui.
 
-![](/docs/legacy/Switch_toggle.png "Switch_toggle.png")
+![](../assets/Switch_toggle.png)
 
-### Developer Requirements for Multi-Language Support
+## Developer Requirements for Multi-Language Support
 
 It is necessary for plugin developers to take appropriate action within
 their plugins to enable them to utilize the multi-language support. The
@@ -84,7 +84,7 @@ added a plugin will still work as-is on 6.9+ with no changes required
 albeit only with text in English (or whatever language the developer has
 embedded into the plugin).
 
-### Multi-Language Forums
+## Multi-Language Forums
 
 In the Unraid forum, there are also many active [language-specific
 forums](https://forums.unraid.net/forum/75-multi-language-section/) to

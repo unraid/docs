@@ -4,7 +4,7 @@ sidebar_position: 3
 
 # Storage Management
 
-![](/docs/legacy/Configuringarray1.png "Configuringarray1.png")
+![](../assets/Configuringarray1.png)
 
 To assign devices to
 the array and/or cache, first login to the server's webGui. Click on
@@ -106,7 +106,7 @@ will be reported under the _Array Operation_ section:
 
 ### Too many disks missing from the array
 
-![indication that you have too many devices missing or incorrectly assigned](/docs/legacy/Toomanywrong.png "Toomanywrong.png")
+![indication that you have too many devices missing or incorrectly assigned](../assets/Toomanywrong.png)
 
 If you have no parity disks, this message won't appear.
 
@@ -122,7 +122,7 @@ failure, you will need to perform the New Config procedure.
 
 ### Too many attached devices
 
-![indication that you have too many storage devices attached](/docs/legacy/Toomanydevices.png "Toomanydevices.png") 
+![indication that you have too many storage devices attached](../assets/Toomanydevices.png)
 
 Storage devices are any
 devices that present themselves as a block storage device EXCLUDING the
@@ -148,7 +148,7 @@ software, not the license policy._
 
 ### Invalid or missing key
 
-![indication that your key is missing or invalid](/docs/legacy/Invalidormissingkey.png "Invalidormissingkey.png")
+![indication that your key is missing or invalid](../assets/Invalidormissingkey.png)
 
 #### Missing key
 
@@ -497,9 +497,9 @@ To perform the upgrade proceed as follows:
 
 ### Replacing failed/disabled disk(s)
 
-![a red X indicates that a disk has suffered a write error and should be replaced](/docs/legacy/Diskfailureindicator.png "Diskfailureindicator.png")
+![a red X indicates that a disk has suffered a write error and should be replaced](../assets/Diskfailureindicator.png)
 
-![if notifications are enabled, this additional alert will appear](/docs/legacy/Diskfailurenotification.png "Diskfailurenotification.png")
+![if notifications are enabled, this additional alert will appear](../assets/Diskfailurenotification.png)
 
 As noted previously, with a single parity disk, you can replace up to
 one disk at a time, but during the replacement process, you are at risk
@@ -515,11 +515,11 @@ Another way to visualize the previous chart:
 | **A single disk failure** | Data from that disk is lost | Data is still available and the disk can be replaced | Data is still available and the disk can be replaced |
 | **A dual disk failure** | Data on both disks are lost | Data on both disks are lost | Data is still available and the disks can be replaced |
 
-![confirming you wish to start the array and rebuild the contents of the failed disk on a new disk](/docs/legacy/Confirmrebuild.png "Confirmrebuild.png")
+![confirming you wish to start the array and rebuild the contents of the failed disk on a new disk](../assets/Confirmrebuild.png)
 
-![notification indicating that a disk rebuild is occurring](/docs/legacy/Diskrebuildnotification.png "Diskrebuildnotification.png")
+![notification indicating that a disk rebuild is occurring](../assets/Diskrebuildnotification.png)
 
-![the progress and time remaining for the rebuild will be displayed under the array operation section](/docs/legacy/Timeremaining.png "Timeremaining.png")
+![the progress and time remaining for the rebuild will be displayed under the array operation section](../assets/Timeremaining.png)
 
 _NOTE: If more disk failures have occurred than your parity protection
 can allow for, you are advised to post in the General Support forum for
@@ -722,7 +722,8 @@ Parity drive, then a special two-step procedure is required as
 described here. It works in two phases: - The larger-than-existing-parity drive is first upgraded to
 become the new the parity drive - The old parity drive replaces the old data drive and the data of
 the failed drive is rebuilt onto it.
-: As an example, you have a 1TB data drive that you want to replace
+
+As an example, you have a 1TB data drive that you want to replace
 (the reason does not matter). You have a 2TB parity drive. You buy a
 4TB drive as a replacement. The 'Parity Swap' procedure will copy
 the parity info from the current 2TB parity drive to the 4TB drive,
@@ -797,7 +798,8 @@ needed.
 7. Install the new drive (preclear STRONGLY suggested, but formatting
    not needed)
 8. Power on
-9. Stop the array\
+9. Stop the array
+
    _\*If you get an "Array Stopping•Retry unmounting disk
    share(s)\..." message, try disabling Docker and/or VM in Settings
    and stopping the array again after rebooting._
@@ -817,20 +819,26 @@ needed.
     _Now patiently watch the copy progress, takes a long time (\~20
     hours for 4TB on a 3GHz Core 2 Duo). All of the contents of the old
     parity drive are being copied onto the new drive, then the remainder
-    of the new parity drive will be zeroed.\
-    **The array will NOT be available during this operation!**\
+    of the new parity drive will be zeroed.
+
+    **The array will NOT be available during this operation!**
+
     _\*If you disabled Docker and/or VM in settings earlier, go ahead
-    and re-enable now._\
+    and re-enable now._
+
     When the copy completes, the array will still be stopped
-    ("**Stopped**. Upgrading disk/swapping parity.").\
+    ("**Stopped**. Upgrading disk/swapping parity.").
+
     The **Start** button will now be present, and the description will
     now indicate that it is ready to start a Data-Rebuild._
 15. Put a check in the **Yes I want to do this** checkbox (older
     versions: **Yes, I'm sure**), and click the **Start** button
     _The data drive rebuild begins. Parity is now valid, and the array
-    is started.\
+    is started.
+
     Because the array is started, you can use the array as normal, but
-    for best performance, we recommend you limit your usage.\
+    for best performance, we recommend you limit your usage.
+
     Once again, you can patiently watch the progress, takes a long time
     too! All of the contents of the old data drive are now being
     reconstructed on what used to be your parity drive, but is now
@@ -899,7 +907,7 @@ To remove a disk from your array, perform the following steps:
    (for both the array and cache; some find it helpful to take a
    screenshot)
 3. Perform the [Reset the array
-   configuration](https://docs.unraid.net/unraid-os/manual/storage-management/#reset-the-array-configuration)
+   configuration](#reset-the-array-configuration)
    procedure. When doing this it is a good idea to use the option to
    preserve all current assignments to avoid you having to re-enter
    them (and possibly make a mistake doing so).
@@ -1040,7 +1048,7 @@ clearing the wrong drive.
 
 ## Checking array devices
 
-![the check button lets you perform parity and read checks](/docs/legacy/Check_button.PNG "Check_button.PNG")
+![the check button lets you perform parity and read checks](../assets/Check_button.PNG)
 
 When the array is started,
 there is a button under **Array Operations** labelled _Check_. Depending
@@ -1096,7 +1104,7 @@ ask questions in the forum.
 
 ### Read check
 
-![history lets you review stats on your preview check operations](/docs/legacy/History_button.PNG "History_button.PNG") 
+![history lets you review stats on your preview check operations](../assets/History_button.PNG)
 
 If you configure an array
 without any parity devices assigned, the _Check_ option will start a
@@ -1128,7 +1136,7 @@ temperature through the webGui.
 
 ## Reset the array configuration
 
-![you can reset your disk configuration from the new config page](/docs/legacy/Newconfig.png "Newconfig.png")
+![you can reset your disk configuration from the new config page](../assets/Newconfig.png)
 
 If you wish to remove a disk from the array or you simply wish to start
 from scratch to build your array configuration, there is a tool in
@@ -1464,7 +1472,7 @@ You can change the BTRFS raid levels for a pool from the Unraid GUI by:
 As an example, the following screenshot shows how you might convert
 the pool from the RAID1 to the SINGLE profile.
 
-![](file:Btrfs-raid1.jpg "wikilink")
+![](../assets/Btrfs-raid1.jpg)
 
 - **If using UnRaid 6.9.0 or later** this has been made even easier by
   giving you a drop-down list of the available options so simply
@@ -1834,7 +1842,8 @@ desired type needs to be created on the disk. This is the operation
 commonly known as "format" and it **erases** any existing content on
 the disk.
 
-**WARNING:**\
+**WARNING:**
+
 If a drive has already been formatted by Unraid then if it now shows as
 **unmountable** you probably do **NOT** want to format it again unless
 you want to **erase** its contents. In such cases, the appropriate
@@ -1880,7 +1889,7 @@ A drive can show as **unmountable** in the Unraid GUI for two reasons:
   any reason and Unraid marks the disk as disabled, although it can
   occur at other times as well.
 
-: **Note:** If a disk is showing as both **unmountable and disabled**
+**Note:** If a disk is showing as both **unmountable and disabled**
 (has a red 'x' against in in the GUI) then the check/repair
 process can be carried out on the disk that is being 'emulated' by
 Unraid prior to carrying out any rebuild process. It is always worth
@@ -1893,7 +1902,8 @@ there is not much point in wasting time on a rebuild if the repair
 is not going to work. Also if there are any problems running the
 repair process on the emulated disk then the physical disk is still
 untouched giving a fall back data recovery path.
-: **IMPORTANT**: You do **not** want to format the drive in this case
+
+**IMPORTANT**: You do **not** want to format the drive in this case
 as this will write an empty file system to the drive update parity
 accordingly and you would therefore lose the contents of the drive.
 
@@ -2126,7 +2136,7 @@ contents of the emulated drive that is used by the rebuild process.
      and does not result in data loss.
    - When asking a question in the forum and when including the
      output from the repair attempt as part of your post use
-     ![Code](/docs/legacy/Code-icon.jpg "Code") option to preserve the formatting
+     ![Code](../assets/Code-icon.jpg) option to preserve the formatting
      as otherwise it becomes difficult to read
 5. If the repair completes without error then stop the array and
    restart in normal mode. The drive should now mount correctly.
@@ -2327,12 +2337,12 @@ Notes:
 
 - For SSDs you can erase the current contents using
 
-`blkdiscard /dev/sdX`
+  `blkdiscard /dev/sdX`
 
-: at the console where 'X' corresponds to what is currently shown in
-the Unraid GUI for the device. Be careful that you get it right as
-you do not want to accidentally erase the contents of the wrong
-drive.
+  at the console where 'X' corresponds to what is currently shown in
+  the Unraid GUI for the device. Be careful that you get it right as
+  you do not want to accidentally erase the contents of the wrong
+  drive.
 
 ## Converting to a new File System type
 

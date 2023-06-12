@@ -25,7 +25,7 @@ hosting Unraid system so that it is not affected by new releases of
 Unraid, and conversely, it will not install software components into
 Unraid that might lead to system instability
 
-**Prerequisites**
+## Prerequisites
 
 - A system up and running with Unraid 6 and you are connected via a
   web browser to the Unraid webGui
@@ -39,15 +39,13 @@ Unraid that might lead to system instability
 _NOTE: Applications are made available and supported by both the Docker
 and Unraid user communities respectively._
 
-\
-
-# Concepts in Unraid Docker Implementation
+## Concepts in Unraid Docker Implementation
 
 There are a number of concepts about the Unraid implementation of Docker
 support that you want to make sure you understand as it makes running
 Docker containers much easier.
 
-**appdata**
+### appdata
 
 Normally each container has a 'working storage
 
@@ -59,7 +57,7 @@ itself uses to keep track of what it is doing. For example, plex keeps
 its library there, which is a database it uses to keep track of all your
 media.
 
-**Templates**
+### Templates
 
 Typically, you will install a new docker by going to the Apps page and
 clicking the download icon on the listing for the docker. This takes you
@@ -72,7 +70,7 @@ stored on the flash drive as a template, which can be used again to edit
 the docker or even reinstall it exactly as it was, using the
 aforementioned Previous Apps feature on the Apps page.
 
-**Container binaries**
+### Container binaries
 
 Each container will have its own unique set of binaries that are the
 programs used within the container. Under Unraid the contents of the
@@ -81,7 +79,7 @@ command with its parameters taken from that form. The docker run command
 downloads the executable code of the docker and stores that code in the
 docker.img, then runs the container.
 
-# Adding Applications as Containers
+## Adding Applications as Containers
 
 By default, you will have access to any and all applications that Lime
 Technology publishes to its public Docker repository. To add them to
@@ -96,7 +94,7 @@ your system, perform the following steps:
 **This method is now deprecated and the recommended way to add all
 containers is via Community Applications**
 
-## Community Applications
+### Community Applications
 
 To gain access to a wider set of applications, see [this
 post](https://forums.unraid.net/forum/index.php?topic=40262.0) in the
@@ -110,9 +108,9 @@ Technology. Support for community-maintained Docker containers can be
 found in the [Docker Containers
 subforum](https://forums.unraid.net/forum/index.php?board=56.0)._
 
-## Configuring a container
+### Configuring a container
 
-### Network Type
+#### Network Type
 
 If the Bridge type is selected, the application's network access will be
 restricted to only communicating on the ports specified in the port
@@ -122,7 +120,7 @@ already mapped to another in-use application/service. Generally
 speaking, it is recommended to leave this setting to its default value
 as specified per application template.
 
-### Volume Mappings
+#### Volume Mappings
 
 Applications can be given read and write access to files on the host by
 mapping a directory path from the container to a directory path on the
@@ -190,7 +188,7 @@ get unexpected folders appearing at the Unraid level then this can be a
 good indication that you have got a container mapping wrong and so the
 folder gets recreated every time the container is run.
 
-### Port Mappings
+#### Port Mappings
 
 While applications may internally be configured to talk to a specific
 port by default, we can remap those to different ports on our host with
@@ -215,11 +213,11 @@ expected by the container should already be specified.
 _IMPORTANT NOTE: If adjusting port mappings, do **not** modify the
 settings for the Container port as only the Host port can be adjusted._
 
-### Environment Variables
+#### Environment Variables
 
 TBD
 
-## Container Creation Process
+### Container Creation Process
 
 With your network, volume and port mappings and environment variables
 configured, you are now ready to create your first Docker container.
@@ -234,7 +232,7 @@ things worth noting while the image is downloading:
 - When the download process completes, you can click the Done button
   to return to the Docker page and continue adding applications.
 
-# Controlling container auto-start
+## Controlling container auto-start
 
 On the Docker page, you can set the Auto-Start option to **ON** for any
 docker container you want to always be started whenever the Array is
@@ -259,7 +257,7 @@ following ways:
 
 - **Changing the order**:
 
-: The simplest capability is to simply change the order in which the
+The simplest capability is to simply change the order in which the
 docker containers are listed on the Docker tab. If you use a mouse
 to click-and-hold on the container name then you will find that you
 can use drag-and-drop to move the container to another position in
@@ -267,7 +265,7 @@ the list.
 
 - **Adding wait times**:
 
-: If simply changing the startup order is not sufficient because some
+If simply changing the startup order is not sufficient because some
 containers take a while to finish their startup process then you can
 also add delays into the start-up sequence. You can do this by the
 following steps. - Switch to Advanced View using the toggle at the top right. - A _wait_ field will appear in the _AutoStart_ column. It will
@@ -281,9 +279,7 @@ determine what are appropriate values for this wait time.
 Using these mechanisms should allow you to control the container startup
 process to achieve the results that you want.
 
-\
-
-# Controlling Your Application
+## Controlling Your Application
 
 Once the download is complete, the application is started automatically.
 To interact with your application, we begin by clicking on the icon
@@ -291,7 +287,7 @@ visible on the Docker page of the Unraid web interface or on the icon
 for the docker on the dashboard page. Doing so will make a context menu
 appear with multiple options:
 
-![](/docs/legacy/Dockerguide-controlling.png "File:Dockerguide-controlling.png")
+![](../assets/Dockerguide-controlling.png)
 
 - **WebUI**
   - Most apps added through Docker will have a web interface that
@@ -326,7 +322,7 @@ appear with multiple options:
     application again later a much faster process (as it will not
     need to be redownloaded).
 
-# Accessing a Volume Mapping Inside a Container
+## Accessing a Volume Mapping Inside a Container
 
 One of the first things you will do after your application is running
 will be to configure it. Configuration typically will involve specifying
@@ -337,9 +333,9 @@ in the BT Sync app that would point to my Media share, I would specify
 the path of "/unraid_media" in the application's interface, as depicted
 below.
 
-![](/docs/legacy/Dockerguide-usingvolumes.png "Dockerguide-usingvolumes.png"){width="500"}
+![](../assets/Dockerguide-usingvolumes.png)
 
-# Re-Create the Docker image file
+## Re-Create the Docker image file
 
 If for any reason your docker image file gets corrupted it is easy to
 recreate it from scratch. The commonest cause for this seems to be the
@@ -375,7 +371,7 @@ At his point, you will probably want to re-install your applications
 with the same settings as previously used. This is easily achieved as
 described below.
 
-# Re-Installing Docker Applications
+## Re-Installing Docker Applications
 
 Every time an application is installed as a docker container then a
 template with the settings used is stored on the flash drive. this
@@ -393,7 +389,7 @@ this can be done by:
 - Proceed with the installation and the docker container will be
   re-downloaded and your previous settings applied.
 
-# Docker Custom Networks
+## Docker Custom Networks
 
 For any Docker Custom Networks created, it is necessary to recreate
 these networks if a vDisk is deleted. They do no persist.
@@ -407,7 +403,7 @@ same subnet as the one used by the host. You can allow this under
 _Settings-\>Docker_ by changing **Host access to custom networks** from
 **disabled** to **enabled**.
 
-# Starting and stopping Docker containers on a schedule
+## Starting and stopping Docker containers on a schedule
 
 A number of users have requested a way to start and/or stop their docker
 containers on a specified schedule. This is not currently a standard
@@ -430,7 +426,7 @@ The basic process is:
   this provides far more precise control.
 - Hit **Apply** to activate the new script together with its schedule.
 
-**Command to start a docker**
+### Command to start a docker
 
 In most cases this is the simply a command of the form:
 
@@ -444,23 +440,24 @@ You can also see the _container-name_ in the _docker run_ command that
 unRaid uses to both create a container (if it does not exist) and also
 start it with the parameters provided via the docker template for that
 container. The _container-name_ is that provided via the _name_
-parameter to the _docker run_ command. You can see what the d*ocker run*
+parameter to the _docker run_ command. You can see what the _docker run_
 command that unRaid will use when you install / edit the application
 (you can always make any change and then change it back and hit Apply to
 get the docker run command to appear). The following is an example of
 what this might look like:
 
-![](/docs/legacy/Docker_run.png "Docker_run.png"){width="800" height="60"}
+![](../assets/Docker_run.png)
 
-**Command to stop a docker**
+#### Command to stop a docker
 
 This is the simply a command of the form:
 
 `docker stop "container-name"`
 
 where _container-name_ is the name you gave the container on the Docker
-tab.\
-=Other Tips and Tricks=
+tab.
+
+## Other Tips and Tricks
 
 Using Docker containers to run applications on Unraid is incredibly easy
 and very powerful. Here are some additional tips to improve your
@@ -474,4 +471,4 @@ experience:
   Docker page or adding applications to see additional configuration
   options.
 - Learn more about Docker containers from our [helpful user
-  community](https://forums.unraid.net/forum/index.php?board=56.0).
+  community](https://forums.unraid.net/forum/47-docker-containers/).

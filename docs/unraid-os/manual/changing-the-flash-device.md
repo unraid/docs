@@ -23,9 +23,9 @@ device.
 NOTE: All the information that is specific to your Unraid installation
 is contained in the **config** folder on the flash drive.
 
-![](/docs/legacy/Backup_flash_drive.png "Backup_flash_drive.png"){width="800"}
+![](../assets/Backup_flash_drive.png)
 
-### Why replace your USB Flash boot device?
+## Why replace your USB Flash boot device?
 
 **IMPORTANT:** Replacing your Unraid USB Flash Device transfers the
 license to a new USB Flash Device. Once this is done, the previous Flash
@@ -62,7 +62,7 @@ license to a new USB Flash Device. Once this is done, the previous Flash
 device is _blacklisted and cannot be used with Unraid going forward.
 This action cannot be undone._
 
-### What if I can't backup my device?
+## What if I can't backup my device?
 
 In the event that your flash device has failed and you do not have a
 backup, you can still reconfigure Unraid onto a new flash device and
@@ -77,7 +77,7 @@ sure you assign each disk to the array / cache exactly as it was prior
 to the failure. If you do not know which disks were assigned where,
 create a post in the forum for further assistance.
 
-### Changing a Flash Device Before Purchasing
+## Changing a Flash Device Before Purchasing
 
 If you're currently using a Trial key and you're ready to purchase,
 you may want to use a better flash drive for your paid key. Perform the
@@ -94,14 +94,14 @@ license to a new USB Flash Device. Once this is done, the previous Flash
 device is _blacklisted and cannot be used with Unraid going forward.
 This action cannot be undone._
 
-### Using the Flash Creator
+## Using the Flash Creator
 
 - Once you have a backup of your Unraid flash device, you will need to
   use the Unraid USB Flash Creator tool to restore your backup to the
   new USB flash device. This can be downloaded for Windows or macOS
   here \-\--\> [Download USB Creator](https://unraid.net/download)
 
-![](/docs/legacy/Usbcreator.png "Usbcreator.png"){width="300"}
+![](../assets/Usbcreator.png)
 
 - Obtain a new good quality USB flash device. This should be at least
   1 GB and a max of 32GB (8GB or 16GB seem to be popular choices).
@@ -114,7 +114,7 @@ This action cannot be undone._
   destination, then click '**Write**' and your backup will be
   restored to the new USB flash device.
 
-![](/docs/legacy/Selectversion.png "Selectversion.png"){width="400"}
+![](../assets/Selectversion.png)
 
 - Shutdown the server. Remove the original USB flash device and
   replace it with the new one created above. Power on the server.
@@ -122,7 +122,7 @@ This action cannot be undone._
   'Invalid, missing or expired registration Key' Click
   'Registration Key'
 
-![](/docs/legacy/Invalidkey.png "Invalidkey.png"){width="800"}
+![](../assets/Invalidkey.png)
 
 - if you are not restoring from a backup (which would contain a copy
   of your licence key file) then copy your existing licence key file
@@ -136,7 +136,7 @@ This action cannot be undone._
   Flash device is _blacklisted and cannot be used with Unraid going
   forward. This action cannot be undone._
 
-![](/docs/legacy/Replacekey.png "Replacekey.png"){width="800"}
+![](../assets/Replacekey.png)
 
 - Once you have received the email, copy the key file URL, then paste
   it into the box and click 'INSTALL KEY
@@ -145,7 +145,7 @@ This action cannot be undone._
   was registered and the next date on which your registration key will
   be eligible to be replaced again. Click 'DONE'.
 
-### Manual Method
+## Manual Method
 
 Prepare a new flash device using the procedure documented in the
 [Getting Started](getting-started.md#manual-install-method) guide.
@@ -159,13 +159,13 @@ Prepare a new flash device using the procedure documented in the
   'Invalid, missing or expired registration Key' Click
   'Registration Key'
 
-![](/docs/legacy/Invalidkey.png "Invalidkey.png"){width="800"}
+![](../assets/Invalidkey.png)
 
 - Click on the option to 'REPLACE KEY' \* Then enter the email
   address to which you would like to have the new key delivered to.
 - Click 'REPLACE KEY'
 
-![](/docs/legacy/Replacekey.png "Replacekey.png"){width="800"}
+![](../assets/Replacekey.png)
 
 **IMPORTANT:** Replacing your Unraid USB Flash Device transfers the
 license to a new USB Flash Device. Once this is done, the previous Flash
@@ -242,7 +242,7 @@ back without data loss:
   change the `startArray="yes"` entry to `startArray="no"`
 
 This is to avoid any accidents that might result in a data drive getting over-written with parity information.
-: You can also achieve the same effect from the Unraid GUI via the
+You can achieve the same effect from the Unraid GUI via the
 _Settings-\>Disk Settings_ option.
 
 - Go to Tools -\> New Config and select the option to create a new

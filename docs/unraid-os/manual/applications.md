@@ -45,7 +45,7 @@ support for installing VMs.
 ### Installing Applications
 
 From any given app's tile, click the download icon
-![](/docs/legacy/CA_Tile1.png "CA_Tile1.png")
+![](../assets/CA_Tile1.png)
 
 ### Removing Applications / Showing Installed Applications
 
@@ -414,5 +414,3 @@ much better performance than having them on an array drive.
     Unraid GUI on the VM tab when a VM is running. Using such an
     alternative client can work in cases where the NoVNC client does
     not work correctly for some reason.
-
-\

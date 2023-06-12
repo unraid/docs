@@ -38,7 +38,6 @@ Some notes before you start:
   to the parity slot and start the array, that drive will be
   overwritten with parity and the data will be lost!
 
-\
 \-\-\-- There are two methods you can use to replace multiple drives
 with a single larger drive, the faster method, and the safer method.
 Either of these methods can be easily adapted to replace 3 or more
