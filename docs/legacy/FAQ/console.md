@@ -87,7 +87,7 @@ the "Main" tab of your webgui. Locate your drive, then look for the Device ID in
 is always 3 lowercase letters, beginning with either **hd** or **sd**,
 eg. _sda_, _sdk_, _hdc_, _hdg_. For simplicity, _sdx_ will be used
 below, and you will substitute the appropriate Device ID for your drive.
-(Extra spaces are added for clarity only, only one space is needed.)\
+(Extra spaces are added for clarity only, only one space is needed.)
 
 ### hdparm
 

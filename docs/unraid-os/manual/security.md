@@ -490,9 +490,10 @@ should _NEVER_ be exposed directly to the internet.**
 - If running Docker container or are exposed to the internet then the
   security of these needs to be assessed on a case-by-case basis.
 
-: You may need to contact the developer of the container to determine
+You may need to contact the developer of the container to determine
 how safe it is to expose it to the internet.
-: There is a level of protection as a docker container runs in a
+
+There is a level of protection as a docker container runs in a
 'sandboxed' environment so the level of access to the content of
 your disks is constrained to what you allow in the path mapping
 settings for the container.
@@ -566,7 +567,7 @@ VPN connection to an Unraid server_.
 
 #### Overview
 
-![](/docs/legacy/Wireguard.png "Wireguard.png"){width="100"}
+![](../assets/Wireguard.png)
 Unraid 6.8 introduces built-in support for WireGuard VPN connections. The
 intention is to make it as easy as possible for Unraid users to set up
 VPN connections to/from their Unraid servers.
@@ -653,7 +654,7 @@ connection types:
 The following diagram attempts to show these different connection types
 in a graphical format
 
-[](file:Wireguard-help.png "wikilink")
+![](../assets/Wireguard-help.png)
 
 #### Incoming VPN Connections
 
@@ -661,7 +662,7 @@ This section will walk through how to setup WireGuard so that your
 trusted devices can VPN into your home network to access Unraid and the
 other systems on your network.
 
-**Prerequisites**
+##### Prerequisites
 
 - You must be running Unraid 6.8 with the Dynamix WireGuard plugin
   installed via the **Apps** tab (Community Applications).
@@ -702,7 +703,7 @@ other systems on your network.
   good first client systems because you can get all the details via QR
   code.
 
-**Setting up the Unraid side of the VPN tunnel**
+##### Setting up the Unraid side of the VPN tunnel
 
 - First, go to Settings -\> Network Settings -\> Interface eth0. If
   "Enable bridging" is "Yes", then WireGuard will work as
@@ -710,14 +711,14 @@ other systems on your network.
   type of connections" that involve the local LAN will work properly.
   As a general rule, bridging should be enabled in Unraid.
 
-[](file:enable-bridging.png "wikilink")
+![](../assets/enable-bridging.png)
 
 - If UPnP is enabled on your router and you want to use it in Unraid,
   go to Settings -\> Management Access and confirm "Use UPnP" is set
   to Yes
 - On Unraid go to Settings -\> VPN Manager
 
-[](file:wg0.png "wikilink")
+![](../assets/wg0.png)
 
 - Give the VPN Tunnel a name, such as "MyHome VPN"
 - Press "Generate Keypair". This will generate a set of public and
@@ -733,13 +734,13 @@ other systems on your network.
 - If Unraid detects that your router supports UPnP, it will
   automatically setup port forwarding for you:
 
-[](file:upnp-yes.png "wikilink")
+![](../assets/upnp-yes.png)
 
 - If you see a note that says "configure your router for port
   forwarding\..." you will need to login to your router and setup the
   port forward as directed by the note:
 
-[](file:upnp-no.png "wikilink")
+![](../assets/upnp-no.png)
 
 - Some tips for setting up the port forward in your router:
   - Both the external (source) and internal (target/local) ports
@@ -755,7 +756,7 @@ other systems on your network.
   removed from view. If you ever need to access them, click the
   "key" icon on the right-hand side.
 
-[](file:key.png "wikilink")
+![](../assets/key.png)
 
 - Similarly, you can access other advanced settings by pressing the
   "down chevron" on the right-hand side. They are beyond the scope
@@ -764,16 +765,16 @@ other systems on your network.
   Active to start WireGuard. You can optionally set the tunnel to
   Autostart when Unraid boots.
 
-[](file:activate.png "wikilink")
+![](../assets/activate.png)
 
-: _There have been cases where this step has been omitted and users
+_There have been cases where this step has been omitted and users
 end up wondering why the WireGuard VPN link is not working!_
 
-**Defining a Peer (client)**
+##### Defining a Peer (client)
 
 - Click "Add Peer"
 
-[](file:peer-add.png "wikilink")
+![](../assets/peer-add.png)
 
 - Give it a name, such as "MyAndroid"
 - For the initial connection type, choose "Remote access to LAN".
@@ -793,7 +794,8 @@ end up wondering why the WireGuard VPN link is not working!_
   complete and you will have to finish configuring the client
   manually.
 
-**Caution:**\
+###### Caution
+
 It can be a little risky to add a new client ("peer") to WireGuard if
 you are already connected remotely using WireGuard as adding a new peer
 _sometimes_ toggles the WireGuard tunnel off which will render you
@@ -804,15 +806,15 @@ configuration. If there is any sort of configuration conflict at this
 point the tunnel stays inactive, and you can no longer connect to the
 Unraid server
 
-**Configuring a Peer (client)**
+##### Configuring a Peer (client)
 
 - Click the "eye" icon to view the peer configuration. If the button
   is not clickable, you need to apply or reset your unsaved changes
   first.
 
-[](file:peer-eye.png "wikilink")
+![](../assets/peer-eye.png)
 
-[](file:peer-view.png "wikilink")
+![](../assets/peer-view.png)
 
 - If you are setting up a mobile device, choose the "Create from QR
   code" option in the mobile app and take a picture of the QR code.
@@ -827,7 +829,7 @@ Unraid server
   Protect this file, anyone who has access to it will be able to
   access your VPN.
 
-**About DNS**
+##### About DNS
 
 The Dynamix WireGuard plugin includes a "Peer DNS Server" option
 
@@ -848,7 +850,7 @@ lose name resolution on the client's local network in the process. The
 simplest solution is to add a hosts file on the client that provides
 name resolution for both networks.
 
-**Complex Networks**
+##### Complex Networks
 
 The instructions above should work out of the box for simple networks.
 With "Use NAT" defaulted to Yes, all network traffic on Unraid uses
@@ -876,7 +878,7 @@ WireGuard clients still may not be able to access Dockers on custom IPs
 or VMs. If you find a solution to this, please ask questions in the
 forum threads mentioned earlier.
 
-**Troubleshooting WireGuard**
+##### Troubleshooting WireGuard
 
 WireGuard is not a chatty protocol, in fact, it is designed to be
 invisible! There aren't really any error messages if things aren't
@@ -941,7 +943,7 @@ making inbound connections. There is a [forum
 thread](https://forums.unraid.net/topic/84316-wireguard-vpn-tunneled-access/)
 discussing making an outbound VPN connection using WireGuard
 
-**Commercial VPN Providers**
+##### Commercial VPN Providers
 
 Several commercial VPN providers now support WireGuard. A few are listed
 below but this is not intended to be an exhaustive list. No endorsement
@@ -959,11 +961,11 @@ needs.
 
 Note that with the current state of WireGuard, VPN providers cannot
 guarantee the same amount of privacy as they can with OpenVPN. See
-[here](https://restoreprivacy.com/wireguard/) for more detail\
+[here](https://restoreprivacy.com/wireguard/) for more detail.
 Typically the objections are not around security, but around the fact
 that it is harder for them to guarantee that they cannot track you.
 
-**Configuring VPN tunneled access**
+##### Configuring VPN tunneled access
 
 - Download a config file from your preferred commercial VPN provider
 - On the Settings -\> VPN Manager page, click the "Import Config"
@@ -985,7 +987,7 @@ that it is harder for them to guarantee that they cannot track you.
     set to something that will work whether the tunnel is up or
     down, such as 8.8.8.8 and 8.8.4.4
 
-**Testing the tunnel**
+##### Testing the tunnel
 
 - Using Community Applications, install a browser such as the
   jlesage/Firefox Docker container

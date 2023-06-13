@@ -74,7 +74,7 @@ correctly extracted. If done correctly, you should see **bzroot** and
 files such as **network.cfg** and **ident.cfg**.
 
 **Step 4** Click on the **Safely Remove Hardware** tool tray icon and
-select your Flash drive to be safely removed.\
+select your Flash drive to be safely removed.
 
 ### Windows Vista and Windows 7
 
