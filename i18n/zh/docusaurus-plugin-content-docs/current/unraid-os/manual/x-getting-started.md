@@ -46,7 +46,7 @@ Time"，并将上述内容依次复制/粘贴到 NTP server
 部分，然后单击"Apply"。同时，请确保此处也选择了正确的"Time
 zone"（时区）。
 
-![](./assets/NTP.png)
+![](../assets/NTP.png)
 
 这将确保您可以申请到 30 天的 Unraid 免费试用。
 
@@ -67,25 +67,25 @@ Plugin"（安装插件）并复制粘贴下列 URL 的其中之一：
 完成上述操作后，Unraid WebGUI
 的顶部栏上方将会新增一个"APPS"(应用)选项卡。
 
-![](./assets/AppsTab.png)
+![](../assets/AppsTab.png)
 
 ## 安装中文语言包
 
 要安装 Unraid OS 的中文语言包，请转到 APPS→
 Language（位于侧边栏）→单击如下图所示的安装按钮来下载"简体中文语言包\"。
-![](./assets/Download.png)
+![](../assets/Download.png)
 
 使用如下图所示的切换按钮，可以在中文与英文之间切换。
-![](./assets/Switch_toggle.png)
+![](../assets/Switch_toggle.png)
 
 通过 Unraid WebGUI
 右上角的切换按钮，同样也可以实现中文和英文之间的来回切换：
 
-![](./assets/Toprightbar.png)
+![](../assets/Toprightbar.png)
 
 另一种找到语言包的方法是使用 CA
 中的搜索栏。查找"Chinese"或者"简体中文语言包"都可以奏效！
-![](./assets/Chinese-Search.png)
+![](../assets/Chinese-Search.png)
 
 ## 使用 Docker
 
@@ -98,7 +98,7 @@ Language（位于侧边栏）→单击如下图所示的安装按钮来下载"�
 CDN。因此，我们强烈建议您进行测试，以便找到对您而言最友好的 CDN。在
 WebGUI 中点击终端按钮：
 
-![](./assets/Terminal.png)
+![](../assets/Terminal.png)
 
 随后将弹出一个窗口。使用以下命令，以测试从选定的 CDN
 链接中拉取某个特定镜像需要多长时间：
@@ -107,7 +107,7 @@ WebGUI 中点击终端按钮：
 
 之后您可能会看到如下的输出：
 
-![](./assets/Output.png)
+![](../assets/Output.png)
 
 上述图像显示需要 22.751 秒来拉取此镜像。更换 CDN
 的链接并逐一测试，您将会找到最适合您的网络的
@@ -167,10 +167,10 @@ CDN。
    SCRIPT"（新建脚本），然后为您的脚本输入一个名称，例如"docker.registry_mirrors"。单击"OK"。
 3. 单击新脚本旁边的齿轮图标：
 
-   ![](./assets/Docker_register_mirrors.png)
+   ![](../assets/Docker_register_mirrors.png)
 
    随后单击第三个按钮 "EDIT SCRIPT"（编辑脚本）：
-   ![](./assets/Edit_Script.png)
+   ![](../assets/Edit_Script.png)
 
 4. 输入下列代码，并单击"SAVE CHANGES"（保存更改）：
 
@@ -198,7 +198,7 @@ CDN。
 5. 当您返回到用户脚本列表时，单击位于"RUN IN
 BACKGROUND"（后台运行）按钮旁边的下拉框，选择"At First Array Start
 Only"（仅在第一个阵列启动时），以确保在服务器重启和阵列启动后脚本能够自动运行。
-![](./assets/Run_in_background.png)
+![](../assets/Run_in_background.png)
 
 ### 检查配置
 
