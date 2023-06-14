@@ -1,12 +1,25 @@
 // Reverse the sidebar items ordering (including nested category items)
 const semver = require("semver");
 
+
+function getTitleFromItemId(id) {
+  return id.split("/").at(-1)
+}
+
 function getSemverFromId(id) {
   try {
     // console.log('id',id.split('/').at(-1))
-    return semver.parse(id.split("/").at(-1));
+    return semver.parse(getTitleFromItemId(id));
   } catch (error) {
     return null;
+  }
+}
+
+
+function addItemTitle(item) {
+  return {
+    ...item,
+    label: getTitleFromItemId(item.id)
   }
 }
 
@@ -46,7 +59,7 @@ function sortSidebarItems(items, sortBySemver = false) {
     }, {});
 
     const subfolders = Object.entries(subfolderArrays).map(([folderName, items]) => {
-      return { type: "category", label: folderName, items: items };
+      return { type: "category", label: folderName, items: items.map(addItemTitle) };
     }).sort((a, b) => {
       // Reorder a, b to change sort direction
       return semver.compare(getSemverFromId(`${b.label}.0`), getSemverFromId(`${a.label}.0`));
