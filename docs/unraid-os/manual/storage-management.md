@@ -356,7 +356,7 @@ build process.
 
 **NOTE:**
 
-You cannot add a parity disk(s) and data disIs) at the same time in a
+You cannot add a parity disk(s) and data disk(s) at the same time in a
 single operation. This needs to be split into two separate steps, one to
 add parity and the other to add additional data space.
 
@@ -627,7 +627,7 @@ To replace a failed disk or disks:
    the array in Maintenance mode you will need to press the **Sync**
    button to trigger the rebuild. The advantage of doing this in
    Maintenance mode is that nothing else can write to the array while
-   the rebuild is running which maximises speed.  The disadvantage is
+   the rebuild is running which maximises speed. The disadvantage is
    that you cannot use the array in the meantime and until you return
    to normal mode cannot see what the contents of the disk being
    rebuilt will look like.
@@ -682,7 +682,7 @@ cause Unraid to rebuild a 'disabled' drive back onto the same drive.
    the array in Maintenance mode you will need to press the **Sync**
    button to trigger the rebuild. The advantage of doing this in
    Maintenance mode is that nothing else can write to the array while
-   the rebuild is running which maximises speed.  The disadvantage is
+   the rebuild is running which maximises speed. The disadvantage is
    that you cannot use the array in the meantime and until you return
    to normal mode cannot see what the contents of the disk being
    rebuilt will look like.
