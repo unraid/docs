@@ -6,7 +6,7 @@ Before upgrading, we highly recommend making a complete backup of your
 USB flash device. You can do this by copying the entire contents of the
 "flash" share to a separate computer.
 
-## From version 6.4
+## From version 6.4 or higher
 
 1. Boot your server up and login to the web interface
 2. Click the _Tools_ tab
@@ -162,32 +162,25 @@ type).
 
 Please ensure your system meets these requirements before upgrading:
 
-1. Your server must be running version 6.1 or later.
-2. Your USB flash device must have at least 128MB of free space.
-3. If you have customized your network bridge name previously, it must
+1. Your USB flash device must have at least 128MB of free space.
+2. If you have customized your network bridge name previously, it must
    be changed back to the default of 'br0' before upgrading.
-4. VMs set to use a custom-named bridge will also need to be edited to
+3. VMs set to use a custom-named bridge will also need to be edited to
    point to the 'br0' prior to the upgrade.
 
-## Checking your existing version
-
-To check which version of Unraid is presently running on your server,
-simply log into the web interface and look in the top right corner of
-the browser.
-
-## Checking for sufficient free space
+### Checking for sufficient free space
 
 The upgrade process will check for this automatically, but if you wish
 to be proactive, you can review your boot device's free space under the
 Flash section on the _Main_ tab of the web interface.
 
-## Checking your network bridge name
+### Checking your network bridge name
 
 To see if you have a customized network bridge, open the _Settings_ -\>
 _Network Settings_ page of the web interface. If the bridge name is
 anything other than 'br0', change it back to 'br0' and click apply.
 
-## Checking your VM network bridge settings
+### Checking your VM network bridge settings
 
 If you found you have a custom-name for your network bridge and you also
 have VMs on the system, it is very likely that these VMs are also set to
@@ -214,7 +207,7 @@ Your VMs should now be ready for use under the latest version.
 
 <https://s3.amazonaws.com/dnld.lime-technology.com/stable/unRAIDServer.plg>
 
-## Post installation procedures
+### Post installation procedures
 
 Once rebooted under version 6.2 for the first time, it may take several
 minutes (potentially longer) to start the array if Docker containers
@@ -229,9 +222,11 @@ properly under version 6.2. Upon booting an OVMF-based VM under 6.2, if
 you are presented with an EFI shell instead of your OS booting
 appropriately, type the following commands in order to boot your VM:
 
-- fs0:
-- cd efi/boot
-- bootx64.efi
+```shell
+fs0:
+cd efi/boot
+bootx64.efi
+```
 
 If this doesn't work, try changing the first command from fs0: to fs1:.
 If that doesn't work, please post in the
@@ -245,3 +240,41 @@ earlier.
 Please see [this forum
 post](https://forums.unraid.net/forum/index.php?topic=41061.0) for
 information on upgrading.
+
+## Manual Upgrade or Downgrade
+
+This is useful if you don't have access to the Unraid webgui for some reason.
+
+### Manual upgrade using a network share or by putting the flash drive in another system
+
+- Copy the URL of the unRAIDServer-version.zip file that you want from <https://unraid.net/download>
+- Unzip that file locally
+- Access the 'flash' share on the server, or physically put the flash drive in the local computer
+- If the `previous` directory does not exist on the flash drive, create it
+- Move (not copy) bz* and changes.txt from the root of the flash drive to the `previous` directory, overwriting files as needed
+- Copy bz* and changes.txt from the unzipped file to the root of the flash drive
+- Reboot the server
+
+### Manual upgrade from the Unraid command line
+
+- Copy the URL of the unRAIDServer-version.zip file that you want from <https://unraid.net/download>
+- Login to the Unraid server using SSH, telnet, or a local keyboard/mouse
+- Type these commands _one line at a time_ and press enter. If there are errors along the way, stop and ask for help:
+
+```shell
+cd /tmp
+rm -f unraid.zip
+rm -rf unraid_install
+wget -O unraid.zip <paste the URL from above>
+[[ -s unraid.zip ]] && echo "OK to continue" || echo "STOP the file was not downloaded"
+unzip -d unraid_install unraid.zip
+[[ -s unraid_install/bzroot ]] && echo "OK to continue" || echo "STOP the file was not extracted properly"
+[[ ! -d /boot/previous ]] && mkdir /boot/previous
+mv /boot/bz* /boot/previous
+mv /boot/changes.txt /boot/previous
+cp unraid_install/bz* /boot
+cp unraid_install/changes.txt /boot
+sync -f /boot
+sleep 5
+reboot
+```
