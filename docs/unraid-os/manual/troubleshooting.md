@@ -61,10 +61,8 @@ of information about the state of your system that can be helpful when
 trying to diagnose any issues. Using this tool will result in a zip file
 being produced that can be downloaded and then attached to forum posts.
 
-If the GUI cannot be accessed for any reason then using the
-**diagnostics** command from the Linux command line level will generate
-the same information and put the resulting zip file into the **logs**
-folder on the flash drive.
+If the GUI cannot be accessed, then use SSH, telnet, or a keyboard/monitor attached to the server
+to login and type `diagnostics`.  This will save the diagnostics.zip file to the "logs" folder on your flash drive.
 
 The Diagnostics should if at all possible cover the period when the
 problem occurred and be captured BEFORE you reboot (logs are reset on a
