@@ -83,7 +83,7 @@ need to sign in to Unraid.net and obtain a key.
 ![UPC installing a trial key](../assets/Upc_install_trial_key.png)
 The purpose of the sign-in is to provide a way for you to manage your registration
 keys for Unraid OS (obtain a Trial key, purchase a paid key, recover a
-lost key, replace your key with a new flash device, or upgrade a keybo
+lost key, replace your key with a new flash device, or upgrade a key
 from one edition to another).
 
 When signing up we **highly recommend** you enable 2FA for your
@@ -229,7 +229,7 @@ attack while leaving your valuable data at risk.
 
 If for some reason the USB Flash Creator tool cannot be used, or your USB flash device is not detected,
 it is possible to manually format and prepare a bootable USB flash device.
-device. **Note: this method only works for devices 32GB and _smaller_.**
+**Note: this method only works for devices 32GB and _smaller_.**
 
 - Plug the USB flash device into your Mac or PC.
 - Format the device using the FAT32 file system. It must **not** be

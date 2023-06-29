@@ -8,7 +8,7 @@ An Unraid server is likely to contain data that is sensitive or that a
 user would hate to lose. Since most users will have their home network
 connected to the internet then precautions should be taken to avoid an
 Unraid server being compromised by malicious actors trying to access
-them remotely..
+them remotely.
 
 The following simple guidelines will help avoid many common pitfalls
 that some user encounter regarding the security of their Unraid servers.
@@ -154,9 +154,9 @@ used in Unraid OS. We here at Lime Technology do our best to ensure all
 vulnerabilities are addressed in a timely manner with software updates.
 However, these updates are useless to you if you don't apply them in a
 timely manner as well. Keeping your OS up-to-date is easy. Just navigate
-to Tools \> Update OS to check for and apply any updates. You can
+to Tools -\> Update OS to check for and apply any updates. You can
 configure notifications to prompt you when a new update is available
-from the Settings \> Notifications page.
+from the Settings -\> Notifications page.
 
 ### Use a secure method for remote administration
 
@@ -197,7 +197,7 @@ Some terms:
   `https://tower.local:3443`)
 - **certificate** refers to either a self-signed SSL Certificate, or a
   SSL certificate issued by a Certificate Authority (Let's Encrypt)
-- **lan-ip** is your servers LAN IP address with dots changed to
+- **lan-ip** is your server's LAN IP address with dots changed to
   dashes (example 192-168-100-1)
 - **wan-ip** is your internet-facing IP address with dots changed to
   dashes (example 136-26-144-139)
@@ -245,7 +245,7 @@ acknowledge the browser warning.
 - Press **Provision**
 - Your primary URLs when **Use SSL/TLS** set to No:
   - `http://[servername].[localTLD]` (example: `http://tower.local`)
-  - `https//[ipaddress]` (example: `http://192.168.100.1`)
+  - `http://[ipaddress]` (example: `http://192.168.100.1`)
 - Your primary URLs when **Use SSL/TLS** set to Yes. Note that these
   URLs use a self-signed certificate (See "Caveats of using a
   self-signed certificate" above)
@@ -398,7 +398,7 @@ drive).
 
 - Stop the array
 - Click on the drive on the Main tab
-- change the file system to The encrypted type that you want to use
+- change the file system to the encrypted type that you want to use
 - click Apply to commit the change
 - click Done to return to the Main tab
 - the drive will now show as unmountable and the option to format
@@ -406,12 +406,12 @@ drive).
   you are expecting to be encrypted and if it is correct go ahead and
   format it.
 
-Once you have set up encryption then it will necessary to provide the
+Once you have set up encryption then it will be necessary to provide the
 encryption key when starting the array. Once this has been done and the
 array successfully started then you can access the data without being
 aware of the fact that any drive is encrypted.
 
-CAUTION; Encrypting data is good from a security perspective, but users
+CAUTION: Encrypting data is good from a security perspective, but users
 should be aware of the fact that it can complicate recovering from
 certain types of hardware failure without data loss. On that basis only
 use encryption if you feel you have a real need for it, and ideally make
@@ -487,7 +487,7 @@ should _NEVER_ be exposed directly to the internet.**
 
 - One exception is the WireGuard VPN service introduced in Unraid 6.8
   explicitly to address secure access to/from the internet.
-- If running Docker container or are exposed to the internet then the
+- If running Docker containers are exposed to the internet then the
   security of these needs to be assessed on a case-by-case basis.
 
 You may need to contact the developer of the container to determine
@@ -502,13 +502,13 @@ settings for the container.
   apply the same security to these that you would apply to a physical
   PC attached to the local LAN.
 
-if you want to make secure connections between an Unraid server and the
+If you want to make secure connections between an Unraid server and the
 Internet then you want to use a technology known as VPN (Virtual Private
 Network). VPN works on a client/server model where you have a server
 that accepts incoming connections and a client that initiates such
 connections.
 
-in simplistic terms, the idea behind VPN connections is to set up an
+In simplistic terms, the idea behind VPN connections is to set up an
 encrypted 'tunnel' between the client and server ends so that no
 malicious players can intercept or eavesdrop on your interactions. Such
 tunnels are set up so that only authorized users are able to make such
@@ -519,7 +519,7 @@ article](https://en.wikipedia.org/wiki/Virtual_private_network)
 There are 2 common Use Cases that Unraid users are likely to have:
 
 - **Remote Access to Unraid from the Internet**: This is by far the
-  commonest Use Case and many users want to. be able to safely access
+  commonest use case and many users want to be able to safely access
   their Unraid servers (and potentially their whole home LAN) when
   away from home. When running in this mode the server end of the VPN
   link will either be running on the user's router (if it supports
@@ -568,6 +568,7 @@ VPN connection to an Unraid server_.
 #### Overview
 
 ![](../assets/Wireguard.png)
+
 Unraid 6.8 introduces built-in support for WireGuard VPN connections. The
 intention is to make it as easy as possible for Unraid users to set up
 VPN connections to/from their Unraid servers.
@@ -613,7 +614,7 @@ place to ask questions regarding Unraid's WireGuard implementation.
 - [forum
   thread](https://forums.unraid.net/topic/84226-wireguard-quickstart/)
   covering setting up incoming connections.
-- [Forum
+- [forum
   thread](https://forums.unraid.net/topic/84316-wireguard-vpn-tunneled-access/)
   covering setting up outgoing connections.
 
@@ -901,15 +902,18 @@ your work:
 
 A few other ideas:
 
-`* For your first client, setup a phone using its data connection (not wifi). This eliminates issues related to the client network, and the QR code is the easiest way to transfer settings. Once you have it working from your phone, move on to other clients.`
-
-Disable any energy-saving features on the client, phones in particular
-may not use VPNs properly when in low power mode. Also, you may need to
-disable any "Data Saver" features on the phone so that VPN is not
-throttled. See this post.
-
-`* If your "Peer type of connection" includes one of the LAN options but you can only access Unraid, go to Settings -> Network Settings and see whether "Enable bridging" is yes.  If bridging is disabled, you will not be able to access your LAN over WireGuard.`
-
+- For your first client, setup a phone using its data connection (not
+  wifi). This eliminates issues related to the client network, and the QR
+  code is the easiest way to transfer settings. Once you have it working
+  from your phone, move on to other clients.
+- Disable any energy-saving features on the client, phones in particular
+  may not use VPNs properly when in low power mode. Also, you may need to
+  disable any "Data Saver" features on the phone so that VPN is not
+  throttled. See this post.
+- If your "Peer type of connection" includes one of the LAN options but
+  you can only access Unraid, go to Settings -> Network Settings and see
+  whether "Enable bridging" is yes.  If bridging is disabled, you will not
+  be able to access your LAN over WireGuard.
 - If you are connecting from another network over the Internet, be
   sure that the networks on both sides use different subnets. You
   can't connect two networks that both use 192.168.1.0/24, for
@@ -998,8 +1002,8 @@ that it is harder for them to guarantee that they cannot track you.
 
 #### Support
 
-WireGuard is a new feature in Unraid so the forum is the place to get
-the ask questions and get the most up-to-date information on using
+WireGuard is a new feature in Unraid so the forum is the place to
+ask questions and get the most up-to-date information on using
 WireGuard with Unraid. The threads most likely to be of interest are:
 
 - [forum

@@ -662,7 +662,7 @@ to another can be problematic and cause blue screens if not prepped
 prior. This is because of differences in machine hardware. This applies
 whether or not it is a physical or a virtual machine. As such we need to
 make changes to the Windows HAL, or hardware abstraction layer. There
-are a few tools that can accomplish with, including one built into
+are a few tools that can accomplish this, including one built into
 Windows itself called 'sysprep'. However, sysprep is meant more for
 cloning a disk image across multiple machines and will activate the
 Windows OOBE (out-of-box experience) upon restoration, requiring things
@@ -851,7 +851,7 @@ STEPS AND RESUME THE PROCEDURE FROM REBOOTING INTO KVM MODE.
 7. Leave graphics, sound, etc. all to defaults and click **Create**
 8. Upon creation, immediately force shutdown the VM (click the eject
    symbol from the VMs page)
-9. Click the \</\> symbol from the VMs page next to the VM to edit the
+9. Click the </\> symbol from the VMs page next to the VM to edit the
    XML
 10. Locate the `<disk>` section for your primary virtual disk.
 11. Remove the `<address>` line completely.

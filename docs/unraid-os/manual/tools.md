@@ -107,19 +107,19 @@ obvious feedback that anything has been done.
 ## 3rd Party Tools
 
 **DISCLAMER**: The tools listed here are not provided or supported by
-Limetech. There is always a risk that installing one /f these tools can
-cause system instability (although tis is unlikely for the more widely
+Limetech. There is always a risk that installing one of these tools can
+cause system instability (although it is unlikely for the more widely
 used ones)
 
-The unRaid community is very active and has contributed a wide variety
-of additional tools to add extra functionality to an unRaid server. The
+The Unraid community is very active and has contributed a wide variety
+of additional tools to add extra functionality to an Unraid server. The
 following section covers some of the more commonly installed 3rd party
 tools. It is by no means an exhaustive list but will give an indication
 of the breadth of the tools available
 
 These 3rd party tools would normally be installed by using Community
 Applications (the Apps tab). Such tools will each have a support thread
-in the Plugins Support section of the unRaid GUI and users should use
+in the Plugins Support section of the Unraid GUI and users should use
 this thread to raise queries, concerns, or suggestions for improvement.
 
 ### Unraid OS

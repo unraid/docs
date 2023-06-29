@@ -108,12 +108,12 @@ It has been pointed out that the diagnostics are not completely
 anonymized if you have enabled _mover_ logging under _Settings-\>Mover
 Settings_ as the _syslog_ will give details of files that mover is
 operating on. This is a bit of a catch-22 scenario as when one has
-enabled mover logging it is normally to investigate a problem whereas
-much detail as terrible is captured so attempting to anonymize such
+enabled mover logging it is normally to investigate a problem where as
+much detail as possible is captured so attempting to anonymize such
 information may well be counter-productive. Since mover logging is
 disabled by default and recommended practice is to only have it enabled
 when investigating why mover is not giving the expected results this is
-probably acceptable?
+probably acceptable.
 
 ### Persistent Logs (Syslog server)
 
@@ -132,10 +132,10 @@ support
 
 - Go to _Settings-\>Network Services-\>Syslog Server_
 
-: You can click on the 'Help' icon on the Toolbar and get more
+- You can click on the 'Help' icon on the Toolbar and get more
 information for all of the options.
 
-- **Mirror to Flash**: This is the simplest to set up. You select
+#### **Mirror to Flash**: This is the simplest to set up. You select
   'Yes' from the dropdown box and click on the 'Apply' button and
   the syslog will be mirrored to the logs folder/directory of the
   flash drive and is appended to on a reboot. There is one principal
@@ -144,29 +144,29 @@ information for all of the options.
   writes to the flash drive. Some folks are hesitant to use the flash
   drive in this manner as it may shorten the life of the flash drive.
 
-: The advantage of this approach is that it captures everything from
-the start of the boot process which can be important if trying to
-diagnose boot problems.
+  - The advantage of this approach is that it captures everything from
+  the start of the boot process which can be important if trying to
+  diagnose boot problems.
 
-- **Remote Syslog Server**: This is used when you have another machine
+#### **Remote Syslog Server**: This is used when you have another machine
   on your network that is acting as a syslog server. This can be
   another Unraid server. You can also use virtually any other
   computer. You find the necessary software by googling for the syslog
-  server `<Operating system>`{=html} After you have set up the
+  server of that computer's operating system. After you have set up the
   computer/server, you fill in the computer/server name or the IP
   address. (I prefer to use the IP address as there is never any
   confusion about what it is.) Then click on the 'Apply' button and
   your syslog will be mirrored to the other computer.
 
-: The other computer has to be left on continuously until the problem
-occurs.
-: The events captured will only start with the point at which the
-syslog daemon is started during the boot process thus missing the
-very start of the boot process.
+  - The other computer has to be left on continuously until the problem
+  occurs.
+  - The events captured will only start with the point at which the
+  syslog daemon is started during the boot process thus missing the
+  very start of the boot process.
 
 ![](../assets/Syslog-server.jpg)
 
-- **Local Syslog Server**: Set this to **Enabled** to setup this
+#### **Local Syslog Server**: Set this to **Enabled** to setup this
   Unraid server to act as a network syslog server. When this is
   enabled then some extra options are offered. The built-in Help gives
   guidance /n suitable settings.
@@ -176,17 +176,17 @@ very start of the boot process.
     disks due to the continuous writing of new lines to the syslog.
     A cache SSD drive would be the ideal choice here using a _cache
     preferred_ share. The syslog will be in the root of that
-    folder/share.)
+    folder/share.
   - **Local syslog rotation**: These settings allow you to control
     how much space the syslog is allowed to use.
     - **Local syslog maximum file size**:
     - **Local syslog number of files**:
 
-: If you click the 'Apply button at this point, you will have this
-server setup to serve as a Remote Syslog Server. It can now capture
-syslogs from several computers if the need should arise.
+  - If you click the 'Apply button at this point, you will have this
+  server setup to serve as a Remote Syslog Server. It can now capture
+  syslogs from several computers if the need should arise.
 
-- **Logging to file local to Unraid server** Using a bit of trickery
+#### **Logging to file local to Unraid server** Using a bit of trickery
   we can use the Unraid server with the problem as the Local syslog
   server. This is appropriate if you want to continue to keep a
   permanent copy of the syslog but the file will not be as easy to
@@ -294,7 +294,7 @@ The boot process for Unraid proceeds through a number of stages
      types being loaded into RAM.
    - If there are any error messages displayed while loading these
      files then it normally indicates a problem with the flash drive.
-   - There will then be messages displayed as Linux startup and
+   - There will then be messages displayed as Linux starts up and
      detects the hardware environment.
 4. **Flash dependent services**: At this stage, the flash drive is
    mounted at _/boot_ so that the process can continue
@@ -305,13 +305,13 @@ The boot process for Unraid proceeds through a number of stages
    - If this stage of the boot process has not completed then typical
      symptoms are that the webGUI and network are not started
 
-   : One way to see if this has happened is to login and use the
+   - One way to see if this has happened is to login and use the
    **df** command. If the flash drive was mounted successfully then
    you will see it as /boot in the resulting list of mount points.
-   : The output should have something like following mount points:
-   : `/dev/sdb1 15413232 826976 14586256 6% /boot`\
-    `/dev/loop0 9344 9344 0 100% /lib/modules`\
-    `/dev/loop1 7424 7424 0 100% /lib/firmware`
+     - The output should have something like following mount points:
+     - `/dev/sdb1 15413232 826976 14586256 6% /boot`\
+       `/dev/loop0 9344 9344 0 100% /lib/modules`\
+       `/dev/loop1 7424 7424 0 100% /lib/firmware`
 
    - One reason the flash drive may fail to mount is that it is not
      labelled as **UNRAID** (all capitals).
@@ -378,15 +378,15 @@ cause of a boot failure:
    normally a USB2 header on the motherboard that can be used via an
    appropriate adapter.**
    - USB3 **does** work with no problems for many people
-   - After initial load Unraid funs from RAM so gains no significant
+   - After initial load Unraid runs from RAM so gains no significant
      performance advantage from using USB3.
    - USB2 drives tend to run cooler than USB3 ones which probably
      explains why they tend to last longer.
    - USB2 drives are typically cheaper than USB3 ones- so why pay
      more if not needed
 2. Check that the BIOS on the Unraid server still has the flash drive
-   set as the boot device. It is not unknown for this to get reset for
-   no obvious reason.
+   set as the boot device. It has been known to get reset for no obvious
+   reason.
 3. On a windows 10 PC or a Mac run a check on the flash drive
    - This will determine if something is wrong physically or
      logically with the flash drive
@@ -552,7 +552,7 @@ The process is:
 
 ### Backing Up Boot Drive
 
-Since the Unraid boot dtive contains all user specific settings in the
+Since the Unraid boot drive contains all user specific settings in the
 'config' folder You should ideally always make a backup of the Unraid
 boot drive any time you make any significant configuration changes.
 
@@ -592,7 +592,7 @@ The normal recovery action is:
   the flash drive (and let it repair any corruption it finds). If the
   flash drive cannot be read then this indicates the flash drive had
   probably failed and you need to follow the procedure for
-  transferring your settings and to a new flash drive.
+  transferring your settings to a new flash drive.
 - (optional) Make a backup of the flash drive. Although not strictly
   necessary at this point it is always a good idea to have an
   up-to-date backup of the flash drive. All your settings are in the
@@ -609,7 +609,7 @@ The normal recovery action is:
 - Extract the _changes.txt_ file and overwrite the one on the flash to
   ensure you have one that corresponds to the bz\* type files you have
   just placed on the flash drive. The system will work if you do not
-  copy this file but it id good practice to keep it in sync with the
+  copy this file but it is good practice to keep it in sync with the
   release that is currently active.
 - Tidily eject the flash drive from the PC/Mac.
 - Boot the Unraid server of the freshly written flash drive.
@@ -621,7 +621,7 @@ forums stating what you have tried and what are your current symptoms.
 
 Sometimes on booting up the system and starting the array a parity check
 is automatically started due to an _Unclean Shutdown_. An Unclean
-shutdown occurs when Unraid thinks that the array is not successfully
+shutdown occurs when Unraid thinks that the array was not successfully
 stopped when the system was last powered off. This can be caused by a
 wide variety of issues:
 
@@ -629,7 +629,7 @@ wide variety of issues:
   against this type of issue is to have an Uninterruptible Power
   Supply (UPS) that is set up to initiate a controlled shutdown of
   Unraid initiated by the UPS when the amount of power left in the UPS
-  is reaches a trigger level.
+  reaches a trigger level.
 - The status of the array is stored on the flash drive, so if for any
   reason the status on the flash drive cannot be updated due to the
   flash drive either dropping offline or going into read-only state
@@ -645,7 +645,7 @@ wide variety of issues:
   them to terminate (which they won't without human intervention).
 
 There are various timeouts that are started when a shutdown of the array
-is started that run in parallel ang many users find the defaults are too
+is started that run in parallel and many users find the defaults are too
 low for their particular workload:
 
 - There is a timer in the **_Settings-\>VM Manager-\>VM Shutdown_**
@@ -658,8 +658,8 @@ low for their particular workload:
   is just like pulling the plug on a PC. A reasonable value is
   something like 300 seconds (5 minutes) in order to insure your
   Windows 10 VMs have time to completely shutdown.
-- There is a timer for stopping Docker Containers under **\*Settings
-  -\> Docker** (in advanced view).\* If this timeout is reached then
+- There is a timer for stopping Docker Containers under **_Settings
+  -\> Docker_** _(in advanced view)_. If this timeout is reached then
   docker containers still running will be Force Stopped.
 - If you have remote SMB or NFS mounts in Unassigned Devices you need
   to account for time for them to time out if the remote server has
@@ -670,7 +670,7 @@ low for their particular workload:
   **_Settings-\>Disk Settings-\>Shutdown time-out_**.  This is the
   overall shutdown timer and when this timer is exceeded, an unclean
   shutdown will occur.  This timer has to be more than the VM and
-  docker shutdown timers  A reasonable value might be something like
+  docker shutdown timers.  A reasonable value might be something like
   420 seconds (7 minutes) to give the system time to completely shut
   down all VMs, Dockers, and plugins.
 
@@ -691,7 +691,7 @@ forums with an unclean shutdown, post the **/log/diagnostics.zip** file.
  There is information in the log that shows why the unclean shutdown
 occurred.
 
-It can also be good idea to activate the \*Settings-\>**\*Syslog Server**
+It can also be good idea to activate the **_Settings-\>Syslog Server_**
 to get logs that can survive a reboot as by default the syslog is only
 in RAM and lost after a reboot.
 
@@ -701,8 +701,8 @@ _THIS SECTION IS STILL UNDER CONSTRUCTION_
 
 ### RAM Issues
 
-It is not unknown for RAM to degrade over time. RAM issues can be
-elusive to track down and cause unpredictable errors. A not uncommon
+It is known that RAM degrades over time. RAM issues can be
+elusive to track down and cause unpredictable errors. A somewhat common
 effect is unexpected file system level corruption.
 
 The Unraid boot menu includes a version of memtest for testing RAM. This
@@ -757,7 +757,7 @@ This section is about recovering your data when Unraid reports problems
 with one or more drives.
 
 There are some important points to bear in mind about securing your
-data(
+data
 
 - **Backup critical data:** Unraid will protect you against most types
   of simple hardware failure, but not catastrophic failure. You should
@@ -780,7 +780,7 @@ data(
     there should be at least one copy of critical files that cannot
     be accessed online and corrupted if you are unfortunate enough
     to suffer from such an attack!
-- _'Be proactive_ about resolving any issues that are detected by
+- _Be proactive_ about resolving any issues that are detected by
   Unraid. Make sure that notifications are enabled under
   _Settings-\>Notifications_ so that you get told as soon as issues
   are detected. For many users, Unraid operates in a _fire-and-forget_
@@ -814,7 +814,7 @@ The correct way to proceed in such a case is to follow the procedure for
 [checking and
 repairing](storage-management.md#checking-a-file-system)
 the file system. The vast majority of the time this will repair the disk
-that was preciously showing as unmountable and now it will mount
+that was previously showing as unmountable and now it will mount
 correctly and all your data will be intact. If you are not sure how to
 proceed then ask a question in the Unraid forums.
 
@@ -847,7 +847,7 @@ can get your array back into operation:
    giving details of what happened.
 4. Make a note of the serial numbers of the parity drives.
 5. Stop the array
-6. Go to Tools \>\>\> New Config. Select the option to retain current
+6. Go to Tools-\>New Config. Select the option to retain current
    assignments (as it reduces the chance of error). Click the yes I
    want to do this and then Apply.
 7. Go back to the Main tab and correct the assignments of the parity
@@ -866,7 +866,7 @@ You can now go configure any other customization that is appropriate and
 add any plugins you normally use.
 
 At this point, it is strongly recommended that you click on the flash
-drive on the Main tab and selecting the option to download a backup of
+drive on the Main tab and select the option to download a backup of
 the flash drive. It is always good practice to do this any time you make
 a significant change.
 
@@ -906,40 +906,44 @@ command:
 
 `ddrescue -f /dev/sdX1 /dev/md# /boot/ddrescue.log`
 
-Replace X with source disk (note de 1 in the source disk identifier), \#
-with destination disk number, recommend enabling turbo write first or it
-will take much longer.
+Replace X with source disk (note the 1 in the source disk identifier), \#
+with destination disk number. It is recommend to enable turbo write
+first or it will take much longer.
 
 Example output during the 1st pass:
 
-`GNU ddrescue 1.22`\
-`ipos:  926889 MB, non-trimmed:    1695 kB,  current rate:  95092 kB/s`\
-`opos:  926889 MB, non-scraped:        0 B,  average rate:  79236 kB/s`\
-`non-tried:    1074 GB,  bad-sector:        0 B,    error rate:       0 B/s`\
-`rescued:  925804 MB,   bad areas:        0,        run time:  3h 14m 44s`\
-`pct rescued:   46.28%, read errors:       54,  remaining time:      3h 18m`\
-`time since last successful read:          0s`\
-`Copying non-tried blocks... Pass 1 (forwards)`
+```
+GNU ddrescue 1.22
+ipos:  926889 MB, non-trimmed:    1695 kB,  current rate:  95092 kB/s
+opos:  926889 MB, non-scraped:        0 B,  average rate:  79236 kB/s
+non-tried:    1074 GB,  bad-sector:        0 B,    error rate:       0 B/s
+rescued:  925804 MB,   bad areas:        0,        run time:  3h 14m 44s
+pct rescued:   46.28%, read errors:       54,  remaining time:      3h 18m
+time since last successful read:          0s
+Copying non-tried blocks... Pass 1 (forwards)
+```
 
 After copying all the good blocks ddrescue will retry the bad blocks,
 forwards and backwards, this last part can take some time depending on
 how bad the disk is, example:
 
-`GNU ddrescue 1.22`\
-`ipos:   17878 MB, non-trimmed:        0 B,  current rate:       0 B/s`\
-`opos:   17878 MB, non-scraped:   362496 B,  average rate:  74898 kB/s`\
-`non-tried:        0 B,  bad-sector:    93696 B,    error rate:     102 B/s`\
-`rescued:    2000 GB,   bad areas:      101,        run time:  7h 25m  8s`\
-`pct rescued:   99.99%, read errors:      260,  remaining time:         25m`\
-`time since last successful read:         10s`\
-`Scraping failed blocks... (forwards)`
+```
+GNU ddrescue 1.22
+ipos:   17878 MB, non-trimmed:        0 B,  current rate:       0 B/s
+opos:   17878 MB, non-scraped:   362496 B,  average rate:  74898 kB/s
+non-tried:        0 B,  bad-sector:    93696 B,    error rate:     102 B/s
+rescued:    2000 GB,   bad areas:      101,        run time:  7h 25m  8s
+pct rescued:   99.99%, read errors:      260,  remaining time:         25m
+time since last successful read:         10s
+Scraping failed blocks... (forwards)
+```
 
 After the clone is complete you can mount the destination disk manually
 or using for example the UD plugin (if the cloned disk is unmountable
 run the appropriate filesystem repair tool, it might also be a good idea
 to run a filesystem check even if it mounts OK) and copy the recovered
-data to the array, some files will likely be corrupt and if you have
-checksums or are using BTRFS you can easily find out which ones, if not
+data to the array. Some files will likely be corrupt and if you have
+checksums or are using BTRFS you can easily find out which ones. If not
 see below.
 
 If you don't have checksums for your files (or use btrfs) there's a
@@ -1007,7 +1011,7 @@ If that is not enough to identify the culprit then:
 - delete current docker image and set a more reasonable size (e.g.
   20G)
 - Start docker service
-- Use Apps \>\>\> Previous apps to re-install your containers (with
+- Use Apps-\>Previous apps to re-install your containers (with
   all their settings intact).
 - Go to docker tab and click the Container size button
 
@@ -1022,9 +1026,9 @@ using.
 ### How do I move docker.img?
 
 The normal reason for wanting to move the _docker.img_ file is because
-it has ended up on a drive that is not the the you want it to use.
+it has ended up on a drive that is not the one you want it to use.
 
-**Note: I**n many cases it is easier to just recreate the _docker.img_
+**Note:** In many cases it is easier to just recreate the _docker.img_
 file from scratch rather than to try and move it.
 
 The way to move _docker.img_ is:
@@ -1033,7 +1037,7 @@ The way to move _docker.img_ is:
   then click the **Apply** button  (this disables Docker support).
   This is required because othewise the Docker service will keep this
   file open which stops you from moving it elsewhere.
-- Using mc or any file manager or the command line, move docker.img to
+- Using mv or any file manager or the command line, move docker.img to
   the desired location (/mnt/cache/docker.img is recommended)
 - In Settings -\> Docker, change the path for _docker.img_ to the
   exact location you just copied to
@@ -1128,7 +1132,7 @@ Points to note are:
   are happening regularly or in large numbers then this definitely
   needs looking into to determine the cause and fix the issue.
 - It is not unusual for the **Current pending sector count** (SMART
-  attribute ) 197 to also be incremented when a lot of getting CRC
+  attribute ) 197 to also be incremented when getting a lot of CRC
   errors. This is more of a cause for concern as it means these
   sectors may not be read reliably if another disk fails and a
   recovery action needs to be performed as error-free recovery
@@ -1167,12 +1171,13 @@ those files. It is not enough to simply stop all running containers
 and/or VMs - you actually need to disable the services themselves to
 allow such files to be moved.
 
-===Files end up on a pool (cache) despite Use Cache=No setting for a
-share=== This behaviour is the one that new users find most perplexing.
+###Files end up on a pool (cache) despite Use Cache=No setting for a share
 
-It arises when a 'move' action is attempted at the Linux level (this
+This behaviour is the one that new users find most perplexing.
+
+It arises when a 'move' action is attempted at the Linux level. (This
 can be either from the command line or within a container (since all
-container are Linux based). It arises from the fact that Linux is not
+container are Linux based).) It arises from the fact that Linux is not
 aware of _User Shares_ combined with the way that Linux implements a
 'move' operation. If Linux thinks that both source and target are on
 the same mount point (and all _User Shares_ are under the **/mnt/user**

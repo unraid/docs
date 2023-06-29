@@ -87,7 +87,7 @@ a registration key from the Tools \> Registration page.
 **NOTE**: Once you transfer a Trial configuration to a new flash device,
 you will be unable to start the array until you purchase a valid
 registration key (Trial keys can only work on the original device to
-which they were registered).\*\*
+which they were registered).
 
 **IMPORTANT:** Replacing your Unraid USB Flash Device transfers the
 license to a new USB Flash Device. Once this is done, the previous Flash
@@ -126,9 +126,9 @@ This action cannot be undone._
 
 - if you are not restoring from a backup (which would contain a copy
   of your licence key file) then copy your existing licence key file
-  into the 'config' folder on the flash drive so that UnRaid knows you
+  into the 'config' folder on the flash drive so that Unraid knows you
   want to switch your licence to this new flash drive.
-- Click on the option to 'REPLACE KEY' \* Then enter the email
+- Click on the option to 'REPLACE KEY' then enter the email
   address to which you would like to have the new key delivered to.
 - Click 'REPLACE KEY'
 - **IMPORTANT:** Replacing your Unraid USB Flash Device transfers the
@@ -161,7 +161,7 @@ Prepare a new flash device using the procedure documented in the
 
 ![](../assets/Invalidkey.png)
 
-- Click on the option to 'REPLACE KEY' \* Then enter the email
+- Click on the option to 'REPLACE KEY' Then enter the email
   address to which you would like to have the new key delivered to.
 - Click 'REPLACE KEY'
 
@@ -274,7 +274,7 @@ Now that you have identified the parity drives then:
 - If you only had a single (parity1) drive then the order of the data
   drives is not important as far as parity is concerned so you can
   probably safely tick the "Parity is Valid" checkbox. With dual
-  parity then since the parity and parity '2 drives use different
+  parity then since the parity1 and parity2 drives use different
   calculations they are **not** interchangeable so you will need to
   generate parity from scratch on both drives.
 - Start the array to commit the drive assignments and you should see
@@ -283,7 +283,7 @@ Now that you have identified the parity drives then:
   parity check to make sure this was a valid assumption.
 
 The above process will not necessarily mean the data drives are in the
-same order so you have any shares that have specific drive
+same order so if you have any shares that have specific drive
 include/exclude then you will need to look at the contents of the
 individual data drives to make sure these are as you want them (and
-correct them if not)
+correct them if not).

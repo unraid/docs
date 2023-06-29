@@ -13,7 +13,7 @@ site](https://www.docker.com/). There is also a [Docker
 FAQ](https://forums.unraid.net/topic/57181-docker-faq/page/2/?tab=comments#comment-934358)
 in the Unraid forums that covers many commonly asked questions.
 
-Using Docker Unraid can run any Linux application regardless of the
+Using Docker, Unraid can run any Linux application regardless of the
 distribution format as long as it is available as a Docker container.
 That means whether an app was written for Ubuntu, CentOS, Arch, Red Hat,
 or any other variant, Unraid can run it. This is accomplished through
@@ -30,7 +30,7 @@ Unraid that might lead to system instability
 - A system up and running with Unraid 6 and you are connected via a
   web browser to the Unraid webGui
 - A share created called "appdata" that will be used to store
-  application metadata (also often referred to as an applications
+  application metadata (also often referred to as an application's
   _working set_). Strictly speaking you could use any name for the
   share to store application metadata but it is wise to stick to the
   recommended name as it simplifies any support questions/issues if
@@ -46,8 +46,6 @@ support that you want to make sure you understand as it makes running
 Docker containers much easier.
 
 ### appdata
-
-Normally each container has a 'working storage
 
 The folder the container puts in appdata contains the "working
 storage" for the application. By convention the **appdata** share is
@@ -68,7 +66,7 @@ changes or additions and submit the form by clicking the Apply button,
 the contents of the form, including your changes and additions, is
 stored on the flash drive as a template, which can be used again to edit
 the docker or even reinstall it exactly as it was, using the
-aforementioned Previous Apps feature on the Apps page.
+Previous Apps feature on the Apps page.
 
 ### Container binaries
 
@@ -132,7 +130,7 @@ When looking at the volume mappings section
   will be mapped.
 - The Host path represents the path the Container volume will map to
   on your Unraid system.
-- The Access Mode specifier what the container can do with the
+- The Access Mode specifies what the container can do with the
   files/folders to which it has been given access. It is good practice
   to give the most restrictive access that is consistent with the
   container being able to run successfully.
@@ -155,7 +153,7 @@ from the host level.
 All applications should require at least one volume mapping to store
 application metadata (e.g., media libraries, application settings, user
 profile data, etc.). The expectation is that all dynamic data will be
-configured to exist outside the container (although docker does no make
+configured to exist outside the container (although docker does not make
 this mandatory) so that the docker image file ends up only containing
 all the binaries associated with the docker container and none of the
 variable data.
@@ -174,11 +172,11 @@ Special points to note when setting up volume mappings are:
 - Path names are case significant both at the host level and the
   container level.
 - Container paths should start with a / character. If this is omitted
-  the path is a realize path so it will not be clear where inside the
+  the path is a relative path so it will not be clear where inside the
   container the path can be found.
 - If you are setting up a mapping that will use an Unassigned Device
   at the host level then it is important that you set the Access Mode
-  to use on if the Slave access modes. If you do not do this then
+  to use one of the Slave access modes. If you do not do this then
   dynamic paths nay not be seen until the docker sub-system is
   restarted.
 
@@ -374,7 +372,7 @@ described below.
 ## Re-Installing Docker Applications
 
 Every time an application is installed as a docker container then a
-template with the settings used is stored on the flash drive. this
+template with the settings used is stored on the flash drive. This
 template will be updated any time you edit the settings for this
 container.
 
@@ -420,9 +418,9 @@ The basic process is:
   single script can be used to start and/or stop multiple Docker
   containers if you want them on the same schedule point.
 - Set the schedule at which the script is to be run. If (as is likely)
-  the simple scheduling options available via the dropdown list then
-  you can set up a Custom schedule by creating an entry in
-  [crontab](https://en.wikipedia.org/wiki/Cron#Overview) format as
+  the simple scheduling options available via the dropdown list is not
+  sufficient then you can set up a Custom schedule by creating an entry
+  in [crontab](https://en.wikipedia.org/wiki/Cron#Overview) format as
   this provides far more precise control.
 - Hit **Apply** to activate the new script together with its schedule.
 
@@ -437,11 +435,11 @@ tab. This starts an existing docker container that you have previously
 set up.
 
 You can also see the _container-name_ in the _docker run_ command that
-unRaid uses to both create a container (if it does not exist) and also
+Unraid uses to both create a container (if it does not exist) and also
 start it with the parameters provided via the docker template for that
 container. The _container-name_ is that provided via the _name_
-parameter to the _docker run_ command. You can see what the _docker run_
-command that unRaid will use when you install / edit the application
+parameter to the _docker run_ command. You can see the _docker run_
+command that Unraid will use when you install / edit the application
 (you can always make any change and then change it back and hit Apply to
 get the docker run command to appear). The following is an example of
 what this might look like:

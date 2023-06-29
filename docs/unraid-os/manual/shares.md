@@ -28,7 +28,7 @@ physical drive that is storing the file/folder.
 User Shares can be enabled/disabled via Settings-\>Global Share
 Settings.
 
-From the **Shares** tab, you can either _create_ a new share or _edit'
+From the **Shares** tab, you can either _create_ a new share or _edit_
 an existing share. Click the **Help** icon in the top-right of the
 Unraid webGui when configuring shares for more information on the
 settings available._
@@ -46,7 +46,7 @@ path **_/mnt/user_**. This includes the files on the main array and also
 any for the share on any pool. It is important to note that a User Share
 is just a logical view imposed on top of the underlying physical file
 system so you can see the same files if you look at the physical level
-(as described below for Disk Shares.
+(as described below for Disk Shares).
 
 - Current releases of Unraid also include the mount point
   **_/mnt/user0_** that shows the files in User Shares OMITTING any
@@ -114,7 +114,7 @@ files are put. Any files already present in the share are left where
 they are located when a setting is changed. It takes Manual action to
 move existing files.
 
-**Important**: The Linux file system used by Unraid are case sensitive
+**Important**: The Linux file systems used by Unraid are case sensitive
 while the SMB share system is not. As an example this means that a
 folder at the Linux level a folder called 'media' is different to one
 called 'Media'. However at the network level case is ignored so for
@@ -157,20 +157,20 @@ The above example shows what will occur when there is a mix of 4 disks
 varying is size from 500gig to 2T in size.
 
 First Pass - The high water level is set to one-half of the size of the
-2T drive or 1T. Each disk will be filled until it has \<1T of free space
+2T drive or 1T. Each disk will be filled until it has <1T of free space
 remaining. This means no data is stored on disk1 or disk2 since both
-already have \<1T of free space. 500gig of data will be stored on disk3
+already have <1T of free space. 500gig of data will be stored on disk3
 followed by 1T of data being stored on disk4.
 
 Second Pass - The high water level is reset to one-half of the previous
-level or 500gig. Each disk will be filled until it has \<500gig of free
+level or 500gig. Each disk will be filled until it has <500gig of free
 space remaining. This means no data is stored on disk1 since it already
-has \<500gig of free space. 500gig of data will be stored on disk2 and
+has <500gig of free space. 500gig of data will be stored on disk2 and
 then 500gig of data will be stored on disk3 and finally 500gig of data
 will be stored on disk4.
 
 Third Pass - The high water level is again reset to one-half of the
-previous level or 250gig. Each disk will be filled until it has \<250gig
+previous level or 250gig. Each disk will be filled until it has <250gig
 of free space remaining. 250gig of data will be stored on disk1 and then
 250gig of data will be stored on disk2 and then 250gig of data will be
 stored on disk3 and finally 250gig of data will be stored on disk4. An
@@ -233,10 +233,11 @@ Here are some examples of the minimum free space setting;
 
 ---
 
-**Free Space** **Value**
-500 meg 500000
-20 gig 20000000
-40 gig 40000000
+| Free Space | Value |
+| ---- | ---- |
+| 500 meg | 500000 |
+| 20 gig | 20000000 |
+| 40 gig | 40000000 |
 
 ---
 
@@ -249,12 +250,12 @@ you're over-writing or updating it. For example, a backup file that
 grows in size over time could end up filling a disk and causing a disk
 full error.
 
-IMPORTANT; There is also a Minkmum Free Space setting for cache pools.
+**IMPORTANT**: There is also a Minimum Free Space setting for cache pools.
 This is used to determine when a new file for a User Share with the Use
 Cache setting having a value of Yes or Prefer should be written to the
 cache or instead bypass the cache and go directly to the array. This
 needs to be set if you want to avoid filling a cache pool which can
-cause problems. As for this value when used with a User Share hare it
+cause problems. As for this value when used with a User Share it
 should be larger than the largest file you intend to write, and some
 people like to make it significantly larger. You get to this setting by
 clicking on a pool on the Main tab.
@@ -422,10 +423,9 @@ as well as some metadata files used by MediaBrowser.
 ![](../assets/Movie_Share.jpg)
 
 The above Windows Explorer screen shot shows the file structure of the
-New_Movies share on the left and the contents of the `<u>`{=html}A
-History of Violence`</u>`{=html} movie folder on the right. The levels
-for this share are labeled on the example. This is what split level = 1
-means:
+New_Movies share on the left and the contents of the A History of
+Violence movie folder on the right. The levels for this share are
+labeled on the example. This is what split level = 1 means:
 
 - A New_Movies folder can be created on each disk allowed by the
   include and exclude disk settings. A new New_Movies folder will be
@@ -434,20 +434,20 @@ means:
   folder will only be created on the next disk in line when it is
   necessary and not when the share is created.
 
-- The `<u>`{=html}A History of Violence`</u>`{=html} folder can only
+- The A History of Violence folder can only
   exist on one disk. Once it is created on the disk, all of the
   contents will remain on the same disk. Any changes or additions to
   this folder will remain on the same disk. For example, a new file
   called movie.nfo for the XBMC metadata might be created in this
   folder in the future. The movie.nfo file will be created in the
-  existing `<u>`{=html}A History of Violence`</u>`{=html} folder. A
-  duplicate `<u>`{=html}A History of Violence`</u>`{=html} folder will
-  not be created on another disk to store this new file.
+  existing A History of Violence folder. A duplicate A History of
+  Violence folder will not be created on another disk to store this new
+  file.
 
-You will notice that the movie folders `<u>`{=html}500 Days of Summer
-(2009)`</u>`{=html} and `<u>`{=html}2 Fast 2 Furious (2003)`</u>`{=html}
-both appear in the New_Movies share. The next screen shot will show how
-each of these files is stored on a separate disk.
+You will notice that the movie folders (500) Days of Summer (2009) and
+2 Fast 2 Furious (2003) both appear in the New_Movies share. The next
+screen shot will show how each of these files is stored on a separate
+disk.
 
 ![](../assets/Movies_Share_Disk_View.JPG)
 
@@ -464,18 +464,17 @@ New_Movies folder on both disk1 and disk2 to store these files.
 
 The windows side by side can be used to examine the contents of the
 New_Movies share on a disk by disk basis. You will notice that the movie
-folder `<u>`{=html}500 Days of Summer (2009)`</u>`{=html} is stored on
-disk1 and the movie folder `<u>`{=html}2 Fast 2 Furious
-(2003)`</u>`{=html} is stored on disk2. As previously noted, Unraid
-combines the movies stored on disk1 and disk2 into one network share
-called New_Movies and both movies appear in the New_Movies network
+folder (500) Days of Summer (2009) is stored on disk1 and the movie
+folder 2 Fast 2 Furious (2003) is stored on disk2. As previously noted,
+Unraid combines the movies stored on disk1 and disk2 into one network
+share called New_Movies and both movies appear in the New_Movies network
 share.
 
 Take note that a share called Movies is also visible on disk2.
 
 ##### Split Level 0
 
-this is what you have if in the GUI you select "Manual: do not
+This is what you have if in the GUI you select "Manual: do not
 Automatically split directories".
 
 Split level 0 is a special case. Split level 0 requires you to create
@@ -626,7 +625,6 @@ For the Secondary storage drop-down:
   "none" and "Array"
 - if Primary storage is "Array", then only "none" appears as an
   option
--
 
 ### Unraid 6.11 and earlier
 
@@ -642,9 +640,9 @@ cache in the way Unraid uses the term. The word cache therefore is
 referring to this functionality and not necessarily to the pool name.
 
 Unraid includes an application called **mover** that is used in
-conjunction with User Shares. It's behavior controlled by the "Use Cache
-for new files" setting under each User Share. The way these different
-settings operate is as follows
+conjunction with User Shares. It's behavior is controlled by the "Use
+Cache for new files" setting under each User Share. The way these
+different settings operate is as follows
 
 - **Yes**: Write new files to the cache as long as the free space on
   the cache is above the _Minimum free space_ value. If the free space
@@ -791,7 +789,7 @@ end up trying to copy the file to itself which results in the file
 being truncated to zero length and its content thus being lost.
 
 There is no problem if the copy is between shares of the same type,
-or copying to/from a disk mounted as an Unassigned Device..
+or copying to/from a disk mounted as an Unassigned Device.
 
 There is another quirk of the interaction between Linux and the Unraid
 User Share system that users can encounter if they are working at the
@@ -813,11 +811,11 @@ Unraid server across the network. Click on Settings-\>Network Services
 to see the various options available.. These options are:
 
 - **SMB**: This the standard protocol used by Windows systems. It is
-  widely implemented on other YS.
+  widely implemented on other systems.
 - **NFS**: **N**etwork **F**ile **S**ystem. This is a protocol widely
-  used on Unix compatible system.
+  used on Unix compatible systems.
 - **AFP**: **A**pple **F**ile **P**rotocol. This is the protocol that
-  has historically been used on Apple Mac system. It is now a
+  has historically been used on Apple Mac systems. It is now a
   deprecated option as the latest versions of MacOS now use SMB as the
   transferred protocol for accessing files and folders over the
   network.

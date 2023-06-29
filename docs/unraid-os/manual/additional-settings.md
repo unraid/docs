@@ -10,8 +10,8 @@ otherwise specified.
 The Unraid GUI has extensive online help built-in that can help with
 choosing appropriate values for the settings that are available. This
 help can ban be displayed for specific fields by clicking on the prompt
-for that field. it can also be toggled on/off for all fields on a page
-by clicking on the **(Help)**
+for that field. It can also be toggled on/off for all fields on a page
+by clicking on the **Help**
 icon at the top right of each page.
 
 ## Date & Time
@@ -135,7 +135,7 @@ monitoring.
 
 ## Scheduler
 
-The scheduler settings page allows you as standard to configure the
+The scheduler settings page presents a standard view to configure the
 frequency for two types of automated system tasks: parity checks and the
 cache mover.
 
@@ -177,8 +177,8 @@ done manually from the _Main_ page in the Unraid GUI.
 ### Mover
 
 **Mover** is used to handle the automated transfer of data belonging to
-User Shares between a cache pool and the to/from the main array. Whether
-is actually moves files and in which direction is controlled by the
+User Shares between a cache pool and the main array. Whether
+it actually moves files and in which direction is controlled by the
 value of the _Use Cache_ setting on each share.
 
 The Mover task is normally scheduled to run automatically in the middle
@@ -208,6 +208,6 @@ of the night when the system its likely to be otherwise inactive.
 ### Other
 
 Plugins offered by 3rd parties can add additional sections to the
-**Scheduler** settings page of the Unraid GUI. Typically there are
+**Scheduler** settings page of the Unraid GUI. Typically they are
 related to enhancing/tuning the **Parity Check** or **Mover**
 functionality although this is not mandated.
