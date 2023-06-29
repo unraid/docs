@@ -487,9 +487,9 @@ questions.
   drive that is from a different manufacturer to that used for the
   host).
 
-Create and start the VM
+**Create and start the VM**
 
-- Optional) Remove the checkmark for automatically starting the VM
+- (Optional) Remove the checkmark for automatically starting the VM
   after creation.
 - Click the **Create** button
 - Back on the VMs -\> Virtual Machines page you can click the Unraid
@@ -521,7 +521,7 @@ Create and start the VM
 - Add the array devices and cache drive that were setup previously and
   start the array
 - Add Community Applications plugin
-- From the _Apps_ tab that is n/w available, add dockers and plugins
+- From the _Apps_ tab that is now available, add dockers and plugins
   as needed for testing.
 - Note that you can update the Unraid VM just as you would a normal
   bare-metal Unraid system, by going to _Tools-\>Update OS_
@@ -533,9 +533,9 @@ Create and start the VM
   VM indicating a problem with the USB flash drive containing the
   Unraid license that is going to be used by this VM. This can be
   fixed using the following steps:
-  - Select the option to Udit the VM
+  - Select the option to edit the VM
   - switch to XML view (using the toggle at the top right)
-  - Do to the bottom of the XML where just before the **memballoon**
+  - Go to the bottom of the XML where just before the **memballoon**
     entry you will see a **hostdev** node defining the flash drive.
   - Remove this **hostdev** node and all its contents
   - Click the _Apply_ button to commit the change

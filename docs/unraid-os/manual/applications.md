@@ -63,7 +63,7 @@ the docker containers can be re-installed with all their settings intact
 in just a few minutes.
 
 CA stores an XML template for each application that it installs at
-/boot/config/plugins/dockerMan/templates-user If You go to the **Apps**
+/boot/config/plugins/dockerMan/templates-user If you go to the **Apps**
 tab in the Unraid GUI then there is a **Previous Apps** section and this
 can be used to reinstall applications using their saved settings. These
 are retrieved automatically from the saved XML templates so it is a
@@ -87,7 +87,7 @@ Virtual Machines do not have the same level of targeted support as they
 can be running almost any OS, and then within that OS any application
 supported by the OS. Having said that there are several areas within the
 forums that are dedicated places for asking questions about VMs and it
-is likely that you will find appropriate threads for the most common OS.
+is likely that you will find appropriate threads for the most common OSes.
 
 ## Plugins
 
@@ -123,7 +123,7 @@ particular application._
     the release of Unraid on which it is being installed.
   - Unraid has the ability to boot a system in Safe Mode that
     suppresses plugins loading to help with diagnosing problems
-    caused by plugins. 'This should be one of the first things to
+    caused by plugins. This should be one of the first things to
     try if a system becomes unstable after installing a new Unraid
     release.
   - If there is a choice between a plugin and a docker
@@ -149,7 +149,7 @@ Thu Unraid GUI has a Plugins tab that can show what plugins are
 installed and provides capabilities for upgrading the installed plugins
 to new releases. It also provides the ability to install plugins from
 this tab, but it is recommended that if the plugin is known to Community
-applications that plugins are instead installed from the **Apps** tab.
+Applications that plugins are instead installed from the **Apps** tab.
 
 As part of improving core sometimes a plugin's functionality gets
 incorporated into a new Unraid release making the plugin superfluous
@@ -157,7 +157,7 @@ incorporated into a new Unraid release making the plugin superfluous
 Community Applications to install plugins (recommended) then CA will
 only offer to install plugins that are believed to be compatible with
 that release. It will not, however, remove plugins that are already
-installed but are n/ longer known to be compatible with the current
+installed but are no longer known to be compatible with the current
 release.
 
 ## Docker Containers
@@ -176,7 +176,7 @@ Key points of the Unraid implementation are:
 
 - The files that make up a Docker container are stored within a
   virtual disk image (i.e. a single file at the Unraid level).
-  - The average user does not need to understand how this type of
+  - The average user does not need to understand this type of
     detail but it can help with troubleshooting and making sense of
     log messages.
   - The default name of the virtual disk images is **docker.img**.
@@ -374,9 +374,9 @@ and management of localized VMs running on an Unraid host:
 It is worth understanding what technologies are being used for
 virtualization by Unraid as documentation on these technologies will not
 be Unraid specific. Also, many issues relating to these technology
-components can be common across all Linux systems using s particular
+components can be common across all Linux systems using a particular
 technology component so often answers can be found in places other than
-the \`Unraid forums.
+the Unraid forums.
 
 Particulars of the Unraid implementation of VM support are:
 
@@ -397,14 +397,12 @@ Particulars of the Unraid implementation of VM support are:
     for use with VMs.
   - **system**: This is the default location for storing the
     libvirt.img file (that contains the XML definitions for VMs.
-
-: The users can over-ride any of these settings if so desired when
-creating individual VMs but for most users, the defaults are a good
-option.
-: All these shares have a default **Use Cache** setting of _prefer_.
-Having VM files (particularly disk images) on the cache will give
-much better performance than having them on an array drive.
-
+  -  The users can over-ride any of these settings if so desired when
+     creating individual VMs but for most users, the defaults are a good
+     option.
+  -  All these shares have a default **Use Cache** setting of _prefer_.
+     Having VM files (particularly disk images) on the cache will give
+     much better performance than having them on an array drive.
 - **VNC**
   - Unraid has the NoVNC web-based client built into its GUI and it
     can be used to access all VMs without the need to install
