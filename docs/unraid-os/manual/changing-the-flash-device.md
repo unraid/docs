@@ -7,7 +7,7 @@ experience.
 
 Alternatively, if you are using a Linux system or if the USB Flash
 Creator tool is not working for some reason, [please use the legacy
-method](getting-started.md#manual-install-method).
+method](./getting-started/manual-install-method).
 
 In either case, you will first need to have a full backup of your
 original Unraid OS USB flash boot device. It is **highly recommended**
@@ -148,7 +148,7 @@ This action cannot be undone._
 ## Manual Method
 
 Prepare a new flash device using the procedure documented in the
-[Getting Started](getting-started.md#manual-install-method) guide.
+[Getting Started](./getting-started/manual-install-method) guide.
 
 - Before removing the flash from the PC, copy the 'config' folder
   from the backup you made into the flash drive, overwriting existing
