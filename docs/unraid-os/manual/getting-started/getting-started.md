@@ -1,7 +1,3 @@
----
-sidebar_position: 2
----
-
 # Getting Started
 
 In this guide, we will be covering how to prepare your flash device,
@@ -30,7 +26,7 @@ page](https://unraid.net/product).
 - Insert a quality USB flash device into your Mac or PC.
 - Download the [USB Flash Creator](https://unraid.net/download) and use
   it to install Unraid OS onto your USB flash device, or use the
-  [Manual Install method](#manual-install-method).
+  [Manual Install method](./manual-install-method).
 - Remove the flash device from your PC and plug it into your server.
 - Boot into your server's BIOS settings and make the following changes:
   - Configure the system to boot from the USB flash device.
@@ -60,7 +56,7 @@ There are two methods to connect to the webGui in Unraid:
 
 Once you are connected to the webGui, you will immediately be prompted
 to set a strong root password (as of version 6.10):
-![](../assets/Set_root_password.png)
+![](../../assets/Set_root_password.png)
 Strong passwords are unique (not reused), have at least 8 characters (the more the better),
 are a combination of alphabetic, numeric, and special characters, and
 are not common dictionary words. Better yet, use a password manager.
@@ -75,12 +71,12 @@ need to sign in to Unraid.net and obtain a key.
 
 - Sign in or Sign up under the Get Started section in the top-right of
   the webGui.
-  ![UPC getting started](../assets/Upc_get_started.png)
+  ![UPC getting started](../../assets/Upc_get_started.png)
 
 - Upon signing in, a registration key will be downloaded and installed
   to your system automatically.
 
-![UPC installing a trial key](../assets/Upc_install_trial_key.png)
+![UPC installing a trial key](../../assets/Upc_install_trial_key.png)
 The purpose of the sign-in is to provide a way for you to manage your registration
 keys for Unraid OS (obtain a Trial key, purchase a paid key, recover a
 lost key, replace your key with a new flash device, or upgrade a key
@@ -103,7 +99,7 @@ your server through the [Unraid Connect Dashboard](https://connect.myunraid.net/
 
 ## Assigning Devices to the Array and Pool(s)
 
-![](../assets/Configuringarray1.png) After installing a
+![](../../assets/Configuringarray1.png) After installing a
 registration key, you are ready to begin assigning devices for Unraid to
 manage. Click on the **Main** tab from the Unraid webGui and follow
 these guidelines when assigning disks:
@@ -221,54 +217,13 @@ up-to-date than any documentation.
 
 Your Unraid server is likely to end up containing data that is valuable
 to you so it can be a good idea to review the [Security Good
-Practices](security.md) part of the documentation to
+Practices](../security.md) part of the documentation to
 ensure you are not doing something that may leave your system open to
 attack while leaving your valuable data at risk.
 
-## Manual Install Method
-
-If for some reason the USB Flash Creator tool cannot be used, or your USB flash device is not detected,
-it is possible to manually format and prepare a bootable USB flash device.
-**Note: this method only works for devices 32GB and _smaller_.**
-
-- Plug the USB flash device into your Mac or PC.
-- Format the device using the FAT32 file system. It must **not** be
-  ex-FAT or NTFS. If your drive is larger than 32GB then you need to use
-  a 3rd party tool (e.g. Rufus) to format it to FAT32 as Windows will
-  not give this as an option on drives larger than 32GB.
-- Set the ‘volume label’ to `UNRAID` (case-sensitive, use all caps).
-- [Go to the downloads page.](http://lime-technology.com/download/) to
-  get the zip file for the release you want to use.
-- Choose a version and download it to a temporary location on your
-  computer (e.g. a “downloads” folder).
-- Extract the contents of the newly downloaded ZIP file onto your USB
-  flash device.
-- Browse to the USB flash device to see the newly extracted contents
-  from your Mac or PC.
-- If you need to enable UEFI boot, rename the `EFI-` directory to `EFI`
-- Run the _make bootable_ script appropriate to the OS you are using:
-  - **Windows XP**
-    - double-click the **make_bootable** file.
-  - **Windows 7 or later**
-    - right-click the **make_bootable** file and select _Run as
-      Administrator_.
-  - **Mac**
-    - double-click the file **make_bootable_mac** file and enter your
-      admin password when prompted.
-  - **Linux**:
-    - copy **make_bootable_linux** file to hard drive
-    - unmount (not eject) USB drive
-    - run the following command from wherever you unpacked it to on your
-      Linux system:
-    - sudo bash ./make_bootable_linux
-
-**NOTE**: during the process of running this script, the flash device
-may seem to disappear and reappear on your workstation a few times –
-this is expected behavior.
-
 ## Advanced BIOS Configuration Guide
 
-![](../assets/Booting.jpg)
+![](../../assets/Booting.jpg)
 Configuring your motherboard BIOS (as well as your storage controller) correctly is an important step to
 ensuring a solid experience using Unraid. The basic guidelines are as
 follows:
@@ -389,9 +344,7 @@ device. What do I do?**
 In the event the flash creator doesn't see or can't install Unraid to
 the device, it could be for one of many reasons. The simplest solution
 would be to try an alternate device, but if that is not an option for
-you, you can try installing Unraid using the legacy [manual method
-documented
-here](#manual-install-method).
+you, you can try installing Unraid using the legacy [manual method documented here](./manual-install-method).
 
 **I can't seem to connect to the webGui using <http://tower> or
 <http://tower.local>. What do I do?**
