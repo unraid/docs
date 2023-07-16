@@ -14,6 +14,17 @@ for that field. It can also be toggled on/off for all fields on a page
 by clicking on the **Help**
 icon at the top right of each page.
 
+## CPU Isolation
+
+CPU isolation allows the user to specify CPU cores that are to be explicitly reserved for assignment (to VMs or Docker containers).
+This is incredibly important for gaming VMs to run smoothly because even if you manually pin your Docker containers to not overlap with your gaming VM, the host OS can still utilize those same cores as the guest VM needs for things like returning responses for the webGui, running a parity check, btrfs operations, etc.
+ 
+So, when you pin a core to a VM or Docker, that core is allocated to the VM/Docker, but the unRAID OS may still access it and use it for various tasks.
+ 
+When you isolate a core, it is no longer accessible even by unRaid for routine tasks and should therefore be 100% dedicated to wherever it's pinned.
+ 
+You can pin cores without requiring a system restart. You must restart your unRaid server to effect any isolation changes.
+
 ## Date & Time
 
 From this page, you can set your time zone and toggle the use of up to 3
