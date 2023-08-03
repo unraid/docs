@@ -2,7 +2,7 @@
 
 First, buy an activation code via [our website](https://unraid.net/pricing). Your unique activation code will be on your purchase receipt.
 
-Next, follow our [Getting Started](../manual/getting-started.md) guide to set up an Unraid server.
+Next, follow our [Getting Started]([../manual/getting-started.md](https://docs.unraid.net/unraid-os/manual/getting-started/) guide to set up an Unraid server.
 
 Once your server is up and running:
 
