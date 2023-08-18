@@ -18,7 +18,7 @@ You manage **User Shares** from the **Shares** tab. There, you can see an overvi
 
 When viewed at the Linux level, user shares appear under the path `/mnt/user`. This includes the files on the main array and also any for the share on any pool. A user share is a logical view imposed on top of the underlying physical file system so you can see the same files if you look at the physical level, as described for [Disk Shares](./disk-shares.md).
 
-Note that current releases of Unraid also include the mount point ***/mnt/user0*** that shows the files in User Shares omitting any files for a share that are on any pool. This is a different view of the files on your server. However, this mount point is now deprecated and may stop being available in a future Unraid release.
+Note that current releases of Unraid also include the mount point `/mnt/user0` that shows the files in User Shares omitting any files for a share that are on any pool. This is a different view of the files on your server. However, this mount point is now deprecated and may stop being available in a future Unraid release.
 
 The physical drive in the main array, used to store a physical file, is controlled by a number of settings for the share, including the [allocation method](#allocation-method), [included or excluded disks](#included-or-excluded-disks), and the [split level](#split-level).
 
