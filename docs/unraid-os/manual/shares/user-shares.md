@@ -18,7 +18,7 @@ You manage **User Shares** from the **Shares** tab. There, you can see an overvi
 
 When viewed at the Linux level, user shares appear under the path `/mnt/user`. This includes the files on the main array and also any for the share on any pool. A user share is a logical view imposed on top of the underlying physical file system so you can see the same files if you look at the physical level, as described for [Disk Shares](./disk-shares.md).
 
-Note that current releases of Unraid also include the mount point `/mnt/user0` that shows the files in User Shares omitting any files for a share that are on any pool. This is a different view of the files on your server. However, this mount point is now deprecated and may stop being available in a future Unraid release.
+Note that current releases of Unraid also include the mount point `/mnt/user0` that shows the files in **User Shares** omitting any files for a share that are on any pool. This is a different view of the files on your server. However, this mount point is now deprecated and may stop being available in a future Unraid release.
 
 The physical drive in the main array, used to store a physical file, is controlled by a number of settings for the share, including the [allocation method](#allocation-method), [included or excluded disks](#included-or-excluded-disks), and the [split level](#split-level).
 
@@ -77,14 +77,14 @@ The **Primary storage** parameter defines the location - *Cache*, *Array*, or an
 
 When primary storage is below the [Minimum Free Space](#minimum-free-space) value, new files and folders are created in secondary storage.
 
-:::important
+:::note
 
 If you select an *array* or any named pool for your primary or secondary storage, you must also configure its allocation method, split level, and any included or excluded disks.
 
 :::
 
-#### Unraid 6.12 and above
-
+<details open><summary>Unraid 6.12 and above</summary>
+  
 Unraid 6.12 introduces new terminology to make it clearer to users where files are initially placed, and where they will end up. The same functionality is present in earlier releases, but has often been misunderstood by new users.
 
 For the **Primary storage** drop-down:
@@ -99,13 +99,15 @@ For the **Secondary storage** drop-down:
   * if Primary storage is a pool name, then the only options are *None* and *Array*.
   * if Primary storage is *Array*, then only *None* appears as an option.
 
-#### Unraid 6.11 and below
+</details>
+
+<details><summary>Unraid 6.11 and below</summary>
 
 These settings are only found in Unraid 6.11 and earlier. They achieve the same functionality as the settings available in 6.12 but are presented differently.
 
-**Use Cache** (and **Mover Behavior** with user shares)
+#### Use Cache (and **Mover Behavior** with user shares)
 
-:::important
+:::note INFO
 
 Starting with Unraid 6.9, multiple pools can exist and they can have any name you choose. Any of these pools can act as a cache in the way Unraid uses the term. The word cache therefore is referring to this functionality and not necessarily to the pool name.
 
@@ -155,6 +157,8 @@ The way to proceed to get the files belonging to a share from the main array ont
 * Manually run **mover** from the *Main* tab to get it to move *Prefer*-type shares from array to the pool (cache).
 * When **mover** finishes you can re-enable the Docker and/or VMs services you use.
 * (optional) change the **Use Cache** setting to *No* to say files for this share can never be cached on a pool.
+
+</details>
 
 ### Allocation method
 
