@@ -7,7 +7,7 @@ experience.
 
 Alternatively, if you are using a Linux system or if the USB Flash
 Creator tool is not working for some reason, [please use the legacy
-method](https://docs.unraid.net/unraid-os/manual/changing-the-flash-device/#manual-method).
+method](#manual-method).
 
 In either case, you will first need to have a full backup of your
 original Unraid OS USB flash boot device. It is **highly recommended**
@@ -148,7 +148,7 @@ This action cannot be undone._
 ## Manual Method
 
 Prepare a new flash device using the procedure documented in the
-[Getting Started](https://docs.unraid.net/unraid-os/manual/getting-started/) guide.
+[Getting Started](../manual/getting-started/getting-started.md) guide.
 
 - Before removing the flash from the PC, copy the 'config' folder
   from the backup you made into the flash drive, overwriting existing
@@ -159,13 +159,13 @@ Prepare a new flash device using the procedure documented in the
   'Invalid, missing or expired registration Key' Click
   'Registration Key'
 
-![](../assets/Invalidkey.png)
+![Invalid Key Example](../assets/Invalidkey.png)
 
 - Click on the option to 'REPLACE KEY' Then enter the email
   address to which you would like to have the new key delivered to.
 - Click 'REPLACE KEY'
 
-![](../assets/Replacekey.png)
+![Replace Key Example](../assets/Replacekey.png)
 
 **IMPORTANT:** Replacing your Unraid USB Flash Device transfers the
 license to a new USB Flash Device. Once this is done, the previous Flash
