@@ -44,21 +44,9 @@ This parameter must be used when the fill-up allocation method is configured, or
 
 When Unraid receives a request to store a file, say for example `file.eg`, it has no idea how big the file is. Unraid will pick a spot to place it and begin to store the file data as the data is transferred over the network. Now, this may result in Unraid picking a storage disk with insufficient storage space for the complete file. Unraid is unaware there isn't enough space when it first places the file so it will only find out when the disk is full. At this point, the transfer will fail with a 'disk full' error. So, Unraid will write to a different disk if the minimum free space is set to a value larger than the biggest file size you will ever transfer.
 
-We recommend setting the value to twice the size of the largest file you will ever transfer. For example, if the largest file you have is 8GB in size then set the minimum free space to 16GB. This allows you to transfer files that may vary in size somewhat and not accidentally transfer one too large. The minimum free space is set in Kilobytes (KB).
+We recommend setting the value to twice the size of the largest file you will ever transfer. For example, if the largest file you have is 8GB in size then set the minimum free space to 16GB. This allows you to transfer files that may vary in size somewhat and not accidentally transfer one too large.
 
-Here are some examples of the minimum free space setting and their value in KB:
-
----
-
-| Free space | Value |
-| :-- | ---- |
-| 500 MB | 500000 |
-| 20 GB | 20000000 |
-| 40 GB | 40000000 |
-
-Generally, for the purpose of this calculation, consider 1 MB to be 1000 KB, and 1 GB to be 1,000,000 KB.
-
----
+The minimum free space is set in kilobytes (KB), megabytes (MB), gigabytes (GB), or terabytes (TB). Enter the value and units without any spaces. For example, if you want to set the value at 50 Gigabytes, enter *50GB*. Note that new user shares will have a default 10% minimum free space assignment.
 
 Unraid will still place files on the disk if the [split level](#split-level) does not allow the files to be placed on another disk with more free space. Note that Unraid will typically not move a file onto a new disk if you're overwriting or updating it. For example, a backup file that grows in size over time could end up filling a disk and causing a disk full error.
 
@@ -71,7 +59,7 @@ This needs to be set if you want to avoid filling a cache pool which can cause p
 
 :::
 
-### Primary and Secondary storage
+### Primary and Secondary storage (Unraid 6.12)
 
 The **Primary storage** parameter defines the location - *Cache*, *Array*, or any named pool - to which new files will be written for the selected share. The **Secondary storage** parameter sets the location where files will be moved to if there is not enough room in primary storage.
 
@@ -83,8 +71,6 @@ If you select an *array* or any named pool for your primary or secondary storage
 
 :::
 
-<details open><summary>Unraid 6.12 and above</summary>
-  
 Unraid 6.12 introduces new terminology to make it clearer to users where files are initially placed, and where they will end up. The same functionality is present in earlier releases, but has often been misunderstood by new users.
 
 For the **Primary storage** drop-down:
@@ -99,13 +85,11 @@ For the **Secondary storage** drop-down:
   * if Primary storage is a pool name, then the only options are *None* and *Array*.
   * if Primary storage is *Array*, then only *None* appears as an option.
 
-</details>
-
-<details><summary>Unraid 6.11 and below</summary>
-
 These settings are only found in Unraid 6.11 and earlier. They achieve the same functionality as the settings available in 6.12 but are presented differently.
 
-#### Use Cache (and **Mover Behavior** with user shares)
+### Use Cache and mover behavior with user shares (Unraid 6.11 and earlier)
+
+The following settings are only found in Unraid 6.11 and earlier. They achieve the same functionality as the settings available in 6.12 but are presented differently.
 
 :::note INFO
 
@@ -132,7 +116,7 @@ Unraid includes an application called **Mover** that is used in conjunction with
 
   This setting works for a share even if you do not (yet) have a physical cache drive(s) as files will be written directly to the array. If at a later date you add a cache drive, **Mover** will automatically try and move the files in any share set to *Prefer* to the pool defined as the cache for the share. This is why *Prefer* is the default for shares that are located on the cache rather than *Only* as it caters to those who do not (yet) have a cache drive.
 
-##### Moving Files from a Pool (cache) to the Array
+#### Moving Files from a Pool (cache) to the Array
 
 This is the more traditional usage of a pool for caching where one wants the files for a particular share initially written to a pool acting as a cache to maximise write speed, but later you want it to be moved to the
 main array for long term storage. Most of the time all that is required is to set the **Use Cache** setting for the share to *Yes* and the default behaviour handles the rest with no further user interaction.
@@ -145,20 +129,18 @@ Sometimes for one reason or another users find that the files seem to be 'stuck'
 * When mover finishes you can re-enable the Docker and/or VMs services you use if you disabled them earlier.
 * (optional) change the **Use Cache** setting to *Only* to say files for this share can never be written to the array.
 
-##### Moving Files from the Array to a Pool (cache)
+#### Moving Files from the Array to a Pool (cache)
 
 One typically wants files associated with running Docker containers or VMs on a pool to maximise performance. It is not unusual for one reason or another to find that one has files on the main array which you really
 want to be on a pool. In particular this is likely to happen for the appdata or system shares.
 
 The way to proceed to get the files belonging to a share from the main array onto a pool is:
 
-* Disable **Docker/VM** services if they are enabled (as files open in these services cannot be moved)
-* Change the Use Cache setting for the share to **Prefer**
-* Manually run **mover** from the *Main* tab to get it to move *Prefer*-type shares from array to the pool (cache).
-* When **mover** finishes you can re-enable the Docker and/or VMs services you use.
-* (optional) change the **Use Cache** setting to *No* to say files for this share can never be cached on a pool.
-
-</details>
+1. Disable **Docker/VM** services if they are enabled (as files open in these services cannot be moved).
+2. Change the Use Cache setting for the share to **Prefer**.
+3. Manually run mover from the **Main** tab to get it to move *Prefer*-type shares from array to the pool (cache).
+4. When mover finishes you  can re-enable the Docker and/or VMs services you use.
+5. (Optional) change the **Use Cache** setting to *No* to say files for this share can never be cached on a pool.
 
 ### Allocation method
 
