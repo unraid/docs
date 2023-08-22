@@ -148,7 +148,7 @@ This action cannot be undone._
 ## Manual Method
 
 Prepare a new flash device using the procedure documented in the
-[Getting Started](../manual/getting-started/getting-started.md) guide.
+[Manual Install Method](../manual/getting-started/manual-install-method.md) guide.
 
 - Before removing the flash from the PC, copy the 'config' folder
   from the backup you made into the flash drive, overwriting existing
