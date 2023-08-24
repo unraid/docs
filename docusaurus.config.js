@@ -216,6 +216,18 @@ const config = {
         disableInDev: false,
       },
     ],
+    [
+      "@docusaurus/plugin-client-redirects",
+      {
+        redirects: [
+          // file renamed in https://github.com/unraid/docs/commit/570a7e629bef1577d43e188495cb71916e7de360
+          {
+            to: "/legacy/FAQ/shrink-array/",
+            from: "/legacy/FAQ/Shrink_array/",
+          },
+        ],
+      },
+    ],
   ],
 };
 
