@@ -27,6 +27,8 @@ The Unraid flash device, used to boot Unraid and store all user settings, is als
 
 Due to the nature of the Unraid boot device, we recommend you maintain your shares in *Private* mode, with read/write access given to trusted users.
 
+:::
+
 ## Disk share constraints
 
 If you have both disk shares and user shares enabled in **Global Share Settings**, then there is an important restriction that you must observe to avoid potential data loss.
@@ -36,5 +38,3 @@ You must ***never*** copy between a user share and a disk share in the same copy
 At the base system level, Linux does not understand user shares, and cannot tell apart a file in a disk share from one in a user share. If you mix the share types in the same copy command you can end up trying to copy the file to itself which results in the file being truncated to zero length and its content being lost.
 
 There is no problem if the copy is between shares of the same type, or copying to/from a disk mounted as an [Unassigned Disk](../storage-management.md#unassigned-drives).
-
-:::
