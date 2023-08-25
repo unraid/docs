@@ -6,7 +6,7 @@ sidebar_position: 0
 
 :::tip
 
-Once you have assigned devices to Unraid and started the array, we recommend that you plan and create shares to simplify how you store data across multiple disks in the array. For ideas and use-cases for your shares, see our [Tutorials](./tutorials) section.
+Once you have assigned devices to Unraid and started the array, we recommend that you plan and create shares to simplify how you store data across multiple disks in the array.
 
 :::
 
@@ -20,15 +20,5 @@ There are two types of shares in Unraid:
 It is important to highlight that there are two different views of the same underlying file system. Every file/folder that appears under a user share will also appear under the disk share for the physical drive that is storing the file/folder.
 
 When you first initialize your array, Unraid automatically creates a [handful of user shares](./user-shares.md#default-shares). These are needed to support common plugins, containers, and virtual machines. You can create your own shares to store other data.
-
-:::caution
-
-If you have both disk shares and user shares enabled in **Global Share Settings**, then there is an important restriction that you must observe to avoid potential data loss.
-
-You must ***never*** copy between a user share and a disk share in the same copy operation where the folder name on the disk share matches the name of the user share. This is because, at the base system level, Linux does not understand user shares, and cannot tell apart a file in a disk share from one in a user share. If you mix the share types in the same copy command you can end up trying to copy the file to itself which results in the file being truncated to zero length and its content being lost.
-
-There is no problem if the copy is between shares of the same type, or copying to/from a disk mounted as an [Unassigned Disk](../storage-management.md#unassigned-drives).
-
-:::
 
 You manage shares from the **Shares** tab in Unraid. You enable or disable shares in ***Settings > Global Share Settings***, with user shares being enabled by default.

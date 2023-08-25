@@ -38,7 +38,7 @@ Share security determines how a share enables user access. If you need, a share 
 
 For example, you may configure a `movies` share on your Unraid server to request a valid username and password, just to read data from that share. You can also make it public, which requires no user credentials.
 
-When you select an existing share on the **Shares** tab the share settings display. Here you can find a security section that enables you to control access to the share, for each of the protocols [you have enabled](./access-permissions.md).
+When you select an existing share on the **Shares** tab the share settings display. Here, you can find a security section that enables you to control access to the share, for each of the protocols [you have enabled](#access-permissions-at-share-level).
 
 The **Security** setting has the following options:
 

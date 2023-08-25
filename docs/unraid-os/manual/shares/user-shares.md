@@ -24,6 +24,14 @@ The physical drive in the main array, used to store a physical file, is controll
 
 If you change the settings for an existing share, the changes only affect where new files are put after the new settings are applied. Any files already present in the share are left where they are. To move existing files takes manual action.
 
+:::caution
+
+There is a quirk of the interaction between Linux and the Unraid user share system that users can encounter if they are working at the disk share level. The Linux command for 'move' is implemented by first trying a rename on the file (which is faster) and only if that fails does it do a copy-and-delete operation.
+
+This can mean when you try to move files from one user share to another from the command line, Linux will often simply rename the files so they have a different path on the same disk, in violation of any user share settings such as included disks. The workaround for this is to instead explicitly copy from source to destination so that new files get created following the user share settings, then deleting from the source.
+
+:::
+
 ## Share settings
 
 :::tip
@@ -59,7 +67,9 @@ This needs to be set if you want to avoid filling a cache pool which can cause p
 
 :::
 
-### Primary and Secondary storage (Unraid 6.12)
+### Storage options
+
+#### Primary and Secondary storage (Unraid 6.12)
 
 The **Primary storage** parameter defines the location - *Cache*, *Array*, or any named pool - to which new files will be written for the selected share. The **Secondary storage** parameter sets the location where files will be moved to if there is not enough room in primary storage.
 
@@ -87,7 +97,7 @@ For the **Secondary storage** drop-down:
 
 These settings are only found in Unraid 6.11 and earlier. They achieve the same functionality as the settings available in 6.12 but are presented differently.
 
-### Use Cache and mover behavior with user shares (Unraid 6.11 and earlier)
+#### Use Cache and mover behavior with user shares (Unraid 6.11 and earlier)
 
 The following settings are only found in Unraid 6.11 and earlier. They achieve the same functionality as the settings available in 6.12 but are presented differently.
 
@@ -116,31 +126,29 @@ Unraid includes an application called **Mover** that is used in conjunction with
 
   This setting works for a share even if you do not (yet) have a physical cache drive(s) as files will be written directly to the array. If at a later date you add a cache drive, **Mover** will automatically try and move the files in any share set to *Prefer* to the pool defined as the cache for the share. This is why *Prefer* is the default for shares that are located on the cache rather than *Only* as it caters to those who do not (yet) have a cache drive.
 
-#### Moving Files from a Pool (cache) to the Array
+### Moving Files from a Pool (cache) to the Array
 
-This is the more traditional usage of a pool for caching where one wants the files for a particular share initially written to a pool acting as a cache to maximise write speed, but later you want it to be moved to the
-main array for long term storage. Most of the time all that is required is to set the **Use Cache** setting for the share to *Yes* and the default behaviour handles the rest with no further user interaction.
+This is the more traditional usage of a pool for caching where you want the files for a particular share initially written to a pool that acts as a cache to maximize write speed, but later you want it to be moved to the main array for long term storage. Most of the time all that is required is to set the **Use Cache** setting for the share to *Yes* and the default behavior handles the rest with no further user interaction.
 
-Sometimes for one reason or another users find that the files seem to be 'stuck' in a pool. In this situation, the way to get the files belonging to a share from a pool onto the main array is:
+Sometimes, for one reason or another, you may find that the files seem to be 'stuck' in a pool. In this situation, the way to get the files belonging to a share from a pool onto the main array is:
 
-* Disable **Docker/VM** services if they are enabled (as files open in these services cannot be moved).
-* Change the Use Cache setting for the share to **Yes**
-* Manually run mover from the *Main* tab to get it to move *Yes*-type shares from array to the pool (cache).
-* When mover finishes you can re-enable the Docker and/or VMs services you use if you disabled them earlier.
-* (optional) change the **Use Cache** setting to *Only* to say files for this share can never be written to the array.
+1. Disable **Docker/VM** services if they are enabled (as files open in these services cannot be moved).
+2. Change the Use Cache setting for the share to **Yes**
+3. Manually run mover from the *Main* tab to get it to move *Yes*-type shares from array to the pool (cache).
+4. When mover finishes you can re-enable the Docker and/or VMs services you use if you disabled them earlier.
+5. (Unraid 6.11 or below) Change the **Use Cache** setting to *Only* to say files for this share can never be written to the array.
 
-#### Moving Files from the Array to a Pool (cache)
+### Moving Files from the Array to a Pool (cache)
 
-One typically wants files associated with running Docker containers or VMs on a pool to maximise performance. It is not unusual for one reason or another to find that one has files on the main array which you really
-want to be on a pool. In particular this is likely to happen for the appdata or system shares.
+You typically want files associated with running Docker containers or VMs on a pool to maximize performance. It is not unusual, for one reason or another, to find that you have files on the main array which you really want to have in a pool. In particular, this is likely to happen for the `appdata` or default system shares.
 
 The way to proceed to get the files belonging to a share from the main array onto a pool is:
 
 1. Disable **Docker/VM** services if they are enabled (as files open in these services cannot be moved).
-2. Change the Use Cache setting for the share to **Prefer**.
+2. Change the **Use Cache** setting for the share to *Prefer*.
 3. Manually run mover from the **Main** tab to get it to move *Prefer*-type shares from array to the pool (cache).
 4. When mover finishes you  can re-enable the Docker and/or VMs services you use.
-5. (Optional) change the **Use Cache** setting to *No* to say files for this share can never be cached on a pool.
+5. (Unraid 6.11 or below) Change the **Use Cache** setting to *No* to say files for this share can never be cached on a pool.
 
 ### Allocation method
 
@@ -168,9 +176,9 @@ The **High-water** setting works with switch points based on continually halving
 
 If you have an array that consists of drives of 8 TB, 3 TB and 2 TB, the largest drive is the one that sets the switch points at 4 TB, 2 TB, 1 TB, and so on, halving the amount in each pass.
 
-* While the 4TB switch point is active the 8 TB drive one is filled to 4 TB free space left.
+* While the 4 TB switch point is active the 8 TB drive one is filled to 4 TB free space left.
 * When the 2 TB switch point becomes active, the 8 TB and 3 TB drives each get used in disk order until they have 2 TB free space
-* Finally, the 1TB switch point becomes active, so each drive now gets used in disk order until there is only 1 TB free space.
+* Finally, the 1 TB switch point becomes active, so each drive now gets used in disk order until there is only 1 TB free space.
 
 This pattern continues with progressively smaller high-water levels until the disks are full.
 
@@ -221,7 +229,7 @@ When a new file or subdirectory needs to be created in a share, Unraid OS will o
 
 :::info
 
-In the event of there being contentions between the **Minimum free space**, **Split Level** and the **Allocation method** settings in deciding which would be an appropriate drive to use, the **Split level** setting always wins. This means that you can get an out-of-space error even though there is plenty of space on other array drives that the share can logically use.
+In the event of there being conflicts between the **Minimum free space**, **Split Level** and the **Allocation method** settings in deciding which would be an appropriate drive to use, the **Split level** setting always wins. This means that you can get an out-of-space error even though there is plenty of space on other array drives that the share can logically use.
 
 <!-- Move into a Split-level tutorial?
 
