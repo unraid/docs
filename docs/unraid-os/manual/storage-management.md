@@ -1802,7 +1802,7 @@ level and is not even aware of the file system that is in use on any
 particular drive.
 
 In addition drives can be
-[encrypted](/unraid-os/manual/security.md#data-encryption). **_A point to
+[encrypted](/unraid-os/manual/security/data-encryption.md). **_A point to
 note about using encryption is that if you get any sort of file system
 corruption then encryption can make it harder (and sometimes impossible
 to recover data on the corrupted file system._**
