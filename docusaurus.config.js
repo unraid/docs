@@ -13,10 +13,12 @@ const config = {
   favicon: "img/favicon.svg", // https://dev.to/masakudamatsu/favicon-nightmare-how-to-maintain-sanity-3al7
 
   // Set the production url of your site here
-  url: "https://docs.unraid.net",
+  url: "https://docs.unraid.net/",
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
   baseUrl: "/",
+
+  trailingSlash: true,
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
@@ -74,6 +76,13 @@ const config = {
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
+      algolia: {
+        appId: "JUYLFQHE7W",
+        apiKey: "47111d6564a2e69ee21a1d3d2f786ef3",
+        indexName: "unraid",
+        contextualSearch: true,
+        searchPagePath: 'search',
+      },
       announcementBar: {
         id: "underConstruction", // change this ID when you change the content so it'll show for users that previously closed the announcement
         content:
@@ -198,14 +207,6 @@ const config = {
     }),
   plugins: [
     [
-      require.resolve("@cmfcmf/docusaurus-search-local"),
-      {
-        indexDocs: true,
-        indexDocSidebarParentCategories: 2,
-        language: locales,
-      },
-    ],
-    [
       "@docusaurus/plugin-ideal-image",
       {
         quality: 70,
@@ -213,6 +214,18 @@ const config = {
         min: 640, // min resized image's size. if original is lower, use that size.
         steps: 2, // the max number of images generated between min and max (inclusive)
         disableInDev: false,
+      },
+    ],
+    [
+      "@docusaurus/plugin-client-redirects",
+      {
+        redirects: [
+          // file renamed in https://github.com/unraid/docs/commit/570a7e629bef1577d43e188495cb71916e7de360
+          {
+            to: "/legacy/FAQ/shrink-array/",
+            from: "/legacy/FAQ/Shrink_array/",
+          },
+        ],
       },
     ],
   ],

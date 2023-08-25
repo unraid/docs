@@ -222,7 +222,7 @@ _MORE DETAIL NEEDED_
 ### Preparing the flash drive
 
 This is covered under the [Getting
-Started](getting-started.md) section of the
+Started](getting-started/getting-started.md) section of the
 documentation.
 
 If for any reason you decide that you need to redo the flash drive then
