@@ -43,7 +43,7 @@ OpenVPN is a well-established solution so if you want to use OpenVPN then you ca
 
 ### Overview
 
-![Wireguard logo](@site/docs/unraid-os/assets/Wireguard.png)
+![Wireguard logo](../../assets/Wireguard.png)
 
 Unraid 6.8 introduces built-in support for WireGuard VPN connections. The intention is to make it as easy as possible for Unraid users to set up VPN connections to/from their Unraid servers.
 
@@ -83,7 +83,7 @@ What can you do with WireGuard? Let's walk through each of the connection types:
 
 The following diagram attempts to show these different connection types in a graphical format
 
-![](@site/docs/unraid-os/assets/Wireguard-help.png)
+![Connection Types](../../assets/Wireguard-help.png)
 
 ### Incoming VPN Connections
 
@@ -103,12 +103,12 @@ This section will walk through how to setup WireGuard so that your trusted devic
 
 * First, go to ***Settings > Network Settings > Interface eth0***. If **Enable bridging** is set to *Yes*, then WireGuard will work as described below. If bridging is disabled, then none of the **Peer type of connections** that involve the local LAN will work properly. As a general rule, bridging should be enabled in Unraid.
 
-![](@site/docs/unraid-os/assets/enable-bridging.png)
+![Enable bridging](../../assets/enable-bridging.png)
 
 * If UPnP is enabled on your router and you want to use it in Unraid, go to Settings -\> Management Access and confirm "Use UPnP" is set to Yes
 * On Unraid go to ***Settings > VPN Manager***
 
-![](@site/docs/unraid-os/assets/wg0.png)
+![Initial setup screen](../../assets/wg0.png)
 
 * Give the **VPN Tunnel** a name, for example *MyHome VPN*.
 * Select **Generate Keypair**. This will generate a set of public and private keys for Unraid. Take care not to share the private key by accident (such as in a screenshot like this).
@@ -117,11 +117,11 @@ This section will walk through how to setup WireGuard so that your trusted devic
 * Select Apply.
 * If Unraid detects that your router supports UPnP, it will automatically setup port forwarding for you:
 
-![](@site/docs/unraid-os/assets/upnp-yes.png)
+![UPnP available](../../assets/upnp-yes.png)
 
 * If you see a note that says "configure your router for port forwarding\..." you will need to login to your router and setup the port forward as directed by the note:
 
-![](@site/docs/unraid-os/assets/upnp-no.png)
+![UPnP not available](../../assets/upnp-no.png)
 
 * Some tips for setting up the port forward in your router:
   * Both the external (source) and internal (target/local) ports should be set to the value Unraid provides. If your router interface asks you to put in a range, use the same port for both the starting and ending values. Be sure to specify that it is a UDP port and not a TCP port.
@@ -129,19 +129,19 @@ This section will walk through how to setup WireGuard so that your trusted devic
   * Google can help you find instructions for your specific router, i.e. "how to port forward Asus RT-AC68U".
 * Note that after **Apply**, the public and private keys are removed from view. If you ever need to access them, click the "key" icon on the right-hand side.
 
-![](@site/docs/unraid-os/assets/key.png)
+![Key icon](../../assets/key.png)
 
 * Similarly, you can access other advanced settings by pressing the "down chevron" on the right-hand side. They are beyond the scope of this guide, but you can turn on help to see what they do.
 * In the upper right corner of the page, change the Inactive slider to Active to start WireGuard. Optionally, you can set the tunnel to autostart when Unraid boots.
 
-![](@site/docs/unraid-os/assets/activate.png)
+![Activate switch](../../assets/activate.png)
 
 There have been cases where this step has been omitted and users end up wondering why the WireGuard VPN link is not working!
 
 #### Defining a Peer (client)
 
 1. Select **Add Peer**.
-  ![](@site/docs/unraid-os/assets/peer-add.png)
+  ![Add Peer](../../assets/peer-add.png)
 2. Give it a name, such as *MyAndroid*.
 3. For the initial connection type, choose *Remote access to LAN*. This will give your device access to Unraid and other items on your network.
 4. Click "Generate Keypair" to generate public and private keys for the client. The private key will be given to the client/peer, but take care not to share it with anyone else (such as in a screenshot like this)
@@ -162,9 +162,9 @@ It can be a little risky to add a new client ("peer") to WireGuard if you are al
 
 * Select the eye icon to view the peer configuration. If the button is not selectable, you must first apply or reset your unsaved changes.
 
-![](@site/docs/unraid-os/assets/peer-eye.png)
+![Peer area - Eye icon](../../assets/peer-eye.png)
 
-![](@site/docs/unraid-os/assets/peer-view.png)
+![Peer details popup](../../assets/peer-view.png)
 
 * If you are setting up a mobile device, choose the "Create from QR code" option in the mobile app and take a picture of the QR code. Give it a name and make the connection. The VPN tunnel starts almost instantaneously, once it is up you can open a browser and connect to Unraid or another system on your network. Be careful not to share screenshots of the QR code with anyone, or they will be able to use it to access your VPN.
 * If you are setting up another type of device, download the file and transfer it to the remote computer via trusted email or dropbox, etc. Then unzip it and load the configuration into the client. Protect this file, anyone who has access to it will be able to access your VPN.
@@ -209,7 +209,7 @@ If you can't connect, it will mainly be an exercise in double-checking your work
 
 A few other ideas:
 
-* For your first client, setup a phone using its data connection (not wifi). This eliminates issues related to the client network, and the QR code is the easiest way to transfer settings. Once you have it working from your phone, move on to other clients.
+* For your first client, setup a phone using its data connection (not wifi). This eliminates issues related to the client network, and the QR code is the easiest way to transfer settings. Once you have it working from your phone, move on to other clients.
 * Disable any energy saving features on the client, phones in particular may not use VPNs properly when in low power mode. Also, you may need to disable any "Data Saver" features on the phone so that VPN is not throttled. See this post
 * If your "Peer type of connection" includes one of the LAN options but you can only access Unraid, go to Settings -> Network Settings and see whether "Enable bridging" is yes.  If bridging is disabled, you will not be able to access your LAN over WireGuard.
 * If you are connecting from another network over the Internet, be sure that the networks on both sides use different subnets. You can't connect two networks that both use 192.168.1.0/24, for instance.
