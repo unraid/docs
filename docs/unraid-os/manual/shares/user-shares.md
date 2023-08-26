@@ -164,7 +164,7 @@ The way to proceed to get the files belonging to a share from the main array ont
     <li>Make sure that <b>Primary Storage</b> is set to <i>Cache</i> and <b>Secondary Storage</b> is set to <i>Array</i>, for any shares you want to move files from.</li>
     <li>Set the <b>Mover action</b> field to <i>Array -> Cache</i>.</li>
     <li>Disable any Docker and VM services, if they are enabled, as files open in these services cannot be moved.</li>
-    <li>Go to <b><i>Main > Array Operation</i></b>, and select <b>Move</b> to manually move files from the array to the Pool (cache).</li>
+    <li>Go to <b><i>Main > Array Operation</i></b>, and select <b>Move</b> to manually move files from the array to the pool (cache).</li>
     <li>When mover finishes, you can re-enable the Docker and/or VMs services you use if you disabled them earlier.</li>
     </ol>
   </TabItem>
@@ -172,7 +172,7 @@ The way to proceed to get the files belonging to a share from the main array ont
     <ol>
     <li>Disable any Docker and VM services if they are enabled (as files open in these services cannot be moved).</li>
     <li>Change the <b>Use Cache</b> setting for the share to <i>Prefer</i>.</li>
-    <li>Go to <b><i>Main > Array Operation</i></b>, and select <b>Move</b> to manually move files from the array to the Pool (cache).</li>
+    <li>Go to <b><i>Main > Array Operation</i></b>, and select <b>Move</b> to manually move files from the array to the pool (cache).</li>
     <li>When mover finishes, you can re-enable the Docker and/or VMs services you use if you disabled them earlier.</li>
     <li>Change the <b>Use Cache</b> setting to <i>No</i> to say files for this share can never be written to the array.</li>
     </ol>
