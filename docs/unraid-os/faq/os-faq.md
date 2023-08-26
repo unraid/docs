@@ -62,17 +62,7 @@ Support)](https://forums.unraid.net/forum/55-general-support/).
 
 ## What Should I do if I have Forgotten my Root Password?
 
-To reset your [root
-password](/unraid-os/manual/getting-started.md#connecting-to-the-unraid-webgui):
-
-1. Shutdown your server.
-2. Plug your USB flash into a laptop or another computer.
-3. Open the USB folder and delete the files "config/shadow" and
-   "config/smbpasswd". _(DO NOT delete "config/passwd)._ This will
-   reset all user passwords, including the root user to blank.
-4. Now, safely eject your USB and reboot it on your Unraid server and
-   you’re in. You can then set a new password in the Users tab of the
-   Unraid webgui.
+See [Lost Root Password](/unraid-os/manual/troubleshooting/#lost-root-password)
 
 _Important: this process only works for user passwords. If you encrypt
 your drives and forget this password, unfortunately you are hosed. There
