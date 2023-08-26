@@ -67,9 +67,7 @@ This needs to be set if you want to avoid filling a cache pool which can cause p
 
 :::
 
-### Storage options
-
-#### Primary and Secondary storage (Unraid 6.12)
+### Primary and Secondary storage (Unraid 6.12)
 
 The **Primary storage** parameter defines the location - *Cache*, *Array*, or any named pool - to which new files will be written for the selected share. The **Secondary storage** parameter sets the location where files will be moved to if there is not enough room in primary storage.
 
@@ -95,9 +93,7 @@ For the **Secondary storage** drop-down:
   * if Primary storage is a pool name, then the only options are *None* and *Array*.
   * if Primary storage is *Array*, then only *None* appears as an option.
 
-These settings are only found in Unraid 6.11 and earlier. They achieve the same functionality as the settings available in 6.12 but are presented differently.
-
-#### Use Cache and mover behavior with user shares (Unraid 6.11 and earlier)
+### Use Cache and mover behavior with user shares (Unraid 6.11 and earlier)
 
 The following settings are only found in Unraid 6.11 and earlier. They achieve the same functionality as the settings available in 6.12 but are presented differently.
 
@@ -128,15 +124,33 @@ Unraid includes an application called **Mover** that is used in conjunction with
 
 ### Moving Files from a Pool (cache) to the Array
 
-This is the more traditional usage of a pool for caching where you want the files for a particular share initially written to a pool that acts as a cache to maximize write speed, but later you want it to be moved to the main array for long term storage. Most of the time all that is required is to set the **Use Cache** setting for the share to *Yes* and the default behavior handles the rest with no further user interaction.
+This is the more traditional usage of a pool for caching where you want the files for a particular share initially written to a pool that acts as a cache to maximize write speed, but later you want it to be moved to the main array for long term storage.
 
-Sometimes, for one reason or another, you may find that the files seem to be 'stuck' in a pool. In this situation, the way to get the files belonging to a share from a pool onto the main array is:
+Sometimes, however, you may find that the files seem to be 'stuck' in a pool. In this situation, the way to get the files belonging to a share from a pool onto the main array is:
 
-1. Disable **Docker/VM** services if they are enabled (as files open in these services cannot be moved).
-2. Change the Use Cache setting for the share to **Yes**
-3. Manually run mover from the *Main* tab to get it to move *Yes*-type shares from array to the pool (cache).
-4. When mover finishes you can re-enable the Docker and/or VMs services you use if you disabled them earlier.
-5. (Unraid 6.11 or below) Change the **Use Cache** setting to *Only* to say files for this share can never be written to the array.
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+<Tabs>
+  <TabItem value="6.12" label="Unraid 6.12" default>
+    <ol>
+    <li>Make sure that <b>Primary Storage</b> is set to <i>Cache</i> and <b>Secondary Storage</b> is set to <i>Array</i>, for any shares you want to move files from.</li>
+    <li>Set the <b>Mover action</b> field to <i>Cache -> Array</i>.</li>
+    <li>Disable Docker and VM services, if they are enabled, as files open in these services cannot be moved.</li>
+    <li>Go to <b><i>Main > Array Operation</i></b>, and select <b>Move</b> to manually move files from the pool (cache) to the array.</li>
+    <li>When mover finishes, you can re-enable the Docker and/or VMs services you use if you disabled them earlier.</li>
+    </ol>
+    </TabItem>
+  <TabItem value="6.11" label="Unraid 6.11 or below">
+    <ol>
+      <li>Disable any Docker and VM services, if they are enabled (as files open in these services cannot be moved).</li>
+      <li>Change the Use Cache setting for the share to <i>Yes</i>.</li>
+      <li>Go to <b><i>Main > Array Operation</i></b>, and select <b>Move</b> to manually move files from the pool (cache) to the array.</li>
+      <li>When mover finishes, you can re-enable the Docker and/or VMs services you use if you disabled them earlier.</li>
+      <li>Change the <b>Use Cache</b> setting to <i>Only</i> to say files for this share can never be written to the array.</li>
+    </ol>
+  </TabItem>
+</Tabs>
 
 ### Moving Files from the Array to a Pool (cache)
 
@@ -144,11 +158,26 @@ You typically want files associated with running Docker containers or VMs on a p
 
 The way to proceed to get the files belonging to a share from the main array onto a pool is:
 
-1. Disable **Docker/VM** services if they are enabled (as files open in these services cannot be moved).
-2. Change the **Use Cache** setting for the share to *Prefer*.
-3. Manually run mover from the **Main** tab to get it to move *Prefer*-type shares from array to the pool (cache).
-4. When mover finishes you  can re-enable the Docker and/or VMs services you use.
-5. (Unraid 6.11 or below) Change the **Use Cache** setting to *No* to say files for this share can never be cached on a pool.
+<Tabs>
+  <TabItem value="6.12" label="Unraid 6.12" default>
+    <ol>
+    <li>Make sure that <b>Primary Storage</b> is set to <i>Cache</i> and <b>Secondary Storage</b> is set to <i>Array</i>, for any shares you want to move files from.</li>
+    <li>Set the <b>Mover action</b> field to <i>Array -> Cache</i>.</li>
+    <li>Disable any Docker and VM services, if they are enabled, as files open in these services cannot be moved.</li>
+    <li>Go to <b><i>Main > Array Operation</i></b>, and select <b>Move</b> to manually move files from the array to the Pool (cache).</li>
+    <li>When mover finishes, you can re-enable the Docker and/or VMs services you use if you disabled them earlier.</li>
+    </ol>
+  </TabItem>
+  <TabItem value="6.11" label="Unraid 6.11 or below">
+    <ol>
+    <li>Disable any Docker and VM services if they are enabled (as files open in these services cannot be moved).</li>
+    <li>Change the <b>Use Cache</b> setting for the share to <i>Prefer</i>.</li>
+    <li>Go to <b><i>Main > Array Operation</i></b>, and select <b>Move</b> to manually move files from the array to the Pool (cache).</li>
+    <li>When mover finishes, you can re-enable the Docker and/or VMs services you use if you disabled them earlier.</li>
+    <li>Change the <b>Use Cache</b> setting to <i>No</i> to say files for this share can never be written to the array.</li>
+    </ol>
+  </TabItem>
+</Tabs>
 
 ### Allocation method
 
