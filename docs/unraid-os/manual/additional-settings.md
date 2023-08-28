@@ -120,7 +120,7 @@ Users can set up logging of the syslog to permanent storage
 WireGuard VPN Server
 
 Users can set up a VPN connection using
-[WireGuard](security.md#wireguard") for secure connections
+[WireGuard](security/vpn.md) for secure connections
 to/from the internet
 
 ["WireGuard" and the "WireGuard" logo are registered trademarks of Jason A. Donenfeld.](https://www.wireguard.com/)

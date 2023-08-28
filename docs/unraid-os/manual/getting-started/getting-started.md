@@ -217,7 +217,7 @@ up-to-date than any documentation.
 
 Your Unraid server is likely to end up containing data that is valuable
 to you so it can be a good idea to review the [Security Good
-Practices](../security.md) part of the documentation to
+Practices](../security/good-practices.md) part of the documentation to
 ensure you are not doing something that may leave your system open to
 attack while leaving your valuable data at risk.
 
