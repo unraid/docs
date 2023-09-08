@@ -242,9 +242,9 @@ Several commercial VPN providers now support WireGuard. The community has had su
 * [VPN Jantit](https://www.vpnjantit.com/free-wireguard)
 * [Azire VPN](https://www.azirevpn.com/cfg/wireguard)
 * [Mullvad](https://mullvad.net/en/guides/category/wireguard/)
-* [IVPN](https://www.ivpn.net/setup/gnu-linux-wireguard.html)
+* [IVPN](https://www.ivpn.net/wireguard/)
 * [OVPN](https://www.ovpn.com/en/wireguard)
-* [Windscribe](https://windscribe.com/)
+* [Windscribe](https://blog.windscribe.com/introducing-wireguard-76a1670700a6/)
 
 Any provider that requires a custom WireGuard client will not work with Unraid.
 
