@@ -25,7 +25,7 @@ Like most servers, this particular piece of hardware should focus on durability 
 
 * USB 2.0 devices are typically recommended over USB 3.0 as they tend to be more reliable and universally recognized by computers.
 * The USB device must contain a GUID in its programmable ROM.
-* Capacity is not a key factor but there is a minimu space requirement: 2 GB in the current version of Unraid.
+* Capacity is not a key factor but there is a minimum space requirement: 2 GB in the current version of Unraid.
 * Physical size is only relevant when it comes to your server's physical location and setup.
 * Using a reputable brand, from a reputable vendor, offers some reassurance of durability, but not every vendor is the same.
 
