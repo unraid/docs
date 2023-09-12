@@ -17,54 +17,64 @@ There are numerous reasons for which you may need to replace your USB flash devi
 * The device is too slow or does not have enough storage - while 2 GB should be more than enough space, it is possible that your device fills up with data, or becomes increasingly slow to access.
 * The device is physically too large - you want to replace the USB flash device with a smaller, more compact unit to fit a constrained space.
 
-### What should I look for when replacing my USB device?
+### What kind of USB device do I need?
 
-USB flash devices have become almost universal on store shelves. They come in different capacities, use different USB protocols, read and write data at varying speeds, come in all shapes and sizes and, most importantly, have different lifespans.
+USB flash devices have become almost universal across store shelves. They come in different capacities, have different USB protocols, read and write data at varying speeds, come in all shapes and sizes and, most importantly, have different lifespans.
 
-Like most servers, this particular piece of hardware should focus on durability and reliability. Speed is not normally an issue for Unraid, as it runs from RAM once booted. USB 2.0 devices are typically recommended over USB 3.0 as they tend to be more reliable and universally recognized by computers. Capacity is not a key factor, so long as you keep the minimum space requirements, which is 2 GB in the current version of Unraid.
+Like most servers, this particular piece of hardware should focus on durability and reliability. Unlike most server hardware, speed is not a primary concern for Unraid, as it runs from RAM once booted. Based on our experience:
+
+* USB 2.0 devices are typically recommended over USB 3.0 as they tend to be more reliable and universally recognized by computers.
+* The USB device must contain a GUID in its programmable ROM.
+* Capacity is not a key factor but there is a minimu space requirement: 2 GB in the current version of Unraid.
+* Physical size is only relevant when it comes to your server's physical location and setup.
+* Using a reputable brand, from a reputable vendor, offers some reassurance of durability, but not every vendor is the same.
 
 :::tip
 
-Do you want to select the *best Flash device for Unraid?* [See this video!](https://www.youtube.com/watch?v=jjkaidlZmgs)
+Do you want to select the *best flash device for Unraid?* [See this video!](https://www.youtube.com/watch?v=jjkaidlZmgs)
 
 :::
 
-Prior to replacing the current flash, it may be worthwhile to shut down your server, remove the flash, and insert it into a Windows or Mac computer. Using Windows Scandisk or Disk Utilities in Mac, you should be able to try to "repair" the existing flash. If this operation works, you may want to consider continuing the use of the flash. If you've done this before and are still having issues with your flash, then replacement is probably necessary.
+## Before you replace your USB flash device
+
+Before replacing the current flash device, it may be worthwhile to carry out some diagnostics.
+
+Shut down your server, securely remove the flash device, and insert it into a Windows or Mac computer. Using Windows Scandisk or Disk Utilities on Mac, you should be able to try to identify errors or even repair the data on the device. A common scenario for this is if you recently experienced a power outage. A power outage will cause delayed write operations to be incomplete, resulting in misallocated data on the device. This can usually be fixed with the method above.
+
+If the disk maintenance operation works, you may want to consider continuing the use of the flash device as it is not currently failing. However, if you've done this before and are still having issues with your flash device, then replacement is recommended.
 
 ### Recommendations on buying USB drives
 
-We recommend that you always buy USB drives from reputable retailers and do your best to avoid internet marketplaces or second-hand devices, as these do not offer the necessary guarantees that your device meets the criteria to boot Unraid.
+The first step is to acquire a new USB flash device. We recommend that you always buy USB drives from reputable retailers and do your best to avoid internet marketplaces or use second-hand devices, as these do not offer the necessary guarantees that your device meets the criteria to boot and maintain Unraid operations over the course of time.
 
-Even well-known brands have been the target of counterfeiting by malicious actors. Please see the forum announcement below regarding an unfortunate level of counterfeit SanDisk USBs on the market: [PSA on SanDisk USBs](https://forums.unraid.net/topic/119052-psa-on-sandisk-usbs/)
-
-At this time, we cannot officially recommend SanDisk USBs due to the issue of generic GUIDs found in knock off/counterfeit units.
+Even well-known brands have been the target of counterfeiting by malicious actors. Please see [this forum announcement](https://forums.unraid.net/topic/119052-psa-on-sandisk-usbs/) on the matter of counterfeit SanDisk USBs on the market. Due to this, at this time, we cannot officially recommend SanDisk USBs due to the issue of generic GUIDs found in knock off/counterfeit units.
 
 ## Replace the USB flash device
 
-There are two ways to swap out your USB flash device. If you are using a PC or Mac, you should use the [USB Flash Creator tool](https://unraid.net/download) for the easiest and most streamlined experience. The second method, if you are using a Linux system or if the USB Flash Creator tool is not working for some reason, [use the legacy method](#manual-method).
+There are two ways to swap out your USB flash device. If you are using a PC or Mac, you should use the [USB Flash Creator tool](https://unraid.net/download) for the easiest and most streamlined experience. The second method, if you are using a Linux system or if the USB Flash Creator tool is not working for some reason, is to [use the legacy method](#manual-method).
 
-### Back up your flash drive
+### Backing up your flash drive
 
-The first step is the have a full backup of your original Unraid OS USB flash boot device. It is **highly recommended** that you always have an up-to-date backup of your Unraid USB flash device.
+The next step is to create a full backup of your original Unraid OS USB flash boot device. It is **highly recommended** that you always have an up-to-date backup of your Unraid USB flash device.
 
-#### Back up from the WebGUI
+#### Back up your USB device using the Unraid WebGUI
 
-To back up your Flash drive:
+To back up your Flash drive in Unraid:
 
 1. In the ***Main*** tab select the **Flash** device from the boot device list.
 2. Under **Flash Device Settings**, select the **FLASH BACKUP** button to download a fully zipped backup of your current flash drive to your Mac or PC.
 
 ![Flash backup](../assets/Backup_flash_drive.png)
 
-#### Back up with Unraid Connect
+#### Back up you USB device using Unraid Connect
 
 Alternatively, you can use [Unraid Connect](../../connect/help.md) to back up your Flash boot device.
 
 1. In the Unraid WebGUI, select the Unraid logo in the top-right corner.
-2. Select ***Go to Connect***.
-3. If asked, log into Unraid Connect with your Unraid account credentials (not the Unraid server ones). The Unraid Connect dashboard displays.
+2. Select ***Go to Connect***. Alternatively, navigate to https://connect.myunraid.net/.
+3. If asked, log into Unraid Connect with your Unraid account credentials (not the Unraid server ones). The Unraid Connect dashboard opens.
 4. On the server you wish to back up, select ***Details***.
-5. On the Server Details screen, locate the ***Flash Backup*** tile.
+5. On the ***Server Details*** screen, locate the **Flash Backup** tile.
 6. Select **Generate Backup** to download a backup ZIP file of your USB device content.
 
 :::note
@@ -73,7 +83,7 @@ You may need to allow notifications and pop-ups on your browser to enable the au
 
 :::
 
-### What if I can't backup my device?
+#### What if I can't backup my device?
 
 In the event that your flash device has failed and you do not have a backup, you can still reconfigure Unraid on a new flash device and transfer your registration key to that device.
 
