@@ -71,11 +71,11 @@ To back up your Flash drive in Unraid:
 Alternatively, you can use [Unraid Connect](../../connect/help.md) to back up your Flash boot device.
 
 1. In the Unraid WebGUI, select the Unraid logo in the top-right corner.
-2. Select ***Go to Connect***. Alternatively, navigate to https://connect.myunraid.net/.
+2. Select ***Go to Connect***. Alternatively, navigate to <https://connect.myunraid.net/>.
 3. If asked, log into Unraid Connect with your Unraid account credentials (not the Unraid server ones). The Unraid Connect dashboard opens.
 4. On the server you wish to back up, select ***Details***.
 5. On the ***Server Details*** screen, locate the **Flash Backup** tile.
-6. Select **Generate Backup** to download a backup ZIP file of your USB device content.
+6. Select **Generate Backup** to download a ZIP file of your USB device content.
 
 :::note
 
