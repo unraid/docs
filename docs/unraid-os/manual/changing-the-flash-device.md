@@ -25,15 +25,9 @@ Like most servers, this particular piece of hardware should focus on durability 
 
 * USB 2.0 devices are typically recommended over USB 3.0 as they tend to be more reliable and universally recognized by computers.
 * The USB device must contain a GUID in its programmable ROM.
-* Capacity is not a key factor but there is a minimum space requirement: 2 GB in the current version of Unraid.
+* Capacity is not a key factor, but the USB device should have 2 GB minimum size, and 32 GB maximum, in the current version of Unraid.
 * Physical size is only relevant when it comes to your server's physical location and setup.
 * Using a reputable brand, from a reputable vendor, offers some reassurance of durability, but not every vendor is the same.
-
-:::tip
-
-Do you want to select the *best flash device for Unraid?* [See this video!](https://www.youtube.com/watch?v=jjkaidlZmgs)
-
-:::
 
 ## Before you replace your USB flash device
 
@@ -47,7 +41,13 @@ If the disk maintenance operation works, you may want to consider continuing the
 
 The first step is to acquire a new USB flash device. We recommend that you always buy USB drives from reputable retailers and do your best to avoid internet marketplaces or use second-hand devices, as these do not offer the necessary guarantees that your device meets the criteria to boot and maintain Unraid operations over the course of time.
 
-Even well-known brands have been the target of counterfeiting by malicious actors. Please see [this forum announcement](https://forums.unraid.net/topic/119052-psa-on-sandisk-usbs/) on the matter of counterfeit SanDisk USBs on the market. Due to this, at this time, we cannot officially recommend SanDisk USBs due to the issue of generic GUIDs found in knock off/counterfeit units.
+Even well-known brands have been the target of counterfeiting by malicious actors. Please see [this forum announcement](https://forums.unraid.net/topic/119052-psa-on-sandisk-usbs/) on the matter of counterfeit SanDisk USB drives on the market. Due to this, at this time, we cannot officially recommend SanDisk USBs due to the issue of generic GUIDs found in knock-off / counterfeit units.
+
+:::tip
+
+Do you want to select the *best flash device for Unraid?* [See this video!](https://www.youtube.com/watch?v=jjkaidlZmgs)
+
+:::
 
 ## Replace the USB flash device
 
@@ -63,25 +63,9 @@ To back up your Flash drive in Unraid:
 
 1. In the ***Main*** tab select the **Flash** device from the boot device list.
 2. Under **Flash Device Settings**, select the **FLASH BACKUP** button to download a fully zipped backup of your current flash drive to your Mac or PC.
-
 ![Flash backup](../assets/Backup_flash_drive.png)
 
-#### Back up you USB device using Unraid Connect
-
-Alternatively, you can use [Unraid Connect](../../connect/help.md) to back up your Flash boot device.
-
-1. In the Unraid WebGUI, select the Unraid logo in the top-right corner.
-2. Select ***Go to Connect***. Alternatively, navigate to <https://connect.myunraid.net/>.
-3. If asked, log into Unraid Connect with your Unraid account credentials (not the Unraid server ones). The Unraid Connect dashboard opens.
-4. On the server you wish to back up, select ***Details***.
-5. On the ***Server Details*** screen, locate the **Flash Backup** tile.
-6. Select **Generate Backup** to download a ZIP file of your USB device content.
-
-:::note
-
-You may need to allow notifications and pop-ups on your browser to enable the automatic download of the ZIP file.
-
-:::
+Alternatively, you can use [Unraid Connect](../../connect/help.md#restoring-flash-backup) to back up your Flash boot device.
 
 #### What if I can't backup my device?
 
@@ -108,12 +92,10 @@ The second step in the process, is to use the Unraid USB Flash Creator tool to r
 
 ![USB Creator tool](../assets/Usbcreator.png)
 
-1. Obtain a new good quality USB flash device. This should be at least 2 GB and a max of 32GB (8GB or 16GB seem to be popular choices). USB 2.0 is fine and anecdotally has proved to be more reliable.
+1. Obtain a new good quality USB flash device.
 2. Plug it into your Mac or PC computer and then run the Unraid USB Creator software.
-3. Select the version **Local Zip** then browse to the location of the backup that you created earlier to select the ZIP file.
-
+3. For the version, select **Local Zip**, then browse to the location of the backup that you created earlier to select the ZIP file.
 ![Select version](../assets/Selectversion.png)
-
 4. Next, make sure that you select your new USB Flash device for the destination, then select **Write** and your backup will be restored to the new USB flash device.
 5. Shutdown the server. Remove the original USB flash device and replace it with the new one you have just created. Power on the server.
 6. Once booted the array will not start and you will see the message:
@@ -138,7 +120,7 @@ Finished! You have replaced the USB flash device and the registration key. You w
 
 ### Manual method
 
-Prepare a new flash device using the procedure documented in the [Manual Install Method](../manual/getting-started/manual-install-method.md) guide.
+Prepare a new flash device using the procedure documented in the [Manual Install Method](../getting-started/manual-install-method.md) guide.
 
 1. Before removing the flash from the PC, copy the `boot/config` folder from the backup you made, into the flash drive, overwriting existing files.
 2. Shut down the server. Remove the original USB flash device and replace it with the new one. Power on the server.
@@ -161,7 +143,7 @@ Finished! You have replaced the USB flash device and the registration key. You w
 
 You may replace your original registration key at any time. After replacing your license key once, you may replace your key using the online automated method after a further period of 12 months.
 
-Should you need to replace it again within that 12 month period, please send an email to <licensing@support.unraid.net> to discuss your options. For expedited service, please email in with your old and new USB GUIDs and purchasing email.
+Should you need to replace it again within that 12 month period, use the contact form at <https://unraid.net/contact>. For expedited service, please include in your message the old and new USB GUIDs, as well as the license and email address used at the moment of purchase.
 
 :::important
 
@@ -185,27 +167,18 @@ If you find you have more unmountable drives than you had parity drives then you
 
 This is to avoid any accidents that might result in a data drive getting overwritten with parity information. You can achieve the same effect from the Unraid GUI via the ***Settings > Disk Settings*** option.
 
-3. Go to ***Tools > New Config*** and select the option to create a new array configuration.
+3. Go to ***Tools > New Config*** and select the option to create a new array configuration. At this point there are two ways to proceed:
 
-At this point there are two ways to proceed:
+    * Assign all drives as data drives, then start the array. Once it has started, make a note of the serial numbers of drives showing as unmountable as these are most likely our parity drives.  
 
-### Option 1 - Assign drives as data drives
-
-a. Assign ALL drives as data drives.
-b. Start the array
-c. Make a note of the serial numbers of drives showing as unmountable as these are most likely our parity drives.
-
-### Option 2 - Use the Unassigned Devices plugin
-
-a. Try to mount each drive in turn to see which ones fail to mount.
-b. Make a note of the serial numbers of drives showing as unmountable as these are probably our parity drives.
+    * Use the **Unassigned Devices** plugin to try and mount each drive in turn to see which ones fail to mount. Then, make a note of the serial numbers of drives showing as unmountable as these are probably our parity drives.
 
 Now that you have identified the parity drives then:
 
 4. Go to ***Tools > New Config*** and select the option to create a new array configuration. This time it is advisable to use the option to retain all currently configured drives as this avoids the need to rearrange all drives (and thus reduces the chances of error).
 5. Go to the ***Main*** tab and assign the drives as required with the correct drive(s) assigned as parity.
 6. If you only had a single (`parity1`) drive then the order of the data drives is not important as far as parity is concerned. You can safely tick the **Parity is Valid** checkbox. With dual parity then since the parity1 and parity2 drives use different calculations they are **not** interchangeable so you will need to generate parity from scratch on both drives.
-6. Start the array to commit the drive assignments and you should see all your data drives have mounted and their contents are intact.
-7. If you ticked the **Parity is Valid** checkbox then run a correcting parity check to make sure this was a valid assumption.
+7. Start the array to commit the drive assignments and you should see all your data drives have mounted and their contents are intact.
+8. If you ticked the **Parity is Valid** checkbox then run a correcting parity check to make sure this was a valid assumption.
 
 The above process will not necessarily mean the data drives are in the same order so if you have any shares that have specific drive include/exclude then you will need to look at the contents of the individual data drives to make sure these are as you want them (and correct them if not).

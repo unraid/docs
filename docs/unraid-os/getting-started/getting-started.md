@@ -1,5 +1,5 @@
 ---
-sidebar_position: 2
+sidebar_position: 1
 ---
 
 # Getting started
@@ -13,7 +13,7 @@ Before you begin:
 * You should have your server assembled and connected via power and Ethernet.
 * You should have a monitor and keyboard attached for the initial configuration and to be ready to alter configuration settings in your
   BIOS.
-* You will also need a high-quality, named-brand USB flash device that is 2GB or larger that must contain a unique GUID (Globally Unique Identifier).
+* You will also need a high-quality, named-brand [USB flash device](../manual/changing-the-flash-device.md#recommendations-on-buying-usb-drives) that is at least 2 GB in size, but no larger than 32 GB, that must contain a unique GUID (Globally Unique Identifier).
 * Your system must be capable of booting from a USB device.
 
 ### Hardware requirements
@@ -27,7 +27,9 @@ As of the [current release](https://unraid.net/product) of Unraid OS, the minimu
 
 :::important
 
-Plan ahead for any containers or VMs you want to add to your Unraid server, consider the hardware requirements of each one, and what their own requirements are. For example, if you add a Windows 11 virtual machine to Unraid, you must meet the minimum requirements for that OS, on top of those required for Unraid, to maintain functionality.
+Plan ahead for any containers or VMs you want to add to your Unraid server, consider the hardware requirements for each one. For example, if you add a Windows 11 virtual machine to Unraid, you must meet the minimum requirements for that OS, in addition to those required for Unraid, to maintain functionality.
+
+Virtual Machines, in particular, require that you have a CPU and chipset combination that supports hardware virtualization. In the enterprise space these are usually identified by the Intel VPro® or AMD Ryzen Pro® badge.
 
 :::
 

@@ -208,7 +208,7 @@ For more general BIOS suggestions on getting a machine to boot the USB
 flash drive, check
 [here](http://www.weethet.nl/english/hardware_bootfromusbstick.php),
 near the bottom of the page. Also see
-[here](/unraid-os/manual/getting-started/getting-started.md#advanced-bios-configuration-guide)
+[here](../../unraid-os/getting-started/getting-started.md)
 
 ## If the Flash will not boot, read over the following tips
 

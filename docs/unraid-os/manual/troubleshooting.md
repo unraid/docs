@@ -221,9 +221,7 @@ _MORE DETAIL NEEDED_
 
 ### Preparing the flash drive
 
-This is covered under the [Getting
-Started](getting-started/getting-started.md) section of the
-documentation.
+This is covered under the [Getting Started](../getting-started/getting-started.md) section of the documentation.
 
 If for any reason you decide that you need to redo the flash drive then
 it is a good idea to make sure you first backup the current flash drive
