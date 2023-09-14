@@ -10,7 +10,6 @@ To reset your Unraid server password you'll need access to another computer:
 4. Locate and delete the files `config/shadow` and `config/smbpasswd` (do **not** delete `config/passwd`). This will reset all user passwords, including the root user, to blank entries.
 5. Securely eject your USB device and connect it to the Unraid server again.
 6. Boot up the Unraid server and it will ask you to set up a new password, as if you'd just completed a first boot of Unraid.
-7. (Optional) If you have any user accounts configured in ***Users > Shares Access*** (or ***Settings > Users***), select each user and enter a new password. Be sure to select **Change** after this.
+7. (Optional) If you have any user accounts configured in ***Users > Shares Access*** (or ***Settings > Users > Shares Access***), select each user and enter a new password. Be sure to select **Change** after this.
 
 Your server passwords are reset and your server is secured.
-
