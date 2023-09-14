@@ -227,10 +227,14 @@ const config = {
             to: "/legacy/FAQ/shrink-array/",
             from: "/legacy/FAQ/Shrink_array/",
           },
-          // move Getting Started page
+          // move Getting Started pages
           {
           to: "/unraid-os/getting-started/",
           from: "/unraid-os/manual/getting-started/",
+          },
+          {
+          to: "/unraid-os/getting-started/manual-install-method/",
+          from: "/unraid-os/manual/getting-started/manual-install-method/",
           },
         ],
       },
