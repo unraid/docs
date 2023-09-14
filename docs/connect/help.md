@@ -152,36 +152,23 @@ that you want to include in the backup, please put them in
 files but not the application files, as those will automatically be
 downloaded when you reboot.
 
-### Restoring Flash Backup
+### Restoring a Flash Backup
 
-1. Login to Unraid Connect.
-2. Select Details.
+1. Log in to Unraid Connect.
+2. Select **Details**.
 3. Click **Generate flash backup** from the Flash backup tile.
-4. This will combine your OS configuration data with the OS release
-   version you were running and put them both into a zip file that can
-   be used with our flash creator tool to restore the backup to a new
-   flash device.
-5. After the backup has been generated, you can click **Download flash
-   backup** to obtain it.
-6. Use the Unraid USB Flash Creator to restore your backup to a new
-   flash drive.
+4. This will combine your OS configuration data with the OS release version you were running and put them both into a zip file that can be used with our flash creator tool to restore the backup to a new flash device.
+5. After the backup has been generated, you can click **Download flash backup** to obtain it.
+6. Use the Unraid USB Flash Creator to restore your backup to a new flash drive.
 
-===Additional Steps Required=== Once you boot the OS, there are only a
-few things you will need to reconfigure:
+#### Additional Steps Required
 
-1. On the Settings -\> Management Access -\> Unraid.net page, click to
-   Activate your flash backup again.
-2. On the Users page, for each user (including root), you will need to
-   reset your passwords.
-3. On the Settings \> VPN Manager page, for each tunnel and peer:
-   - Click the key icon. Click "Generate Keypair" and "Generate Key",
-     start each tunnel, then download the new client configuration to
-     each associated client device.
-4. If your server does not have Internet access when you reboot then
-   you will need to go to Community Apps -\> Previous Apps and
-   reinstall your plugins once you have Internet access. The
-   configuration files will be on your system ready to use once the
-   application files have been installed.
+Once you boot the OS, there are only a few things you will need to reconfigure:
+
+1. On the ***Settings > Management Access > Unraid.net*** page, click to activate your flash backup again.
+2. On the Users page, for each user (including root), you will need to reset your passwords.
+3. On the ***Settings > VPN Manager*** page, for each tunnel and peer select the key icon. Click "Generate Keypair" and "Generate Key", start each tunnel, then download the new client configuration to each associated client device.
+4. If your server does not have Internet access when you reboot then you will need to go to ***Apps > Previous Apps*** and reinstall your plugins once you have Internet access. The configuration files will be on your system ready to use once the application files have been installed.
 
 ## **Server Deep Linking**
 

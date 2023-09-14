@@ -220,10 +220,21 @@ const config = {
       "@docusaurus/plugin-client-redirects",
       {
         redirects: [
+          // reminder: these have no effect in dev mode
+          // see https://docusaurus.io/docs/api/plugins/@docusaurus/plugin-client-redirects
           // file renamed in https://github.com/unraid/docs/commit/570a7e629bef1577d43e188495cb71916e7de360
           {
             to: "/legacy/FAQ/shrink-array/",
             from: "/legacy/FAQ/Shrink_array/",
+          },
+          // move Getting Started pages
+          {
+          to: "/unraid-os/getting-started/",
+          from: "/unraid-os/manual/getting-started/",
+          },
+          {
+          to: "/unraid-os/getting-started/manual-install-method/",
+          from: "/unraid-os/manual/getting-started/manual-install-method/",
           },
         ],
       },
