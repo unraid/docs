@@ -256,10 +256,10 @@ following ways:
 - **Changing the order**:
 
 The simplest capability is to simply change the order in which the
-docker containers are listed on the Docker tab. If you use a mouse
-to click-and-hold on the container name then you will find that you
-can use drag-and-drop to move the container to another position in
-the list.
+docker containers are listed on the Docker tab. Unlock the padlock 
+then use a mouse to click-and-hold on the container name, then you
+will find that you can use drag-and-drop to move the container to
+another position in the list.
 
 - **Adding wait times**:
 
