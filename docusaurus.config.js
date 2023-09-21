@@ -250,7 +250,7 @@ const config = {
           },
           {
             to: "/unraid-os/overview/",
-            from: " /unraid-os/overview/what-is-unraid/",
+            from: "/unraid-os/overview/what-is-unraid/",
           },
         ],
       },
