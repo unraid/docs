@@ -238,7 +238,20 @@ const config = {
           {
             to: "/account/",
             from: "/unraid-os/faq/unraid-account/",
-          }
+          },
+          // move User and Overview pages
+          {
+            to: "/unraid-os/guides/reset-password/",
+            from: "/unraid-os/manual/users/reset-password/",
+          },
+          {
+            to: "/unraid-os/manual/what-is-unraid/",
+            from: "/unraid-os/overview/what-is-unraid/",
+          },
+          {
+            to: "/unraid-os/overview/",
+            from: " /unraid-os/overview/what-is-unraid/",
+          },
         ],
       },
     ],
