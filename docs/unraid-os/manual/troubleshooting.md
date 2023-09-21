@@ -429,22 +429,20 @@ To reset the management password use the following process:
 2. While there it is a good idea to run a check on the flash drive and
    make a backup of its contents
 3. Delete these files:
-   - config/passwd
-   - config/shadow
-   - config/smbpasswd
+   - `config/passwd`
+   - `config/shadow`
+   - `config/smbpasswd`
 
 4. Plug the flash back into the server and start up again.
 
-Note that this will reset **all** user passwords including 'root' user
-to null (blank).
+Note that this will reset **all** user passwords including the `root` user to null (blank).
 
-There is an alternative procedure that can be used for just resetting
-the root password (but is a little more prone to error):
+There is an alternative procedure that can be used for just resetting the root password (but is a little more prone to error):
 
 1. Plug the USB drive into another computer
 2. Bing up an editor (such as Notepad++) on the following file:
 
-   - /boot/config/shadow
+   - `/boot/config/shadow`
 
 3. On the first line you should see something such as:
 

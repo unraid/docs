@@ -34,7 +34,7 @@ Each protocol can be configured at the share level. On the **Shares** tab, selec
 
 ## Share security
 
-Share security determines how a share enables user access. If you need, a share may request user credentials to allow read/write access, or may be publicly available.
+Share security determines how a share enables user access. If you need, a share may request user credentials to allow access for read/write operations, read-only, or may be publicly available.
 
 For example, you may configure a `movies` share on your Unraid server to request a valid username and password, just to read data from that share. You can also make it public, which requires no user credentials.
 
@@ -46,7 +46,7 @@ The **Security** setting has the following options:
 * **Secure** - The share is secured and all users, including guests, have read access. You can select which of your users have write access.
 * **Private** - The share is private, and you select which of your users have access. You can then pick if that user has read/write or read-only access.
 
-:::caution Windows 'Gotcha'
+:::caution The Windows 'Gotcha'
 
 There is an issue with the way Windows handles network shares: Windows only allows a single set of credentials to be in use on any one server. Any attempts to connect to a different share on the same server, that requires a different set of credentials, and that is not a public share, automatically fails.
 
