@@ -236,6 +236,19 @@ const config = {
           to: "/unraid-os/getting-started/manual-install-method/",
           from: "/unraid-os/manual/getting-started/manual-install-method/",
           },
+          // move User and Overview pages
+          {
+            to: "/unraid-os/guides/reset-password/",
+            from: "/unraid-os/manual/users/reset-password/",
+          },
+          {
+            to: "/unraid-os/manual/what-is-unraid/",
+            from: "/unraid-os/overview/what-is-unraid/",
+          },
+          {
+            to: "/unraid-os/overview/",
+            from: " /unraid-os/overview/what-is-unraid/",
+          },
         ],
       },
     ],
