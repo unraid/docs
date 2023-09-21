@@ -233,7 +233,20 @@ const config = {
           {
             to: "/unraid-os/release-notes/6.12.8/",
             from: "/unraid-os/release-notes/6.12.7/",
-          }
+          },
+          // move User and Overview pages
+          {
+            to: "/unraid-os/guides/reset-password/",
+            from: "/unraid-os/manual/users/reset-password/",
+          },
+          {
+            to: "/unraid-os/manual/what-is-unraid/",
+            from: "/unraid-os/overview/what-is-unraid/",
+          },
+          {
+            to: "/unraid-os/overview/",
+            from: " /unraid-os/overview/what-is-unraid/",
+          },
         ],
       },
     ],
