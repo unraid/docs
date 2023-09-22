@@ -415,45 +415,7 @@ cause of a boot failure:
 
 ### Lost root Password
 
-Occasionally users lose their password for managing Unraid via the
-Unraid webGUI or console. This may be that they simply forgot the
-password, but corruption of the flash drive can also result in the
-password not being recognized.
-
-_Passwords for shares can be changed/reset from the Unraid webGUI._
-
-To reset the management password use the following process:
-
-1. Shutdown server and then plug the USB boot flash device into a PC or
-   Mac
-2. While there it is a good idea to run a check on the flash drive and
-   make a backup of its contents
-3. Delete these files:
-   - `config/passwd`
-   - `config/shadow`
-   - `config/smbpasswd`
-
-4. Plug the flash back into the server and start up again.
-
-Note that this will reset **all** user passwords including the `root` user to null (blank).
-
-There is an alternative procedure that can be used for just resetting the root password (but is a little more prone to error):
-
-1. Plug the USB drive into another computer
-2. Bing up an editor (such as Notepad++) on the following file:
-
-   - `/boot/config/shadow`
-
-3. On the first line you should see something such as:
-
-   `root:\$&\$&%\*1112233484847648DHD\$%.:15477:0:99999:7:::`
-
-4. Change that line to the following (essentially delete the content
-   between the first and second colons):
-
-   `root::15477:0:99999:7:::`
-
-5. Plug flash back into server and start up again.
+See [Resetting your Unraid password](./users/reset-password.md).
 
 ### Lost boot drive and do not know which are the parity drives
 
