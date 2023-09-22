@@ -10,16 +10,16 @@ You can manage existing user accounts on your Unraid server, change share permis
 
 You can modify a user account in Unraid if the user has forgotten their password, or if you need a more direct way of changing shared folder access, for example.
 
-1. Navigate to the ***Users*** menu, and select the name of the user account you want to modify.
+1. Navigate to ***Users > Shares Access*** (or ***Settings > Users > Shares Access***), and select the name of the user account you want to modify.
 2. *(Optional)* In the **Edit User** screen, modify any field that you want, except the **User name**. If you want to set a new **Password** for this user, simply enter a new one and retype it in the **Retype password**.
-3. *(Optional)* At the bottom of the screen Unraid displays a list of shares to which the user has been given access. You can change the **USER ACCESS** settings for any listed shares. However, you cannot add new ones.
-4. Select **APPLY** to save your changes.
+3. *(Optional)* At the bottom of the screen Unraid displays a list of shares to which the user has been given access. You can change the **User Access** settings for any listed shares. However, you cannot add new ones.
+4. Select **Apply** to save your changes.
 
 ## Delete a user account
 
 You can easily remove a user account in Unraid, when it is no longer needed.
 
 1. Navigate to the ***Users*** menu, and select the name of the user account you want to delete.
-2. Tick the **Delete** checkbox. The **APPLY** button switches to a **DELETE** button.
-3. Select **DELETE** to delete the user. A confirmation dialog confirms the user deletion.
-4. Select **DONE**.
+2. Tick the **Delete** checkbox. The **Apply** button switches to a **Delete** button.
+3. Select **Delete** to delete the user. A confirmation dialog confirms the user deletion.
+4. Select **Done**.

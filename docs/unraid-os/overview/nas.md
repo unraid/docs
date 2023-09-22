@@ -8,7 +8,7 @@ At its core, Unraid is a hardware-agnostic solution that can turn almost any 64-
 
 ## Parity-protected array
 
-The primary purpose of an Unraid array is to manage and protect the data of any group of drives (JBOD) by adding up to two dedicated parity drives. A parity drive provides a way to reconstruct all of the data from a failed drive onto a replacement. Amazing as it seems, a single parity drive can add protection for all of the others! In Unraid, parity is always maintained in real-time. You can find more detail on the access pattern to the drives in [Storage Management](./storage-management.md), together with performance implications.
+The primary purpose of an Unraid array is to manage and protect the data of any group of drives (JBOD) by adding up to two dedicated parity drives. A parity drive provides a way to reconstruct all of the data from a failed drive onto a replacement. Amazing as it seems, a single parity drive can add protection for all of the others! In Unraid, parity is always maintained in real-time. You can find more detail on the access pattern to the drives in [Storage Management](../manual/storage-management.md), together with performance implications.
 
 The contents of a hard drive can be thought of as a very long stream of bits, each of which can only be a zero or a one. If you sum the values of the nth bit on every drive and determine whether that sum is even or odd, then you can force the corresponding nth parity bit to also be even or odd (zero or one). If a data drive fails, that parity information can now be used to deduce the exact bit values of the failed drive, and perfectly rebuild it on a replacement drive. Here's an example:
 
