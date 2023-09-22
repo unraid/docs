@@ -36,7 +36,7 @@ Each protocol can be configured at the share level. On the **Shares** tab, selec
 
 Share security determines how a share enables user access. If you need, a share may request user credentials to allow access for read/write operations, read-only, or may be publicly available.
 
-For example, you may configure a `movies` share on your Unraid server to request a valid username and password, just to read data from that share. You can also make it public, which requires no user credentials.
+For example, you may configure a `movies` share on your Unraid server to request a valid username and password, just to read data from that share. You can also make it public, which requires no user credentials. A `root` user can create share users, following [this procedure](../users/create-user.md).
 
 When you select an existing share on the **Shares** tab the share settings display. Here, you can find a security section that enables you to control access to the share, for each of the protocols [you have enabled](#access-permissions-at-share-level).
 

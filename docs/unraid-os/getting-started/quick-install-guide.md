@@ -45,7 +45,8 @@ Strong passwords are unique (not reused), have at least 8 characters (the more t
 
 :::tip
 
-If you happen to forget your root password, the steps to reset it can be found [here](../guides/reset-password.md).
+If you happen to forget your root password, the steps to reset it can be found [here](../manual/users/reset-password.md).  
+If you know your root password, but want to change it to something more secure, you can follow [these steps](../manual/users/manage-user.md#modify-a-user-account).
 
 :::
 
