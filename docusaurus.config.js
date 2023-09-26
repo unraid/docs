@@ -237,10 +237,10 @@ const config = {
             from: "/unraid-os/manual/getting-started/manual-install-method/",
           },
           // User and Overview sections redirects
-          {
-            to: "/unraid-os/manual/users/reset-password/",
-            from: "/unraid-os/manual/troubleshooting/#lost-root-password",
-          },
+          //{
+          //  to: "/unraid-os/manual/users/reset-password/",
+          //  from: "/unraid-os/manual/troubleshooting/#lost-root-password",
+          //},
           {
             to: "/unraid-os/overview/what-is-unraid/",
             from: "/unraid-os/manual/what-is-unraid/",
