@@ -65,13 +65,7 @@ and update parity to reflect this making recovering the data
 impossible/very difficult so do **NOT** do this unless you are happy to
 lose the contents of the drive.
 
-The correct way to proceed in such a case is to follow the procedure for
-[checking and
-repairing](storage-management.md#checking-a-file-system)
-the file system. The vast majority of the time this will repair the disk
-that was previously showing as unmountable and now it will mount
-correctly and all your data will be intact. If you are not sure how to
-proceed then ask a question in the Unraid forums.
+The correct way to proceed in such a case is to follow the procedure for [checking and repairing](../manual/storage-management.md#checking-a-file-system) the file system. The vast majority of the time this will repair the disk that was previously showing as unmountable and now it will mount correctly and all your data will be intact. If you are not sure how to proceed then ask a question in the Unraid forums.
 
 ## Lost Array Configuration
 
@@ -127,9 +121,7 @@ a significant change.
 
 ## Using _ddrescue_ to recover data from a failing disk
 
-In normal use, a tailed/disabled disk is recovered under Unraid using
-the [Replacing
-Disks](storage-management.md#replacing-disks) procedure.
+In normal use, a tailed/disabled disk is recovered under Unraid using the [Replacing Disks](../manual/storage-management.md#replacing-disks) procedure.
 
 Occasionally it can happen due to a variety of reasons, like a disk
 failing while parity is invalid or two disks failing with single parity,

@@ -200,7 +200,7 @@ cause of a boot failure:
 
 ## Lost root Password
 
-See [Resetting your Unraid password](./users/reset-password.md).
+See [Resetting your Unraid password](../manual/users/reset-password.md).
 
 ## Lost boot drive and do not know which are the parity drives
 
