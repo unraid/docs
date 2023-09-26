@@ -238,12 +238,12 @@ const config = {
           },
           // User and Overview sections redirects
           {
-            to: "/unraid-os/guides/reset-password/",
-            from: "/unraid-os/manual/users/reset-password/",
+            to: "/unraid-os/manual/users/reset-password/",
+            from: "/unraid-os/guides/reset-password/",
           },
           {
-            to: "/unraid-os/manual/what-is-unraid/",
-            from: "/unraid-os/overview/what-is-unraid/",
+            to: "/unraid-os/overview/what-is-unraid/",
+            from: "/unraid-os/manual/what-is-unraid/",
           },
           {
             to: "/unraid-os/overview/",
