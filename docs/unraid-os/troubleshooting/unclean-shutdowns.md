@@ -2,7 +2,7 @@
 sidebar_position: 4
 ---
 
-# Unclean Shutdowns
+# Unclean shutdowns
 
 Sometimes when booting up the system and starting the array a parity check is automatically started due to an unclean shutdown. An unclean shutdown occurs when Unraid records the array was not successfully stopped when the system was last powered off. 
 
