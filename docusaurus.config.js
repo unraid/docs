@@ -229,12 +229,12 @@ const config = {
           },
           // move Getting Started pages
           {
-          to: "/unraid-os/getting-started/",
-          from: "/unraid-os/manual/getting-started/",
+            to: "/unraid-os/getting-started/",
+            from: "/unraid-os/manual/getting-started/",
           },
           {
-          to: "/unraid-os/getting-started/manual-install-method/",
-          from: "/unraid-os/manual/getting-started/manual-install-method/",
+            to: "/unraid-os/getting-started/manual-install-method/",
+            from: "/unraid-os/manual/getting-started/manual-install-method/",
           },
           // User and Overview sections redirects
           {
