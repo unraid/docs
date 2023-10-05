@@ -84,6 +84,12 @@ const config = {
         searchPagePath: 'search',
       },
       colorMode: { defaultMode: "dark", respectPrefersColorScheme: true },
+      docs: {
+        sidebar: {
+          hideable: true,
+          autoCollapseCategories: true,
+        },
+      },
       image: "img/meta-unraid.png",
       metadata: [
         {
@@ -241,18 +247,14 @@ const config = {
           },
           // move User and Overview pages
           // User and Overview sections redirects
-          //{
-          //  to: "/unraid-os/manual/users/reset-password/",
-          //  from: "/unraid-os/manual/troubleshooting/#lost-root-password",
-          //},
+          {
+            to: "/unraid-os/manual/users/reset-password/",
+            from: "/unraid-os/manual/troubleshooting/",
+          },
           {
             to: "/unraid-os/overview/what-is-unraid/",
             from: "/unraid-os/manual/what-is-unraid/",
           },
-          //{
-          //  to: "/unraid-os/overview/",
-          //  from: "/unraid-os/overview/what-is-unraid/",
-          //},
           //Troubleshooting section redirect
           {
             to: "/unraid-os/troubleshooting/",
