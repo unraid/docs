@@ -10,7 +10,11 @@ In Unraid 6.12.4 it looks like this:
 
 ![WebGUI](../assets/webgui.png)
 
-The WebGUI is composed of different navigation elements that give you access to different aspects of the server management:
+The WebGUI is composed of different navigation elements that give you access to different aspects of the server management. These are:
+
+* The navigation bar (and system shortcuts)
+* Your account options
+* The status bar
 
 ## Navigation bar
 
@@ -61,7 +65,7 @@ The **Settings** screen lets you to manage all the system settings on your Unrai
 
 ### Plugins
 
-The **Plugins** screen displays all the plugins you have installed on your Unraid server. Plugins extend the functionality of Unraid and are covered in our [Community Applications documentation](../manual/applications#plugins).
+The **Plugins** screen displays all the plugins you have installed on your Unraid server. Plugins extend the functionality of Unraid and are covered in our [Community Applications documentation](../manual/applications.md#plugins).
 
 ### Docker
 
@@ -71,7 +75,7 @@ The **Docker** screen displays  all the containers you have installed from Commu
 
 :::note
 
-If your Unraid server meets the hardware virtualization requirements, this option displays in the navigation bar. Otherwise, this option will not be visible.
+If your Unraid server meets the [hardware virtualization requirements](../manual/vm-management/#determining-hvmiommu-hardware-support), this option displays in the navigation bar. Otherwise, this option will not be visible.
 
 :::
 
@@ -81,15 +85,15 @@ The **VMs** screen lets you manage VMs on your Unraid server. Any VMs you have c
 
 The **Apps** screen, otherwise known as the Community Applications, is the official source for Unraid applications.
 
-As the name implies, Community Applications provides community-sourced applications in the form of plugins and docker containers, that extend Unraid functionality beyond that of a mere NAS.
+As the name implies, Community Applications provides community-sourced applications in the form of plugins and docker containers, that extend Unraid functionality beyond that of a mere NAS. You can read more about this in the [Community Applications section](../manual/applications.md#community-applications).
 
 ### Tools
 
-The **Tools* screen provides a number of tools to manage Unraid OS, the WebGUI presentation, and system updates.
+The **Tools* screen provides a number of tools to manage Unraid OS, customization of the WebGUI visuals, and system updates.
 
-### Additional options
+### System shortcuts
 
-The navigation bar also displays, on the right-hand side of the screen, shortcuts to a number of Unraid features, including:
+On the right-hand side of the screen, the navigation bar displays shortcuts for a number of Unraid features, including:
 
 * Logout - select this option to immediately log out of the Unraid server.
 * Terminal - select this to open a terminal window.
@@ -104,12 +108,12 @@ The navigation bar also displays, on the right-hand side of the screen, shortcut
 
 ![Account options](../assets/account-options.png)
 
-In the top-right corner of the WebGUI, next to your serve name, you can find a hamburger menu. This menu provides options to manage your Unraid account and profile, including access to Unraid Connect, license key upgrades, and a logout option.
+In the top-right corner of the WebGUI, next to your server name, you can find a hamburger menu (three stacked horizontal lines). This menu provides options to manage your Unraid account and profile, including access to Unraid Connect, license key upgrades, and a logout option.
 
-If Unraid is in trial mode, you can also activate your license here.
+If Unraid is in trial mode, you can also redeem your license key from here and activate Unraid as a Basic, Plus, or Pro edition.
 
 ## Status bar
 
 ![Status bar](./../assets/status-bar.png)
 
-The status bar, at the bottom of the WebGUI, provides indicators on the current state of your array and the status of any ongoing operations such as Mover. Some plugins also add functonality to the system tray by displaying key values like system temperatures and others.
+The status bar, at the bottom of the WebGUI, provides indicators on the current state of your array and the status of any ongoing operations such as Mover or parity checks. Some plugins also add functionality to the system tray by displaying key values like system temperatures and others.
