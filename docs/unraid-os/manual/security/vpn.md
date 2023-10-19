@@ -58,7 +58,7 @@ More information about WireGuard can be found on the [WireGuard website](https:/
 What can you do with WireGuard? Let's walk you through each of the connection types:
 
 * **Remote access to server**: Use your phone or computer to remotely access your Unraid server, including:
-  * Unraid administration via the webGUI.
+  * Unraid administration via the WebGUI.
   * Access Docker containers, VMs, and network shares as though you were physically connected to the network.
 * **Remote access to LAN**: Builds on "Remote access to server", allowing you to access your entire LAN as well.
 * **Server to server access**: Allows two Unraid servers to connect to each other.
@@ -227,7 +227,7 @@ A few other troubleshooting ideas:
 * If you are using Cloudflare for DDNS, be sure to configure the Cloudflare **Proxy status** to *DNS only* and not *Proxied*. Note that this change takes some time to take effect.
 * If you can connect from some locations but not others, keep in mind that the "broken" remote locations may have a firewall that blocks UDP traffic. Hopefully, WireGuard will support TCP in the future but, at the moment, there is no workaround for this.
 * If nothing is working properly, switch to **Advanced** mode and confirm that the **Local tunnel network pool** is not already in use on your network or on one of the networks you are connecting to. If there is a conflict, you will need to change it to a different private network (`10.0.0.0` to `10.255.255.255` \| `172.16.0.0` to `172.31.255.255` \| `192.168.0.0` to `192.168.255.255`).
-* If you can't reach the Unraid webGUI for some reason and you need to prevent a WireGuard tunnel from automatically starting, delete this file from your flash drive and reboot:
+* If you can't reach the Unraid WebGUI for some reason and you need to prevent a WireGuard tunnel from automatically starting, delete this file from your flash drive and reboot:
   `/boot/config/wireguard/autostart`.
 * Note that if you have Docker containers with custom IPs or VMs with strict networking requirements, you will likely have issues. Please see the [Complex Networks](#complex-networks) section above.
 

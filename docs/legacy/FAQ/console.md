@@ -83,7 +83,7 @@ if you can!**
 ## Console Commands for Hard Drives
 
 The following commands require the Device ID, which you can get from
-the "Main" tab of your webgui. Locate your drive, then look for the Device ID in parentheses. It
+the "Main" tab of your WebGUI. Locate your drive, then look for the Device ID in parentheses. It
 is always 3 lowercase letters, beginning with either **hd** or **sd**,
 eg. _sda_, _sdk_, _hdc_, _hdg_. For simplicity, _sdx_ will be used
 below, and you will substitute the appropriate Device ID for your drive.

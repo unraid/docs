@@ -42,7 +42,7 @@ You can even manage multiple servers from your phone, tablet, laptop, or
 PC in the same browser window.
 
 To install a myunraid.net certificate, head to the _Settings -\>
-Management Access_ page of the Unraid webgui and click "Provision" in
+Management Access_ page of the Unraid WebGUI and click "Provision" in
 the Certificate section, if applicable.
 
 ### A note regarding DNS Rebinding Protection
@@ -55,7 +55,7 @@ work, keep reading.
 Many routers have a security feature known as DNS Rebinding Protection.
 This feature prevents public DNS entries from pointing to local IP
 addresses on your network. Unfortunately, this _feature_ prevents us
-from providing proper SSL access when connecting to the webGui locally.
+from providing proper SSL access when connecting to the WebGUI locally.
 As such, users must either disable this feature on their router or set
 their router to allow DNS rebinding for the myunraid.net domain (if the
 certificate was provisioned in Unraid 6.10) or unraid.net domain (if the
@@ -78,7 +78,7 @@ port is not the default of 443)
 This is required in order to utilize a fully valid SSL certificate. A
 downside is if you temporarily lose Internet access and your browser has
 not cached the DNS for yourpersonalhash.unraid.net, you will be unable
-to access the webgui.
+to access the WebGUI.
 
 If the Internet goes down and you lose access to DNS, do the following:
 
@@ -90,7 +90,7 @@ If the Internet goes down and you lose access to DNS, do the following:
 - If that doesn't work, or if **Use SSL/TLS** is set to **Strict**, then
   using telnet, SSH or local keyboard/monitor log in to the server and
   type: `use_ssl no`
-- Now you will be able to access your server's webgui via:
+- Now you will be able to access your server's WebGUI via:
   [`http://`](http://)<ip_address> (note: http not https) or
   [`http://`](http://)<server_ip>`:`<http_port> (if your http port is
   not the default of 80)
@@ -100,7 +100,7 @@ If the Internet goes down and you lose access to DNS, do the following:
 
 ### How to disable SSL for local access
 
-(If you currently cannot access the webgui, scroll up to the previous
+(If you currently cannot access the WebGUI, scroll up to the previous
 topic.) If you decide you would rather not use the secure
 `https://ip.yourpersonalhash.myunraid.net` url for local access, you can
 disable SSL. There is no need to uninstall the Unraid Connect plugin, in
@@ -172,9 +172,9 @@ Once you boot the OS, there are only a few things you will need to reconfigure:
 
 ## **Server Deep Linking**
 
-Deep linking allows you to manage relevant sections of the Unraid webgui
+Deep linking allows you to manage relevant sections of the Unraid WebGUI
 in one click. Click any of the circled link buttons to take you right to
-the relevant page in the Unraid webgui:
+the relevant page in the Unraid WebGUI:
 ![](./assets/Deep-linking.png)
 
 ## **Customizable Dashboard, Server Banner Image and Themes**

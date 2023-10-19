@@ -28,7 +28,7 @@ Unraid that might lead to system instability
 ## Prerequisites
 
 - A system up and running with Unraid 6 and you are connected via a
-  web browser to the Unraid webGui
+  web browser to the Unraid WebGUI
 - A share created called "appdata" that will be used to store
   application metadata (also often referred to as an application's
   _working set_). Strictly speaking you could use any name for the
@@ -83,7 +83,7 @@ By default, you will have access to any and all applications that Lime
 Technology publishes to its public Docker repository. To add them to
 your system, perform the following steps:
 
-- Click **Add Container** on the **Docker** tab in the webGui.
+- Click **Add Container** on the **Docker** tab in the WebGUI.
 - Click the _Template_ drop-down and select an application.
 - Read the description and instructions for using this application.
 - Click **Create** to begin downloading the application to your system

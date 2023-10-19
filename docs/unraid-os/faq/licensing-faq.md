@@ -23,8 +23,8 @@ Next, follow our [Getting Started guide](../getting-started/getting-started.md) 
 
 Once your server is up and running:
 
-Login to your Unraid server's webgui. (`http://tower` or `http://tower.local` from Mac by default)
-For Unraid 6.10 and newer, Sign in to your Unraid.net account (or create one) from the top-right of the webgui and select "Redeem Activation Code" and enter the activation code to activate your license. For Unraid 6.9 and older, navigate to the Tools -> Registration page in the webGui and click "Purchase Key."
+Login to your Unraid server's WebGUI. (`http://tower` or `http://tower.local` from Mac by default)
+For Unraid 6.10 and newer, Sign in to your Unraid.net account (or create one) from the top-right of the WebGUI and select "Redeem Activation Code" and enter the activation code to activate your license. For Unraid 6.9 and older, navigate to the Tools -> Registration page in the WebGUI and click "Purchase Key."
 Select the corresponding license you purchased via activation code and enter the activation code in the "Your Activation Code" box to complete the activation process. Your registration key will be emailed to you with instructions for installation! Note: Activation Codes are one-time use for generating your Unraid license keyfile.
 If you have any issues or questions with the above, there is also a walk through video: [Activation Code Instructional Video](https://www.loom.com/share/3ceb40440240474aaa80a0b7e3e69cb2)
 
@@ -104,7 +104,7 @@ Next:
 
 Alternately, if your server is running and your flash share is visible
 on the network, navigate to the flash share under Network, and drag the
-registration key file into the config directory. Next, using the webGUI,
+registration key file into the config directory. Next, using the WebGUI,
 **Stop** the array, and then **Start** the array again.
 
 ## I'm getting an error registering my flash device: '####-####-####-#############' is already registered to another user. What do I do?
@@ -148,7 +148,7 @@ wish to continue where you left off._
 ## I'm a Reseller/OEM that needs to Purchase a License on Behalf of my Customer: How do I do that?
 
 You will need to [purchase a license either via the Unraid
-webGui](#how-do-i-purchase-unraid)
+WebGUI](#how-do-i-purchase-unraid)
 or you can [purchase an activation code via the
 website](https://unraid.net/pricing).
 

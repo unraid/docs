@@ -31,7 +31,7 @@ in Time Machine itself.
 
 ## Unraid and Time Machine Setup
 
-Before you begin, make sure **SMB** is enabled in the Unraid webgui by
+Before you begin, make sure **SMB** is enabled in the Unraid WebGUI by
 going to:
 
 1. Settings \--\> SMB under "Network Services"
@@ -43,7 +43,7 @@ going to:
 
 Now:
 
-1. In the Unraid webGUI, go to "Shares" and click "Add Share".
+1. In the Unraid WebGUI, go to "Shares" and click "Add Share".
 2. Name the share (Ex: Time Machine).
 3. Set your minimum free space or leave default. This is the minimum
    free space available to allow writing to any disk belonging to the

@@ -121,7 +121,7 @@ VMs that were previously created using Unraid 6.1 or earlier.
 
 ### Trying to start my VM gives a "Invalid Machine Type" error
 
-If you receive this error, simply edit your VM in the webGui and without
+If you receive this error, simply edit your VM in the WebGUI and without
 making any changes, click "Apply". This will update the VM's machine
 type to the latest version and your VM should start without the error.
 
@@ -129,7 +129,7 @@ type to the latest version and your VM should start without the error.
 
 Some users have replied that their VMs perform poorly after updating to
 6.3. One possible solution could be to update the machine type version
-for your VM. To do this, edit your VM from the VMs tab in the webGui.
+for your VM. To do this, edit your VM from the VMs tab in the WebGUI.
 Turn on "Advanced View" in the top right and look for the **Machine**
 option. Toggle the version to the latest revision and then hit apply (do
 not change the prefix selected, only the version; e.g. if previously you

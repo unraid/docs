@@ -2,7 +2,7 @@
 sidebar_position: 2
 ---
 
-# Securing webGUI connections (SSL)
+# Securing WebGUI connections (SSL)
 
 As of Unraid 6.10, you can improve the security of the SSL implementation for both local access and [Unraid Connect Remote Access](/connect/remote-access.md) using wildcard SSL Certificates provisioned by [Let's Encrypt](https://letsencrypt.org/).
 
@@ -22,7 +22,7 @@ When it comes to SSL security, there are different parameters across the Unraid 
 | **wan-ip** | This is your internet-facing IP address with dots changed to dashes (example 136-26-144-139) |
 | **hash** | This is a random 40 character hex string (160 bits) uniquely assigned to your server when a certificate is first issued |
 
-## How to access the Unraid server webGUI on your LAN
+## How to access the Unraid server WebGUI on your LAN
 
 ### HTTP-only
 
@@ -60,7 +60,7 @@ When you use self-signed certificates, browsers will show a certificate error be
 
 ### HTTPS with Myunraid.net certificate and fallback URL if DNS is unavailable
 
-You can access your server securely via the webGUI using a Myunraid.net certificate, and configure a fallback URL in case your DNS resolution is down. All traffic will be encrypted and the server is configured to fallback to a secondary method when DNS is down.
+You can access your server securely via the WebGUI using a Myunraid.net certificate, and configure a fallback URL in case your DNS resolution is down. All traffic will be encrypted and the server is configured to fallback to a secondary method when DNS is down.
 
 1. Go to ***Settings > Management Access***.
 2. **LocalTLD** should be kept at the default of `local` unless you can provide your own DNS name resolution (this is used for the fallback certificate).
@@ -89,8 +89,8 @@ You can access your server securely via the webGUI using a Myunraid.net certific
 
 If at any point DNS resolution becomes unavailable (e.g., your Internet goes down), you can use Telnet, SSH or local keyboard/monitor to login. Then:
 
-* Type `use_ssl no` to access the webGUI via `http://[servername].[localTLD]` or `http://[ipaddress]`.
-* Type `use_ssl yes` to access the webGUI via `https://[servername].[localTLD]` or `https://[ipaddress]` using a self-signed certificate (See [HTTPS with a self-signed certificate](#https-with-self-signed-certificate) above).
+* Type `use_ssl no` to access the WebGUI via `http://[servername].[localTLD]` or `http://[ipaddress]`.
+* Type `use_ssl yes` to access the WebGUI via `https://[servername].[localTLD]` or `https://[ipaddress]` using a self-signed certificate (See [HTTPS with a self-signed certificate](#https-with-self-signed-certificate) above).
 * Once DNS resolution is available again, change **Use SSL/TLS** back to *Strict*.
 
 :::

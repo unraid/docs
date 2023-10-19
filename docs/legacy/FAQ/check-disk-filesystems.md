@@ -35,7 +35,7 @@
 
 ### Drive names and symbols
 
-- If you will be using the v6 webGui, you don't have to worry about
+- If you will be using the v6 WebGUI, you don't have to worry about
   using the right drive symbol, as it will be automatically and
   correctly selected for you.
 
@@ -104,10 +104,10 @@
   is divided into 5 sections. Please follow only the instructions in
   the correct section for your drive.
 
-- If you are running Unraid v6, you can use the webGui to check and
+- If you are running Unraid v6, you can use the WebGUI to check and
   fix the file system of any data drive. Unless you prefer to work at
   the command line, go to [Checking and fixing drives in the
-  webGui](#checking-and-fixing-drives-in-the-webgui).
+  WebGUI](#checking-and-fixing-drives-in-the-WebGUI).
 
 - If you are running Unraid v4 or v5 or prefer working at the command
   line -
@@ -133,7 +133,7 @@
     BTRFS](#drives-formatted-with-btrfs).
     _But sorry, that section is not really ready yet._
 
-## Checking and fixing drives in the webGui
+## Checking and fixing drives in the WebGUI
 
 The instructions here are designed to check and fix the integrity of the
 file system of a data drive, while maintaining its parity info.
@@ -142,7 +142,7 @@ file system of a data drive, while maintaining its parity info.
 
 - The first step is to identify the file system of the drive you wish
   to test or repair. If you don't know for sure, then go to the Main
-  page of the webGui, and click on the name of the drive (Disk 3,
+  page of the WebGUI, and click on the name of the drive (Disk 3,
   Cache, etc). Look for **File system type**, and you will see the
   file system format for your drive (should be **xfs**, **reiserfs**,
   or **btrfs**).
@@ -157,7 +157,7 @@ file system of a data drive, while maintaining its parity info.
   **BTRFS** cannot be checked or repaired in Maintenance mode! They
   must be checked and repaired with the array started in the regular
   mode._
-- From the Main screen of the webGui, click the name of the disk that
+- From the Main screen of the WebGUI, click the name of the disk that
   you want to test or repair. For example, if the drive of concern is
   Disk 5, then click on **Disk 5**. If it's the Cache drive, then
   click on **Cache**.
@@ -229,7 +229,7 @@ file system of a data drive, while maintaining its parity info.
   section below!
 - **Important!** If you are instructed to rerun the repair with
   the **\--rebuild-sb** option, then **you cannot continue here in
-  the webGui!** You will have to follow the instructions in the
+  the WebGUI!** You will have to follow the instructions in the
   [Drives formatted with ReiserFS using Unraid v5 or
   later](#drives-formatted-with-reiserfs-using-unraid-v5-or-later)
   section below.
@@ -432,7 +432,7 @@ xfs_repair -v /dev/md1
 - We're sorry, but we don't have enough experience yet with the
   **scrub** command. We recommend reading through this section, then
   either using the
-  [webGui](#checking-and-fixing-drives-in-the-webgui)
+  [WebGUI](#checking-and-fixing-drives-in-the-WebGUI)
   to possibly repair a drive formatted with **BTRFS**, or if you are
   comfortable at the command line, checking out the **scrub** command
   and its options, see [btrfs

@@ -6,13 +6,13 @@ Next, follow our [Getting Started](../../unraid-os/getting-started/getting-start
 
 Once your server is up and running:
 
-1. Login to your Unraid server's webgui. (<http://tower> or
+1. Login to your Unraid server's WebGUI. (<http://tower> or
    <http://tower.local> from Mac by default)
 2. For Unraid 6.10 and newer, Sign in to your Unraid.net account (or
    [create one](https://account.unraid.net/)) from the
-   top-right of the webgui and select "Redeem Activation Code" and enter the activation code to
+   top-right of the WebGUI and select "Redeem Activation Code" and enter the activation code to
    activate your license. For Unraid 6.9 and older, navigate to the
-   Tools -\> Registration page in the webGui and click "Purchase Key."
+   Tools -\> Registration page in the WebGUI and click "Purchase Key."
 3. Select the corresponding license you purchased via activation code
    and enter the activation code in the "Your Activation Code" box to
    complete the activation process. Your registration key will be
