@@ -86,7 +86,7 @@ The boot process for Unraid proceeds through a number of stages
      login prompt displayed. However, this does not necessarily mean
      the whole boot process completed correctly.
    - If this stage of the boot process has not completed then typical
-     symptoms are that the webGUI and network are not started
+     symptoms are that the WebGUI and network are not started
 
    - One way to see if this has happened is to login and use the
    **df** command. If the flash drive was mounted successfully then
@@ -112,9 +112,9 @@ The boot process for Unraid proceeds through a number of stages
 
 6. **Web GUI**
    - The Unraid web GUI is started.
-   - The webGUI is actually done via an entry in the _config/go_ file
+   - The WebGUI is actually done via an entry in the _config/go_ file
      on the flash drive so it is possible for user-supplied commands
-     to also be run from there either before starting the webGUI or
+     to also be run from there either before starting the WebGUI or
      just after doing so.
 
 7. **Array**

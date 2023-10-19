@@ -3,7 +3,7 @@
 ![](./assets/Enabling_remote_access.png)
 
 The Remote Access feature
-allows you to access your Unraid webgui from the Internet. If you need
+allows you to access your Unraid WebGUI from the Internet. If you need
 access to Docker containers, network drives, or other devices on your
 network, you'll want to [setup a
 VPN](/unraid-os/manual/security/vpn.md) instead.
@@ -16,7 +16,7 @@ to use the rest of Unraid Connect.
 
 ## Remote Access - **Initial Setup**
 
-1. From Unraid webGUI Navigate to **Settings** → **Management Access**
+1. From Unraid WebGUI Navigate to **Settings** → **Management Access**
 2. Note the **HTTPS port**, it defaults to port 443. If you have Docker
    containers running on this port, choose an unused port over 1000
    such as 3443, 4443, 5443, etc.
@@ -29,11 +29,11 @@ to use the rest of Unraid Connect.
 There are two kinds of Remote Access provided through Unraid Connect:
 **Dynamic Remote Access** and **Static Remote Access**
 
-**Dynamic Remote Access** enables access to your webGUI from the
-internet only when needed, and leaves the webGUI inaccessible from WAN
+**Dynamic Remote Access** enables access to your WebGUI from the
+internet only when needed, and leaves the WebGUI inaccessible from WAN
 otherwise. This feature works with both UPNP as well as static port
 forwarding and uses an API call through the Unraid Connect plugin to
-open your webGUI to internet traffic, closing it automatically when not
+open your WebGUI to internet traffic, closing it automatically when not
 needed. This helps to prevent automated attacks.
 
 **Static Remote Access** enables your server to listen to WAN traffic at
@@ -134,5 +134,5 @@ Protection](/connect/help.md#a-note-regarding-dns-rebinding-protection).
 Note that once SSL is set to Strict, your client computers will need
 access to DNS in order to access your server. This means if your
 Internet connection drops you will likely lose access to your server's
-webgui. See [How to access your server when DNS is
+WebGUI. See [How to access your server when DNS is
 down](/connect/help.md#how-to-access-your-server-when-dns-is-down).

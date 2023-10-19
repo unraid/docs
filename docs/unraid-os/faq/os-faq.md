@@ -50,7 +50,7 @@ _Important: this process only works for user passwords. If you encrypt your driv
 3. Remove the USB flash device.
 4. Using a Windows or Mac computer, reformat the flash using the USB Flash Creator tool from our website.
 5. Reinstall the flash in the server and boot it up.
-6. Click on the "terminal" icon in the top right corner of the webGui.
+6. Click on the "terminal" icon in the top right corner of the WebGUI.
 7. From the command line, type: lsblk
 8. Note all the devices present excluding your USB flash device.
 9. Now for each device in the list (excluding the USB flash device), type the following command: wipefs /dev/sdX (replacing X with the letter of the device from the previous steps). This will remove the filesystem from the device so it can be reformatted by Unraid OS.
@@ -58,7 +58,7 @@ _Important: this process only works for user passwords. If you encrypt your driv
 
 ## Whenever I Shutdown my Windows 10 VM with my AMD GPU Assigned, if I try to restart it, it doesn't work. What do I do?
 
-This is due to issues with many AMD GPUs not supporting function-level resets. NVIDIA GPUs are recommended as they do not have this problem. A workaround to this issue is to eject the GPU from the VM before shutting it down. You can do this from the bottom right corner in Windows where you would also find any USB devices. Just eject the GPU, then use another machine to shut down the VM from the Unraid webGui. Then when you start it again, it shouldn't have any problems.
+This is due to issues with many AMD GPUs not supporting function-level resets. NVIDIA GPUs are recommended as they do not have this problem. A workaround to this issue is to eject the GPU from the VM before shutting it down. You can do this from the bottom right corner in Windows where you would also find any USB devices. Just eject the GPU, then use another machine to shut down the VM from the Unraid WebGUI. Then when you start it again, it shouldn't have any problems.
 
 ## How do I passthrough my primary GPU to a VM when my CPU doesn't have an integrated graphics device?
 

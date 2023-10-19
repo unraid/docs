@@ -10,7 +10,7 @@ The flash drive that is used to boot Unraid is important as it contains all the 
 
 If a flash drive ever fails for any reason, as long as you have a backup, getting the Unraid server back into normal operation is an easy process. We recommend that you make a backup whenever you make a significant configuration change.
 
-You can easily achieve this from the Unraid webGUI:
+You can easily achieve this from the Unraid WebGUI:
 
 1. Select the flash drive on the **Main** tab.
 2. In the **Flash Device Settings** section select the **Flash Backup** button.

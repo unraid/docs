@@ -36,7 +36,7 @@ This can mean when you try to move files from one user share to another from the
 
 :::tip
 
-When you configure the settings for the share, select the **Help** icon in the top-right of the Unraid webGUI for detailed information on the individual settings.
+When you configure the settings for the share, select the **Help** icon in the top-right of the Unraid WebGUI for detailed information on the individual settings.
 
 :::
 

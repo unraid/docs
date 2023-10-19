@@ -9,7 +9,7 @@ sidebar_position: 8
 [Unraid 6.9](https://unraid.net/blog/unraid-6-9-multi-language-support)
 introduced the mechanism to [support multiple
 languages](https://unraid.net/blog/unraid-6-9-multi-language-support) in
-the Unraid webGUI.
+the Unraid WebGUI.
 
 You can now download, install, and use the Unraid OS in the following
 languages:
@@ -61,7 +61,7 @@ language pack you would like to download and use.
 
 ## How to Switch Back to English?
 
-To switch back to English, you can always click the Switch back toggle button located in the top right of the webGui.
+To switch back to English, you can always click the Switch back toggle button located in the top right of the WebGUI.
 
 ![](../assets/Switch_toggle.png)
 

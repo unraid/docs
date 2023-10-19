@@ -3,7 +3,7 @@
 While Unraid is configured to work automatically, you may wish to
 further refine your setup by customizing your IP address, hostname, disk
 tunables, and other settings. This section goes over the various
-settings you can configure from the Unraid webGui. All settings controls
+settings you can configure from the Unraid WebGUI. All settings controls
 can be found under the _Settings_ tab on the Unraid task bar unless
 otherwise specified.
 
@@ -17,7 +17,7 @@ icon at the top right of each page.
 ## CPU Isolation
 
 CPU isolation allows the user to specify CPU cores that are to be explicitly reserved for assignment (to VMs or Docker containers).
-This is incredibly important for gaming VMs to run smoothly because even if you manually pin your Docker containers to not overlap with your gaming VM, the host OS can still utilize those same cores as the guest VM needs for things like returning responses for the webGui, running a parity check, btrfs operations, etc.
+This is incredibly important for gaming VMs to run smoothly because even if you manually pin your Docker containers to not overlap with your gaming VM, the host OS can still utilize those same cores as the guest VM needs for things like returning responses for the WebGUI, running a parity check, btrfs operations, etc.
  
 So, when you pin a core to a VM or Docker, that core is allocated to the VM/Docker, but the unRAID OS may still access it and use it for various tasks.
  
@@ -50,7 +50,7 @@ information on setting up applications using Docker.
 Unraid automatically uses the hostname of `tower`, but you can adjust
 that from this page. You can also give your system a description / model
 number (useful for system builders). In addition, this page also allows
-you to enable or disable SSL support, change what port the webGui uses,
+you to enable or disable SSL support, change what port the WebGUI uses,
 and even provision an SSL certificate for your server.
 
 ## Network Settings
@@ -132,7 +132,7 @@ tasks.
 
 ## Display Settings
 
-Customize the appearance of the Unraid webGui from this page. This
+Customize the appearance of the Unraid WebGUI from this page. This
 includes adjusting the date and time format, number format, toggles for
 tabbed/non-tabbed view modes, temperature unit, and much more. You can
 also toggle between various themes for how the UI itself is presented.

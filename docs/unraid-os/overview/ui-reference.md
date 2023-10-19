@@ -8,7 +8,7 @@ The main Unraid user interface, also known as the WebGUI, is the primary interfa
 
 In Unraid 6.12.4 it looks like this:
 
-![WebGUI](../assets/webgui.png)
+![WebGUI](../assets/WebGUI.png)
 
 The WebGUI is composed of different navigation elements that give you access to different aspects of the server management. These are:
 
@@ -116,4 +116,4 @@ If Unraid is in trial mode, you can also redeem your license key from here and a
 
 ![Status bar](./../assets/status-bar.png)
 
-The status bar, at the bottom of the WebGUI, provides indicators on the current state of your array and the status of any ongoing operations such as Mover or parity checks. Some plugins also add functionality to the system tray by displaying key values like system temperatures and others.
+The status bar, at the bottom of the WebGUI, provides indicators on the current state of your array and the status of any ongoing operations such as Mover or parity checks. Some plugins also add functionality to the status bar by displaying key values like system temperatures and others.
