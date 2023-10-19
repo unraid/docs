@@ -11,7 +11,7 @@ There are some important general guidelines that we recommend users follow to he
 * **Use the built-in Help**: The Unraid GUI has extensive built-in Help for most fields in the GUI. This can be accessed at the
   individual field level by clicking on the field name, or toggled  on/off for the whole page by clicking on the ![Help](../assets/Help-icon.jpg) icon at the top right of the GUI.
 * **Use the online documentation**: There is extensive online documentation that can be accessed via the **Manual** link at the
-  bottom of the Unraid webGUI.
+  bottom of the Unraid WebGUI.
 * **Enable Notifications**: Unraid has a notification system that can be used to keep you informed about the health of your Unraid system. This can be enabled and the level of notifications you receive tuned under Settings-\>User Preferences-\>Notification Settings. Since Unraid systems often function for very long times without needing any user oversight it can be important that you are informed of problems when they first occur as if left unresolved they can grow into more serious ones.
 * **Proactively fix any reported issues**:
 * **Ask for help in the forums**: Unraid has a vibrant user community and many knowledgeable users who are active in the Unraid forums. Any time you encounter a problem and you are not sure how to proceed it is a good idea to ask questions in the forums. There is nothing worse than rushing into trying to fix a problem using a process you do not understand and as a result making a problem that was initially easy to resolve into something more serious.

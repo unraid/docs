@@ -25,7 +25,7 @@ Creator Tool。
 ## **查找您的局域网 IP** {#查找您的局域网_ip}
 
 如果您选择启动 Unraid OS Headless，您可能需要知道您的局域网 IP 才能访问
-OS webgui。通过您的路由器的管理界面，或通过终端 (\>_) 运行 Linux/Unix
+OS WebGUI。通过您的路由器的管理界面，或通过终端 (\>_) 运行 Linux/Unix
 命令 ifconfig ，均可完成这一步骤。
 
 注意，仅在您无法直接通过 `http://tower/` 或 `http://tower.local`
