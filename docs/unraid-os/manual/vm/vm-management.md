@@ -112,18 +112,17 @@ Before you can get started creating virtual machines, we need to perform a few c
     [1](http://vfio.blogspot.com/2014/08/iommu-groups-inside-and-out.html)
 * Select **Apply** when done to apply your settings
 
-:::tip
+:::tip Troubleshooting
 
-Troubleshooting:
-
-If it says stopped after applying, check **/boot/config/domains.cfg**, you may need to set fields: (See also [Forum help by Squid](https://forums.unraid.net/topic/70874-restoring-virtual-machines/?tab=comments#comment-650785))
+If Unraid reports the VM as stopped, after applying, check **/boot/config/domains.cfg**, you may need to set fields:
 
 * `MEDIADIR="/mnt/user/system/"`
 * `VIRTIOISO="/mnt/user/system"` (the share with virtio image)
 
+For more information, you can See also [Forum help by Squid](https://forums.unraid.net/topic/70874-restoring-virtual-machines/?tab=comments#comment-650785)
 :::
 
-## Creating Your Own Virtual Machines
+## Creating Your Own VMs
 
 With the preparation steps completed, you can create your first VM by clicking **Add VM** from the **Virtual Machines** page.
 
