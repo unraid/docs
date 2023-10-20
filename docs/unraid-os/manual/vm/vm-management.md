@@ -2,14 +2,13 @@
 sidebar_position: 6
 ---
 
-# VM Management
+# VM management
 
 ## Overview
 
-While [Docker Containers](../docker-management.md) are the preferred mechanism for running Linux-based applications such as media servers, backup software, and file sharing solutions, virtual machines add support for non-Linux workloads and the ability to utilize devices that the host cannot (think graphics pass through, USB pass through/assignment, etc). *Localized Virtualization* is our method of supporting VMs where all resources
-assigned to the guest are local to the host.
+While [Docker Containers](../docker-management.md) are the preferred mechanism for running Linux-based applications such as media servers, backup software, and file sharing solutions, virtual machines add support for non-Linux workloads and the ability to utilize devices that the host cannot (think graphics pass through, USB pass through/assignment, etc). *Localized Virtualization* is our method of supporting VMs where all resources assigned to the guest are local to the host.
 
-For information on what operating systems have been tested for use with Unraid Server OS, please see the [VM Support](/unraid-os/manual/vm-support.md) wiki page.
+For information on what operating systems have been tested for use with Unraid Server OS, please see the [VM Support](vm-support.md) page.
 
 ## Prerequisites
 
@@ -34,8 +33,7 @@ To determine if hardware has support for HVM or IOMMU, there are two primary met
 
 #### Through the Unraid WebGUI
 
-* When accessing your Unraid system through the web interface, you can determine if your system is virtualization compatible by clicking
-  the **Info** button on the right side of the top menu bar.
+* When accessing your Unraid system through the web interface, you can determine if your system is virtualization compatible by selecting the **Info** button on the right side of the top menu bar.
   * **HVM Support** refers to Intel VT-x or AMD-V
     * *Not Available* means that your hardware is not HVM capable.
     * *Disabled* means that your hardware is HVM capable, but the settings in your motherboard BIOS are not enabled.
@@ -64,10 +62,10 @@ In order to utilize all the virtualization features of Unraid 6, you must ensure
 
 Here are a few examples of where virtualization settings can be found from various motherboard BIOS screens.
 
-![](../../assets/Bios-virtualization1.png)
-![](../../assets/Bios-virtualization2.jpg)
-![](../../assets/Bios-virtualization3.JPG)
-![](../../assets/Bios-virtualization4.png)
+![Phoenix BIOS](../../assets/Bios-virtualization1.png)
+![HP BIOS](../../assets/Bios-virtualization2.jpg)
+![American Megatrends BIOS](../../assets/Bios-virtualization3.JPG)
+![ASUS EFI BIOS](../../assets/Bios-virtualization4.png)
 
 ### Configure a Network Bridge
 
@@ -112,11 +110,18 @@ Before you can get started creating virtual machines, we need to perform a few c
   * Without this setting enabled, you may not be able to pass through devices to multiple virtual machines simultaneously
   * WARNING: This setting is experimental! Take caution when using.
     [1](http://vfio.blogspot.com/2014/08/iommu-groups-inside-and-out.html)
-* Click **Apply** when done to apply your settings
+* Select **Apply** when done to apply your settings
 
-* Troubleshoot: If it says stopped after clicking apply, check **/boot/config/domains.cfg**, you may need to set fields: (See also [Forum help by Squid](https://forums.unraid.net/topic/70874-restoring-virtual-machines/?tab=comments#comment-650785))
-  * `MEDIADIR="/mnt/user/system/"`
-  * `VIRTIOISO="/mnt/user/system"` (the share with virtio image)
+:::tip
+
+Troubleshooting:
+
+If it says stopped after applying, check **/boot/config/domains.cfg**, you may need to set fields: (See also [Forum help by Squid](https://forums.unraid.net/topic/70874-restoring-virtual-machines/?tab=comments#comment-650785))
+
+* `MEDIADIR="/mnt/user/system/"`
+* `VIRTIOISO="/mnt/user/system"` (the share with virtio image)
+
+:::
 
 ## Creating Your Own Virtual Machines
 
@@ -137,8 +142,7 @@ The WebGUI will by default present the minimum number of fields required in orde
 * Select an **OS Install ISO** for your installation media
 * Specify the vDisks you wish to create (or select an existing vDisk)
   * The **Primary vDisk** is used to store your VM's operating system
-  * **Additional vDisks** can be added by clicking
-    ![](../../assets/Add-device.png)
+  * **Additional vDisks** can be added by selecting the plus sign.
 * Specify a **Graphics Card** to use to interact with the VM
   * If you are not assigning a physical graphics card, specify **VNC**.
   * If you are assigning a physical graphics card, select it from the list.
@@ -146,12 +150,10 @@ The WebGUI will by default present the minimum number of fields required in orde
   * A password can be optionally specified for the VNC connection.
   * Not all graphics cards will work as a secondary display.
   * If you assign a physical graphics device, be sure to assign a USB keyboard and mouse as well.
-  * Additional graphics devices can be assigned by clicking  
-    ![](../../assets/Add-device.png)
+  * Additional graphics devices can be assigned by selecting the plus sign.
 * Assign a **Sound Card** if you're assigning a graphics card to get audio support in your VM.
   * Most GPUs have their own built-in sound card as a function of the graphics card for HDMI audio.
-  * Additional sound cards can be assigned by clicking
-    ![](../../assets/Add-device.png)
+  * Additional sound cards can be assigned by selecting the plus sign.
 * **USB Devices** can be assigned to the VM that are plugged into the host.
   * USB hot-plugging is not currently supported, so devices must be attached before the VM is started in order for USB pass through to function.
   * Some USB devices may not work properly when passed through to a guest (though most do work fine).
@@ -181,8 +183,7 @@ If you wish to toggle other advanced settings for the VM, you can toggle from **
   * For more information on VirtFS and the 9p file system, visit here: <http://wiki.qemu.org/Documentation/9psetup>
 * If you desire, you can modify the **Network MAC** address for the virtual network interface of the VM as well as specify an alternate **Network Bridge**.
   * You can click the blue refresh symbol to auto-generate a new MAC address for the virtual network interface.
-  * Additional virtual network interfaces can be assigned by clicking  
-![](../../assets/Add-device.png)
+  * Additional virtual network interfaces can be assigned by selecting the plus sign.
 
 ## Expanding a vDisk
 
@@ -195,7 +196,7 @@ In the event that you need to increase the size of your virtual disk device, you
 * Edit a value of how large you want the vDisk to be and press enter (e.g. for 100 gigabytes, enter 100G)
 * You will now see the new capacity take affect.
 
-After doing this, you can start your VM and the new storage will be available, though you will need to either create a new partition out of that space or extend an existing partition to make use of it. For instructions on how to expand your Windows partition, please see [this article](/legacy/Articles/expanding-windows-vm-vdisk-partitions.md).
+After doing this, you can start your VM and the new storage will be available, though you will need to either create a new partition out of that space or extend an existing partition to make use of it. For instructions on how to expand your Windows partition, please see [this article](../../../legacy/Articles/expanding-windows-vm-vdisk-partitions.md).
 
 ## Troubleshooting Stuck at UEFI Shell
 
@@ -228,7 +229,7 @@ will remain intact. Note that not all GPUs support OVMF as OVMF requires UEFI su
 
 ### Help! Failed to set iommu for container: Operation not permitted
 
-If you are getting the above message when trying to assign a graphics device to a VM, it is most likely that your device is in an IOMMU group along with another active/in-use device on your system. Please see [this article](http://vfio.blogspot.com/2014/08/iommu-groups-inside-and-out.html) written by Alex Williamson on IOMMU groups if you wish to better understand this issue and how it impacts you. Under _Settings_ -\> _VM Manager_ you will find an option to toggle for PCIe ACS Override, which will forcibly break out each device into its own IOMMU group (following a reboot of the system). This setting is experimental, so use with caution.
+If you are getting the above message when trying to assign a graphics device to a VM, it is most likely that your device is in an IOMMU group along with another active/in-use device on your system. Please see [this article](http://vfio.blogspot.com/2014/08/iommu-groups-inside-and-out.html) written by Alex Williamson on IOMMU groups if you wish to better understand this issue and how it impacts you. Under ***Settings > VM Manager*** you will find an option to toggle for PCIe ACS Override, which will forcibly break out each device into its own IOMMU group (following a reboot of the system). This setting is experimental, so use with caution.
 
 Another possibility here is that your system doesn't support interrupt remapping, which is critical for VFIO and GPU pass through. There is a workaround for this, but you will not be protected against MSI-based interrupt injection attacks by guests ([more info about MSI injection attacks through VT-d](http://invisiblethingslab.com/resources/2011/Software%20Attacks%20on%20Intel%20VT-d.pdf)). If you completely trust your VM guests and the drivers inside them,
 enabling this workaround should resolve the issue. The alternative is to purchase hardware that offers interrupt remapping support. To enable the workaround, you will need to modify your syslinux.cfg file, adding the bolded bit below:
@@ -244,19 +245,19 @@ append vfio_iommu_type1.allow_unsafe_interrupts=1 initrd=/bzroot
 
 If you aren't receiving an error message, but the display doesn't "light up" when your VM is started, it means that while the device is being assigned properly, you may have an issue with your motherboard or GPU preventing proper VGA arbitration from occurring. There are several things you can do to try to fix this:
 
-* Boot into your motherboard BIOS and make sure your primary graphics is NOT set to a card you wish to pass through (the best option is to set it to integrated graphics, aka iGPU; make sure it's not PCI or PCIe).
-* Ensure your motherboard BIOS _and_ video card BIOS are up to date.
-* Try adjusting the **BIOS** under **Advanced View** when adding a new VM from SeaBIOS to OVMF (existing VMs cannot have this setting changed once created).
-* Try adjusting the **Machine Type** from _i440fx_ to _Q35_ under **Advanced View** when editing or adding a VM.
-* As a last resort, you can attempt to manually provide the ROM file for your video card by editing the XML for your VM (see below procedure).
+1. Boot into your motherboard BIOS and make sure your primary graphics is NOT set to a card you wish to pass through (the best option is to set it to integrated graphics, aka iGPU; make sure it's not PCI or PCIe).
+2. Ensure your motherboard BIOS and video card BIOS are up to date.
+3. Try adjusting the **BIOS** under **Advanced View** when adding a new VM from SeaBIOS to OVMF (existing VMs cannot have this setting changed once created).
+4. Try adjusting the **Machine Type** from *i440fx* to Q35 under **Advanced View** when editing or adding a VM.
+5. As a last resort, you can attempt to manually provide the ROM file for your video card by editing the XML for your VM (see below procedure).
 
-#### Edit XML for VM to supply GPU ROM manually
+### Edit XML for VM to supply GPU ROM manually
 
-* From another PC, navigate to this webpage: <http://www.techpowerup.com/vgabios/>
-* Use the **Refine Search Parameters** section to locate your GPU from the database.
-* Download the appropriate ROM file for your video card and store the file on any user share in Unraid.
-* With your VM stopped, click the icon for your VM, then select **Edit XML** from the context menu.
-* Scroll to the bottom of the XML and locate this section (the `<address>` parts may look different for you than from the example below):
+1. From another PC, navigate to this webpage: <http://www.techpowerup.com/vgabios/>
+2. Use the **Refine Search Parameters** section to locate your GPU from the database.
+3. Download the appropriate ROM file for your video card and store the file on any user share in Unraid.
+4. With your VM stopped, click the icon for your VM, then select **Edit XML** from the context menu.
+5. Scroll to the bottom of the XML and locate this section (the `<address>` parts may look different for you than from the example below):
 
 ```xml
 <hostdev mode='subsystem' type='pci' managed='yes'>
@@ -268,12 +269,12 @@ If you aren't receiving an error message, but the display doesn't "light up" whe
 </hostdev>
 ```
 
-* After the `</source>` tag, add the following code:
+6. After the `</source>` tag, add the following code:
 
 ```xml
 <rom file='/mnt/user/sharename/foldername/rom.bin'/>
 ```
 
-* Change the path after /mnt/user/ to the actual user share / sub-folder path to your rom file.
+7. Change the path after /mnt/user/ to the actual user share / sub-folder path to your rom file.
 
-Once done editing the XML, click **Update** and try starting your VM again to see if the GPU assignment works properly.
+Once done editing the XML, select **Update** and try starting your VM again to see if the GPU assignment works properly.
