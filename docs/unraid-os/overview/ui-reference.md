@@ -8,7 +8,7 @@ The main Unraid user interface, also known as the WebGUI, is the primary interfa
 
 In Unraid 6.12.4 it looks like this:
 
-![WebGUI](../assets/WebGUI.png)
+![WebGUI](../assets/webgui.png)
 
 The WebGUI is composed of different navigation elements that give you access to different aspects of the server management. These are:
 
