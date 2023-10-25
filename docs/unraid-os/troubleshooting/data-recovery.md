@@ -70,9 +70,9 @@ The correct way to proceed in such a case is to follow the procedure for [checki
 ## Lost Array Configuration
 
 If you have lost the array configuration and do not have a current
-backup of the flash drive the data will still be intact on the drives.
+backup of the flash device the data will still be intact on the drives.
 
-All configuration information is stored on the flash drive in the
+All configuration information is stored on the flash device in the
 _config_ folder. In particular, the Unraid array configuration is stored
 in the _config/super.dat_ file.
 
@@ -116,7 +116,7 @@ add any plugins you normally use.
 
 At this point, it is strongly recommended that you click on the flash
 drive on the Main tab and select the option to download a backup of
-the flash drive. It is always good practice to do this any time you make
+the flash device. It is always good practice to do this any time you make
 a significant change.
 
 ## Using _ddrescue_ to recover data from a failing disk

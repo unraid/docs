@@ -2,17 +2,17 @@
 sidebar_position: 2
 ---
 
-# Capturing Diagnostic Information
+# Capturing diagnostic information
 
 When you encounter any sort of problem it is always recommended that you attempt to capture as much information as possible to help with pinpointing the cause. If you want to ask questions in the forum such information will typically be requested as it will speed up the process of getting meaningful and accurate feedback.
 
-## System Diagnostics
+## System diagnostics
 
-Unraid has a GUI option under **_Tools-\>Diagnostics_** to capture a lot of information about the state of your system that can be helpful when trying to diagnose any issues. Using this tool will result in a zip file being produced that can be downloaded and then attached to forum posts.
+Unraid has a GUI option under ***Tools > Diagnostics*** to capture detailed information about the state of your system. This can be helpful when trying to diagnose any issues. Using this tool will result in a zip file being produced that can be downloaded and then attached to forum posts.
 
-If the GUI cannot be accessed, then use SSH, telnet, or a keyboard/monitor attached to the server to login and type `diagnostics`.  This will save the diagnostics.zip file to the "logs" folder on your flash drive.
+If the WebGUI becomes unresponsive, then use SSH, telnet, or a keyboard/monitor attached to the server to login and type `diagnostics`.  This will save the `diagnostics.zip` file to the `/boot/logs` folder on your flash drive.
 
-The Diagnostics should if at all possible cover the period when the problem occurred and be captured BEFORE you reboot (logs are reset on a reboot) so that the logs show what happened leading up to the problem occurring. The zip file produced can then be attached to a forum post when asking for help on a problem in the Unraid forums. It is preferred that you attach them to a new post if you have already started a thread on your issue so that other forum users are notified that there has been something added to the thread.
+The Diagnostics should, if possible, cover the period when the problem occurred and be captured BEFORE you reboot (logs are reset on a reboot) so that the logs show what happened leading up to the problem occurring. You can then attach the diagnostics zip file to a forum post when asking for help on a problem in the Unraid forums. It is preferred that you attach them to a new post if you have already started a thread on your issue so that other forum users are notified that there has been something added to the thread.
 
 ![Diagnostics](../assets/Diagnostics.jpg)
 
@@ -34,52 +34,63 @@ The diagnostics are a single zip file containing multiple files. If it seems to 
 
 ### Anonymization of diagnostic data
 
-It has been pointed out that the diagnostics are not completely anonymized if you have enabled _mover_ logging under _Settings-\>Mover Settings_ as the _syslog_ will give details of files that mover is operating on. This is a bit of a catch-22 scenario as when one has enabled mover logging it is normally to investigate a problem where as much detail as possible is captured so attempting to anonymize such information may well be counter-productive. Since mover logging is disabled by default and  recommended practice is to only have it enabled when investigating why mover is not giving the expected results this is probably acceptable.
+While diagnostic data is anonymized, if you enable mover logging under ***Settings > Mover Settings***, the syslog will give details of files that mover is operating on.
 
-## Persistent Logs (Syslog server)
+In this particular scenario, you have intentionally enabled mover logging to investigate a problem where it is beneficial to gather as much detail as possible, in order to resolve an issue.
 
-The main system log is the **_syslog_** file and it is the contents of this file that is displayed when you click the ![](../assets/Log-icon.png) icon at the top right of the Unraid GUI. Note that when posting to the forums
-extracted fragments of the syslog are rarely helpful as they do not show
-what lead up to a problem occurring.
+However, since mover logging is disabled by default, and the recommended practice is to only enable it when investigating why it is not giving the expected results, this is understood to be the exception and not the rule to normal Unraid privacy practice.
 
-Normally the logs are only written to RAM so do not survive the system being rebooted. If you are investigating a system crash then as long as you are running Unraid 6.7.2 or later there is built-in syslog server support.
+## Persistent logs (Syslog server)
 
-![](../assets/Syslog-server-setup.jpg)
+If you are investigating a system crash you can use the built-in syslog server support.
 
-1. Go to _Settings-\>Network Services-\>Syslog Server_
-2. You can click on the 'Help' icon on the Toolbar and get more information for all of the options.
+Logs are only written to RAM and are wiped when the system is rebooted. The main system log is the syslog file. The contents of this file display when you select the log ![Log](../assets/Log-icon2.png) icon at the top-right of the navigation bar.
 
-* **Mirror to Flash**
-This is the simplest to set up. You select 'Yes' from the dropdown box and click on the 'Apply' button and the syslog will be mirrored to the logs folder/directory of the flash drive and is appended to on a reboot. There is one principal disadvantage to this method. If the condition, that you are trying to troubleshoot, takes days to weeks to occur, it can do a lot of writes to the flash drive. Some folks are hesitant to use the flash drive in this manner as it may shorten the life of the flash drive.
+:::important
+
+When posting to the Unraid forums, avoid posting fragments of the syslog, as these do not provide the full picture of what led up to a problem.
+
+:::
+
+![Syslog server screen](../assets/Syslog-server-setup.jpg)
+
+### Enabling the syslog server
+
+To configure and enable the Syslog server go to ***Settings > Network Services > Syslog Server*** and set the **Local syslog server** to *enabled*.
+
+:::tip
+
+Use the Help icon on the system toolbar to get comprehensive guidance on all the options.
+
+:::
+
+You can configure the Syslog server operations in different ways:
+
+* **Mirror to flash**. Select *Yes* from the dropdown to mirror the syslog file to the `/boot/logs` folder of the flash device. There is one main disadvantage to this method: If the condition you are trying to troubleshoot takes days to weeks to occur, it can cause a lot of writes to the flash device and may shorten its lifespan.
 
 The advantage of this approach is that it captures everything from the start of the boot process which can be important if trying to diagnose boot problems.
 
-* **Remote Syslog Server**
+* **Remote syslog server**  
 This is used when you have another machine on your network that is acting as a syslog server. This can be another Unraid server. You can also use virtually any other computer. You find the necessary software by googling for the syslog server of that computer's operating system. After you have set up the computer/server, you fill in the computer/server name or the IP address. (I prefer to use the IP address as there is never any confusion about what it is.) Then click on the 'Apply' button and your syslog will be mirrored to the other computer.
 
 The other computer has to be left on continuously until the problem occurs.
 The events captured will only start with the point at which the syslog daemon is started during the boot process thus missing the very start of the boot process.
 
-![](../assets/Syslog-server.jpg)
+If you select **Apply** at this point, you will have this server setup to serve as a Remote Syslog Server. It can now capture syslogs from several computers if the need should arise.
+
+![Syslog server](../assets/Syslog-server.jpg)
 
 * **Local Syslog Server**
-* Set this to **Enabled** to setup this Unraid server to act as a network syslog server. When this is enabled then some extra options are offered. The built-in Help gives guidance /n suitable settings.
-* **Local syslog folder**: This will be a share on your server but chose it with care. Ideally, it will be a 'cache only' or a 'cache preferred' share. This will minimize the spinning up of disks due to the continuous writing of new lines to the syslog. A cache SSD drive would be the ideal choice here using a 'cache preferred' share. The syslog will be in the root of that folder/share.
-* **Local syslog rotation**: These settings allow you to control how much space the syslog is allowed to use.
-  * **Local syslog maximum file size**
-  * **Local syslog number of files**
+   * Set this to **Enabled** to setup this Unraid server to act as a network syslog server. When this is enabled then some extra options are offered. The built-in Help gives guidance /n suitable settings.
+   * **Local syslog folder**: This will be a share on your server but chose it with care. Ideally, it will be a 'cache only' or a 'cache preferred' share. This will minimize the spinning up of disks due to the continuous writing of new lines to the syslog. A cache SSD drive would be the ideal choice here using a 'cache preferred' share. The syslog will be in the root of that folder/share.
+   * **Local syslog rotation**: These settings allow you to control how much space the syslog is allowed to use.
+     * **Local syslog maximum file size**
+     * **Local syslog number of files**
 
-* If you click the 'Apply button at this point, you will have this server setup to serve as a Remote Syslog Server. It can now capture syslogs from several computers if the need should arise.
+Select **Apply** to complete the server setup.
 
-### **Logging to file local to Unraid server** Using a bit of trickery
-  we can use the Unraid server with the problem as the Local syslog
-  server. This is appropriate if you want to continue to keep a
-  permanent copy of the syslog but the file will not be as easy to
-  access if the Unraid system is crashing. It also has the advantage
-  of avoiding lots of writes to the flash drive. To achieve this you
-  now add the IP address of this server as the Remote syslog server
-  (Remember the mention of trickery). So basically, you send data
-  out-of-the-server and it comes-right-back-in.
+### Logging to file local to Unraid server Using a bit of trickery
+we can use the Unraid server with the problem as the Local syslog server. This is appropriate if you want to continue to keep a permanent copy of the syslog but the file will not be as easy to access if the Unraid system is crashing. It also has the advantage of avoiding lots of writes to the flash drive. To achieve this you now add the IP address of this server as the Remote syslog server (Remember the mention of trickery). So basically, you send data out-of-the-server and it comes-right-back-in.
 
 :::note
 
@@ -87,6 +98,6 @@ The standard system diagnostics include the RAM copy of the `syslog` so there is
 
 :::
 
-## Docker Containers and Virtual Machines
+## Docker containers and virtual machines
 
 The standard system diagnostics do not contain much that will help with diagnosing issues with docker containers and VMs. These may have their own system logging feature and you must refer to their own documentation for information on how to access them.
