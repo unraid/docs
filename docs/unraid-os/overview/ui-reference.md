@@ -75,11 +75,11 @@ The **Docker** screen displays  all the containers you have installed from Commu
 
 :::note
 
-If your Unraid server meets the [hardware virtualization requirements](../manual/vm-management/#determining-hvmiommu-hardware-support), this option displays in the navigation bar. Otherwise, this option will not be visible.
+If your Unraid server meets the [hardware virtualization requirements](../manual/vm/vm-management/#determining-hvmiommu-hardware-support), this option displays in the navigation bar. Otherwise, this option will not be visible.
 
 :::
 
-The **VMs** screen lets you manage VMs on your Unraid server. Any VMs you have created will display here, together with the VM's main attributes (CPU core assignments, vDisk allocation. graphics card), and you can edit the VM settings. You can read more about this in the [VM section of our documentation](../manual/vm-management.md).
+The **VMs** screen lets you manage VMs on your Unraid server. Any VMs you have created will display here, together with the VM's main attributes (CPU core assignments, vDisk allocation. graphics card), and you can edit the VM settings. You can read more about this in the [VM section of our documentation](../manual/vm/vm-management.md).
 
 ### Apps
 
