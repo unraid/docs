@@ -107,16 +107,16 @@ The second step in the process, is to use the Unraid USB Flash Creator tool to r
 ![Invalid key](../assets/Invalidkey.png)
 
 8. if you are not restoring from a backup, which would contain a copy of your license key file, then copy your existing license key file into the `boot/config` folder on the flash drive. This lets Unraid know you want to switch your license to this new flash drive.
-9. In ***Tools > Registration***, select **REPLACE KEY** then enter the email address to which you would like to have the new key delivered to.
-10. Select **REPLACE KEY**.
+9. In ***Tools > Registration***, select **Replace Key** then enter the email address to which you would like to have the new key delivered to.
+10. Select **Replace Key**.
 
-![Replace key button](../assets/Replacekey.png)
+![Replace Key button](../assets/Replacekey.png)
 
-11. Once you have received the email, copy the key file URL, then paste it into the box and select **INSTALL KEY**.
+11. Once you have received the email, copy the key file URL, then paste it into the box and select **Install Key**.
 
 Finished! You have replaced the USB flash device and the registration key. You will see a screen showing the date this key was registered and the next date on which your registration key will be eligible to be replaced again.
 
-12. Select **DONE**, to finish.
+12. Select **Done**, to finish.
 
 ### Manual method
 
@@ -130,12 +130,12 @@ Prepare a new flash device using the procedure documented in the [Manual Install
 
 4. Select **Registration Key**.
 ![Invalid Key Example](../assets/Invalidkey.png)
-5. In ***Tools > Registration***, select **REPLACE KEY** then enter the email address to which you would like to have the new key delivered to.
-6. Select **REPLACE KEY**.
+5. In ***Tools > Registration***, select **Replace Key** then enter the email address to which you would like to have the new key delivered to.
+6. Select **Replace Key**.
 ![Replace Key Example](../assets/Replacekey.png)
-7. Once you have received the email, copy the key file URL, then paste it into the box and click 'INSTALL KEY'
+7. Once you have received the email, copy the key file URL, then paste it into the box and select **Install Key**
 
-Finished! You have replaced the USB flash device and the registration key. You will see a screen showing the date this key was registered and the next date on which your registration key will be eligible to be replaced again.
+You're finished! You have replaced the USB flash device and the registration key. You will see a screen showing the date this key was registered and the next date on which your registration key will be eligible to be replaced again.
 
 8. Select **DONE**.
 
