@@ -401,7 +401,7 @@ The excluded disk(s) parameter defines the set of disks which are excluded from 
 
 ### Default Shares
 
-If [Docker](../docker-management.md) or [VMs](../vm-support.md) are enabled then, Unraid automatically sets up a number of default shares to support their use. You are not required to use these shares, and the system will let you remove them if you do not want to use them for their standard purpose. However, we recommend their use, as it makes it easier to support users who encounter problems.
+If [Docker](../docker-management.md) or [VMs](../vm/vm-support.md) are enabled then, Unraid automatically sets up a number of default shares to support their use. You are not required to use these shares, and the system will let you remove them if you do not want to use them for their standard purpose. However, we recommend their use, as it makes it easier to support users who encounter problems.
 
 The shares that fall into this category are:
 
