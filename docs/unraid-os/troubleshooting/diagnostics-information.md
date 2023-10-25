@@ -44,7 +44,7 @@ However, since mover logging is disabled by default, and the recommended practic
 
 If you are investigating a system crash you can use the built-in syslog server support.
 
-Logs are only written to RAM and are wiped when the system is rebooted. The main system log is the syslog file. The contents of this file display when you select the log ![Log](../assets/log-icon2.png) icon at the top-right of the navigation bar.
+Logs are only written to RAM and are wiped when the system is rebooted. The main system log is the syslog file. The contents of this file display when you select the log ![Log](../assets/Log-icon.png) icon at the top-right of the navigation bar.
 
 :::important
 
