@@ -65,8 +65,7 @@ array (28 data and 2 parity) and up to 35 named pools, of up to 30
 storage devices in the [cache
 pool(s)](/unraid-os/release-notes/6.9.0.md#multiple-pools).
 Additional storage devices can still be utilized directly with other
-Unraid features such as [Virtual
-Machines](/unraid-os/manual/vm-management.md) or the unassigned devices
+Unraid features such as [Virtual Machines](../manual/vm/vm-management.md) or the unassigned devices
 plugin.
 
 ## What Happens if my USB Fails? Do I Have to Repurchase a License?
@@ -82,7 +81,7 @@ will transfer your license manually. Please provide the old and new USB
 GUIDs [with your support ticket.](https://unraid.net/contact)
 
 **IMPORTANT:** Please ensure you routinely back up your USB device!
-We recommend using [Unraid Connect](/connect/about.md) for this.
+We recommend using [Unraid Connect](../../connect/about.md) for this.
 
 ## How do I Manually Install my License keyfile to my USB Flash?
 
