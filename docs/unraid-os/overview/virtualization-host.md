@@ -8,7 +8,7 @@ Unraid is designed to run as a virtualization host, leveraging a hypervisor to p
 
 :::tip
 
-To use the hardware virtualization feature in Unraid, you need a combination of CPU, chipset, a compatible BIOS, and device drivers, to support functionality. A full account of these requirements can be found [here](../manual/vm-management.md). If your server does not meet these requirements, the VMS menu will be disabled in the Unraid WebGUI.
+To use the hardware virtualization feature in Unraid, you need a combination of CPU, chipset, a compatible BIOS, and device drivers, to support functionality. A full account of these requirements can be found [here](../manual/vm/vm-management.md). If your server does not meet these requirements, the VMS menu will be disabled in the Unraid WebGUI.
 
 :::
 
