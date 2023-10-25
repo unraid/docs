@@ -143,7 +143,7 @@ The process is:
 2. At this point any parity drives will show as **unmountable** since the parity drives contain no file system. You should have the same number of unmountable drives as you had parity drives and as long as this is the case make a note of their serial numbers. If this is not the case ask for help in the Unraid forums on the best way to proceed.
 3. While the drives are mounted you might want to look quickly at the contents if the order of the data drives matters to you to see if you can identify the order for the data drives.
 
-## Backing Up Boot Drive
+## Backing up the boot drive
 
 Since the Unraid boot drive contains all user specific settings in the 'config' folder You should ideally always make a backup of the Unraid boot drive any time you make any significant configuration changes.
 
@@ -153,31 +153,12 @@ There are various ways of achieving this:
 * By Installing [Unraid Connect](/connect/about.md), which provides for automated backups to cloud servers managed by Limetech.
 * By plugging the flash device into a PC/Mac and copying the full contents to a local folder on the PC/Mac.
 
-## Manually Upgrading (or Downgrading) an Unraid release
+## Manually upgrading (or downgrading) an Unraid release
 
-Follow the same process as laid out in the section below for handling bzimage checksum errors.
+This procedure is identical to carrying out an [upgrade or downgrade of the Unraid OS](../manual/upgrade-instructions.md#manual-upgrade-or-downgrade).
 
 ## Bzimage checksum error/failure reading flash device
 
-Sometimes when booting you get a message displayed on a locally attached monitor indicating that something has gone wrong when trying to load the Unraid OS files into RAM from the flash device. There are two typical manifestations of this:
-
-* An explicit message stating that a read error has occurred.
-* A message stating that there is a checksum failure on a bz\* type file (most commonly bzimage). This most commonly happens after updating the Unraid OS (which is one time a lot of data is written to the flash device in one go), although it can happen at any time.
-
-:::note
-
-This procedure can also be used to upgrade or downgrade an Unraid release
-
-:::
-
-The normal recovery action is:
-
-* Plug the flash device into a PC/Mac and make sure it is able to read the flash device (and let it repair any corruption it finds). If the flash device cannot be read then this indicates the flash device had probably failed and you need to follow the procedure for transferring your settings to a new flash device.
-* (optional) Make a backup of the flash device. Although not strictly necessary at this point it is always a good idea to have an up-to-date backup of the flash device. All your settings are in the **config** folder on the flash device and this procedure leaves that unchanged.
-* Download the zip file for the release. The last few Stable releases will have the download link on the Download page on the Unraid website. Every forum page will have a Download link at the top right to take you to that page. For beta/rc test releases you can normally get the link by asking in the ***Bug reports > Preleases*** section of the Unraid forums.
-* Extract all the bz\* type files from the zip file and overwrite the corresponding files on the flash device.
-* Extract the `changes.txt` file and overwrite the one on the flash to ensure you have one that corresponds to the bz\* type files you have just placed on the flash device. The system will work if you do not copy this file but it is good practice to keep it in sync with the release that is currently active.
-* Tidily eject the flash device from the PC/Mac.
-* Boot the Unraid server of the freshly written flash device.
+This procedure is identical to carrying out an [upgrade or downgrade of the Unraid OS](../manual/upgrade-instructions.md#manual-upgrade-or-downgrade).
 
 If the above does not help then it is advisable to post in the Unraid forums stating what you have tried and what are your current symptoms.
