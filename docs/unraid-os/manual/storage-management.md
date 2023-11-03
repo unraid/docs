@@ -330,7 +330,7 @@ The procedure is:
       system on the drive.
 
 You can add as many new disks to the array as you desire at one time,
-but none of them will be available for use until they are both cleared
+but none of them will be available for use until they are all cleared
 and formatted with a filesystem
 
 ### Parity Disks
