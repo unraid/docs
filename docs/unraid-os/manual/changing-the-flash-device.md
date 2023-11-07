@@ -130,14 +130,13 @@ Finished! You have replaced the USB flash device and the registration key. You w
 
 6. Select **Registration Key**.
 ![Invalid Key Example](../assets/Invalidkey.png)
-5. In ***Tools > Registration***, select **Replace Key** then enter the email address to which you would like to have the new key delivered to.
+5. In <navpath>Tools > Registration</navpath>, select **Replace Key** then enter the email address to which you would like to have the new key delivered to.
 6. Select **Replace Key**.
 ![Replace Key Example](../assets/Replacekey.png)
 7. Once you have received the email, copy the key file URL, then paste it into the box and select **Install Key**
+8. Select **DONE**.
 
 You're finished! You have replaced the USB flash device and the registration key. You will see a screen showing the date this key was registered and the next date on which your registration key will be eligible to be replaced again.
-
-9. Select **DONE**.
 
 ## Notes about replacing your registration key
 
