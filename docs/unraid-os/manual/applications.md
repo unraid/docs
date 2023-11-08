@@ -142,59 +142,69 @@ Key points of the Unraid implementation are:
 * The default location for the `docker.img` file is within the `system` share. The `system` share is set up with the **Use Cache** set to *Prefer* as having the `docker.img` file on the cache (if the user has one) helps maximize the performance of Docker containers.
 * Unraid does not have built-in support for the **Docker compose** command line utility.
 
-### Technology Stack
+### Technology stack
 
 Unraid OS features a number of key technologies to simplify the creation and management of localized VMs running on an Unraid host:
 
-* **KVM**
-   * [KVM](https://www.linux-kvm.org/page/Main_Page) is a hypervisor responsible for monitoring and managing the resources allocated to virtual machines.
-    : KVM is a component in the Linux kernel that allows it to act as a hypervisor. Simply put, hypervisors are responsible for monitoring and managing the resources allocated to virtual machines. Virtual machines are emulated computers that run on top of a physical computer. Ever wanted to run three operating systems on one computer all at the same time? Hypervisors make this possible. Examples of other hypervisors include Xen, VMWare (ESX/ESXi), VirtualBox, and Microsoft Hyper-V
-   * Unlike other hypervisors, KVM is the only one that is built directly into and supported by the Linux kernel itself.
-    : All other type-1 hypervisors out there will load before Linux does, and then Linux runs in an underprivileged state to that hypervisor.
-    : By leveraging a hypervisor that is part of the Linux kernel itself, it means better support, less complexity, and more room for optimization improvements.
-* **QEMU**
-   * [QEMU](https://www.qemu.org/) is the component in the kernel that manages / monitors resources allocated to virtual machines.
-   * QEMU is responsible for the emulation of hardware components such as a motherboard, CPU, and various controllers that make up a virtual machine.
-   * KVM can't work without QEMU, so you'll often times see KVM referred to as KVM/QEMU.
-* **HVM**
-   * When virtual machine technology was first starting to grow in adoption, it wasn't directly supported by the chipset manufacturers directly. As such, there was a significant amount
-    of overhead associated with virtual machines due to software emulation. Later, Intel and AMD built support for virtualization directly into their hardware (Intel VT-x and AMD-v), reducing overhead for emulation, monitoring, and security. These technologies allow for the creation of hardware-assisted virtual machines (referred to as HVMs).
-   * While Xen offers a way to eliminate the overhead associated with traditional emulation without the need for VT-x, this paravirtualization method only works with Linux-based guests,
-    and for that, Docker Containers are a better solution anyway. As such, HVMs are best suited for virtual machines where more than just basic Linux applications are needed.
-   * HVM is required to be able to run a VM on Unraid. Most modern systems will have HVM support. You can see if your Unraid server has HVM support by clicking on the _info_ button at the top right of the Unraid GUI. If it shows as disabled then you might want to check your motherboard's BIOS to see if it needs to be enabled there.
-* **VFIO**
+#### KVM
 
-   * [VFIO](https://www.linux-kvm.org/images/b/b4/2012-forum-VFIO.pdf) (**V**irtual **F**unction **IO**) allows us to assign a physical device, such as a graphics card, directly to a virtual machine that in turn will provide driver support for the device directly.
-    : We can also prevent the device from accessing spaces in memory that are outside of that VM. This means that if something goes wrong with the device or its driver, the impact of such an event is limited to the virtual machine and not the host.
-   * VFIO prevents assigned devices from accessing spaces in memory that are outside of the VM to which they are assigned. This limits the impact of issues pertaining to device drivers and memory space, shielding Unraid OS from being exposed to unnecessary risk.
-   * VFIO usage requires **IOMMU** capable hardware (your CPU must have Intel VT-d or AMD-Vi support)[1](https://www.kernel.org/doc/Documentation/vfio.txt).
-   * IOMMU is required to be able to pass through hardware to a VM on Unraid. You can see if your Unraid server has IOMMU support by clicking on the _info_ button at the top right of the Unraid GUI. If it shows as disabled then you might want to check your motherboard's BIOS to see if it needs to be enabled there.
+[KVM](https://www.linux-kvm.org/page/Main_Page) is a hypervisor responsible for monitoring and managing the resources allocated to virtual machines.  
+   KVM is a component in the Linux kernel that allows it to act as a hypervisor. Simply put, hypervisors are responsible for monitoring and managing the resources allocated to virtual machines. Virtual machines are emulated computers that run on top of a physical computer. Ever wanted to run three operating systems on one computer all at the same time? Hypervisors make this possible.  
+   Examples of other hypervisors include Xen, VMWare (ESX/ESXi), VirtualBox, and Microsoft Hyper-V.
+Unlike other hypervisors, KVM is the only one that is built directly into and supported by the Linux kernel itself.  
+   All other type-1 hypervisors out there will load before Linux does, and then Linux runs in an underprivileged state to that hypervisor.  
+   By leveraging a hypervisor that is part of the Linux kernel itself, it means better support, less complexity, and more room for optimization improvements.
+
+#### QEMU
+
+[QEMU](https://www.qemu.org/) is the component in the kernel that manages / monitors resources allocated to virtual machines. QEMU is responsible for the emulation of hardware components such as a motherboard, CPU, and various controllers that make up a virtual machine.  
+KVM can't work without QEMU, so you'll often times see KVM referred to as KVM/QEMU.
+
+#### HVM
+
+When virtual machine technology was first starting to grow in adoption, it wasn't directly supported by the chipset manufacturers directly. As such, there was a significant amount of overhead associated with virtual machines due to software emulation. Later, Intel and AMD built support for virtualization directly into their hardware (Intel VT-x and AMD-v), reducing overhead for emulation, monitoring, and security. These technologies allow for the creation of hardware-assisted virtual machines (referred to as HVMs).  
+While Xen offers a way to eliminate the overhead associated with traditional emulation without the need for VT-x, this paravirtualization method only works with Linux-based guests, and for that, Docker Containers are a better solution anyway. As such, HVMs are best suited for virtual machines where more than just basic Linux applications are needed.  
+HVM is required to be able to run a VM on Unraid. Most modern systems will have HVM support. You can see if your Unraid server has HVM support by clicking on the **Info** button at the top right of the Unraid GUI. If it shows as disabled then you might want to check your motherboard's BIOS to see if it needs to be enabled there.
+
+#### VFIO
+
+[VFIO](https://www.linux-kvm.org/images/b/b4/2012-forum-VFIO.pdf) (**V**irtual **F**unction **IO**) allows us to assign a physical device, such as a graphics card, directly to a virtual machine that in turn will provide driver support for the device directly.  
+We can also prevent the device from accessing spaces in memory that are outside of that VM. This means that if something goes wrong with the device or its driver, the impact of such an event is limited to the virtual machine and not the host.  
+VFIO prevents assigned devices from accessing spaces in memory that are outside of the VM to which they are assigned. This limits the impact of issues pertaining to device drivers and memory space, shielding Unraid OS from being exposed to unnecessary risk.
+   * VFIO usage requires **IOMMU** capable hardware (your CPU must have [Intel VT-d or AMD-Vi support](https://www.kernel.org/doc/Documentation/vfio.txt)).
+   * IOMMU is required to be able to pass through hardware to a VM on Unraid. You can see if your Unraid server has IOMMU support by clicking on the **Info** button at the top right of the Unraid GUI. If it shows as disabled then you might want to check your motherboard's BIOS to see if it needs to be enabled there.
    * IOMMU support requires support in the CPU, motherboard, and BIOS to all be present.
      * IOMMU is often referred to as _hardware pass-through_ in the context of a VM.
      * IOMMU allows a VM to get direct access to hardware and thus tends to give better performance in using that hardware and also may allow capabilities of the hardware to be accessed by the VM that is not possible in the host OS.
 
-* **VirtIO**
-   * [VirtIO](https://www.linux-kvm.org/page/Virtio) is a virtualization standard for network and disk device drivers where just the guest's device driver "knows" it is running in
-    a virtual environment and cooperates with the hypervisor.
-   * This enables guests to get high-performance network and disk operations, and gives most of the performance benefits of paravirtualization[2](http://wiki.libvirt.org/page/Virtio).
-   * Using VirtIO in a guest OS requires that guest OS have virtIO drivers installed for the devices specified to use VirtIO in the VM definition.
-   * If the guest does not haveVirtIO drivers then the VM will have to be specified to emulate a device for which the guest OS **does** have drivers. This will be less efficient but does allow OS that are not VirtIO aware to be run in a VM. Examples might be to emulate SCSI or SATA for disk drives and e1000 for network adapters.
-* **VirtFS**
-   * Also referred to as the 9p filesystem, [VirtFS](https://www.kernel.org/doc/ols/2010/ols2010-pages-109-120.pdf) allows us to easily pass through file system access from a
-    virtualization host to a guest.
-   * VirtFS is the equivalent of Docker Volumes for KVM, but requires a mount command to be issued from within the guest[3](http://wiki.qemu.org/Documentation/9psetup). VirtFS
-    works with Linux-based virtual machines _only_.
-* **Libvirt**
-   * [Libvirt](https://libvirt.org/) is a collection of software that provides a convenient way to manage virtual machines and other virtualization functionality, such as storage and network interface management.
-   * These software pieces include an API library, a daemon (libvirtd), and a command-line utility (virsh)[4](http://wiki.libvirt.org/page/FAQ#What_is_libvirt.3F).
-* **VNC**
-   * [VNC](https://en.wikipedia.org/wiki/Virtual_Network_Computing) is a method that allows the screen/mouse/keyboard of a VM to be visible across the network from another device.
-   * VNC clients are available for most OS
-   * VNC can be used to view _emulated_ GPUs.
-   * VNC does **not** support sound emulation.
-   * One can get better performance emulating a GPU by having appropriate software installed directly into a guest OS. Such software also often provides sound emulation as well.
+#### VirtIO
 
-It is worth understanding what technologies are being used for virtualization by Unraid as documentation on these technologies will not be Unraid specific. Also, many issues relating to these technology components can be common across all Linux systems using a particular technology component so often answers can be found in places other than the Unraid forums.
+[VirtIO](https://www.linux-kvm.org/page/Virtio) is a virtualization standard for network and disk device drivers where just the guest's device driver "knows" it is running in a virtual environment and cooperates with the hypervisor. This enables guests to get high-performance network and disk operations, and gives most of the performance benefits of [paravirtualization](http://wiki.libvirt.org/page/Virtio).
+
+Using VirtIO in a guest OS requires that the guest OS have virtIO drivers installed for the devices specified to use VirtIO in the VM definition. If the guest does not have VirtIO drivers then the VM will have to be specified to emulate a device for which the guest OS **does** have drivers. This will be less efficient but does allow OS that are not VirtIO aware to be run in a VM. Examples might be to emulate SCSI or SATA for disk drives and e1000 for network adapters.
+
+#### VirtFS
+
+Also referred to as the 9p filesystem, [VirtFS](https://www.kernel.org/doc/ols/2010/ols2010-pages-109-120.pdf) allows us to easily pass through file system access from a virtualization host to a guest. VirtFS is the equivalent of Docker Volumes for KVM, but requires a mount command to be issued from within the [guest](http://wiki.qemu.org/Documentation/9psetup). VirtFS
+    only works with Linux-based virtual machines.
+
+#### Libvirt
+
+[Libvirt](https://libvirt.org/) is a collection of software that provides a convenient way to manage virtual machines and other virtualization functionality, such as storage and network interface management. These software pieces include an API library, a daemon (`libvirtd`), and a command-line utility ([virsh](http://wiki.libvirt.org/page/FAQ#What_is_libvirt.3F)).
+
+#### VNC
+
+[VNC](https://en.wikipedia.org/wiki/Virtual_Network_Computing) is a method that allows the screen/mouse/keyboard of a VM to be visible across the network from another device.
+   * VNC clients are available for most OSes.
+   * VNC can be used to view emulated GPUs.
+   * VNC does not support sound emulation.
+   * You can get better performance emulating a GPU by having appropriate software installed directly into a guest OS. Such software also often provides sound emulation as well.
+
+:::note
+
+It is worth understanding which technologies are being used for virtualization by Unraid, as documentation on these technologies will not be Unraid-specific. Also, many issues relating to these technology components can be common across all Linux systems using a particular technology component, so answers can often be found in places other than the Unraid forums.
+
+:::
 
 Particulars of the Unraid implementation of VM support are:
 
@@ -204,10 +214,10 @@ Particulars of the Unraid implementation of VM support are:
 * Unraid provides GUI support for managing VMs.
 * **Libvirt:** The XML definitions needed by libvirt are stored as a disk image file (typically called _libvirt.img_ although the user can change this name)
 * Unraid sets up some standard shares to provide a level of consistency to users:
-  * **domains**: This the default location for storing VM vdisk images associated with a VM
+  * **domains**: This the default location for storing VM vDisk images associated with a VM
   * **isos**: This is the default location for storing iso images for use with VMs.
   * **system**: This is the default location for storing the libvirt.img file (that contains the XML definitions for VMs.
-  *  The users can override any of these settings if so desired when creating individual VMs but for most users, the defaults are a good option.
+  *  Users can override any of these settings if they desire, when creating individual VMs. However, for most users the defaults are a good option.
   *  All these shares have a default **Use Cache** setting of _prefer_. Having VM files (particularly disk images) on the cache will give much better performance than having them on an array drive.
 * **VNC**
   * Unraid has the NoVNC web-based client built into its GUI and it can be used to access all VMs without the need to install specialist software into the guest OS.
