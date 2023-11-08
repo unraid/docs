@@ -214,7 +214,7 @@ Particulars of the Unraid implementation of VM support are:
 * Unraid provides GUI support for managing VMs.
 * **Libvirt:** The XML definitions needed by libvirt are stored as a disk image file (typically called _libvirt.img_ although the user can change this name)
 * Unraid sets up some standard shares to provide a level of consistency to users:
-  * **domains**: This the default location for storing VM vDisk images associated with a VM
+  * **domains**: This the default location for storing VM vDisk images associated with a VM.
   * **isos**: This is the default location for storing iso images for use with VMs.
   * **system**: This is the default location for storing the libvirt.img file (that contains the XML definitions for VMs.
   *  Users can override any of these settings if they desire, when creating individual VMs. However, for most users the defaults are a good option.
