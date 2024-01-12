@@ -119,7 +119,7 @@ MB。以下为一位用户提供的参考测试结果：
   所属组织        CDN 链接                         用户测试结果   备注
   --------------- -------------------------------- -------------- --------------------------------------------------------------------------------------------------
   网易            hub-mirror.c.163.com             22.751s
-  阿里云          [YourID].mirror.aliyuncs.com   28.677s        需要注册。点击以下链接以获取 YourID: <https://cr.console.aliyun.com/cn-hangzhou/instances/mirrors>
+  阿里云          [YourID].mirror.aliyuncs.com   28.677s        需要注册。点击以下链接以获取 YourID: https://cr.console.aliyun.com/cn-hangzhou/instances/mirrors
   Docker 官方源   docker.io                        20.883s        这是 Docker 的官方源，因此测试时无需在命令中添加" [CDN's Link]/"。
   中国科技大学    docker.mirrors.ustc.edu.cn       无响应
   Docker-cn       registry.docker-cn.com           无响应
