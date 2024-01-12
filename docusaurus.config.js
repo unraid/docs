@@ -138,9 +138,6 @@ const config = {
           },
         ],
       },
-      prism:{
-        additionalLanguages: ['shell', 'diff', 'json'],
-      },
       tableOfContents: {
         minHeadingLevel: 2,
         maxHeadingLevel: 4,
@@ -206,6 +203,7 @@ const config = {
       prism: {
         theme: lightCodeTheme,
         darkTheme: darkCodeTheme,
+        additionalLanguages: ['shell', 'diff', 'json'],
       },
     }),
   plugins: [
