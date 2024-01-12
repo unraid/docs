@@ -110,10 +110,10 @@ Example:
 Moves all contents from disk1 to disk4. All files/directories on disk1
 are now gone.
 
-Caution: Using the `<b>`{=html}move`</b>`{=html} command may be
+Caution: Using the <b>move</b> command may be
 potentially dangerous as it will copy to the destination drive and then
 delete your data file(s) from the source drive. In the interest of
-maximum safety, you may want to use `<b>`{=html}copy`</b>`{=html}
+maximum safety, you may want to use <b>copy</b>
 instead.
 
 ### Quotes

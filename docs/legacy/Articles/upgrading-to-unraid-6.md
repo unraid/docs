@@ -197,8 +197,6 @@ Your VMs should now be ready for use under the latest version.
 4. Copy and paste the below link into the field and click install
 5. Once the upgrade plugin has been installed, reboot your server
 
-<https://raw.githubusercontent.com/limetech/unRAIDServer-6.2/master/unRAIDServer.plg>
-
 ## Post installation procedures
 
 Once rebooted under version 6.2 for the first time, it may take several

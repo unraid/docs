@@ -50,7 +50,7 @@ In this case, manually install the update as follows:
 
 1. Navigate to Plugins/Install Plugin tab
 2. Select/copy this text
-   <https://s3.amazonaws.com/dnld.lime-technology.com/stable/unRAIDServer.plg>
+   https://stable.dl.unraid.net/unRAIDServer.plg
 3. Paste into URL field and click Install
 
 #### My array/docker apps are taking a really long time to start after the upgrade
@@ -205,8 +205,6 @@ Your VMs should now be ready for use under the latest version.
 4. Copy and paste the below link into the field and click install
 5. Once the upgrade plugin has been installed, reboot your server
 
-<https://s3.amazonaws.com/dnld.lime-technology.com/stable/unRAIDServer.plg>
-
 ### Post installation procedures
 
 Once rebooted under version 6.2 for the first time, it may take several
@@ -247,7 +245,7 @@ This is useful if you don't have access to the Unraid webgui for some reason.
 
 ### Manual upgrade using a network share or by putting the flash drive in another system
 
-- Copy the URL of the unRAIDServer-version.zip file that you want from <https://unraid.net/download>
+- Copy the URL of the `unRAIDServer-version.zip` file that you want from https://unraid.net/download
 - Unzip that file locally
 - Access the 'flash' share on the server, or physically put the flash drive in the local computer
 - If the `previous` directory does not exist on the flash drive, create it
@@ -257,7 +255,7 @@ This is useful if you don't have access to the Unraid webgui for some reason.
 
 ### Manual upgrade from the Unraid command line
 
-- Copy the URL of the unRAIDServer-version.zip file that you want from <https://unraid.net/download>
+- Copy the URL of the `unRAIDServer-version.zip` file that you want from https://unraid.net/download
 - Login to the Unraid server using SSH, telnet, or a local keyboard/mouse
 - Type these commands _one line at a time_ and press enter. If there are errors along the way, stop and ask for help:
 

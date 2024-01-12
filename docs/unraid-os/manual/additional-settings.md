@@ -76,7 +76,7 @@ that in the event of a power loss, the system can be commanded to shut
 down while being supplied power through a battery. From this page, you
 can configure the connection to your specific UPS and define policies
 for when the shutdown command should be issued. For a complete manual,
-visit: <http://apcupsd.org/manual/manual.html>
+visit: http://apcupsd.org/manual/manual.html
 
 ## VM Manager
 

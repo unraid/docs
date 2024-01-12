@@ -3,7 +3,7 @@
 ## [**How to Install**](https://connect.myunraid.net/help)
 
 1. Please make a local backup of your USB flash drive. This can be done
-   from the Main \> Flash page. In the event you need to revert to your
+   from the Main -> Flash page. In the event you need to revert to your
    previous stable installation, you can use the USB Flash Creator from
    our website to restore this backup zip file to your flash drive.
 2. Download Connect from Community Applications
@@ -21,7 +21,7 @@
 
 Sign in to the Unraid Connect Dashboard:
 
-> <https://connect.myunraid.net>
+[https://connect.myunraid.net](https://connect.myunraid.net)
 
 for a comprehensive overview of your Unraid server's online/offline status,
 available storage, license type, uptime, Unraid OS version, and more.
@@ -72,7 +72,7 @@ Once you enable local SSL per the instructions above, you will access
 your server through a Fully Qualified Domain Name:
 
 `https://ip.yourpersonalhash.myunraid.net` or
-`https://ip.yourpersonalhash.myunraid.net:`<https_port> (if your https
+`https://ip.yourpersonalhash.myunraid.net:<https_port>` (if your https
 port is not the default of 443)
 
 This is required in order to utilize a fully valid SSL certificate. A
@@ -85,14 +85,14 @@ If the Internet goes down and you lose access to DNS, do the following:
 - If **Use SSL/TLS** is set to **Yes**, then you can access your server
   using: [`https://[servername]`](https://%5Bservername%5D)`.[localTLD]`
   or
-  [`https://[servername]`](https://%5Bservername%5D)`.[localTLD]:`<https_port>
+  [`https://[servername]`](https://%5Bservername%5D)`.[localTLD]:<https_port>`
   (if your https port is not the default of 443)
 - If that doesn't work, or if **Use SSL/TLS** is set to **Strict**, then
   using telnet, SSH or local keyboard/monitor log in to the server and
   type: `use_ssl no`
 - Now you will be able to access your server's webgui via:
-  [`http://`](http://)<ip_address> (note: http not https) or
-  [`http://`](http://)<server_ip>`:`<http_port> (if your http port is
+  [`http://`](http://)`<ip_address>` (note: http not https) or
+  [`http://`](http://)`<server_ip>:<http_port>` (if your http port is
   not the default of 80)
 - When the Internet comes back, navigate to Settings -\> Management
   Access and set **Use SSL/TLS** back to **Strict** to re-enable local

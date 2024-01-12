@@ -138,10 +138,10 @@ You'll need to download the following:
   device path was /dev/disk2s1, the raw device name is /dev/rdisk2,
   basically you drop the s1 off the end (that's the partition number)
   and add in a r before disk
-- Type the following command, substituting `<device>`{=html} for your
+- Type the following command, substituting `<device>` for your
   raw deivce name ex: /dev/rdisk2 and press enter
 
-` fdisk -e ``<device> `{=html}
+` fdisk -e <device> `
 
 - At the \> prompt type the following and press enter between each
 
@@ -162,10 +162,10 @@ writing, ensure you have Unmounted the partition in Disk Utility
 `cd ~/Downloads/syslinux-4.05/mbr`
 
 - Install the bootable MBR on your flash drive with the following
-  command (again substituting `<device>`{=html} for your raw device
+  command (again substituting `<device>` for your raw device
   name)
 
-` dd conv=notrunc bs=440 count=1 if=mbr.bin of=``<device> `{=html}
+` dd conv=notrunc bs=440 count=1 if=mbr.bin of=<device> `
 
 **4. Install Unraid on your prepared Flash Drive**
 
@@ -298,7 +298,7 @@ try another.
   thread (uses a Knoppix installation or Live CD), if you have a board
   that will only boot from a flash drive as a USB-ZIP drive. Similar
   instructions, using Ubuntu or similar, can be found here:
-  <http://www.pendrivelinux.com/booting-linux-from-usb-zip-on-older-systems/>.
+  [http://www.pendrivelinux.com/booting-linux-from-usb-zip-on-older-systems](http://www.pendrivelinux.com/booting-linux-from-usb-zip-on-older-systems)
 
 - And last of all, try upgrading the BIOS of your motherboard. A later
   BIOS may have better support for booting from USB.

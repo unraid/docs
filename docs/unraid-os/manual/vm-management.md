@@ -47,7 +47,7 @@ primary methods available:
 #### Online Research
 
 - To check if your Intel processor has support for VT-x or VT-d, visit
-  <http://ark.intel.com/Search/Advanced>.  On the left hand filter
+  http://ark.intel.com/Search/Advanced.  On the left hand filter
   panel, you can filter by processors that have support for VT-x,
   VT-d, or both.
 - For guidance with AMD processors, there is not an equivalent to the
@@ -184,7 +184,7 @@ a few configuration steps:
   storage, network, and memory.
   - Download the latest 'stable' VirtIO Windows drivers ISO found
     here:
-    <https://fedoraproject.org/wiki/Windows_Virtio_Drivers#Direct_download>
+    https://fedoraproject.org/wiki/Windows_Virtio_Drivers#Direct_download
   - Copy the ISO file for the drivers to the ISO Library Share that
     you created earlier
   - Use the file picker for **VirtIO Windows Drivers ISO** to select
@@ -316,7 +316,7 @@ Settings_ section bar from the _Add VM_ page).
 - _With Linux-based VMs_, you can add multiple **VirtFS** mappings to
   your guest
   - For more information on VirtFS and the 9p file system, visit
-    here: <http://wiki.qemu.org/Documentation/9psetup>
+    here: http://wiki.qemu.org/Documentation/9psetup
 - If you desire, you can modify the **Network MAC** address for the
   virtual network interface of the VM as well as specify an alternate
   **Network Bridge**.
@@ -451,7 +451,7 @@ things you can do to try to fix this:
 #### Edit XML for VM to supply GPU ROM manually
 
 - From another PC, navigate to this webpage:
-  <http://www.techpowerup.com/vgabios/>
+  http://www.techpowerup.com/vgabios/
 - Use the **Refine Search Parameters** section to locate your GPU from
   the database.
 - Download the appropriate ROM file for your video card and store the
@@ -649,7 +649,7 @@ disk with any OS but this conversion guide only covers Windows.
 - A spare USB flash drive
 - Acronis Universal Restore (or similar tool):
 
-<http://www.acronis.com/redirector/products/atih2016/aur?build=6569&edition=16&gaID=1987015932.2478000884&language=1&winver=10.0>
+http://www.acronis.com/redirector/products/atih2016/aur?build=6569&edition=16&gaID=1987015932.2478000884&language=1&winver=10.0
 
 - It is also recommended you back up an image of your drive just in
   case. I recommend just using dd in the command line. It's very easy
@@ -673,7 +673,7 @@ trial, although there are likely other freeware versions that accomplish
 the same thing if you have an issue with that.
 
 - Download and install the following:
-  <http://www.acronis.com/redirector/products/atih2016/aur?build=6569&edition=16&gaID=1987015932.2478000884&language=1&winver=10.0>
+  http://www.acronis.com/redirector/products/atih2016/aur?build=6569&edition=16&gaID=1987015932.2478000884&language=1&winver=10.0
 - Insert your USB drive, open the program, and follow the onscreen
   instruction to create a bootable flash drive
   - Select 'Windows-like representation'
@@ -851,7 +851,7 @@ STEPS AND RESUME THE PROCEDURE FROM REBOOTING INTO KVM MODE.
 7. Leave graphics, sound, etc. all to defaults and click **Create**
 8. Upon creation, immediately force shutdown the VM (click the eject
    symbol from the VMs page)
-9. Click the </\> symbol from the VMs page next to the VM to edit the
+9. Click the \</\> symbol from the VMs page next to the VM to edit the
    XML
 10. Locate the `<disk>` section for your primary virtual disk.
 11. Remove the `<address>` line completely.

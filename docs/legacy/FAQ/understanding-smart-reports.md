@@ -436,28 +436,28 @@ incomplete!]_
 - also known more accurately as **S.M.A.R.T.** or **Self-Monitoring,
   Analysis and Reporting Technology**
 - Reference materials
-  - <http://en.wikipedia.org/wiki/S.M.A.R.T>. - all about
+  - http://en.wikipedia.org/wiki/S.M.A.R.T. - all about
     S.M.A.R.T., from Wikipedia; **recommended reading!**
-  - <http://en.wikipedia.org/wiki/S.M.A.R.T#Known_ATA_S.M.A.R.T._attributes> -
+  - http://en.wikipedia.org/wiki/S.M.A.R.T#Known_ATA_S.M.A.R.T._attributes -
     table of S.M.A.R.T. attributes, from Wikipedia
-  - <http://www.linuxjournal.com/article/6983> - an excellent
+  - http://www.linuxjournal.com/article/6983 - an excellent
     article on SMART and smartctl, from Linux Journal
-  - <http://smartmontools.sourceforge.net/> - smartmontools Home
+  - http://smartmontools.sourceforge.net/ - smartmontools Home
     Page
-  - <http://smartmontools.sourceforge.net/faq.html> - smartmontools
+  - http://smartmontools.sourceforge.net/faq.html - smartmontools
     FAQ Page
-  - <http://smartmontools.sourceforge.net/man/smartctl.8.html> - MAN
+  - http://smartmontools.sourceforge.net/man/smartctl.8.html - MAN
     Page for smartmontools
 - UnRAID related (some are marked _\<\< old \>\>_, meaning some part
   may be obsolete or incompatible with current releases of UnRAID)
-  - <https://forums.unraid.net/forum/index.php?topic=13054.msg53337#msg53337> -
+  - https://forums.unraid.net/forum/index.php?topic=13054.msg53337#msg53337 -
     keeping SMART values in perspective, and how to properly
     interpret them - a series of posts to help users alarmed by the
     very large numbers they find in a SMART report or 'diff'
-  - <https://forums.unraid.net/forum/index.php?topic=2135.msg15733#msg15733> -
+  - https://forums.unraid.net/forum/index.php?topic=2135.msg15733#msg15733 -
     a script for grabbing dated SMART reports for all drives
   - [Data Recovery](/unraid-os/manual/troubleshooting#data-recovery)
-  - <https://forums.unraid.net/forum/index.php?topic=2708> - the
+  - https://forums.unraid.net/forum/index.php?topic=2708 - the
     MyMain thread; an UnMENU plugin; after installing UnMENU,
     install this next; has a Smart View that provides color-coded
     SMART info for all drives

@@ -143,7 +143,7 @@ Finished! You have replaced the USB flash device and the registration key. You w
 
 You may replace your original registration key at any time. After replacing your license key once, you may replace your key using the online automated method after a further period of 12 months.
 
-Should you need to replace it again within that 12 month period, use the contact form at <https://unraid.net/contact>. For expedited service, please include in your message the old and new USB GUIDs, as well as the license and email address used at the moment of purchase.
+Should you need to replace it again within that 12 month period, use the contact form at https://unraid.net/contact. For expedited service, please include in your message the old and new USB GUIDs, as well as the license and email address used at the moment of purchase.
 
 :::important
 

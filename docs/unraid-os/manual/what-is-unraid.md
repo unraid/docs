@@ -216,7 +216,7 @@ containers through the use of templates in Unraid 6. These forum members
 have taken it upon themselves to build and maintain these templates and
 the list of available templates continues to grow.
 
-The Docker Hub can be accessed at <http://registry.hub.docker.com>.
+The Docker Hub can be accessed at http://registry.hub.docker.com.
 
 ### Containers
 

@@ -290,7 +290,7 @@ you cannot find a line that mentions MSI as a capability, it means your
 device does not support this. If the **Enable** setting is set to **-**,
 this means your device claims it is MSI capable, but that the guest VM
 is NOT using it. The procedure for enabling MSI support from Windows is
-documented here: <http://forums.guru3d.com/showthread.php?t=378044>
+documented here: http://forums.guru3d.com/showthread.php?t=378044
 
 ## Upgrading a VM to Windows 10
 

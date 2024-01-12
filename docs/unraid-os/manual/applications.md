@@ -34,7 +34,7 @@ CA provides a useful level of curation that is of particular value to
 new Unraid users.
 
 Install Community Applications by visiting this page on the forum:
-<https://forums.unraid.net/topic/38582-plug-in-community-applications/>
+https://forums.unraid.net/topic/38582-plug-in-community-applications/
 
 ### Finding applications
 

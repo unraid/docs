@@ -290,8 +290,8 @@ Important! Prior to Unraid 6.11.2, you must take care to start the WireGuard tun
 3. Switch to **Advanced** view and add your preferred DNS provider to the **Extra Parameters**. For example `--dns=8.8.8.8`.  
   If you don't set this, the container may leak your ISP's DNS server.
 4. Apply the changes and start the container.
-5. Launch Firefox and visit <https://whatismyipaddress.com/> you should see that your IP address is in the country you selected when you signed up with the provider.
-6. Visit <https://www.dnsleaktest.com/> and run a test, confirm that it only finds IPs related to the DNS provider you specified.
+5. Launch Firefox and visit https://whatismyipaddress.com/ you should see that your IP address is in the country you selected when you signed up with the provider.
+6. Visit https://www.dnsleaktest.com/ and run a test, confirm that it only finds IPs related to the DNS provider you specified.
 
 Feel free to add more containers to this same tunnel, or create multiple tunnels if desired.
 
@@ -317,7 +317,7 @@ Now all of your Unraid traffic will go through the commercial VPN tunnel.
 
 * Using Community Applications, install a [Firefox](https://unraid.net/community/apps?q=Firefox) Docker container.
 * Accept all defaults.
-* Launch Firefox and visit <https://whatismyipaddress.com/> you should see that your IP address is in the country you selected when you signed up with the provider.
+* Launch Firefox and visit https://whatismyipaddress.com you should see that your IP address is in the country you selected when you signed up with the provider.
 
 ### Support
 

@@ -4,7 +4,7 @@
 
 In the event the flash creator doesn't see or can't install Unraid to the device, it could be for one of many reasons. The simplest solution would be to try an alternate device, but if that is not an option for you, you can try installing Unraid using the legacy [manual method documented here](./manual-install-method).
 
-## I can't seem to connect to the WebGUI using <http://tower> or <http://tower.local>. What do I do?
+## I can't seem to connect to the WebGUI using `http://tower` or `http://tower.local`. What do I do?
 
 Sometimes your local DNS server won't resolve by hostname and if that is the case here, you can try connecting to the server by IP address. You can discover the IP address of the server in multiple ways (by manually setting it during the creation of the flash device, reviewing your router/switch DHCP address pool, or by connecting a monitor to the server).
 
