@@ -86,8 +86,8 @@ unmounted, making all data and applications unavailable until you once
 again start the array. To start or stop the array, perform the following
 steps:
 
-1. Log into the Unraid webGui using a browser (e.g. <http://tower>;
-   <http://tower.local> from Mac)
+1. Log into the Unraid webGui using a browser (e.g. `http://tower`;
+   `http://tower.local` from Mac)
 2. Click on **Main**
 3. Go to the _Array Operation_ section
 4. Click **Start** or **Stop** (you may first need to click the "Yes I
@@ -155,8 +155,8 @@ software, not the license policy._
 A valid registration key is required in order to start the array. To
 purchase or get a trial key, perform the following steps:
 
-1. Log into the Unraid webGui using a browser (e.g. <http://tower> from
-   most device, <http://tower.local> from Mac devices)
+1. Log into the Unraid webGui using a browser (e.g. `http://tower` from
+   most device, `http://tower.local` from Mac devices)
 2. Click on **Tools**
 3. Click on **Registration**
 4. Click to **Purchase Key** or **Get Trial Key** and complete the
@@ -2432,7 +2432,7 @@ likely to succeed without error for the average Unraid user.
 ## BTRFS Operations
 
 If you want more information BTRFS then the
-[./<Https://en.wikipedia.org/wiki/Btrfs> Wikipedia BTRFS article] is a
+[Wikipedia BTRFS article](https://en.wikipedia.org/wiki/Btrfs) is a
 good place to start
 
 There are a number of operations that are specific to BTRFS formatted

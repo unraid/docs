@@ -19,7 +19,7 @@ share on the server:
 `cp -r /work/* /mnt/disk1`
 
 (Of course you can copy from the workstation share to any disk/share.
-Eg. /mnt/user/`<sharename>`{=html})
+Eg. /mnt/user/`<sharename>`)
 
 Edit: Another option is to use rsync to get speed/progress information:
 

@@ -897,7 +897,7 @@ btrfs scrub start [-BdqrR] `<path>`{=html}\|`<device>`{=html}
 ```
 
 - Start a scrub on all devices of the filesystem identified by
-  `<path>`{=html} or on a single `<device>`{=html}.
+  `<path>` or on a single `<device>`.
 - Without options, scrub is started as a background process.
   Scrubbing involves reading all data from all disks and verifying
   checksums. Errors are corrected along the way IF POSSIBLE.

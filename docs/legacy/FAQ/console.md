@@ -91,8 +91,8 @@ below, and you will substitute the appropriate Device ID for your drive.
 
 ### hdparm
 
-- Instruction manual (a Linux MAN page) =\>
-  <http://linux.die.net/man/8/hdparm>
+- Instruction manual (a Linux MAN page)
+  [http://linux.die.net/man/8/hdparm](http://linux.die.net/man/8/hdparm)
 
 To view the identity and configuration information for a drive (at the
 console or terminal prompt)
@@ -109,8 +109,8 @@ Speed](check-harddrive-speed.md).
 
 ### smartctl
 
-- Instruction manual (a Linux MAN page) =\>
-  <http://smartmontools.sourceforge.net/man/smartctl.8.html>
+- Instruction manual (a Linux MAN page)
+  [http://smartmontools.sourceforge.net/man/smartctl.8.html](http://smartmontools.sourceforge.net/man/smartctl.8.html)
 
 To obtain the SMART info for a drive, including some identity and
 configuration information, and physical statistics and error history.
