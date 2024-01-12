@@ -138,6 +138,9 @@ const config = {
           },
         ],
       },
+      prism:{
+        additionalLanguages: ['shell', 'diff', 'json'],
+      },
       tableOfContents: {
         minHeadingLevel: 2,
         maxHeadingLevel: 4,
