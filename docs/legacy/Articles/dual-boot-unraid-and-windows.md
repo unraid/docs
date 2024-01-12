@@ -21,11 +21,11 @@ on the motherboard.
 
 The trick to multiboot Windows and Unraid on a cache drive is that
 Unraid requires the cache partition to be the first one in the partition
-table, but Windows insists on reordering the partitions when Windows in
+table, but Windows insists on reordering the partitions when Windows is
 installed, to put the Windows partition first. This is complicated by
 the fact that different versions and service packs of Windows have
 limitations on where it can read the boot files from... i.e., some
-versions of Windows can’t boot if the Windows boot partition is starts
+versions of Windows can’t boot if the Windows boot partition starts
 after 32GB, and some, if it starts after 136GB.
 
 Select the drive you want to use for cache. You must then decide:
@@ -122,7 +122,7 @@ installing lilo to the MBR.
 
 When done, edit /etc/lilo.conf to your liking.
 
-Finally, format the cache partition (partition1) with ReiserFS.
+Finally, format the cache partition (partition1) with XFS.
 
 ## Finish
 
