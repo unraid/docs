@@ -167,7 +167,7 @@ const config = {
               },
               {
                 label: "Discord",
-                href: "https://discordapp.com/invite/unraid",
+                href: "https://discord.unraid.net/",
               },
             ],
           },
