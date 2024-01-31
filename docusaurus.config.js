@@ -83,14 +83,6 @@ const config = {
         contextualSearch: true,
         searchPagePath: 'search',
       },
-      announcementBar: {
-        id: "underConstruction", // change this ID when you change the content so it'll show for users that previously closed the announcement
-        content:
-          'Welcome to the new Unraid Documentation! 🚧 Currently Under Construction 🚧 <a href="https://legacy.wiki.unraid.net" target="_blank">Legacy Wiki</a> ',
-        isCloseable: true,
-        backgroundColor: "#ff8c2f",
-        textColor: "#fff",
-      },
       colorMode: { defaultMode: "dark", respectPrefersColorScheme: true },
       image: "img/meta-unraid.png",
       metadata: [
