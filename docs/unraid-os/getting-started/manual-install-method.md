@@ -15,7 +15,7 @@ This method only works for devices 32GB and smaller.
 1. Plug the USB flash device into your Mac or PC.
 2. Format the device using the FAT32 file system. It must **not** be ex-FAT or NTFS. If your drive is larger than 32GB then you need to use a 3rd party tool (e.g. Rufus) to format it to FAT32 as Windows will not give this as an option on drives larger than 32GB.
 3. Set the ‘volume label’ to `UNRAID` (case-sensitive, use all caps).
-4. [Go to the downloads page.](http://lime-technology.com/download/) to get the zip file for the release you want to use.
+4. [Go to the downloads page.](https://unraid.net/download/) to get the zip file for the release you want to use.
 5. Choose a version and download it to a temporary location on your computer (e.g. a “downloads” folder).
 6. Extract the contents of the newly downloaded ZIP file onto your USB flash device.
 7. Browse to the USB flash device to see the newly extracted contents from your Mac or PC.
