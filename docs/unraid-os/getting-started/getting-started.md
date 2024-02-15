@@ -23,7 +23,9 @@ As of the [current release](https://unraid.net/product) of Unraid OS, the minimu
 * A 64-bit capable processor, that runs 1 GHz or higher.
 * A minimum of 4 GB of RAM for basic NAS functionality.
 * Linux hardware driver support for storage, Ethernet, and USB controllers.
-* Two hard disk drives to ensure data protection with a parity disk.
+* Two hard disk drives to ensure data protection with a [parity disk](/legacy/FAQ/Parity.md).
+
+Additional requirements apply when adding applications or virtual machines.
 
 :::important
 
@@ -33,4 +35,18 @@ Virtual Machines, in particular, require that you have a CPU and chipset combina
 
 :::
 
-For full hardware requirements, visit our [product page](https://unraid.net/product).
+#### Application Servers
+
+To run many applications, your system should have at least a quad-core CPU (2.4 GHz or faster) and 4-8GB of RAM. As you load more applications, you’ll need to add additional resources.
+
+#### Creating Virtual Machines
+
+To run VMs, you must have hardware-assisted virtualization (HVM) support on your processor/motherboard (Intel VT-x / AMD-V). To assign host-based PCI devices, like graphics and sound, to your VMs, your CPU and motherboard must also support IOMMU (Intel VT-d / AMD-Vi).
+
+Each of the three types of VMs have slightly different requirements for virtualization support:
+
+* Virtual Servers: HVM Required, IOMMU Not Required
+* Virtual Desktops: HVM Required, IOMMU Not Required
+* Hybrid VMs: HVM Required, IOMMU Required
+
+For more information, see our [VM documentation](/unraid-os/manual/vm-support.md).
