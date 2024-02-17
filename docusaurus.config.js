@@ -229,6 +229,11 @@ const config = {
           to: "/unraid-os/getting-started/manual-install-method/",
           from: "/unraid-os/manual/getting-started/manual-install-method/",
           },
+          // redirect from 6.12.7 to 6.12.8
+          {
+            to: "/unraid-os/release-notes/6.12.8/",
+            from: "/unraid-os/release-notes/6.12.7/",
+          }
         ],
       },
     ],
