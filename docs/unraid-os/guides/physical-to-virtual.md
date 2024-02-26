@@ -7,7 +7,7 @@ The steps for creating a VM using a physical disk (including one with an OS alre
 - A spare USB flash drive
 - Acronis Universal Restore (or similar tool):
 
-<http://www.acronis.com/redirector/products/atih2016/aur?build=6569&edition=16&gaID=1987015932.2478000884&language=1&winver=10.0>
+http://www.acronis.com/redirector/products/atih2016/aur?build=6569&edition=16&gaID=1987015932.2478000884&language=1&winver=10.0
 
 - It is also recommended you back up an image of your drive just in case. I recommend just using dd in the command line. It's very easy to use, just Google it.
 
@@ -15,7 +15,7 @@ The steps for creating a VM using a physical disk (including one with an OS alre
 
 Moving a hard drive with a Windows installation on it from one machine to another can be problematic and cause blue screens if not prepped prior. This is because of differences in machine hardware. This applies whether or not it is a physical or a virtual machine. As such we need to make changes to the Windows HAL, or hardware abstraction layer. There are a few tools that can accomplish this, including one built into Windows itself called 'sysprep'. However, sysprep is meant more for cloning a disk image across multiple machines and will activate the Windows OOBE (out-of-box experience) upon restoration, requiring things like user account setup and other changes that are undesirable and unnecessary for our situation. As such we will be using a third-party tool by Acronis (Universal Restore). This software has a 30-Day free trial, although there are likely other freeware versions that accomplish the same thing if you have an issue with that.
 
-* Download and install the following: <http://www.acronis.com/redirector/products/atih2016/aur?build=6569&edition=16&gaID=1987015932.2478000884&language=1&winver=10.0>
+* Download and install the following: http://www.acronis.com/redirector/products/atih2016/aur?build=6569&edition=16&gaID=1987015932.2478000884&language=1&winver=10.0
 * Insert your USB drive, open the program, and follow the onscreen instruction to create a bootable flash drive
   * Select 'Windows-like representation'
   * No Linux kernel parameters

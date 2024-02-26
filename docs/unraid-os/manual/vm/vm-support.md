@@ -181,7 +181,7 @@ Here's the procedure for doing this:
 5. From the command line, type the following: `lspci -v -s 1:00.0` (replace 1:00.0 with your GPU device)
 6. Look for a line that looks like this: `Capabilities: [68] MSI: Enable+ Count=1/1 Maskable- 64bit+`
 
-If the **Enable** setting is set to **+**, that means your device claims it is MSI capable and it is enabled by the guest VM that is using it. If you cannot find a line that mentions MSI as a capability, it means your device does not support this. If the **Enable** setting is set to **-**, this means your device claims it is MSI capable, but that the guest VM is NOT using it. The procedure for enabling MSI support from Windows is documented here: <http://forums.guru3d.com/showthread.php?t=378044>
+If the **Enable** setting is set to **+**, that means your device claims it is MSI capable and it is enabled by the guest VM that is using it. If you cannot find a line that mentions MSI as a capability, it means your device does not support this. If the **Enable** setting is set to **-**, this means your device claims it is MSI capable, but that the guest VM is NOT using it. The procedure for enabling MSI support from Windows is documented here: http://forums.guru3d.com/showthread.php?t=378044
 
 ### Upgrading a VM to Windows 10
 

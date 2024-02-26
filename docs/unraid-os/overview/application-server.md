@@ -36,7 +36,7 @@ run-time environments.
 
 In contrast, the Docker Hub provides all the benefits without the limitations of a traditional package manager. Using the Docker engine, pre-built applications can be downloaded automatically and, thanks to the copy-on-write benefits we've already covered, the only data that is actually downloaded is data not already present on your system. The hub contains over 14,000 Dockerized apps, so finding what you're looking for shouldn't be a problem. In addition, thanks to some of our loyal community members, users can quickly add many of the most popular containers through the use of templates in Unraid 6. These forum members have taken it upon themselves to build and maintain these templates and the list of available templates continues to grow.
 
-The Docker Hub can be accessed at <http://registry.hub.docker.com>.
+The Docker Hub can be accessed at http://registry.hub.docker.com.
 
 ## Containers
 
