@@ -27,7 +27,7 @@ To determine if hardware has support for HVM or IOMMU, there are two primary met
 
 #### Online Research
 
-* To check if your Intel processor has support for VT-x or VT-d, visit <http://ark.intel.com/Search/Advanced>.  On the left hand filter panel, you can filter by processors that have support for VT-x,  VT-d, or both.
+* To check if your Intel processor has support for VT-x or VT-d, visit http://ark.intel.com/Search/Advanced.  On the left hand filter panel, you can filter by processors that have support for VT-x,  VT-d, or both.
 * For guidance with AMD processors, there is not an equivalent to the ARK site, but [this Wikipedia article](http://en.wikipedia.org/wiki/List_of_IOMMU-supporting_hardware#AMD_based) may assist you.
 * Motherboard support for virtualization is usually available as part of the product documentation or user manual.
 
@@ -99,7 +99,7 @@ Before you can get started creating virtual machines, we need to perform a few c
 
 * In the WebGUI, navigate to ***Settings > VM Manager***.
 * For Windows VMs, you will need to download virtual drivers for storage, network, and memory.
-  * Download the latest "stable" VirtIO Windows drivers ISO found here: <https://github.com/virtio-win/virtio-win-pkg-scripts/blob/master/README.md>.
+  * Download the latest "stable" VirtIO Windows drivers ISO found here: https://github.com/virtio-win/virtio-win-pkg-scripts/blob/master/README.md.
   * Copy the VirtIO ISO file for the drivers to the ISO share folder.
   * Use the file picker for **VirtIO Windows Drivers ISO** to select the ISO file you copied.
   * You can override the default driver ISO on a per-VM basis (under **Advanced View**).
@@ -179,7 +179,7 @@ If you wish to toggle other advanced settings for the VM, you can toggle from **
 * You can choose to override the default **VirtIO Drivers ISO** should you so desire.
 * You can toggle the **vDisk Type** between RAW and QCOW2 (RAW is recommended for best performance)
 * With Linux-based VMs, you can add multiple **VirtFS** mappings to your guest
-  * For more information on VirtFS and the 9p file system, visit here: <http://wiki.qemu.org/Documentation/9psetup>
+  * For more information on VirtFS and the 9p file system, visit here: http://wiki.qemu.org/Documentation/9psetup
 * If you desire, you can modify the **Network MAC** address for the virtual network interface of the VM as well as specify an alternate **Network Bridge**.
   * You can click the blue refresh symbol to auto-generate a new MAC address for the virtual network interface.
   * Additional virtual network interfaces can be assigned by selecting the plus sign.
@@ -252,7 +252,7 @@ If you aren't receiving an error message, but the display doesn't "light up" whe
 
 ### Edit XML for VM to supply GPU ROM manually
 
-1. From another PC, navigate to this webpage: <http://www.techpowerup.com/vgabios/>
+1. From another PC, navigate to this webpage: http://www.techpowerup.com/vgabios/
 2. Use the **Refine Search Parameters** section to locate your GPU from the database.
 3. Download the appropriate ROM file for your video card and store the file on any user share in Unraid.
 4. With your VM stopped, click the icon for your VM, then select **Edit XML** from the context menu.
