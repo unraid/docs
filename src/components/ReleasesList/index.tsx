@@ -24,11 +24,13 @@ export function ReleasesListViewer() {
   return (
     <table>
       <thead>
-        <th>Version</th>
-        <th>Created</th>
-        <th>Download</th>
-        <th>Changelog</th>
-        <th>MD5</th>
+        <tr>
+          <th>Version</th>
+          <th>Created</th>
+          <th>Download</th>
+          <th>Changelog</th>
+          <th>MD5</th>
+        </tr>
       </thead>
       <tbody>
         {releases.map((release) => (
