@@ -86,7 +86,7 @@ const config = {
       colorMode: { defaultMode: "dark", respectPrefersColorScheme: true },
       docs: {
         sidebar: {
-          hideable: true,
+          hideable: false,
           autoCollapseCategories: true,
         },
       },
