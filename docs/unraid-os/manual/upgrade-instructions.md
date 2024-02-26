@@ -2,25 +2,30 @@
 
 ## Prerequisites
 
-Before upgrading, we highly recommend making a complete backup of your
-USB flash device. You can do this by copying the entire contents of the
-"flash" share to a separate computer.
+Before upgrading, we highly recommend making a complete backup of your USB flash device. You can use Unraid Connect to create the backup or you can do it manually via the WebGUI:
 
-## From version 6.4 or higher
+1. In the ***Main*** tab select the **Flash** device from the boot device list.
+2. Under **Flash Device Settings**, select the **Flash Backup** button to download a fully zipped backup of your current flash drive to your Mac or PC.
+![Flash backup](../assets/Backup_flash_drive.png)
+
+Alternatively, if you want, you can use [Unraid Connect](../../connect/help.md#restoring-flash-backup) to back up your Flash boot device.
+
+## Upgrading from version 6.4 or higher
 
 1. Boot your server up and login to the web interface
-2. Click the _Tools_ tab
-3. Click "Update OS" under the _About_ section
+2. Click the **Tools** tab
+3. Click "Update OS" under the **About** section
 4. Click "Check for Updates" to see if a new release is available
 5. Click "Update" to apply the update
-6. Once the upgrade is complete, reboot your server for it to take
-   effect
+6. Once the upgrade is complete, reboot your server for it to take effect
 
-_Note: You can optionally install releases from the "Next" branch as
-well, but those releases are not considered fully "Stable", so only do
-so at your own risk._
+:::note
 
-## From version 6.3
+You can optionally install releases from the "Next" branch as well, but those releases are not considered fully "Stable", so only do so at your own risk.
+
+:::
+
+## Upgrading from version 6.3
 
 1. Boot your server up and login to the web interface
 2. Click the _Plugins_ tab
@@ -28,7 +33,7 @@ so at your own risk._
 4. Once the upgrade is complete, reboot your server for it to take
    effect
 
-## From version 6.2
+## Upgrading from version 6.2
 
 1. Boot your server up and login to the web interface
 2. Click the _Plugins_ tab
@@ -50,7 +55,7 @@ In this case, manually install the update as follows:
 
 1. Navigate to Plugins/Install Plugin tab
 2. Select/copy this text
-   https://stable.dl.unraid.net/unRAIDServer.plg
+   https://s3.amazonaws.com/dnld.lime-technology.com/stable/unRAIDServer.plg
 3. Paste into URL field and click Install
 
 #### My array/docker apps are taking a really long time to start after the upgrade
@@ -158,7 +163,7 @@ the VNC Video Driver. You can do this from the Edit VM page. It is
 recommended to first try Cirrus, then vmvga (if available for your VM
 type).
 
-## From version 6.1 or earlier
+## Upgrading from version 6.1 or earlier
 
 Please ensure your system meets these requirements before upgrading:
 
@@ -233,25 +238,31 @@ procedure should only need to be performed the first time you boot OVMF
 VMs under version 6.2 that were previously created using Unraid 6.1 or
 earlier.
 
-## From version 5.x or earlier
+## Upgrading from version 5.x or earlier
 
 Please see [this forum
 post](https://forums.unraid.net/forum/index.php?topic=41061.0) for
 information on upgrading.
 
-## Manual Upgrade or Downgrade
+## Manual upgrade or downgrade
 
-This is useful if you don't have access to the Unraid webgui for some reason.
+This is useful if you don't have access to the Unraid WebGUi for some reason.
+
+Before proceeding, and if you haven't done so already, make a complete backup of your USB flash device. You can use Unraid Connect to create the backup or you can do it manually via the WebGUI:
+
+1. In the ***Main*** tab select the **Flash** device from the boot device list.
+2. Under **Flash Device Settings**, select the **Flash Backup** button to download a fully zipped backup of your current flash drive to your Mac or PC.
+![Flash backup](../assets/Backup_flash_drive.png)
 
 ### Manual upgrade using a network share or by putting the flash drive in another system
 
-- Copy the URL of the `unRAIDServer-version.zip` file that you want from https://unraid.net/download
-- Unzip that file locally
-- Access the 'flash' share on the server, or physically put the flash drive in the local computer
-- If the `previous` directory does not exist on the flash drive, create it
-- Move (not copy) bz* and changes.txt from the root of the flash drive to the `previous` directory, overwriting files as needed
-- Copy bz* and changes.txt from the unzipped file to the root of the flash drive
-- Reboot the server
+1. Copy the URL of the unRAIDServer-version.zip file that you want from our [Downloads page](https://unraid.net/download).
+2. Unzip that file locally.
+3. Access the 'flash' share on the server, or physically put the flash drive in the local computer.
+4. If the `previous` directory does not exist on the flash drive, create it.
+5. Move (not copy) `bz*` and `changes.txt` from the root of the flash drive to the `previous` directory, overwriting files as needed.
+6. Copy `bz*` and `changes.txt` from the unzipped file to the root of the flash drive.
+7. Reboot the server.
 
 ### Manual upgrade from the Unraid command line
 
