@@ -245,7 +245,7 @@ This is useful if you don't have access to the Unraid webgui for some reason.
 
 ### Manual upgrade using a network share or by putting the flash drive in another system
 
-- Copy the URL of the `unRAIDServer-version.zip` file that you want from https://unraid.net/download
+- Copy the URL of the `unRAIDServer-version.zip` file that you want from the [Download Archive](../download_list.mdx)
 - Unzip that file locally
 - Access the 'flash' share on the server, or physically put the flash drive in the local computer
 - If the `previous` directory does not exist on the flash drive, create it
@@ -255,7 +255,7 @@ This is useful if you don't have access to the Unraid webgui for some reason.
 
 ### Manual upgrade from the Unraid command line
 
-- Copy the URL of the `unRAIDServer-version.zip` file that you want from https://unraid.net/download
+- Copy the URL of the `unRAIDServer-version.zip` file that you want from [Download Archive](../download_list.mdx)
 - Login to the Unraid server using SSH, telnet, or a local keyboard/mouse
 - Type these commands _one line at a time_ and press enter. If there are errors along the way, stop and ask for help:
 
