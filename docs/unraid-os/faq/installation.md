@@ -2,7 +2,7 @@
 
 ## I'm unable to get the USB Flash Creator to install Unraid to my flash device. What do I do?
 
-In the event the flash creator doesn't see or can't install Unraid to the device, it could be for one of many reasons. The simplest solution would be to try an alternate device, but if that is not an option for you, you can try installing Unraid using the legacy [manual method documented here](./manual-install-method).
+In the event this tool doesn't work for you, a [manual installation method](/unraid-os/getting-started/manual-install-method.md) is also available.
 
 ## I can't seem to connect to the WebGUI using `http://tower` or `http://tower.local`. What do I do?
 
@@ -17,13 +17,6 @@ You can change the name used for your Unraid server from the WebGUI by going to 
 The USB Flash device **must** be one that has a unique hardware GUID (serial number) built into it. Some manufacturers re-use the same GUID on the drives they manufacture, use a GUID that is all zeroes, or use an obviously made-up number. These drives are not able to be used as an Unraid boot device. Although it is difficult to generalize, drives from most major manufacturers **do** satisfy the requirement of having a unique GUID.
 
 Note: SSDs, USB card readers, SD card readers, or other devices cannot be used to boot Unraid at this time.
-
-## The USB flash creator tool isn't detecting my flash drive. What do I do?
-
-In the event this tool doesn't work for you, we have additionally documented a manual process by which you can also create your flash
-device. As an FYI, the manual method only works on 32 GB devices or smaller.
-
-USB flash devices and the Flash Creator tool are discussed further in this New Users Blog.
 
 ## I need to configure my system to boot using UEFI. How do I do this?
 

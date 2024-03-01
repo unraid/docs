@@ -6,14 +6,13 @@ sidebar_position: 3
 
 If for some reason the USB Flash Creator tool cannot be used, or your USB flash device is not detected, it is possible to manually format and prepare a bootable USB flash device.
 
-:::important
-
-This method only works for devices 32GB and smaller.
-
-:::
-
 1. Plug the USB flash device into your Mac or PC.
-2. Format the device using the FAT32 file system. It must **not** be ex-FAT or NTFS. If your drive is larger than 32GB then you need to use a 3rd party tool (e.g. Rufus) to format it to FAT32 as Windows will not give this as an option on drives larger than 32GB.
+2. Format the device using the FAT32 file system. It must **not** be ex-FAT or NTFS.
+    :::important
+
+    If your flash drive is larger than 32 GB then you need to use a 3rd party tool (e.g. Rufus) to format it to FAT32 as Windows will not give this as an option on drives larger than 32 GB.
+
+    :::
 3. Set the ‘volume label’ to `UNRAID` (case-sensitive, use all caps).
 4. Go to the [Download Archive](../download_list.mdx) to get the zip file for the release you want to use.
 5. Choose a version and download it to a temporary location on your computer (e.g. a “downloads” folder).
