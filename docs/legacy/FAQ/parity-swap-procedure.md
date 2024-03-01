@@ -48,7 +48,8 @@ one, that is even larger than the Parity drive.**
 - This procedure is strictly for replacing data drives in an Unraid
   array. If all you want to do is replace your Parity drive with a
   larger one, then you don't need the Parity Swap procedure. Just
-  remove the old parity drive and add the new one, and start the
+  stop the array, unassign the parity drive and then remove the
+  old parity drive and add the new one, and start the
   array. The process of building parity will immediately begin. (If
   something goes wrong, you still have the old parity drive that you
   can put back!)
