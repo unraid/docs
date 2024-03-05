@@ -29,6 +29,8 @@ Like most servers, this particular piece of hardware should focus on durability 
 * Physical size is only relevant when it comes to your server's physical location and setup.
 * Using a reputable brand, from a reputable vendor, offers some reassurance of durability, but not every vendor is the same.
 
+For advanced users: its also been found a mSATA SSD in a usb enclosure can be used instead of a USB stick as long as the mSATA to USB convertor chip has its own GUID, currently only the Asmedia ASM1153e has been confirmed to have this feature 
+
 ## Before you replace your USB flash device
 
 Before replacing the current flash device, it may be worthwhile to carry out some diagnostics.
