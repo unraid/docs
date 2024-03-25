@@ -1,19 +1,16 @@
 # Licensing
 
-## Is Pricing for Unraid OS "one time"? Are There Additional Fees for OS Updates?
+## Do I own my software license?
 
-Unraid OS license pricing is a one-time fee and updates are included.
+When you purchase an Unraid OS license, you own a perpetual copy of the software forever. 
 
 ## How do I Purchase Unraid?
 
-Unraid OS can be purchased from within the OS via the Tools-\>
-Registration page or, in OS version 6.10 and beyond, via the top right
-corner of the page.
+You have two options: 
 
-You can also purchase a [license activation code directly from our
-website](https://unraid.net/pricing) and redeem the code for a license
-later when your server is up and running. The activation code will be on
-your receipt.
+1. If you've already started a trial, you can purchase licenses and upgrades from the top right drop-down within Unraid.
+2. You can purchase an Unraid license "activation code" from the Buy Now buttons above and [activate](https://docs.unraid.net/unraid-os/faq/licensing-faq/#how-to-redeem-a-license-activation-code) your license later. Activation codes do not expire.
+The pricing listed is per server. All sales are final. Please utilize our free 30-day trial before purchasing!
 
 ## How to Redeem a License Activation Code
 
@@ -36,29 +33,67 @@ via the top right corner of the page.
 
 ![](../assets/Upgrade-UPC.png)
 
-**Unraid Basic** allows for up to _6 attached storage
+**Unraid Starter** allows for up to _6 attached storage
 devices<sup>1</sup>._
 
-**Unraid Plus** allows for up to _12 attached storage
+**Unraid Unleashed** allows for_unlimited<sup>2</sup> attached storage
 devices<sup>1</sup>._
 
-**Unraid Pro** allows for _unlimited<sup>2</sup> attached storage
+**Unraid Lifetime** allows for _unlimited<sup>2</sup> attached storage
 devices<sup>1</sup>._
+
+Annual Extension Fee for Starter and Unleashed: $36
 
 License upgrades are priced as follows:
 
-Basic license → Plus license: _$39 USD_
+Starter to Unleashed: _$69 USD_
 
-Basic license → Pro license: _$79 USD_
+Starter to Lifetime: _$209 USD_
 
-Plus license → Pro license: _$49 USD_
+Unleashed to lifetime: _$149 USD_
+
+Basic to Unleashed: _$49 USD_
+
+Plus to Unleashed: _$19 USD_
+
+Basic license → Plus license: _$59 USD_
+
+Basic license → Pro license: _$99 USD_
+
+Plus license → Pro license: _$69 USD_
 
 <sup>1</sup> <b>Attached storage devices</b> refer to the total number of
 storage devices you are allowed to have attached to the server before
 starting the array, not counting the USB Flash boot device. There are
 _no other limitations_ in the software based on license type.
+Prices are subject to change _at any time._
 
-## What does "Unlimited" mean for trial and Pro licenses?
+## Is Unraid OS a subscription?
+
+No- we don't like forced subscriptions either. Once you purchase a license, you own it. 
+Your purchase of Starter or Unleashed includes one free year of updates, and a Lifetime license includes a lifetime of updates. 
+After one year, an optional $36 license extension fee will get you an additional year of OS updates. 
+Don’t want to pay? No problem. You still own your license and will simply stay on that minor version of Unraid unless or until you pay your extension fee again.
+
+## What happens if I don't extend my Starter or Unleashed license?
+
+When you purchase a Starter or Unleashed License, you automatically get a free year of Unraid OS updates. 
+If you choose not to extend, you still own a copy of the software at the current version, but your update eligibility changes. See next FAQ for details.
+
+## What happens with security updates if I don't extend my Starter or Unleashed license?
+
+If your license extension lapses (as in, you do not pay your annual fee), you can download patch releases within the same minor OS version that was available to you at the time of the lapse. 
+
+Our naming convention for releases is: <major>.<minor>.<patch>. 
+
+For example: Your system is eligible for Unraid 7.1.0 when your extension lapses. You qualify for the remaining patch releases of the Unraid 7.1.x series. 
+Once Unraid 7.2.0 is released, the 7.1.x patch releases will only include security patches. Once Unraid 7.3 is released, version 7.1.0 will be EOL, and there will be no more 7.1.x updates.
+
+## What happens if I choose to extend my Starter or Unleashed license at a later date?
+
+No problem—just pay the extension fee and jump back in (subject to the current extension pricing).
+
+## What does "Unlimited" mean for attached storage devices?
 
 Unraid OS Pro supports up to 30 storage devices in the parity-protected
 array (28 data and 2 parity) and up to 35 named pools, of up to 30
@@ -67,9 +102,9 @@ pool(s)](/unraid-os/release-notes/6.9.0.md#multiple-pools).
 Additional storage devices can still be utilized directly with other
 Unraid features such as [Virtual
 Machines](/unraid-os/manual/vm-management.md) or the unassigned devices
-plugin.
+plugin and their is no limit to the amount of devices.
 
-## What Happens if my USB Fails? Do I Have to Repurchase a License?
+## What Happens if My USB Fails? Do I Have to Repurchase a License?
 
 If your USB Flash boot device fails, you can [transfer
 your](/unraid-os/manual/changing-the-flash-device.md) license to a new USB
@@ -120,6 +155,12 @@ Simple! Navigate to the Tools \> Registration page and you can review
 your current key type and registration information.
 
 ## Unraid OS Trial
+
+### How do Unraid Trials work?
+
+Trial licenses last 30 days and provide the full functionality of an Unraid Pro license with no attached storage device limit.
+
+To begin, you must have a quality USB drive ready and download our USB creator tool. Then, follow our Getting Started Guide to be up and running in minutes. Trial licenses require an internet connection upon server boot to validate.
 
 ### Can I Transfer my Trial Key to a New Flash Device?
 
