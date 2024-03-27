@@ -89,7 +89,7 @@ No problem—just pay the extension fee and jump back in (subject to the current
 
 ## What does "Unlimited" mean for attached storage devices?
 
-Unraid Pro, Unleashed and Lifetime licenses supports up to 30 storage devices in the parity-protected
+Unraid Pro, Unleashed and Lifetime licenses support up to 30 storage devices in the parity-protected
 array (28 data and 2 parity) and up to 35 named pools, of up to 30
 storage devices in the [cache
 pool(s)](/unraid-os/release-notes/6.9.0.md#multiple-pools).
