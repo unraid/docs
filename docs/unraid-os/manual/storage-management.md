@@ -134,18 +134,6 @@ storage devices and make use of them (such as USB flash devices for
 assignment to virtual machines). In Unraid Server OS 6, the attached
 storage device limits are as follows:
 
-Attached Storage Device Limits by Registration Key
-
----
-
-#### Trial
-
-Unlimited
-
-_NOTE: The attached device limits do NOT refer to how many devices you
-can assign to the array or cache. Those limits are imposed by the
-software, not the license policy._
-
 ### Invalid or missing key
 
 ![indication that your key is missing or invalid](../assets/Invalidormissingkey.png)
