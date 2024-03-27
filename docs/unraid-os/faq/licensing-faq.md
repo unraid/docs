@@ -33,10 +33,9 @@ via the top right corner of the page.
 
 ![](../assets/Upgrade-UPC.png)
 
-**Unraid Starter** allows for up to _6 attached storage
-devices<sup>1</sup>._
+**Unraid Starter** allows for up to _6 attached storage devices<sup>1</sup>._
 
-**Unraid Unleashed** allows for_unlimited<sup>2</sup> attached storage
+**Unraid Unleashed** allows for _unlimited<sup>2</sup> attached storage
 devices<sup>1</sup>._
 
 **Unraid Lifetime** allows for _unlimited<sup>2</sup> attached storage
@@ -46,27 +45,22 @@ Annual Extension Fee for Starter and Unleashed: $36
 
 License upgrades are priced as follows:
 
-Starter to Unleashed: _$69 USD_
-
-Starter to Lifetime: _$209 USD_
-
-Unleashed to lifetime: _$149 USD_
-
-Basic to Unleashed: _$49 USD_
-
-Plus to Unleashed: _$19 USD_
-
-Basic license → Plus license: _$59 USD_
-
-Basic license → Pro license: _$99 USD_
-
-Plus license → Pro license: _$69 USD_
+* Starter to Unleashed: _$69 USD_
+* Starter to Lifetime: _$209 USD_
+* Unleashed to Lifetime: _$149 USD_
+* Basic to Unleashed: _$49 USD_
+* Plus to Unleashed: _$19 USD_
+* Basic to Plus: _$59 USD_
+* Basic to Pro: _$99 USD_
+* Plus to Pro: _$69 USD_
 
 <sup>1</sup> <b>Attached storage devices</b> refer to the total number of
 storage devices you are allowed to have attached to the server before
 starting the array, not counting the USB Flash boot device. There are
 _no other limitations_ in the software based on license type.
 Prices are subject to change _at any time._
+
+<sup>2</sup> <b>Unlimited devices</b> see [below](#what-does-unlimited-mean-for-attached-storage-devices)
 
 ## Is Unraid OS a subscription?
 
@@ -95,7 +89,7 @@ No problem—just pay the extension fee and jump back in (subject to the current
 
 ## What does "Unlimited" mean for attached storage devices?
 
-Unraid OS Pro supports up to 30 storage devices in the parity-protected
+Unraid Pro, Unleashed and Lifetime licenses support up to 30 storage devices in the parity-protected
 array (28 data and 2 parity) and up to 35 named pools, of up to 30
 storage devices in the [cache
 pool(s)](/unraid-os/release-notes/6.9.0.md#multiple-pools).
@@ -149,7 +143,7 @@ unique ID, and therefore is ineligible for registration. Please obtain a
 different USB flash device for use with Unraid OS. A few brands that
 work best include Lexar, Samsung, Kingston, or PNY.
 
-## How do I determine what registration type (Basic, Plus, or Pro) I have?
+## How do I determine what registration type I have?
 
 Simple! Navigate to the Tools \> Registration page and you can review
 your current key type and registration information.
