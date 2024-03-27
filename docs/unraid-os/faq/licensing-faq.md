@@ -84,7 +84,7 @@ If you choose not to extend, you still own a copy of the software at the current
 
 If your license extension lapses (as in, you do not pay your annual fee), you can download patch releases within the same minor OS version that was available to you at the time of the lapse. 
 
-Our naming convention for releases is: <major>.<minor>.<patch>. 
+Our naming convention for releases is: `<major>.<minor>.<patch>`. 
 
 For example: Your system is eligible for Unraid 7.1.0 when your extension lapses. You qualify for the remaining patch releases of the Unraid 7.1.x series. 
 Once Unraid 7.2.0 is released, the 7.1.x patch releases will only include security patches. Once Unraid 7.3 is released, version 7.1.0 will be EOL, and there will be no more 7.1.x updates.
