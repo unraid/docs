@@ -21,7 +21,7 @@ Trial keys are not eligible to be linked.
    ![Step 3](assets/link-step-03.png)
    ![Step 4](assets/link-step-04.png)
 
-4. Moving forward you'll be able to find the linked license key on the [My License Keys](https://account.unraid.net/keys) page of your [Unraid.net](https://account.unraid.net/) account.
+4. Moving forward you'll be able to find the linked license key on the [My License Keys](https://account.unraid.net/keys) page of your [Unraid.net account](https://account.unraid.net/).
 
    ![Step 5](assets/link-step-05.png)
 
