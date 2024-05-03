@@ -233,6 +233,11 @@ const config = {
           {
             to: "/unraid-os/release-notes/6.12.8/",
             from: "/unraid-os/release-notes/6.12.7/",
+          },
+          // redirect from unraid-account faq page to the top level account page
+          {
+            to: "/account/",
+            from: "/unraid-os/faq/unraid-account/",
           }
         ],
       },
