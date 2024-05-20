@@ -10,7 +10,7 @@ Sometimes your local DNS server won't resolve by hostname and if that is the cas
 
 ## How do I change the hostname of my server?
 
-You can change the name used for your Unraid server from the WebGUI by going to Settings-\>System Settings-\>Identification
+You can change the name used for your Unraid server from the WebGUI by going to Settings → System Settings → Identification
 
 ## My flash drive is reporting an invalid GUID. What do I do?
 
