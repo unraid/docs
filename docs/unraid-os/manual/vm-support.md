@@ -450,7 +450,7 @@ questions.
 
 **Setup the VM on the host**
 
-- On the host system, go to _Settings-\>VM_ and make sure VMs are
+- On the host system, go to _Settings → VM_ and make sure VMs are
   enabled. For more details see the [VM
   Management](vm-management.md) in the Unraid manual.
 - Go to the VMs tab and click the **Add VM** button. This will display
@@ -492,7 +492,7 @@ questions.
 - (Optional) Remove the checkmark for automatically starting the VM
   after creation.
 - Click the **Create** button
-- Back on the VMs -\> Virtual Machines page you can click the Unraid
+- Back on the VMs → Virtual Machines page you can click the Unraid
   icon and then choose "VNC Remote" to watch the VM boot. Note the
   IP address is displayed right before the login prompt.
 
@@ -504,17 +504,17 @@ questions.
 - You can now configure and manage the VM just like you would any
   other Unraid server but choose settings that are appropriate for
   this VM.
-- Go to _Settings-\>Identification_ and make sure set the _Server
+- Go to _Settings → Identification_ and make sure set the _Server
   Name_ is set to be different to the host. It can also be a good idea
   to set the _Description_ to something like "Unraid as guest"
-- (Optional) Go to _Settings-\>Display Settings_ and choose a
+- (Optional) Go to _Settings → Display Settings_ and choose a
   different Dynamix color theme to that used on the host. This will
   help with making it more obvious
 - Since this is a test system, you'll probably want to go to
-  _Settings-\>SMB Settings-\>Workgroup Settings_ and set Local Master
+  _Settings → SMB Settings → Workgroup Settings_ and set Local Master
   to No.
 - If you have a UPS on the host system (and you do, right?) go to
-  Settings -\> UPS (on the VM) and set the UPS cable to "Ether", UPS
+  Settings → UPS (on the VM) and set the UPS cable to "Ether", UPS
   type to "net" and Device to the IP address of your host. Configure
   the runtime settings so the VM turns off before the host, and set
   "Turn off UPS" to no. Then start the UPS daemon.
@@ -524,7 +524,7 @@ questions.
 - From the _Apps_ tab that is now available, add dockers and plugins
   as needed for testing.
 - Note that you can update the Unraid VM just as you would a normal
-  bare-metal Unraid system, by going to _Tools-\>Update OS_
+  bare-metal Unraid system, by going to _Tools → Update OS_
 
 **Troubleshooting**
 
@@ -566,7 +566,7 @@ requirements:
 - At least 300MB of free disk space in a user share
 - A connection to the Internet is required to download the virtual
   disk image template
-- Virtual machines must be enabled (under **Settings** -\> **VM
+- Virtual machines must be enabled (under **Settings** → **VM
   Manager**)
 - A place to store the virtual disk image and application data must be
   available (e.g. a domains and appdata share).
