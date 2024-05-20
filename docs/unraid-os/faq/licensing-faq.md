@@ -45,14 +45,14 @@ Annual Extension Fee for Starter and Unleashed: $36
 
 License upgrades are priced as follows:
 
-* Starter to Unleashed: _$69 USD_
-* Starter to Lifetime: _$209 USD_
-* Unleashed to Lifetime: _$149 USD_
-* Basic to Unleashed: _$49 USD_
-* Plus to Unleashed: _$19 USD_
-* Basic to Plus: _$59 USD_
-* Basic to Pro: _$99 USD_
-* Plus to Pro: _$69 USD_
+* Starter → Unleashed: _$69 USD_
+* Starter → Lifetime: _$209 USD_
+* Unleashed → Lifetime: _$149 USD_
+* Basic → Unleashed: _$49 USD_
+* Plus → Unleashed: _$19 USD_
+* Basic → Plus: _$59 USD_
+* Basic → Pro: _$99 USD_
+* Plus → Pro: _$69 USD_
 
 <sup>1</sup> <b>Attached storage devices</b> refer to the total number of
 storage devices you are allowed to have attached to the server before
@@ -101,7 +101,7 @@ plugin and their is no limit to the amount of devices.
 ## What Happens if My USB Fails? Do I Have to Repurchase a License?
 
 If your USB Flash boot device fails, you can [transfer
-your](/unraid-os/manual/changing-the-flash-device.md) license to a new USB
+your](/unraid-os/manual/changing-the-flash-device/) license to a new USB
 Flash device initially at any time, and subsequently using the automated
 transfer system once per 12 months.
 
@@ -116,7 +116,7 @@ We recommend using [Unraid Connect](/connect/about.md) for this.
 ## How do I Manually Install my License keyfile to my USB Flash?
 
 First, ensure you have a recent backup of your USB drive via
-Main-\>Flash-\> Flash Backup.
+Main → Flash → Flash Backup.
 
 To install the license key manually, first save the key file (.key file)
 to a different PC/Mac.
@@ -145,7 +145,7 @@ work best include Lexar, Samsung, Kingston, or PNY.
 
 ## How do I determine what registration type I have?
 
-Simple! Navigate to the Tools \> Registration page and you can review
+Simple! Navigate to the Tools → Registration page and you can review
 your current key type and registration information.
 
 ## Unraid OS Trial
