@@ -28,7 +28,7 @@ In addition, depending on how the device works, you may need to assign an entire
 
 First, you'll need to get a new flash device. Remember to get a quality device from manufacturers such as Kingston, PNY, Lexar, or Samsung. Second, you'll need to find the e-mail with your registration key for your previous flash device.
 
-Last, you'll need to install Unraid on the new flash device, boot it up on your server, and then install the old registration key on the new flash (from the Tools \> Registration page). From there you can request and then install a replacement key.
+Last, you'll need to install Unraid on the new flash device, boot it up on your server, and then install the old registration key on the new flash (from the Tools → Registration page). From there you can request and then install a replacement key.
 
 As far as your configuration goes, if you can remember your drive assignments (which disks were assigned to which slots), you should be able to simply re-assign them all and start the array. 
 
@@ -89,7 +89,7 @@ This will begin printing the system log to the monitor directly. Now go about us
 
 ## Is there any way to disable the br0 bridge?
 
-Absolutely! Simply navigate to the Tools \> Network Settings page to disable network bridging. Note that this will result in differences in behavior for virtual machines (including losing the ability to communicate with the host from a guest).
+Absolutely! Simply navigate to the Tools → Network Settings page to disable network bridging. Note that this will result in differences in behavior for virtual machines (including losing the ability to communicate with the host from a guest).
 
 ## How do I enable UEFI boot mode if I configured my flash device using the manual method?
 
@@ -100,7 +100,7 @@ Simply remove the dash symbol from the EFI folder on the root of the flash drive
 Posting in the forums for assistance is always recommended when troubleshooting a VM / pass through problem, but there is something
 worth noting about these newer devices that is unique compared to previous series cards. These GPUs feature a USB controller built into the GPU. This is quite fortunate as it can be used with a USB hub to then act as a device your Windows VM can interact with more naturally (such as supporting hot plugging USB devices). However, it is recommended that you stub this device to ensure it's driver isn't loaded with Unraid OS. To stub the device, perform the following steps:
 
-1. Locate your IOMMU group containing your GPU and its other devices on the Tools \> System Devices page.
+1. Locate your IOMMU group containing your GPU and its other devices on the Tools → System Devices page.
 
 2. Note the vendor and product IDs indicated in the brackets.
 Example:
