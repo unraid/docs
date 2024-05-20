@@ -34,7 +34,7 @@ in Time Machine itself.
 Before you begin, make sure **SMB** is enabled in the Unraid webgui by
 going to:
 
-1. Settings \--\> SMB under "Network Services"
+1. Settings → SMB under "Network Services"
 2. Set "Enable SMB" to "Yes" and click "Apply" (Array must be stopped
    to change this).
 3. Also, set "Enhanced macOS interoperability" to Yes as well.
