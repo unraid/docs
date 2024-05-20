@@ -798,7 +798,7 @@ needed.
     replaced
     _You should now have blue drive status indicators for both the
     parity drive and the drive being replaced._
-13. Go to the **Main** -\> **Array Operation** section
+13. Go to the **Main** → **Array Operation** section
     _You should now have a **Copy** button, with a statement indicating
     "**Copy** will copy the parity information to the new parity
     disk"._
@@ -970,7 +970,7 @@ The procedure is as follows:
    - However when using 'Turbo Write' all drives must read without
      error so do not use it unless you are sure no other drive is
      having issues.
-   - To enable 'turbo Write' in _Settings-\>Disk Settings_, change
+   - To enable 'turbo Write' in _Settings → Disk Settings_, change
      Tunable (md_write_method) to reconstruct write
 5. Make sure ALL data has been copied off the drive; drive MUST be
    completely empty for the clearing script to work.
@@ -1044,7 +1044,7 @@ on whether or not you have any parity devices assigned, one of two
 operations will be performed when clicking this button.
 
 It is also possible to schedule checks to be run automatically at
-User-defined intervals under **Settings-\>Scheduler**. It is a good idea
+User-defined intervals under **Settings → Scheduler**. It is a good idea
 to do this as an automated check on array health so that problems can be
 noticed and fixed before the array can deteriorate beyond repair.
 Typical periods for such automated checks are monthly or quarterly and
@@ -1333,8 +1333,8 @@ VMs related files on the cache disk, some of these steps are unnecessary
 if there aren't.
 
 1. Stop all running Dockers/VMs
-2. Settings -\> VM Manager: disable VMs and click apply
-3. Settings -\> Docker: disable Docker and click apply
+2. Settings → VM Manager: disable VMs and click apply
+3. Settings → Docker: disable Docker and click apply
 4. Click on Shares and change to "Yes" all User Shares with "Use
    cache disk:" set to "Only" or "Prefer"
 5. Check that there's enough free space on the array and invoke the
@@ -1354,8 +1354,8 @@ the above steps:
 3. When the mover finishes check that your pool now has the expected
    content and that the shares in question no longer have files on the
    main array
-4. Settings -\> Docker: enable Docker and click apply
-5. Settings -\> VM Manager: enable VMs and click apply
+4. Settings → Docker: enable Docker and click apply
+5. Settings → VM Manager: enable VMs and click apply
 6. Start any Dockers/VMs that you want to be running
 
 ## Switching the pool to multi-device mode
@@ -1560,7 +1560,7 @@ and is not relevant if the setting is **No**.
 
 For **Unraid 6.8.3** (and earlier) which only supported a single pool
 (that was always called cache) this setting can be found under
-_Settings-\>Global Share Settings_.
+_Settings → Global Share Settings_.
 
 For **Unraid 6.9.0** (and later) which supports multiple pools (with the
 names being user defined) this setting can be found by clicking on the
@@ -1809,7 +1809,7 @@ systems that do not support standard Linux formats.
 
 The File System type for a new drive can be set in 2 ways:
 
-1. Under _Settings-\>Disk Settings_ the default type for array drives
+1. Under _Settings → Disk Settings_ the default type for array drives
    and the cache pool can be set.
    - On a new Unraid system this will be XFS for array drives and
      BTRFS for the cache.
@@ -1818,7 +1818,7 @@ The File System type for a new drive can be set in 2 ways:
    offered.
    - When a drive is first added the file system type will show as
      **auto** which means use the setting specified under
-     _Settings-\>Disk Settings_.
+     _Settings → Disk Settings_.
    - Setting an explicit type over-rides the global setting
    - The only supported format for a cache containing more than one
      drive is BTRFS.
@@ -1912,7 +1912,7 @@ it again and see all its data.
 
 If you are at all unsure on the best way to proceed it is often a good
 idea to make a post in the forums and attach your system's diagnostics
-zip file (obtained via Tools-\>Diagnostics) so you can get feedback on
+zip file (obtained via Tools → Diagnostics) so you can get feedback on
 your issue.
 
 ## Checking a File System
@@ -2319,7 +2319,7 @@ change the file system type if you do not want to lose it.
    refreshing the Main tab normally fixes this.
 
 If anything appears to go wrong then ask in the forum to add your system
-diagnostics zip file (obtained via Tools-\>Diagnostics) to your post.
+diagnostics zip file (obtained via Tools → Diagnostics) to your post.
 
 Notes:
 
@@ -2535,7 +2535,7 @@ modes are appropriate to how they currently want their array to operate.
 
 ### Setting the Write mode
 
-The write mode is set by going _Settings-\>Disk Settings_, and look for
+The write mode is set by going _Settings → Disk Settings_, and look for
 the **Tunable (md_write_method**) setting. The 3 options are:
 
 - **Auto**: Currently this operates just like setting the
@@ -2705,7 +2705,7 @@ Points to note are:
 - Moves from cache to array are still comparatively slow but since
   mover is normally scheduled to run when the system is otherwise idle
   this is not visible to the end-user.
-- There is a **Minimum Free Space** setting under _Settings-\>Global
+- There is a **Minimum Free Space** setting under _Settings → Global
   Share settings_ and if the free space on the cache falls below this
   value Unraid will stop trying to write new files to the cache. Since
   when Unraid first creates a file it does not know the final size it
