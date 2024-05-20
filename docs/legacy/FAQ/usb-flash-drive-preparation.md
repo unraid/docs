@@ -17,7 +17,7 @@ batch installation file is included, that replaces the use of the
 The instructions below do still work, and are necessary for installing
 versions of Unraid earlier than v4.6 Final, and for preparing a flash
 drive on a Mac. And there is still value in the advanced troubleshooting
-tips below.\>
+tips below.
 
 ---
 
@@ -111,9 +111,9 @@ You'll need to download the following:
 
 **1. Plug in your USB Flash drive and format it using Disk Utility.**
 
-- Open Disk Utility (Applications -\> Utilities-\> Disk Utility) and
+- Open Disk Utility (Applications → Utilities → Disk Utility) and
   choose your device from the list on the left - note: In recent
-  versions of macOS you will need to select View \> Show All Devices.
+  versions of macOS you will need to select View → Show All Devices.
   Please make sure to read carefully to know when to select "Device"
   or "Partition"
 - Select Partition
@@ -133,7 +133,7 @@ You'll need to download the following:
 
 **3. Make the partition Bootable**
 
-- Open Terminal (Applications -\> Utilities -\> Terminal)
+- Open Terminal (Applications → Utilities → Terminal)
 - Now you'll need the raw disk device name.. so if your partition
   device path was /dev/disk2s1, the raw device name is /dev/rdisk2,
   basically you drop the s1 off the end (that's the partition number)
