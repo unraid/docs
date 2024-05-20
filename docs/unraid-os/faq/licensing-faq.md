@@ -172,7 +172,7 @@ ill-suited. Things break. Life happens. We get it. To try out Unraid a
 little longer, once your original trial shows "expired" in the upper
 left of the header, _Stop the array_.
 
-Next, go to the Tools-\> _Registration_ page, and now a button shows up
+Next, go to the Tools → _Registration_ page, and now a button shows up
 where you can click for a 15 day extension. Please remember that you are
 only allotted up to two extensions, each for two weeks. No further
 extensions can be issued thereafter.
