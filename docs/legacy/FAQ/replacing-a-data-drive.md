@@ -44,7 +44,7 @@ would you want to do that? Any number of reasons...
   the Unraid forums), and are SURE that the drive is good, then you
   can use the procedures below to rebuild it onto itself (below,
   consider the 'old drive' to be the 'new drive'). There is a
-  similar procedure just for this though -\> [Re-enable the
+  similar procedure just for this though → [Re-enable the
   drive](/unraid-os/manual/storage-management.md#rebuilding-a-drive-onto-itself).
 
 ## The procedure
@@ -61,7 +61,7 @@ older, skip down to the next section._
 5. Install the new drive
 6. Power on
 7. Assign the new drive in the slot of the old drive
-8. Go to the **Main** -\> **Array Operation** section
+8. Go to the **Main** → **Array Operation** section
 9. Put a check in the **Yes, I'm sure** checkbox (next to the
    information indicating the drive will be rebuilt), and click the
    **Start** button
