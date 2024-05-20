@@ -27,7 +27,7 @@ required:
 - **Enable Notifications**: Unraid has a notification system that can
   be used to keep you informed about the health of your Unraid system.
   This can be enabled and the level of notifications you receive tuned
-  under Settings-\>User Preferences-\>Notification Settings. Since
+  under Settings → User Preferences → Notification Settings. Since
   Unraid systems often function for very long times without needing
   any user oversight it can be important that you are informed of
   problems when they first occur as if left unresolved they can grow
@@ -56,7 +56,7 @@ of getting meaningful and accurate feedback.
 
 ### System Diagnostics
 
-Unraid has a GUI option under **_Tools-\>Diagnostics_** to capture a lot
+Unraid has a GUI option under **_Tools → Diagnostics_** to capture a lot
 of information about the state of your system that can be helpful when
 trying to diagnose any issues. Using this tool will result in a zip file
 being produced that can be downloaded and then attached to forum posts.
@@ -105,7 +105,7 @@ thread.
 **_Note on anonymization of the diagnostics_**
 
 It has been pointed out that the diagnostics are not completely
-anonymized if you have enabled _mover_ logging under _Settings-\>Mover
+anonymized if you have enabled _mover_ logging under _Settings → Mover
 Settings_ as the _syslog_ will give details of files that mover is
 operating on. This is a bit of a catch-22 scenario as when one has
 enabled mover logging it is normally to investigate a problem where as
@@ -130,7 +130,7 @@ support
 
 ![](../assets/Syslog-server-setup.jpg)
 
-- Go to _Settings-\>Network Services-\>Syslog Server_
+- Go to _Settings → Network Services → Syslog Server_
 
 - You can click on the 'Help' icon on the Toolbar and get more
 information for all of the options.
@@ -483,7 +483,7 @@ The basic approach is:
   to a new boot drive.
 - Identify which drives are the parity drives. There are 2 ways to do
   this as shown below.
-- Use _Tools -\> New Config_ to reset the array. It is normally
+- Use _Tools → New Config_ to reset the array. It is normally
   easiest to use the option to retain previous assignments but this is
   not mandatory.
 - Return to the main tab and now that you know which are the array
@@ -556,7 +556,7 @@ boot drive any time you make any significant configuration changes.
 
 There are various ways of achieving this:
 
-- From the Unraid GUI via Main -\> Boot -\> Device -\> Flash -\> Flash
+- From the Unraid GUI via Main → Boot → Device → Flash → Flash
   Backup. This will create a zip file that you then download.
 - by Installing [Unraid Connect](/connect/about.md), which provides for automated
   backups to cloud servers managed by Limetech.
@@ -600,7 +600,7 @@ The normal recovery action is:
   will have the download link on the Download page on the Unraid web
   site. Every forum page will have a Download link at the top right to
   take you to that page. For beta/rc test releases you can normally
-  get the link by asking in the Bug reports-\>Preleases section of the
+  get the link by asking in the Bug reports → Preleases section of the
   Unraid forums.
 - Extract all the bz\* type files from the zip file and overwrite the
   corresponding files on the flash drive.
@@ -646,7 +646,7 @@ There are various timeouts that are started when a shutdown of the array
 is started that run in parallel and many users find the defaults are too
 low for their particular workload:
 
-- There is a timer in the **_Settings-\>VM Manager-\>VM Shutdown_**
+- There is a timer in the **_Settings → VM Manager-\>VM Shutdown_**
   _(in advanced view)_ that needs to be set to a high enough value to
   allow your VMs time to completely shutdown.   Windows VMs will
   sometimes have an update that requires a shutdown to perform.  These
@@ -657,7 +657,7 @@ low for their particular workload:
   something like 300 seconds (5 minutes) in order to insure your
   Windows 10 VMs have time to completely shutdown.
 - There is a timer for stopping Docker Containers under **_Settings
-  -\> Docker_** _(in advanced view)_. If this timeout is reached then
+  → Docker_** _(in advanced view)_. If this timeout is reached then
   docker containers still running will be Force Stopped.
 - If you have remote SMB or NFS mounts in Unassigned Devices you need
   to account for time for them to time out if the remote server has
@@ -665,7 +665,7 @@ low for their particular workload:
   seconds for each remote mount.  They are unmounted sequentially, so
   you need to account for 45 seconds for each one.
 - There is an final timer used for shutdowns under the
-  **_Settings-\>Disk Settings-\>Shutdown time-out_**.  This is the
+  **_Settings → Disk Settings → Shutdown time-out_**.  This is the
   overall shutdown timer and when this timer is exceeded, an unclean
   shutdown will occur.  This timer has to be more than the VM and
   docker shutdown timers.  A reasonable value might be something like
@@ -689,7 +689,7 @@ forums with an unclean shutdown, post the **/log/diagnostics.zip** file.
  There is information in the log that shows why the unclean shutdown
 occurred.
 
-It can also be good idea to activate the **_Settings-\>Syslog Server_**
+It can also be good idea to activate the **_Settings → Syslog Server_**
 to get logs that can survive a reboot as by default the syslog is only
 in RAM and lost after a reboot.
 
@@ -780,7 +780,7 @@ data
     to suffer from such an attack!
 - _Be proactive_ about resolving any issues that are detected by
   Unraid. Make sure that notifications are enabled under
-  _Settings-\>Notifications_ so that you get told as soon as issues
+  _Settings → Notifications_ so that you get told as soon as issues
   are detected. For many users, Unraid operates in a _fire-and-forget_
   mode so that they will not be actively checking for problems so need
   such reminders.
@@ -845,7 +845,7 @@ can get your array back into operation:
    giving details of what happened.
 4. Make a note of the serial numbers of the parity drives.
 5. Stop the array
-6. Go to Tools-\>New Config. Select the option to retain current
+6. Go to Tools → New Config. Select the option to retain current
    assignments (as it reduces the chance of error). Click the yes I
    want to do this and then Apply.
 7. Go back to the Main tab and correct the assignments of the parity
@@ -882,7 +882,7 @@ such a case you can try using **ddrescue** to salvage as much data as
 possible.
 
 To install _ddrescue_ install the Nerd Pack plugin then go to Settings
--\> Nerd Pack and install _ddrescue_.
+→ Nerd Pack and install _ddrescue_.
 
 You need an extra disk (same size or larger than the failing disk) to
 clone the old disk to, using the console/SSH type:
@@ -1009,7 +1009,7 @@ If that is not enough to identify the culprit then:
 - delete current docker image and set a more reasonable size (e.g.
   20G)
 - Start docker service
-- Use Apps-\>Previous apps to re-install your containers (with
+- Use Apps → Previous apps to re-install your containers (with
   all their settings intact).
 - Go to docker tab and click the Container size button
 
@@ -1031,13 +1031,13 @@ file from scratch rather than to try and move it.
 
 The way to move _docker.img_ is:
 
-- Go to _Settings -\> Docker -\> Enable Docker_, and set to **No**,
+- Go to _Settings → Docker → Enable Docker_, and set to **No**,
   then click the **Apply** button  (this disables Docker support).
   This is required because othewise the Docker service will keep this
   file open which stops you from moving it elsewhere.
 - Using mv or any file manager or the command line, move docker.img to
   the desired location (/mnt/cache/docker.img is recommended)
-- In Settings -\> Docker, change the path for _docker.img_ to the
+- In Settings → Docker, change the path for _docker.img_ to the
   exact location you just copied to
 - Set Enable Docker back to Yes, and click the Apply button again
    (re-enabling Docker support)
@@ -1053,7 +1053,7 @@ Other common reasons for recreating the _docker.img_ file is because you
 want to change the amount of space that you have allocated to it or to
 change its location.
 
-- Go to _Settings -\> Docker -\> Enable Docker_, and set to **No**,
+- Go to _Settings → Docker → Enable Docker_, and set to **No**,
   then click the **Apply** button  (this disables Docker support)
 - Switch to Advanced View, then check off the box and press **Delete**
 - Make sure that the settings for the size and location are what you
