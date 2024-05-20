@@ -101,7 +101,7 @@ plugin and their is no limit to the amount of devices.
 ## What Happens if My USB Fails? Do I Have to Repurchase a License?
 
 If your USB Flash boot device fails, you can [transfer
-your](/unraid-os/manual/changing-the-flash-device/) license to a new USB
+your license](/unraid-os/manual/changing-the-flash-device/) to a new USB
 Flash device initially at any time, and subsequently using the automated
 transfer system once per 12 months.
 
