@@ -874,12 +874,12 @@ options, but probably too dangerous for our use)
 - These are just examples, replace drive ID with the correct drive
   symbol, either an md number (md2, md15, etc) or an sd symbol (sdc1,
   sdj1, etc).
-- `xfs_repair -v /dev/md3` -\> tests and reports, making changes
+- `xfs_repair -v /dev/md3` → tests and reports, making changes
   when necessary
-- `xfs_repair -nv /dev/sdc1` -\> tests and reports without making
+- `xfs_repair -nv /dev/sdc1` → tests and reports without making
   changes
-- `xfs_repair -V` -\> displays version and exits
-- `xfs_repair` -\> displays options and exits
+- `xfs_repair -V` → displays version and exits
+- `xfs_repair` → displays options and exits
 - Note: As far as I can tell, these are the ONLY options we should be using.
 
 ## btrfs scrub
@@ -935,9 +935,9 @@ These are just examples, replace drive ID with the correct drive
 symbol, either cache or an md number (md2, md15, etc) or an sd
 symbol (sdc1, sdj1, etc).
 
-- `btrfs scrub start -B /dev/md3` -\> tests and reports, making
+- `btrfs scrub start -B /dev/md3` → tests and reports, making
   changes when necessary
-- `btrfs scrub start -rdB /dev/cache` -\> tests and reports without
+- `btrfs scrub start -rdB /dev/cache` → tests and reports without
   making changes
 
 _\-\-- work in progress \-\--_
@@ -962,15 +962,15 @@ _Note: in the following examples, the option is preceded by 2
 hyphens. Drive 3 (/dev/md3) is just used as an example. If you were
 testing Disk 13, you would use /dev/md13._
 
-- `reiserfsck \--check /dev/md3` -\> checks file system for errors
-- `reiserfsck \--fix-fixable /dev/md3` -\> fixes file system
+- `reiserfsck \--check /dev/md3` → checks file system for errors
+- `reiserfsck \--fix-fixable /dev/md3` → fixes file system
   errors
-- `reiserfsck \--rebuild-tree /dev/md3` -\> rebuilds the file
+- `reiserfsck \--rebuild-tree /dev/md3` → rebuilds the file
   system (may have lost files)
-- `reiserfsck \--rebuild-tree -S /dev/md3` -\> rebuilds the file
+- `reiserfsck \--rebuild-tree -S /dev/md3` → rebuilds the file
   system from entire partition (may have lost files, may recover old
   deleted files or their pieces)
-- `reiserfsck \--rebuild-sb /dev/md3` -\> rebuilds superblock based
+- `reiserfsck \--rebuild-sb /dev/md3` → rebuilds superblock based
   on series of questions, answers MUST be accurate! Please see the
   [Rebuilding the superblock](#rebuilding-the-superblock)
   section below.
