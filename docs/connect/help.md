@@ -83,16 +83,13 @@ to access the WebGUI.
 If the Internet goes down and you lose access to DNS, do the following:
 
 - If **Use SSL/TLS** is set to **Yes**, then you can access your server
-  using: [`https://[servername]`](https://%5Bservername%5D)`.[localTLD]`
-  or
-  [`https://[servername]`](https://%5Bservername%5D)`.[localTLD]:<https_port>`
-  (if your https port is not the default of 443)
+  using: `https://[servername].[localTLD]` or `https://servername.[localTLD]:<https_port>` (if your https port is not the default of 443)
 - If that doesn't work, or if **Use SSL/TLS** is set to **Strict**, then
   using telnet, SSH or local keyboard/monitor log in to the server and
   type: `use_ssl no`
 - Now you will be able to access your server's WebGUI via:
-  [`http://`](http://)`<ip_address>` (note: http not https) or
-  [`http://`](http://)`<server_ip>:<http_port>` (if your http port is
+  `http://<ip_address>` (note: http not https) or
+  `http://<server_ip>:<http_port>` (if your http port is
   not the default of 80)
 - When the Internet comes back, navigate to Settings → Management
   Access and set **Use SSL/TLS** back to **Strict** to re-enable local
