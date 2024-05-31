@@ -107,7 +107,7 @@ Server](transferring-files-within-the-unraid-server.md).
 _Note for UnRAID v5 and v6 users: some have found that Midnight
 Commander looks funny, with accented letters (mostly a little 'a'
 with a hat) where line drawing characters should be. In your PuTTY
-configuration, go to Window-\>Translation and set Remote Character
+configuration, go to Window → Translation and set Remote Character
 Set to something like UTF-8, then restart MC (thanks to Wody for
 this tip, see
 [this](https://forums.unraid.net/forum/index.php?topic=18157)).
@@ -151,7 +151,7 @@ powerful, free for home use._
 
 ## Opening a terminal session with the Windows Telnet tool
 
-To open a Telnet session from Windows click Start -\> Run. In the
+To open a Telnet session from Windows click Start → Run. In the
 dialog box type:
 
 `telnet tower`

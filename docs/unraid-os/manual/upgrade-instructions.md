@@ -77,7 +77,7 @@ completes (such as the "layers from manifest don't match image
 configuration" error), you will need to rebuild your Docker image file.
 To do this:
 
-1. Stop Docker from the _Settings_ \> _Docker_ page
+1. Stop Docker from the _Settings_ → _Docker_ page
 2. Click the checkbox and then click the button to delete the image
 3. Start Docker again and the image will be recreated
 4. Go to the _Docker_ tab and click _Add Container_
@@ -99,7 +99,7 @@ of 'br0'. To fix this, perform the following steps:
 3. Locate the network section and from the dropdown, select br0 and
    then click apply.
 4. Once all VMs are set to use the 'br0' bridge, go to the _Settings_
-   -\> _VM Manager_ page, turn on _Advanced View_, and set the default
+   → _VM Manager_ page, turn on _Advanced View_, and set the default
    network bridge on this page to also be 'br0' and click apply.
 
 #### VNC access to my VMs is not working or performing poorly
@@ -176,7 +176,7 @@ Flash section on the _Main_ tab of the web interface.
 
 ### Checking your network bridge name
 
-To see if you have a customized network bridge, open the _Settings_ -\>
+To see if you have a customized network bridge, open the _Settings_ →
 _Network Settings_ page of the web interface. If the bridge name is
 anything other than 'br0', change it back to 'br0' and click apply.
 
@@ -193,7 +193,7 @@ restored the default network bridge name:
 3. Locate the network section and from the dropdown, select br0 and
    then click apply.
 4. Once all VMs are set to use the 'br0' bridge, go to the _Settings_
-   -\> _Network Settings_ page, turn on _Advanced View_, and set the
+   → _Network Settings_ page, turn on _Advanced View_, and set the
    default network bridge on this page to also be 'br0' and click
    apply.
 

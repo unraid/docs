@@ -41,7 +41,7 @@ from within the Connect web UI.
 You can even manage multiple servers from your phone, tablet, laptop, or
 PC in the same browser window.
 
-To install a myunraid.net certificate, head to the _Settings -\>
+To install a myunraid.net certificate, head to the _Settings →
 Management Access_ page of the Unraid webgui and click "Provision" in
 the Certificate section, if applicable.
 
@@ -94,7 +94,7 @@ If the Internet goes down and you lose access to DNS, do the following:
   [`http://`](http://)`<ip_address>` (note: http not https) or
   [`http://`](http://)`<server_ip>:<http_port>` (if your http port is
   not the default of 80)
-- When the Internet comes back, navigate to Settings -\> Management
+- When the Internet comes back, navigate to Settings → Management
   Access and set **Use SSL/TLS** back to **Strict** to re-enable local
   SSL.
 
@@ -107,7 +107,7 @@ disable SSL. There is no need to uninstall the Unraid Connect plugin, in
 fact that will have no effect on SSL as this is a core feature of Unraid
 and not the plugin.
 
-Navigate to Settings -\> Management Access, set **Use SSL/TLS** to
+Navigate to Settings → Management Access, set **Use SSL/TLS** to
 **No** and hit Apply. In Unraid 6.9 this will also disable the Remote
 Access feature at the same time.
 
@@ -130,7 +130,7 @@ backups do include docker template XML files, which may contain
 application-specific passwords and other private data. We are actively
 working on solutions to encrypt the backups.
 
-1. Navigate to Settings -\> Management Access -\> Connect and under
+1. Navigate to Settings → Management Access -\> Connect and under
    **Flash backup** click the **Activate** button.
 2. Wait for the activation and initial backup job to complete (once
    done, it will show **Activated: Up-to-date**.
@@ -204,8 +204,8 @@ English, German, French, Spanish or Chinese!
 ## Signing Out
 
 In the event that you wish to sign out of the Unraid Connect program on
-your system, you can do so from the Settings-\> Management Access -\>
-Unraid Connect -\> Account Status and click the Sign Out button.
+your system, you can do so from the Settings → Management Access → 
+Unraid Connect → Account Status and click the Sign Out button.
 
 **NOTE**: Signed-out servers will still be displayed on the Unraid
 Connect Dashboard, but you will only be able to download their

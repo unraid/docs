@@ -12,7 +12,7 @@ Once your server is up and running:
    [create one](https://account.unraid.net/)) from the
    top-right of the webgui and select "Redeem Activation Code" and enter the activation code to
    activate your license. For Unraid 6.9 and older, navigate to the
-   Tools -\> Registration page in the webGui and click "Purchase Key."
+   Tools → Registration page in the webGui and click "Purchase Key."
 3. Select the corresponding license you purchased via activation code
    and enter the activation code in the "Your Activation Code" box to
    complete the activation process. Your registration key will be

@@ -54,7 +54,7 @@ language pack manually for new and improved translations.
 
 ## How to Activate a Language
 
-Via Community Applications -\> Language, click the download button on the
+Via Community Applications → Language, click the download button on the
 language pack you would like to download and use.
 
 ![](../assets/Download.png)

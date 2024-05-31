@@ -85,7 +85,7 @@ of the Dynamic settings in the Remote Access dropdown:
 ### Configuring **UPNP** (Applies to Dynamic - UPNP / Always On - UPNP)
 
 1. Ensure your router supports UPNP and has it enabled.
-2. Navigate to Settings -\> Management Access and set "Use UPnP" to
+2. Navigate to Settings → Management Access and set "Use UPnP" to
    Yes.
 3. On the Unraid Connect settings page, set the remote access option to
    UPNP (either Dynamic or Always On) and Apply.
@@ -124,7 +124,7 @@ of the Dynamic settings in the Remote Access dropdown:
    Connect](/connect/help.md#unraid-connect-dashboard) and click the Manage link
 
 ===Optional step for secure local access=== If you want to use secure
-https for local access to your server as well, navigate to Settings -\>
+https for local access to your server as well, navigate to Settings → 
 Management Access. In the CA-signed certificate area, if there are no
 warnings about DNS Rebinding then go ahead and set **Use SSL/TLS** to
 **Strict**. If there are warnings about DNS Rebinding see [A note

@@ -128,7 +128,7 @@ _Note: this section has been tested but is still fairly new_
 4. It is **highly recommended** to turn on **reconstruct write**, as
    the write method (sometimes called 'Turbo write'). With it on, the
    script can run 2 to 3 times as fast, saving hours!
-   In **Settings** -\> **Disk Settings**, change **Tunable
+   In **Settings** → **Disk Settings**, change **Tunable
    (md_write_method)** to **reconstruct write**.
 5. Make sure ALL data has been copied off the drive; drive MUST be
    completely empty for the clearing script to work.

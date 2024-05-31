@@ -349,7 +349,7 @@ the problem occurred.
 
 The steps to recreate the docker image file are:
 
-- Go to Settings-\>Docker in the Unraid GUI
+- Go to Settings → Docker in the Unraid GUI
 - Set the **Enable Docker** option to **No** and click **Apply** to
   stop the docker service
 - Select the option to delete the Docker vdisk file and click apply
@@ -398,7 +398,7 @@ to re-adding the containers.
 
 Normally Docker does not allow Docker containers to directly access the
 same subnet as the one used by the host. You can allow this under
-_Settings-\>Docker_ by changing **Host access to custom networks** from
+_Settings → Docker_ by changing **Host access to custom networks** from
 **disabled** to **enabled**.
 
 ## Starting and stopping Docker containers on a schedule
@@ -413,7 +413,7 @@ The basic process is:
 - Install the [User
   Scripts](https://forums.unraid.net/topic/48286-plugin-ca-user-scripts/)
   plugin via the _Apps_ tab if you do not already have it installed.
-- Go to _Settings -\> User Scripts_ to setup and control your scripts.
+- Go to _Settings → User Scripts_ to setup and control your scripts.
 - Create a new script for each separate time you want to schedule. A
   single script can be used to start and/or stop multiple Docker
   containers if you want them on the same schedule point.

@@ -138,7 +138,7 @@ needed.
     _You should now have blue drive status indicators for both the
     parity drive and the drive being replaced._
 
-13. Go to the **Main** -\> **Array Operation** section
+13. Go to the **Main** → **Array Operation** section
 
     \*You should now have a **Copy** button, with a statement indicating
 
