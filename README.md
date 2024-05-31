@@ -2,7 +2,7 @@
 
 View the live documentation on our website [Unraid Docs](https://docs.unraid.net)
 
-Unraid Docs are built using [Docusaurus 2](https://docusaurus.io/)
+Unraid Docs are built using [Docusaurus](https://docusaurus.io/)
 
 ### Installation
 
