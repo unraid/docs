@@ -86,7 +86,7 @@ obvious feedback that anything has been done.
 
 #### System Log
 
-### webGUI
+### WebGUI
 
 #### Language
 

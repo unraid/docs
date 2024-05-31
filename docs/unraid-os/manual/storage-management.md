@@ -7,7 +7,7 @@ sidebar_position: 3
 ![](../assets/Configuringarray1.png)
 
 To assign devices to
-the array and/or cache, first login to the server's webGui. Click on
+the array and/or cache, first login to the server's WebGUI. Click on
 the **Main** tab and select the devices to assign to slots for parity,
 data, and cache disks. Assigning devices to Unraid is easy! Just
 remember these guidelines:
@@ -78,7 +78,7 @@ automatically started (brought on-line and exported as a set of shares).
 But if there's been a change in disk configuration, such as a new disk
 added, the array is left stopped so that you can confirm the
 configuration is correct. This means that any time you have made a disk
-configuration change you must log in to the webGui and manually start
+configuration change you must log in to the WebGUI and manually start
 the array. When you wish to make changes to disks in your array, you
 will need to stop the array to do this. Stopping the array means all of
 your applications/services are stopped, and your storage devices are
@@ -86,7 +86,7 @@ unmounted, making all data and applications unavailable until you once
 again start the array. To start or stop the array, perform the following
 steps:
 
-1. Log into the Unraid webGui using a browser (e.g. `http://tower`;
+1. Log into the Unraid WebGUI using a browser (e.g. `http://tower`;
    `http://tower.local` from Mac)
 2. Click on **Main**
 3. Go to the _Array Operation_ section
@@ -143,8 +143,8 @@ storage device limits are as follows:
 A valid registration key is required in order to start the array. To
 purchase or get a trial key, perform the following steps:
 
-1. Log into the Unraid webGui using a browser (e.g. `http://tower` from
-   most device, `http://tower.local` from Mac devices)
+1. Log into the Unraid webGui using a browser (e.g. http://tower from
+   most device, http://tower.local from Mac devices)
 2. Click on **Tools**
 3. Click on **Registration**
 4. Click to **Purchase Key** or **Get Trial Key** and complete the
@@ -154,7 +154,7 @@ purchase or get a trial key, perform the following steps:
 
 #### Expired trial
 
-If the word "expired" is visible at the top left of the webGui, this
+If the word "expired" is visible at the top left of the WebGUI, this
 means your trial key has expired. Visit the registration page to request
 either an extension to your trial or purchase a valid registration key.
 
@@ -180,7 +180,7 @@ If your server is unable to contact our key server to validate your
 Trial license, you will not be able to start the array. The server will
 attempt to validate upon first boot with a timeout of 30 sec. If it
 can't validate upon first boot, then the array won't start, but each
-time you navigate or refresh the webGui it will attempt validation again
+time you navigate or refresh the WebGUI it will attempt validation again
 (with a very short timeout). Once validated, it won't phone-home for
 validation again unless rebooted.
 
@@ -274,7 +274,7 @@ The procedure is:
 3. Install your new disk(s).
 4. Power up the server.
 5. Assign the new storage device(s) to a disk slot(s) using the Unraid
-   webGui.
+   WebGUI.
 6. Start the array.
 7. If your array is parity protected then Unraid will now automatically
    begin to clear the disk as this is required before it can be added
@@ -295,7 +295,7 @@ The procedure is:
      a clear operation, and the clear operation should not degrade
      performance in accessing these other drives.
 8. Once the disk has been cleared, an option to format the disk will
-   appear in the webGui. At this point, the disk is added to the array
+   appear in the WebGUI. At this point, the disk is added to the array
    and shows as unmountable and the option to format unmountable disks
    is shown.
    - Check that the serial number of the disk(s) is what you expect.
@@ -609,7 +609,7 @@ To replace a failed disk or disks:
 2. Power down the unit.
 3. Replace the failed disk(s) with a new one(s).
 4. Power up the unit.
-5. Assign the replacement disk(s) using the Unraid webGui.
+5. Assign the replacement disk(s) using the Unraid WebGUI.
 6. Click the checkbox that says _Yes I want to do this_
 7. (optional) Tick the box to start in Maintenance mode. If you start
    the array in Maintenance mode you will need to press the **Sync**
@@ -1120,7 +1120,7 @@ process of being accessed while using these controls, the disk(s) in use
 will remain in an active state, ignoring your request.
 
 When disks are in a spun-down state, they will not report their
-temperature through the webGui.
+temperature through the WebGUI.
 
 ## Reset the array configuration
 
@@ -1483,7 +1483,7 @@ To replace a disk in the redundant pool, perform the following steps:
 2. Physically detach the disk from your system you wish to remove.
 3. Attach the replacement disk (must be equal to or larger than the
    disk being replaced).
-4. Refresh the Unraid webGui when under the **Main** tab.
+4. Refresh the Unraid WebGUI when under the **Main** tab.
 5. Select the pool slot that previously was set to the old disk and
    assign the new disk to the slot.
 6. Start the array.
@@ -1945,7 +1945,7 @@ users new to Unraid often misunderstand are:
 
 The first step is to identify the file system of the drive you wish to
 test or repair. If you don't know for sure, then go to the Main page of
-the webGui, and click on the name of the drive (Disk 3, Cache, etc).
+the WebGUI, and click on the name of the drive (Disk 3, Cache, etc).
 Look for **File system type**, and you will see the file system format
 for your drive (should be **xfs**, **btrfs** or **reiserfs**).
 
@@ -1964,7 +1964,7 @@ mode.
 **Note:** Details will need to be added for **ZFS** file systems after
 Unraid 6.12 is release with ZFS support built in.
 
-### Running the Test using the webGui
+### Running the Test using the WebGUI
 
 The process for checking a file system using the Unraid GUI is as
 follows:
@@ -1973,7 +1973,7 @@ follows:
    necessary stop the array and restart in the correct mode by
    clicking/unclicking the Maintenance Mode checkbox next to the Start
    button.
-2. From the Main screen of the webGui, click the name of the disk that
+2. From the Main screen of the WebGUI, click the name of the disk that
    you want to test or repair. For example, if the drive of concern is
    Disk 5, then click on **Disk 5**. If it's the Cache drive, then
    click on **Cache**. If in Maintenance mode then The disks will not
@@ -2148,7 +2148,7 @@ forum.
 If you are going to repair a **BTRFS**, **XFS** or **ReiserFS** file
 system then you always want the array to be started in Maintenace mode
 
-### Running the Repair using the webGui
+### Running the Repair using the WebGUI
 
 #### XFS and ReiserFS
 
@@ -2159,7 +2159,7 @@ follows:
    necessary stop the array and restart in the correct mode by
    clicking/unclicking the Maintenance Mode checkbox next to the Start
    button.
-2. From the Main screen of the webGui, click the name of the disk that
+2. From the Main screen of the WebGUI, click the name of the disk that
    you want to test or repair. For example, if the drive of concern is
    Disk 5, then click on **Disk 5**. If it's the Cache drive, then
    click on **Cache**. If in Maintenance mode then The disks will not

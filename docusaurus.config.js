@@ -84,6 +84,12 @@ const config = {
         searchPagePath: 'search',
       },
       colorMode: { defaultMode: "dark", respectPrefersColorScheme: true },
+      docs: {
+        sidebar: {
+          hideable: false,
+          autoCollapseCategories: true,
+        },
+      },
       image: "img/meta-unraid.png",
       metadata: [
         {
@@ -197,8 +203,19 @@ const config = {
         darkTheme: darkCodeTheme,
         additionalLanguages: ['diff', 'json', 'bash'],
       },
+      zoom: {
+        selector: '.markdown :not(em) > img',
+        background: {
+            light: 'rgb(255, 255, 255)',
+            dark: 'rgb(50, 50, 50)'
+        },
+        config: {
+          // options you can specify via https://github.com/francoischalifour/medium-zoom#usage
+        }
+      },
     }),
   plugins: [
+    require.resolve('docusaurus-plugin-image-zoom'),
     [
       "@docusaurus/plugin-ideal-image",
       {
@@ -222,12 +239,12 @@ const config = {
           },
           // move Getting Started pages
           {
-          to: "/unraid-os/getting-started/",
-          from: "/unraid-os/manual/getting-started/",
+            to: "/unraid-os/getting-started/",
+            from: "/unraid-os/manual/getting-started/",
           },
           {
-          to: "/unraid-os/getting-started/manual-install-method/",
-          from: "/unraid-os/manual/getting-started/manual-install-method/",
+            to: "/unraid-os/getting-started/manual-install-method/",
+            from: "/unraid-os/manual/getting-started/manual-install-method/",
           },
           // redirect from 6.12.7 to 6.12.8
           {
@@ -238,7 +255,22 @@ const config = {
           {
             to: "/account/",
             from: "/unraid-os/faq/unraid-account/",
-          }
+          },
+          // move User and Overview pages
+          // User and Overview sections redirects
+          {
+            to: "/unraid-os/manual/users/reset-password/",
+            from: "/unraid-os/manual/troubleshooting/",
+          },
+          {
+            to: "/unraid-os/overview/what-is-unraid/",
+            from: "/unraid-os/manual/what-is-unraid/",
+          },
+          //Troubleshooting section redirect
+          {
+            to: "/unraid-os/troubleshooting/",
+            from: "/unraid-os/manual/troubleshooting/",
+          },
         ],
       },
     ],
