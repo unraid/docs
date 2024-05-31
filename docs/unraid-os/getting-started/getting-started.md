@@ -48,4 +48,4 @@ Each of the three types of VMs have slightly different requirements for virtuali
 * Virtual Desktops: HVM Required, IOMMU Not Required
 * Hybrid VMs: HVM Required, IOMMU Required
 
-For more information, see our [VM documentation](/unraid-os/manual/vm-support.md).
+For more information, see our [VM documentation](../manual/vm/vm-support.md).
