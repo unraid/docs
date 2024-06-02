@@ -1498,16 +1498,24 @@ intact. This cannot be done from the Unraid GUI but is easy enough to do
 from the command line in a console session.
 
 **Note**: You need to maintain the minimum number of devices for the
-profile in use, i.e., you can remove a device from a 3+ device raid0
-pool but you can't remove one from a 2 device raid0 pool (unless it's
-converted to a single profile first).
+profile in use, i.e., you can remove a device from a 3+ device raid1
+pool but you can't remove one from a 2 device raid1 pool (unless it's
+converted to a single profile first), also make sure the remaining 
+devices have enpugh space for the current used pool space, or the 
+removal will fail.
 
 With the array running type on the console:
 
-`btrfs dev del /dev/mapper/sdX1 /mnt/cache`
+`btrfs device remove /dev/sdX1 /mnt/cache`
 
 Replace X with the correct letter for the drive you want to remove from
 the system as shown on the Main tab (don't forget the 1 after it).
+
+If the device is encrypted, you will need slightly different syntax:
+
+'btrfs device remove /dev/mapper/sdX1 /mnt/cache'
+
+If the drive is an NVMe device, use 'nvmeXn1p1' in place of 'sdX1'
 
 Wait for the device to be deleted (i.e., until the command completes and
 you get the cursor back).
@@ -1533,7 +1541,7 @@ Done
 You can also remove multiple devices with a single command (as long as
 the above rule is observed):
 
-`btrfs dev del /dev/mapper/sdX1 /dev/mapper/sdY1 /mnt/cache`
+`btrfs device remove /dev/sdX1 /dev/sdY1 /mnt/cache`
 
 but in practice this does the same as removing one device, then the
 other, as they are still removed one at a time, just one after the other
