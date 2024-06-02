@@ -1513,9 +1513,9 @@ the system as shown on the Main tab (don't forget the 1 after it).
 
 If the device is encrypted, you will need slightly different syntax:
 
-'btrfs device remove /dev/mapper/sdX1 /mnt/cache'
+`btrfs device remove /dev/mapper/sdX1 /mnt/cache`
 
-If the drive is an NVMe device, use 'nvmeXn1p1' in place of 'sdX1'
+If the drive is an NVMe device, use `nvmeXn1p1` in place of `sdX1`
 
 Wait for the device to be deleted (i.e., until the command completes and
 you get the cursor back).
