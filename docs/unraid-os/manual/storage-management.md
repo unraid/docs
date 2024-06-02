@@ -1501,7 +1501,7 @@ from the command line in a console session.
 profile in use, i.e., you can remove a device from a 3+ device raid1
 pool but you can't remove one from a 2 device raid1 pool (unless it's
 converted to a single profile first), also make sure the remaining 
-devices have enpugh space for the current used pool space, or the 
+devices have enough space for the current used pool space, or the 
 removal will fail.
 
 With the array running type on the console:
