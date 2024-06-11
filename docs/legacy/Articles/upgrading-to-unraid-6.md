@@ -36,7 +36,7 @@ In this case, manually install the update as follows:
 
 1. Navigate to Plugins/Install Plugin tab
 2. Select/copy this text
-   [`https://raw.githubusercontent.com/limetech/unRAIDServer/master/unRAIDServer.plg`](https://raw.githubusercontent.com/limetech/unRAIDServer/master/unRAIDServer.plg)
+   `https://stable.dl.unraid.net/unRAIDServer.plg`
 3. Paste into URL field and click Install
 
 ### My array / docker apps are taking a really long time to start after the upgrade
