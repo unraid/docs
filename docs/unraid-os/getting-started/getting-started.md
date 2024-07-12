@@ -12,7 +12,7 @@ Before you begin:
 
 * You should have your server assembled and connected via power and Ethernet.
 * You should have a monitor and keyboard attached for the initial configuration and to be ready to alter configuration settings in your BIOS.
-* You will also need a high-quality, named-brand [USB flash device](../manual/changing-the-flash-device.md#recommendations-on-buying-usb-drives) that is at least 2 GB in size, but no larger than 32 GB, that must contain a unique GUID (Globally Unique Identifier).
+* You will also need a high-quality, named-brand [USB flash device](../manual/changing-the-flash-device.md#recommendations-on-buying-usb-drives) that is at least 2 GB in size, that must contain a unique GUID (Globally Unique Identifier).
 * Your system must be capable of booting from a USB device.
 
 ### Hardware requirements
