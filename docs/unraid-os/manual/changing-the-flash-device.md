@@ -65,7 +65,7 @@ To back up your Flash drive in Unraid:
 2. Under **Flash Device Settings**, select the **FLASH BACKUP** button to download a fully zipped backup of your current flash drive to your Mac or PC.
 ![Flash backup](../assets/Backup_flash_drive.png)
 
-Alternatively, you can use [Unraid Connect](../../connect/help.md#restoring-flash-backup) to back up your Flash boot device.
+Alternatively, you can use [Unraid Connect](../../connect/help.md#restoring-a-flash-backup) to back up your Flash boot device.
 
 #### What if I can't backup my device?
 

@@ -100,9 +100,8 @@ mentioned, such as anywhere in the Wiki or the Unraid forums. It is
 used the same way as Windows Telnet, but because it supports the
 mouse and arrow and function keys, it is much easier to use in
 programs like MC (Midnight Commander, a dual pane commander-like
-file manager). For an example, see [Transferring Files Within the
-Unraid
-Server](transferring-files-within-the-unraid-server.md).
+file manager). For an example, see
+[Transferring Files Within the Unraid Server](transferring-files-within-the-unraid-server.md).
 
 _Note for UnRAID v5 and v6 users: some have found that Midnight
 Commander looks funny, with accented letters (mostly a little 'a'
@@ -111,8 +110,7 @@ configuration, go to Window → Translation and set Remote Character
 Set to something like UTF-8, then restart MC (thanks to Wody for
 this tip, see
 [this](https://forums.unraid.net/forum/index.php?topic=18157)).
-Wody has an additional PuTTY tip in [this
-post](https://forums.unraid.net/forum/index.php?topic=18157.msg162943#msg162943)._
+Wody has an additional PuTTY tip in [this post](https://forums.unraid.net/forum/index.php?topic=18157.msg162943#msg162943)._
 
 PuTTY has a number of settings, but the defaults are usually fine.
 On the **Window** tab, I set **Columns** to 120, **Rows** to 60, and
@@ -171,11 +169,9 @@ right-clicking the title bar. Notes regarding the command shell:
 
 ## Related links
 
-- [SSH vs
-  Telnet](https://forums.unraid.net/forum/index.php?topic=30273) -
+- [SSH vs Telnet](https://forums.unraid.net/forum/index.php?topic=30273) -
   discussion of the merits of both, why many want Telnet disabled
-- [Google search of "how to secure your ssh
-  server"](http://www.google.com/search?q=how+to+secure+your+ssh+server)
+- [Google search of "how to secure your ssh server"](http://www.google.com/search?q=how+to+secure+your+ssh+server)
 - [Console](console.md) - basics of console usage, plus
   commands for drives, networking, system management, files and
   folders, and system information

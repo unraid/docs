@@ -75,7 +75,7 @@ The **Docker** screen displays  all the containers you have installed from Commu
 
 :::note
 
-If your Unraid server meets the [hardware virtualization requirements](../manual/vm/vm-management/#determining-hvmiommu-hardware-support), this option displays in the navigation bar. Otherwise, this option will not be visible.
+If your Unraid server meets the [hardware virtualization requirements](../manual/vm/vm-management.md#determining-hvmiommu-hardware-support), this option displays in the navigation bar. Otherwise, this option will not be visible.
 
 :::
 
@@ -85,7 +85,8 @@ The **VMs** screen lets you manage VMs on your Unraid server. Any VMs you have c
 
 The **Apps** screen, otherwise known as the Community Applications, is the official source for Unraid applications.
 
-As the name implies, Community Applications provides community-sourced applications in the form of plugins and docker containers, that extend Unraid functionality beyond that of a mere NAS. You can read more about this in the [Community Applications section](../manual/applications.md#community-applications).
+As the name implies, Community Applications provides community-sourced applications in the form of plugins and docker containers, that extend Unraid functionality beyond that of a mere NAS. You can read more about this in the
+[Community Applications section](../manual/applications.md).
 
 ### Tools
 

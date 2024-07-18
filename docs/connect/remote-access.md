@@ -5,8 +5,7 @@
 The Remote Access feature
 allows you to access your Unraid WebGUI from the Internet. If you need
 access to Docker containers, network drives, or other devices on your
-network, you'll want to [setup a
-VPN](/unraid-os/manual/security/vpn.md) instead.
+network, you'll want to [setup a VPN](/unraid-os/manual/security/vpn.md) instead.
 
 **Note: Before enabling remote access, consider your root password. Is
 it sufficiently complex? Update your root password on the Users page.**
@@ -94,8 +93,8 @@ of the Dynamic settings in the Remote Access dropdown:
    Unraid Server is reachable from the Internet"
    - Note: When using Dynamic forwarding, you will not be able to
      access your server from this manual port forward unless you click
-     the Enable Dynamic Remote access button in [Unraid
-     Connect](/connect/help.md#unraid-connect-dashboard).
+     the Enable Dynamic Remote access button in
+     [Unraid Connect](/connect/help.md#unraid-connect-dashboard).
 5. Note: If the setting changes from UPnP to "Manual Port Forward" when
    you reload the page, then we were not able to communicate with your
    router to enable UPnP. It may need to be enabled on your router, or
@@ -118,21 +117,19 @@ of the Dynamic settings in the Remote Access dropdown:
    Unraid Server is reachable from the Internet"
    - Note: When using Dynamic forwarding, you will not be able to
      access your server from this manual port forward unless you click
-     the Enable Dynamic Remote access button in [Unraid
-     Connect](/connect/help.md#unraid-connect-dashboard)
-5. To access your server using Remote Access, login to [Unraid
-   Connect](/connect/help.md#unraid-connect-dashboard) and click the Manage link
+     the Enable Dynamic Remote access button in
+     [Unraid Connect](/connect/help.md#unraid-connect-dashboard)
+5. To access your server using Remote Access, login to
+   [Unraid Connect](/connect/help.md#unraid-connect-dashboard) and click the Manage link
 
 ===Optional step for secure local access=== If you want to use secure
-https for local access to your server as well, navigate to Settings → 
+https for local access to your server as well, navigate to Settings →
 Management Access. In the CA-signed certificate area, if there are no
 warnings about DNS Rebinding then go ahead and set **Use SSL/TLS** to
-**Strict**. If there are warnings about DNS Rebinding see [A note
-regarding DNS Rebinding
-Protection](/connect/help.md#a-note-regarding-dns-rebinding-protection).
+**Strict**. If there are warnings about DNS Rebinding see 
+[A note regarding DNS Rebinding Protection](/connect/help.md#a-note-regarding-dns-rebinding-protection).
 
 Note that once SSL is set to Strict, your client computers will need
 access to DNS in order to access your server. This means if your
 Internet connection drops you will likely lose access to your server's
-WebGUI. See [How to access your server when DNS is
-down](/connect/help.md#how-to-access-your-server-when-dns-is-down).
+WebGUI. See [How to access your server when DNS is down](/connect/help.md#how-to-access-your-server-when-dns-is-down).

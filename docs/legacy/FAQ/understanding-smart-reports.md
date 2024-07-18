@@ -456,7 +456,7 @@ incomplete!]_
     very large numbers they find in a SMART report or 'diff'
   - https://forums.unraid.net/forum/index.php?topic=2135.msg15733#msg15733 -
     a script for grabbing dated SMART reports for all drives
-  - [Data Recovery](/unraid-os/manual/troubleshooting#data-recovery)
+  - [Data Recovery](/unraid-os/troubleshooting/data-recovery)
   - https://forums.unraid.net/forum/index.php?topic=2708 - the
     MyMain thread; an UnMENU plugin; after installing UnMENU,
     install this next; has a Smart View that provides color-coded
