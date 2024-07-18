@@ -39,7 +39,7 @@ Support)](https://forums.unraid.net/forum/55-general-support/).
 
 ## What Should I do if I have Forgotten my Root Password?
 
-See [Lost Root Password](/unraid-os/manual/troubleshooting/#lost-root-password)
+See [Resetting your Unraid password](/unraid-os/manual/users/reset-password.md)
 
 _Important: this process only works for user passwords. If you encrypt your drives and forget this password, unfortunately you are hosed. There is no way for Lime Technology or anyone to recover this password. Please remember it or write it down in a secure, locked place!_
 

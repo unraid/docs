@@ -7,8 +7,7 @@ if you can!**
 
 ## Basics of Console Usage
 
-- If you are new to Linux, start by reading the [Terminal
-  Access](terminal-access.md) page.
+- If you are new to Linux, start by reading the [Terminal Access](terminal-access.md) page.
 - The commands below usually list a usage note, which is a link to a
   'man page'. In Linux, man pages describe the syntax of command
   usage, including all options for the command. Linux splits all of
@@ -102,8 +101,8 @@ console or terminal prompt)
 To determine the read speed of a hard drive, the following command can
 be used. The very last number in MB/sec is the one you want, ignore the
 rest. Although one run will give you a decent result, for better
-accuracy, take the average of at least 5 runs. See also [Check Harddrive
-Speed](check-harddrive-speed.md).
+accuracy, take the average of at least 5 runs. See also 
+[Check Harddrive Speed](check-harddrive-speed.md).
 
 `hdparm  -tT  /dev/sdx`
 
@@ -116,7 +115,7 @@ To obtain the SMART info for a drive, including some identity and
 configuration information, and physical statistics and error history.
 For more information about SMART and `smartctl`, see
 [here](https://forums.unraid.net/forum/index.php?topic=1521) and
-[here](/unraid-os/manual/troubleshooting#data-recovery) and
+[here](/unraid-os/troubleshooting/data-recovery.md) and
 [here](https://forums.unraid.net/forum/index.php?topic=1845.msg13042#msg13042)
 and [here](https://forums.unraid.net/forum/index.php?topic=2097) and
 [here](https://forums.unraid.net/forum/index.php?topic=2074.0).
@@ -345,8 +344,8 @@ or you can individually terminate individual process IDs by typing
 
 ## Console Commands for Files and Folders
 
-Many more file and folder commands can be found in the [Basics of
-Console Usage](#basics-of-bonsole-usage) section
+Many more file and folder commands can be found in the
+[Basics of Console Usage](#basics-of-console-usage) section
 above.
 
 - `df` - [usage](http://linux.die.net/man/1/df)
@@ -364,8 +363,8 @@ above.
 ## Console Commands for System Information
 
 In the commands below, `cat` is often used to display info, but
-`more` and `less` can be used instead (see [Basics of Console
-Usage](#basics-of-bonsole-usage) section above).
+`more` and `less` can be used instead (see
+[Basics of Console Usage](#basics-of-console-usage) section above).
 
 ### CPU Info
 

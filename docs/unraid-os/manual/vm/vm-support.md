@@ -195,7 +195,7 @@ Microsoft's website suggests that if you want to upgrade to Windows 10, use the 
 
 #### Upgrade VirtIO Drivers to 0.1.109 or later
 
-If you used the 0.1.102 drivers for your Windows 7 or 8.1 VM, you will want to upgrade these drivers to 0.1.109 or later before performing the upgrade. The process to update the drivers is located [here](#updating-virtio-drivers):
+If you used the 0.1.102 drivers for your Windows 7 or 8.1 VM, you will want to upgrade these drivers to 0.1.109 or later before performing the upgrade. The process to update the drivers is located [here](#using-virtio-drivers):
 
 #### Obtaining the Installation Media
 

@@ -17,7 +17,7 @@ Midnight Commander is a Linux console tool, and needs to be run from
 either the physical console on your Unraid server, or from a Telnet
 console on your desktop station. For more information, see the
 [Telnet](terminal-access.md#telnet) page, which includes information on
-[PuTTY](terminal-access.md#PuTTY).
+[PuTTY](terminal-access.md#putty).
 
 ## Move Files Overnight
 

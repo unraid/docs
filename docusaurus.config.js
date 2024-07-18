@@ -256,20 +256,29 @@ const config = {
             to: "/account/",
             from: "/unraid-os/faq/unraid-account/",
           },
-          // move User and Overview pages
-          // User and Overview sections redirects
-          {
-            to: "/unraid-os/manual/users/reset-password/",
-            from: "/unraid-os/manual/troubleshooting/",
-          },
+          // Overview redirect
           {
             to: "/unraid-os/overview/what-is-unraid/",
             from: "/unraid-os/manual/what-is-unraid/",
           },
-          //Troubleshooting section redirect
+          // Troubleshooting section redirect
+          // skip, lost-root-password takes precedence
+          /*
           {
             to: "/unraid-os/troubleshooting/",
             from: "/unraid-os/manual/troubleshooting/",
+          },
+          */
+          // reset password redirect
+          {
+            to: "/unraid-os/manual/users/reset-password/",
+            from: "/unraid-os/manual/troubleshooting/",
+            // actually from: /unraid-os/manual/troubleshooting#lost-root-password
+          },
+          // VM reorg
+          {
+            to: "/unraid-os/manual/vm/vm-management/",
+            from: "/unraid-os/manual/vm-management/",
           },
         ],
       },
