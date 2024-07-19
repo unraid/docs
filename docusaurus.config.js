@@ -280,6 +280,31 @@ const config = {
             to: "/unraid-os/manual/vm/vm-management/",
             from: "/unraid-os/manual/vm-management/",
           },
+          // go links used by the OS
+          {
+            to: "/category/manual/",
+            from: "/go/manual",
+          },
+          {
+            to: "/unraid-os/manual/users/reset-password/",
+            from: "/go/lost-root-password",
+          },
+          {
+            to: "/unraid-os/manual/changing-the-flash-device/",
+            from: "/go/changing-the-flash-device",
+          },
+          {
+            to: "/unraid-os/manual/security/vpn/#configuring-vpn-tunneled-access-for-system",
+            from: "/go/configuring-vpn-tunneled-access-for-system",
+          },
+          {
+            to: "/unraid-os/manual/vm/vm-management/#determining-hvmiommu-hardware-support",
+            from: "/go/determining-hvmiommu-hardware-support",
+          },
+          {
+            to: "/unraid-os/manual/vm/vm-management/#system-preparation",
+            from: "/go/vm-system-preparation",
+          },
         ],
       },
     ],
