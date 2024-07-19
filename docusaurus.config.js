@@ -305,6 +305,39 @@ const config = {
             to: "/unraid-os/manual/vm/vm-management/#system-preparation",
             from: "/go/vm-system-preparation",
           },
+          // go links used for Forum Word Expansions
+          {
+            to: "/unraid-os/manual/storage-management/#checking-a-file-system",
+            from: "/go/check-filesystem",
+          },
+          {
+            to: "/unraid-os/troubleshooting/diagnostics-information/",
+            from: "/go/diagnostics",
+          },
+          {
+            to: "/unraid-os/manual/shares/disk-shares/",
+            from: "/go/disk-shares",
+          },
+          {
+            to: "/unraid-os/manual/storage-management#parity-swap",
+            from: "/go/parity-swap",
+          },
+          {
+            to: "/legacy/FAQ/shrink-array/",
+            from: "/go/shrink-array",
+          },
+          {
+            to: "/unraid-os/manual/shares/user-shares/#split-level",
+            from: "/go/split-level",
+          },
+          {
+            to: "/unraid-os/troubleshooting/diagnostics-information/#persistent-logs-syslog-server",
+            from: "/go/syslog-server",
+          },
+          {
+            to: "/unraid-os/manual/shares/user-shares/",
+            from: "/go/user-shares",
+          },
         ],
       },
     ],
