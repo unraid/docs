@@ -2,17 +2,20 @@
 sidebar_position: 1
 ---
 
-# Contributing to Unraid Documentation
+# Getting started
 
-**Contribute to a Docs Page that already Exists**
-If you want to contribute to an Unraid Docs page that already exists, there is an "Edit this page" button at the bottom of every page.
+## Contribute to Unraid documentation
 
-Clicking this will take you to github, where you can click on the edit pencil in the far right to fork the repository, make edits on your own branch, and then commit Pull Requests to Main.
+Unraid OS is versatile, easy to use, and offers a wide range of features for storage, virtualization, and application hosting. It is continuously evolving and being updated by LimeTech staff and other contributors.
 
-Unraid Docs are built using Docusaurus which uses [Markdown](https://docs.unraid.net/contribute-to-docs/tutorial-basics/markdown-features), so please use the proper formatting outlined there for [links](https://docs.unraid.net/contribute-to-docs/tutorial-basics/markdown-features#links),  [code blocks](https://docs.unraid.net/contribute-to-docs/tutorial-basics/markdown-features#code-blocks), and [admonitions](https://docs.unraid.net/contribute-to-docs/tutorial-basics/markdown-features#admonitions). 
+### The Unraid Docs style guide
 
-**Creating a New Docs Page**
+The Unraid documentation style guide provides references and guidelines that help you write documentation that is simple, straightforward, and clear. It answers the key questions about writing choices and ensures that all documentation is consistent in its form and function. The documentation should be a resource that Unraid OS users can trust completely.
 
-To create a new Docs page, for example an Unraid Guide, in github, go to [docs/unraid-os/guides](https://github.com/unraid/docs/tree/main/docs/unraid-os/guides) and click "Add file" on the right to add a new Guides page. From there, name your file/guide and ensure it ends with ".md". Also, please ensure filenames are *lower case* and have *dashes separating-any-words* (Ex: wake-on-lan.md) Next, add the guide info and styling and then commit your changes. Then, a LimeTech employee will review and merge if everything looks good.
+### Docusaurus
 
-Thank you in advance for any and all submissions and edits. Making living technical documentation would be impossible without community involvement!
+Our documentation is built on Docusaurus. This is an open-source tool for building documentation sites, developed by Meta. The idea behind Docusaurus is to allow you to write documentation using Markdown and React-based MDX.
+
+For the most part, Docusaurus is based on Markdown, with the ability to use React code, if required. Docusaurus also has some unique structuring elements and formatting syntax that enhance the reading experience.
+
+Our section on Docusaurus includes two tutorials, that teach you to use the majority of its features.
