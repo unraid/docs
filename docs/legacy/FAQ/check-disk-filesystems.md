@@ -22,7 +22,7 @@
     [Need help? Read me
     first!](https://forums.unraid.net/forum/index.php?topic=39257).
   - If hardware or drive issues please see the
-    [Troubleshooting](/unraid-os/manual/troubleshooting)
+    [Troubleshooting](/unraid-os/troubleshooting/troubleshooting.md)
     page.
 
 - **Very important!!! Do NOT run these tools
@@ -106,8 +106,7 @@
 
 - If you are running Unraid v6, you can use the WebGUI to check and
   fix the file system of any data drive. Unless you prefer to work at
-  the command line, go to [Checking and fixing drives in the
-  WebGUI](#checking-and-fixing-drives-in-the-WebGUI).
+  the command line, go to [Checking and fixing drives in the WebGUI](#checking-and-fixing-drives-in-the-webgui).
 
 - If you are running Unraid v4 or v5 or prefer working at the command
   line -
@@ -329,8 +328,7 @@ file system of a data drive, while maintaining its parity info.
 ### Running xfs_repair
 
 - Now you are ready to run the XFS file system test. At the console or
-  in a [terminal session with SSH or
-  Telnet](terminal-access.md), type this: (_Note: the
+  in a [terminal session with SSH or Telnet](terminal-access.md), type this: (_Note: the
   following example refers to Disk 1, as **/dev/md1**. You will need
   to substitute the correct drive for your case. For example, if it is
   your Disk 5 that you are testing, then substitute **md5** for
@@ -432,7 +430,7 @@ xfs_repair -v /dev/md1
 - We're sorry, but we don't have enough experience yet with the
   **scrub** command. We recommend reading through this section, then
   either using the
-  [WebGUI](#checking-and-fixing-drives-in-the-WebGUI)
+  [WebGUI](#checking-and-fixing-drives-in-the-webgui)
   to possibly repair a drive formatted with **BTRFS**, or if you are
   comfortable at the command line, checking out the **scrub** command
   and its options, see [btrfs
@@ -549,8 +547,7 @@ xfs_repair -v /dev/md1
 
 - Now you are ready to run the Reiser file system test. (Note:
   \--check is the default option, not strictly required, but included
-  here for clarification.) At the console or in a [terminal session
-  with SSH or Telnet](terminal-access.md), type this:
+  here for clarification.) At the console or in a [terminal session with SSH or Telnet](terminal-access.md), type this:
 
   ```shell
   reiserfsck --check /dev/md1 [answer with the word **Yes**
@@ -669,8 +666,7 @@ xfs_repair -v /dev/md1
 
 ### Preparing to run reiserfsck
 
-- Start the array, then from the console or in a [terminal session
-  with SSH or Telnet](terminal-access.md), type this:
+- Start the array, then from the console or in a [terminal session with SSH or Telnet](terminal-access.md), type this:
 
 ```shell
     cd [this will make sure you are in the /root directory]
@@ -690,8 +686,7 @@ xfs_repair -v /dev/md1
 
 - Now you are ready to run the Reiser file system test. (Note:
   \--check is the default option, not strictly required, but included
-  here for clarification.) At the console or in a [terminal session
-  with SSH or Telnet](terminal-access.md), type this:
+  here for clarification.) At the console or in a [terminal session with SSH or Telnet](terminal-access.md), type this:
 
 ```shell
     reiserfsck --check /dev/md1

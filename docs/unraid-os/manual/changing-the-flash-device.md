@@ -65,7 +65,7 @@ To back up your Flash drive in Unraid:
 2. Under **Flash Device Settings**, select the **FLASH BACKUP** button to download a fully zipped backup of your current flash drive to your Mac or PC.
 ![Flash backup](../assets/Backup_flash_drive.png)
 
-Alternatively, you can use [Unraid Connect](../../connect/help.md#restoring-flash-backup) to back up your Flash boot device.
+Alternatively, you can use [Unraid Connect](../../connect/help.md#restoring-a-flash-backup) to back up your Flash boot device.
 
 #### What if I can't backup my device?
 
@@ -107,10 +107,23 @@ The second step in the process, is to use the Unraid USB Flash Creator tool to r
 ![Invalid key](../assets/Invalidkey.png)
 
 8. if you are not restoring from a backup, which would contain a copy of your license key file, then copy your existing license key file into the `boot/config` folder on the flash drive. This lets Unraid know you want to switch your license to this new flash drive.
+
+:::important
+
+Please make sure that only one key exists in the config folder, if there are multiple keys installed, the **Replace Key** option will not appear.
+
+:::
+   
 9. In ***Tools > Registration***, select **Replace Key** then enter the email address to which you would like to have the new key delivered to.
 10. Select **Replace Key**.
 
 ![Replace Key button](../assets/Replacekey.png)
+
+:::important
+
+If after selecting **Replace Key** you see a "keyfile is not valid" error, it usually means that the installed key is a previously blacklisted key, not the last key that was being used, the automatic replacement will only work with the last valid key, if you don't have it, please contact support and they can do the replacement for you.
+
+:::
 
 11. Once you have received the email, copy the key file URL, then paste it into the box and select **Install Key**.
 

@@ -256,20 +256,244 @@ const config = {
             to: "/account/",
             from: "/unraid-os/faq/unraid-account/",
           },
-          // move User and Overview pages
-          // User and Overview sections redirects
-          {
-            to: "/unraid-os/manual/users/reset-password/",
-            from: "/unraid-os/manual/troubleshooting/",
-          },
+          // Overview redirect
           {
             to: "/unraid-os/overview/what-is-unraid/",
             from: "/unraid-os/manual/what-is-unraid/",
           },
-          //Troubleshooting section redirect
+          // Troubleshooting section redirect
+          // skip, lost-root-password takes precedence
+          /*
           {
             to: "/unraid-os/troubleshooting/",
             from: "/unraid-os/manual/troubleshooting/",
+          },
+          */
+          // reset password redirect
+          {
+            to: "/unraid-os/manual/users/reset-password/",
+            from: "/unraid-os/manual/troubleshooting/",
+            // actually from: /unraid-os/manual/troubleshooting#lost-root-password
+          },
+          // VM reorg
+          {
+            to: "/unraid-os/manual/vm/vm-management/",
+            from: "/unraid-os/manual/vm-management/",
+          },
+          // go links used by the OS
+          {
+            to: "/category/manual/",
+            from: "/go/manual",
+          },
+          {
+            to: "/unraid-os/manual/users/reset-password/",
+            from: "/go/lost-root-password",
+          },
+          {
+            to: "/unraid-os/manual/changing-the-flash-device/",
+            from: "/go/changing-the-flash-device",
+          },
+          {
+            to: "/unraid-os/manual/security/vpn/#configuring-vpn-tunneled-access-for-system",
+            from: "/go/configuring-vpn-tunneled-access-for-system",
+          },
+          {
+            to: "/unraid-os/manual/vm/vm-management/#determining-hvmiommu-hardware-support",
+            from: "/go/determining-hvmiommu-hardware-support",
+          },
+          {
+            to: "/unraid-os/manual/vm/vm-management/#system-preparation",
+            from: "/go/vm-system-preparation",
+          },
+          // go links used for Forum Word Expansions
+          {
+            to: "/unraid-os/manual/storage-management/#checking-a-file-system",
+            from: "/go/check-filesystem",
+          },
+          {
+            to: "/unraid-os/troubleshooting/diagnostics-information/",
+            from: "/go/diagnostics",
+          },
+          {
+            to: "/unraid-os/manual/shares/disk-shares/",
+            from: "/go/disk-shares",
+          },
+          {
+            to: "/unraid-os/manual/storage-management#parity-swap",
+            from: "/go/parity-swap",
+          },
+          {
+            to: "/legacy/FAQ/shrink-array/",
+            from: "/go/shrink-array",
+          },
+          {
+            to: "/unraid-os/manual/shares/user-shares/#split-level",
+            from: "/go/split-level",
+          },
+          {
+            to: "/unraid-os/troubleshooting/diagnostics-information/#persistent-logs-syslog-server",
+            from: "/go/syslog-server",
+          },
+          {
+            to: "/unraid-os/manual/shares/user-shares/",
+            from: "/go/user-shares",
+          },
+          // go links used for unraid.net website
+          {
+            to: "/account/",
+            from: "/go/account",
+          },
+          {
+            to: "/unraid-os/manual/storage-management/#adding-disks",
+            from: "/go/adding-array-disks",
+          },
+          {
+            to: "/unraid-os/manual/storage-management/#why-use-a-pool",
+            from: "/go/adding-pools",
+          },
+          {
+            to: "/unraid-os/getting-started/advanced-bios-config/",
+            from: "/go/advanced-bios-config",
+          },
+          {
+            to: "/unraid-os/manual/applications/",
+            from: "/go/applications",
+          },
+          {
+            to: "/category/unraid-connect/",
+            from: "/go/connect",
+          },
+          {
+            to: "/connect/about/",
+            from: "/go/connect-about",
+          },
+          {
+            to: "/connect/help/",
+            from: "/go/connect-help",
+          },
+          {
+            to: "/connect/help#server-deep-linking",
+            from: "/go/connect-deep-linking",
+          },
+          {
+            to: "/connect/remote-access/",
+            from: "/go/connect-remote-access",
+          },
+          {
+            to: "/connect/remote-access/#dynamic-remote-access",
+            from: "/go/connect-dynamic-remote-access",
+          },
+          {
+            to: "/connect/help/#automated-flash-backup",
+            from: "/go/connect-flash-backup",
+          },
+          {
+            to: "/connect/help/#license-management",
+            from: "/go/connect-license-management",
+          },
+          {
+            to: "/connect/help/#manage-your-server-from-within-the-connect-ui",
+            from: "/go/connect-manage-server-from-connect",
+          },
+          {
+            to: "/unraid-os/manual/docker-management/",
+            from: "/go/docker-management",
+          },
+          {
+            to: "/unraid-os/download_list/",
+            from: "/go/download-list",
+          },
+          {
+            to: "/legacy/Articles/expanding-windows-vm-vdisk-partitions/",
+            from: "/go/expanding-windows-vm-vdisk-partitions",
+          },
+          {
+            to: "/category/faq/",
+            from: "/go/faq",
+          },
+          {
+            to: "/unraid-os/faq/licensing-faq/",
+            from: "/go/faq-licensing",
+          },
+          {
+            to: "/unraid-os/faq/licensing-faq/#how-to-redeem-a-license-activation-code",
+            from: "/go/faq-licensing-redeem-activation-code",
+          },
+          {
+            to: "/unraid-os/faq/licensing-faq/#how-do-i-upgrade-my-unraid-license",
+            from: "/go/faq-licensing-upgrade",
+          },
+          {
+            to: "/unraid-os/getting-started/",
+            from: "/go/getting-started",
+          },
+          {
+            to: "/unraid-os/getting-started/manual-install-method/",
+            from: "/go/manual-install-method",
+          },
+          {
+            to: "/unraid-os/manual/security/outgoing-proxy-manager/",
+            from: "/go/outgoing-proxy-manager",
+          },
+          {
+            to: "/unraid-os/manual/multi-language/",
+            from: "/go/multi-language",
+          },
+          {
+            to: "/legacy/FAQ/Parity/",
+            from: "/go/parity",
+          },
+          {
+            to: "/unraid-os/getting-started/quick-install-guide/",
+            from: "/go/quick-install-guide",
+          },
+          {
+            to: "/unraid-os/getting-started/quick-install-guide/#assigning-devices-to-the-array-and-pools",
+            from: "/go/quick-install-guide-assigning-devices",
+          },
+          {
+            to: "/unraid-os/getting-started/quick-install-guide/#setting-up-the-unraid-os",
+            from: "/go/quick-install-guide-setting-up",
+          },
+          {
+            to: "/unraid-os/manual/changing-the-flash-device/#recommendations-on-buying-usb-drives",
+            from: "/go/recommendations-on-buying-usb-drives",
+          },
+          {
+            to: "/category/release-notes/",
+            from: "/go/release-notes",
+          },
+          {
+            to: "/unraid-os/manual/shares/",
+            from: "/go/shares",
+          },
+          {
+            to: "/unraid-os/manual/storage-management/",
+            from: "/go/storage-management",
+          },
+          {
+            to: "/unraid-os/troubleshooting/",
+            from: "/go/troubleshooting",
+          },
+          {
+            to: "/unraid-os/manual/upgrade-instructions/",
+            from: "/go/upgrade-instructions",
+          },
+          {
+            to: "/unraid-os/manual/vm/vm-management/",
+            from: "/go/vm-management",
+          },
+          {
+            to: "/unraid-os/manual/vm/vm-support/",
+            from: "/go/vm-support",
+          },
+          {
+            to: "/unraid-os/manual/security/vpn/",
+            from: "/go/vpn",
+          },
+          {
+            to: "/unraid-os/manual/security/secure-webgui-ssl/",
+            from: "/go/webgui-ssl",
           },
         ],
       },

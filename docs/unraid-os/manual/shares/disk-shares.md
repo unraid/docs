@@ -37,4 +37,5 @@ You must ***never*** copy between a user share and a disk share in the same copy
 
 At the base system level, Linux does not understand user shares, and cannot tell apart a file in a disk share from one in a user share. If you mix the share types in the same copy command you can end up trying to copy the file to itself which results in the file being truncated to zero length and its content being lost.
 
-There is no problem if the copy is between shares of the same type, or copying to/from a disk mounted as an [Unassigned Disk](../storage-management.md#unassigned-drives).
+There is no problem if the copy is between shares of the same type, or copying to/from a disk mounted as an
+[Unassigned Disk](../storage-management.md#unassigned-drives).

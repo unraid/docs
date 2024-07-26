@@ -8,7 +8,7 @@ Before upgrading, we highly recommend making a complete backup of your USB flash
 2. Under **Flash Device Settings**, select the **Flash Backup** button to download a fully zipped backup of your current flash drive to your Mac or PC.
 ![Flash backup](../assets/Backup_flash_drive.png)
 
-Alternatively, if you want, you can use [Unraid Connect](../../connect/help.md#restoring-flash-backup) to back up your Flash boot device.
+Alternatively, if you want, you can use [Unraid Connect](../../connect/help.md#restoring-a-flash-backup) to back up your Flash boot device.
 
 ## Upgrading from version 6.4 or higher
 
@@ -55,7 +55,7 @@ In this case, manually install the update as follows:
 
 1. Navigate to Plugins/Install Plugin tab
 2. Select/copy this text
-   https://s3.amazonaws.com/dnld.lime-technology.com/stable/unRAIDServer.plg
+   `https://stable.dl.unraid.net/unRAIDServer.plg`
 3. Paste into URL field and click Install
 
 #### My array/docker apps are taking a really long time to start after the upgrade

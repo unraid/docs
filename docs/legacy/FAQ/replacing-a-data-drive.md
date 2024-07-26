@@ -28,8 +28,7 @@ would you want to do that? Any number of reasons...
 
 - **Important! You cannot replace a drive with one that is LARGER than
   the parity drive!** If your replacement drive is larger than the
-  parity drive, then proceed to [The parity swap
-  procedure](parity-swap-procedure.md).
+  parity drive, then proceed to [The parity swap procedure](parity-swap-procedure.md).
 
 - Unraid does not require the replacement drive to be the same size as
   the old drive being replaced. It CANNOT be smaller, but it CAN be a
@@ -44,8 +43,8 @@ would you want to do that? Any number of reasons...
   the Unraid forums), and are SURE that the drive is good, then you
   can use the procedures below to rebuild it onto itself (below,
   consider the 'old drive' to be the 'new drive'). There is a
-  similar procedure just for this though → [Re-enable the
-  drive](/unraid-os/manual/storage-management.md#rebuilding-a-drive-onto-itself).
+  similar procedure just for this though →
+  [Re-enable the drive](/unraid-os/manual/storage-management.md#rebuilding-a-drive-onto-itself).
 
 ## The procedure
 
