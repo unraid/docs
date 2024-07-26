@@ -30,17 +30,17 @@ Unraid Docs use Markdown syntax for text formatting. The use of bold, italic, a 
 
 ### Referencing WebGUI elements
 
-Use these conventions to signal users what you're writing about:
+Use these conventions to indicate to users what you're writing about:
 
-| Element | Convention | Example |
-| ------- | ---------- | ------- |
-| Screen option | Bold | Select **Done** |
-| User input | Italics| Enter a value of *50gb* |
-| Navigation path | Bold + Italics| ***Settings > Disk Settings*** |
-| CLI and system responses | Monospace (codeblock) | Navigate to `http://tower.local` |
-| Document title | Heading 1 | <h1>Heading</h1> |
-| Document section | Heading 2 | <h2>Heading</h2> |
-| Document sub-section | Heading 3 | <h3>Heading</h3> |
+| Element | Convention | Syntax | Example |
+| ------- | ---------- | ------- | ------- |
+| Option or button name | Bold | `**text**` |Select **Done** | 
+| User input | Italics| `*text*` | Enter a value of *50gb* |
+| Navigation path | Bold + Italics, separate each element of the path with a &rarr; | `***nav_element1***` `\&rarr` `***nav_element2***`| ***Settings → Disk Settings*** |
+| CLI and system responses | Monospace (codeblock) | `` `text` `` | Navigate to `http://tower.local` |
+| Document title | Heading 1 | `#heading` | <h1>Heading</h1> |
+| Document section | Heading 2 | `##heading` | <h2>Heading</h2> |
+| Document sub-section | Heading 3 | `###heading` | <h3>Heading</h3> |
 
 :::note
 
