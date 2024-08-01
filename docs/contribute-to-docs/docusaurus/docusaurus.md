@@ -10,4 +10,4 @@ Overall, Docusaurus simplifies the process of creating and maintaining documenta
 
 Unraid documentation was written in [Markdown](./tutorial-basics/markdown-features.mdx) for Docusaurus, so please use the proper formatting outlined there for [links](https://docs.unraid.net/contribute-to-docs/tutorial-basics/markdown-features#links),  [code blocks](https://docs.unraid.net/contribute-to-docs/tutorial-basics/markdown-features#code-blocks), and [admonitions](https://docs.unraid.net/contribute-to-docs/tutorial-basics/markdown-features#admonitions).
 
-You can also check our writing tips and guidelines, [here](../unraid-styleguide/conventions.md).
+You can also check our [writing tips and guidelines](../unraid-styleguide/conventions.md).

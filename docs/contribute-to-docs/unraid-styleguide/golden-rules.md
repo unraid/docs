@@ -12,7 +12,7 @@ Keep sentences short as the help reading comprehension and information retention
 
 ## Rule #2 Use plain (American) English
 
-We write in American English, so avoid all the usual conflicts of British English vs American English. Wikipedia has a comprehensive list of differences [here](https://en.wikipedia.org/wiki/Comparison_of_American_and_British_English).
+We write in American English, so avoid all the usual conflicts of British English vs American English. Wikipedia has a [comprehensive list of differences](https://en.wikipedia.org/wiki/Comparison_of_American_and_British_English).
 
 ## Rule #3 Avoid using idioms and loanwords
 
@@ -35,16 +35,16 @@ A consistent writing style involves maintaining uniformity in various elements o
 
 Always put yourself in the place of the reader. Think of who you're writing for, the tone and voice, and terminology you use. Consider the complexity of the language you are using. Writing for an Unraid user who has no programming or command line experience is very different than writing for a developer.
 
-## Rule #6 Avoid conjunctive adverbs
+## Rule #6 Limit the use of conjunctive adverbs
 
 Whether it's the way you learned English, or simply your style of writing, conjunctive adverbs can be mistranslated or misunderstood. They also sound a bit archaic, so it's best to avoid them. You're not writing a legal document, you're writing for the widest audience possible.
 
-Some common conjunctive adverb types and examples:
+Some common conjunctive adverb types you should try to limit:
 
-* **Addition**: also, besides, furthermore, moreover
+* **Addition**: besides, furthermore, moreover
 * **Contrast**: however, nevertheless, nonetheless, still
 * **Cause and Effect**: therefore, thus, consequently, hence
-* **Time**: then, finally, subsequently, meanwhile
+* **Time**: finally, subsequently, meanwhile
 * **Comparison**: similarly, likewise
 
 ## Rule #7 Use the active voice

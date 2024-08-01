@@ -1,12 +1,12 @@
 # How to contribute
 
-We can't state this enough: everyone is welcome to contribute to the Unraid Docs. Once you've read through our style guide and have a basic understanding of Github and Docusaurus, you are ready to start editing existing pages or creating your own original ones.
+Once you've read through our style guide and have a basic understanding of Markdown, you are ready to start editing existing pages or creating your own original ones.
 
 ## Contribute to a page that already exists
 
 If you want to contribute to an Unraid Docs page that already exists:
 
-1. Select the **Edit this page** button at the bottom of every page. This will take you to our github repository.
+1. Select the **Edit this page** button at the bottom of every page. This will take you to our Github repository.
 2. Select the edit pencil in the top-right to fork the repository.
 3. Make edits to the document on your own branch.
 4. Commit pull requests to **Main**.

@@ -36,7 +36,7 @@ Use these conventions to indicate to users what you're writing about:
 | ------- | ---------- | ------- | ------- |
 | Option or button name | Bold | `**text**` |Select **Done** | 
 | User input | Italics| `*text*` | Enter a value of *50gb* |
-| Navigation path | Bold + Italics, separate each element of the path with a &rarr; | `***nav_element1***` `\&rarr` `***nav_element2***`| ***Settings → Disk Settings*** |
+| Navigation path | Bold + Italics, separate each element of the path with a → | `***nav_element1 → nav_element2***`| ***Settings → Disk Settings*** |
 | CLI and system responses | Monospace (codeblock) | `` `text` `` | Navigate to `http://tower.local` |
 | Document title | Heading 1 | `#heading` | <h1>Heading</h1> |
 | Document section | Heading 2 | `##heading` | <h2>Heading</h2> |
@@ -110,3 +110,13 @@ Confusion may arise when readers are confronted with abbreviations, acronyms, or
 * Initialisms, also combine the first letter of each word in a phrase, but each letter is read out separately. For example, *OS* or *ZFS*.
 
 There is a certain amount of technical jargon inherent to Unraid OS. We recommend that you avoid abbreviating words for the sake of abbreviation, but if you must use uncommon acronyms or initialisms, spell them out on the first use, followed by the acronym or initialism in parentheses. For example, you might not feel the need to explain *GPU*, but you might feel the reader benefits from an explanation for *Virtual Machine Disk (VMDK)*.
+
+## Hyperlinking to other documents or sites
+
+Cross-referencing other documents in our documentation, or URLs on the Internet, can be useful to offer readers an onward journey and learn more about a subject. We use in-paragraph link text to provide detail into what is expected from the link, as well as making it accessible to screenreaders. Link text is the visible wording that displays when you link to another document or location on the web. Link text should describe what the destination page or document is about. It should tell the reader where the link is going.
+
+We avoid generic phrases like "Click here" and "Read more", as these are not helpful to the reader, and we don't use URLs as in-paragraph links.
+
+For example, you can write:
+
+> You can also check our [writing tips and guidelines](../unraid-styleguide/conventions.md).
