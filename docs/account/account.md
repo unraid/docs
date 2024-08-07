@@ -2,7 +2,7 @@
 
 ## What is an Unraid.net Account?
 
-An [Unraid.net account](https://account.unraid.net/) is the account you create to use the [Unraid forums](https://forums.unraid.net/), use [Unraid Connect](/connect/about.md), and to manage your Unraid keys. This account is _not the same_ as your server's root password that you use to login to the Unraid webgui. Users do not need to sign into this account to use Unraid.
+An [Unraid.net account](https://account.unraid.net/) is the account you create to use the [Unraid forums](https://forums.unraid.net/), use [Unraid Connect](/connect/index.md), and to manage your Unraid keys. This account is _not the same_ as your server's root password that you use to login to the Unraid webgui. Users do not need to sign into this account to use Unraid.
 
 ## Unraid.net Account Sign In / Ups
 

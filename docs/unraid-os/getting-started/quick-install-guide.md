@@ -115,9 +115,9 @@ In order to perform one of these operations, in ***Main*** scroll down to the se
 
 ### Managing your server with Unraid Connect
 
-[Unraid Connect](/connect/about.md) is a plugin for Unraid, available through Community applications. Using Unraid Connect you can manage all your server instances through a unified [Unraid Connect Dashboard](https://connect.myunraid.net/).
+[Unraid Connect](/connect/index.md) is a plugin for Unraid, available through Community applications. Using Unraid Connect you can manage all your server instances through a unified [Unraid Connect Dashboard](https://connect.myunraid.net/).
 
-Unraid connect uses your Unraid.net credentials for access management, while communicating with our cloud servers through a secure connection. For a better understanding of how we handle this, read the [Privacy section](../../connect/help.md#privacy) in our Unraid Connect documentation.
+Unraid connect uses your Unraid.net credentials for access management, while communicating with our cloud servers through a secure connection. For a better understanding of how we handle this, read the [Privacy section](/connect/privacy.md) in our Unraid Connect documentation.
 
 ### Getting help
 

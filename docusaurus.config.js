@@ -243,6 +243,10 @@ const config = {
             from: "/unraid-os/manual/getting-started/",
           },
           {
+            to: "/unraid-os/getting-started/",
+            from: "/category/getting-started/",
+          },
+          {
             to: "/unraid-os/getting-started/manual-install-method/",
             from: "/unraid-os/manual/getting-started/manual-install-method/",
           },
@@ -279,6 +283,15 @@ const config = {
           {
             to: "/unraid-os/manual/vm/vm-management/",
             from: "/unraid-os/manual/vm-management/",
+          },
+          // Connect reorg
+          {
+            to: "/connect/",
+            from: "/category/unraid-connect/",
+          },
+          {
+            to: "/connect/",
+            from: "/connect/about/",
           },
           // go links used by the OS
           {
@@ -360,11 +373,11 @@ const config = {
             from: "/go/applications",
           },
           {
-            to: "/category/unraid-connect/",
+            to: "/connect/",
             from: "/go/connect",
           },
           {
-            to: "/connect/about/",
+            to: "/connect/",
             from: "/go/connect-about",
           },
           {
@@ -384,7 +397,7 @@ const config = {
             from: "/go/connect-dynamic-remote-access",
           },
           {
-            to: "/connect/help/#automated-flash-backup",
+            to: "/connect/flash-backup/",
             from: "/go/connect-flash-backup",
           },
           {
