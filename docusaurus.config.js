@@ -409,6 +409,18 @@ const config = {
             from: "/go/connect-manage-server-from-connect",
           },
           {
+            to: "/connect/help/#unraid-connect-dashboard",
+            from: "/go/connect-dashboard",
+          },
+          {
+            to: "/connect/help/#customizable-dashboard-server-banner-image-and-themes",
+            from: "/go/connect-customizable-dashboard",
+          },
+          {
+            to: "/connect/help/#language-localization",
+            from: "/go/connect-language-localization",
+          },
+          {
             to: "/unraid-os/manual/docker-management/",
             from: "/go/docker-management",
           },
