@@ -150,7 +150,7 @@ Since the Unraid boot drive contains all user specific settings in the 'config' 
 There are various ways of achieving this:
 
 * From the Unraid WebGUI via ***Main > Boot > Device > Flash > Flash Backup***. This will create a zip file that you then download.
-* By Installing [Unraid Connect](/connect/about.md), which provides for automated backups to cloud servers managed by Limetech.
+* By Installing [Unraid Connect](/connect/index.md), which provides for automated backups to cloud servers managed by Limetech.
 * By plugging the flash device into a PC/Mac and copying the full contents to a local folder on the PC/Mac.
 
 ## Manually upgrading (or downgrading) an Unraid release

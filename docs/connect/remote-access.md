@@ -1,6 +1,10 @@
+---
+sidebar_position: 4
+---
+
 # Remote Access
 
-![](./assets/Enabling_remote_access.png)
+![Remote Access](./assets/Enabling_remote_access.png)
 
 The Remote Access feature
 allows you to access your Unraid WebGUI from the Internet. If you need
@@ -13,9 +17,9 @@ it sufficiently complex? Update your root password on the Users page.**
 Also note: **Remote Access is an optional feature**, and is not required
 to use the rest of Unraid Connect.
 
-## Remote Access - **Initial Setup**
+## Initial Setup
 
-1. From Unraid WebGUI Navigate to **Settings** → **Management Access**
+1. From Unraid WebGUI Navigate to ***Settings → Management Access***
 2. Note the **HTTPS port**, it defaults to port 443. If you have Docker
    containers running on this port, choose an unused port over 1000
    such as 3443, 4443, 5443, etc.
@@ -23,7 +27,7 @@ to use the rest of Unraid Connect.
    take effect.
 4. In the **CA-signed certificate file** area, click **Provision**
 
-### Remote Access - **Choose Remote Access Type**
+### Choose Remote Access Type
 
 There are two kinds of Remote Access provided through Unraid Connect:
 **Dynamic Remote Access** and **Static Remote Access**
@@ -38,12 +42,12 @@ needed. This helps to prevent automated attacks.
 **Static Remote Access** enables your server to listen to WAN traffic at
 all times, allowing your server to be accessed from the internet.
 
-![](./assets/Remote_access_settings.png)
+![Remote Access Settings](./assets/Remote_access_settings.png)
 
-## **Dynamic Remote Access**
+### Dynamic Remote Access
 
 To use Dynamic Remote access, first set the type you would like to use
-in the **Management Access → Unraid Connect** settings page. Choose one
+in the ***Settings → Management Access → Unraid Connect*** settings page. Choose one
 of the Dynamic settings in the Remote Access dropdown:
 
 1. **Dynamic - UPNP**
@@ -84,7 +88,7 @@ of the Dynamic settings in the Remote Access dropdown:
 ### Configuring **UPNP** (Applies to Dynamic - UPNP / Always On - UPNP)
 
 1. Ensure your router supports UPNP and has it enabled.
-2. Navigate to Settings → Management Access and set "Use UPnP" to
+2. Navigate to ***Settings → Management Access*** and set "Use UPnP" to
    Yes.
 3. On the Unraid Connect settings page, set the remote access option to
    UPNP (either Dynamic or Always On) and Apply.
@@ -122,9 +126,11 @@ of the Dynamic settings in the Remote Access dropdown:
 5. To access your server using Remote Access, login to
    [Unraid Connect](/connect/help.md#unraid-connect-dashboard) and click the Manage link
 
-===Optional step for secure local access=== If you want to use secure
-https for local access to your server as well, navigate to Settings →
-Management Access. In the CA-signed certificate area, if there are no
+### Optional step for secure local access
+
+If you want to use secure
+https for local access to your server as well, navigate to 
+***Settings → Management Access***. In the CA-signed certificate area, if there are no
 warnings about DNS Rebinding then go ahead and set **Use SSL/TLS** to
 **Strict**. If there are warnings about DNS Rebinding see 
 [A note regarding DNS Rebinding Protection](/connect/help.md#a-note-regarding-dns-rebinding-protection).

@@ -65,7 +65,7 @@ To back up your Flash drive in Unraid:
 2. Under **Flash Device Settings**, select the **FLASH BACKUP** button to download a fully zipped backup of your current flash drive to your Mac or PC.
 ![Flash backup](../assets/Backup_flash_drive.png)
 
-Alternatively, you can use [Unraid Connect](../../connect/help.md#restoring-a-flash-backup) to back up your Flash boot device.
+Alternatively, you can use [Unraid Connect](/connect/flash-backup.md) to back up your Flash boot device.
 
 #### What if I can't backup my device?
 
@@ -113,7 +113,7 @@ The second step in the process, is to use the Unraid USB Flash Creator tool to r
 Please make sure that only one key exists in the config folder, if there are multiple keys installed, the **Replace Key** option will not appear.
 
 :::
-   
+
 9. In ***Tools > Registration***, select **Replace Key** then enter the email address to which you would like to have the new key delivered to.
 10. Select **Replace Key**.
 
@@ -143,7 +143,7 @@ Finished! You have replaced the USB flash device and the registration key. You w
 
 6. Select **Registration Key**.
 ![Invalid Key Example](../assets/Invalidkey.png)
-5. In <navpath>Tools > Registration</navpath>, select **Replace Key** then enter the email address to which you would like to have the new key delivered to.
+5. In ***Tools → Registration***, select **Replace Key** then enter the email address to which you would like to have the new key delivered to.
 6. Select **Replace Key**.
 ![Replace Key Example](../assets/Replacekey.png)
 7. Once you have received the email, copy the key file URL, then paste it into the box and select **Install Key**
@@ -155,7 +155,7 @@ You're finished! You have replaced the USB flash device and the registration key
 
 You may replace your original registration key at any time. After replacing your license key once, you may replace your key using the online automated method after a further period of 12 months.
 
-Should you need to replace it again within that 12 month period, use the contact form at https://unraid.net/contact. For expedited service, please include in your message the old and new USB GUIDs, as well as the license and email address used at the moment of purchase.
+Should you need to replace it again within that 12 month period, [Contact us](https://unraid.net/contact). For expedited service, please include in your message the old and new USB GUIDs, as well as the license and email address used at the moment of purchase.
 
 :::important
 

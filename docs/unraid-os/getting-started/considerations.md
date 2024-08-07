@@ -11,7 +11,7 @@ Once you've completed your initial setup, there are a few more things you should
 It is a good idea to have your Unraid flash device backed up any time you make a significant configuration change. Regular flash backups are highly recommended:
 
 * On the **Main** tab, select your flash device, then **Flash Backup**. Make sure to store your backups off of your Unraid array so it is easily accessible even if the array is not operational.
-* Alternatively, install the [Unraid Connect](/connect/about.md) plugin which provides automated backups of the flash drive to LimeTech cloud-based servers.
+* Alternatively, install the [Unraid Connect](/connect/index.md) plugin which provides automated backups of the flash drive to LimeTech cloud-based servers.
 
 ## Using the built-in help
 

@@ -1,6 +1,10 @@
-# About Unraid Connect
+---
+sidebar_position: 1
+---
 
-## **What is Unraid Connect?**
+# Unraid Connect
+
+## What is Unraid Connect?
 
 Unraid Connect is your one-stop shop for server management, monitoring,
 and maintenance. Enjoy the convenience and connectivity of the cloud
@@ -12,4 +16,4 @@ Unraid Server with a suite of new features including Dynamic Remote
 Access, Server Deep Linking, Server management from the Connect UI,
 Online flash backups, Real-time monitoring, and much more!
 
-## [**Launch Unraid Connect**](https://connect.myunraid.net)
+[**Launch Unraid Connect**](https://connect.myunraid.net)

@@ -17,6 +17,6 @@ Welcome! Some of the documentation here is still a work in progress, while the o
 
 ### [Unraid.net Account](/account/account.md)
 
-### [Unraid Connect](/category/unraid-connect)
+### [Unraid Connect](/connect/index.md)
 
 ### [Legacy Documentation](/category/legacy-documentation)

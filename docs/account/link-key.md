@@ -2,7 +2,7 @@
 
 :::important
 
-This process requires Unraid 6.12.8 or higher, or the [Unraid Connect](/connect/about.md) plugin.
+This process requires Unraid 6.12.8 or higher, or the [Unraid Connect](/connect/index.md) plugin.
 
 Trial keys are not eligible to be linked.
 

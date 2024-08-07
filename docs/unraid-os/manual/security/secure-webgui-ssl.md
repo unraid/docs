@@ -72,7 +72,7 @@ You can access your server securely via the WebGUI using a Myunraid.net certific
 6. Your primary URLs when **Use SSL/TLS** set to *Yes*. Note that these URLs use a self-signed certificate.
     * `https://[servername].[localTLD]` (example: `https://tower.local`)
     * `https://[ipaddress]` (example: `https://192.168.100.1`)
-7. Your alternate URL will be `https://[lan-ip].[hash].myunraid.net` (example: `https://192-168-100-1.a1b2c3d4e5.myunraid.net`). This URL is shown in the **Local access URLs** field on the **Management Access** page. If you install the [Unraid Connect](/connect/about.md) plugin it will also be shown on the [Connect dashboard](https://connect.myunraid.net/).
+7. Your alternate URL will be `https://[lan-ip].[hash].myunraid.net` (example: `https://192-168-100-1.a1b2c3d4e5.myunraid.net`). This URL is shown in the **Local access URLs** field on the **Management Access** page. If you install the [Unraid Connect](/connect/index.md) plugin it will also be shown on the [Connect dashboard](https://connect.myunraid.net/).
 
 ---
 
@@ -83,7 +83,7 @@ You can access your server securely via the WebGUI using a Myunraid.net certific
 3. Press **Provision**.
 4. If DNS Rebinding is not an issue, the *Strict* option for **Use SSL/TLS** will be available.
 5. Set **Use SSL/TLS** to *Strict* (or *Auto* in earlier versions of Unraid).
-6. Your URL will be `https://[lan-ip].[hash].myunraid.net` (example: `https://192-168-100-1.a1b2c3d4e5.myunraid.net`). This URL is shown in the **Local access URLs** field on the **Management Access** page. If you install the optional [Unraid Connect](/connect/about.md) plugin it will also be shown on the [Connect dashboard](https://connect.myunraid.net/).
+6. Your URL will be `https://[lan-ip].[hash].myunraid.net` (example: `https://192-168-100-1.a1b2c3d4e5.myunraid.net`). This URL is shown in the **Local access URLs** field on the **Management Access** page. If you install the optional [Unraid Connect](/connect/index.md) plugin it will also be shown on the [Connect dashboard](https://connect.myunraid.net/).
 
 :::caution
 
@@ -119,7 +119,7 @@ Looking for setup instructions for Unraid Connect remote access? See our [dedica
 
 <!--
 
-1. Install the [Unraid Connect](/connect/about.md) plugin.
+1. Install the [Unraid Connect](/connect/index.md) plugin.
 2. Navigate to the ***Settings > Management Access*** page.
 3. Click **Provision** if you haven't already.
 4. Regardless of the value of **Use SSL/TLS**, you will have the option to access the server using `https://[lan-ip].[hash].myunraid.net:[wan-port]` (example: `https://192-168-100-1.a1b2c3d4e5.myunraid.net`).

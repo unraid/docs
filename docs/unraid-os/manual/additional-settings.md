@@ -1,6 +1,6 @@
 # Additional Settings
 
-While Unraid is configured to work automatically, you may want to further refine your setup by customizing your IP address, hostname, disk tunables, and other settings. This section goes over the various settings you can configure from the Unraid WebGUI. All settings controls can be found under the <navpath>Settings</navpath> tab on the Unraid navigation bar, unless otherwise specified.
+While Unraid is configured to work automatically, you may want to further refine your setup by customizing your IP address, hostname, disk tunables, and other settings. This section goes over the various settings you can configure from the Unraid WebGUI. All settings controls can be found under the ***Settings*** tab on the Unraid navigation bar, unless otherwise specified.
 
 The Unraid WebGUI has extensive online help built-in that can help with choosing appropriate values for the settings that are available. This help can be displayed for specific fields by clicking on the prompt for that field. It can also be toggled on/off for all fields on a page by clicking on the **Help** icon at the top right of each page.
 

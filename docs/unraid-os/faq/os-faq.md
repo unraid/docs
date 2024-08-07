@@ -24,7 +24,7 @@ In addition, depending on how the device works, you may need to assign an entire
 
 ## My USB Flash Has Failed and I Don't Have a Backup. How do I Restore my Configuration?
 
-[Unraid Connect](/connect/about.md) has support for Flash Backups to help resolve some of the pain points of a broken flash drive.
+[Unraid Connect](/connect/index.md) has support for Flash Backups to help resolve some of the pain points of a broken flash drive.
 
 First, you'll need to get a new flash device. Remember to get a quality device from manufacturers such as Kingston, PNY, Lexar, or Samsung. Second, you'll need to find the e-mail with your registration key for your previous flash device.
 

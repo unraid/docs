@@ -8,7 +8,7 @@ Before upgrading, we highly recommend making a complete backup of your USB flash
 2. Under **Flash Device Settings**, select the **Flash Backup** button to download a fully zipped backup of your current flash drive to your Mac or PC.
 ![Flash backup](../assets/Backup_flash_drive.png)
 
-Alternatively, if you want, you can use [Unraid Connect](../../connect/help.md#restoring-a-flash-backup) to back up your Flash boot device.
+Alternatively, if you want, you can use [Unraid Connect](/connect/flash-backup.md) to back up your Flash boot device.
 
 ## Upgrading from version 6.4 or higher
 
