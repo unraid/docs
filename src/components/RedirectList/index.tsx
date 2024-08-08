@@ -45,8 +45,7 @@ export function RedirectListViewer() {
         const resText = await response.text();
         // get just the section that deals with redirects
         const resJson = resText.match(/redirects: (\[[^\]]*\])/m);
-        // convert from JS string to JSON to actual JS
-        const data: Redirect[] = JSON.parse(eval("JSON.stringify("+resJson[1]+");"));
+        const data: Redirect[] = eval(resJson[1]);
         const parsedRedirects = data.reduce<{
           golinks: Redirect[];
           otherredirects: Redirect[];
