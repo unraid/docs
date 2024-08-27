@@ -524,6 +524,10 @@ const config = {
             to: "/unraid-os/release-notes/6.12.12/",
             from: "/go/release-notes/6.12.12",
           },
+          {
+            to: "/unraid-os/release-notes/6.12.13/",
+            from: "/go/release-notes/6.12.13",
+          },
         ],
       },
     ],
