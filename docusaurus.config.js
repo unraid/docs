@@ -520,6 +520,10 @@ const config = {
             to: "/unraid-os/manual/security/secure-webgui-ssl/",
             from: "/go/webgui-ssl",
           },
+          {
+            to: "/unraid-os/release-notes/6.12.12/",
+            from: "/go/release-notes/6.12.12",
+          },
         ],
       },
     ],
