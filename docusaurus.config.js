@@ -528,6 +528,10 @@ const config = {
             to: "/unraid-os/release-notes/6.12.13/",
             from: "/go/release-notes/6.12.13/",
           },
+          {
+            to: "/unraid-os/manual/security/tailscale/",
+            from: "/go/tailscale",
+          },
         ],
       },
     ],
