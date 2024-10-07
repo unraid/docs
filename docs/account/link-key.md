@@ -10,20 +10,21 @@ Trial keys are not eligible to be linked.
 
 1. Go to your Unraid server, open the dropdown in the top-right and click **Manage Unraid.net Account**
 
-   ![Step 1](assets/link-step-01.png)
+   ![Step 1](assets/link-key-step-01.png)
 
-2. On the next page click **Link Key to Account**
+2. On the next page click **License Keys**
 
-   ![Step 2](assets/link-step-02.png)
+   ![Step 2](assets/link-key-step-02.png)
 
-3. Then **Confirm & Link Key** to link your license key to your account
+3. Then **Link Key** in the "Unlinked License Key Detected" section.
 
-   ![Step 3](assets/link-step-03.png)
-   ![Step 4](assets/link-step-04.png)
+   ![Step 3](assets/link-key-step-03.png)
 
-4. Moving forward you'll be able to find the linked license key on the [My License Keys](https://account.unraid.net/keys) page of your [Unraid.net account](https://account.unraid.net/).
+4. Lastly, confirm by clicking the **Confirm** button on the Link Key page
 
-   ![Step 5](assets/link-step-05.png)
+   ![Step 4](assets/link-key-step-04.png)
+
+5. Once your key has successfully been linked to you account you'll be able to find the linked license key on the [License Keys](https://account.unraid.net/keys) page of your [Unraid.net account](https://account.unraid.net/).
 
 :::tip
 
