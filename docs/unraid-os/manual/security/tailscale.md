@@ -143,3 +143,13 @@ Additionally, **Userspace Networking** options depends on the **Network type** o
 * **eth0/br0/bond0**: defaults to having Userspace Networking *disabled*, but it can be *enabled* if desired
   * The container will be accessible by both the **Tailscale WebUI** URL and the original **WebUI** url, regardless of the **Userspace Networking** setting.
 * **container/wg0**: currently defaults to having Userspace Networking *disabled*, but it can be *enabled* if desired. Note that this is untested, the usefulness of adding Tailscale here is unclear
+
+### How does the Unraid Tailscale-Docker integration work?
+
+When you enable the **Use Tailscale** switch and click **Apply**:
+
+1. Unraid will extract the default **Entrypoint** and **CMD** from the container
+2. The **tailscale_container_hook** script will be mounted in the container to `/opt/unraid/tailscale-hook` and the container's **Entrypoint** will be modified to call it
+3. The original **Entrypoint** and **CMD** from the container, alongside with the other necessary variables for Tailscale, will be passed to the Docker run command
+4. When the container starts, the **tailscale_container_hook** script will be executed, which installs dependencies and then downloads and runs Tailscale
+5. The **tailscale_container_hook** script will then run the original **Entrypoint** and **CMD** which was extracted in step 2 and the container will start as usual
