@@ -69,9 +69,10 @@ The Tailscale plugin for Unraid is technically *not required* for Docker integra
 
 ### Install Tailscale in a Docker container
 
-1. Navigate to the ***Docker*** tab in the Unraid webGUI and edit a container
-2. Enable the **Use Tailscale** switch
-3. Provide the **Tailscale Hostname** for this container. It does not need to match the container name, but it must be unique on your Tailnet.
+1. Review the [Getting Started](#getting-started) section above, there are some adjustments you'll want to make to your Tailscale account before continuing
+2. Navigate to the ***Docker*** tab in the Unraid webGUI and edit a container
+3. Enable the **Use Tailscale** switch
+4. Provide the **Tailscale Hostname** for this container. It does not need to match the container name, but it must be unique on your Tailnet.
 
     :::warning
 
@@ -80,12 +81,12 @@ The Tailscale plugin for Unraid is technically *not required* for Docker integra
 
     :::
 
-4. Specify whether this container will **Be an Exit Node** or not; this is most useful for containers that connect to commercial VPN services. For more details, see the Tailscale documentation on [Exit Nodes](https://tailscale.com/kb/1103/exit-nodes).
-5. Specify whether this container should **Use an Exit Node** for its outgoing Internet traffic. If you have the Tailnet plugin installed on your server you will see a list of Exit Nodes to choose from. If not, you will need to provide the IP address of the Exit Node to use. For more details, see the Tailscale documentation on [Exit Nodes](https://tailscale.com/kb/1103/exit-nodes).
-6. If you chose to **Use an Exit Node**, specify whether the container should also have access to your LAN.
-7. Depending on your previous choices, the **Tailscale Userspace Networking** field may already be set for you. If not, you will probably want to leave it **disabled**. [See below](#userspace-networking) for details.
-8. Specify whether or not to enable **Tailscale SSH**. This is similar to the Docker **Console** option in the Unraid webGUI, except you connect with an SSH client and authenticate via Tailscale. For more details, see the [Tailscale SSH](https://tailscale.com/kb/1193/tailscale-ssh) documentation.
-9. Enable **Serve** to easily reverse proxy a website in the container at a friendly https URL with a full certificate. For more details, see the [Tailscale Serve](https://tailscale.com/kb/1312/serve) documentation. Or enable **Funnel** to make the container's website available on the open Internet (use with care as the container is likely to be attacked!) See the [Tailscale Funnel](https://tailscale.com/kb/1223/funnel) documentation.
+5. Specify whether this container will **Be an Exit Node** or not, this is most useful for containers that connect to commercial VPN services. For more details, see the Tailscale documentation on [Exit Nodes](https://tailscale.com/kb/1103/exit-nodes).
+6. Specify whether this container should **Use an Exit Node** for its outgoing Internet traffic. If you have the Tailnet plugin installed on your server you will see a list of Exit Nodes to choose from. If not, you will need to provide the IP address of the Exit Node to use. For more details, see the Tailscale documentation on [Exit Nodes](https://tailscale.com/kb/1103/exit-nodes).
+7. If you chose to **Use an Exit Node**, specify whether the container should also have access to your LAN.
+8. Depending on your previous choices, the **Tailscale Userspace Networking** field may already be set for you. If not, you will probably want to leave it **disabled**. [See below](#userspace-networking) for details.
+9. Specify whether or not to enable **Tailscale SSH**. This is similar to the Docker **Console** option in the Unraid webGUI, except you connect with an SSH client and authenticate via Tailscale. For more details, see the [Tailscale SSH](https://tailscale.com/kb/1193/tailscale-ssh) documentation.
+10. Enable **Serve** to easily reverse proxy a website in the container at a friendly https url with a full certificate. For more details, see the [Tailscale Serve](https://tailscale.com/kb/1312/serve) documentation. Or enable **Funnel** to make the container's website available on the open Internet (use with care as the container is likely to be attacked!) See the [Tailscale Funnel](https://tailscale.com/kb/1223/funnel) documentation.
 
     :::warning
 
