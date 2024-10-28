@@ -28,11 +28,14 @@ Keep in mind that HTTPS Certificates are public, so make sure you are comfortabl
 
 ## Adding Tailscale to Unraid
 
-1. Navigate to Community Apps, search for **Tailscale plugin** and install it. Big thanks to [@EDACerton](https://forums.unraid.net/profile/244077-edacerton/) aka [@dkaser](https://github.com/dkaser) for all their work on this plugin!
-2. Navigate to ***Settings → Tailscale*** and click **Reauthenticate** (you will sign in with your Tailscale account, not your Unraid.net account)
-3. Click **Connect** to add this system to your Tailnet. You can then close the window.
-4. If you are on Unraid 7.0.0-beta.3 or higher, navigate to ***Settings → Management Access*** to see your new Tailscale URL(s) which any system on your Tailnet can use to access the Unraid webgui.
-5. Navigate to ***Settings → Tailscale*** to find this system's name and IP address on the Tailnet. This can be used to access SMB/NFS shares or most Docker containers, etc.  Just replace the URL you normally use with the name/IP shown here.
+1. Review the [Getting Started](#getting-started) section above, there are some adjustments you'll want to make to your Tailscale account before continuing
+2. Navigate to Community Apps, search for **Tailscale plugin** and install it. Big thanks to [@EDACerton](https://forums.unraid.net/profile/244077-edacerton/) aka [@dkaser](https://github.com/dkaser) for all their work on this plugin!
+3. Navigate to ***Settings → Tailscale*** and click **Reauthenticate** (you will sign in with your Tailscale account, not your Unraid.net account)
+4. Click **Connect** to add this system to your Tailnet. You can then close the window.
+5. If you are on Unraid 7.0.0-beta.3 or higher, navigate to ***Settings → Management Access*** to see your new Tailscale URL(s) which any system on your Tailnet can use to access the Unraid webGUI.
+6. Navigate to ***Settings → Tailscale*** to find this system's name and IP address on the Tailnet. This can be used to access SMB/NFS shares or most Docker containers, etc.  Just replace the URL you normally use with the name/IP shown here.
+
+### Subnet routing (optional)
 
 If you would prefer to access the system by it's main IP when connected to the Tailnet, or if you want to access Docker containers that are on their own IPs:
 
