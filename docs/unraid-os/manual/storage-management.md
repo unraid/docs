@@ -1480,7 +1480,7 @@ the pool from the RAID1 to the SINGLE profile.
 To replace a disk in the redundant pool, perform the following steps:
 
 1. Stop the array.
-2. Physically detach the disk from your system you wish to remove.
+2. (optional) Physically detach the disk from your system you wish to remove.
 3. Attach the replacement disk (must be equal to or larger than the
    disk being replaced).
 4. Refresh the Unraid WebGUI when under the **Main** tab.
