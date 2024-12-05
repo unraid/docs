@@ -25,7 +25,7 @@ Like most servers, this particular piece of hardware should focus on durability 
 
 * USB 2.0 devices are typically recommended over USB 3.0 as they tend to be more reliable and universally recognized by computers.
 * The USB device must contain a unique GUID in its programmable ROM.
-* The USB device should at least 2 GB in size. To simplify manual installs we recommend 32 GB max capacity, but larger devices can work as well.
+* The USB device should be at least 2 GB in size. To simplify manual installs we recommend 32 GB max capacity, but larger devices can work as well.
 * Physical size is only relevant when it comes to your server's physical location and setup.
 * Using a reputable brand, from a reputable vendor, offers some reassurance of durability, but not every vendor is the same.
 
