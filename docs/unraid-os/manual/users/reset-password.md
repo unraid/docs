@@ -21,14 +21,14 @@ There are two methods to reset your `root` password, both of which require acces
       <li> 
       Locate and delete the files:
         <ul>
-          <li><code>boot/config/shadow</code></li>
-          <li><code>boot/config/smbpasswd</code></li>
+          <li><code>/config/shadow</code></li>
+          <li><code>/config/smbpasswd</code></li>
         </ul>
       </li>
       <li> Securely eject your USB device and connect it to the Unraid server again.</li>
       <li> Boot up the Unraid server and it will ask you to set up a new password, as if you'd just completed a first boot of Unraid.</li>
-      <li> 
-        <i>(Optional)</i> If you have any user accounts configured in <b><i>Users > Shares Access</i></b> (or <b><i>Settings > Users > Shares Access</i></b>), select each user and enter a new password. Be sure to select <b>Change</b> and not <b>Done</b> after this.
+      <li>
+        <i>(Optional)</i> If you have any user accounts configured in <b><i>Users → Shares Access</i></b> (or <b><i>Settings → Users → Shares Access</i></b>), select each user and enter a new password. Be sure to select <b>Change</b> and not <b>Done</b> after this.
       </li>
     </ol>
     <p> Your password is reset and your account secured.</p>
@@ -38,7 +38,7 @@ There are two methods to reset your `root` password, both of which require acces
     <ol>
       <li> Shutdown your server.</li>
       <li> Plug your USB flash device into a Windows or Mac computer.</li>
-      <li> Bring up an editor (such as Notepad++) and edit the following file: <code>/boot/config/shadow</code>.</li>
+      <li> Bring up an editor (such as Notepad++) and edit the following file: <code>/config/shadow</code>.</li>
       <li> On the first line you should see something such as: <code>root:\$&\$&%\*1112233484847648DHD\$%.:15477:0:99999:7:::</code></li>
       <li> Change that line to the following (essentially delete the content between the first and second colons):    <code>root::15477:0:99999:7:::</code>, save and exit.</li>
       <li> Securely eject your USB device and connect it to the Unraid server again.</li>
