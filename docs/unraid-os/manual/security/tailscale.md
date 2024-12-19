@@ -100,6 +100,22 @@ The Tailscale plugin for Unraid is technically *not required* for Docker integra
     1. Unraid will automatically determine the best port to reverse proxy via **Serve** or **Funnel** based on the **WebUI** field for this container, visible by switching from **Basic View** to **Advanced View** in the upper right corner of the Edit Docker page. To override this value, enable **Tailscale Show Advanced Settings** and modify the **Tailscale Serve Port**.
     2. In most cases, specifying the port is all that is needed to get **Serve** or **Funnel** working. Additional settings are available behind the **Tailscale Show Advanced Settings** switch. See the inline help and the Tailscale documentation for [Tailscale Serve Command Line](https://tailscale.com/kb/1242/tailscale-serve) for details on using those advanced settings.
 
+11. **Apply** your changes, then click **View Container Log**. Watch the logs for Tailscale-related messages and click the link titled "To authenticate, visit".  This will take you to the Tailscale website where you can approve the request to add this container to your Tailnet.
+12. If you see a message saying "ERROR: Couldn't detect persistent Docker directory for .tailscale_state", please do the following:
+    1. Edit the Docker container, look at the paths which are mapped and pick one to store your Tailscale state data, then identify the **Container Path** for that mapping. For this example we will assume it is `/container-path/`, adjust as needed.
+    2. Enable **Tailscale Show Advanced Settings** and set the **Tailscale State Directory** to:
+
+    ```xml
+    /container-path/.tailscale_state
+    ```
+
+    3. Start the container and it will use your specified directory to store the Tailscale state files.
+    4. Note: if you are a Docker XML author you can simplify this for your users by adding this variable to the container’s XML file so your users don’t have to do this:
+
+    ```xml
+    <TailscaleStateDir>/container-path/.tailscale_state</TailscaleStateDir>
+    ```
+
 ## Updating Tailscale
 
 Tailscale is updated regularly. See their [changelog](https://tailscale.com/changelog).
