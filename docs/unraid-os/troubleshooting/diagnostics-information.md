@@ -56,7 +56,7 @@ When posting to the Unraid forums, avoid posting fragments of the syslog, as the
 
 ### Enabling the syslog server
 
-To configure and enable the Syslog server go to ***Settings > Network Services > Syslog Server*** and set the **Local syslog server** to *enabled*.
+To configure and enable the Syslog server go to ***Settings > Syslog Server*** and set the **Local syslog server** to *enabled*.
 
 :::tip
 
