@@ -22,7 +22,7 @@ On the [Tailscale website](https://login.tailscale.com/admin/dns), navigate to t
 
 :::warning
 
-Keep in mind that HTTPS Certificates are public, so make sure you are comfortable with your machine names being public before you do this.
+Keep in mind that [details about issued HTTPS certificates are public](https://certificate.transparency.dev/howctworks/), even if you only use them on a private network, so make sure you are comfortable with your machine names being public before you do this.
 
 :::
 
