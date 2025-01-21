@@ -532,6 +532,10 @@ const config = {
             to: "/unraid-os/manual/security/tailscale/",
             from: "/go/tailscale",
           },
+          {
+            to: "/unraid-os/manual/security/tailscale/#adding-tailscale-to-docker-containers",
+            from: "/go/tailscale-docker",
+          },
         ],
       },
     ],
