@@ -2,11 +2,11 @@
 
 ## Do I own my software license?
 
-When you purchase an Unraid OS license, you own a perpetual copy of the software forever. 
+When you purchase an Unraid OS license, you own a perpetual copy of the software forever.
 
 ## How do I Purchase Unraid?
 
-You have two options: 
+You have two options:
 
 1. If you've already started a trial, you can purchase licenses and upgrades from the top right drop-down within Unraid.
 2. You can purchase an Unraid license "activation code" from the Buy Now buttons above and [activate](https://docs.unraid.net/unraid-os/faq/licensing-faq/#how-to-redeem-a-license-activation-code) your license later. Activation codes do not expire.
@@ -64,24 +64,43 @@ Prices are subject to change _at any time._
 
 ## Is Unraid OS a subscription?
 
-No- we don't like forced subscriptions either. Once you purchase a license, you own it. 
-Your purchase of Starter or Unleashed includes one free year of updates, and a Lifetime license includes a lifetime of updates. 
-After one year, an optional $36 license extension fee will get you an additional year of OS updates. 
+No- we don't like forced subscriptions either. Once you purchase a license, you own it.
+Your purchase of Starter or Unleashed includes one free year of updates, and a Lifetime license includes a lifetime of updates.
+After one year, an optional $36 license extension fee will get you an additional year of OS updates.
 Don’t want to pay? No problem. You still own your license and will simply stay on that minor version of Unraid unless or until you pay your extension fee again.
 
 ## What happens if I don't extend my Starter or Unleashed license?
 
-When you purchase a Starter or Unleashed License, you automatically get a free year of Unraid OS updates. 
+When you purchase a Starter or Unleashed License, you automatically get a free year of Unraid OS updates.
 If you choose not to extend, you still own a copy of the software at the current version, but your update eligibility changes. See next FAQ for details.
 
 ## What happens with security updates if I don't extend my Starter or Unleashed license?
 
-If your license extension lapses (as in, you do not pay your annual fee), you can download patch releases within the same minor OS version that was available to you at the time of the lapse. 
+If your license extension lapses (as in, you do not pay your annual fee), you can download patch releases within the same minor OS version that was available to you at the time of the lapse.
 
-Our naming convention for releases is: `<major>.<minor>.<patch>`. 
+Our naming convention for releases is: `<major>.<minor>.<patch>`.
 
-For example: Your system is eligible for Unraid 7.1.0 when your extension lapses. You qualify for the remaining patch releases of the Unraid 7.1.x series. 
+For example: Your system is eligible for Unraid 7.1.0 when your extension lapses. You qualify for the remaining patch releases of the Unraid 7.1.x series.
 Once Unraid 7.2.0 is released, the 7.1.x patch releases will only include security patches. Once Unraid 7.3 is released, version 7.1.0 will be EOL, and there will be no more 7.1.x updates.
+
+## What happens with pre-releases?
+
+Beta and release candidate (RC) versions are pre-release software that may contain bugs or behave unexpectedly compared to stable releases. Your feedback helps us identify issues, implement fixes, and improve Unraid OS.
+
+Important Guidelines:
+
+* Install pre-release versions only on non-production systems
+* Pre-release versions are temporary and not for long-term use
+* Support ends when the stable version is released
+
+License Requirements:
+
+* Your license must be eligible for OS Updates on the release date to receive the stable version
+* If your license expires before the stable release:
+  * Extend your license to receive the stable version
+  * Roll back to a stable version that your license supports
+
+Your Unraid license remains valid after expiration - you need an active license only for new updates.
 
 ## What happens if I choose to extend my Starter or Unleashed license at a later date?
 
@@ -187,9 +206,9 @@ website](https://unraid.net/pricing).
 
 At checkout, you will be presented with three options:
 
-- Individual
-- Business/Organization
-- OEM
+* Individual
+* Business/Organization
+* OEM
 
 Select 'OEM', enter your purchase details, and then enter your customer
 name and email address in the Customer section. The purchase will be

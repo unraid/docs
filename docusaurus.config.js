@@ -449,6 +449,10 @@ const config = {
             from: "/go/faq-licensing-upgrade",
           },
           {
+            to: "/unraid-os/faq/licensing-faq/#what-happens-with-pre-releases",
+            from: "/go/faq-licensing-pre-release",
+          },
+          {
             to: "/unraid-os/getting-started/",
             from: "/go/getting-started",
           },
