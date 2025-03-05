@@ -1000,7 +1000,8 @@ The procedure is as follows:
    - Clearing takes a loooong time! Progress info will be displayed.
    - For best performance, make sure there are no reads/writes
      happening to the array. It is recommended that you stop the
-     Docker and VM Manager services prior to clearing.
+     Docker and VM Manager services, and temporarily disable the mover
+     prior to clearing.
    - While the script is running, the Main screen may show invalid
      numbers for the drive, ignore them. Important! Do not try to
      access the drive, at all!
