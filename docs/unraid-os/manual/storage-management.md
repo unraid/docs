@@ -990,21 +990,21 @@ The procedure is as follows:
    umount /mnt/diskX
    ```
 10. Clear the drive (replace `X` with the drive number)
-   ```shell
-   dd bs=1M if=/dev/zero of=/dev/mdXp1 status=progress
-   ```
-   - On Unraid 7 and later, the parity protected drives are mounted
-     at the path `/dev/mdXp1` but on older versions, they are mounted
-     at the path `/dev/mdX`. Double check that you're using the
-     correct path.
-   - Clearing takes a loooong time! Progress info will be displayed.
-   - For best performance, make sure there are no reads/writes
-     happening to the array. It is recommended that you stop the
-     Docker and VM Manager services, and temporarily disable the mover
-     prior to clearing.
-   - While the script is running, the Main screen may show invalid
-     numbers for the drive, ignore them. Important! Do not try to
-     access the drive, at all!
+    ```shell
+    dd bs=1M if=/dev/zero of=/dev/mdXp1 status=progress
+    ```
+    - On Unraid 7 and later, the parity protected drives are mounted
+      at the path `/dev/mdXp1` but on older versions, they are mounted
+      at the path `/dev/mdX`. Double check that you're using the
+      correct path.
+    - Clearing takes a loooong time! Progress info will be displayed.
+    - For best performance, make sure there are no reads/writes
+      happening to the array. It is recommended that you stop the
+      Docker and VM Manager services, and temporarily disable the mover
+      prior to clearing.
+    - While the script is running, the Main screen may show invalid
+      numbers for the drive, ignore them. Important! Do not try to
+      access the drive, at all!
 11. When the clearing is complete, stop the array
 12. On Unraid 7 and later, stopping the array may get stuck with the
     message `Retry unmounting disk share(s)...`. That's because we
