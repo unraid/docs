@@ -924,11 +924,12 @@ are doing it at your own risk._
 1. This method preserves parity protection at all times.
 2. This method can only be used if the drive to be removed is a good
    drive that is completely empty, is mounted and can be completely
-   cleared without errors occurring
-3. This method is limited to removing only one drive at a time
-   (actually this is not technically true but trying to do multiple
-   drives in parallel is slower than doing them sequentially due to the
-   contention that arises for updating the parity drive)
+   cleared without errors occurring.
+3. While this method allows for removing multiple drives at once, make
+   sure that you are not clearing multiple drives at the same time.
+   Trying to clear multiple drives in parallel is slower than doing
+   them sequentially due to the contention that arises for updating
+   the parity drive.
 4. As stated above, the drive must be completely empty as this process
    will erase all existing content. If there are still any files on it
    (including hidden ones), they must be moved to another drive or
@@ -942,16 +943,14 @@ are doing it at your own risk._
      drive is updated accordingly, so the data cannot be easily
      recovered.
    - Explanatory note: "Since you are going to clear the drive
-     anyway, why do I have to empty it? And what is the purpose of
-     this strange clear-me folder?" Yes, it seems a bit draconian to
+     anyway, why do I have to empty it?" Yes, it seems a bit draconian to
      require the drive to be empty since we're about to clear and
      empty it in the script, but we're trying to be absolutely
      certain we don't cause data loss. In the past, some users
      misunderstood the procedure, and somehow thought we would
      preserve their data while clearing the drive! This way, by
-     requiring the user to remove all data, and then add an odd
-     marker, there cannot be any accidents or misunderstandings and
-     data loss.
+     requiring the user to remove all data, there cannot be any
+     accidents or misunderstandings and data loss.
 
 The procedure is as follows:
 
@@ -974,65 +973,75 @@ The procedure is as follows:
      Tunable (md_write_method) to reconstruct write
 5. Make sure ALL data has been copied off the drive; drive MUST be
    completely empty for the clearing script to work.
-6. Double check that there are no files or folders left on the drive.
+7. Double check that there are no files or folders left on the drive.
    - Note: one quick way to clean a drive is to reformat it! (once
      you're sure nothing of importance is left of course!)
-7. Create a single folder on the drive with the name **clear-me** -
-   exactly 7 lowercase letters and one hyphen
-8. Run the [clear an array
-   drive](https://forums.unraid.net/forum/index.php?topic=50416.msg494968#msg494968)
-   script from the [User
-   Scripts](https://forums.unraid.net/forum/index.php?topic=49992)
-   plugin (or run it standalone, at a command prompt).
-   - If you prepared the drive correctly, it will completely and
-     safely zero out the drive. If you didn't prepare the drive
-     correctly, the script will refuse to run, in order to avoid any
-     chance of data loss.
-   - If the script refuses to run, indicating it did not find a
-     marked and empty drive, then very likely there are still files
-     on your drive. Check for hidden files. ALL files must be
-     removed!
-   - Clearing takes a loooong time! Progress info will be displayed.
-   - For best performance, make sure there are no reads/writes
-     happening to the array. The easiest way to do this is to bring
-     the array up in maintenance mode.
-   - If running in User Scripts, the browser tab will hang for the
-     entire clearing process.
-   - While the script is running, the Main screen may show invalid
-     numbers for the drive, ignore them. Important! Do not try to
-     access the drive, at all!
-9. When the clearing is complete, stop the array
-10. Follow the procedure for resetting the array making sure you elect
+   - Another way to check is by running `ls -al /mnt/diskX` in the
+     Unraid console. Replace `X` with the disk number.
+8. If you're going to be running the commands through ssh or the
+   Unraid console, you probably need to run them in `screen` or `tmux`
+   so that if the session is disconnected, the process continues to run
+   in the background. To prevent that issue, it is recommended that
+   you run the following commands on the main Unraid console (not
+   through the gui, but on the physical machine).
+9. Unmount the disk you are planning to remove (replace `X` with the
+   drive number)
+   ```shell
+   umount /mnt/diskX
+   ```
+10. Clear the drive (replace `X` with the drive number)
+    ```shell
+    dd bs=1M if=/dev/zero of=/dev/mdXp1 status=progress
+    ```
+    - On Unraid 7 and later, the parity protected drives are mounted
+      at the path `/dev/mdXp1` but on older versions, they are mounted
+      at the path `/dev/mdX`. Double check that you're using the
+      correct path.
+    - Clearing takes a loooong time! Progress info will be displayed.
+    - For best performance, make sure there are no reads/writes
+      happening to the array. It is recommended that you stop the
+      Docker and VM Manager services prior to clearing.
+    - While the script is running, the Main screen may show invalid
+      numbers for the drive, ignore them. Important! Do not try to
+      access the drive, at all!
+11. When the clearing is complete, stop the array
+12. On Unraid 7 and later, stopping the array may get stuck with the
+    message `Retry unmounting disk share(s)...`. That's because we
+    manually unmounted the cleared drive and Unraid does not like it.
+    If you get that error, perform the following steps on the Unraid
+    console to create and mount a mock disk that Unraid can unmount
+    and continuw with stopping the array (replace `X` with the drive
+    number):
+    ```shell
+    # Create a mock disk to mount
+    dd if=/dev/zero of=/tmp/mockdisk bs=1M count=310
+    # Create a filesystem on the mock disk
+    mkfs -t xfs /tmp/mockdisk
+    # Mount the mock disk so Unraid can unmount it and continue
+    # Replace X with the drive number
+    mount /tmp/mockdisk /mnt/diskX
+    ```
+    Once you run those commands, Unraid will be able to unmount the
+    drive and successfully stop the array. You can then remove the mock
+    disk by running the following command on the Unraid console:
+    ```shell
+    rm /tmp/mockdisk
+    ```
+14. Follow the procedure for resetting the array making sure you elect
     to retain all current assignments.
-11. Return to the Main page, and check all assignments. If any are
+15. Return to the Main page, and check all assignments. If any are
     missing, correct them. Unassign the drive(s) you are removing.
     Double-check all of the assignments, especially the parity drive(s)!
-12. Click the check box for Parity is already valid, make sure it is
+16. Click the check box for Parity is already valid, make sure it is
     checked!
-13. Start the array! Click the Start button then the Proceed button (on
+17. Start the array! Click the Start button then the Proceed button (on
     the warning popup that will pop up)
-14. (Optional) Start a correcting parity check to ensure parity really
+18. (Optional) Start a correcting parity check to ensure parity really
     is valid and you did not make a mistake in the procedure. If
     everything was done correctly this should return zero errors.
 
-Alternate Procedure steps for Linux proficient users
-
-If you are happy to use the Linux Command line then you can replace
-steps 7 and 8 by performing the clearing commands yourself at a command
-prompt. (Clearing takes just as long though!) If you would rather do
-that than run the script in steps 7 and 8, then here are the 2 commands
-to perform:
-
-```shell
-umount /mnt/diskX
-dd bs=1M if=/dev/zero of=/dev/mdX status=progress
-```
-
-(where X in both lines is the number of the data drive being removed)
 **Important!!!** It is VITAL you use the correct drive number, or you
-will wipe clean the wrong drive! That's why using the script is
-recommended, because it's designed to protect you from accidentally
-clearing the wrong drive.
+will wipe clean the wrong drive!
 
 ## Checking array devices
 
