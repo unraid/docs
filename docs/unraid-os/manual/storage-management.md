@@ -979,17 +979,17 @@ The procedure is as follows:
    - Another way to check is by running `ls -al /mnt/diskX` in the
      Unraid console. Replace `X` with the disk number.
 7. If you're going to be running the commands through ssh or the
-   Unraid console, you probably need to run them in `screen` or `tmux`
-   so that if the session is disconnected, the process continues to run
-   in the background. To prevent that issue, it is recommended that
-   you run the following commands on the main Unraid console (not
-   through the gui, but on the physical machine).
-8. Unmount the disk you are planning to remove (replace `X` with the
+   web based Unraid console, you probably need to run them in `screen`
+   or `tmux` so that if the session is disconnected, the process
+   continues to run in the background. To prevent that issue, it is
+   recommended that you run the following commands on the main Unraid
+   console (not through the gui, but on the physical machine).
+9. Unmount the disk you are planning to remove (replace `X` with the
    drive number)
    ```shell
    umount /mnt/diskX
    ```
-9. Clear the drive (replace `X` with the drive number)
+10. Clear the drive (replace `X` with the drive number)
    ```shell
    dd bs=1M if=/dev/zero of=/dev/mdXp1 status=progress
    ```
@@ -1004,8 +1004,8 @@ The procedure is as follows:
    - While the script is running, the Main screen may show invalid
      numbers for the drive, ignore them. Important! Do not try to
      access the drive, at all!
-10. When the clearing is complete, stop the array
-11. On Unraid 7 and later, stopping the array may get stuck with the
+11. When the clearing is complete, stop the array
+12. On Unraid 7 and later, stopping the array may get stuck with the
     message `Retry unmounting disk share(s)...`. That's because we
     manually unmounted the cleared drive and Unraid does not like it.
     If you get that error, perform the following steps on the Unraid
@@ -1027,16 +1027,16 @@ The procedure is as follows:
     ```shell
     rm /tmp/mockdisk
     ```
-12. Follow the procedure for resetting the array making sure you elect
+13. Follow the procedure for resetting the array making sure you elect
     to retain all current assignments.
-13. Return to the Main page, and check all assignments. If any are
+14. Return to the Main page, and check all assignments. If any are
     missing, correct them. Unassign the drive(s) you are removing.
     Double-check all of the assignments, especially the parity drive(s)!
-14. Click the check box for Parity is already valid, make sure it is
+15. Click the check box for Parity is already valid, make sure it is
     checked!
-15. Start the array! Click the Start button then the Proceed button (on
+16. Start the array! Click the Start button then the Proceed button (on
     the warning popup that will pop up)
-16. (Optional) Start a correcting parity check to ensure parity really
+17. (Optional) Start a correcting parity check to ensure parity really
     is valid and you did not make a mistake in the procedure. If
     everything was done correctly this should return zero errors.
 
