@@ -981,7 +981,7 @@ The procedure is as follows:
 7. If you're going to be running the commands through ssh or the
    web based Unraid console, you probably need to run them in `screen`
    or `tmux` so that if the session is disconnected, the process
-   continues to run in the background. To prevent that issue, it is
+   continues to run in the background. To avoid that issue, it is
    recommended that you run the following commands on the main Unraid
    console (not through the gui, but on the physical machine).
 9. Unmount the disk you are planning to remove (replace `X` with the
