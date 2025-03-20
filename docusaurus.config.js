@@ -30,8 +30,16 @@ const config = {
   // Even if you don't use internalization, you can use this field to set useful
   // metadata like html lang. For example, if your site is Chinese, you may want
   // to replace "en" with "zh-Hans".
-  i18n: { defaultLocale: "en", locales },
-
+  i18n: {
+    defaultLocale: "en",
+    locales,
+  },
+  scripts: [
+    {
+      src: "/js/redirects.js",
+      async: false,
+    },
+  ],
   presets: [
     [
       "classic",
@@ -161,7 +169,10 @@ const config = {
       },
       zoom: {
         selector: ".markdown :not(em) > img",
-        background: { light: "rgb(255, 255, 255)", dark: "rgb(50, 50, 50)" },
+        background: {
+          light: "rgb(255, 255, 255)",
+          dark: "rgb(50, 50, 50)",
+        },
         config: {
           // options you can specify via https://github.com/francoischalifour/medium-zoom#usage
         },
