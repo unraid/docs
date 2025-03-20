@@ -1,8 +1,8 @@
 // @ts-check
 // Note: type annotations allow type checking and IDEs autocompletion
 
-const lightCodeTheme = require('prism-react-renderer').themes.github;
-const darkCodeTheme = require('prism-react-renderer').themes.dracula;
+const lightCodeTheme = require("prism-react-renderer").themes.github;
+const darkCodeTheme = require("prism-react-renderer").themes.dracula;
 const { sortSidebarItems } = require("./sitebar-semver-sort");
 
 const locales = ["en", "zh", "es", "fr", "de"];
@@ -30,10 +30,7 @@ const config = {
   // Even if you don't use internalization, you can use this field to set useful
   // metadata like html lang. For example, if your site is Chinese, you may want
   // to replace "en" with "zh-Hans".
-  i18n: {
-    defaultLocale: "en",
-    locales,
-  },
+  i18n: { defaultLocale: "en", locales },
 
   presets: [
     [
@@ -62,13 +59,8 @@ const config = {
           editUrl: "https://github.com/unraid/docs/tree/main/",
         }, */
 
-        theme: {
-          customCss: require.resolve("./src/css/custom.css"),
-        },
-        gtag: {
-          trackingID: "G-CZENQ1ZPEH",
-          anonymizeIP: true,
-        },
+        theme: { customCss: require.resolve("./src/css/custom.css") },
+        gtag: { trackingID: "G-CZENQ1ZPEH", anonymizeIP: true },
       }),
     ],
   ],
@@ -81,15 +73,10 @@ const config = {
         apiKey: "47111d6564a2e69ee21a1d3d2f786ef3",
         indexName: "unraid",
         contextualSearch: true,
-        searchPagePath: 'search',
+        searchPagePath: "search",
       },
       colorMode: { defaultMode: "dark", respectPrefersColorScheme: true },
-      docs: {
-        sidebar: {
-          hideable: false,
-          autoCollapseCategories: true,
-        },
-      },
+      docs: { sidebar: { hideable: false, autoCollapseCategories: true } },
       image: "img/meta-unraid.png",
       metadata: [
         {
@@ -103,53 +90,40 @@ const config = {
           media: "(prefers-color-scheme: light)",
         },
         { name: "color-scheme", content: "dark light" },
-        { name: "keywords", content: "Unraid, server, storage, NAS, Docker, virtualization, array, parity, data protection, file sharing, plugins, management, GUI, disk management, caching, SSD, disk encryption, security, RAID, network configuration, backups, media server, transcoding, monitoring, VMs, GPU passthrough, hardware compatibility" },
+        {
+          name: "keywords",
+          content:
+            "Unraid, server, storage, NAS, Docker, virtualization, array, parity, data protection, file sharing, plugins, management, GUI, disk management, caching, SSD, disk encryption, security, RAID, network configuration, backups, media server, transcoding, monitoring, VMs, GPU passthrough, hardware compatibility",
+        },
       ],
       navbar: {
         title: "Unraid Docs",
         logo: {
           alt: "My Site Logo",
           src: "img/un-mark-gradient.svg",
-          style: {
-            width: "30px",
-          },
+          style: { width: "30px" },
         },
         items: [
           {
             items: [
-              {
-                href: "https://unraid.net",
-                label: "Unraid Home",
-              },
-              {
-                href: "https://forums.unraid.net",
-                label: "Forums",
-              },
+              { href: "https://unraid.net", label: "Unraid Home" },
+              { href: "https://forums.unraid.net", label: "Forums" },
               { label: "Docs Github", href: "https://github.com/unraid/docs" },
             ],
             position: "right",
             label: "More",
           },
-          {
-            type: "localeDropdown",
-            position: "right",
-          },
+          { type: "localeDropdown", position: "right" },
         ],
       },
-      tableOfContents: {
-        minHeadingLevel: 2,
-        maxHeadingLevel: 4,
-      },
+      tableOfContents: { minHeadingLevel: 2, maxHeadingLevel: 4 },
       footer: {
         style: "light",
         links: [
           {
             title: "Documentation",
             items: [
-              {
-                label: "Home",
-                to: "/",
-              },
+              { label: "Home", to: "/" },
               {
                 label: "Contribute on Github",
                 href: "https://github.com/unraid/docs",
@@ -159,35 +133,17 @@ const config = {
           {
             title: "Community",
             items: [
-              {
-                label: "Forums",
-                href: "https://forums.unraid.net",
-              },
-              {
-                label: "Discord",
-                href: "https://discord.unraid.net/",
-              },
+              { label: "Forums", href: "https://forums.unraid.net" },
+              { label: "Discord", href: "https://discord.unraid.net/" },
             ],
           },
           {
             title: "More",
             items: [
-              {
-                label: "Unraid Home",
-                href: "https://unraid.net",
-              },
-              {
-                label: "Unraid Connect",
-                href: "https://connect.myunraid.net",
-              },
-              {
-                label: "Newsletter",
-                href: "https://newsletter.unraid.net",
-              },
-              {
-                label: "Blog",
-                href: "https://unraid.net/blog",
-              },
+              { label: "Unraid Home", href: "https://unraid.net" },
+              { label: "Unraid Connect", href: "https://connect.myunraid.net" },
+              { label: "Newsletter", href: "https://newsletter.unraid.net" },
+              { label: "Blog", href: "https://unraid.net/blog" },
             ],
           },
         ],
@@ -201,21 +157,18 @@ const config = {
       prism: {
         theme: lightCodeTheme,
         darkTheme: darkCodeTheme,
-        additionalLanguages: ['diff', 'json', 'bash'],
+        additionalLanguages: ["diff", "json", "bash"],
       },
       zoom: {
-        selector: '.markdown :not(em) > img',
-        background: {
-            light: 'rgb(255, 255, 255)',
-            dark: 'rgb(50, 50, 50)'
-        },
+        selector: ".markdown :not(em) > img",
+        background: { light: "rgb(255, 255, 255)", dark: "rgb(50, 50, 50)" },
         config: {
           // options you can specify via https://github.com/francoischalifour/medium-zoom#usage
-        }
+        },
       },
     }),
   plugins: [
-    require.resolve('docusaurus-plugin-image-zoom'),
+    require.resolve("docusaurus-plugin-image-zoom"),
     [
       "@docusaurus/plugin-ideal-image",
       {
@@ -256,10 +209,7 @@ const config = {
             from: "/unraid-os/release-notes/6.12.7/",
           },
           // redirect from unraid-account faq page to the top level account page
-          {
-            to: "/account/",
-            from: "/unraid-os/faq/unraid-account/",
-          },
+          { to: "/account/", from: "/unraid-os/faq/unraid-account/" },
           // Overview redirect
           {
             to: "/unraid-os/overview/what-is-unraid/",
@@ -285,19 +235,10 @@ const config = {
             from: "/unraid-os/manual/vm-management/",
           },
           // Connect reorg
-          {
-            to: "/connect/",
-            from: "/category/unraid-connect/",
-          },
-          {
-            to: "/connect/",
-            from: "/connect/about/",
-          },
+          { to: "/connect/", from: "/category/unraid-connect/" },
+          { to: "/connect/", from: "/connect/about/" },
           // go links used by the OS
-          {
-            to: "/category/manual/",
-            from: "/go/manual",
-          },
+          { to: "/category/manual/", from: "/go/manual" },
           {
             to: "/unraid-os/manual/users/reset-password/",
             from: "/go/lost-root-password",
@@ -335,10 +276,7 @@ const config = {
             to: "/unraid-os/manual/storage-management#parity-swap",
             from: "/go/parity-swap",
           },
-          {
-            to: "/legacy/FAQ/shrink-array/",
-            from: "/go/shrink-array",
-          },
+          { to: "/legacy/FAQ/shrink-array/", from: "/go/shrink-array" },
           {
             to: "/unraid-os/manual/shares/user-shares/#split-level",
             from: "/go/split-level",
@@ -352,10 +290,7 @@ const config = {
             from: "/go/user-shares",
           },
           // go links used for unraid.net website
-          {
-            to: "/account/",
-            from: "/go/account",
-          },
+          { to: "/account/", from: "/go/account" },
           {
             to: "/unraid-os/manual/storage-management/#adding-disks",
             from: "/go/adding-array-disks",
@@ -368,38 +303,20 @@ const config = {
             to: "/unraid-os/getting-started/advanced-bios-config/",
             from: "/go/advanced-bios-config",
           },
-          {
-            to: "/unraid-os/manual/applications/",
-            from: "/go/applications",
-          },
-          {
-            to: "/connect/",
-            from: "/go/connect",
-          },
-          {
-            to: "/connect/",
-            from: "/go/connect-about",
-          },
-          {
-            to: "/connect/help/",
-            from: "/go/connect-help",
-          },
+          { to: "/unraid-os/manual/applications/", from: "/go/applications" },
+          { to: "/connect/", from: "/go/connect" },
+          { to: "/connect/", from: "/go/connect-about" },
+          { to: "/connect/help/", from: "/go/connect-help" },
           {
             to: "/connect/help#server-deep-linking",
             from: "/go/connect-deep-linking",
           },
-          {
-            to: "/connect/remote-access/",
-            from: "/go/connect-remote-access",
-          },
+          { to: "/connect/remote-access/", from: "/go/connect-remote-access" },
           {
             to: "/connect/remote-access/#dynamic-remote-access",
             from: "/go/connect-dynamic-remote-access",
           },
-          {
-            to: "/connect/flash-backup/",
-            from: "/go/connect-flash-backup",
-          },
+          { to: "/connect/flash-backup/", from: "/go/connect-flash-backup" },
           {
             to: "/connect/help/#license-management",
             from: "/go/connect-license-management",
@@ -424,22 +341,13 @@ const config = {
             to: "/unraid-os/manual/docker-management/",
             from: "/go/docker-management",
           },
-          {
-            to: "/unraid-os/download_list/",
-            from: "/go/download-list",
-          },
+          { to: "/unraid-os/download_list/", from: "/go/download-list" },
           {
             to: "/legacy/Articles/expanding-windows-vm-vdisk-partitions/",
             from: "/go/expanding-windows-vm-vdisk-partitions",
           },
-          {
-            to: "/category/faq/",
-            from: "/go/faq",
-          },
-          {
-            to: "/unraid-os/faq/licensing-faq/",
-            from: "/go/faq-licensing",
-          },
+          { to: "/category/faq/", from: "/go/faq" },
+          { to: "/unraid-os/faq/licensing-faq/", from: "/go/faq-licensing" },
           {
             to: "/unraid-os/faq/licensing-faq/#how-to-redeem-a-license-activation-code",
             from: "/go/faq-licensing-redeem-activation-code",
@@ -452,10 +360,7 @@ const config = {
             to: "/unraid-os/faq/licensing-faq/#what-happens-with-pre-releases",
             from: "/go/faq-licensing-pre-release",
           },
-          {
-            to: "/unraid-os/getting-started/",
-            from: "/go/getting-started",
-          },
+          { to: "/unraid-os/getting-started/", from: "/go/getting-started" },
           {
             to: "/unraid-os/getting-started/manual-install-method/",
             from: "/go/manual-install-method",
@@ -468,10 +373,7 @@ const config = {
             to: "/unraid-os/manual/multi-language/",
             from: "/go/multi-language",
           },
-          {
-            to: "/legacy/FAQ/Parity/",
-            from: "/go/parity",
-          },
+          { to: "/legacy/FAQ/Parity/", from: "/go/parity" },
           {
             to: "/unraid-os/getting-started/quick-install-guide/",
             from: "/go/quick-install-guide",
@@ -488,22 +390,13 @@ const config = {
             to: "/unraid-os/manual/changing-the-flash-device/#recommendations-on-buying-usb-drives",
             from: "/go/recommendations-on-buying-usb-drives",
           },
-          {
-            to: "/category/release-notes/",
-            from: "/go/release-notes",
-          },
-          {
-            to: "/unraid-os/manual/shares/",
-            from: "/go/shares",
-          },
+          { to: "/category/release-notes/", from: "/go/release-notes" },
+          { to: "/unraid-os/manual/shares/", from: "/go/shares" },
           {
             to: "/unraid-os/manual/storage-management/",
             from: "/go/storage-management",
           },
-          {
-            to: "/unraid-os/troubleshooting/",
-            from: "/go/troubleshooting",
-          },
+          { to: "/unraid-os/troubleshooting/", from: "/go/troubleshooting" },
           {
             to: "/unraid-os/manual/upgrade-instructions/",
             from: "/go/upgrade-instructions",
@@ -525,14 +418,6 @@ const config = {
             from: "/go/webgui-ssl",
           },
           {
-            to: "/unraid-os/release-notes/6.12.12/",
-            from: "/go/release-notes/6.12.12/",
-          },
-          {
-            to: "/unraid-os/release-notes/6.12.13/",
-            from: "/go/release-notes/6.12.13/",
-          },
-          {
             to: "/unraid-os/manual/security/tailscale/",
             from: "/go/tailscale",
           },
@@ -541,6 +426,24 @@ const config = {
             from: "/go/tailscale-docker",
           },
         ],
+        createRedirects(existingPath) {
+          // Create automatic redirects for release notes paths
+          if (existingPath.includes("/unraid-os/release-notes/")) {
+            console.log("existingPath", existingPath);
+            // Extract the version number from the path
+            const versionMatch = existingPath.match(
+              /\/unraid-os\/release-notes\/(.+?)\//
+            );
+            if (versionMatch && versionMatch[1]) {
+              const version = versionMatch[1];
+              // Create a go link redirect for this release note
+              console.log("version", version);
+              return `/go/release-notes/${version}/`;
+            }
+          }
+
+          return undefined; // Return undefined for paths that don't need automatic redirects
+        },
       },
     ],
   ],
