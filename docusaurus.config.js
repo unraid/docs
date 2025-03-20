@@ -1,8 +1,8 @@
 // @ts-check
 // Note: type annotations allow type checking and IDEs autocompletion
 
-const lightCodeTheme = require('prism-react-renderer').themes.github;
-const darkCodeTheme = require('prism-react-renderer').themes.dracula;
+const lightCodeTheme = require("prism-react-renderer").themes.github;
+const darkCodeTheme = require("prism-react-renderer").themes.dracula;
 const { sortSidebarItems } = require("./sitebar-semver-sort");
 
 const locales = ["en", "zh", "es", "fr", "de"];
@@ -34,7 +34,12 @@ const config = {
     defaultLocale: "en",
     locales,
   },
-
+  scripts: [
+    {
+      src: "/js/redirects.js",
+      async: false,
+    },
+  ],
   presets: [
     [
       "classic",
@@ -81,7 +86,7 @@ const config = {
         apiKey: "47111d6564a2e69ee21a1d3d2f786ef3",
         indexName: "unraid",
         contextualSearch: true,
-        searchPagePath: 'search',
+        searchPagePath: "search",
       },
       colorMode: { defaultMode: "dark", respectPrefersColorScheme: true },
       docs: {
@@ -103,7 +108,11 @@ const config = {
           media: "(prefers-color-scheme: light)",
         },
         { name: "color-scheme", content: "dark light" },
-        { name: "keywords", content: "Unraid, server, storage, NAS, Docker, virtualization, array, parity, data protection, file sharing, plugins, management, GUI, disk management, caching, SSD, disk encryption, security, RAID, network configuration, backups, media server, transcoding, monitoring, VMs, GPU passthrough, hardware compatibility" },
+        {
+          name: "keywords",
+          content:
+            "Unraid, server, storage, NAS, Docker, virtualization, array, parity, data protection, file sharing, plugins, management, GUI, disk management, caching, SSD, disk encryption, security, RAID, network configuration, backups, media server, transcoding, monitoring, VMs, GPU passthrough, hardware compatibility",
+        },
       ],
       navbar: {
         title: "Unraid Docs",
@@ -201,21 +210,21 @@ const config = {
       prism: {
         theme: lightCodeTheme,
         darkTheme: darkCodeTheme,
-        additionalLanguages: ['diff', 'json', 'bash'],
+        additionalLanguages: ["diff", "json", "bash"],
       },
       zoom: {
-        selector: '.markdown :not(em) > img',
+        selector: ".markdown :not(em) > img",
         background: {
-            light: 'rgb(255, 255, 255)',
-            dark: 'rgb(50, 50, 50)'
+          light: "rgb(255, 255, 255)",
+          dark: "rgb(50, 50, 50)",
         },
         config: {
           // options you can specify via https://github.com/francoischalifour/medium-zoom#usage
-        }
+        },
       },
     }),
   plugins: [
-    require.resolve('docusaurus-plugin-image-zoom'),
+    require.resolve("docusaurus-plugin-image-zoom"),
     [
       "@docusaurus/plugin-ideal-image",
       {
