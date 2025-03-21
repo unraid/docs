@@ -440,7 +440,6 @@ const config = {
         createRedirects(existingPath) {
           // Create automatic redirects for release notes paths
           if (existingPath.includes("/unraid-os/release-notes/")) {
-            console.log("existingPath", existingPath);
             // Extract the version number from the path
             const versionMatch = existingPath.match(
               /\/unraid-os\/release-notes\/(.+?)\//
@@ -448,8 +447,7 @@ const config = {
             if (versionMatch && versionMatch[1]) {
               const version = versionMatch[1];
               // Create a go link redirect for this release note
-              console.log("version", version);
-              return `/go/release-notes/${version}/`;
+              return `/go/release-notes/${version}`;
             }
           }
 
