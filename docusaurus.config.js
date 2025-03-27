@@ -436,6 +436,10 @@ const config = {
             to: "/unraid-os/manual/security/tailscale/#adding-tailscale-to-docker-containers",
             from: "/go/tailscale-docker",
           },
+          {
+            to: "/unraid-os/manual/storage-management/#blacklisted-usb-flash-device",
+            from: "/go/blacklisted-usb-flash-device",
+          },
         ],
         createRedirects(existingPath) {
           // Create automatic redirects for release notes paths
