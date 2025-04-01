@@ -1487,8 +1487,7 @@ To replace a disk in the redundant pool, perform the following steps:
 5. Select the pool slot that previously was set to the old disk and
    assign the new disk to the slot.
 6. Start the array.
-7. If presented with an option to **Format** the device, click the
-   checkbox and button to do so.
+7. Device replacement will start automatically.
 
 ## Remove a disk from a pool
 
