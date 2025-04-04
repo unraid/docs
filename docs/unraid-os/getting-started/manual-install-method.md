@@ -12,6 +12,8 @@ If for some reason the USB Flash Creator tool cannot be used, or your USB flash 
 
     If your flash drive is larger than 32 GB then you need to use a 3rd party tool (e.g. Rufus) to format it to FAT32 as Windows will not give this as an option on drives larger than 32 GB.
 
+    Ensure you use MBR/MS-DOS for the partition table type. Many modern partitioning tools (especially on Linux and macOS) default to GPT, which won't work for this installation method.
+
     :::
 3. Set the ‘volume label’ to `UNRAID` (case-sensitive, use all caps).
 4. Go to the [Download Archive](../download_list.mdx) to get the zip file for the release you want to use.
