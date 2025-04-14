@@ -1,7 +1,5 @@
 # The Parity Swap Procedure
 
-**_`First release, tested only on v6.1 & 6.7.2`_**
-
 **This page describes how to do the 'Parity Swap' procedure, often
 known as the 'Swap Disable' procedure.**
 
@@ -48,11 +46,10 @@ one, that is even larger than the Parity drive.**
 - This procedure is strictly for replacing data drives in an Unraid
   array. If all you want to do is replace your Parity drive with a
   larger one, then you don't need the Parity Swap procedure. Just
-  stop the array, unassign the parity drive and then remove the
-  old parity drive and add the new one, and start the
-  array. The process of building parity will immediately begin. (If
-  something goes wrong, you still have the old parity drive that you
-  can put back!)
+  stop the array, unassign the current parity drive, (optionally) physically remove the
+  current parity drive from the system, physically add the new parity drive and assign it to the parity slot.
+  Start the array to begin the parity-sync process. The array will remain available during this process, though with slower access speeds.
+  
 - **IMPORTANT!!!** This procedure REQUIRES that the data drive being
   replaced MUST be disabled first. If the drive failed (has a red
   ball), then it is already 'disabled', but if the drive is OK but
@@ -72,13 +69,6 @@ one, that is even larger than the Parity drive.**
   serial numbers. If the drives are recent Toshiba models, then they
   may all end in **GS** or **S**, so you will want to note the
   preceding 4 characters instead.
-- _Lastly, this page was only tested with v6 (and not with a disabled
-  drive), and is 'assumed' to be correct for all versions. (You know
-  what happens when you 'assume'!) If you see any improvements or
-  corrections, please add them, or suggest them to us, either on the
-  'discussion' page for this page, or on the Unraid forums. By the
-  way, if you are NOT running the latest Unraid v6 release, we
-  strongly urge you to Upgrade to Unraid v6!_
 
 ## The procedure
 
