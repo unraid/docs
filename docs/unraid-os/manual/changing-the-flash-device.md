@@ -14,7 +14,7 @@ There are numerous reasons for which you may need to replace your USB flash devi
 
 * The device is failing or has failed - the server refuses to boot, files are disappearing from the USB device, or the device repeatedly goes into read-only mode.
 * The device has been lost or stolen - you have misplaced your USB flash device, or it has been stolen.
-* The device is too slow or does not have enough storage - while 2 GB should be more than enough space, it is possible that your device fills up with data, or becomes increasingly slow to access.
+* The device is too slow or does not have enough storage - as data is added to the device there may not be enough free space left for easy OS updates.
 * The device is physically too large - you want to replace the USB flash device with a smaller, more compact unit to fit a constrained space.
 
 ### What kind of USB device do I need?
@@ -25,7 +25,7 @@ Like most servers, this particular piece of hardware should focus on durability 
 
 * USB 2.0 devices are typically recommended over USB 3.0 as they tend to be more reliable and universally recognized by computers.
 * The USB device must contain a unique GUID in its programmable ROM.
-* The USB device should be at least 2 GB in size. To simplify manual installs we recommend 32 GB max capacity, but larger devices can work as well.
+* The USB device should be at least 4 GB in size. To simplify manual installs we recommend 32 GB max capacity, but larger devices can work as well.
 * Physical size is only relevant when it comes to your server's physical location and setup.
 * Using a reputable brand, from a reputable vendor, offers some reassurance of durability, but not every vendor is the same.
 
