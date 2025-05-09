@@ -24,6 +24,8 @@ function applyIframeMode() {
 }
 
 // Apply only once when the DOM is loaded
-document.addEventListener('DOMContentLoaded', function() {
+if (document.readyState !== 'loading') {
   applyIframeMode();
-}); 
+} else {
+  document.addEventListener('DOMContentLoaded', applyIframeMode);
+}
