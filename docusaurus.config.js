@@ -39,7 +39,14 @@ const config = {
       src: "/js/redirects.js",
       async: false,
     },
+    {
+      src: "/js/iframe-detector.js",
+      async: false,
+    }
   ],
+  // clientModules: [
+  //   require.resolve('./src/theme/IframeDetector.js'),
+  // ],
   presets: [
     [
       "classic",
