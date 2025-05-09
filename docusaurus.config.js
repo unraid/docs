@@ -39,6 +39,10 @@ const config = {
       src: "/js/redirects.js",
       async: false,
     },
+    {
+      src: "/js/iframe-detector.js",
+      async: false,
+    }
   ],
   presets: [
     [
