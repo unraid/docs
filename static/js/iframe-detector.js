@@ -14,14 +14,8 @@ function isInIframe() {
   }
 }
 
-// Apply iframe detection as a CSS variable
 function applyIframeMode() {
-  // Define the behavior as a CSS variable on :root that can be used in stylesheets
-  const inIframe = isInIframe();
-  document.documentElement.style.setProperty('--is-iframe', inIframe ? 'true' : 'false');
-  
-  // Also apply a data attribute for easier CSS targeting
-  if (inIframe) {
+  if (isInIframe()) {
     document.documentElement.setAttribute('data-iframe', 'true');
     console.log('Detected iframe environment');
   } else {
