@@ -44,9 +44,6 @@ const config = {
       async: false,
     }
   ],
-  // clientModules: [
-  //   require.resolve('./src/theme/IframeDetector.js'),
-  // ],
   presets: [
     [
       "classic",
