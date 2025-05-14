@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iframe Test Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .controls {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .iframe-container {
+            width: 100%;
+            border-radius: 5px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            background-color: #fff;
+        }
+        iframe {
+            width: 100%;
+            height: 600px;
+            border: none;
+        }
+        select, input, button {
+            padding: 8px;
+            margin-right: 10px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .dimensions {
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+        }
+        .dimensions input {
+            width: 80px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Iframe Test Page</h1>
+        <div class="controls">
+            <div>
+                <label for="preset-urls">Preset URLs:</label>
+                <select id="preset-urls">
+                    <option value="">-- Select a page --</option>
+                    <option value="http://localhost:3000" selected>localhost:3000 (Home)</option>
+                    <option value="/">Home</option>
+                    <option value="/docs/unraid-os/getting-started">Getting Started</option>
+                    <option value="/docs/unraid-os/manual">Manual</option>
+                    <option value="/docs/unraid-os/faq">FAQ</option>
+                    <option value="/docs/connect">Connect</option>
+                </select>
+
+                <label for="custom-url">Custom URL:</label>
+                <input type="text" id="custom-url" placeholder="/path/to/page">
+
+                <button id="load-iframe">Load</button>
+            </div>
+            
+            <div class="dimensions">
+                <label for="iframe-width">Width:</label>
+                <input type="number" id="iframe-width" value="100" min="10" max="100"> %
+                
+                <label for="iframe-height" style="margin-left: 20px;">Height:</label>
+                <input type="number" id="iframe-height" value="600" min="100" max="2000"> px
+                
+                <button id="resize-iframe" style="margin-left: 10px;">Resize</button>
+            </div>
+        </div>
+        
+        <div class="iframe-container">
+            <iframe id="test-iframe" src="http://localhost:3000" title="Documentation iframe"></iframe>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const presetUrls = document.getElementById('preset-urls');
+            const customUrl = document.getElementById('custom-url');
+            const loadButton = document.getElementById('load-iframe');
+            const resizeButton = document.getElementById('resize-iframe');
+            const iframe = document.getElementById('test-iframe');
+            const widthInput = document.getElementById('iframe-width');
+            const heightInput = document.getElementById('iframe-height');
+            const iframeContainer = document.querySelector('.iframe-container');
+            
+            // Load iframe with selected URL
+            loadButton.addEventListener('click', function() {
+                let url = customUrl.value.trim();
+                
+                if (!url && presetUrls.value) {
+                    url = presetUrls.value;
+                }
+                
+                if (url) {
+                    // If URL doesn't start with http or /, add / at the beginning
+                    if (!url.startsWith('http') && !url.startsWith('/')) {
+                        url = '/' + url;
+                    }
+                    
+                    iframe.src = url;
+                }
+            });
+            
+            // Handle preset URL selection
+            presetUrls.addEventListener('change', function() {
+                if (presetUrls.value) {
+                    customUrl.value = '';
+                }
+            });
+            
+            // Handle custom URL input
+            customUrl.addEventListener('input', function() {
+                if (customUrl.value.trim()) {
+                    presetUrls.value = '';
+                }
+            });
+            
+            // Resize iframe
+            resizeButton.addEventListener('click', function() {
+                const width = widthInput.value + '%';
+                const height = heightInput.value + 'px';
+                
+                iframeContainer.style.width = width;
+                iframe.style.height = height;
+            });
+        });
+    </script>
+</body>
+</html>
