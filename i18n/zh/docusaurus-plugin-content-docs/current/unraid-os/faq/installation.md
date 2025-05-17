@@ -2,7 +2,7 @@
 
 ## 我无法使用USB闪存创建工具将Unraid安装到我的闪存设备上。我该怎么办？
 
-如果您不能使用此工具，也可以[手动安装](/unraid-os/getting-started/manual-install-method.md)。
+如果您不能使用此工具，也可以[手动安装](../getting-started/manual-install-method.md)。
 
 ## 我无法使用`http://tower`或`http://tower.local`连接到WebGUI。我该怎么办？
 
