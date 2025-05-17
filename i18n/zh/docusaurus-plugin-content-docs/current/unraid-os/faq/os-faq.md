@@ -6,7 +6,7 @@ sidebar_position: 9
 
 ## 我需要获得构建/配置系统的帮助。我应该去哪里？
 
-如需帮助为 Unraid OS 创建特殊构建的帮助，请查看我们的 [Compulsive Design 论坛](https://forums.unraid.net/forum/35-unraid-compulsive-design/%7CUnraid)。
+如需帮助为 Unraid OS 创建特殊构建的帮助，请查看我们的 [Compulsive Design 论坛](https://forums.unraid.net/forum/35-unraid-compulsive-design/)。
 
 我们的社区非常乐于帮助用户创建他们的终极 Unraid 系统。
 
@@ -24,7 +24,7 @@ sidebar_position: 9
 
 ## 我的 USB 闪存出现故障，并且我没有备份。如何恢复我的配置？
 
-[Unraid Connect](/connect/index.md) 支持闪存备份，帮助解决闪存驱动器损坏的一些痛点。
+[Unraid Connect](../connect/index.md) 支持闪存备份，帮助解决闪存驱动器损坏的一些痛点。
 
 首先，您需要获取一个新的闪存设备。请记住使用来自 Kingston、PNY、Lexar 或 Samsung 等制造商的优质设备。其次，您需要找到包含您之前闪存设备注册密钥的电子邮件。
 
@@ -38,7 +38,7 @@ sidebar_position: 9
 
 ## 如果我忘记了 root 密码该怎么办？
 
-请参阅 [重置您的 Unraid 密码](/unraid-os/manual/users/reset-password.md)
+请参阅 [重置您的 Unraid 密码](../manual/users/reset-password.md)
 
 _重要提示：此过程仅适用于用户密码。如果您加密驱动器并忘记了密码，很遗憾，您将无法恢复数据。Lime Technology 或任何人都无法恢复此密码。请记住密码或将其写在安全、私密的地方！_
 

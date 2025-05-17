@@ -9,7 +9,7 @@
 有两个方法可以购买Unraid：
 
 1. 如果您已经开始试用，您可以从Unraid内的右上角下拉菜单购买许可和升级。
-2. 您可以通过上方的"立即购买"按钮购买Unraid许可"激活码"，并[稍后激活](https://docs.unraid.net/unraid-os/faq/licensing-faq/#how-to-redeem-a-license-activation-code)您的许可。激活码不会过期。
+2. 您可以通过上方的"立即购买"按钮购买Unraid许可"激活码"，并[稍后激活](#如何兑换许可激活码)您的许可。激活码不会过期。
 激活码仅可用于一台服务器（跟随引导设备）。所有交易不接受退款申请，因此请在购买前充分试用，我们提供30天的免费试用！
 
 ## 如何兑换许可激活码
@@ -51,8 +51,8 @@ Starter和Unleashed的年度延期费用：$36
 * Basic → Pro：_$99 USD_
 * Plus → Pro：_$69 USD_
 
-<sup>1</sup> <b>连接的存储设备</b>指的是在启动阵列之前允许连接到服务器的存储设备总数，不包括USB闪存启动设备。基于许可类型，软件中_没有其他限制_。
-价格可能会_随时_发生变化。
+<sup>1</sup> <b>连接的存储设备</b>指的是在启动阵列之前允许连接到服务器的存储设备总数，不包括USB闪存启动设备。基于许可类型，软件中 _没有其他限制_。
+价格可能会 _随时_ 发生变化。
 
 <sup>2</sup> <b>无限设备</b>请参见[下文](#无限对于连接的存储设备意味着什么)
 
@@ -102,17 +102,17 @@ Starter和Unleashed的年度延期费用：$36
 
 ## "无限"对于连接的存储设备意味着什么？
 
-Unraid Pro、Unleashed和Lifetime许可支持奇偶校验保护阵列中最多30个存储设备（28个数据和2个奇偶校验）和最多35个命名池，每个[缓存池](/unraid-os/release-notes/6.9.0.md#multiple-pools)最多60个存储设备。
+Unraid Pro、Unleashed和Lifetime许可支持奇偶校验保护阵列中最多30个存储设备（28个数据和2个奇偶校验）和最多35个命名池，每个[缓存池](../release-notes/6.9.0.md#multiple-pools)最多60个存储设备。
 其他存储设备仍然可以直接被其它Unraid功能使用，如[虚拟机](../manual/vm/vm-management.md)或未分配设备插件。
 
 ## 如果我的U盘损坏会怎样？我需要重新购买许可吗？
 
-如果您的USB闪存启动设备损坏，您可以随时[将您的许可转移](/unraid-os/manual/changing-the-flash-device/)到新的USB闪存设备，您每12个月可以转移一次许可。
+如果您的USB闪存启动设备损坏，您可以随时[将您的许可转移](../manual/changing-the-flash-device/)到新的USB闪存设备，您每12个月可以转移一次许可。
 
 如果您需要在12个月内再次进行许可转移，[您需要联系我们](https://unraid.net/contact)，我们将手动转移您的许可。请在[您的支持工单](https://unraid.net/contact)中提供旧的和新的USB GUID。
 
 **重要提示：**请确保您定期备份您的USB设备！
-我们建议使用[Unraid Connect](/connect/flash-backup.md)进行备份。
+我们建议使用[Unraid Connect](../connect/flash-backup.md)进行备份。
 
 ## 如何手动将我的许可密钥文件安装到我的USB驱动器？
 
@@ -162,7 +162,7 @@ Unraid Pro、Unleashed和Lifetime许可支持奇偶校验保护阵列中最多30
 
 ## 我是代表客户购买许可的经销商/OEM：我该如何做？
 
-您需要[通过Unraid WebGUI购买许可](#how-do-i-purchase-unraid)或者您可以[通过网站购买激活码](https://unraid.net/pricing)。
+您需要[通过Unraid WebGUI购买许可](#如何购买unraid)或者您可以[通过网站购买激活码](https://unraid.net/pricing)。
 
 在结账时，您将看到三个选项：
 
