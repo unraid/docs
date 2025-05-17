@@ -31,14 +31,15 @@
 
 ![](../assets/Upgrade-UPC.png)
 
-**Unraid Starter**允许最多连接_6个存储设备<sup>1</sup>_。
+**Unraid Starter**允许最多连接 _6个存储设备<sup>1</sup>_。
 
-**Unraid Unleashed**允许连接_无限<sup>2</sup>个存储设备<sup>1</sup>_。
+**Unraid Unleashed**允许连接 _无限<sup>2</sup>个存储设备<sup>1</sup>_。
 
-**Unraid Lifetime**允许连接_无限<sup>2</sup>个存储设备<sup>1</sup>_。
+**Unraid Lifetime**允许连接 _无限<sup>2</sup>个存储设备<sup>1</sup>_。
 
 Starter和Unleashed的年度延期费用：$36
-关于年度延期费用的详细信息请参考[下文](#Unraid OS是一项订阅服务吗)
+关于年度延期费用的详细信息请参考[下文](#unraid-os是一项订阅服务吗)
+
 许可升级价格如下：
 
 * Starter → Unleashed：_$69 USD_
