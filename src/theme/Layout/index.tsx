@@ -1,36 +1,25 @@
 import React, { useEffect, useState } from "react";
 import Layout from "@theme-original/Layout";
-import { useLocation } from "@docusaurus/router";
-
-function isInIframe() {
-  return typeof window !== 'undefined' && window.self !== window.top;
-}
+import { ThemeSync } from "./ThemeSync";
+import { IframeNavigation } from "./IframeNavigation";
+import { isInIframe } from "./utils";
 
 export default function LayoutWrapper(props) {
-  const location = useLocation();
-  const [isIframe, setIsIframe] = useState(false);
+  const [isInIframeState, setIsInIframeState] = useState(false);
 
   useEffect(() => {
-    setIsIframe(isInIframe());
+    setIsInIframeState(isInIframe());
   }, []);
 
-  useEffect(() => {
-    if (isIframe) {
-      window.parent.postMessage({
-        type: 'unraid-docs-navigation',
-        pathname: location.pathname,
-        search: location.search,
-        hash: location.hash,
-        url: window.location.href,
-      }, '*');
-    }
-  }, [location, isIframe]);
-
-  const dataAttributes = isIframe ? { 'data-iframe': 'true' } : {};
+  const dataAttributes = isInIframeState ? { 'data-iframe': 'true' } : {};
 
   return (
     <div {...dataAttributes}>
-      <Layout {...props} />
+      <Layout {...props}>
+        <ThemeSync />
+        <IframeNavigation />
+        {props.children}
+      </Layout>
     </div>
   );
 }
