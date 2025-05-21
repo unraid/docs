@@ -1025,7 +1025,7 @@ to perform:
 
 ```shell
 umount /mnt/diskX
-dd bs=1M if=/dev/zero of=/dev/mdX status=progress
+dd bs=1M if=/dev/zero of=/dev/mdXp1 status=progress
 ```
 
 (where X in both lines is the number of the data drive being removed)
