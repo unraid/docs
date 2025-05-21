@@ -17,13 +17,16 @@ export function ThemeSync(): JSX.Element | null {
   useEffect(() => {
     if (isInIframeState) {
       const handleMessage = (event) => {
-        // Handle theme update message
-        if (event.data && event.data.type === 'theme-update') {
-          const { theme } = event.data;
-          
-          // Set the theme based on the message
-          if (theme === 'dark' || theme === 'light') {
-            setColorMode(theme);
+        // Validate the message structure
+        if (event.data && typeof event.data === 'object') {
+          // Handle theme update message
+          if (event.data.type === 'theme-update') {
+            const { theme } = event.data;
+            
+            // Set the theme based on the message
+            if (theme === 'dark' || theme === 'light') {
+              setColorMode(theme);
+            }
           }
         }
       };
