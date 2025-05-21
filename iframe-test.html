@@ -27,7 +27,7 @@
             border-radius: 5px;
             overflow: hidden;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            background-color: #fff;
+            background-color: transparent;
         }
         iframe {
             width: 100%;
@@ -56,6 +56,11 @@
         }
         .dimensions input {
             width: 80px;
+        }
+        .theme-controls {
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
         }
     </style>
 </head>
@@ -90,6 +95,15 @@
                 
                 <button id="resize-iframe" style="margin-left: 10px;">Resize</button>
             </div>
+            
+            <div class="theme-controls">
+                <label for="theme-mode">Theme Mode:</label>
+                <select id="theme-mode">
+                    <option value="light" selected>Light</option>
+                    <option value="dark">Dark</option>
+                </select>
+                <button id="apply-theme">Apply Theme</button>
+            </div>
         </div>
         
         <div class="iframe-container">
@@ -107,6 +121,30 @@
             const widthInput = document.getElementById('iframe-width');
             const heightInput = document.getElementById('iframe-height');
             const iframeContainer = document.querySelector('.iframe-container');
+            const themeMode = document.getElementById('theme-mode');
+            const applyThemeButton = document.getElementById('apply-theme');
+            
+            // Function to send theme to iframe
+            function sendThemeToIframe(theme) {
+                iframe.contentWindow.postMessage(
+                    { type: 'theme-update', theme: theme },
+                    '*'
+                );
+            }
+            
+            // Apply theme when button is clicked
+            applyThemeButton.addEventListener('click', function() {
+                const selectedTheme = themeMode.value;
+                sendThemeToIframe(selectedTheme);
+            });
+            
+            // Auto-apply theme when iframe loads
+            iframe.addEventListener('load', function() {
+                // Wait a moment for Docusaurus to initialize
+                setTimeout(() => {
+                    sendThemeToIframe(themeMode.value);
+                }, 500);
+            });
             
             // Load iframe with selected URL
             loadButton.addEventListener('click', function() {
@@ -123,6 +161,27 @@
                     }
                     
                     iframe.src = url;
+                }
+            });
+            
+            // Listen for messages from the iframe
+            window.addEventListener('message', function(event) {
+                // Check if the message is from our iframe
+                if (event.source === iframe.contentWindow) {
+                    // Handle theme-ready message
+                    if (event.data && event.data.type === 'theme-ready') {
+                        console.log('Docusaurus is ready for theme sync');
+                        // Send current theme
+                        sendThemeToIframe(themeMode.value);
+                    }
+                    
+                    // Handle theme change notifications from Docusaurus
+                    if (event.data && event.data.type === 'theme-changed') {
+                        const newTheme = event.data.theme;
+                        // Update the theme dropdown to match
+                        themeMode.value = newTheme;
+                        console.log('Theme changed in Docusaurus to:', newTheme);
+                    }
                 }
             });
             
