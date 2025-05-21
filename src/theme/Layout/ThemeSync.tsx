@@ -7,11 +7,25 @@ import { isInIframe } from "./utils";
  */
 export function ThemeSync(): JSX.Element | null {
   const [isInIframeState, setIsInIframeState] = useState(false);
+  const [lastSentTheme, setLastSentTheme] = useState<string | null>(null);
   const { colorMode, setColorMode } = useColorMode();
   
   useEffect(() => {
     setIsInIframeState(isInIframe());
   }, []);
+  
+  // Ensure theme system is ready and notify parent
+  useEffect(() => {
+    if (isInIframeState) {
+      // Wait a short time to ensure Docusaurus theme system is fully initialized
+      const readyTimer = setTimeout(() => {
+        // Send ready message to parent
+        window.parent.postMessage({ type: 'theme-ready' }, '*');
+      }, 20);
+      
+      return () => clearTimeout(readyTimer);
+    }
+  }, [isInIframeState]);
   
   // Handle theme message events from parent
   useEffect(() => {
@@ -34,9 +48,6 @@ export function ThemeSync(): JSX.Element | null {
       // Add event listener
       window.addEventListener('message', handleMessage);
       
-      // Send ready message to parent
-      window.parent.postMessage({ type: 'theme-ready' }, '*');
-
       // Clean up
       return () => {
         window.removeEventListener('message', handleMessage);
@@ -46,14 +57,17 @@ export function ThemeSync(): JSX.Element | null {
 
   // Notify parent when the theme changes
   useEffect(() => {
-    if (isInIframeState) {
+    if (isInIframeState && colorMode !== lastSentTheme) {
       // Send theme change notification to parent
       window.parent.postMessage({ 
         type: 'theme-changed', 
         theme: colorMode 
       }, '*');
+      
+      // Update the last sent theme
+      setLastSentTheme(colorMode);
     }
-  }, [colorMode, isInIframeState]);
+  }, [colorMode, isInIframeState, lastSentTheme]);
 
   // This component doesn't render anything
   return null;
