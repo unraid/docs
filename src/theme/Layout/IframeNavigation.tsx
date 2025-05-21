@@ -1,17 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useLocation } from "@docusaurus/router";
-import { isInIframe } from "./utils";
+import { useIframe } from "../../hooks/useIframe";
 
 /**
  * Component that handles navigation events between iframe and parent window
  */
 export function IframeNavigation(): JSX.Element | null {
   const location = useLocation();
-  const [isInIframeState, setIsInIframeState] = useState(false);
-
-  useEffect(() => {
-    setIsInIframeState(isInIframe());
-  }, []);
+  const isInIframeState = useIframe();
 
   // Handle navigation events
   useEffect(() => {
