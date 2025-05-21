@@ -1,18 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useColorMode } from "@docusaurus/theme-common";
-import { isInIframe } from "./utils";
+import { useIframe } from "../../hooks/useIframe";
 
 /**
  * Component that handles theme synchronization between iframe and parent window
  */
 export function ThemeSync(): JSX.Element | null {
-  const [isInIframeState, setIsInIframeState] = useState(false);
+  const isInIframeState = useIframe();
   const [lastSentTheme, setLastSentTheme] = useState<string | null>(null);
   const { colorMode, setColorMode } = useColorMode();
-  
-  useEffect(() => {
-    setIsInIframeState(isInIframe());
-  }, []);
   
   // Ensure theme system is ready and notify parent
   useEffect(() => {
