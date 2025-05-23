@@ -1023,10 +1023,23 @@ prompt. (Clearing takes just as long though!) If you would rather do
 that than run the script in steps 7 and 8, then here are the 2 commands
 to perform:
 
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+<Tabs>
+  <TabItem value="6.12" label="Unraid 6.12" default>
 ```shell
 umount /mnt/diskX
 dd bs=1M if=/dev/zero of=/dev/mdXp1 status=progress
 ```
+   </TabItem>
+  <TabItem value="6.11" label="Unraid 6.11 or below">
+```shell
+umount /mnt/diskX
+dd bs=1M if=/dev/zero of=/dev/mdX status=progress
+```
+  </TabItem>
+</Tabs>
 
 (where X in both lines is the number of the data drive being removed)
 **Important!!!** It is VITAL you use the correct drive number, or you
