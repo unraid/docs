@@ -14,7 +14,7 @@ If you're struggling with any part of the Unraid installation, be sure to check 
 ## Assign Parity and Data disks
 
 You’ll use the **Main** tab in the Unraid **WebGUI** to assign and review devices, including array and pool assignments along with any unassigned devices and your boot device (the **USB flash device**).
-![Configuring array](/img/configuringarray1.png)
+![Configuring array](/img/Configuringarray1.png)
 
 ### Device Roles
 
