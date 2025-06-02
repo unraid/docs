@@ -50,9 +50,9 @@ License upgrades are priced as follows:
 * Unleashed → Lifetime: _$149 USD_
 * Basic → Unleashed: _$49 USD_
 * Plus → Unleashed: _$19 USD_
-* Basic → Plus: _$59 USD_
-* Basic → Pro: _$99 USD_
-* Plus → Pro: _$69 USD_
+* Basic → Plus: _$89 USD_
+* Basic → Pro: _$139 USD_
+* Plus → Pro: _$109 USD_
 
 <sup>1</sup> <b>Attached storage devices</b> refer to the total number of
 storage devices you are allowed to have attached to the server before
