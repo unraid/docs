@@ -190,6 +190,12 @@ const config = {
         disableInDev: false,
       },
     ],
+    [
+      "@lunaticmuch/docusaurus-terminology",
+      {
+        //options
+      }
+    ]
   ],
 };
 
