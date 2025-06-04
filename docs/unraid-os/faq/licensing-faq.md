@@ -27,9 +27,8 @@ If you have any issues or questions with the above, there is also a walk through
 
 ## How do I Upgrade my Unraid License?
 
-If you want or need to upgrade your license to a higher tier, upgrades
-are done from within the OS WebGUI via the Tools → Registration page or
-via the top right corner of the page.
+If you'd like to upgrade your license to a higher tier, you can upgrade from within the OS WebGUI via the Tools → Registration page or via the top right corner of the page.
+Alternately, go to account.unraid.net/keys and select upgrade from the 3 dot menu.
 
 ![](../assets/Upgrade-UPC.png)
 
