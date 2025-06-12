@@ -1,0 +1,63 @@
+---
+sidebar_position: 1
+sidebar_label: Plugins
+---
+ 
+# Plugins
+
+Plugins are software extensions that integrate directly with Unraid OS. They allow you to enhance your system features or add advanced functionality.
+
+:::tip
+Whenever you can, use Docker containers for applications or services. Reserve plugins for features that require direct integration with Unraid OS.
+:::
+
+## When to use plugins
+
+Plugins are suitable for the following situations:
+
+- System-level services or enhancements that need direct access to Unraid OS or the WebGUI.
+- Features that cannot be provided as Docker containers.
+
+It’s advisable to avoid using plugins for general-purpose applications that can run safely in isolated containers.
+
+## Plugin considerations
+
+Before you install a plugin, think about these aspects:
+
+| Pros                                                      | Cons                                                                 |
+|-----------------------------------------------------------|----------------------------------------------------------------------|
+| Deep integration with Unraid OS and the WebGUI       | Can cause system instability, especially after OS updates            |
+| Enables hardware-level and storage features                | Full filesystem access increases security risks                      |
+| Often open source for transparency                        | Requires manual maintenance and compatibility checks                 |
+| Necessary for some advanced storage or network features    | May be deprecated when features are added to the base OS            |
+
+:::important Security considerations
+
+- Only install plugins from trusted sources or well-known developers.
+- Research each plugin before installation; check community feedback and update history.
+- Be cautious with plugins asking for broad access or that modify core system files.
+- Keep plugins updated, and regularly review installed plugins for compatibility.
+:::
+
+## Managing plugins
+
+You can manage plugins from the **Plugins** tab in the Unraid **WebGUI**.
+
+If a plugin is available in **Community Applications**, installing it from the **Apps** tab is recommended for extra vetting and compatibility checks.
+
+:::note
+As Unraid continues to evolve, some plugin features may be added to the base OS. Community Applications will only offer plugins believed to be compatible with your current release, but they won’t automatically remove incompatible plugins already installed.
+:::
+
+## Troubleshooting with safe mode
+
+If your system becomes unstable after installing or updating plugins, you can troubleshoot issues using **Safe Mode**. Safe Mode loads only the essential components and disables all plugins.
+
+**To boot into safe mode:**
+
+1. Restart your Unraid server.
+2. At the boot menu, select “Unraid OS Safe Mode.”
+3. Press Enter to continue.
+
+While in safe mode, review your installed plugins and consider removing or updating those that may not be compatible with your current Unraid release.
+
