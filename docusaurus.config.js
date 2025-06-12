@@ -5,7 +5,7 @@ const lightCodeTheme = require("prism-react-renderer").themes.github;
 const darkCodeTheme = require("prism-react-renderer").themes.dracula;
 const { sortSidebarItems } = require("./sitebar-semver-sort");
 
-const locales = ["en", "zh", "es", "fr", "de"];
+const locales = ["en"];
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: "Unraid Docs",
@@ -57,6 +57,7 @@ const config = {
             ...args
           }) {
             const sidebarItems = await defaultSidebarItemsGenerator(args);
+            // @ts-ignore
             return sortSidebarItems(sidebarItems);
           },
         },
@@ -511,6 +512,13 @@ const config = {
           return undefined; // Return undefined for paths that don't need automatic redirects
         },
       },
+    ],
+    [
+      "@lunaticmuch/docusaurus-terminology",
+        {
+          termsDir: "./docs/terms", //Term directory
+          glossaryTermPatterns: ["term"], // File naming pattern
+        }
     ],
   ],
   headTags: [],

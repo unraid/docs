@@ -1,0 +1,299 @@
+---
+sidebar_position: 2
+sidebar_label: VM setup
+---
+
+# VM setup
+
+Setting up a **virtual machine (VM)** on Unraid is a flexible way to run full operating systems—such as Windows, Linux, or other platforms—alongside your containers and native apps. Whether you want to test new software, run legacy applications, host a desktop environment, or utilize hardware passthrough for gaming or creative work, Unraid’s VM Manager makes the process approachable for all skill levels.
+
+If you haven’t done so already, please review the [Overview & system prep](./overview-and-system-prep.md) instruction to ensure your hardware and shares are ready for virtualization.
+
+## Creating your own virtual machines
+
+With your system prepared and preferences set, you can create a new **virtual machine (VM)** using the **WebGUI**.
+
+:::note Before you begin
+
+- Confirm your `isos` and `domains` shares are configured and accessible.
+- Upload your operating system installation ISO and, for Windows VMs, the latest VirtIO drivers ISO to the `isos` share.
+- Decide whether you will use GPU passthrough or VNC for graphics.
+:::
+
+To create a basic VM:
+
+1. Click **Add VM** from the **Virtual Machines** page.
+2. Set the **Template** to **Custom**, or select a predefined OS template for common distributions.
+3. Enter a **Name** and, optionally, a **Description** for your VM.
+4. Toggle **Autostart** if you want the VM to start automatically with the **array**.
+5. Select the **Operating System** type. This will also adjust the VM icon.
+6. Assign **CPU cores** to the VM.  
+   You can assign up to the number of physical cores available on your host.
+7. Specify the **Initial Memory** (RAM) for the VM.  
+   Refer to your guest OS documentation for recommended values.
+8. Choose the **OS Install ISO** from your **isos** share.
+9. Configure the **Primary vDisk** (location, size, and type).  
+   - The primary vDisk stores the VM’s operating system.
+   - Add additional vDisks as needed using the plus sign.
+10. Select a **Graphics Card**:  
+    - Choose **VNC** for remote access or select a physical GPU for passthrough.
+    - Assign a USB keyboard/mouse if using a physical GPU.
+    - Set a VNC password if desired.
+11. Assign a **Sound Card** (optional, but required for HDMI audio via GPU).
+12. Assign **USB Devices** as needed.  
+    - Devices must be attached before starting the VM (USB hot-plugging is not supported).
+    - The Unraid USB flash device is not available for assignment.
+13. Click **Create VM**.  
+    - The VM will start automatically unless you uncheck **Start VM after creation**.
+
+### Advanced options
+
+<details>
+<summary>Expand this section to view guidance on the more advanced options</summary>
+
+Switch to **Advanced View** on the **Add VM** page to access additional settings.  
+Here are the most important advanced options, broken into focused sections:
+
+**CPU mode:**
+
+- **Host passthrough**: Exposes all host CPU features to the VM for maximum performance.
+- **Emulated**: Uses a generic CPU model, reducing compatibility issues but limiting performance.
+
+**Memory ballooning:**
+
+- Set a **Max Memory** value to enable dynamic memory allocation (memory ballooning).
+- Not available for VMs with PCI devices assigned (e.g., GPU passthrough).
+
+**Machine type:**
+
+- **i440fx**: Default for Windows VMs. Change only if you have GPU passthrough issues.
+- **Q35**: Default for Linux VMs and recommended for most modern operating systems, especially with GPU passthrough.
+
+**BIOS type:**
+
+- **SeaBIOS**: Traditional BIOS for legacy OSes.
+- **OVMF**: UEFI BIOS required for Windows 8+, most modern Linux distros, and GPU passthrough.  
+  _Note: BIOS type can only be set when creating a new VM._
+
+**Hyper-V extensions:**
+
+- For Windows VMs, toggle Hyper-V extensions for improved compatibility and performance.
+
+**VirtIO drivers ISO:**
+
+- Override the default VirtIO ISO if needed, especially for testing or using newer drivers.
+
+**vDisk type:**
+
+- **RAW**: Best performance, less flexible for snapshots.
+- **QCOW2**: Supports snapshots but offers slightly lower performance.
+
+**VirtFS mappings (Linux VMs):**
+
+- Add multiple VirtFS (9p) shares for file system integration between host and guest.
+- See [QEMU 9p documentation](http://wiki.qemu.org/Documentation/9psetup) for details.
+
+**Network settings:**
+
+- Modify the **Network MAC address** or select an alternate **Network Bridge**.
+- Click the refresh symbol to auto-generate a new MAC address.
+- Add additional virtual network interfaces as needed.
+
+</details>
+
+:::info Troubleshooting tips
+
+- If your VM fails to start, double-check your ISO and vDisk paths.
+- For GPU passthrough, ensure your hardware and BIOS settings support IOMMU/VT-d/AMD-Vi.
+- Some USB devices may not work reliably with passthrough - test and consult the [Unraid forums](https://forums.unraid.net/) for device-specific advice.
+:::
+
+---
+
+## GPU passthrough for virtual machines
+
+GPU passthrough allows you to assign a physical graphics card directly to a **virtual machine (VM)**, providing near-native performance for gaming, creative work, or machine learning.
+
+:::info Why use GPU passthrough?
+
+- **Performance:** Direct hardware access for demanding applications.
+- **Compatibility:** Run graphics-intensive workloads that require a dedicated GPU.
+- **Flexibility:** Transform your unraid server into a multi-purpose workstation.
+:::
+
+**Prerequisites**
+
+- **Hardware:**  
+  - CPU with Intel VT-d or AMD-Vi support (IOMMU enabled in BIOS).
+  - GPU compatible with passthrough (see [community-tested hardware](https://docs.google.com/spreadsheets/d/1LnGpTrXalwGVNy0PWJDURhyxa3sgqkGXmvNCIvIMenk/edit#gid=0)).
+  - A motherboard that properly isolates PCIe devices.
+- **Software:**  
+  - Unraid 6.9+ with virtualization enabled.
+  - OVMF (UEFI) bios for VMs (recommended over Seabios).
+
+To setup GPU passthrough:
+
+1. Ensure your hardware supports IOMMU and is enabled in your BIOS.
+2. Enable virtualization features in BIOS (Intel VT-x/VT-d or AMD-v/AMD-vi).
+3. Update Unraid to the latest stable version.
+4. Assign the GPU to the VM in the VM creation or edit screen under the graphics card section.
+5. Assign a USB keyboard and mouse to the VM if using GPU passthrough.
+6. Use OVMF bios for the VM for better compatibility with GPU passthrough.
+7. Start the VM and verify the GPU is passed through correctly.
+
+:::note
+Some GPUs may require additional configuration or ROM injection for proper passthrough.
+:::
+
+### Manual ROM injection
+
+:::important Why manual ROM injection?  
+Some GPUs, especially specific NVIDIA models, require a ROM file to be manually provided to the VM to initialize correctly. This is often necessary when the GPU’s onboard firmware is not correctly passed through by default, causing issues like black screens or failure to boot. Manual ROM injection is a last resort after trying BIOS and VM configuration adjustments.
+:::
+
+To inject a ROM:
+
+1. **Download GPU ROM:**  
+   - Visit [TechPowerUp VGA BIOS database](https://www.techpowerup.com/vgabios/).
+   - Search for your GPU model and download the correct ROM file.
+   - Store the rom in your unraid `isos` or `domains` share.
+
+2. **Edit VM XML:**
+   - Stop the VM and open its XML configuration (**Edit XML** from the VM context menu).
+   - Locate the GPU’s `<hostdev>` block and add the `<rom>` tag:
+
+     ```xml
+     <hostdev mode='subsystem' type='pci' managed='yes'>
+       <driver name='vfio'/>
+       <source>
+         <address domain='0x0000' bus='0x02' slot='0x00' function='0x0'/>
+       </source>
+       <rom file='/mnt/user/isos/gpu_roms/your_gpu.rom'/> <!-- Update path -->
+       <address type='pci' domain='0x0000' bus='0x00' slot='0x05' function='0x0'/>
+     </hostdev>
+     ```
+
+3. **Save and test:** Click **Update** and start the VM.
+
+---
+
+## Common issues
+
+This section covers advanced topics and solutions for common issues when managing **virtual machines (VMs)** on Unraid. Expand the sections below for step-by-step instructions and troubleshooting tips.
+
+### Expand a vDisk
+
+<details>
+<summary><strong>Expand</strong></summary>
+
+If your VM is running low on disk space, you can increase the size of its virtual disk (**vDisk**) directly from the **WebGUI**.
+
+To expand a vDisk:
+
+1. Go to the **VMs** tab in the **WebGUI**.
+2. Ensure the VM is stopped.
+3. Click on the VM’s name to expand its details.
+4. Locate the vDisk you want to expand. Click the value in the **Capacity** field to make it editable.
+5. Enter the new desired size (e.g., `100G` for 100 gigabytes) and press **Enter**.
+6. The new capacity is now set.
+
+:::note
+You cannot shrink a vDisk from the Unraid GUI; only expansion is supported.
+:::
+
+**Expanding the partition in your guest OS**
+
+After resizing the vDisk, start your VM. You must expand the partition within the guest operating system to use the new space:
+
+- **Windows:**  
+  Use the built-in Disk Management tool to extend your partition.  
+  
+- **Linux (LVM):**  
+  Use tools like `fdisk`, `pvresize`, `lvextend`, and `resize2fs` to expand partitions and logical volumes.  
+  
+  **Example:**  
+
+  ```bash
+  sudo fdisk /dev/vda
+  sudo pvresize /dev/vda3
+  sudo lvextend -l +100%FREE /dev/mapper/ubuntu--vg-ubuntu--lv
+  sudo resize2fs /dev/mapper/ubuntu--vg-ubuntu--lv
+  ```
+
+  Adjust device names as needed for your setup.
+
+:::tip
+Always back up your VM before making disk changes.
+:::
+
+</details>
+
+### Stuck at UEFI shell
+
+<details>
+<summary>**Expand**</summary>
+
+If your VM boots to a **UEFI shell** instead of your operating system, you can manually start the boot process:
+
+1. At the UEFI shell prompt, enter:
+
+   ```bash
+   fs0:
+   cd efi/boot
+   bootx64.efi
+   ```
+
+2. The VM should now continue booting into your OS.
+
+:::tip
+If this happens frequently, check your VM’s boot order and ensure the correct vDisk or ISO is set as the primary boot device in the VM settings.
+:::
+
+</details>
+
+### Black screen after VM start
+
+<details>
+<summary><strong>Expand</strong></summary>
+
+If your VM starts but the display remains blank:
+
+1. **Check BIOS settings:**
+   - Set primary graphics to integrated GPU (iGPU), not the passthrough GPU.
+   - Update motherboard and GPU BIOS to the latest versions.
+
+2. **Adjust VM settings:**
+   - Switch from SeaBIOS to **OVMF** (UEFI) in VM settings.
+   - Change **machine type** from `i440fx` to `Q35`.
+
+3. **Manual ROM injection (last resort):**
+   - [Inject GPU ROM manually](#manual-rom-injection).
+
+</details>
+
+### Error: "Failed to set iommu for container: operation not permitted"
+
+<details>
+<summary><strong>Expand</strong></summary>
+
+This error typically indicates IOMMU group conflicts or missing interrupt remapping:
+
+1. **Enable PCIe ACS override:**
+   - Go to **Settings > VM Manager**.
+   - Set **PCIe ACS override** to *Downstream* or *Both*.
+   - Reboot Unraid.
+
+2. **Allow unsafe interrupts (advanced):**
+   - Edit `syslinux.cfg` on your unraid flash drive:
+
+     ```bash
+     append vfio_iommu_type1.allow_unsafe_interrupts=1 initrd=/bzroot
+     ```
+
+   - Only use this if you fully trust your VM guests.
+
+:::note
+For detailed IOMMU group explanations, see [Alex Williamson’s blog](http://vfio.blogspot.com/2014/08/iommu-groups-inside-and-out.html).
+:::
+
+</details>
