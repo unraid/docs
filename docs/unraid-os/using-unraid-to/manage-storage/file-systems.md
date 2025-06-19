@@ -36,6 +36,8 @@ import TabItem from '@theme/TabItem';
 - **Performance:** Excellent, particularly for multi-device pools.
 - **Best for:** High-performance environments, virtual machines, Docker, or when advanced features like snapshots are required.
 
+For a deep dive into ZFS features, configuration, and best practices, check out our dedicated section on [ZFS storage](../../advanced-configurations/optimize-storage/zfs-storage.md).
+
 </TabItem>
 <TabItem value="btrfs" label="BTRFS">
 
@@ -512,9 +514,45 @@ Running this command on an array disk outside of **Maintenance mode** will inval
 
   </TabItem>
 
-  <TabItem value="zfs" label="ZFS (coming soon)">
+  <TabItem value="zfs" label="ZFS">
 
-Details for ZFS file system checks will be added once full ZFS support is documented in Unraid.
+To check a ZFS file system via the command line:
+
+**ZFS scrub (recommended method):**  
+ZFS uses **scrubbing** instead of traditional filesystem checks like `fsck`. A scrub examines all data in the pool to verify checksums and automatically repairs any corruption found on redundant configurations.  
+
+- Start the array in **normal mode** and run:  
+  ```
+  zpool scrub poolname
+  ```
+  Replace `poolname` with your actual ZFS pool name.
+
+**Check pool status:**  
+To view the current health and any ongoing scrub progress, use the command:  
+```
+zpool status -v poolname
+```
+This command shows detailed information about pool health, any errors, and scrub progress.  
+
+**Additional ZFS commands:**  
+- To pause a scrub:  
+  ```
+  zpool scrub -p poolname
+  ```
+- To stop a scrub:  
+  ```
+  zpool scrub -s poolname
+  ```
+- To list all pools:  
+  ```
+  zpool list
+  ```
+
+:::info  
+ZFS does not require or support traditional `fsck` utilities. The transactional nature of ZFS means it moves atomically from one consistent state to another, making scrubbing the preferred method for integrity checking.  
+:::
+
+For comprehensive guidance on ZFS file systems, check out the dedicated [ZFS storage section](../../advanced-configurations/optimize-storage/zfs-storage.md).
 
   </TabItem>
 </Tabs>
@@ -545,7 +583,7 @@ Repairs can take anywhere from several minutes to several hours, especially for 
 - **Start the array in the correct mode:**  
   - For **XFS**: Use **Maintenance mode**.
   - For **BTRFS**: Use Normal mode for a scrub; use **Maintenance mode** for a repair.
-  - For **ZFS**: Check the upcoming ZFS section (coming soon).
+  - For **ZFS**: Use Normal mode and run a scrub to check for errors.  See the [ZFS storage page](../../advanced-configurations/optimize-storage/zfs-storage.md) for guidance on ZFS pool maintenance and repair procedures.
   
 - **If the disk is disabled and being emulated:**  
   Run the repair on the emulated disk before trying to do a rebuild.
@@ -606,9 +644,26 @@ Always get advice before using `--repair` with BTRFS, as it may occasionally cau
 
   </TabItem>
 
-  <TabItem value="zfs" label="ZFS (coming soon)">
+  <TabItem value="zfs" label="ZFS">
 
-Information on ZFS file system repairs will be added once full ZFS support documentation is available in Unraid.
+ZFS pools offer built-in integrity checking and self-healing capabilities, which often eliminate the need for traditional file system repairs.
+
+**For ZFS pools:**
+
+- **Check pool health:** Use the command `zpool status poolname` to see the status of your pool.
+- **Run a scrub:** Execute `zpool scrub poolname`. This command detects and repairs any corruption automatically.
+- **Clear errors:** After addressing any underlying issues, run `zpool clear poolname` to clear the error state.
+
+**For ZFS disks in the array:**
+
+- **Check dataset health:** Use `zfs list -o name,health` to check the health of your datasets.
+- **Run a scrub:** You can also run `zpool scrub poolname` for any disks belonging to a specific pool.
+
+ZFS automatically identifies and fixes data corruption when redundancy is available, such as in mirrors or RAIDZ configurations. Unlike traditional file systems, ZFS typically does not require manual repair commands because it continuously monitors data integrity with checksums.
+
+:::tip
+For a comprehensive understanding of ZFS management, troubleshooting, and advanced repair scenarios, refer to the dedicated [ZFS storage page](../../advanced-configurations/optimize-storage/zfs-storage.md) for detailed guides and best practices.
+:::
 
   </TabItem>
 </Tabs>

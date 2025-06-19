@@ -5,6 +5,11 @@ sidebar_label: Security fundamentals
 
 # Security fundamentals
 
+:::note Principle of least privilege
+
+The principle of least privilege means granting users and devices only the minimum access necessary to perform their tasks, never more. This approach limits potential damage from compromised accounts or accidental actions and is a core concept in modern security, including zero trust models. Apply this principle throughout your Unraid configuration, especially when creating share users and assigning permissions.
+:::
+
 ## Controlling access to shared folders
 
 ### Choosing a network file sharing protocol
@@ -69,7 +74,7 @@ The **Security** setting has the following options:
 
 :::caution Windows SMB access
 
-Modern versions of Windows (Windows 10 1709+, Windows 11, Server 2019+) block access to **Public** (guest/anonymous) SMB shares by default, due to stricter security policies. Attempting to connect to a public share will usually fail unless you manually enable insecure guest logons in Windows settings—which is not recommended for security reasons.
+Modern versions of Windows (Windows 10 1709+, Windows 11, Server 2019+) block access to **Public** (guest/anonymous) SMB shares by default, due to stricter security policies. Attempting to connect to a public share will usually fail unless you manually enable insecure guest logons in Windows settings - which is not recommended for security reasons.
 
 **Best Practice:** Set up user accounts and passwords for your Unraid shares and connect using those credentials for reliable access from Windows.
 
@@ -79,4 +84,91 @@ Modern versions of Windows (Windows 10 1709+, Windows 11, Server 2019+) block ac
 - If you encounter credential issues, try connecting to one share using the server's name and another using its IP address. Windows treats these as separate servers.
 
 For more details, see [Microsoft's documentation on SMB guest access](https://learn.microsoft.com/en-us/windows-server/storage/file-server/enable-insecure-guest-logons-smb2-and-smb3).
+:::
+
+---
+
+## Network security
+
+### Set a strong root password
+
+Unraid does not set a password for the root user by default. Set a strong password immediately after installation to prevent unauthorized access to the WebGUI and your data.
+
+- Go to the **Users** tab, select the root user, and set a password.
+- Consider using the **Dynamix Password Validator** plugin from [Community Apps](../../using-unraid-to/run-docker-containers/community-applications.md) for real-time strength feedback.
+- For additional guidance, check out the [Bitwarden password strength tool](https://bitwarden.com/) provided online.
+
+### Review and minimize port forwarding
+
+Forwarding ports from your router to your Unraid server can be necessary for remote access to services, but it exposes your network to significant risks. Only forward ports that you fully understand and need.
+
+| Port(s)      | Typical use                  | Security risk                                                                                  | Safer alternative                                  |
+|--------------|-----------------------------|-----------------------------------------------------------------------------------------------|----------------------------------------------------|
+| 80 / 443     | WebGUI (HTTP/HTTPS)         | Exposes management interface; risk of interception or brute force if password is weak          | Use Unraid Connect for secure remote access |
+| 445          | SMB (file shares)           | Exposes shares to the internet; risk of data theft or deletion                                | Use WireGuard VPN for secure remote file access      |
+| 111 / 2049   | NFS                         | Exposes NFS shares; similar risks as SMB                                                      | Use VPN for remote access                          |
+| 22 / 23      | SSH/Telnet                  | Exposes console access; risk of brute force or credential theft                               | Use SSH keys and VPN; never forward Telnet         |
+| 57xx         | VNC for VMs                 | Exposes VM consoles; risk of unauthorized remote access                                       | Use Unraid Connect or VPN                          |
+
+:::tip
+If you see a port forwarding rule you don’t understand, remove it and monitor for issues. You can always re-add it if necessary.
+:::
+
+:::caution
+Never put your server in your network's DMZ. Placing your Unraid server in the DMZ exposes all ports to the internet, dramatically increasing the risk of a compromise. Even with strong passwords, this is never recommended.
+:::
+
+---
+
+## Share access security
+
+### Control share visibility and permissions
+
+- Use the **Shares** tab in the WebGUI to set each share’s export and security settings.
+- Prefer Private or Secure shares for sensitive data.
+  - Public shares are accessible by anyone on the network and are blocked by default in modern Windows versions for security reasons.
+- Assign user accounts with only the permissions needed for their role (least privilege).
+- Limit share access to specific users whenever possible.
+
+### Assign user permissions carefully
+
+- Assign users to shares using Read-only or Read/Write access as required.
+- Avoid using the root account for everyday access; create dedicated share users.
+- Regularly review user permissions and remove unused accounts.
+
+### Restrict share access to private or read-only
+
+While passwordless access to shares is convenient, it can also put your data at risk if devices on your local network become compromised. This includes PCs, Macs, mobile devices, and IoT devices. By default, Unraid shares are set to be publicly readable and writable, meaning any device on your network could potentially steal, delete, or encrypt your files if it gets compromised. Additionally, malicious users can upload unwanted data to your server.
+
+- Set sensitive shares to **Private** in the **shares** tab of the **WebGUI**.
+- If a **Public** share is necessary, set it to **Read-only** whenever possible.
+- Only give write access to authorized users who have strong passwords.
+
+### Avoid exposing the flash share - or make it private
+
+The Unraid flash device contains critical system and configuration files. While it may be convenient to expose the flash share over SMB for advanced configuration, this introduces significant risk if left public.
+
+- Only expose the flash share if absolutely necessary and set it to **Private**.
+- Require a username and strong password for access.
+- Remove or disable the share when not in use to reduce risk.
+
+### Keep your server up to date
+
+Regular updates are essential for security. New vulnerabilities (CVEs) are discovered frequently, and Lime Technology actively issues patches for Unraid OS. Updating is only effective if you actually apply the updates.
+
+- Check for updates in **Tools > Update OS** in the **WebGUI**.
+- Enable notifications in **Settings > Notifications** to be alerted when updates are available.
+- Apply updates promptly to ensure your server is protected against known threats.
+
+### Use secure methods for remote administration
+
+Never expose the **WebGUI** directly to the internet. Instead, use secure remote access solutions:
+
+- **WireGuard VPN** is built into Unraid and provides a secure, encrypted tunnel for remote management.
+- **OpenVPN** is available as a plugin or Docker container.
+- Many modern routers offer built-in VPN support - check your router documentation for setup.
+- The [Unraid Connect](/connect/index.md) plugin enables secure, SSL-encrypted remote access to the WebGUI without exposing ports directly.
+
+:::tip
+Always use a VPN or Unraid Connect for remote administration. Avoid port forwarding the WebGUI or any other sensitive services.
 :::
