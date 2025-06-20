@@ -318,6 +318,7 @@ const config = {
           { to: "/connect/", from: "/go/connect" },
           { to: "/connect/", from: "/go/connect-about" },
           { to: "/connect/help/", from: "/go/connect-help" },
+          { to: "/connect/privacy/", from: "/go/connect-privacy" },
           {
             to: "/connect/help#server-deep-linking",
             from: "/go/connect-deep-linking",
@@ -390,6 +391,18 @@ const config = {
             from: "/go/quick-install-guide",
           },
           {
+            to: "/unraid-os/getting-started/#hardware-requirements",
+            from: "/go/hardware-requirements",
+          },
+          {
+            to: "/unraid-os/getting-started/quick-install-guide/#connecting-to-the-unraid-webgui",
+            from: "/go/quick-install-guide-connecting-to-webgui",
+          },
+          {
+            to: "/unraid-os/getting-started/quick-install-guide/#setting-a-root-password",
+            from: "/go/quick-install-guide-set-root-password",
+          },
+          {
             to: "/unraid-os/getting-started/quick-install-guide/#assigning-devices-to-the-array-and-pools",
             from: "/go/quick-install-guide-assigning-devices",
           },
@@ -400,6 +413,14 @@ const config = {
           {
             to: "/unraid-os/manual/changing-the-flash-device/#recommendations-on-buying-usb-drives",
             from: "/go/recommendations-on-buying-usb-drives",
+          },
+          {
+            to: "/unraid-os/manual/changing-the-flash-device/#what-kind-of-usb-device-do-i-need",
+            from: "/go/what-kind-of-usb-device-do-i-need",
+          },
+          {
+            to: "/unraid-os/manual/changing-the-flash-device/#backing-up-your-flash-drive",
+            from: "/go/backing-up-your-flash-drive",
           },
           { to: "/category/release-notes/", from: "/go/release-notes" },
           { to: "/unraid-os/manual/shares/", from: "/go/shares" },
@@ -421,6 +442,14 @@ const config = {
             from: "/go/vm-support",
           },
           {
+            to: "/unraid-os/manual/vm/vm-support/#upgrading-a-vm-to-windows-11",
+            from: "/go/upgrading-a-vm-to-windows-11",
+          },
+          {
+            to: "/unraid-os/manual/vm/vm-management/#expanding-a-vdisk",
+            from: "/go/vm-expanding-a-vdisk",
+          },
+          {
             to: "/unraid-os/manual/security/vpn/",
             from: "/go/vpn",
           },
@@ -439,6 +468,10 @@ const config = {
           {
             to: "/unraid-os/manual/storage-management/#blacklisted-usb-flash-device",
             from: "/go/blacklisted-usb-flash-device",
+          },
+          {
+            to: "/unraid-os/manual/additional-settings/#ups-settings",
+            from: "/go/ups-settings",
           },
         ],
         createRedirects(existingPath) {
