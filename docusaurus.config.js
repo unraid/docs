@@ -438,8 +438,16 @@ const config = {
             from: "/go/vm-management",
           },
           {
+            to: "/unraid-os/manual/vm/vm-management/#adjust-bios-settings",
+            from: "/go/vm-adjust-bios-settings",
+          },
+          {
             to: "/unraid-os/manual/vm/vm-support/",
             from: "/go/vm-support",
+          },
+          {
+            to: "/unraid-os/manual/vm/vm-support/#microsoft-windows-as-a-vm",
+            from: "/go/microsoft-windows-as-a-vm",
           },
           {
             to: "/unraid-os/manual/vm/vm-support/#upgrading-a-vm-to-windows-11",
