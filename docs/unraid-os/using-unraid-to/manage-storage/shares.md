@@ -9,8 +9,8 @@ A key feature of Unraid is the management of shares. Shares are folders or drive
 
 Unraid offers two types of shares to optimize your data management:
 
-- [**User Shares**](./user-shares.md): These utilize **Linux FUSE** and represent folders within the broader file system.
-- [**Disk Shares**](./disk-shares.md): These share the entire disk using the drive’s <u>file system</u>.
+- [**User Shares**](#user-shares): These utilize **Linux FUSE** and represent folders within the broader file system.
+- [**Disk Shares**](#disk-shares): These share the entire disk using the drive’s <u>file system</u>.
 
 <div style={{ margin: 'auto', maxWidth: '500px'}}>
 
@@ -20,7 +20,7 @@ Unraid offers two types of shares to optimize your data management:
 
 It's important to remember that both share types present different views of the same underlying file system; any file or folder visible in a user share will also appear under the disk share for its respective physical drive.
 
-When you first initialize your array, Unraid automatically creates a [set of default user shares](./user-shares.md#default-shares) designed to support common plugins, Docker containers, and **virtual machines (VMs)**. You can conveniently create additional shares for your personal data as needed.
+When you first initialize your array, Unraid automatically creates a [set of default user shares](#default-shares) designed to support common plugins, Docker containers, and **virtual machines (VMs)**. You can conveniently create additional shares for your personal data as needed.
 
 :::note
 To manage your shares, simply navigate to the **Shares** tab in the **WebGUI**. Here, you can easily enable or disable shares through **Settings > Global Share Settings**. By default, user shares are enabled, providing a straightforward starting point for your file organization.
@@ -84,7 +84,7 @@ To add a share:
    - **Primary Storage**: Choose where the share will mainly be stored (e.g., **cache**, **array**, or a specific pool).
    - **Secondary Storage**: Set a backup location (like the array if the cache runs out of space).  
 
-    (For more details, see [Primary and secondary storage](#primary-and-secondary-storage-unraid-612))
+    (For more details, see [Primary and secondary storage](#primary-and-secondary-storage))
 
 5. **Set Data Rules**:
    - **Allocation Method**: Pick how data will be stored - options include high-water, fill-up, or most-free.  (For more details, see [Allocation method](#allocation-method))
