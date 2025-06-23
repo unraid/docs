@@ -347,7 +347,7 @@ To make the most of your unassigned drives, consider installing the following pl
 - Formatting or erasing drives for future use.
 - Safely disconnecting USB or external drives without hassle.
 
-For more details on installing and managing plugins, check out [Plugins](#plugins) in “Customizing your experience.”
+For more details on installing and managing plugins, check out [Plugins](../customize-your-experience/plugins.md) in “Customizing your experience.”
 
 
 
