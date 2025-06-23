@@ -45,7 +45,7 @@ The manual installation method is designed for situations where the USB Flash Cr
 
   #### Download and extract:
 
-  1. Go to the [Unraid Download Archive](https://unraid.net/download) and download the ZIP file of your chosen release.
+  1. Go to the [Unraid Download Archive](../../download_list.mdx) and download the ZIP file of your chosen release.
   2. Extract the ZIP contents to the USB device.
   3. Confirm that the files have been copied.
 
