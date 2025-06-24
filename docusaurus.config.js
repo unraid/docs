@@ -311,6 +311,10 @@ const config = {
             from: "/go/adding-pools",
           },
           {
+            to: "/unraid-os/manual/storage-management/#multiple-pools",
+            from: "/go/multiple-pools",
+          },
+          {
             to: "/unraid-os/getting-started/advanced-bios-config/",
             from: "/go/advanced-bios-config",
           },
@@ -464,6 +468,10 @@ const config = {
           {
             to: "/unraid-os/manual/security/secure-webgui-ssl/",
             from: "/go/webgui-ssl",
+          },
+          {
+            to: "/unraid-os/manual/security/data-encryption/",
+            from: "/go/data-encryption",
           },
           {
             to: "/unraid-os/manual/security/tailscale/",
