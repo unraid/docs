@@ -130,37 +130,37 @@ For shares containing data:
    - Find your share in **Shares** and click the **Browse** icon.
    - Delete or move all files using the file manager.
 
+  <details>
+  <summary>Using the Command Line (Advanced)</summary>
+
+  1. **Open the terminal**: Use the **Web Terminal** (**Tools > Terminal**) or connect via SSH.
+
+  2. **Delete files**:  
+    Run this command, replacing `[share_name]` with your share's name:  
+    ```
+    rm -rf /mnt/user/[share_name]/*
+    ```
+
+  3. **Delete the share**: Follow the steps to delete an empty share above.
+
+  :::caution
+
+  - The `rm -rf` command will permanently delete files. Double-check before using it.  
+  - Make sure no Docker or VM services are using the share before you delete it.
+  :::
+  </details>
+
+  :::note Alternative Method
+
+  If you can access the share over the network:
+  - Use **Windows Explorer** (SMB) or **macOS Finder** (AFP/SMB) to connect to the share.
+  - Manually delete the files, then remove the share through the **WebGUI**.
+  :::
+
 2. **Delete the share**:  
    - Go back to **Shares** and click on the now-empty share.
    - Check the **Delete** box and click **Delete**.
    - Confirm and click **Done**.
-
-<details>
-<summary>Using the Command Line (Advanced)</summary>
-
-1. **Open the terminal**: Use the **Web Terminal** (**Tools > Terminal**) or connect via SSH.
-
-2. **Delete files**:  
-   Run this command, replacing `[share_name]` with your share's name:  
-   ```
-   rm -rf /mnt/user/[share_name]/*
-   ```
-
-3. **Delete the share**: Follow the steps to delete an empty share above.
-
-:::caution
-
-- The `rm -rf` command will permanently delete files. Double-check before using it.  
-- Make sure no Docker or VM services are using the share before you delete it.
-:::
-</details>
-
-:::note Alternative Method
-
-If you can access the share over the network:
-- Use **Windows Explorer** (SMB) or **macOS Finder** (AFP/SMB) to connect to the share.
-- Manually delete the files, then remove the share through the **WebGUI**.
-:::
 
 #### Deleting an empty share
 
@@ -220,9 +220,7 @@ import TabItem from '@theme/TabItem';
 <Tabs>
   <TabItem value="6.12" label="Unraid 6.12 and later" default>
 
-The **Primary Storage** setting determines where new files for a share are initially written—this can be the **cache**, the **array**, or any named **pool**. The **Secondary Storage** setting specifies where files will be moved if there is not enough space available in the primary storage location.
-
-When available space in primary storage drops below the **Minimum Free Space** threshold, Unraid automatically directs new files and folders to secondary storage.
+The **Primary Storage** setting determines where new files for a share are initially written—this can be the **cache**, the **array**, or any named **pool**. The **Secondary Storage** setting specifies an alternate location for new files and folders if the primary storage falls below the **Minimum Free Space** threshold.
 
 <div style={{ margin: 'auto', maxWidth: '312px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
 
@@ -266,50 +264,59 @@ Starting with Unraid 6.9, multiple pools can be created and used as cache. Any o
 
 ### Moving files between cache and array
 
-Unraid offers a user-friendly approach to move files between **cache pools** and the **array**, helping you optimize performance and manage your data effectively. Below are simple workflows designed for different versions of Unraid.
+Unraid provides a straightforward way to manage file placement between **cache pools** and the **array**, allowing you to optimize performance and manage your data effectively. The key is to set up your share settings based on your preferred data flow and let the **Mover** handle file transfers automatically according to its schedule.
 
-:::caution Critical steps for both directions
+:::tip Scheduling the mover
 
-- **Check parity validity:** Make sure your parity is valid before moving files from the array to the cache.
-- For large datasets, monitor progress in the **Main** tab.
-- If files seem "stuck," check the mover logs under **Tools > Logs**.  
-  If you see files are still open or not moving, try temporarily disabling Docker and the VM Manager, then run the mover again. Open files cannot be moved while in use.
+You can configure the **Mover** schedule by going to **Settings → Scheduler → Mover Settings**. Running it automatically during off-peak hours helps move files between the cache and array without requiring manual action.
+
 :::
 
+#### Cache to array 
 
-#### Cache → Array  
-
-*Use Case:* This is useful when you want to move files from your high-speed cache to the array for long-term storage.
-
-<Tabs>
-  <TabItem value="6.1+2" label="Unraid 6.12+" default>
-    1. Go to the share settings and set **Primary Storage** to *Cache* and **Secondary Storage** to *Array*.
-    2. Under Mover settings, select the **Mover action** as *Cache -> Array*.
-    3. Make sure to disable Docker and VMs: Navigate to **Main > Array Operation → Move**.  
-  </TabItem>
-  <TabItem value="6.11" label="Unraid 6.11 or below">
-    1. Adjust the share’s **Use Cache** setting to *Yes*.
-    2. Disable Docker and VMs by navigating to **Main > Array Operation → Move**.
-    3. After moving the files, change the **Use Cache** setting to *Only*.
-  </TabItem>
-</Tabs>
-
-#### Array → Cache  
-
-*Use Case:* This helps improve performance for Docker containers and VMs by moving files to the cache.
+*Use case:* Moving files from your high-speed cache to the array for long-term storage.
 
 <Tabs>
   <TabItem value="6.12+" label="Unraid 6.12+" default>
     1. In the share settings, set **Primary Storage** to *Cache* and **Secondary Storage** to *Array*.
-    2. Select **Mover action** as *Array -> Cache*.
-    3. Disable Docker and VMs: Go to **Main > Array Operation → Move**.
+    2. Set the **Mover action** to *Cache -> Array*.
+    3. The **Mover** runs automatically based on your schedule to transfer files. Manual mover runs are possible but not necessary.
+  </TabItem>
+  <TabItem value="6.11" label="Unraid 6.11 or below">
+    1. Change the share’s **Use Cache** setting to *Yes*.
+    2. The **Mover** transfers files automatically according to your schedule. Manual runs are optional.
+    3. After the files are moved, you can change the **Use Cache** setting to *Only* if you want.
+  </TabItem>
+</Tabs>
+
+#### Array to cache
+
+*Use case:* Improving performance for Docker containers and VMs by moving files to the cache.
+
+<Tabs>
+  <TabItem value="6.12+" label="Unraid 6.12+" default>
+    1. In the share settings, set **Primary Storage** to *Cache* and **Secondary Storage** to *Array*.
+    2. Set the **Mover action** to *Array -> Cache*.
+    3. The **Mover** will run automatically based on your schedule to move files, with manual runs as an option.
   </TabItem>
   <TabItem value="6.11+" label="Unraid 6.11 or below">
     1. Set the share’s **Use Cache** to *Prefer*.
-    2. Disable Docker and VMs: Navigate to **Main > Array Operation → Move**.
-    3. After the move, change **Use Cache** to *No*.
+    2. The **Mover** runs automatically based on your schedule to move files, and manual runs are optional.
+    3. After files are moved, you can change **Use Cache** to *No* if you prefer.
   </TabItem>
 </Tabs>
+
+:::tip Enabling mover logging for troubleshooting
+
+If you run into issues with file movement, you can enable **Mover logging** through the **Settings → Scheduler → Mover Settings** page. This logs every file moved and can be viewed in **Tools → System Log**.
+:::
+
+:::caution Critical steps for both directions
+
+- Make sure your parity is valid before moving files from the array to the cache.
+- If dealing with large datasets, keep an eye on mover activity via the logs.
+- If files appear to be "stuck," consider temporarily disabling Docker and the VM Manager, then running the mover manually via **Main > Array Operation → Move**.
+:::
 
 ---
 

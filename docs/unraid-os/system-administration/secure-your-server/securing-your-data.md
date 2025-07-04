@@ -27,6 +27,11 @@ If you use Unraid mainly for home media or non-sensitive files, encryption may n
 Encrypting a drive will erase all existing data on that drive.
 :::
 
+:::important Before encrypting
+
+Move all data off the drive you want to encrypt to another location (another drive in your **array**, a **cache pool**, or external backup). For details on safely moving your data, see [Converting to a new file system type](../../using-unraid-to/manage-storage/file-systems.md#converting-to-a-new-file-system-type).
+:::
+
 To encrypt a drive:
 
 1. Go to the **Main** tab in the **WebGUI**.

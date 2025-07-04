@@ -10,7 +10,7 @@ Unraid's storage system combines flexibility with data protection through its ar
 Below are some important array configuration principles:
 
 <details>
-<summary><strong>🛡️ Always use your largest drive(s) for parity.</strong></summary>
+<summary><strong>Always use your largest drive(s) for parity.</strong></summary>
 
 When you add more disks to your array later, remember that you can't use a data disk that's larger than your parity disk(s). It's a good idea to buy the biggest hard drive for your parity disk at the start. This way, you won't be limited by smaller sizes when expanding later.  
 
@@ -18,33 +18,35 @@ If you use two parity disks, they can be different sizes. However, keep in mind 
 </details>
 
 <details>
-<summary><strong>⚠️ Do not use SSDs in the Array - save them for pools or unassigned devices.</strong></summary>
+<summary><strong>Do not use SSDs in the Array - save them for pools or unassigned devices.</strong></summary>
 
 Unraid does not support TRIM or Discard operations for SSDs in the main array. Over time, this will cause SSD performance to degrade if they are used as array members. For best results, use SSDs in cache pools or as unassigned devices, where these features are supported and long-term performance is maintained. Most modern SSDs, including NVMe, work well in these roles.
 </details>
 
 <details>
-<summary><strong>⚡Using a cache will improve array write performance.</strong></summary>
+<summary><strong>Using a cache will improve array write performance.</strong></summary>
 
 Instead of writing directly to the main storage, data is first sent to a dedicated disk or a group of disks. This data is then moved to the main storage at scheduled times, usually once a day at 3:40 AM. The great thing is that data saved to the cache still appears through your user shares, so you don’t have to change how you access your files.
 </details>
 
 <details>
-<summary><strong>🔄 Creating a cache-pool helps keep your cached data safe.</strong></summary>
+<summary><strong>Creating a cache-pool helps keep your cached data safe.</strong></summary>
 
 Using only one cache device puts your cached data at risk until it is moved to the main array. To protect your data at all times, use multiple devices configured as a cache-pool. This setup provides redundancy for cached data, reducing the chance of data loss due to a cache device failure.
 </details>
 
 <details>
-<summary><strong>🚀 SSD cache devices are great for apps and virtual machines.</strong></summary>
+<summary><strong>SSD cache devices are great for apps and virtual machines.</strong></summary>
 
 Using SSDs helps applications and virtual machines (VMs) run faster because they can access data more quickly. SSDs work well in a cache pool, giving you an excellent mix of speed, efficiency, and data security.
 </details>
 
 <details>
-<summary><strong>🔒 Encryption is turned off by default.</strong></summary>
+<summary><strong>Encryption is turned off by default.</strong></summary>
 
-If you want to use encryption on your system, you can enable it for specific devices. Just click on the disk you want to encrypt and change the file system to one of the encrypted options available. Keep in mind that using encryption can make it harder to recover data if something goes wrong, so only use it if you really need it.
+If you want to use encryption on your system, you must reformat the disk with an encrypted file system type—this process erases all existing data on the drive. Before enabling encryption, move your data off the disk, change the file system to an encrypted option, format the disk, and then move your data back. For details, see [How to encrypt a drive in Unraid](../../system-administration/secure-your-server/securing-your-data.md#how-to-encrypt-a-drive-in-unraid). 
+
+Keep in mind that using encryption can make it harder to recover data if something goes wrong, so only use it if you really need it.
 </details>
 
 :::info Disk Recognition and Port Flexibility
@@ -62,18 +64,14 @@ Your array will not start if you assign or attach more devices than your license
 When your system starts up, it usually powers up the array of disks automatically. However, if you've recently changed the disk setup, such as adding a new disk, the array will remain off to allow you to check your configuration.
 
 :::caution
-Keep in mind that you'll need to stop the array first to make any adjustments. Stopping it will pause all applications and services, and your storage devices will be unmounted, making your data and applications inaccessible until you restart the array.
+Keep in mind that you'll need to stop the array first to make any adjustments. Stopping it will fully stop all Docker containers and network shares, shut down or hibernate VMs, and your storage devices will be unmounted, making your data and applications inaccessible until you restart the array.
 :::
 
 To start or stop the array:
 
-1. Open a web browser and log into the Unraid WebGUI by entering `http://tower` (or `http://tower.local` on a Mac)  
-   :::note
-   This address will vary based on on how you named your server when you first configured Unraid.
-   :::
-2. Click on the **Main** tab.
-3. Navigate to the **Array Operation** section.
-4. Click **Start** or **Stop**. You may need to check the box that says "Yes, I want to do this" before proceeding.
+1. Click on the **Main** tab.
+2. Navigate to the **Array Operation** section.
+3. Click **Start** or **Stop**. You may need to check the box that says "Yes, I want to do this" before proceeding.
 
 ---
 
@@ -87,9 +85,9 @@ import DocCardList from '@theme/DocCardList';
 { type: 'link', href: '#adding-disks', label: 'Add Disks', description: 'Expand storage capacity' },
 { type: 'link', href: '#replacing-disks', label: 'Replace Disks', description: 'Upgrade or swap failed drives' },
 { type: 'link', href: '#removing-disks', label: 'Remove Disks', description: 'Decommission or reduce array size' },
-{ type: 'link', href: '#disk-health', label: 'Check Disks', description: 'Monitor SMART data and diagnostics' },
-{ type: 'link', href: '#power-management', label: 'Spin Control', description: 'Manage disk spin-up/down' },
-{ type: 'link', href: '#reset-config', label: 'Reset Config', description: 'Rebuild array structure' }
+{ type: 'link', href: '#checking-array-devices', label: 'Checking array devices', description: 'Monitor SMART data and diagnostics' },
+{ type: 'link', href: '#spinning-disks-down-or-up', label: 'Spinning disks down or up', description: 'Manage disk spin-up/down' },
+{ type: 'link', href: '#reset-the-array-configuration', label: 'Reset the array configuration', description: 'Rebuild array structure' }
 ]} />
 ---
 
@@ -229,13 +227,12 @@ Adding a parity disk is similar to adding a data disk, but there’s one importa
 2. While this process runs, you can still access your files. However, the system might run a bit slower because it’s working to calculate the parity.
 
 :::caution Remember
-**Crucial:** Don’t try to add parity and data disks at the same time.  
 
-Always, separately:
+When setting up a new data storage system, add your data disks **first**, making sure they all use a compatible file system. **After** placing your data disks, you can add a parity disk to protect against drive failures.
 
-1. Add your parity disk(s) and allow the system to rebuild the parity.
-2. Add your data disk(s) and proceed to clear or format them.
+Once your parity disk is added, remember that any new disk you want to include in the **array** must be cleared (zeroed) before it's integrated. This is to ensure that the parity remains valid and continues to protect your data.
 :::
+
 
 #### Upgrading parity disks
 
@@ -808,7 +805,7 @@ Use the spin controls to save power and reduce wear on your drives. Remember tha
 
 ---
 
-### Reset the Array Configuration
+### Reset the array configuration
 
 Resetting your array configuration is an important step that should be undertaken carefully. This process is usually necessary when removing a disk, starting fresh with a new array layout, or fixing disk assignment issues. Please note that this action can impact data protection and parity, so ensure you only proceed when truly needed.
 

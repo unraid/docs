@@ -133,16 +133,6 @@ To change the file system type on a particular drive:
 
 If you encounter any issues, feel free to visit the [Unraid forums](https://forums.unraid.net/). Attach your system diagnostics zip file (found under **Tools → Diagnostics**) for assistance.
 
-:::note Note for SSDs  
-To securely erase the current contents of an SSD, you can use the following command in the console (ensure you replace `X` with the correct device letter as displayed in the WebGUI):
-
-```
-blkdiscard /dev/sdX
-```
-
-Be very careful to identify the correct device, as this command will permanently erase all data on the drive.
-:::
-
 ---
 
 ## Converting to a new file system type
@@ -158,6 +148,17 @@ To safely convert to a new file system type:
 1. **Copy all data off the drive:** Move your files to another location. This could be another drive in your array, a cache pool, or an external backup.  
    - If you’re converting multiple drives, do so one at a time to minimize risk and space requirements.
    - Many users schedule conversions after adding a new drive to the array to create the needed free space.
+   
+:::info Emptying an array disk
+**As of Unraid 7.0**, you can use the new "Empty" feature in Mover to automatically relocate all data from one array disk to other disks in the array according to your share settings. This is especially useful if you're migrating away from ReiserFS, or preparing a disk for encryption.
+
+To empty an array disk:  
+Go to **Main > Array Devices**, click on the disk you want to empty, and select **Empty**.
+
+To empty a pool drive:  
+Use standard **Mover** to transfer data to another pool or the array
+:::
+
 2. **Change the file system type:** Follow the procedure for changing a file system type. This will format the drive and erase all content, leaving you with a blank drive in the new format.
 3. **Copy your data back:** Move the saved files back to the newly formatted drive.
 4. **Repeat as needed:** If you have more than one drive to convert, repeat these steps for each drive, transferring data as needed.
@@ -169,8 +170,6 @@ The process can take several hours, depending on the amount of data and the spee
 :::tip
 If you are migrating from ReiserFS, this is the safest way to preserve your data since support for ReiserFS is being removed from Unraid and the Linux kernel.
 :::
-
-If you have questions or run into issues, ask for help on the [Unraid forums](https://forums.unraid.net/) and include your system diagnostics for faster assistance.
 
 ---
 
@@ -239,16 +238,6 @@ Sometimes, you'll need to reformat a cache drive for the following reasons:
 
 :::note Timing
 The time it takes to move data with the mover and format the drive can vary from several minutes to several hours, depending on the amount of data and the speed of the drive.
-:::
-
-:::tip  
-If you want to securely erase an SSD, you can use this command in the console (replace `X` with the correct device letter):
-
-```
-blkdiscard /dev/sdX
-```
-
-Be absolutely sure you have the correct device selected, as this will permanently erase all data.
 :::
 
 ---
@@ -444,8 +433,6 @@ If the WebGUI suggests formatting an unmountable drive, <strong>do not format</s
 | **No valid BTRFS found**                      | Disk may not belong to a valid pool; check pool assignments.       |
 | **Mount: wrong fs type, bad option, etc.**    | Incorrect file system selection or disk is unformatted.            |
 | **Cannot mount /dev/mdX: Structure needs cleaning** | File system is corrupted; perform a repair.                   |
-
-If you're uncertain about an error message, copy the output and seek assistance on the [Unraid forums](https://forums.unraid.net/).
 
 #### Via the WebGUI
 

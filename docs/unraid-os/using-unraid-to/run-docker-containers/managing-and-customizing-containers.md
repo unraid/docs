@@ -36,6 +36,11 @@ Unraid supports several Docker network modes. The network type you choose determ
 The default network type specified in the container’s template is recommended for most users.
 :::
 
+:::caution Wi-Fi and Docker Networking Limitations
+
+Docker has a limitation that prevents it from participating in two networks that share the same subnet. If you switch between a wired and a wireless connection, you will need to restart Docker and reconfigure all existing containers to use the new interface. To avoid complications, we recommend choosing either a wired or wireless connection and sticking with it.
+:::
+
 </TabItem>
   <TabItem value="Volume mappings" label="Volume mappings">
 

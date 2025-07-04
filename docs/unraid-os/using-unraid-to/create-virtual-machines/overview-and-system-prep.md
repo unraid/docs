@@ -173,6 +173,11 @@ Virtual machines can connect to your network using one of two bridge types. Choo
 | **Private NAT (virbr0)**| Managed by libvirt. This option provides an internal DHCP server and an isolated subnet. VMs can access the internet and host file shares, but are isolated from other network devices. | Ideal for isolated VMs needing internet and host access but no LAN visibility.              |
 | **Public bridge (br0)** | Managed by Unraid. This option connects VMs directly to your LAN, with IPs assigned by your router. MAC addresses are preserved for consistent IP assignment. | Best for VMs that should function as regular devices on your network, accessible from other devices. |
 
+:::important
+
+If your Unraid server is connected to Wi-Fi, using the **Private NAT (virbr0)** network bridge for your virtual machines is recommended. This is because Wi-Fi interfaces support only a single MAC address, which restricts the use of public bridges and custom network types. By utilizing the **virbr0** bridge, your VMs will have complete network access through NAT, although they will not be directly accessible from other devices on your local area network (LAN). However, you can still access the VMs via VNC through the host.
+:::
+
 - Enable the public bridge in **Network settings > Enable bridging**.
 - Set your preferred bridge as the **Default network bridge** in **VM settings**. You may need to enable advanced view to see this option.
 
@@ -217,12 +222,3 @@ To set your virtualization preferences:
    - This option breaks apart IOMMU groups, allowing more flexible device passthrough.
    - **Warning:** This setting is experimental and may affect system stability. Use with caution.
 5. Click **Apply** to save your settings.
-
-:::tip Troubleshooting
-
-If a VM reports as stopped after you apply changes, check your `/boot/config/domains.cfg` file. You may need to set:
-
-- `MEDIADIR="/mnt/user/system/"`
-- `VIRTIOISO="/mnt/user/system"` (the share containing the VirtIO ISO)
-
-:::
