@@ -164,11 +164,8 @@ Regular updates are essential for security. New vulnerabilities (CVEs) are disco
 
 Never expose the **WebGUI** directly to the internet. Instead, use secure remote access solutions:
 
+- **Tailscale** is a recommended option, with a dedicated plugin for Unraid. It creates a secure private network (tailnet) for accessing your server and services from anywhere, without the need to expose ports or configure complex firewall rules.
 - **WireGuard VPN** is built into Unraid and provides a secure, encrypted tunnel for remote management.
 - **OpenVPN** is available as a plugin or Docker container.
 - Many modern routers offer built-in VPN support - check your router documentation for setup.
-- The [Unraid Connect](/connect/index.md) plugin enables secure, SSL-encrypted remote access to the WebGUI without exposing ports directly.
-
-:::tip
-Always use a VPN or Unraid Connect for remote administration. Avoid port forwarding the WebGUI or any other sensitive services.
-:::
+- The [Unraid Connect](/connect/index.md) plugin enables remote access to the WebGUI, but requires a port to be forwarded on your router.

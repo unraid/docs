@@ -1,16 +1,12 @@
 ---
 sidebar_position: 3
-sidebar_label: Other VM operating systems
+sidebar_label: Windows on a VM
 ---
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# Other VM operating systems
-
-While Unraid excels at Linux-based virtualization, it also supports running other operating systems as virtual machines! This section focuses on best practices for non-Linux VMs.
-
-## Microsoft Windows
+# Windows on a VM
 
 Windows is one of the most popular guest operating systems for Unraid users, especially for gaming, productivity, and support for legacy applications. Here are essential considerations for running Windows VMs.
 
@@ -261,9 +257,10 @@ To add TPM support:
   <TabItem value="Clean install" label="Clean install">
 
 1. Download the [Windows 11 ISO](https://www.microsoft.com/en-us/software-download/windows11).
-2. Attach the ISO to your VM.
-3. Boot from the ISO and perform the fresh installation.
-4. Reinstall your applications and restore your data from backup.
+2. Upload the ISO to your `isos` share on your Unraid server.
+3. Modify your VM template to boot from the ISO in the `isos` share.
+4. Boot the VM from the ISO and perform the fresh installation.
+5. Reinstall your applications and restore your data from backup.
 
   </TabItem>
 </Tabs>

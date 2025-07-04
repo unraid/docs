@@ -1,0 +1,223 @@
+---
+sidebar_position: 2
+sidebar_label: Upgrading Unraid
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+# Upgrading Unraid
+
+Upgrading **Unraid OS** ensures that you have the latest features, security updates, and hardware support. This page outlines the standard upgrade process, along with troubleshooting tips and manual upgrade options.
+
+:::note Prerequisites
+Before you start upgrading, make sure to create a complete backup of your USB flash device. For more details, refer to [Changing your flash device](../maintain-and-update/changing-the-flash-device.md#backing-up-your-flash-device).
+:::
+
+:::tip Best practices before upgrading
+- Update all plugins and Docker containers to their latest versions.
+- Run the [**Update Assistant**](#update-assistant) to check for compatibility and other potential issues.
+- Shut down all **virtual machines** and disable the VM Manager (**Settings → VM Manager**).
+- Stop all Docker containers and disable Docker (**Settings → Docker**).
+- Take a screenshot of your **array** and **cache pool** assignments for reference.
+:::
+
+---
+
+## Standard upgrade process
+
+<Tabs>
+  <TabItem value="Modern (2025)" label="Unraid 7.x and later" default>
+
+Upgrading Unraid is done using the new **Update OS tool** with a user-friendly interface:
+
+1. In the WebGUI, click the top-right dropdown menu and select **Check for Update** or navigate to **Tools → Update OS**.
+2. Click **View Changelog to Start Update**. The Changelog will appear for you to review before hitting **Continue**.
+3. Click **Confirm and start update** to apply the latest stable release.
+4. When prompted, reboot your server to complete the upgrade.
+
+:::note
+You may need to log into your Unraid account to access updates, especially for "Next" branch releases.
+:::
+
+  </TabItem>
+  <TabItem value="Legacy (6.11 to 6.12)" label="Unraid 6.11 to 6.12">
+
+For Unraid versions 6.11 and 6.12, follow this traditional update method:
+
+1. In the WebGUI, go to **Tools → Update OS**.
+2. Click **Check for Updates**.
+3. If a new release is available, click **Update**.
+4. Reboot your server when prompted.
+
+  </TabItem>
+</Tabs>
+
+:::caution ZFS pool upgrade warnings
+
+When upgrading to Unraid 7.x, you may encounter warnings about ZFS pool feature upgrades during boot or within the WebGUI. These warnings indicate that the ZFS pool is using features from an older version and may need to be upgraded automatically or require manual steps.
+
+This is typical and not a sign of a problem, but make sure to back up your data before upgrading your ZFS pools.
+:::
+
+---
+
+## Update Assistant
+
+The Update Assistant is a useful tool for checking plugin compatibility and identifying potential issues before upgrading. It’s not included by default, so you will need to install the [**Fix Common Problems**](https://unraid.net/community/apps/c/plugins?q=fix+common+problems#r) plugin first.
+
+To use the Update Assistant:
+
+1. Install the [**Fix Common Problems**](https://unraid.net/community/apps/c/plugins?q=fix+common+problems#r) plugin from the Community Applications.
+2. Once installed, navigate to **Tools → About → Update Assistant**.
+3. Run the assistant to detect any plugin conflicts or blockers for the upgrade.
+
+---
+
+## Troubleshooting upgrade issues
+
+If you run into problems after upgrading, check the relevant section below for assistance.
+
+<details>
+<summary><strong>The new release does not appear after checking for updates</strong></summary>
+
+If the update doesn't show up, you can manually install it by following these steps:
+
+1. Go to **Plugins → Install Plugin**.
+2. Paste this URL into the field: https://stable.dl.unraid.net/unRAIDServer.plg
+3. Click **Install** and follow the prompts.
+
+</details>
+
+<details>
+<summary><strong>Array or docker containers are slow to start after upgrade</strong></summary>
+
+A one-time migration may be necessary for Docker containers after certain upgrades. This process can take time, especially if you have many images. Be patient during this process; performance should normalize after the initial start.
+</details>
+
+<details>
+<summary><strong>Docker containers are not working correctly after upgrade</strong></summary>
+
+If you encounter errors like *"layers from manifest don't match image configuration,"* you may need to rebuild your Docker image file. Here’s how:
+
+1. Go to **Settings → Docker** and stop the Docker service.
+2. Check the box to delete the Docker image and click the delete button.
+3. Restart Docker to recreate the image.
+4. Navigate to the **Docker** tab and click **Add Container**.
+5. Select your previous templates (those prefixed with "my-") from the drop-down and click **Apply** for each container.
+
+Repeat this for all containers. No need to reconfigure; your app settings will be preserved.
+
+</details>
+
+<details>
+<summary><strong>VMs show "cannot get interface MTU" or network errors</strong></summary>
+
+If you’ve used a custom bridge name for VM networking, update all VMs to use the default `br0` bridge by following these steps:
+
+1. Go to the **VMs** tab and edit each VM (make sure to enable **Advanced View**).
+2. Set the network bridge to `br0` and click **Apply**.
+3. Navigate to **Settings → VM Manager** (in Advanced View) and set the default bridge to `br0`.
+
+</details>
+
+<details>
+<summary><strong>VNC access to VMs is not working or is slow</strong></summary>
+
+For older VMs, you may need to update the VNC video driver. Here's how:
+
+1. Edit the VM from the **VMs** tab (select **Advanced View**).
+2. Set the **VNC Video Driver** to **QXL** (recommended). Try **Cirrus** or **vmvga** if you have limited success with QXL.
+3. Click **Apply** to save the changes.
+
+</details>
+
+<details>
+<summary><strong>VM will not boot (EFI shell appears)</strong></summary>
+
+If you have OVMF-based VMs created in older Unraid versions, you might encounter an EFI shell. You can boot the VM by entering the following commands:
+
+1. Type `fs0:`.
+2. Then type `cd efi/boot`.
+3. Finally, type `bootx64.efi`.
+
+If `fs0:` doesn’t work, you can try `fs1:` instead. If you continue to have issues, please visit the [Unraid forums](https://forums.unraid.net/) for assistance.
+</details>
+
+<details>
+<summary><strong>Trying to start my VM gives an "Invalid machine type" error</strong></summary>
+
+To resolve this, edit the VM in the **WebGUI** and click **Apply** without making any changes. This action will update the machine type to the latest supported version.
+</details>
+
+<details>
+<summary><strong>Poor VM performance after upgrading</strong></summary>
+
+If your VM is slow after an upgrade, go to the VM settings (in **Advanced View**) and update the **Machine** type version to the latest revision (e.g., change from `i440fx-2.5` to `i440fx-2.7`). Make sure not to change the prefix (for example, don’t switch from `i440fx` to `Q35`).
+</details>
+
+---
+
+## Manual upgrade or downgrade
+
+Manual upgrades are infrequently necessary but may be needed if you can’t access the **WebGUI** or need to revert to a prior version. Before proceeding, it’s important to back up your USB flash device, details of which you can find in [Changing your flash device](../maintain-and-update/changing-the-flash-device.md#backing-up-your-flash-device).
+
+### Downgrade using the OS tool (if WebGUI is accessible)
+
+If you can reach the WebGUI:
+
+1. Log in to the **WebGUI**.
+2. Navigate to **Tools → Downgrade OS**.
+3. Look through the available previous versions and their release notes.
+4. Choose the version you wish to downgrade to.
+5. Click **Downgrade** and follow the prompts.
+6. Reboot your server when prompted.
+
+:::caution
+Keep in mind that downgrading can lead to compatibility issues with plugins or Docker containers. Always back up your USB flash device and any important data beforehand.
+:::
+
+### Manual methods (if WebGUI is inaccessible)
+
+Only use these methods if you can’t access the WebGUI:
+
+<Tabs>
+  <TabItem value="Simplest method" label="Simplest method">
+
+1. Download the Unraid version ZIP file from the [Download Archive](../download_list.mdx).
+2. Unzip the file on your computer.
+3. Access the `flash` share or connect the USB flash device to your computer.
+4. Create a `previous` directory if it doesn’t already exist.
+5. Move all `bz*` and `changes.txt` files into the `previous` directory.
+6. Copy the new `bz*` and `changes.txt` files to the root of the flash drive.
+7. Safely eject the drive and reboot your system.
+
+  </TabItem>
+  <TabItem value="Command line method" label="Command line method">
+
+:::caution
+This method should only be used if you are comfortable with the Linux command line, as mistakes might make your system unbootable.
+:::
+
+1. Copy the URL of the desired Unraid version ZIP file from the [Download Archive](../download_list.mdx).
+2. Log in via SSH or console.
+3. Execute the following commands *one at a time* (replace `<URL>` with the copied link):
+```bash
+cd /tmp
+rm -f unraid.zip
+rm -rf unraid_install
+wget -O unraid.zip <URL>
+[[ -s unraid.zip ]] && echo "OK to continue" || echo "STOP: the file was not downloaded"
+unzip -d unraid_install unraid.zip
+[[ -s unraid_install/bzroot ]] && echo "OK to continue" || echo "STOP: the file was not extracted properly"
+[[ ! -d /boot/previous ]] && mkdir /boot/previous
+mv /boot/bz* /boot/previous
+mv /boot/changes.txt /boot/previous
+cp unraid_install/bz* /boot
+cp unraid_install/changes.txt /boot
+sync -f /boot
+sleep 5
+reboot
+```
+  </TabItem>
+</Tabs>

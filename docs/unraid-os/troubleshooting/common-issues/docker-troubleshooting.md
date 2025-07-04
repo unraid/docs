@@ -1,5 +1,5 @@
 ---
-sidebar_position: 4
+sidebar_position: 5
 sidebar_label: Docker troubleshooting
 ---
 
@@ -60,11 +60,24 @@ Verify that all mapped host paths exist and have the correct permissions after r
 
 ## Restoring Docker custom networks
 
-Custom Docker networks do not persist if the Docker image file is deleted. Before deleting the image, make a note of any custom network names.
+Custom Docker networks do not persist if the Docker image file is deleted. Before removing the image, document your custom network names by opening a terminal and running:
+
+```
+docker network ls
+```
+
+Note the names of any networks you created (excluding the default `bridge`, `host`, and `none` networks).
 
 To restore custom networks:
 
-1. After recreating the Docker image file, recreate each custom network with the same name as before.
+1. After recreating the Docker image file, recreate each custom network using:
+
+   ```
+   docker network create <network-name>
+   ```
+   
+   Replace `<network-name>` with the exact name you recorded earlier.
+
 2. Update your containers to use the restored networks as needed.
 
 :::note

@@ -46,7 +46,7 @@ The hybrid ZFS-in-array approach is helpful for specific backup or replication s
 
 ### Pools, vdevs, and redundancy
 
-A ZFS pool (called a "zpool") is made up of one or more vdevs (virtual devices). Each vdev is a group of physical disks with its redundancy level. ZFS writes data across vdevs, but each vdev is responsible for its fault tolerance.
+A ZFS pool (called a "zpool") is made up of one or more vdevs (virtual devices). Each vdev is a group of physical disks with its own redundancy level. ZFS writes data across vdevs, but each vdev is responsible for its fault tolerance.
 
 :::caution  
 Redundancy is always per vdev. If any vdev fails, the entire pool fails, even if other vdevs are healthy. Plan your vdevs with care!  
@@ -182,9 +182,9 @@ When you set up a ZFS pool, your allocation profile determines how your data is 
 |-----------|--------------------|----------------------------|-------------------|------------------|-----------------------------------------|
 | Stripe    | None               | Fast, but risky            | Add more disks    | 100%             | Temporary/scratch storage               |
 | Mirror    | 1:1 (RAID 1 style) | Excellent for random I/O   | Add more mirrors  | 50%              | High performance, easy expansion        |
-| RAIDZ1    | 1 disk per vdev    | Good for large files       | Add new vdevs     | High             | General use, 1-disk fault tolerance     |
-| RAIDZ2    | 2 disks per vdev   | Good for large files       | Add new vdevs     | Moderate         | Important data, 2-disk fault tolerance  |
-| RAIDZ3    | 3 disks per vdev   | Good for large files       | Add new vdevs     | Lower            | Mission-critical, 3-disk fault tolerance|
+| RAIDZ1    | 1 disk per vdev    | Fast for big files. Not ideal for small or random writes.      | Add new vdevs     | High             | General use, 1-disk fault tolerance     |
+| RAIDZ2    | 2 disks per vdev   | Like Z1 but slightly slower writes (extra parity)       | Add new vdevs     | Moderate         | Important data, 2-disk fault tolerance  |
+| RAIDZ3    | 3 disks per vdev   | Like Z2, with more write overhead (for maximum safety)       | Add new vdevs     | Lower            | Mission-critical, 3-disk fault tolerance|
 
 :::important How to choose
 
@@ -275,7 +275,7 @@ Unraid can import ZFS pools created on other platforms with minimal hassle.
 5. **Finish and start array:** Click **Done**, then start the array.
 
 :::info Automatic detection
-Unraid will automatically detect and import the ZFS pool. Support vdevs (like log, cache/L2ARC, special/dedup) are listed under **Subpools** in the WebGUI. There is no need to add subpools during import manually.
+Unraid will automatically detect and import the ZFS pool. Support vdevs (like log, cache/L2ARC, special/dedup) are listed under **Subpools** in the WebGUI. There is no need to add subpools separately after initiating the import. Unraid will automatically import them alongside the main data disks when all required drives are assigned.
 :::
 
 After importing, running a **scrub** is highly recommended to verify data integrity.

@@ -5,7 +5,7 @@ sidebar_label: Cache pools
 
 # Cache pools
 
-In Unraid, a cache pool is a collection of one or more drives, typically SSDs or high-speed HDDs. These drives temporarily store data before it's moved to your main array. Using cache pools can significantly enhance write speeds, protect your data, and provide dedicated storage for specific tasks like running Docker containers or virtual machines. If you're using Unraid version 6.9 or newer, you can even create multiple cache pools, each with its own name and purpose.
+In Unraid, a cache pool is a collection of one or more drives, typically SSDs or high-speed HDDs. These drives temporarily store data before it's moved to your main array. Using cache pools can significantly enhance write speeds, protect your data, and provide dedicated storage for specific tasks like running Docker containers or virtual machines.
 
 Cache pools offer several advantages, making them a valuable addition to your Unraid setup, such as:
 
@@ -23,7 +23,7 @@ Cache pools offer several advantages, making them a valuable addition to your Un
 
 :::info Keep in Mind
 
-- **Multiple pools:** With Unraid 6.9 and later, you can create and name different cache pools, tailoring them to match your specific needs.
+- **Multiple pools:** You can create and name different cache pools, tailoring them to match your specific needs.
 - **SSD vs. HDD:** SSDs are great for speed, while you can use HDDs for large, sequential data workloads. Additionally, HDDs can help prolong the lifespan of your SSDs.
 - **Redundancy matters:** To protect your data, use more than one drive in a cache pool. A single drive pool won't protect you from potential drive failure.
 - **File system choice:** The default file system for cache pools is BTRFS, which supports various RAID options for added redundancy and flexibility.
@@ -347,7 +347,7 @@ Setting a minimum free space for your cache pool is essential to prevent errors 
 If you often download files around 10 GB, set the minimum free space to at least 10 GB, but ideally 20 GB to allow for adjustments.
 :::
 
-In Unraid 6.9 and later, you can access Minimum free space by clicking on the pool name in the **Main** tab and going to **Individual Pool Settings**.
+You can access Minimum free space by clicking on the pool name in the **Main** tab and going to **Individual Pool Settings**.
 
 **How It Works:**
 
@@ -412,6 +412,20 @@ To move files from the array to a pool:
 
   </TabItem>
 </Tabs>
+
+<details>
+<summary>Why do files sometimes end up in the wrong pool or cache?</summary>
+
+When you move files between user shares at the Linux level (for example, using `mv` or within a Docker container), Linux tries to optimize the operation. If both the source and destination appear on the same mount point (`/mnt/user`), Linux might rename the file instead of moving it. This can result in files remaining on the original disk or pool, even if the share's “Use cache” setting is set to “No.”
+
+To ensure that files move as intended, consider the following options:
+
+- Use the Mover tool.
+- Copy files and then delete the originals.
+- Move files over the network.
+
+These methods help prevent files from ending up in the wrong location.
+</details>
 
 ---
 

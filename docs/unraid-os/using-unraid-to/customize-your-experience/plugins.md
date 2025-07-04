@@ -2,7 +2,10 @@
 sidebar_position: 1
 sidebar_label: Plugins
 ---
- 
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
 # Plugins
 
 Plugins are software extensions that integrate directly with Unraid OS. They allow you to enhance your system features or add advanced functionality.
@@ -55,9 +58,20 @@ If your system becomes unstable after installing or updating plugins, you can tr
 
 **To boot into safe mode:**
 
+<Tabs>
+  <TabItem value="preferred" label="Preferred method" default>
+Preferred, as it doesn't even require a display connected to your server.
+
+1. In the **WebGUI**, go to **Main > Array Operation**.
+2. Check the **Reboot in safe mode** box.
+3. Click **Reboot** to restart your server directly into Safe Mode—no keyboard or monitor required.
+
+  </TabItem>
+  <TabItem value="alternative" label="Alternative method">
 1. Restart your Unraid server.
 2. At the boot menu, select “Unraid OS Safe Mode.”
 3. Press Enter to continue.
+ </TabItem>
+</Tabs>
 
 While in safe mode, review your installed plugins and consider removing or updating those that may not be compatible with your current Unraid release.
-
