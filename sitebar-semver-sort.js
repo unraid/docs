@@ -23,7 +23,7 @@ function addItemTitle(item) {
 function sortSidebarItems(items, sortBySemver = false) {
   const result = items.map((item) => {
     if (item.type === "category") {
-      if (item.label === "Release Notes") {
+      if (item.label.toLowerCase() === "release notes") {
         return { ...item, items: sortSidebarItems(item.items, true) };
       } else {
         return { ...item, items: sortSidebarItems(item.items, false) };
