@@ -12,7 +12,7 @@ Apple’s Time Machine is a backup tool that comes with every Mac. It makes it e
 
 :::note macOS compatibility
 
-This guide applies to macOS Ventura (13.x), Sonoma (14.x), and Sequoia (15.x) versions. Some features, such as SMB enhancements and Time Machine support over SMB, require macOS versions that support these protocols.
+This guide applies to macOS Ventura (13.x), Sonoma (14.x), and Sequoia (15.x) versions. Some features, such as %%SMB|samba%% enhancements and Time Machine support over %%SMB|samba%%, require macOS versions that support these protocols.
 
 For the best results, keep your Mac updated to the latest version of macOS that is compatible with your hardware.
 
@@ -25,10 +25,10 @@ Some users report intermittent issues with Time Machine and network shares on ma
 
 :::caution Before you begin
 
-Ensure **SMB** is enabled in the WebGUI:
+Ensure **%%SMB|samba%%** is enabled in the %%WebGUI|web-gui%%:
 
-  1. Go to **Settings → SMB** under "Network Services."
-  2. Set **Enable SMB** to **Yes** (you must stop the array to change this).
+  1. Go to ***Settings → SMB*** under "Network Services."
+  2. Set **Enable %%SMB|samba%%** to **Yes** (you must stop the %%array|array%% to change this).
   3. Set **Enhanced macOS interoperability** to **Yes**.
     <div style={{ margin: 'auto', maxWidth: '600px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
 
@@ -39,32 +39,32 @@ Ensure **SMB** is enabled in the WebGUI:
 
 To create a Time Machine share:
 
-1. In the WebGUI, go to **Shares** and click **Add Share**.
+1. In the %%WebGUI|web-gui%%, go to **Shares** and click **Add %%user share|user-share%%**.
 2. Configure the following key settings:
 
     | Setting                     | Description                                                                                  |
     |-----------------------------|----------------------------------------------------------------------------------------------|
-    | **Share name**              | Name your share (e.g., Time Machine).                                                       |
-    | **Minimum free space**      | Set the **Minimum free space** to allow writing to any disk in the share (default is usually fine). |
-    | **Included disk(s)**        | Select the disk(s) in the array to use for the Time Machine share.                          |
+    | **%%User share&#124;user-share%% name**              | Name your %%user share&#124;user-share%% (e.g., Time Machine).                                                       |
+    | **Minimum free space**      | Set the **Minimum free space** to allow writing to any disk in the %%user share&#124;user-share%% (default is usually fine). |
+    | **Included disk(s)**        | Select the disk(s) in the %%array&#124;array%% to use for the Time Machine %%user share&#124;user-share%%.                          |
     | **Enable copy-on-write**    | Keep at **Auto** for best performance.                                                      |
-    | **SMB export**              | Set to **Yes (Time Machine)** to enable Time Machine support.                               |
+    | **%%SMB&#124;samba%% export**              | Set to **Yes (Time Machine)** to enable Time Machine support.                               |
     | **Time Machine volume size**| Limit the reported volume size to prevent Time Machine from using all disk space.           |
-    | **Security settings**       | Configure SMB security parameters as desired.                                               |
+    | **Security settings**       | Configure %%SMB&#124;samba%% security parameters as desired.                                               |
 
-3. Click **Apply** to create the share.
+3. Click **Apply** to create the %%user share|user-share%%.
 
 ## Connect from macOS
 
-To connect to your share from your Mac:
+To connect to your %%user share|user-share%% from your Mac:
 
 1. In **Finder**, press **Command + K** to open the "Connect to Server" window.
-2. Enter the SMB address of your Unraid server. For example, use the format `smb://[server-ip]/[Time Machine share name]` and click **Connect**.
+2. Enter the %%SMB|samba%% address of your Unraid server. For example, use the format `smb://[server-ip]/[Time Machine share name]` and click **Connect**.
 3. When prompted, input your Unraid username and password that has access to the share, then click **Connect**.
 4. Open **System Settings** if you're using macOS Ventura 13.0 or later, or **System Preferences** if you're on macOS Monterey 12.x or earlier. Then navigate to **Time Machine**.
-5. Click on **Select Disk** or **Add Backup Disk**, choose your Unraid Time Machine share, and then click **Use Disk**.
+5. Click on **Select Disk** or **Add Backup Disk**, choose your Unraid Time Machine %%user share|user-share%%, and then click **Use Disk**.
 6. (Optional) If you want to secure your backup with a password, enable **Encrypt backups**.
-7. If prompted, confirm the connection and re-enter your Unraid user credentials if needed.
+7. If prompted, confirm the connection and re-enter your Unraid %%root user|root-user%% credentials if needed.
 8. Time Machine will start the initial backup automatically. Keep in mind that the first backup may take a while, but future backups will be faster since they are incremental.
 
 :::tip
@@ -84,28 +84,28 @@ For families or settings with multiple Macs, this method offers clear separation
 
 To create separate backups for different users or Macs on your Unraid server:
 
-1. **Create unique Unraid user accounts** for each person or Mac that will back up data. For example, users named `larry`, `curly`, and `moe`.
+1. **Create unique Unraid %%root user|root-user%% accounts** for each person or Mac that will back up data. For example, users named `larry`, `curly`, and `moe`.
    - This ensures that each user has their own identity and permissions.
 
-2. **Create individual Time Machine shares** for each user, naming them clearly to match the user, such as `tm-larry`, `tm-curly`, and `tm-moe`.
+2. **Create individual Time Machine %%user shares|user-share%%** for each user, naming them clearly to match the user, such as `tm-larry`, `tm-curly`, and `tm-moe`.
    - Keeping shares separate helps with managing storage and access for each user.
 
-3. **Assign appropriate user permissions** for each share:
-   - Set the share's SMB security settings to ensure that only the corresponding user has access.
-   - Confirm that only the intended user can read and write to their Time Machine share.
+3. **Assign appropriate user permissions** for each %%user share|user-share%%:
+   - Set the %%user share|user-share%%'s %%SMB|samba%% security settings to ensure that only the corresponding user has access.
+   - Confirm that only the intended user can read and write to their Time Machine %%user share|user-share%%.
 
-4. **Configure Time Machine on each Mac** to connect to its designated share:
-   - On each Mac, connect to the Unraid server using the SMB path for their specific share (e.g., `smb://unraid-server/tm-larry`).
-   - Follow the usual Time Machine setup steps to select the share as the backup disk.
+4. **Configure Time Machine on each Mac** to connect to its designated %%user share|user-share%%:
+   - On each Mac, connect to the Unraid server using the %%SMB|samba%% path for their specific %%user share|user-share%% (e.g., `smb://unraid-server/tm-larry`).
+   - Follow the usual Time Machine setup steps to select the %%user share|user-share%% as the backup disk.
 
 5. **Monitor and manage storage usage**:
-   - You can optionally set volume size limits on each Time Machine share to prevent one user from taking up too much space.
+   - You can optionally set volume size limits on each Time Machine %%user share|user-share%% to prevent one user from taking up too much space.
    - Regularly check usage and adjust quotas as necessary.
 
 ## Troubleshooting
 
 If Time Machine backups fail or become unreliable:
 
-1. **Try the Time Machine Docker container**: [Available through Community Applications](https://unraid.net/community/apps?q=time+machine#r), this option can provide more stable backups than direct SMB shares.
+1. **Try the Time Machine Docker container**: [Available through Community Applications](https://unraid.net/community/apps?q=time+machine#r), this option can provide more stable backups than direct %%SMB|samba%% %%user shares|user-share%%.
 2. **Check macOS firewall**: Temporarily disable the firewall to see if it’s blocking connections.
-3. **Create a fresh backup destination**: Delete and recreate the Time Machine share if issues continue.
+3. **Create a fresh backup destination**: Delete and recreate the Time Machine %%user share|user-share%% if issues continue.

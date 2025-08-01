@@ -9,7 +9,7 @@ An Unraid.net account is your access point to Unraid’s online services, includ
  
 #### Benefits of an Unraid.net account include:
  
-- **<u>Single Sign-On (SSO)</u>:** Access Unraid's systems with one set of credentials.
+- **%%Single Sign-On (SSO)|sso%%:** Access Unraid's systems with one set of credentials.
 - **License Management:** Easily manage your license keys and server registrations.
 - **Access to Prereleases:** Download and test prerelease versions of Unraid.
 - **Enhanced Support:** Engage in forums and receive updates on your account.
@@ -17,7 +17,7 @@ An Unraid.net account is your access point to Unraid’s online services, includ
  
 ### Your Account and the Data that's Stored
  
-Unraid.net uses a SSO system at account.unraid.net for secure authentication via <u>AWS Cognito</u>. Your data is stored securely and encrypted. The AWS Cognito <u>user pool database</u> retains the following information for registered users:
+Unraid.net uses a %%SSO|sso%% system at account.unraid.net for secure authentication via %%AWS Cognito|aws-cognito-oauth%%. Your data is stored securely and encrypted. The %%AWS Cognito|aws-cognito-oauth%% user pool database retains the following information for registered users:
 
 | Data Type                  | Description                                               |
 |----------------------------|-----------------------------------------------------------|
@@ -26,6 +26,6 @@ Unraid.net uses a SSO system at account.unraid.net for secure authentication via
 | Email address              | Used for communication and account recovery               |
 | Unraid Forum ID            | Links your account to forum activity                      |
 | Prerelease authorization   | Indicates if you can download Unraid prereleases          |
-| Password hash              | Secure, encrypted version of your password                |
+| %%Password hash&#124;hash%%              | Secure, encrypted version of your password                |
 | MFA details                | Information for multi-factor authentication               |
-| Google/Apple SSO info      | Third-party sign-in attributes (if used)                  |
+| Google/Apple %%SSO&#124;sso%% info      | Third-party sign-in attributes (if used)                  |

@@ -4,7 +4,7 @@ sidebar_position: 2
 
 # Tour the WebGUI
 
-The WebGUI is the primary interface for managing and configuring your Unraid server. It provides access to all system features, monitoring tools, and configuration options through an organized navigation bar and user-friendly screens. This layout is designed to help you efficiently manage storage, users, applications, and system settings from any web browser.
+The %%WebGUI|web-gui%% is the primary interface for managing and configuring your Unraid server. It provides access to all system features, monitoring tools, and configuration options through an organized navigation bar and user-friendly screens. This layout is designed to help you efficiently manage storage, users, applications, and system settings from any web browser.
 
 ## The Navigation Bar
 
@@ -14,15 +14,15 @@ The horizontal navigation bar gives users access to the main functional areas of
 
 ### 1. Dashboard
 
-The Dashboard tab provides real-time monitoring of hardware and software components on your Unraid server. It displays various aspects of management - such as system identification, CPU, RAM, storage, network information, Containers, VMs, users, and shares - in a grid of tiles.
+The Dashboard tab provides real-time monitoring of hardware and software components on your Unraid server. It displays various aspects of management - such as system identification, CPU, RAM, storage, network information, Containers, %%VMs|vm%%, users, and shares - in a grid of tiles.
   ![Dashboard tab](/img/dashboard.png)
 You can enhance the Dashboard with plugins from <u>Community Applications</u> and customize the display by toggling tiles on and off using the padlock in the navigation bar.
 
 ### 2. Main
 
-The Main screen enables efficient management of your Unraid storage and disk operations. You can configure your array, cache pools, and flash devices, as well as manage USB storage and unassigned devices, including remote shares. It displays key information about each storage device, such as health, capacity, and file systems.
+The Main screen enables efficient management of your Unraid storage and disk operations. You can configure your %%array|array%%, %%cache pools|cache-pool%%, and flash devices, as well as manage USB storage and unassigned devices, including remote shares. It displays key information about each storage device, such as health, capacity, and file systems.
   ![Main tab](/img/maintab.png)
-At the bottom, the Array Operation section provides maintenance options to keep your array running smoothly.
+At the bottom, the Array Operation section provides maintenance options to keep your %%array|array%% running smoothly.
 
 ### 3. Shares
 
@@ -40,7 +40,7 @@ The Users screen allows management of all user accounts on the Unraid server, as
 The Settings screen allows you to manage all system settings on your Unraid server, including:
 
 - **System Settings**: Configure parameters and behaviors for the core components of Unraid.
-- **Network Services**: Set up various communication protocols and configure your <u>Wireguard VPN</u>.
+- **Network Services**: Set up various communication protocols and configure your %%Wireguard|wireguard%% %%VPN|vpn-tunnel%%.
 - **User Preferences**: Adjust individual user preferences, such as notifications and display settings.
 - **User Utilities**: Manage individual utilities that you have added through plugins.
 
@@ -65,10 +65,10 @@ For details on running Docker containers, see <u>Using Unraid to... > Run Docker
 
 ### 8. VMs
 
-The VMs screen lets you manage virtual machines (VMs) on your Unraid server. It displays all your created VMs along with their main attributes, such as CPU assignments, vDisk allocation, and graphics card settings.
+The VMs screen lets you manage %%virtual machines (VMs)|vm%% on your Unraid server. It displays all your created %%VMs|vm%% along with their main attributes, such as CPU assignments, %%vDisk allocation|vdisk-allocation%%, and graphics card settings.
 
 :::note
-This option will **only** appear in the Navigation Bar if your Unraid server meets the <u>hardware virtualization requirements</u>.
+This option will **only** appear in the Navigation Bar if your Unraid server meets the %%hardware virtualization|hvm%% requirements.
 :::
 
 ### 9. Apps
@@ -79,7 +79,7 @@ It provides community-sourced plugins and Docker containers that enhance Unraidâ
 
 ### 10. Tools
 
-The Tools screen offers various tools for managing Unraid OS, customizing the look of the WebGUI, and system updates.
+The Tools screen offers various tools for managing Unraid OS, customizing the look of the %%WebGUI|web-gui%%, and system updates.
 ![Tools tab](/img/toolstab.png)
 
 ### 11. System Shortcuts
@@ -99,11 +99,11 @@ The section of the Navigation bar displays shortcuts to Unraid features, such as
 
 ### 12. Account Options
 
-In the top-right corner of the WebGUI, next to your server name, is the hamburger menu. This menu allows you to manage your Unraid account, access Unraid Connect, upgrade your license key, and log out.
+In the top-right corner of the %%WebGUI|web-gui%%, next to your server name, is the hamburger menu. This menu allows you to manage your Unraid account, access Unraid Connect, upgrade your license key, and log out.
 
 If you're in trial mode, you can also redeem your license key here to activate Unraid as Basic, Plus, or Pro.
 
 ### 13. Status Bar
 
 ![Status Bar](/img/status-bar2.png)
-The status bar at the bottom of the WebGUI shows the current state of your array and the status of ongoing operations like Mover or parity checks. Some plugins also display important information, like system temperatures.
+The status bar at the bottom of the %%WebGUI|web-gui%% shows the current state of your %%array|array%% and the status of ongoing operations like %%Mover|mover%% or %%parity checks|parity-check%%. Some plugins also display important information, like system temperatures.

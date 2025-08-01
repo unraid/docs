@@ -35,32 +35,52 @@ For WoL to work properly, make sure you meet the following requirements:
 
 ## Putting an Unraid server to sleep
 
-Putting your Unraid server into a sleep state helps conserve power while maintaining the system's state in RAM. This allows the server to quickly resume operation when needed, without requiring a full reboot. To use Wake-on-LAN (WoL), you must first configure your server to enter sleep mode correctly and ensure that WoL is enabled on the network interface.
+The preferred and user-friendly way to manage sleep on Unraid is by using the [**Dynamix S3 Sleep plugin**](https://unraid.net/community/apps/c/plugins/p3?srsltid=AfmBOorpfP2Psw_bCorklf-QVCUHvADYGsdbsAH-4CldU4V2hWgoO-09#r:~:text=%3E%3E-,Dynamix%20S3%20Sleep,-Dynamix%20Repository). This plugin offers a graphical interface to help schedule sleep, wake, and idle behavior, while also addressing common issues that may arise with various hardware configurations.
 
-1. Connect to your Unraid server using the WebGUI terminal or SSH.
+To install and configure:
 
-2. Identify your primary network interface (usually `eth0`):
+1. Open the **Apps** tab in the Unraid WebGUI.
+2. Search for "Dynamix S3 Sleep" and install the plugin.
+3. Navigate to ***Settings → Sleep Settings*** to set up your sleep and wake options.
+4. Follow the on-screen instructions to configure idle timers, wake-on-LAN (WoL), and exclusion periods.
+
+The plugin automatically manages most configuration steps and receives regular updates to support a wide range of hardware.
+
+<details>
+<summary>Alternative manual method</summary>
+
+If you want more control or need advanced customization, you can configure sleep and WoL settings through the command line. This method is recommended for advanced users.
+
+:::caution
+Not all hardware supports S3 sleep or WoL reliably. Some systems may experience issues entering sleep, fail to wake up correctly, or require additional BIOS/UEFI settings. Always test these features thoroughly before relying on them.
+:::
+
+To configure sleep manually:
+
+1. Connect to your server using the WebGUI terminal or SSH.
+
+2. Identify your primary network interface (usually `eth0`) by running the following command:
 
    ```
    ifconfig
    ```
 
-   Take note of the MAC address (listed as `ether`).
+   Note the MAC address (labelled as `ether`).
 
-3. Enable WoL on the interface:
+3. Enable WoL on the interface with this command:
 
    ```
    ethtool -s eth0 wol g
    ```
 
-4. Put the server to sleep:
+4. Put the server to sleep by entering this command:
 
    ```
    echo -n mem > /sys/power/state
    ```
 
 :::caution Persistence
-WoL settings are **not persistent** across reboots. To make them permanent:
+WoL settings configured manually are **not persistent** across reboots by default. To make them permanent:
 
 1. Create a `go` file on your flash drive at `/boot/config/go`.
 2. Add this line:
@@ -70,6 +90,8 @@ WoL settings are **not persistent** across reboots. To make them permanent:
 ```
 
 :::
+
+</details>
 
 ## Wake your Unraid server
 

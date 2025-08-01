@@ -16,7 +16,7 @@ Taking some proactive steps can help you avoid or identify unclean shutdowns:
 
 - **Use a UPS:** Keep your server connected to an Uninterruptible Power Supply (UPS) and set it up to initiate a controlled shutdown when battery power runs low.
 - **Attempt a graceful shutdown:** If your server is unresponsive, briefly press the power button to trigger a safe shutdown. Do not hold the button down, as this will force a hard power off and lead to an unclean shutdown.
-- **Enable persistent logging:** Go to **Settings > Syslog Server** to activate logging that persists after a reboot. See [Persistent logs (Syslog server)](./diagnostics-information.md#persistent-logs-syslog-server) for more details.
+- **Enable persistent logging:** Go to ***Settings → Syslog Server*** to activate logging that persists after a reboot. See [Persistent logs (Syslog server)](./diagnostics-information.md#persistent-logs-syslog-server) for more details.
 - **Attach diagnostics for support:** If an unclean shutdown occurs, Unraid will attempt to save diagnostics to `/log/diagnostics.zip` on your flash device. Attach this file to forum posts when you seek help.
 :::
 
@@ -25,7 +25,7 @@ Taking some proactive steps can help you avoid or identify unclean shutdowns:
 A well-configured UPS is your best defense against unclean shutdowns caused by power loss.
 
 - **Connect the UPS via USB** to your Unraid server.
-- **Enable UPS support** in **Settings > UPS Settings**.
+- **Enable UPS support** in ***Settings → UPS Settings***.
 - **Configure shutdown timeouts:** Set the UPS to trigger a controlled shutdown before the battery runs low. Adjust the "Battery runtime left" or "Battery charge level" thresholds to provide enough time for Unraid to stop the **array** and power down safely.
 - **Test your configuration:** Simulate a power loss to ensure the UPS and Unraid respond correctly.
 
@@ -73,9 +73,9 @@ Properly configuring shutdown timeouts is essential to ensure your Unraid server
 
 | Setting                      | Default | Recommended minimum | Where to configure                                  |
 |------------------------------|---------|---------------------|-----------------------------------------------------|
-| VM shutdown timeout          | 60s     | 300s (5 min)        | ***Settings > VM Manager > VM Shutdown (Advanced)*** |
-| Docker container stop timeout | 10s     | 30–60s              | ***Settings > Docker (Advanced)***                   |
-| General shutdown timeout      | 90s     | 3 × VM timeout + Docker timeout + 15–30s | ***Settings > Disk Settings > Shutdown time-out***   |
+| VM shutdown timeout          | 60s     | 300s (5 min)        | ***Settings → VM Manager → VM Shutdown (Advanced)*** |
+| Docker container stop timeout | 10s     | 30–60s              | ***Settings → Docker (Advanced)***                   |
+| General shutdown timeout      | 90s     | 3 × VM timeout + Docker timeout + 15–30s | ***Settings → Disk Settings → Shutdown time-out***   |
 
 ### Virtual machines timeout
 
@@ -85,7 +85,7 @@ Properly configuring shutdown timeouts is essential to ensure your Unraid server
 Unraid first shuts down all configured virtual machines (VMs) before stopping Docker containers or the array itself. The **VM Shutdown Timeout** determines how long Unraid waits for each VM to shut down gracefully.
 
 **Where to set:**  
-  **Settings > VM Manager > VM Shutdown** (enable Advanced view)
+  ***Settings → VM Manager → VM Shutdown*** (enable Advanced view)
 
 **Consider:**  
 
@@ -105,7 +105,7 @@ Unraid first shuts down all configured virtual machines (VMs) before stopping Do
 After VMs, Unraid stops all running Docker containers. The **Docker Container Stop Timeout** controls how long Unraid waits for each container to exit cleanly.
 
 **Where to set:**  
-  **Settings > Docker** (enable Advanced view)
+  ***Settings → Docker*** (enable Advanced view)
 
 **Consider:**  
 
@@ -127,7 +127,7 @@ The overall **Shutdown time-out** is the maximum time Unraid allows for all shut
 
 **Where to set:**  
 
-  ***Settings > Disk Settings > Shutdown time-out***
+  ***Settings → Disk Settings → Shutdown time-out***
 
 **How to calculate:**  
   
@@ -148,7 +148,7 @@ The overall **Shutdown time-out** is the maximum time Unraid allows for all shut
 Your UPS must provide enough runtime to allow all shutdown timers to expire before the server loses power.
 
 **Where to check:**  
-  - **Settings > UPS Settings** (see "Runtime left" with all disks spun up)  
+  - ***Settings → UPS Settings*** (see "Runtime left" with all disks spun up)  
 
 **Consider:**  
   - The UPS should trigger a shutdown early enough to allow the full shutdown sequence to complete.

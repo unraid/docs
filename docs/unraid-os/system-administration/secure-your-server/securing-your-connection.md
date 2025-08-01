@@ -20,11 +20,11 @@ Several parameters in Unraid affect how SSL is configured and used. Understandin
 
 | Parameter         | Description                                                                                          |
 |-------------------|------------------------------------------------------------------------------------------------------|
-| **Server name**    | Set in **Settings > Identification**. Default is `tower`.                                            |
-| **Local TLD**      | Set in **Settings > Management Access**. Default is `local`.                                         |
-| **Use ssl/tls**   | Set in **Settings > Management Access**. Controls whether SSL is enabled.                            |
-| **HTTP port**     | Set in **Settings > Management Access**. Default is `80`.                                            |
-| **HTTPS port**    | Set in **Settings > Management Access**. Default is `443`.                                           |
+| **Server name**    | Set in ***Settings → Identification***. Default is `tower`.                                            |
+| **Local TLD**      | Set in ***Settings → Management Access***. Default is `local`.                                         |
+| **Use ssl/tls**   | Set in ***Settings → Management Access***. Controls whether SSL is enabled.                            |
+| **HTTP port**     | Set in ***Settings → Management Access***. Default is `80`.                                            |
+| **HTTPS port**    | Set in ***Settings → Management Access***. Default is `443`.                                           |
 | **Certificate**   | Type of SSL certificate used (see below).                                                            |
 | **Lan ip**        | Your server's LAN IP address, formatted for use in URLs.                                             |
 | **Wan ip**        | Your server's public IP address, formatted for use in URLs.                                          |
@@ -51,7 +51,7 @@ Below are the main ways to access your Unraid WebGUI, depending on your SSL conf
 
 With HTTP only, traffic between your browser and the server is not encrypted.
 
-1. Go to **Settings > Management Access**.
+1. Go to ***Settings → Management Access***.
 2. Set **Use SSL/TLS** to *No*.
 3. Keep **Local TLD** as `local` unless you have your own DNS.
 4. Access URLs:
@@ -73,7 +73,7 @@ Anyone on your network can intercept data sent over HTTP. Use HTTPS whenever pos
 
 Traffic is encrypted, but browsers will display a warning because the certificate is not signed by a trusted authority.
 
-1. Go to **Settings > Management Access**.
+1. Go to ***Settings → Management Access***.
 2. Set **Use SSL/TLS** to *Yes*.
 3. Keep **Local TLD** as `local` unless you have your own DNS.
 4. Access URLs:
@@ -95,7 +95,7 @@ Browsers will show a certificate error. All traffic is still encrypted after you
 
 You can access your server securely via the **WebGUI** using a Myunraid.net certificate, and configure a fallback URL in case your DNS resolution is down. All traffic will be encrypted, and the server is configured to fall back to a secondary method when DNS is unavailable.
 
-1. Go to **Settings > Management Access**.
+1. Go to ***Settings → Management Access***.
 2. Keep **Local TLD** at the default of `local` unless you can provide your own DNS name resolution (this is used for the fallback certificate).
 3. Leave **Use SSL/TLS** set to either *No* or *Yes*.
 4. Press **Provision** to generate the myunraid.net certificate.
@@ -130,7 +130,7 @@ If DNS resolution becomes unavailable (e.g., your Internet goes down), you can u
 
 This method provides the highest level of SSL enforcement by requiring all WebGUI access to use the Myunraid.net certificate and URL. It is ideal for users who want maximum security and do not need to access their server via local IP or hostname if DNS is unavailable.
 
-1. Go to **Settings > Management Access** in the **WebGUI**.
+1. Go to ***Settings → Management Access*** in the **WebGUI**.
 2. Keep **LocalTLD** set to `local` unless you have your own DNS name resolution (this is used for the fallback certificate if you later run the `use_ssl` command).
 3. Click **Provision** to generate a Myunraid.net certificate.
 4. If your network does not have DNS rebinding issues, the *Strict* option for **Use SSL/TLS** will be available.
@@ -198,7 +198,7 @@ If your certificate is invalid or does not match the server's URL, Unraid will d
 <details>
 <summary><strong>Access via HTTPS with custom certificate</strong></summary>
 
-1. Go to **Settings > Management Access**.
+1. Go to ***Settings → Management Access***.
 2. Set **Use SSL/TLS** to *Yes*.
 3. Set **Local TLD** to the domain name used in your certificate's Subject.
 4. Access your server at `https://[servername].[localTLD]` (e.g., `https://tower.mydomain.com`). You must manage DNS for this URL.

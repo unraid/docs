@@ -5,14 +5,19 @@ sidebar_label: Deploy & configure Unraid OS
 
 # Deploy & configure Unraid OS
 
-After booting Unraid OS for the first time, you'll use the WebGUI to complete your system configuration. This interface lets you manage your server, set up storage, configure user shares, and control features like hardware virtualization and Docker containers.
+After booting Unraid OS for the first time, you'll use the %%WebGUI|web-gui%% to complete your system configuration. This interface lets you manage your server, set up storage, configure user shares, and control features like %%hardware virtualization|hvm%% and Docker containers.
+
+:::info Localize
+
+It may be easier for users to follow this guide after configuring their language settings.  Check out [Multi-language support](../../using-unraid-to/customize-your-experience/multi-language-support.md) to make the %%WebGUI|web-gui%% more accessible in your preferred language.
+:::
 
 ## Connect to the Unraid WebGUI
 
-You can connect to the WebGUI in two ways:
+You can connect to the %%WebGUI|web-gui%% in two ways:
 
 - **GUI Mode:** Boot Unraid in GUI mode and sign in using `root` as the username with no initial password.
-- **Web Browser:** On another device on your local network, visit `http://tower.local`. If you set a different hostname, use that instead of `tower` (i.e., for the hostname `unraidserver`, you'd visit `http://unraidserver.local`).
+- **Web Browser:** On another device on your local network, visit `http://tower.local`. If you set a different hostname, use that instead of `tower` (i.e., for the hostname `unraidserver`, you'd visit `http://unraidserver.local`). %%mDNS|mdns%% handles the resolution of these `.local` addresses.
 
 :::important
 The Unraid server is accessible on your LAN as soon as it’s fully booted. You can find the IP address on your router’s DHCP client list or by using a network scanning tool.
@@ -20,7 +25,7 @@ The Unraid server is accessible on your LAN as soon as it’s fully booted. You 
 
 ## Set a root password
 
-When you access the WebGUI for the first time, you'll be prompted to create a strong password for the root user.
+When you access the %%WebGUI|web-gui%% for the first time, you'll be prompted to create a strong password for the %%root user|root-user%%.
 
 Make sure your password is:
 
@@ -39,14 +44,14 @@ We recommend using a password manager for secure storage.
 :::
 
 :::tip
-If you forget your root password, you can reset it following the [Unraid documentation](https://docs.unraid.net/unraid-os/manual/security/reset-root-password/). You can also update your password in the Users page of the WebGUI.
+If you forget your root password, you can reset it following the [Unraid documentation](https://docs.unraid.net/unraid-os/manual/security/reset-root-password/). You can also update your password in the Users page of the %%WebGUI|web-gui%%.
 :::
 
 ## Register your license key
 
 After setting your root password, log in to your Unraid.net account to obtain a license key:
 
-1. In the WebGUI, go to the **Get Started** section.
+1. In the %%WebGUI|web-gui%%, go to the **Get Started** section.
     <div style={{ margin: 'auto', maxWidth: '500px'}}>
 
     ![Get started](/img/Upc_get_started.png)
@@ -62,7 +67,7 @@ After setting your root password, log in to your Unraid.net account to obtain a 
     This process allows you to manage your Unraid OS license keys, obtain new keys, recover lost ones, or upgrade your license.
 
 :::important
-For details on your license, visit **Tools > Registration** in the WebGUI.
+For details on your license, visit ***Tools → Registration*** in the %%WebGUI|web-gui%%.
 :::
 
 ## BIOS Recommendations
@@ -77,14 +82,14 @@ Before deploying Unraid OS, it's important to verify your system's BIOS and stor
 ### Basic Settings
 
  ✅ Set the **USB flash drive** as the primary boot device.  
- ✅ Configure the storage controller to **AHCI** mode with **SATA** connections.  
- ✅ Set the controller to **HBA mode** (not **RAID**).  
+ ✅ Configure the storage controller to **%%AHCI|ahci%%** mode with **SATA** connections.  
+ ✅ Set the controller to **%%HBA mode|hba-mode%%** (not **%%RAID|raid%%**).  
  ✅ Avoid front panel USB ports, and instead opt for USB ports located directly on the motherboard I/O panel.  
 
 ### Advanced Settings
 
- ✅ Enable **hardware virtualization** features (e.g., **Intel VT-x** or **AMD-V**) for **virtual machines (VMs)**.  
- ✅ Enable **IOMMU** support for PCI device assignment to VMs.
+ ✅ Enable **%%hardware virtualization|hvm%%** features (e.g., **%%Intel VT-x|intel-vt-x%%** or **%%AMD-V|amd-v%%**) for **%%virtual machines (VMs)|vm%%**.  
+ ✅ Enable **%%IOMMU|iommu%%** support for PCI device assignment to VMs.
 
 ### Troubleshooting Tips
 

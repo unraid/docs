@@ -24,7 +24,7 @@ When sharing files with your Unraid server over your home or office network, you
 
 :::important
 
-Starting with Unraid version 6.9, support for **AFP (Apple Filing Protocol)** has been removed. To ensure that your Mac computers work well with your Unraid server, including features like Time Machine backups, go to ***Settings > SMB*** and turn on **Enhanced macOS interoperability**.
+Starting with Unraid version 6.9, support for **AFP (Apple Filing Protocol)** has been removed. To ensure that your Mac computers work well with your Unraid server, including features like Time Machine backups, go to ***Settings → SMB*** and turn on **Enhanced macOS interoperability**.
 :::
 
 Deciding which protocol to use depends on the types of devices you have and what you need to do with your files. By default, Unraid enables SMB because it's widely supported by modern Windows and macOS systems. NFS and FTP are turned off but can be enabled if needed.
@@ -92,7 +92,7 @@ For more details, see [Microsoft's documentation on SMB guest access](https://le
 
 ### Set a strong root password
 
-Unraid does not set a password for the root user by default. Set a strong password immediately after installation to prevent unauthorized access to the WebGUI and your data.
+When you first access the WebGUI after install, you are required to set a password for the root user.  However, Unraid does not enforce password complexity requirements - it's up to you as the user to set the degree of password security for your server.
 
 - Go to the **Users** tab, select the root user, and set a password.
 - Consider using the **Dynamix Password Validator** plugin from [Community Apps](../../using-unraid-to/run-docker-containers/community-applications.md) for real-time strength feedback.
@@ -104,10 +104,10 @@ Forwarding ports from your router to your Unraid server can be necessary for rem
 
 | Port(s)      | Typical use                  | Security risk                                                                                  | Safer alternative                                  |
 |--------------|-----------------------------|-----------------------------------------------------------------------------------------------|----------------------------------------------------|
-| 80 / 443     | WebGUI (HTTP/HTTPS)         | Exposes management interface; risk of interception or brute force if password is weak          | Use Unraid Connect for secure remote access |
-| 445          | SMB (file shares)           | Exposes shares to the internet; risk of data theft or deletion                                | Use WireGuard VPN for secure remote file access      |
+| 80 / 443     | WebGUI (HTTP/HTTPS)         | Exposes management interface; risk of interception or brute force if password is weak          | Use Unraid Connect for secure remote access to the WebGUI |
+| 445          | SMB (file shares)           | Exposes shares to the internet; risk of data theft or deletion                                | Use  VPN for secure remote file access      |
 | 111 / 2049   | NFS                         | Exposes NFS shares; similar risks as SMB                                                      | Use VPN for remote access                          |
-| 22 / 23      | SSH/Telnet                  | Exposes console access; risk of brute force or credential theft                               | Use SSH keys and VPN; never forward Telnet         |
+| 22 / 23      | SSH/Telnet                  | Exposes console access; risk of brute force or credential theft                               | Use SSH keys or VPN; never forward Telnet         |
 | 57xx         | VNC for VMs                 | Exposes VM consoles; risk of unauthorized remote access                                       | Use Unraid Connect or VPN                          |
 
 :::tip
@@ -133,7 +133,7 @@ Never put your server in your network's DMZ. Placing your Unraid server in the D
 ### Assign user permissions carefully
 
 - Assign users to shares using Read-only or Read/Write access as required.
-- Avoid using the root account for everyday access; create dedicated share users.
+- The root account is for system administration and can't access network shares. Create dedicated user accounts for network share access.
 - Regularly review user permissions and remove unused accounts.
 
 ### Restrict share access to private or read-only
@@ -156,8 +156,9 @@ The Unraid flash device contains critical system and configuration files. While 
 
 Regular updates are essential for security. New vulnerabilities (CVEs) are discovered frequently, and Lime Technology actively issues patches for Unraid OS. Updating is only effective if you actually apply the updates.
 
-- Check for updates in **Tools > Update OS** in the **WebGUI**.
-- Enable notifications in **Settings > Notifications** to be alerted when updates are available.
+- Check for updates in ***Tools → Update OS*** in the **WebGUI**.
+- Enable notifications in ***Settings → Notifications*** to be alerted when updates are available.
+- Update plugins and Docker containers via the **Apps** tab to ensure all components are secure and compatible.
 - Apply updates promptly to ensure your server is protected against known threats.
 
 ### Use secure methods for remote administration

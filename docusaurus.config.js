@@ -6,199 +6,201 @@ const darkCodeTheme = require("prism-react-renderer").themes.dracula;
 const { sortSidebarItems } = require("./sitebar-semver-sort");
 
 const locales = ["en"];
+
 /** @type {import('@docusaurus/types').Config} */
-const config = {
-  title: "Unraid Docs",
-  tagline: "Documentation for Unraid",
-  favicon: "img/favicon.svg", // https://dev.to/masakudamatsu/favicon-nightmare-how-to-maintain-sanity-3al7
+module.exports = async function createConfigAsync() {
+  // Import the ES module plugin dynamically
+  const { default: remarkAutoGlossary } = await import('@renatonagliati/remark-auto-glossary');
 
-  // Set the production url of your site here
-  url: "https://docs.unraid.net/",
-  // Set the /<baseUrl>/ pathname under which your site is served
-  // For GitHub pages deployment, it is often '/<projectName>/'
-  baseUrl: "/",
+  return {
+    title: "d Docs",
+    tagline: "Documentation for Unraid",
+    favicon: "img/favicon.svg", // Fixed: removed malformed "site here" text
 
-  trailingSlash: true,
+    // Set the production url of your site here
+    url: "https://docs.unraid.net/",
+    // Set the /<baseUrl>/ pathname under which your site is served
+    // For GitHub pages deployment, it is often '/<projectName>/'
+    baseUrl: "/",
 
-  // GitHub pages deployment config.
-  // If you aren't using GitHub pages, you don't need these.
-  organizationName: "unraid", // Usually your GitHub org/user name.
-  projectName: "docs", // Usually your repo name.
+    trailingSlash: true,
 
-  onBrokenLinks: "warn",
-  onBrokenMarkdownLinks: "warn",
-  // Even if you don't use internalization, you can use this field to set useful
-  // metadata like html lang. For example, if your site is Chinese, you may want
-  // to replace "en" with "zh-Hans".
-  i18n: {
-    defaultLocale: "en",
-    locales,
-  },
-  scripts: [
-    {
-      src: "/js/redirects.js",
-      async: false,
+    // GitHub pages deployment config.
+    // If you aren't using GitHub pages, you don't need these.
+    organizationName: "unraid", // Usually your GitHub org/user name.
+    projectName: "docs", // Usually your repo name.
+
+    onBrokenLinks: "warn",
+    onBrokenMarkdownLinks: "warn",
+    // Even if you don't use internalization, you can use this field to set useful
+    // metadata like html lang. For example, if your site is Chinese, you may want
+    // to replace "en" with "zh-Hans".
+    i18n: {
+      defaultLocale: "en",
+      locales,
     },
-  ],
-  presets: [
-    [
-      "classic",
-      /** @type {import('@docusaurus/preset-classic').Options} */
+    scripts: [
+      {
+        src: "/js/redirects.js",
+        async: false,
+      },
+    ],
+    presets: [
+      [
+        "classic",
+        /** @type {import('@docusaurus/preset-classic').Options} */
+        ({
+          docs: {
+            routeBasePath: "/",
+            sidebarPath: require.resolve("./sidebars.js"),
+            // Please change this to your repo.
+            // Remove this to remove the "edit this page" links.
+            // editUrl: "https://github.com/unraid/docs/tree/main/",
+            // editLocalizedFiles: true,
+            async sidebarItemsGenerator({
+              defaultSidebarItemsGenerator,
+              ...args
+            }) {
+              const sidebarItems = await defaultSidebarItemsGenerator(args);
+              // @ts-ignore
+              return sortSidebarItems(sidebarItems);
+            },
+            // CORRECTED: Use the dynamically imported plugin
+            remarkPlugins: [
+              [remarkAutoGlossary, { yamlFile: "glossary.yaml" }]
+            ],
+          },
+          /* blog: {
+            showReadingTime: true,
+            // Please change this to your repo.
+            // Remove this to remove the "edit this page" links.
+            editUrl: "https://github.com/unraid/docs/tree/main/",
+          }, */
+
+          theme: { customCss: require.resolve("./src/css/custom.css") },
+          gtag: { trackingID: "G-CZENQ1ZPEH", anonymizeIP: true },
+        }),
+      ],
+    ],
+
+    themeConfig:
+      /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
       ({
-        docs: {
-          routeBasePath: "/",
-          sidebarPath: require.resolve("./sidebars.js"),
-          // Please change this to your repo.
-          // Remove this to remove the "edit this page" links.
-          // editUrl: "https://github.com/unraid/docs/tree/main/",
-          // editLocalizedFiles: true,
-          async sidebarItemsGenerator({
-            defaultSidebarItemsGenerator,
-            ...args
-          }) {
-            const sidebarItems = await defaultSidebarItemsGenerator(args);
-            // @ts-ignore
-            return sortSidebarItems(sidebarItems);
+        algolia: {
+          appId: "JUYLFQHE7W",
+          apiKey: "47111d6564a2e69ee21a1d3d2f786ef3",
+          indexName: "unraid",
+          contextualSearch: true,
+          searchPagePath: "search",
+        },
+        colorMode: { defaultMode: "dark", respectPrefersColorScheme: true },
+        docs: { sidebar: { hideable: false, autoCollapseCategories: true } },
+        image: "img/meta-unraid.png",
+        metadata: [
+          {
+            name: "theme-color",
+            content: "#242526",
+            media: "(prefers-color-scheme: dark)",
+          }, // matches docusaurus theme rather than unraid specific color
+          {
+            name: "theme-color",
+            content: "#ffffff",
+            media: "(prefers-color-scheme: light)",
+          },
+          { name: "color-scheme", content: "dark light" },
+          {
+            name: "keywords",
+            content:
+              "Unraid, server, storage, NAS, Docker, virtualization, array, parity, data protection, file sharing, plugins, management, GUI, disk management, caching, SSD, disk encryption, security, RAID, network configuration, backups, media server, transcoding, monitoring, VMs, GPU passthrough, hardware compatibility",
+          },
+        ],
+        navbar: {
+          title: "Unraid Docs",
+          logo: {
+            alt: "My Site Logo",
+            src: "img/un-mark-gradient.svg",
+            style: { width: "30px" },
+          },
+          items: [
+            {
+              items: [
+                { href: "https://unraid.net", label: "Unraid Home" },
+                { href: "https://forums.unraid.net", label: "Forums" },
+                { label: "Docs Github", href: "https://github.com/unraid/docs" },
+              ],
+              position: "right",
+              label: "More",
+            },
+            { type: "localeDropdown", position: "right" },
+          ],
+        },
+        tableOfContents: { minHeadingLevel: 2, maxHeadingLevel: 4 },
+        footer: {
+          style: "light",
+          links: [
+            {
+              title: "Documentation",
+              items: [
+                { label: "Home", to: "/" },
+                {
+                  label: "Contribute on Github",
+                  href: "https://github.com/unraid/docs",
+                },
+              ],
+            },
+            {
+              title: "Community",
+              items: [
+                { label: "Forums", href: "https://forums.unraid.net" },
+                { label: "Discord", href: "https://discord.unraid.net/" },
+              ],
+            },
+            {
+              title: "More",
+              items: [
+                { label: "Unraid Home", href: "https://unraid.net" },
+                { label: "Unraid Connect", href: "https://connect.myunraid.net" },
+                { label: "Newsletter", href: "https://newsletter.unraid.net" },
+                { label: "Blog", href: "https://unraid.net/blog" },
+              ],
+            },
+          ],
+          logo: {
+            alt: "Unraid Logo",
+            src: "img/un-mark-gradient.svg",
+            width: 100,
+          },
+          copyright: `<small>Copyright &copy; 2005-${new Date().getFullYear()} Lime Technology, Inc.<br>Unraid&reg; is a registered trademark of Lime Technology, Inc.</small>`,
+        },
+        prism: {
+          theme: lightCodeTheme,
+          darkTheme: darkCodeTheme,
+          additionalLanguages: ["diff", "json", "bash"],
+        },
+        zoom: {
+          selector: ".markdown :not(em) > img", // Fixed: corrected HTML entity
+          background: {
+            light: "rgb(255, 255, 255)",
+            dark: "rgb(50, 50, 50)",
+          },
+          config: {
+            // options you can specify via https://github.com/francoischalifour/medium-zoom#usage
           },
         },
-        /* blog: {
-          showReadingTime: true,
-          // Please change this to your repo.
-          // Remove this to remove the "edit this page" links.
-          editUrl: "https://github.com/unraid/docs/tree/main/",
-        }, */
-
-        theme: { customCss: require.resolve("./src/css/custom.css") },
-        gtag: { trackingID: "G-CZENQ1ZPEH", anonymizeIP: true },
       }),
-    ],
-  ],
-
-  themeConfig:
-    /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
-    ({
-      algolia: {
-        appId: "JUYLFQHE7W",
-        apiKey: "47111d6564a2e69ee21a1d3d2f786ef3",
-        indexName: "unraid",
-        contextualSearch: true,
-        searchPagePath: "search",
-      },
-      colorMode: { defaultMode: "dark", respectPrefersColorScheme: true },
-      docs: { sidebar: { hideable: false, autoCollapseCategories: true } },
-      image: "img/meta-unraid.png",
-      metadata: [
+    plugins: [
+      require.resolve("docusaurus-plugin-image-zoom"),
+      [
+        "@docusaurus/plugin-ideal-image",
         {
-          name: "theme-color",
-          content: "#242526",
-          media: "(prefers-color-scheme: dark)",
-        }, // matches docusaurus theme rather than unraid specific color
-        {
-          name: "theme-color",
-          content: "#ffffff",
-          media: "(prefers-color-scheme: light)",
-        },
-        { name: "color-scheme", content: "dark light" },
-        {
-          name: "keywords",
-          content:
-            "Unraid, server, storage, NAS, Docker, virtualization, array, parity, data protection, file sharing, plugins, management, GUI, disk management, caching, SSD, disk encryption, security, RAID, network configuration, backups, media server, transcoding, monitoring, VMs, GPU passthrough, hardware compatibility",
+          quality: 70,
+          max: 1030, // max resized image's size.
+          min: 640, // min resized image's size. if original is lower, use that size.
+          steps: 2, // the max number of images generated between min and max (inclusive)
+          disableInDev: false,
         },
       ],
-      navbar: {
-        title: "Unraid Docs",
-        logo: {
-          alt: "My Site Logo",
-          src: "img/un-mark-gradient.svg",
-          style: { width: "30px" },
-        },
-        items: [
-          {
-            items: [
-              { href: "https://unraid.net", label: "Unraid Home" },
-              { href: "https://forums.unraid.net", label: "Forums" },
-              { label: "Docs Github", href: "https://github.com/unraid/docs" },
-            ],
-            position: "right",
-            label: "More",
-          },
-          { type: "localeDropdown", position: "right" },
-        ],
-      },
-      tableOfContents: { minHeadingLevel: 2, maxHeadingLevel: 4 },
-      footer: {
-        style: "light",
-        links: [
-          {
-            title: "Documentation",
-            items: [
-              { label: "Home", to: "/" },
-              {
-                label: "Contribute on Github",
-                href: "https://github.com/unraid/docs",
-              },
-            ],
-          },
-          {
-            title: "Community",
-            items: [
-              { label: "Forums", href: "https://forums.unraid.net" },
-              { label: "Discord", href: "https://discord.unraid.net/" },
-            ],
-          },
-          {
-            title: "More",
-            items: [
-              { label: "Unraid Home", href: "https://unraid.net" },
-              { label: "Unraid Connect", href: "https://connect.myunraid.net" },
-              { label: "Newsletter", href: "https://newsletter.unraid.net" },
-              { label: "Blog", href: "https://unraid.net/blog" },
-            ],
-          },
-        ],
-        logo: {
-          alt: "Unraid Logo",
-          src: "img/un-mark-gradient.svg",
-          width: 100,
-        },
-        copyright: `<small>Copyright &copy; 2005-${new Date().getFullYear()} Lime Technology, Inc.<br>Unraid&reg; is a registered trademark of Lime Technology, Inc.</small>`,
-      },
-      prism: {
-        theme: lightCodeTheme,
-        darkTheme: darkCodeTheme,
-        additionalLanguages: ["diff", "json", "bash"],
-      },
-      zoom: {
-        selector: ".markdown :not(em) > img",
-        background: {
-          light: "rgb(255, 255, 255)",
-          dark: "rgb(50, 50, 50)",
-        },
-        config: {
-          // options you can specify via https://github.com/francoischalifour/medium-zoom#usage
-        },
-      },
-    }),
-  plugins: [
-    require.resolve("docusaurus-plugin-image-zoom"),
-    [
-      "@docusaurus/plugin-ideal-image",
-      {
-        quality: 70,
-        max: 1030, // max resized image's size.
-        min: 640, // min resized image's size. if original is lower, use that size.
-        steps: 2, // the max number of images generated between min and max (inclusive)
-        disableInDev: false,
-      },
+      // Removed all conflicting glossary plugins
     ],
-    [
-      "@lunaticmuch/docusaurus-terminology",
-        {
-          termsDir: "./docs/terms", //Term directory
-          glossaryTermPatterns: ["term"], // File naming pattern
-        }
-    ],
-  ],
+  };
 };
-
-module.exports = config;

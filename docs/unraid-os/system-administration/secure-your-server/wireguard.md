@@ -8,17 +8,21 @@ import TabItem from '@theme/TabItem';
 
 # WireGuard
 
-While Tailscale provides a user-friendly experience for most, [WireGuard](https://www.wireguard.com/) is a robust built-in VPN solution in Unraid that shines in specific advanced networking scenarios. It’s particularly useful when you need detailed control over VPN routing or require server-to-server or LAN-to-LAN connections without relying on third-party services. Below are key scenarios where WireGuard excels in 2025.
+While Tailscale provides a user-friendly experience for most, [WireGuard](https://www.wireguard.com/) is a robust built-in VPN solution in Unraid that shines in specific advanced networking scenarios. It’s particularly useful when you need detailed control over VPN routing or require server-to-server or LAN-to-LAN connections without relying on third-party services. Below are key scenarios where WireGuard excels.
 
 **When to choose WireGuard:**
 
 | Scenario                     | Why choose WireGuard?                                                            |
 |------------------------------|----------------------------------------------------------------------------------|
-| **Full network control**     | Enables direct management of encryption keys and routing tables                  |
+| **Advanced configuration**     | Allows for custom VPN setups and integration with existing network infrastructure |
 | **Server-to-server tunnels** | Lets you create persistent encrypted links between Unraid servers                |
 | **LAN-to-LAN integration**   | Connects entire networks without involving intermediary services                  |
 | **Bandwidth-intensive tasks** | Offers minimal protocol overhead for maximum throughput                          |
-| **Regulatory compliance**    | Provides a complete on-premises solution without external service dependencies   |
+
+:::info
+For most users, [**Tailscale**](../secure-your-server/tailscale.md) can accomplish everything that WireGuard can do, often more easily. It typically doesn’t require port forwarding or manual configuration. However, if you need advanced, custom VPN setups or have specific compatibility requirements, choosing WireGuard may be a better option for some.
+:::
+
 
 ### Connection types and use cases
 
@@ -41,14 +45,14 @@ Knowing the connection types in Wireguard can help you decide if it's right for 
 
 - **Dynamic DNS:** Set up DDNS for reliable access if your public IP changes. Popular options include [Cloudflare](https://www.cloudflare.com/) (requires domain ownership), [No-IP](https://www.noip.com/), or [DuckDNS](https://www.duckdns.org/) (free but may experience occasional outages).
 - **Router configuration:**
-  - Enable UPnP in **Settings > Management Access** for automatic port forwarding.
+  - Enable UPnP in ***Settings → Management Access*** for automatic port forwarding.
   - If UPnP is unavailable, manually forward UDP port 51820 to your Unraid server's IP.
 - **Client software:** Install WireGuard on your devices ([Windows](https://www.wireguard.com/install/), [macOS](https://apps.apple.com/us/app/wireguard/id1451685025), [iOS](https://apps.apple.com/us/app/wireguard/id1441195209), [Android](https://play.google.com/store/apps/details?id=com.wireguard.android)).
 :::
 
 **Step 1: Generate keys**
 
-1. Go to **Settings > VPN Manager**.
+1. Go to ***Settings → VPN Manager***.
 
 <div style={{ margin: 'auto', maxWidth: '600px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
 
@@ -69,7 +73,7 @@ Store the private key securely since it provides full network access.
 
 **Step 3: Set up port forwarding**
 
-- **UPnP users:** Unraid will automatically forward ports if enabled in **Settings > Management Access**.  
+- **UPnP users:** Unraid will automatically forward ports if enabled in ***Settings → Management Access***.  
 
 <div style={{ margin: 'auto', maxWidth: '600px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
 
@@ -172,7 +176,7 @@ Short names like "tower" or router-managed DNS entries may not work over the VPN
 :::
 
 2. To enable short name resolution:
-   - Go to **Settings > VPN Manager** in Unraid.
+   - Go to ***Settings → VPN Manager*** in Unraid.
    - Switch from **Basic** to **Advanced** mode.
    - Enter the IP address of your preferred DNS server in the **Peer DNS Server** field.
    - Save changes and update the client configuration file.
@@ -193,7 +197,7 @@ For most users, the default **Use NAT** setting works out of the box and allows 
 
 1. In your WireGuard tunnel configuration, set **Use NAT** to **No**.
 2. On your router, add a static route for the WireGuard tunnel network (e.g., `10.253.0.0/24`) pointing to your Unraid server’s IP.
-3. In **Settings > Docker Settings**, set **Host access to custom networks** to **Enabled**.
+3. In ***Settings → Docker Settings***, set **Host access to custom networks** to **Enabled**.
 
 #### Configurations to avoid
 
@@ -259,3 +263,5 @@ If you lose access to the Unraid webGUI and need to disable WireGuard auto-start
 
 - Delete `/boot/config/wireguard/autostart` from your flash drive and reboot.
 </details>
+
+\* *"WireGuard" and the "WireGuard" logo are registered trademarks of Jason A. Donenfeld.*

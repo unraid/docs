@@ -12,26 +12,25 @@ When you have issues with your Unraid server, gathering detailed information is 
 
 :::info Diagnostics include...
 
-The diagnostics zip file contains several text files that create a detailed snapshot of your Unraid system, including:
+The diagnostics zip file contains several anonymized text files that create a detailed snapshot of your Unraid system, including:
 
 - **System configuration**: Information about your **array**, shares, network settings, and installed plugins.
 - **System logs**: Logs from the kernel, **WebGUI**, and system services, documenting events that may have led to the issue.
 - **Hardware information**: Details about connected drives, controllers, and other hardware components.
-- **Docker and VM info**: Configuration and logs for Docker containers and virtual machines, if applicable.
+- **Docker and VM info**: Overall configuration for Docker and virtual machines (no information about your individual containers or VMs is included).
 :::
 
 ---
 
 ## System diagnostics
 
-Unraid provides a **Diagnostics** tool located under **Tools > Diagnostics** in the **WebGUI** to capture comprehensive system information for troubleshooting. This tool will generate a zip file you can download and attach to forum posts for support. All diagnostics files are text-based, and users can review them to understand what information is included.
-
+Unraid provides a **Diagnostics** tool located under ***Tools → Diagnostics*** in the **WebGUI** to capture comprehensive system information for troubleshooting. This tool will generate a zip file you can download and attach to forum posts for support. All diagnostics files are text-based, and users can review them to understand what information is included.
 
 | Scenario                       | How to capture                                                                                          | Notes                                                                                                     |
 |--------------------------------|---------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------|
-| WebGUI responsive              | Use **Tools > Diagnostics** in the **WebGUI** to generate and download the diagnostics zip file.                 | Diagnostics are anonymized by default to protect sensitive data.                                          |
-| WebGUI unresponsive            | Access via SSH, telnet, or direct console to run the `diagnostics` command. The zip file saves to `/boot/logs`.   | Always capture diagnostics before rebooting to keep logs intact.                                         |
-| Array started in normal mode   | This is the preferred method for capturing diagnostics, as it provides the most complete information, especially about drive status. | If this isn't possible, refer to forum feedback for the best way to capture diagnostics.                 |
+| WebGUI available              | Use ***Tools → Diagnostics*** in the **WebGUI** to generate and download the diagnostics zip file.                 | Diagnostics are anonymized by default to protect sensitive data.                                          |
+| WebGUI not available            | Access via SSH, telnet, or direct console to run the `diagnostics` command. The zip file saves to `/boot/logs`.   | Always capture diagnostics before rebooting to keep logs intact.                                         |
+| Array started in normal mode   | This is the preferred method for capturing diagnostics, as it provides the most complete information, especially about drive status. | If this isn't possible, see the [Persistent logs section](#persistent-logs-syslog-server) for alternative capture methods.                 |
 
 <div style={{ margin: 'auto', maxWidth: '600px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
 
@@ -45,9 +44,81 @@ Attach the single diagnostics zip file when posting on forums - avoid uploading 
 
 ### Anonymization of diagnostic data
 
-By default, diagnostics are automatically anonymized. If you enable Mover logging under **Settings > Mover Settings**, the syslog will include details about files the Mover processes. It’s best to allow Mover logging only when troubleshooting specific Mover-related issues, as it may reveal file paths and names.
+By default, diagnostics are automatically anonymized. If you enable Mover logging under ***Settings → Mover Settings***, the syslog will include details about files the Mover processes. It’s best to allow Mover logging only when troubleshooting specific Mover-related issues, as it may reveal file paths and names.
 
-System logs reset upon reboot. Capturing diagnostics beforehand ensures the logs document the events that occurred leading up to the issue, which is vital for troubleshooting.
+When your system shuts down gracefully, the session log is saved automatically to the flash drive. You can access it after rebooting by going to ***Tools → Syslog → syslog-previous***. This log is also included in diagnostics on the next boot. However, if the system crashes, the system log will be lost. In these cases, enabling syslog mirroring to the flash or using a remote syslog server is recommended to preserve logs for troubleshooting.
+
+---
+## Testing drive read performance
+
+You can use built-in Linux tools to evaluate the read performance of your hard drives. This is helpful when diagnosing slow parity syncs, sluggish disk responses, or mismatched speeds among drives in an array or cache.
+
+:::important When and why to test drive speed
+
+Consider running disk read benchmarks if you experience:
+
+- Extremely slow parity builds or checks
+- Suspiciously slow file transfers from a specific disk
+- Drive mismatches after adding or replacing disks, particularly when mixing SSDs and HDDs
+- Reallocated sectors or UDMA CRC errors, which may indicate failing drives
+
+While these tests won’t give you exact real-world file transfer speeds, they can point out underperforming disks and any controller bottlenecks.
+:::
+
+### Quick test (hdparm)
+
+The `hdparm` tool measures both cached and buffered read speeds of a disk.
+
+To run the test, replace `X` with your disk device (like `sdb` or `sdg`) and enter the following command:
+
+```
+hdparm -tT /dev/sdX
+```
+
+- The `-T` result shows the cache read speed.
+- The `-t` result shows the buffered (sequential) disk read performance.
+
+:::tip
+Run this test multiple times to get a more reliable benchmark. You can use the following one-liner to run the test 12 times:
+
+```
+for ((i=0;i<12;i++)); do hdparm -tT /dev/sdX; done
+```
+:::
+
+:::note
+Make sure to replace `/dev/sdX` with a valid physical device. Avoid logical Unraid devices, such as `/dev/md1`, which include parity processes that may distort the raw performance readings.
+:::
+
+### Comprehensive test (diskspeed.sh)
+
+For a more detailed assessment of all attached drives, including parity and data drives, consider using the community script `diskspeed.sh`.
+
+This script:
+
+- Tests read speeds at multiple linear offsets across the disk surface
+- Generates CSV data and performance heat maps (images)
+- Can identify zones of poor performance, which might be a sign of failing hardware or problematic SMR drives
+
+To get started with `diskspeed.sh`:
+
+1. Download the script from the [Unraid forums](https://forums.unraid.net/topic/31073-disk-speed-test-graphs-disk-bottlenecks-identified-see-how-fast-your-disks-can-really-go/).
+2. Place it in a persistent path like `/boot/scripts/`.
+3. Make it executable:
+
+```
+chmod +x /boot/scripts/diskspeed.sh
+```
+
+4. Run the script:
+
+```
+bash /boot/scripts/diskspeed.sh
+```
+
+:::note
+This script only performs read-only operations and won’t modify any data on your drives. However, it's best to schedule the test during idle periods, as it may affect disk I/O and interfere with array performance.
+:::
 
 ---
 
@@ -57,7 +128,7 @@ Persistent logs are essential for keeping a record of system events between rebo
 
 ### Choosing the right logging method
 
-Go to **Settings > Syslog Server** to set up persistent logging. Each method has advantages and disadvantages:
+Go to ***Settings → Syslog Server*** to set up persistent logging. Each method has advantages and disadvantages:
 
 | Method               | Pros                                      | Cons                                      | Best for                                  |
 |----------------------|-------------------------------------------|-------------------------------------------|-------------------------------------------|
@@ -74,13 +145,21 @@ For detailed configuration help, check the **Help** icon in the WebGUI toolbar.
 <Tabs>
 <TabItem value="mirror" label="Mirror to flash">
 
-1. Set **Local syslog server** to *Enabled*.
-2. Select *Yes* under **Mirror to flash**.  
-3. Click **Apply**.  
-   - Logs will be saved to `/boot/logs` on your flash drive  
+1. Select *Yes* under **Mirror to flash**.  
+2. Click **Apply**.  
+   - Logs will be saved to `/boot/logs/syslog` on your flash drive  
+
+On the next reboot, this file will be renamed to `/boot/logs/syslog-previous`. You can view this file through **Tools → Syslog → syslog-previous**, and it will also be included (anonymized) in diagnostics.
+
+How it works:
+
+- By default, Unraid copies the syslog to the flash drive during every graceful shutdown. This is managed through the "copy syslog to flash on shutdown" setting, which is enabled by default.  
+- If you're troubleshooting crashes, you can enable "Mirror to flash." This will write the syslog to both `/var/log/syslog` and `/boot/logs/syslog` in real time. If a crash happens, any syslog entries recorded to flash before the crash will be preserved.
+
+Both methods result in the creation of a `/boot/logs/syslog-previous` file after the next boot, which you can access via the syslog viewer and will be included in diagnostics.
 
 :::caution
-Avoid using this method for long-term logging to protect the health of your flash drive.
+The "Copy syslog to flash on shutdown" setting is safe for your flash drive. However, enabling "Mirror to flash" can lead to excessive writes if left on for an extended period. For long-term logging needs, consider using a local or remote syslog server instead.
 :::
 
 </TabItem>
@@ -97,32 +176,33 @@ Avoid using this method for long-term logging to protect the health of your flas
 
 </div>
 
+:::note
+If you upload files from a remote syslog server to the forum, they will **not** be anonymized.
+:::
+
 </TabItem>
 <TabItem value="local" label="Local syslog server">
+
+To create a persistent, reliable copy of your Unraid syslog on your server:
 
 1. Set **Local syslog server** to *Enabled*.  
 2. Configure the following options:  
    - **Local syslog folder**: Use a cache-only or preferred share (best for SSDs).  
    - **Rotation settings**: Adjust the file size and number limits.  
-3. Click **Apply**.  
+3. For best results and to ensure all syslog data (including boot events) is captured, also set the **Remote syslog server** field to your server’s own IP address (the "Loopback method").
+   - This ensures syslog events are both stored locally and persist across reboots, without writing to the flash drive.
+4. Click **Apply**.  
    - Logs will be saved to the share you specified.  
+
+:::note
+
+- If you upload files from the local syslog server to the forum, they will **not** be anonymized.
+- Logs saved using this method are not included in standard diagnostics. Attach them separately if you need support.
+
+:::
 
 </TabItem>
 </Tabs>
-
-### Self-hosted local syslog (loopback method)
-
-If you want persistent logging without affecting flash drive wear or needing external devices, consider this approach.  This method prevents flash drive wear, captures boot process events, and saves logs on more reliable storage (array or cache).
-
-To enable this method:
-
-1. Configure the **Local syslog server** as [mentioned above](#enabling-the-syslog-server).  
-2. Use the same server's IP as the **Remote syslog server**.  
-   - Logs are sent out but looped back to the local share.  
-
-:::note
-Logs from this method won't be included in standard diagnostics. Make sure to attach them separately if you need support.
-:::
 
 ---
 

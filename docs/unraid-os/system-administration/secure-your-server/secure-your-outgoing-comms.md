@@ -5,22 +5,24 @@ sidebar_label: Secure your outgoing communications
 
 # Secure your outgoing communications
 
-The **Outgoing Proxy Manager**, introduced in Unraid 7.0, allows you to route Unraid's outgoing HTTP communications through an HTTP proxy server. This tool is designed to help you bypass restrictive firewalls or comply with network policies that require proxy usage. Note that the Outgoing Proxy Manager only applies to Unraid's own system traffic, not to Docker containers or virtual machines.
+The outgoing proxy manager and Tailscale exit nodes provide a way to route Unraid's outgoing communications through secure channels. These tools are useful for bypassing restrictive firewalls, adhering to network policies, or safeguarding your outgoing traffic. While these solutions mainly focus on Unraid's system traffic, there are configuration options to extend their coverage to your broader network.
 
-The Outgoing Proxy Manager is ideal for:
+There are three main methods to secure your outgoing communications:
 
-- Environments where direct Internet access from Unraid is blocked or filtered.
-- Organizations that need all server traffic to pass through a managed proxy for auditing or compliance.
-- Users who want to work around restrictive firewalls without routing all server traffic through a VPN.
+1. [**Outgoing Proxy Manager**](#setting-up-a-proxy-server) - This tool routes HTTP traffic through a proxy server, allowing you to manage and direct your web requests securely.
+2. [**Tailscale exit nodes**](#tailscale-exit-nodes) - With Tailscale exit nodes, all your traffic can be routed through Tailscale's mesh network, ensuring a secure connection across your devices.
+3. [**WireGuard VPN**](#outgoing-vpn-connections) - You can also use WireGuard VPN to route your traffic through commercial VPN providers, adding an extra layer of privacy and security.
 
-### Outgoing proxy vs. VPN: Which should you use?
+### Outgoing Proxy Manager vs. Tailscale/WireGuard/VPN
 
 | Use case                                  | Recommended tool         | Why                                                                                 |
 |-------------------------------------------|--------------------------|-------------------------------------------------------------------------------------|
 | Bypass firewall for Unraid system updates | Outgoing Proxy Manager   | Routes only Unraid's system traffic through a proxy; simple and minimal configuration.  |
-| Secure all outgoing traffic (system-wide) | Tailscale, WireGuard | Encrypts and tunnels all traffic from Unraid (including Docker/VMs) to remote sites. |
+| Secure all outgoing traffic with mesh networking | Tailscale exit nodes | Encrypts traffic through Tailscale's mesh network; easy setup with existing Tailscale infrastructure. |
+| Secure all outgoing traffic (system-wide) | WireGuard VPN | Encrypts and tunnels all traffic from Unraid (including Docker/VMs) to commercial VPN providers. |
 | Isolate Docker or VM traffic              | VPN or container proxy    | Configure VPN at the container/VM level for granular control.                        |
-| Compliance with corporate proxy policies   | Outgoing Proxy Manager   | Integrates with existing HTTP proxy infrastructure.                                  |
+| Access home network from anywhere          | Tailscale exit nodes     | Route traffic through your home network for consistent IP and geo-location.         |
+
 
 For most users, solutions like [Tailscale](../secure-your-server/secure-remote-access.md#tailscale) or [WireGuard](../secure-your-server/secure-remote-access.md#wireguard) are preferred for full-system security and privacy. Use Outgoing Proxy Manager when you only need to proxy Unraid's own HTTP requests.
 
@@ -65,6 +67,43 @@ To monitor proxy traffic, go to the **Docker** tab on the proxy host system, sel
 
 For additional information about plugin development and compatibility, visit the [Plugins section of the documentation](../plugins/).
 
+## Tailscale exit nodes
+
+Tailscale exit nodes offer a secure and modern way to route your Unraid server's outgoing traffic through another device on your Tailnet. This setup provides the security of a VPN while leveraging Tailscale's easy-to-use mesh networking, making it ideal for users who want encrypted outgoing traffic without the complexity of traditional VPNs.
+
+:::tip When to use Tailscale exit nodes
+
+Consider using Tailscale exit nodes for:
+
+- Securing outgoing traffic from your home network while traveling
+- Maintaining consistent IP addresses for services that block VPN traffic
+- Integrating seamlessly with existing Tailscale infrastructure
+:::
+
+### Configuring Tailscale exit nodes
+
+To set up a Tailscale exit node for your server's outgoing traffic:
+
+1. **Install the [Tailscale plugin](https://unraid.net/community/apps/c/plugins?q=tailscale#r:~:text=Plugins-,Tailscale%20(Plugin),-Derek%20Kaser)** from Community Applications if it’s not already installed.
+2. **Set up an exit node** on your Tailnet. This can be another Unraid server, a Docker container, or any device running Tailscale.
+3. **Configure your Unraid server** to use the exit node:
+   - Navigate to **Settings → Tailscale**.
+   - In the **Use Exit Node** field, select your available exit node.
+   - Click **Apply**.
+
+### Mullvad integration
+
+Tailscale has teamed up with Mullvad VPN to provide commercial exit nodes. You can purchase [Mullvad VPN through Tailscale](https://tailscale.com/mullvad), gaining access to their global network of servers as exit nodes. This combination offers Tailscale's mesh networking along with Mullvad's privacy-focused infrastructure.
+
+### Docker container exit nodes
+
+You can also set up a Docker container to function as a Tailscale exit node on your Unraid server.
+
+1. **Deploy a Tailscale container** using the [official Tailscale Docker image](https://hub.docker.com/r/tailscale/tailscale).
+2. **Configure the container** by adding the `--advertise-exit-node` flag.
+3. **Approve the exit node** in your Tailscale admin console.
+4. **Select the container** as an exit node for your other devices on the Tailnet.
+
 ## Outgoing VPN connections
 
 Unraid supports outgoing WireGuard VPN connections to commercial providers, allowing you to route Docker containers or your entire server’s traffic through a secure tunnel. This is useful for privacy, bypassing geo-restrictions, or securing outbound data. For community insights and troubleshooting, see the [WireGuard VPN tunneled access forum thread](https://forums.unraid.net/topic/84316-wireguard-vpn-tunneled-access/).
@@ -92,7 +131,7 @@ Choose a provider with native WireGuard support and strong privacy policies. Avo
 You can route specific Docker containers through a commercial VPN tunnel - no router changes required.
 
 1. Download the WireGuard config file from your chosen provider.
-2. In **Settings > VPN Manager**, select **Import Config** and upload the file. This creates a new tunnel.
+2. In ***Settings → VPN Manager***, select **Import Config** and upload the file. This creates a new tunnel.
 3. The **Peer type of access** defaults to *VPN tunneled access for Docker*. Optionally, give it a local name.
 4. Click **Apply**.
 5. Set the tunnel toggle to **Active**.
@@ -120,7 +159,7 @@ You can assign additional containers to this tunnel or create multiple tunnels.
 To route all Unraid traffic through a commercial VPN:
 
 1. Download the WireGuard config from your provider.
-2. In **Settings > VPN Manager**, select **Import Config** and upload the file.
+2. In ***Settings → VPN Manager***, select **Import Config** and upload the file.
 3. Optionally, rename the tunnel.
 4. Click **Apply**.
 5. Set the tunnel toggle to **Active**.
@@ -145,11 +184,10 @@ To route all Unraid traffic through a commercial VPN:
 
 For the most up-to-date guidance, troubleshooting assistance, and community tips, visit the following resources on the [Unraid forums](https://forums.unraid.net/):
 
-- **[WireGuard VPN Tunneled Access](https://forums.unraid.net/topic/84316-wireguard-vpn-tunneled-access/)**  
-  This community discussion focuses on routing Docker containers or system-wide traffic through commercial WireGuard VPN providers. It includes real-world setup examples, DNS leak testing tips, and troubleshooting advice for outbound tunnels.
+- **[WireGuard VPN Tunneled Access](https://forums.unraid.net/topic/84316-wireguard-vpn-tunneled-access/)** - This community discussion focuses on routing Docker containers or system-wide traffic through commercial WireGuard VPN providers. It includes real-world setup examples, DNS leak testing tips, and troubleshooting advice for outbound tunnels.
 
-- **[Dynamix WireGuard Plugin Thread](https://forums.unraid.net/topic/84229-dynamix-wireguard-vpn/)**  
-  This is the official thread for the Dynamix WireGuard plugin. It covers plugin updates, feature requests, bug reports, and general questions and answers related to Unraid’s built-in WireGuard support.
+- **[Dynamix WireGuard Plugin Thread](https://forums.unraid.net/topic/84229-dynamix-wireguard-vpn/)** - This is the official thread for the Dynamix WireGuard plugin. It covers plugin updates, feature requests, bug reports, and general questions and answers related to Unraid’s built-in WireGuard support.
 
-- **[WireGuard Quickstart](https://forums.unraid.net/topic/84226-wireguard-quickstart/)**  
-  A step-by-step guide for setting up inbound WireGuard VPN connections to Unraid. This resource includes configuration walkthroughs, peer setup instructions, and tips for remote access.
+- **[WireGuard Quickstart](https://forums.unraid.net/topic/84226-wireguard-quickstart/)** - A step-by-step guide for setting up inbound WireGuard VPN connections to Unraid. This resource includes configuration walkthroughs, peer setup instructions, and tips for remote access.
+
+  \* *"WireGuard" and the "WireGuard" logo are registered trademarks of Jason A. Donenfeld.*

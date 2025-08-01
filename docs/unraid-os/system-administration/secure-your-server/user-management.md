@@ -60,7 +60,7 @@ To connect to shared files on Unraid from another device, you'll need a username
 To add a user:
 
 1. **Access User Management**
-   - Go to **Users > Shares Access** (or **Settings > Users > Shares Access**).
+   - Go to ***Users → Shares Access*** (or ***Settings → Users → Shares Access***).
    - Click on **Add User**.
 
 2. **Set up user credentials**
@@ -110,7 +110,7 @@ You can change a user account in Unraid if the user forgot their password or nee
 
 To modify a user account:
 
-1. Go to **Users > Shares Access** (or **Settings > Users > Shares Access**), and click on the user account you want to change.
+1. Go to ***Users → Shares Access*** (or ***Settings → Users → Shares Access***), and click on the user account you want to change.
 2. *(Optional)* In the **Edit User** screen, you can update any information except the **User name**. To set a new **Password**, just type it in and confirm it by retyping it.
 3. *(Optional)* At the bottom, you’ll see a list of folders (shares) the user can access. You can adjust their access settings for any of these shares, but you can’t add new ones.
 4. Click **Apply** to save your changes.

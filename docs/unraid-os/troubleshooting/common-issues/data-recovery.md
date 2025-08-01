@@ -3,6 +3,9 @@ sidebar_position: 4
 sidebar_label: Data recovery
 ---
 
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
 # Data recovery
 
 Understanding data protection is important when managing your Unraid server. While Unraid offers strong protection against common hardware failures, no system can guarantee complete immunity to data loss. This section provides guidance on best practices for safeguarding your data, recognizing potential issues, and recovering data when problems occur.
@@ -34,11 +37,167 @@ With Unraid 7.0 and up, enable **Unraid Connect** for automated cloud backups of
 
 :::info Proactive monitoring and support
 
-- **Enable notifications:** Set up notifications in **Settings > Notifications** to receive immediate alerts about system issues.
-- **Seek expert guidance:** If you're unsure about recovery steps, consult the [Unraid forums](https://forums.unraid.net/) before taking any action.
+- **Enable notifications:** Set up notifications in ***Settings → Notifications*** to receive immediate alerts about system issues.
+- **Seek expert guidance:** If you're unsure about recovery steps, consult the Unraid forums before taking any action.
 - **Regular health checks:** Keep an eye on your drive’s SMART data and perform periodic file system checks.
 
 :::
+
+---
+
+## Repair file systems
+
+:::caution
+**Use these instructions strictly for data drives with file system corruption. Do not apply them to the parity drive, hardware issues, or missing drives.**
+  
+- File system repair tools are intended only for fixing data or cache drives that have file system or mount errors.
+- The parity drive does **not** have a file system. Running any repair tool on the parity drive can corrupt it and may result in irreversible data loss.
+
+:::
+
+### Device naming: paths and symbols
+
+When using the **WebGUI**, device paths are managed automatically. If you choose to repair via the command line, always ensure you are using the correct **partition path**:
+
+| Label           | Typical path      | Usage                  | Parity protected?    |
+|-----------------|------------------|------------------------|----------------------|
+| Disk 7          | /mnt/disk7       | Unraid mount point     | Yes (if array disk)  |
+| Array partition | /dev/md7         | Unraid-managed device  | Yes                  |
+| Raw partition   | /dev/sdj1        | Direct device access   | No                   |
+
+:::warning
+Never run file system repair tools on entire drives (like `/dev/sdj`); always use partition paths (like `/dev/sdj1` or Unraid-managed `/dev/mdX`).  
+
+- For array drives, always use the Unraid-managed device (such as `/dev/md5`) to **preserve parity protection**.  
+- Using the raw partition (for example, `/dev/sdj1`) will not update parity, leaving it invalid.
+
+:::
+
+- Always use `/dev/mdX` for array drives to maintain valid parity.
+- For non-array drives (like cache-only devices), use the direct partition path, e.g., `/dev/sdj1`.
+
+### Choosing the right repair method
+
+All Unraid versions since **v6.0.0** support file system repairs through the WebGUI for XFS and BTRFS.
+
+For most users, the recommended method is:
+
+1. Open the WebGUI.
+2. Navigate to the **Main** tab.
+3. Click on the appropriate array or cache device.
+4. Follow the prompts to run the built-in file system check and repair.
+
+If you prefer using the command line, always:
+
+- Identify the correct Unraid-managed partition (`/dev/mdX`) for array drives.
+- Use the appropriate repair tools for your file system:  
+  - **XFS:** `xfs_repair`
+  - **BTRFS:** `btrfs scrub`
+
+:::caution Know your file system
+Using the wrong repair tool can cause further damage. Verify that your disk is formatted as **XFS**, **BTRFS**, or another supported file system type before initiating repairs.
+:::
+
+---
+
+## Checking and fixing drives in the WebGUI
+
+This section is designed to check and repair the integrity of a data drive's file system while preserving parity protection.
+
+### Preparing to test
+
+| File System | Start Mode          | Maintenance Mode Req'd? | Notes                                                        |
+|-------------|---------------------|--------------------------|--------------------------------------------------------------|
+| XFS         | Maintenance Mode    | Yes                      | Array must be started in Maintenance Mode (drives not mounted) for check/repair. |
+| BTRFS       | Normal mode         | No                       | Array must be started normally, not in Maintenance Mode, for scrub/check.        |
+
+- Identify the file system for the target drive: **Main** tab → Click drive name → Check **File system type**.
+- From the Main screen, click the disk to be tested or repaired.
+
+### Running the test
+
+1. The default for most file systems (like XFS) is a read-only check (no changes), usually with the `-n` (no modify) option. (For more detailed output with XFS, add the `-v` (verbose) option, resulting in `-nv`.)  
+2. For BTRFS, you will use the `scrub` command instead of the `balance` operation.  
+3. Click **Check** to start; use the **Refresh** button to monitor progress if needed.  
+4. If no corruptions are found, proceed to [**After the test and repair**](#after-the-test-and-repair).
+
+### Running the Repair
+
+<Tabs>
+<TabItem value="xfs-drives" label="For XFS drives">
+
+1. If issues are found, a message will indicate required repair actions; typically, this involves rerunning the check _without_ the `-n` option, allowing repairs.
+2. On repair success, rerun a read-only check to verify.
+
+:::note
+
+- Repairs maintain parity protection and can take significant time.
+- Both WebGUI and command-line options are supported for XFS repair (commands shown below).
+
+:::
+
+</TabItem>
+
+<TabItem value="btrfs-drives" label="For BTRFS drives and pools">
+
+- Use `btrfs scrub` in the WebGUI to scan for and repair certain errors.
+- On single drives, scrub may detect but not fix some errors; if so, consider copying data and reformatting the disk or pool.
+
+:::note
+
+- Current BTRFS repair tools may not address all corruption; check Unraid documentation for updated tools if needed.
+- For more details on scrub and recovery, refer to the respective BTRFS documentation or Unraid forums for guidance.
+
+:::
+
+</TabItem>
+</Tabs>
+
+### After the test and repair
+
+If you used Maintenance Mode, stop the array and restart it in normal mode to resume operations.
+
+:::tip Additional comments
+
+- Repair and check operations may take up to a half hour or more, depending on the size and status of your file system.
+- Extensive corruption may create a `lost+found folder` containing recovered file and folder fragments. Examine and restore these as needed; delete when finished.
+- This is similar to running chkdsk or scandisk on Windows and working with files renamed as File0000.chk, etc. Take your time when reviewing `lost+found` content.
+:::
+
+---
+
+### XFS check & repair
+
+<Tabs>
+<TabItem value="webguicheck" label="WebGUI check and repair">
+
+1. Use the WebGUI for array drives formatted with XFS.
+2. Start the array in Maintenance Mode (unmounted).
+3. From the Main tab, select the disk and open **Check Filesystem Status**.
+4. By default, a check uses `-n` (non-modifying); for more output, add `-v` for `-nv`.
+5. To repair, remove the `-n` flag to allow fixes.
+
+The WebGUI process maintains parity during repair.
+
+</TabItem>
+
+<TabItem value="xfs_repair_cl" label="Running xfs_repair via command line">
+
+At the console or via SSH, run:
+
+```
+xfs_repair -v /dev/mdX
+```
+
+Replace **X** with the correct disk number (e.g., `md1` for Disk 1).
+
+- Review the repair report for further remediation steps if required. If only minor issues, running `-v` is generally sufficient.
+- If repair produces a `lost+found` directory, review and manage as above.
+- Parity is maintained during the repair.
+- When finished, stop the array and restart in normal mode.
+
+</TabItem>
+</Tabs>
 
 ---
 
@@ -58,33 +217,32 @@ Instead, your first step should be to attempt a file system repair. Unraid provi
 
 Here’s how to proceed:
 
-1. Review the [file system repair section](../../using-unraid-to/manage-storage/file-systems.md#repairing-a-file-system) in the Unraid documentation. This guide walks you through the process for your specific file system.
-
+1. Review the [file system repair section](#repair-file-systems). This guide walks you through the process for your specific file system.
 2. For disks using the XFS file system (the default for most Unraid setups), run:
 
-   ```bash
-   xfs_repair -v /dev/[disk]
-   ```
+```
+xfs_repair -v /dev/[disk]
+```
 
-   The `-v` flag provides detailed progress information. This command checks and attempts to repair the file system on the specified disk.
+The `-v` flag provides detailed progress information. This command checks and attempts to repair the file system on the specified disk.
 
 3. For disks formatted with BTRFS, first run a read-only check:
 
-   ```bash
-   btrfs check /dev/[disk]
-   ```
+```
+btrfs check /dev/[disk]
+```
 
-   Only use repair mode if absolutely necessary and after understanding the risks:
+Only use repair mode if absolutely necessary and after understanding the risks:
 
-   ```bash
-   btrfs check --repair /dev/[disk]
-   ```
+```
+btrfs check --repair /dev/[disk]
+```
 
-   :::warning 
-   The `--repair` option is extremely dangerous and can cause further data loss. Always backup or image the disk first. Review [the documentation](https://btrfs.readthedocs.io/en/latest/btrfs-check.html) and consider seeking additional advice if you’re unsure.
-   :::
+:::warning
+The `--repair` option is extremely dangerous and can cause further data loss. Always backup or image the disk first. Review [the documentation](https://btrfs.readthedocs.io/en/latest/btrfs-check.html) and consider seeking additional advice if you’re unsure.
+:::
 
-If these repair attempts do not resolve the issue or if you encounter errors you don’t understand, it’s best to pause and ask for help on the [Unraid forums](https://forums.unraid.net/). Many experienced users and moderators are available to help guide you through the next steps, and getting a second opinion before proceeding further is always safer.
+If these repair attempts do not resolve the issue or if you encounter errors you don’t understand, it’s best to pause and ask for help on the Unraid forums. Many experienced users and moderators are available to help guide you through the next steps, and getting a second opinion before proceeding further is always safer.
 
 ---
 
@@ -98,7 +256,7 @@ Here’s what to do if you find yourself in this situation:
 2. Start the array. Drives previously used for parity will appear as *unmountable* because they don't contain a file system.
 3. Write down or take a screenshot of the serial numbers for these unmountable drives—these are your parity drives.
 4. Stop the array.
-5. Go to **Tools > New Config** and select the option to retain current assignments.
+5. Go to ***Tools → New Config*** and select the option to retain current assignments.
 6. Click the checkbox confirming you want to proceed and click **Apply**.
 7. Return to the **Main** tab and correctly assign the parity drives using the serial numbers you noted.
 8. Start the array to rebuild parity based on your correct assignments.
@@ -118,8 +276,8 @@ The recommended method to install ddrescue is through the **Nerd Tools** plugin 
 
 To enable ddrescue:
 
-1. Install [Nerd Tools](https://unraid.net/community/apps/c/plugins/p4?srsltid=AfmBOoopT6iVZD4eLH_gtKTkTZgRKdgxBRgNXxdrH_fALqsa8a9SWB9G#:~:text=to%20a%20topic.-,Nerd%20Tools,-unRaid.es) from the **Apps** tab in the Unraid WebGUI.
-2. Open **Settings > Nerd Tools** and enable **ddrescue**.
+1. Install Nerd Tools from the **Apps** tab in the Unraid WebGUI.
+2. Open ***Settings → Nerd Tools*** and enable **ddrescue**.
 
 ### Cloning a failing disk
 
@@ -127,17 +285,17 @@ You'll need a healthy destination disk that is at least as large as the failing 
 
 To clone the entire disk, open a terminal or SSH session and run the following command:
 
-```bash
+```
 ddrescue -f /dev/sdX /dev/sdY /boot/ddrescue.log
 ```
 
 - Replace **X** with the letter of your source disk and **Y** with the letter of your destination disk.
 - The `/boot/ddrescue.log` file will track progress and allow you to resume if the process is interrupted.
 
-If you want to clone directly to an array disk while maintaining parity, use the `md#` device and start the array in maintenance mode:
+If you want to clone directly to an array disk while maintaining parity, use the `md#` device and start the array in Maintenance Mode:
 
-```bash
-ddrescue -f /dev/sdX1 /dev/md# /boot/ddrescue.log
+```
+ddrescue -f /dev/sdX1 /dev/md\# /boot/ddrescue.log
 ```
 
 - Replace **X** with the letter of your source disk (note the `1` for the partition).
@@ -165,6 +323,7 @@ Copying non-tried blocks... Pass 1 (forwards)
 ```
 
 :::note What does this mean?
+
 - **ipos/opos**: Current read/write positions on the source and destination disks.
 - **rescued**: Amount of data successfully copied.
 - **bad areas/read errors**: Number of problematic regions and read errors encountered.
@@ -206,15 +365,14 @@ If you don’t have checksums, you can still identify files affected by bad sect
 
 1. Create a temporary file with a unique string:
 
-   ```bash
-   printf "Unraid " > ~/fill.txt
-   ```
+```
+printf "Unraid " > ~/fill.txt
+```
 
 2. Fill the bad blocks on the cloned disk with that string:
 
-   ```bash
-   ddrescue --fill-mode='-' ~/fill.txt /dev/sdY /boot/ddrescue.log
-   ```
+```
+ddrescue --fill-mode='-' ~/fill.txt /dev/sdY /boot/ddrescue.log
+```
 
-   Replace **Y** with the destination disk and use the existing ddrescue mapfile.
-
+Replace **Y** with the destination disk and use the existing ddrescue mapfile.

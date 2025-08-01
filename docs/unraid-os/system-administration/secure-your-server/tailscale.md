@@ -163,7 +163,7 @@ The behavior of Tailscale integration and userspace networking depends on the co
 
 | Network type          | Userspace networking default | Can be changed? | WebUI access (Tailscale) | WebUI access (Original) | Notes                                                        |
 |---------------------- |-----------------------------|-----------------|--------------------------|-------------------------|--------------------------------------------------------------|
-| `host`                | Enabled                     | No              | Yes                      | Yes                     | Both URLs accessible                                         |
+| `host`                | Disabled      | No              | No                       | Yes                     | Tailscale integration not available in host mode              |
 | `bridge`              | Disabled                    | Yes             | Yes                      | *Enabled*: Yes  *Disabled*: No | Enables both URLs if enabled; only Tailscale WebUI if disabled |
 | `eth0`/`br0`/`bond0`  | Disabled                    | Yes             | Yes                      | Yes                     | Both URLs accessible regardless of setting                   |
 | `container`/`wg0`     | Disabled (untested)        | Yes             | Unknown                  | Unknown                 | Use with caution; not fully tested                           |
@@ -173,3 +173,5 @@ The behavior of Tailscale integration and userspace networking depends on the co
 - Tailscale WebUI URLs are only accessible from devices with Tailscale installed and joined to your Tailnet, or with explicit sharing enabled.
 - For most users, default settings provide secure and reliable access. Advanced options are available for specialized networking needs.
 :::
+
+\* *"WireGuard" and the "WireGuard" logo are registered trademarks of Jason A. Donenfeld.*

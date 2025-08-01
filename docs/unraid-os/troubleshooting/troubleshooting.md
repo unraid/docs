@@ -15,5 +15,3 @@ For additional support, the Unraid community forums are a fantastic resource. Wh
 - **Capture diagnostics before rebooting.**  
   Go to **Tools → Diagnostics** to generate a diagnostics file that preserves logs and system details necessary for troubleshooting.  
 - **Share the diagnostics file** in a [post on the Unraid forums](http://forums.unraid.net/) to assist others in helping you effectively.
-
-If you're unsure how to proceed, always feel free to ask for guidance in the forums before attempting repairs. Rushing may complicate issues further.

@@ -14,7 +14,7 @@ When consolidating hardware, preserving legacy systems, or testing upgrades in a
 
 - Your Unraid server should meet the minimum hardware requirements for virtualization (see table below).
 - The source disk must be connected to your Unraid server (via SATA, USB, or as an unassigned device).
-- Ensure you have enough free space in your **array** or **cache pool** to accommodate the new virtual disk image.
+- Ensure you have enough free space in your **%%array|array%%** or **%%cache pool|cache-pool%%** to accommodate the new virtual disk image.
 - Backup any critical data before starting the conversion or migration process.
 :::
 
@@ -22,10 +22,10 @@ When consolidating hardware, preserving legacy systems, or testing upgrades in a
 
 | Component            | Minimum requirement                  | Recommended for best performance       |
 |----------------------|--------------------------------------|----------------------------------------|
-| **CPU**              | 64-bit with hardware virtualization (Intel VT-x/AMD-V) | Multi-core CPU with VT-d/AMD-Vi for passthrough |
+| **CPU**              | 64-bit with hardware virtualization (%%Intel VT-X&#124;intel-vt-x%%/%%AMD-V&#124;amd-v%%) | Multi-core CPU with VT-d/AMD-Vi for passthrough |
 | **RAM**              | 8 GB                                 | 16 GB or more                          |
-| **Storage**          | SSD or NVMe cache pool with sufficient space | Dedicated NVMe cache pool for VM storage |
-| **Motherboard/BIOS** | UEFI with virtualization enabled    | UEFI with IOMMU/VT-d/AMD-Vi enabled    |
+| **Storage**          | SSD or NVMe %%cache pool&#124;cache-pool%% with sufficient space | Dedicated NVMe %%cache pool&#124;cache-pool%% for VM storage |
+| **Motherboard/BIOS** | %%UEFI&#124;uefi%% with virtualization enabled    | %%UEFI&#124;uefi%% with %%IOMMU&#124;iommu%%/VT-d/AMD-Vi enabled    |
 
 ---
 
@@ -41,11 +41,11 @@ To convert a physical disk to a VM:
 <h3>Step 1: Prepare the physical disk</h3>
 
 1. Connect the source disk to your Unraid server (using SATA or USB).
-2. Log in to the **WebGUI** (`http://tower` or `http://tower.local`).
+2. Log in to the **%%WebGUI|web-gui%%** (`http://tower` or `http://tower.local`).
 3. Click on the **Main** tab.
-4. Start the **array** if it isn’t already running.
+4. Start the **%%array|array%%** if it isn’t already running.
 5. Find your disk under **Unassigned Devices**.
-6. Take note of the device letter (e.g., `sdb`, `sdc`) and disk size. You’ll need at least this free space on your **array** or **cache pool** for the new virtual disk.
+6. Take note of the device letter (e.g., `sdb`, `sdc`) and disk size. You’ll need at least this free space on your **%%array|array%%** or **%%cache pool|cache-pool%%** for the new virtual disk.
 
 <h3>Step 2: Create a new virtual machine</h3>
 
@@ -53,11 +53,11 @@ Refer to the [Creating your own virtual machines](../create-virtual-machines/vm-
 
 - Set the **BIOS** to **OVMF**.
 - Make sure to specify the **VirtIO Drivers ISO** for optimal performance.
-- Store VM images on a **cache pool** instead of an array for the best performance.
+- Store VM images on a **%%cache pool|cache-pool%%** instead of an %%array|array%% for the best performance.
 
 <h3>Step 3: Convert the physical disk to a virtual disk image</h3>
 
-1. Open a terminal (SSH or local console) and log in as `root`.
+1. Open a terminal (%%SSH|ssh%% or local console) and log in as `root`.
 2. Use the following command to convert the physical disk into a virtual disk image:
 
 ```
@@ -114,9 +114,9 @@ qemu-img convert -p -O raw /dev/sdX /mnt/user/[vdisk_share]/[vmname]/vdisk1.img
 
 - Finally, click **Update** to save your changes to the virtual machine's XML.
 
-<h3>Step 2: Install the VirtIO drivers from inside the VM (Windows guests only)</h3>
+<h3>Step 2: Install the %%VirtIO|virtio%% drivers from inside the VM (Windows guests only)</h3>
 
-- Open **Windows File Explorer** and go to the VirtIO virtual CD-ROM to explore its contents.
+- Open **Windows File Explorer** and go to the %%VirtIO|virtio%% virtual CD-ROM to explore its contents.
   - Navigate to the **Balloon** folder.
   - Inside that folder, find the subfolder for your **Windows OS version** (for example, `w8.1`).
   - Go to the **amd64** subfolder.
@@ -126,7 +126,7 @@ qemu-img convert -p -O raw /dev/sdX /mnt/user/[vdisk_share]/[vmname]/vdisk1.img
   - **vioserial**
   - **viostor**
 - After you've installed the drivers, navigate back into the virtual CD-ROM and open the **guest-agent** folder.
-- Double-click on **qemu-ga-x64.msi** to install the QEMU/KVM guest agent.
+- Double-click on **qemu-ga-x64.msi** to install the %%QEMU|qemu%%/%%KVM|kvm%% guest agent.
 
 <h3>Step 3: Remove the secondary vDisk from your VM (Windows guests only)</h3>
 
@@ -215,19 +215,19 @@ Acronis True Image 2025 features Universal Restore, which assists with hardware 
 
 <h3>Step 2: Identify the physical disk in Unraid</h3>
 
-1. Log in to the **WebGUI** (`http://tower` or `http://tower.local`).
+1. Log in to the **%%WebGUI|web-gui%%** (`http://tower` or `http://tower.local`).
 2. Go to the **Main** tab.
-3. Start the **array** if it’s not already running.
+3. Start the **%%array|array%%** if it’s not already running.
 4. Locate your disk under **Unassigned Devices**.
 5. Note the device letter (for example, `sdb`, `sdc`) for use in the VM configuration.
 
 <h3>Step 3: Create a new virtual machine</h3>
 
-1. Go to the **VMs** tab in the **WebGUI**.
+1. Go to the **VMs** tab in the **%%WebGUI|web-gui%%**.
    - If the tab is missing, ensure that virtualization is enabled and that hardware requirements are met.
 2. Click **Add VM**.
 3. Follow the [Creating your own virtual machines](../create-virtual-machines/vm-setup.md#creating-your-own-virtual-machines) guide, using these settings:
-   - Set **BIOS** to SeaBIOS (try OVMF if SeaBIOS fails to boot).
+   - Set **BIOS** to %%SeaBIOS|seabios%% (try %%OVMF|ovmf%% if %%SeaBIOS|seabios%% fails to boot).
    - Leave **OS Install ISO** blank.
    - Specify the **VirtIO Drivers ISO** for optimal performance after boot.
    - For the primary virtual disk, select any location and size (this will be replaced in the next step).
@@ -274,7 +274,7 @@ Click **Update** to save your XML changes.
 2. Once in Windows, open Device Manager by right-clicking the Start menu and selecting **Device Manager**.
 3. Look for devices marked with a yellow exclamation mark (indicating missing drivers). Right-click on each and select **Update driver**.
 4. Choose **Browse my computer for drivers**.
-5. Direct it to the drive where the VirtIO Drivers ISO is mounted (usually D: or E:).
+5. Direct it to the drive where the %%VirtIO|virtio%% Drivers ISO is mounted (usually D: or E:).
 6. Make sure **Include subfolders** is checked, then click **Next**.
 7. Repeat this process for each device with missing drivers, commonly including: SCSI Controller, Ethernet, Balloon, and Serial devices.
 
@@ -282,7 +282,7 @@ Remember to reinstall those applications after migration if you use software tha
 
 :::tip
 
-If you are stuck at SeaBIOS with a "Booting from Hard Disk" message, it’s likely because your Windows OS was installed using UEFI instead of the traditional BIOS. In this case, recreate the VM using OVMF as the BIOS type rather than SeaBIOS. Most modern Windows installations (Windows 8.1, 10, and 11) support UEFI and may need OVMF to boot successfully. The rest of the conversion process will remain the same.
+If you are stuck at %%SeaBIOS|seabios%% with a "Booting from Hard Disk" message, it’s likely because your Windows OS was installed using %%UEFI|uefi%% instead of the traditional BIOS. In this case, recreate the VM using %%OVMF|ovmf%% as the BIOS type rather than %%SeaBIOS|seabios%%. Most modern Windows installations (Windows 8.1, 10, and 11) support %%UEFI|uefi%% and may need %%OVMF|ovmf%% to boot successfully. The rest of the conversion process will remain the same.
 :::
 
 ---
@@ -290,33 +290,33 @@ If you are stuck at SeaBIOS with a "Booting from Hard Disk" message, it’s like
 ## Xen to KVM migration
 
 :::info Historical Context
-Unraid supported Xen from early 6.x versions until it was deprecated in 6.2 (September 2016) and later removed entirely. This migration guide is relevant for users upgrading from very old Unraid installations (pre-2017) to modern versions.
+Unraid supported %%Xen|xen-hvm%% from early 6.x versions until it was deprecated in 6.2 (September 2016) and later removed entirely. This migration guide is relevant for users upgrading from very old Unraid installations (pre-2017) to modern versions.
 :::
 
-A Xen hypervisor is a virtualization platform that allows multiple operating systems to run on the same hardware. In Unraid, Xen was historically used for virtual machines (VMs), but KVM is now the standard. Migrating from Xen to KVM is essential for utilizing modern Unraid features, enabling hardware passthrough, and ensuring compatibility with current releases.
+A %%Xen|xen-hvm%% hypervisor is a virtualization platform that allows multiple operating systems to run on the same hardware. In Unraid, %%Xen|xen-hvm%% was historically used for virtual machines (VMs), but %%KVM|kvm%% is now the standard. Migrating from %%Xen|xen-hvm%% to %%KVM|kvm%% is essential for utilizing modern Unraid features, enabling hardware passthrough, and ensuring compatibility with current releases.
 
-The process of migrating a VM from Xen to KVM varies depending on whether your VM is set up as a paravirtualized (PV) or hardware-virtualized (HVM) guest. This guide focuses specifically on converting Windows VMs that utilize Xen’s GPLPV drivers, as they require special handling.
+The process of migrating a VM from %%Xen|xen-hvm%% to %%KVM|kvm%% varies depending on whether your VM is set up as a paravirtualized (PV) or hardware-virtualized (%%HVM|hvm%%) guest. This guide focuses specifically on converting Windows VMs that utilize Xen’s GPLPV drivers, as they require special handling.
 
-Always create a backup of your Xen virtual disk before starting this process. And test your migration on the backup to prevent data loss.
+Always create a backup of your %%Xen|xen-hvm%% virtual disk before starting this process. And test your migration on the backup to prevent data loss.
 
 :::info Why migrate?
-Unraid no longer supports Xen from version 6.2 onward. KVM is now mandatory for VM management, hardware passthrough, and ongoing updates. Migrating ensures your VMs remain secure and compatible with new features.
+Unraid no longer supports %%Xen|xen-hvm%% from version 6.2 onward. %%KVM|kvm%% is now mandatory for VM management, hardware passthrough, and ongoing updates. Migrating ensures your VMs remain secure and compatible with new features.
 :::
 
 ### Windows conversion procedure
 
-To convert a Windows VM from Xen to KVM, follow these steps. Remember to **remove any PCI device passthrough from your Xen domain configuration** before you begin. These devices can be added back after the migration is complete.
+To convert a Windows VM from %%Xen|xen-hvm%% to %%KVM|kvm%%, follow these steps. Remember to **remove any PCI device passthrough from your %%Xen|xen-hvm%% domain configuration** before you begin. These devices can be added back after the migration is complete.
 
 <details> 
 <summary>Step 1: Determine if your VM uses Xen's GPLPV drivers</summary>
 
-1. Inside your Xen VM, open **Windows Device Manager** (press *Windows key + X*, then select **Device Manager**).
+1. Inside your %%Xen|xen-hvm%% VM, open **Windows Device Manager** (press *Windows key + X*, then select **Device Manager**).
 2. Expand **Network adapters** and check the device name.
    - If the name contains "Xen," you are using GPLPV drivers.
-   - If it doesn't, skip to the step about rebooting into KVM mode.
+   - If it doesn't, skip to the step about rebooting into %%KVM|kvm%% mode.
 
 :::tip
-If you are not using GPLPV drivers, you can skip the next several steps and continue from the rebooting into KVM mode section.
+If you are not using GPLPV drivers, you can skip the next several steps and continue from the rebooting into %%KVM|kvm%% mode section.
 :::
 </details>
 
@@ -335,7 +335,7 @@ If you are not using GPLPV drivers, you can skip the next several steps and cont
 <details>
 <summary>Step 3: Uninstall GPLPV drivers</summary>
 
-After the reboot, purge all Xen GPLPV drivers from your system using the comprehensive manual removal process documented in the [Xen Project Wiki](https://wiki.xenproject.org/wiki/Xen_Windows_GPLPV).
+After the reboot, purge all %%Xen|xen-hvm%% GPLPV drivers from your system using the comprehensive manual removal process documented in the [Xen Project Wiki](https://wiki.xenproject.org/wiki/Xen_Windows_GPLPV).
 
 :::caution
 GPLPV removal requires extensive registry editing and manual file deletion. Follow the Xen Project Wiki instructions **exactly** as written, as errors can cause system instability or boot failures.
@@ -352,12 +352,12 @@ GPLPV removal requires extensive registry editing and manual file deletion. Foll
    - Download the latest **VirtIO drivers ISO** for Windows by selecting it from the dropdown menu and clicking **Download**.
 
 2. Navigate to the **VMs** tab and click **Add VM**.
-3. Select the Windows version that matches your original Xen virtual machine.
+3. Select the Windows version that matches your original %%Xen|xen-hvm%% virtual machine.
 4. Configure the basic settings:
    - **Name**: Assign a descriptive name to your VM.
    - **VirtIO drivers ISO**: Choose the version you just downloaded.
 5. Under **Primary vDisk Location**:
-   - Browse and select your existing Xen virtual disk.
+   - Browse and select your existing %%Xen|xen-hvm%% virtual disk.
 6. Add a **temporary secondary vDisk**:
    - Click the green plus sign.
    - Set the size to **1M** (this will enforce IDE bus compatibility during the initial boot).
@@ -376,7 +376,7 @@ GPLPV removal requires extensive registry editing and manual file deletion. Foll
     - Click **Update**.
 
 :::tip Why the temporary disk?
-The 1MB temporary disk forces Unraid to assign the primary disk as `hda` (IDE) instead of `vda` (VirtIO), allowing Windows to boot without VirtIO drivers initially. This temporary disk will be removed after the driver installation.
+The 1MB temporary disk forces Unraid to assign the primary disk as `hda` (IDE) instead of `vda` (%%VirtIO|virtio%%), allowing Windows to boot without %%VirtIO|virtio%% drivers initially. This temporary disk will be removed after the driver installation.
 :::
 </details>
 
@@ -384,7 +384,7 @@ The 1MB temporary disk forces Unraid to assign the primary disk as `hda` (IDE) i
 <summary>Step 5: Install VirtIO drivers</summary>
 
 1. Start the VM from the **VMs** tab.
-2. Connect via VNC:
+2. Connect via %%VNC|vnc-session%%:
    - Click the VM icon and select **Start with console (VNC)**.
 3. During boot:
    - Windows will detect new hardware but might fail to install drivers.
@@ -393,7 +393,7 @@ The 1MB temporary disk forces Unraid to assign the primary disk as `hda` (IDE) i
    - Install drivers for each device listed under **Other devices** (like Ethernet Controller, PCI Device, etc.):
      1. Right-click the device and select **Update driver**.
      2. Choose **Browse my computer for drivers**.
-     3. Point to the VirtIO ISO drive (for example, `D:\`).
+     3. Point to the %%VirtIO|virtio%% ISO drive (for example, `D:\`).
      4. Check **Include subfolders**.
      5. If prompted, accept **Always trust Red Hat**.
 5. Install the QEMU guest agent:
@@ -407,14 +407,14 @@ The 1MB temporary disk forces Unraid to assign the primary disk as `hda` (IDE) i
 
 1. Edit the VM:
    - Remove the temporary secondary vDisk by clicking the red minus icon.
-   - Confirm that the primary vDisk points to your original Xen disk.
+   - Confirm that the primary vDisk points to your original %%Xen|xen-hvm%% disk.
 2. Update the VM:
    - Click **Update** to save your changes.
 3. Start the VM normally.
 4. Verify in **Device Manager** that:
    - No warning icons appear.
-   - All devices utilize VirtIO drivers (for example, "Red Hat VirtIO Ethernet Adapter").
-5. (Optional) Enable VirtIO for better performance:
+   - All devices utilize %%VirtIO|virtio%% drivers (for example, "Red Hat %%VirtIO|virtio%% Ethernet Adapter").
+5. (Optional) Enable %%VirtIO|virtio%% for better performance:
    - Edit the VM and switch to XML view.
    - Change the primary disk's `bus` from `ide` to `virtio`.
    - Click **Update** and reboot the VM.
@@ -422,7 +422,7 @@ The 1MB temporary disk forces Unraid to assign the primary disk as `hda` (IDE) i
 :::tip Driver troubleshooting
 If you notice errors on devices after migration:
 
-1. Reinstall the VirtIO drivers from the ISO.
+1. Reinstall the %%VirtIO|virtio%% drivers from the ISO.
 2. Check for Windows updates, which may provide newer drivers.
 3. Visit the [Red Hat VirtIO Drivers](https://docs.fedoraproject.org/en-US/quick-docs/creating-windows-virtual-machines-using-virtio-drivers/) page for the latest versions.
 :::

@@ -15,11 +15,13 @@ Before you start upgrading, make sure to create a complete backup of your USB fl
 :::
 
 :::tip Best practices before upgrading
-- Update all plugins and Docker containers to their latest versions.
-- Run the [**Update Assistant**](#update-assistant) to check for compatibility and other potential issues.
-- Shut down all **virtual machines** and disable the VM Manager (**Settings → VM Manager**).
-- Stop all Docker containers and disable Docker (**Settings → Docker**).
-- Take a screenshot of your **array** and **cache pool** assignments for reference.
+
+1. **Make a backup** of your flash drive and any important data.
+2. **Read the Release Notes** for the version you plan to install.
+3. **Update all plugins** to their latest versions.
+4. **Optionally, stop the array** before proceeding.
+5. **Update Unraid OS** using the ***Tools → Update OS*** page.
+6. **Reboot** your server to complete the upgrade.
 :::
 
 ---
@@ -55,9 +57,11 @@ For Unraid versions 6.11 and 6.12, follow this traditional update method:
 
 :::caution ZFS pool upgrade warnings
 
-When upgrading to Unraid 7.x, you may encounter warnings about ZFS pool feature upgrades during boot or within the WebGUI. These warnings indicate that the ZFS pool is using features from an older version and may need to be upgraded automatically or require manual steps.
+When upgrading to Unraid 7.x, you may see warnings about ZFS pool feature upgrades during boot or in the WebGUI. These warnings are not a sign of a problem; they simply indicate that your ZFS pool is using features from an older version
 
-This is typical and not a sign of a problem, but make sure to back up your data before upgrading your ZFS pools.
+Upgrading your pool isn't urgent, but if you do decide to upgrade, keep in mind that it will no longer work with older versions of Unraid. This means you won't be able to revert to a previous Unraid version after making the upgrade.
+
+As always, remember to back up your data before upgrading your ZFS pools
 :::
 
 ---
@@ -77,17 +81,6 @@ To use the Update Assistant:
 ## Troubleshooting upgrade issues
 
 If you run into problems after upgrading, check the relevant section below for assistance.
-
-<details>
-<summary><strong>The new release does not appear after checking for updates</strong></summary>
-
-If the update doesn't show up, you can manually install it by following these steps:
-
-1. Go to **Plugins → Install Plugin**.
-2. Paste this URL into the field: https://stable.dl.unraid.net/unRAIDServer.plg
-3. Click **Install** and follow the prompts.
-
-</details>
 
 <details>
 <summary><strong>Array or docker containers are slow to start after upgrade</strong></summary>
@@ -168,10 +161,9 @@ If you can reach the WebGUI:
 
 1. Log in to the **WebGUI**.
 2. Navigate to **Tools → Downgrade OS**.
-3. Look through the available previous versions and their release notes.
-4. Choose the version you wish to downgrade to.
-5. Click **Downgrade** and follow the prompts.
-6. Reboot your server when prompted.
+3. Your previous version will be listed as the available downgrade option.
+4. Click **Downgrade** and follow the prompts.
+5. Reboot your server when prompted.
 
 :::caution
 Keep in mind that downgrading can lead to compatibility issues with plugins or Docker containers. Always back up your USB flash device and any important data beforehand.

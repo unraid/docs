@@ -51,7 +51,7 @@ Volume mappings control how your container accesses files on your Unraid server.
 - **Access mode:** Controls permissions - read-only or read/write. Use the most restrictive mode that still allows the container to function.
 
 :::tip Best practice
-Store application data (settings, libraries, etc.) outside the container, typically in the `appdata` share. This keeps your data safe during updates or reinstalls.
+Store application data (settings, libraries, etc.) outside the container, typically in the `appdata` %%user share|user-share%%. This keeps your data safe during updates or reinstalls.
 :::
 
 :::note
@@ -93,9 +93,9 @@ Environment variables can customize how your Docker container behaves at runtime
 - Specifying language preferences
 - Adjusting application-specific settings, like API keys or feature toggles
 
-**Managing environment variables in the WebGUI:**
+Managing environment variables in the %%WebGUI|web-gui%%:
 
-- You can add, edit, or remove environment variables in the container's configuration screen through the WebGUI.
+- You can add, edit, or remove environment variables in the container's configuration screen through the %%WebGUI|web-gui%%.
 - Many container templates come with common environment variables that are already set, but you can always add more if needed.
 - Be sure to check the specific application’s documentation to know which environment variables are available and which values are valid.
 
@@ -129,11 +129,11 @@ After reviewing your configuration settings in the container template:
 
 ### Planning your startup sequence
 
-Some containers depend on others to function correctly. For example, an application might need a database container running first, or a service might require a VPN container to be active before it starts.
+Some containers depend on others to function correctly. For example, an application might need a database container running first, or a service might require a %%VPN|vpn-tunnel%% container to be active before it starts.
 
 :::important Plan your startup
 
-- Identify containers that provide core services (like databases, VPNs, or storage gateways).
+- Identify containers that provide core services (like databases, %%VPNs|vpn-tunnel%%, or storage gateways).
 - Ensure dependent containers are started only after their prerequisites are running and ready.
 - Review documentation for each container to understand any specific startup requirements.
 :::
@@ -142,11 +142,11 @@ Some containers depend on others to function correctly. For example, an applicat
 
 ## Advanced container startup
 
-Unraid gives you flexible control over which containers start automatically and in what order. This is especially useful if you have containers that depend on others (such as a database or VPN service).
+Unraid gives you flexible control over which containers start automatically and in what order. This is especially useful if you have containers that depend on others (such as a database or %%VPN|vpn-tunnel%% service).
 
-To ensure a container starts automatically when the **array** starts:
+To ensure a container starts automatically when the %%array|array%% starts:
 
-1. Go to the **Docker** tab in the **WebGUI**.
+1. Go to the **Docker** tab in the %%WebGUI|web-gui%%.
 2. Toggle the **Auto-Start** switch to **ON** for each container you want to launch automatically.
 
 ### Customize startup order and delays
@@ -160,7 +160,7 @@ By default, Unraid starts all auto-start containers as quickly as possible, in t
    - Use trial and error to determine the best wait times for your setup.
 
 :::tip
-Setting the correct order and wait times is especially important for containers that depend on services provided by others (for example, starting a database before an app that uses it, or a VPN before dependent apps).
+Setting the correct order and wait times is especially important for containers that depend on services provided by others (for example, starting a database before an app that uses it, or a %%VPN|vpn-tunnel%% before dependent apps).
 :::
 
 ### Testing your startup sequence
@@ -180,7 +180,7 @@ Test your startup sequence after changing container dependencies or adding new s
 
 ## Controlling your containers
 
-Once you've created and started your **Docker container**, managing it is easy through the **WebGUI**. This guide will walk you through using the context menu, understanding container health indicators, and accessing volume mappings within your container.
+Once you've created and started your **Docker container**, managing it is easy through the %%WebGUI|web-gui%%. This guide will walk you through using the context menu, understanding container health indicators, and accessing volume mappings within your container.
 
 To access the container's context menu, go to the **Docker** or **Dashboard** tab and click on the container icon you want to manage. This menu offers straightforward access to common actions:
 
@@ -197,7 +197,7 @@ To access the container's context menu, go to the **Docker** or **Dashboard** ta
 | **Start/Stop**           | Starts or stops the container.                                                                      |
 | **Logs**                 | Shows the container’s log output for troubleshooting.                                               |
 | **Edit**                 | Change container settings, such as port or volume mappings. Changes apply immediately after saving.  |
-| **Enable/Disable autostart** | Sets whether the container starts automatically when the **array** starts.                       |
+| **Enable/Disable autostart** | Sets whether the container starts automatically when the %%array&#124;array%% starts.                       |
 | **Remove**               | Deletes the container. You can choose to remove just the container or also delete its image.         |
 
 :::tip
@@ -236,7 +236,7 @@ For instance, if you mapped `/mnt/user/media` on the host to `/unraid_media` in 
   Container path: `/config`  
   In the app, use `/config` for configuration storage.  
 
-- **Multiple shares**:  
+- Multiple %%user shares|user-share%%:  
   Host path: `/mnt/user/downloads` → Container path: `/downloads`  
   Host path: `/mnt/user/torrents` → Container path: `/torrents`  
   Reference `/downloads` or `/torrents` in the application as needed.  
@@ -253,10 +253,10 @@ Unraid does not natively support scheduled start or stop actions for **Docker co
 
 ### User Scripts plugin
 
-The **User Scripts plugin** allows you to create, manage, and schedule custom shell scripts directly from the **WebGUI**. You can use it for various automation tasks, such as starting or stopping containers, backing up data, or running maintenance routines.
+The **User Scripts plugin** allows you to create, manage, and schedule custom shell scripts directly from the %%WebGUI|web-gui%%. You can use it for various automation tasks, such as starting or stopping containers, backing up data, or running maintenance routines.
 
 - Install the plugin from the **Apps** tab if you haven’t done so already.
-- Access it via **Settings → User Scripts** to create and manage your scripts.
+- Access it via ***Settings → User Scripts*** to create and manage your scripts.
 
 To learn more about plugins, check out [Plugins](../customize-your-experience/plugins.md).
 
@@ -265,7 +265,7 @@ To learn more about plugins, check out [Plugins](../customize-your-experience/pl
 To automate the start or stop of your containers on a schedule:
 
 1. Install the **User Scripts plugin** from the **Apps** tab.
-2. Navigate to **Settings → User Scripts**.
+2. Navigate to ***Settings → User Scripts***.
 3. Create a new script for each unique schedule.  
    _You can include commands for multiple containers in a single script if they share the same schedule._
 4. Set the schedule using the dropdown menu or use a custom [cron](https://en.wikipedia.org/wiki/Cron) expression for more advanced timing options.

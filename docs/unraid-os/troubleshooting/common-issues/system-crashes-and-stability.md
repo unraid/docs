@@ -16,7 +16,7 @@ System crashes and stability issues can be tough to diagnose and resolve. They o
 
 RAM can wear out over time, leading to unpredictable errors, including file system corruption. To diagnose RAM problems, careful testing and observation are essential.
 
-Running memory tests is a good idea if you notice unexplained crashes, data corruption, or system instability. The Unraid boot menu has a version of Memtest86+ for RAM testing, but it's only available in Legacy boot mode. You'll need to download the latest Memtest86+ from the official site for UEFI systems.
+Running memory tests is a good idea if you notice unexplained crashes, data corruption, or system instability. The Unraid boot menu includes Memtest86+ for RAM testing, which works on both Legacy and UEFI systems
 
 ### Testing RAM
 To test your RAM, restart your server and select **Memtest86+** from the boot menu. Modern versions (v6.0+) support both UEFI and Legacy modes with enhanced DDR4/DDR5 compatibility. For the latest version, download from [memtest.org](https://www.memtest86.com/).
@@ -94,7 +94,7 @@ Outdated firmware or BIOS can lead to instability, security vulnerabilities, and
 
 :::tip Recommendations
 - Use manufacturer utilities for risk-free updates, such as [ASUS Armoury Crate](https://www.asus.com/supportonly/armoury%20crate/helpdesk_download/), [Gigabyte @BIOS](https://www.gigabyte.com/Support/Consumer/Download), or [MSI Center](https://www.msi.com/Landing/MSI-Center).
-- Enable **UEFI Capsule Updates** for automatic firmware patching.
+- Check your motherboard's BIOS settings for automatic update options if available.
 :::
 
 </details>
@@ -106,19 +106,4 @@ Outdated firmware or BIOS can lead to instability, security vulnerabilities, and
 
 Consistent monitoring is essential for early problem detection. Enable persistent logging in Unraid to retain logs across reboots. Utilize system monitoring tools to track temperatures, voltages, and drive health. Set up alerts for critical thresholds to take action before minor issues escalate. Regularly reviewing system logs allows you to spot patterns and address underlying causes before they lead to downtime.
 
-Some tool recommendations include:
-
-<div style={{ margin: 'auto', maxWidth: '600px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-
-| Tool Type               | Recommendations          |
-|-------------------------|-------------------------------|
-| **AI Predictive**       | [ManageEngine OpManager](https://www.manageengine.com/network-monitoring/)       |
-| **Hardware Sensors**    | [HWiNFO64](https://www.hwinfo.com/download/)                     |
-| **Container Monitoring**| [Netdata Cloud](https://www.netdata.cloud/)                |
-| **Alert Systems**       | Set thresholds for:         |
-|                         | - CPU >80°C sustained        |
-|                         | - RAM usage >90% for 5+ min |
-</div>
-
 </details>
-

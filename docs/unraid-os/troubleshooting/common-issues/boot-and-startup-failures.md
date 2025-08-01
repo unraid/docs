@@ -20,7 +20,7 @@ Always back up your flash drive before making changes. All user-specific setting
 
 ## Enabling UEFI boot
 
-Modern systems typically require **UEFI boot mode** for enhanced security and faster startup times. When creating your Unraid boot device, you can enable UEFI support during setup. If you need to enable UEFI boot later, simply rename the folder on the flash device from `efi~` to `efi` by removing the trailing tilde `~`.
+Modern systems typically require **UEFI boot mode** for enhanced security and faster startup times. When creating your Unraid boot device, you can enable UEFI support during setup. If you need to enable UEFI boot later, simply rename the folder on the flash device from `EFI-` to `EFI` by removing the trailing tilde `~`.
 
 To configure UEFI boot in your system BIOS/UEFI settings:
 
@@ -40,7 +40,7 @@ The Unraid boot sequence has a number of stages:
 - The motherboard BIOS recognizes the Unraid bootable flash device.
 - Setting the flash device as the default boot device varies based on your BIOS; check your motherboard manual for guidance.
 - The flash device supports both **legacy (CSM)** and **UEFI** boot modes.
-- For UEFI boot, ensure the `efi` folder on the flash device does not have a trailing tilde (`~`).
+- For UEFI boot, ensure the `EFI` folder on the flash device does not have a trailing tilde (`~`).
 
 </details>
 
@@ -48,8 +48,8 @@ The Unraid boot sequence has a number of stages:
 <summary>2. Syslinux loader</summary>
 
 - Boot menu entries are defined in the `syslinux/syslinux.cfg` file on the flash device.
-- You can edit this file through the **WebGUI** under **Main** > **Syslinux configuration**.
-- **Memtest86+** only works in legacy mode; obtain a compatible version from official memtest sites for UEFI.
+- You can edit this file through the **WebGUI** under ***Main → Syslinux configuration***.
+- **Memtest86+**, which ships with current builds of Unraid, works in both legacy and UEFI modes. For older Unraid versions, obtain a compatible version from [the official memtest site](https://www.memtest86.com/) for UEFI.
 - If no option is selected, the default boots after a timeout, which is useful for headless operation.
 
 </details>
@@ -139,7 +139,7 @@ Unraid identifies data drives by detecting existing valid file systems. Parity d
 2. Boot the server from this new drive (do not assign any drives yet).
 3. Activate a license, using either a trial or transferring an existing one.
 4. Identify parity drives using one of the methods outlined below.
-5. Use **Tools > New Config** to reset the array while retaining previous assignments if possible.
+5. Use ***Tools → New Config*** to reset the array while retaining previous assignments if possible.
 6. Correct drive assignments on the **Main** tab, making sure to distinguish between parity and data drives.
 7. Start the array to commit the drive assignments.
 8. If the parity is valid, check the box for **Parity is Already Valid**. If not, allow the parity to rebuild.

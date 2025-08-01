@@ -18,22 +18,22 @@ Running Unraid as a **virtual machine** on your primary Unraid server can be ver
 
 - Lime Technology does not officially support this configuration for production data.
 - Virtualization introduces some overhead; expect reduced performance compared to running directly on hardware.
-- You need a separate, valid license key for the VM.
+- You need a separate, valid license key for the %%VM|vm%%.
 :::
 
 :::note Prerequisites
 
-- A valid Unraid license key for the VM
+- A valid Unraid license key for the %%VM|vm%%
 - A dedicated USB flash drive (use a different manufacturer than your host's boot drive)
-- Unraid version 6.4.0 or higher for the VM (older versions require manual setup)
+- Unraid version 6.4.0 or higher for the %%VM|vm%% (older versions require manual setup)
 :::
 
-To get Unraid up and running as a VM:
+To get Unraid up and running as a %%VM|vm%%:
 
 <details>
-<summary><strong>1. Prepare the flash drive for the VM</strong></summary>
+<summary><strong>1. Prepare the flash drive for the %%VM|vm%%</strong></summary>
 
-Getting your flash drive ready is crucial for a seamless and dependable VM boot process. Here's how to set up your VM environment with a unique and properly configured boot device.
+Getting your flash drive ready is crucial for a seamless and dependable %%VM|vm%% boot process. Here's how to set up your %%VM|vm%% environment with a unique and properly configured boot device.
 
 1. Use the [Unraid USB Creator](https://unraid.net/download) tool on your desktop to prepare the flash drive:
    - Select **Allow EFI boot**.
@@ -57,22 +57,22 @@ Getting your flash drive ready is crucial for a seamless and dependable VM boot 
    \EFI\boot\bootx64.efi
    ```
 
-4. Note the manufacturer of the flash drive (you'll need this for VM setup later).
+4. Note the manufacturer of the flash drive (you'll need this for %%VM|vm%% setup later).
 
 </details>
 
 <details>
-<summary><strong>2. Set up the VM on the host</strong></summary>
+<summary><strong>2. Set up the %%VM|vm%% on the host</strong></summary>
 
-Configuring the Unraid VM requires some specific settings to ensure proper operation.
+Configuring the Unraid %%VM|vm%% requires some specific settings to ensure proper operation.
 
-To create the VM template:
+To create the %%VM|vm%% template:
 
-1. On the host Unraid server, go to **Settings > VM Manager** and ensure that VMs are enabled.
-2. Navigate to the **VMs** tab and click **Add VM**.
+1. On the host Unraid server, go to ***Settings → VM Manager*** and ensure that %%VM|vm%% are enabled.
+2. Navigate to the **%%VMs|vm%%** tab and click **Add VM**.
 3. Select the **Slackware** template, as it's the closest match to Unraid.
 4. (Optional) If available, replace the Slackware icon with the Unraid icon.
-5. Name the VM (e.g., `UNRAID-VM`).
+5. Name the %%VM|vm%% (e.g., `UNRAID-VM`).
 6. (Optional) Add a description, such as *"Unraid test environment - vX.XX.X."*
 7. Assign resources:
    - CPUs: 2-4 cores
@@ -81,59 +81,59 @@ To create the VM template:
 9. Set **BIOS** to **OVMF** and **USB controller** to **3.0 (QEMU XHCI)**.
 10. Configure virtual disks:
     - Add vDisks for cache/data using **RAW** format and **SATA** bus.
-    - Size disks differently for easy identification (e.g., parity > data > cache).
+    - Size disks differently for easy identification (e.g., %%parity|parity%% > data > cache).
 11. Leave graphics, sound, and network at their default settings.
 12. Under **USB devices**, select the flash drive by **manufacturer**, not label.
 
 :::important
-The VM's flash drive must be from a different manufacturer than the host's boot drive. If they match, the VM drive won't be visible.
+The %%VM|vm%%'s flash drive must be from a different manufacturer than the host's boot drive. If they match, the VM drive won't be visible.
 :::
 
 </details>
 
 <details>
-<summary><strong>3. Create and start the VM</strong></summary>
+<summary><strong>3. Create and start the %%VM|vm%%</strong></summary>
 
-To launch the VM after configuration:
+To launch the %%VM|vm%% after configuration:
 
 1. Uncheck **Start VM after creation** if you want manual control.
 2. Click **Create**.
-3. On the **VMs** tab, click the Unraid VM icon and select **Start with console (VNC)**.
-4. Watch the boot process in the VNC console and note the VM's IP address displayed before login.
+3. On the **VMs** tab, click the Unraid %%VM|vm%% icon and select **Start with console (VNC)**.
+4. Watch the boot process in the %%VNC|vnc-session%% console and note the %%VM|vm%%'s IP address displayed before login.
 
 </details>
 
 <details>
-<summary><strong>4. Configure the VM</strong></summary>
+<summary><strong>4. Configure the %%VM|vm%%</strong></summary>
 
-Once the VM is running, set it up like a physical Unraid server:
+Once the %%VM|vm%% is running, set it up like a physical Unraid server:
 
-1. Access the VM's **WebGUI** at `http://[VM-IP]`.
-2. Go to **Settings > Identification**:
+1. Access the %%VM|vm%%'s **%%WebGUI|web-gui%%** at `http://[VM-IP]`.
+2. Go to ***Settings → Identification***:
    - Set a unique **Server name** (e.g., `Unraid-VM`).
    - Add a description like "Development instance."
-3. (Optional) Go to **Settings > Display settings** and choose a different color theme to distinguish it from the host.
-4. Go to **Settings > SMB settings > Workgroup settings** and set **Local master** to *No* to avoid conflicts.
+3. (Optional) Go to ***Settings → Display settings*** and choose a different color theme to distinguish it from the host.
+4. Go to ***Settings → SMB settings → Workgroup settings*** and set **Local master** to *No* to avoid conflicts.
 5. For UPS passthrough (if the host has UPS):
-   - Go to **Settings > UPS** on the VM.
+   - Go to ***Settings → UPS*** on the %%VM|vm%%.
    - Set **UPS cable** to *Ether*.
    - Set **UPS type** to *net*.
    - Enter the host's IP in **Device**.
-   - Configure **Runtime** to shut down the VM before the host.
-6. Start the array with your configured devices.
+   - Configure **Runtime** to shut down the %%VM|vm%% before the host.
+6. Start the %%array|array%% with your configured devices.
 7. Install **Community Applications** for plugin/Docker testing.
-8. Update the VM via **Tools > Update OS**, just like a physical server.
+8. Update the %%VM|vm%% via ***Tools → Update OS***, just like a physical server.
 
 </details>
 
 ### Troubleshooting
 
-If you encounter an *Execution Error* related to the USB flash device after editing VM settings:
+If you encounter an *Execution Error* related to the USB flash device after editing %%VM|vm%% settings:
 
-1. Edit the VM and switch to **XML view**.
+1. Edit the %%VM|vm%% and switch to **XML view**.
 2. Locate the `<hostdev>` node that defines the flash device (usually near the end).
 3. Delete the entire `<hostdev>...</hostdev>` block.
 4. Click **Update**.
-5. Re-edit the VM in **Form view**.
+5. Re-edit the %%VM|vm%% in **Form view**.
 6. Re-select the flash drive under **USB devices**.
-7. Click **Update** again. The VM should now start normally.
+7. Click **Update** again. The %%VM|vm%% should now start normally.
