@@ -19,7 +19,7 @@ A corrupted Docker image file (`docker.img`) is a common issue, often caused by 
 
 To recreate the Docker image file:
 
-1. Go to **Settings** → **Docker** in the **WebGUI**.
+1. Go to ***Settings → Docker*** in the **WebGUI**.
 2. Set **Enable Docker** to **No** and click **Apply** to stop the Docker service.
 3. Select the option to delete the Docker vdisk file, then click **Apply**.  
    _You can also manually delete the file if needed._
@@ -81,7 +81,7 @@ To restore custom networks:
 2. Update your containers to use the restored networks as needed.
 
 :::note
-You can enable host access to custom networks under **Settings** → **Docker** by setting **Host access to custom networks** to **Enabled** if your setup requires it.
+You can enable host access to custom networks under ***Settings → Docker*** by setting **Host access to custom networks** to **Enabled** if your setup requires it.
 :::
 
 :::tip

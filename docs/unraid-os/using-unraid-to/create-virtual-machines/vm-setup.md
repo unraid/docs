@@ -5,66 +5,66 @@ sidebar_label: VM setup
 
 # VM setup
 
-Setting up a **virtual machine (VM)** on Unraid is a flexible way to run full operating systems—such as Windows, Linux, or other platforms—alongside your containers and native apps. Whether you want to test new software, run legacy applications, host a desktop environment, or utilize hardware passthrough for gaming or creative work, Unraid’s **VM Manager** makes the process approachable for all skill levels.
+Setting up a %%virtual machine (VM)|vm%% on Unraid is a flexible way to run full operating systems—such as Windows, Linux, or other platforms—alongside your containers and native apps. Whether you want to test new software, run legacy applications, host a desktop environment, or utilize hardware passthrough for gaming or creative work, Unraid’s **VM Manager** makes the process approachable for all skill levels.
 
 :::tip New in Unraid 7.0
-Unraid 7.x brings significant enhancements to virtual machines (VMs), including:
+Unraid 7.x brings significant enhancements to %%virtual machines (VMs)|vm%%, including:
 
-- VM clones and snapshots
-- User-created VM templates
-- Inline XML editing/view
+- %%VM|vm%% clones and snapshots
+- User-created %%VM|vm%% templates
+- Inline `XML` editing/view
 - Advanced GPU sharing and passthrough features
 
-Check out the [VM manager features](#new-in-unraid-7x-vm-manager) section for more details.
+Check out the [%%VM|vm%% manager features](#new-in-unraid-7x-vm-manager) section for more details.
 :::
 
 If you haven’t done so already, please review the [Overview & system prep](./overview-and-system-prep.md) instruction to ensure your hardware and shares are ready for virtualization.
 
 ## Creating your own virtual machines
 
-With your system prepared and preferences set, you can create a new **virtual machine (VM)** using the **WebGUI**.
+With your system prepared and preferences set, you can create a new %%virtual machine (VM)|vm%% using the %%WebGUI|web-gui%%.
 
 :::note Before you begin
 
 - Confirm your `isos` and `domains` shares are configured and accessible.
-- Upload your operating system installation ISO and, for Windows VMs, the latest VirtIO drivers ISO to the `isos` share.
-- Decide whether you will use GPU passthrough or VNC for graphics.
+- Upload your operating system installation ISO and, for Windows %%VMs|vm%%, the latest %%VirtIO|virtio%% drivers ISO to the `isos` share.
+- Decide whether you will use %%GPU passthrough|gpu-passthrough%% or %%VNC|vnc-session%% for graphics.
 :::
 
-To create a basic VM:
+To create a basic %%VM|vm%%:
 
 1. Click **Add VM** from the **Virtual Machines** page.
 2. Set the **Template** to **Custom**, or select a predefined OS template for common distributions.
-3. Enter a **Name** and, optionally, a **Description** for your VM.
-4. Toggle **Autostart** if you want the VM to start automatically with the **array**.
-5. Select the **Operating System** type. This will also adjust the VM icon.
-6. Assign **CPU cores** to the VM.  
+3. Enter a **Name** and, optionally, a **Description** for your %%VM|vm%%.
+4. Toggle **Autostart** if you want the %%VM|vm%% to start automatically with the %%array|array%%.
+5. Select the **Operating System** type. This will also adjust the %%VM|vm%% icon.
+6. Assign **CPU cores** to the %%VM|vm%%.  
    You can assign up to the number of physical cores available on your host.
-7. Specify the **Initial Memory** (RAM) for the VM.  
+7. Specify the **Initial Memory** (RAM) for the %%VM|vm%%.  
    Refer to your guest OS documentation for recommended values.
 8. Choose the **OS Install ISO** from your **isos** share.
 9. Configure the **Primary vDisk** (location, size, and type).  
-   - The primary vDisk stores the VM’s operating system.
-   - Add additional vDisks as needed using the plus sign.
+   - The primary %%vDisk|vdisk%% stores the VM’s operating system.
+   - Add additional %%vDisks|vdisk%% as needed using the plus sign.
 10. Select a **Graphics Card**:  
-    - Choose **VNC** for remote access or select a physical GPU for passthrough.
-    - Assign a USB keyboard/mouse if using a physical GPU.
-    - Set a VNC password if desired.
-11. Assign a **Sound Card** (optional, but required for HDMI audio via GPU).
+    - Choose %%VNC|vnc-session%% for remote access or select a physical %%GPU|gpu-passthrough%% for passthrough.
+    - Assign a USB keyboard/mouse if using a physical %%GPU|gpu-passthrough%%.
+    - Set a %%VNC|vnc-session%% password if desired.
+11. Assign a **Sound Card** (optional, but required for HDMI audio via %%GPU|gpu-passthrough%%).
 12. Assign **USB Devices** as needed.  
-    - Devices must be attached before starting the VM (USB hot-plugging is not supported).
+    - Devices must be attached before starting the %%VM|vm%% (USB hot-plugging is not supported).
     - The Unraid USB flash device is not available for assignment.
 13. Click **Create VM**.  
-    - The VM will start automatically unless you uncheck **Start VM after creation**.
+    - The %%VM|vm%% will start automatically unless you uncheck **Start VM after creation**.
 
 ---
 
 ## User VM templates
 
-Unraid 7.1+ introduces **user VM templates**, making saving and reusing your custom VM configurations easy. User templates streamline VM deployment and ensure consistency across setups.
+Unraid 7.1+ introduces **user %%VM|vm%% templates**, making saving and reusing your custom %%VM|vm%% configurations easy. User templates streamline %%VM|vm%% deployment and ensure consistency across setups.
 
 **To create a user template:**
-1. Edit the VM you want to template.
+1. Edit the %%VM|vm%% you want to template.
 2. Select **create/modify template** and enter a name.
 3. Your template will now be available in the **user templates** area on the **add VM** screen.
 
@@ -79,57 +79,57 @@ Unraid 7.1+ introduces **user VM templates**, making saving and reusing your cus
 
 ## New in Unraid 7.x: VM Manager
 
-Unraid 7.x introduces a range of powerful enhancements to the **VM Manager**, streamlining the process of running and managing virtual machines. These features cater to beginners and advanced users, making deploying, customizing, and optimizing your VMs simpler.
+Unraid 7.x introduces a range of powerful enhancements to the **%%VM|vm%% Manager**, streamlining the process of running and managing %%virtual machines|vm%%. These features cater to beginners and advanced users, making deploying, customizing, and optimizing your %%VMs|vm%% simpler.
 
 :::tip highlights
-- Save time with VM clones, snapshots, and reusable templates
+- Save time with %%VM|vm%% clones, snapshots, and reusable templates
 - Fine-tune performance and compatibility with advanced passthrough and storage options
-- Enjoy improved visibility and control with usage stats and inline XML editing
+- Enjoy improved visibility and control with usage stats and inline `XML` editing
 :::
 
 <details>
 <summary>Workflow enhancements</summary>
 
-- **VM clones & snapshots:** Duplicate VMs or quickly save/restore their state for testing or backup.
-- **User VM templates:** Save your custom VM configurations and deploy new VMs with just a few clicks.
-- **Inline xml view/edit:** Instantly view or copy the xml generated by the **WebGUI**; switch to xml mode for advanced edits.
-- **Autostart disable:** Choose which VMs start automatically with your **array**.
-- **VM usage statistics:** Track resource usage per VM directly from the **dashboard**.
+- **VM clones & snapshots:** Duplicate %%VMs|vm%% or quickly save/restore their state for testing or backup.
+- **User VM templates:** Save your custom %%VM|vm%% configurations and deploy new %%VMs|vm%% with just a few clicks.
+- **Inline XML view/edit:** Instantly view or copy the `XML` generated by the %%WebGUI|web-gui%%; switch to `XML` mode for advanced edits.
+- **Autostart disable:** Choose which %%VMs|vm%% start automatically with your %%array|array%%.
+- **VM usage statistics:** Track resource usage per %%VM|vm%% directly from the **dashboard**.
 </details>
 
 <details>
 <summary>Advanced hardware & storage options</summary>
 
 - **PCI multifunction/other:** Assign complex PCI devices or groups for advanced passthrough scenarios.
-- **QEMU command-line passthrough:** Add custom QEMU arguments for expert-level VM tuning.
-- **Storage override:** Specify the storage location for each VM’s virtual disk.
-- **SSD flag & unmap:** Optimize vDisk performance for SSDs and enable discard/unmap support.
-- **SR-IOV for Intel iGPU:** Share integrated Intel graphics across multiple VMs.
-- **VM name validation for ZFS:** Prevent the use of unsupported characters in VM names for **ZFS** pools.
+- **%%QEMU|qemu%% command-line passthrough:** Add custom %%QEMU|qemu%% arguments for expert-level %%VM|vm%% tuning.
+- **Storage override:** Specify the storage location for each VM’s %%virtual disk|vdisk%%.
+- **SSD flag & unmap:** Optimize %%vDisk|vdisk%% performance for SSDs and enable discard/unmap support.
+- **`SR-IOV` for Intel iGPU:** Share integrated Intel graphics across multiple %%VMs|vm%%.
+- **VM name validation for ZFS:** Prevent the use of unsupported characters in %%VM|vm%% names for %%ZFS|zfs%% pools.
 
 </details>
 
 <details>
 <summary>Enhanced graphics and GPU sharing</summary>
 
-- **VirGL & QXL virtual GPUs:** Share Intel/AMD GPUs among multiple Linux VMs or utilize QXL for multi-screen/memory options.
-- **CPU pinning optional:** Allow Unraid to manage CPU allocation automatically or manually pin cores as needed.
+- **`VirGL` & `QXL` virtual GPUs:** Share Intel/AMD %%GPUs|gpu-passthrough%% among multiple Linux %%VMs|vm%% or utilize `QXL` for multi-screen/memory options.
+- **%%CPU pinning|cpu-pinning%% optional:** Allow Unraid to manage CPU allocation automatically or manually pin cores as needed.
 
 </details>
 
 <details>
 <summary>More advanced features</summary>
 
-- View all graphics cards and VM-assigned IP addresses in the VM tab
-- Support for QEMU ppc64 target and `qemu:override`
-- Hypervclock support for Windows VMs
+- View all graphics cards and %%VM|vm%%-assigned IP addresses in the %%VM|vm%% tab
+- Support for %%QEMU|qemu%% ppc64 target and `qemu:override`
+- Hypervclock support for Windows %%VMs|vm%%
 - "Migratable" on/off for the emulated CPU
 - Timer/offset configuration options
 - No keymap/nogpu options available for specific use cases
-- Improved VM icon selection and editing
-- Warnings when assigning the primary GPU as passthrough (may require vBIOS)
-- Boot Unraid VMs into GUI mode with the QXL video driver
-- Various fixes for path and icon issues in XML view
+- Improved %%VM|vm%% icon selection and editing
+- Warnings when assigning the primary %%GPU|gpu-passthrough%% as passthrough (may require `vBIOS`)
+- Boot Unraid %%VMs|vm%% into GUI mode with the `QXL` video driver
+- Various fixes for path and icon issues in `XML` view
 
 </details>
 
@@ -137,12 +137,12 @@ Unraid 7.x introduces a range of powerful enhancements to the **VM Manager**, st
 
 ## Using virtual GPUs and GPU sharing
 
-Unraid now supports advanced GPU sharing via VirGL and QXL for Linux VMs (and some Nvidia GPUs with the Nouveau driver).
+Unraid now supports advanced %%GPU|gpu-passthrough%% sharing via `VirGL` and `QXL` for Linux %%VMs|vm%% (and some Nvidia %%GPUs|gpu-passthrough%% with the `Nouveau` driver).
 
-- To use VirGL: set **Graphics Card** to **Virtual** and **VM console video driver** to **VirtIO(3D)**.
-- To use QXL: set **Graphics Card** to **Virtual** and **VM console video driver** to **QXL (best)**.
-- VirGL does not output to a physical monitor and is not compatible with Windows VMs or standard Nvidia plugins.
-- QXL supports multi-screen and configurable video memory.
+- To use `VirGL`: set **Graphics Card** to **Virtual** and **VM console video driver** to **VirtIO(3D)**.
+- To use `QXL`: set **Graphics Card** to **Virtual** and **VM console video driver** to **`QXL` (best)**.
+- `VirGL` does not output to a physical monitor and is not compatible with Windows %%VMs|vm%% or standard Nvidia plugins.
+- `QXL` supports multi-screen and configurable video memory.
 
 ---
 
@@ -156,42 +156,42 @@ Here are the most important advanced options, broken into focused sections:
 
 **CPU mode:**
 
-- **Host passthrough**: Exposes all host CPU features to the VM for maximum performance.
+- **Host passthrough**: Exposes all host CPU features to the %%VM|vm%% for maximum performance.
 - **Emulated**: Uses a generic CPU model, reducing compatibility issues but limiting performance.
 
 **Memory ballooning:**
 
-- Set a **Max Memory** value to enable dynamic memory allocation (memory ballooning).
-- Not available for VMs with PCI devices assigned (e.g., GPU passthrough).
+- Set a **Max Memory** value to enable dynamic memory allocation (%%memory ballooning|memory-ballooning%%).
+- Not available for %%VMs|vm%% with PCI devices assigned (e.g., %%GPU passthrough|gpu-passthrough%%).
 
 **Machine type:**
 
-- **i440fx**: Default for Windows VMs. Change only if you have GPU passthrough issues.
-- **Q35**: Default for Linux VMs and recommended for most modern operating systems, especially with GPU passthrough.
+- **`i440fx`**: Default for Windows %%VMs|vm%%. Change only if you have %%GPU passthrough|gpu-passthrough%% issues.
+- **`Q35`**: Default for Linux %%VMs|vm%% and recommended for most modern operating systems, especially with %%GPU passthrough|gpu-passthrough%%.
 
 **BIOS type:**
 
 - **SeaBIOS**: Traditional BIOS for legacy OSes.
-- **OVMF**: UEFI BIOS required for Windows 8+, most modern Linux distros, and GPU passthrough.  
-  _Note: BIOS type can only be set when creating a new VM._
+- **OVMF**: %%UEFI|uefi%% BIOS required for Windows 8+, most modern Linux distros, and %%GPU passthrough|gpu-passthrough%%.  
+  _Note: BIOS type can only be set when creating a new %%VM|vm%%._
 
 **Hyper-V extensions:**
 
-- For Windows VMs, enable Hyper-V extensions for improved compatibility and performance.
+- For Windows %%VMs|vm%%, enable Hyper-V extensions for improved compatibility and performance.
 
 **VirtIO drivers ISO:**
 
-- Override the default VirtIO ISO if needed, especially for testing or using newer drivers.
+- Override the default %%VirtIO|virtio%% ISO if needed, especially for testing or using newer drivers.
 
 **vDisk type:**
 
-- **RAW**: Best performance, less flexible for snapshots.
-- **QCOW2**: Supports snapshots but offers slightly lower performance.
+- **`RAW`**: Best performance, less flexible for snapshots.
+- **`QCOW2`**: Supports snapshots but offers slightly lower performance.
 
 **VirtFS mappings (Linux VMs):**
 
-- Add multiple VirtFS (9p) shares for file system integration between host and guest.
-- See [QEMU 9p documentation](http://wiki.qemu.org/Documentation/9psetup) for details.
+- Add multiple %%VirtFS|virtfs%% (`9p`) shares for file system integration between host and guest.
+- See [%%QEMU|qemu%% 9p documentation](http://wiki.qemu.org/Documentation/9psetup) for details.
 
 **Network settings:**
 
@@ -203,8 +203,8 @@ Here are the most important advanced options, broken into focused sections:
 
 :::info Troubleshooting tips
 
-- If your VM fails to start, double-check your ISO and vDisk paths.
-- For GPU passthrough, ensure your hardware and BIOS settings support IOMMU/VT-d/AMD-Vi.
+- If your %%VM|vm%% fails to start, double-check your ISO and %%vDisk|vdisk%% paths.
+- For %%GPU passthrough|gpu-passthrough%%, ensure your hardware and BIOS settings support %%IOMMU|iommu%%/VT-d/AMD-Vi.
 - Some USB devices may not work reliably with passthrough - test and consult the [Unraid forums](https://forums.unraid.net/) for device-specific advice.
 :::
 
@@ -212,15 +212,15 @@ Here are the most important advanced options, broken into focused sections:
 
 ## Binding PCI devices for passthrough
 
-Before you can assign a GPU or any PCI device to a **virtual machine**, it's important to “bind” the device to the **vfio-pci** driver. This process hides the device from Unraid and dedicates it solely to your VM.
+Before you can assign a %%GPU|gpu-passthrough%% or any PCI device to a %%virtual machine|vm%%, it's important to “bind” the device to the **vfio-pci** driver. This process hides the device from Unraid and dedicates it solely to your %%VM|vm%%.
 
-To bind a PCI device (GPU, USB controller, NVMe, etc.) for passthrough:
+To bind a PCI device (%%GPU|gpu-passthrough%%, USB controller, NVMe, etc.) for passthrough:
 
-1. Navigate to **Tools → System Devices** in the **WebGUI**.
-2. Look through the list of all detected PCI devices and their IOMMU groups.
+1. Navigate to ***Tools → System Devices*** in the %%WebGUI|web-gui%%.
+2. Look through the list of all detected PCI devices and their %%IOMMU|iommu%% groups.
 3. Check the box next to each device you wish to bind to **vfio-pci** (to hide it from Unraid).
    - Note that devices already in use by Unraid (such as disk controllers and network cards) cannot be selected.
-   - If you select a GPU, select the associated sound device.
+   - If you select a %%GPU|gpu-passthrough%%, select the associated sound device.
 4. Click on **Bind Selected to VFIO at Boot** to save your changes.
 5. Restart your server for the binding to take effect.
 
@@ -228,15 +228,15 @@ To bind a PCI device (GPU, USB controller, NVMe, etc.) for passthrough:
 If you make hardware changes (like adding or removing PCI devices), return to **System Devices** to ensure the correct devices are still bound. If devices are unbound or misbound, they may not appear for passthrough.
 :::
 
-After binding, bound devices will appear in the **Other PCI Devices** dropdown when editing or creating a VM.
+After binding, bound devices will appear in the **Other PCI Devices** dropdown when editing or creating a %%VM|vm%%.
 
 <details>
 <summary>Troubleshooting</summary>
 
-- If you've previously used the VFIO-PCI Config plugin, uninstall it - this functionality is now integrated.
+- If you've previously used the `VFIO-PCI` Config plugin, uninstall it - this functionality is now integrated.
 - To reset all bindings, delete `/boot/config/vfio-pci.cfg` and reboot your system.
-- After rebooting, utilize the **View VFIO-PCI Log** button on the **System Devices** page for advanced troubleshooting.
-- Remember that if you bind your only GPU, Unraid may not boot to the GUI. Make sure you plan for this.
+- After rebooting, utilize the **View `VFIO-PCI` Log** button on the **System Devices** page for advanced troubleshooting.
+- Remember that if you bind your only %%GPU|gpu-passthrough%%, Unraid may not boot to the GUI. Make sure you plan for this.
 - For more information, check the [official guide on the Unraid forums](https://forums.unraid.net/topic/93781-guide-bind-devices-to-vfio-pci-for-easy-passthrough-to-vms/).
 </details>
 
@@ -244,54 +244,54 @@ After binding, bound devices will appear in the **Other PCI Devices** dropdown w
 
 ## GPU passthrough for virtual machines
 
-GPU passthrough allows you to assign a physical graphics card directly to a **virtual machine (VM)**, providing near-native performance for gaming, creative work, or machine learning.
+%%GPU passthrough|gpu-passthrough%% allows you to assign a physical graphics card directly to a %%virtual machine (VM)|vm%%, providing near-native performance for gaming, creative work, or machine learning.
 
 :::info Why use GPU passthrough?
 
 - **Performance:** Direct hardware access for demanding applications.
-- **Compatibility:** Run graphics-intensive workloads that require a dedicated GPU.
+- **Compatibility:** Run graphics-intensive workloads that require a dedicated %%GPU|gpu-passthrough%%.
 - **Flexibility:** Transform your unraid server into a multi-purpose workstation.
 :::
 
 **Prerequisites**
 
 - **Hardware:**  
-  - CPU with Intel VT-d or AMD-Vi support (IOMMU enabled in BIOS).
-  - GPU compatible with passthrough (see [community-tested hardware](https://docs.google.com/spreadsheets/d/1LnGpTrXalwGVNy0PWJDURhyxa3sgqkGXmvNCIvIMenk/edit#gid=0)).
+  - CPU with Intel VT-d or AMD-Vi support (%%IOMMU|iommu%% enabled in BIOS).
+  - %%GPU|gpu-passthrough%% compatible with passthrough (see [community-tested hardware](https://docs.google.com/spreadsheets/d/1LnGpTrXalwGVNy0PWJDURhyxa3sgqkGXmvNCIvIMenk/edit#ggid=0)).
   - A motherboard that properly isolates PCIe devices.
 - **Software:**  
   - Unraid 6.9+ with virtualization enabled.
-  - OVMF (UEFI) bios for VMs (recommended over Seabios).
+  - %%OVMF|ovmf%% (%%UEFI|uefi%%) bios for %%VMs|vm%% (recommended over %%SeaBIOS|seabios%%).
 
 To setup GPU passthrough:
 
-1. Ensure your hardware supports IOMMU and is enabled in your BIOS.
+1. Ensure your hardware supports %%IOMMU|iommu%% and is enabled in your BIOS.
 2. Enable virtualization features in BIOS (Intel VT-x/VT-d or AMD-v/AMD-vi).
 3. Update Unraid to the latest stable version.
-4. Assign the GPU to the VM in the VM creation or edit screen under the graphics card section.
-5. Assign a USB keyboard and mouse to the VM if using GPU passthrough.
-6. Use OVMF bios for the VM for better compatibility with GPU passthrough.
-7. Start the VM and verify the GPU is passed through correctly.
+4. Assign the %%GPU|gpu-passthrough%% to the %%VM|vm%% in the %%VM|vm%% creation or edit screen under the graphics card section.
+5. Assign a USB keyboard and mouse to the %%VM|vm%% if using %%GPU passthrough|gpu-passthrough%%.
+6. Use %%OVMF|ovmf%% BIOS for the %%VM|vm%% for better compatibility with %%GPU passthrough|gpu-passthrough%%.
+7. Start the %%VM|vm%% and verify the %%GPU|gpu-passthrough%% is passed through correctly.
 
 :::note
-Some GPUs may require additional configuration or ROM injection for proper passthrough.
+Some %%GPUs|gpu-passthrough%% may require additional configuration or ROM injection for proper passthrough.
 :::
 
-### Manual ROM injection
+### Manual `ROM` injection
 
-:::important Why manual ROM injection?  
+:::important Why manual `ROM` injection?  
 Some GPUs, especially specific NVIDIA models, require a ROM file to be manually provided to the VM to initialize correctly. This is often necessary when the GPU’s onboard firmware is not correctly passed through by default, causing issues like black screens or failure to boot. Manual ROM injection is a last resort after trying BIOS and VM configuration adjustments.
 :::
 
 To inject a ROM:
 
-1. **Download GPU ROM:**  
+1. **Download GPU `ROM`:**  
    - Visit [TechPowerUp VGA BIOS database](https://www.techpowerup.com/vgabios/).
-   - Search for your GPU model and download the correct ROM file.
+   - Search for your %%GPU|gpu-passthrough%% model and download the correct `ROM` file.
    - Store the rom in your unraid `isos` or `domains` share.
 
-2. **Edit VM XML:**
-   - Stop the VM and open its XML configuration (**Edit XML** from the VM context menu).
+2. **Edit %%VM|vm%% XML:**
+   - Stop the %%VM|vm%% and open its XML configuration (**Edit XML** from the %%VM|vm%% context menu).
    - Locate the GPU’s `<hostdev>` block and add the `<rom>` tag:
 
      ```xml
@@ -305,37 +305,37 @@ To inject a ROM:
      </hostdev>
      ```
 
-3. **Save and test:** Click **Update** and start the VM.
+3. **Save and test:** Click **Update** and start the %%VM|vm%%.
 
 ---
 
 ## Common issues
 
-This section covers advanced topics and solutions for common issues when managing **virtual machines (VMs)** on Unraid. Expand the sections below for step-by-step instructions and troubleshooting tips.
+This section covers advanced topics and solutions for common issues when managing %%virtual machines (VMs)|vm%% on Unraid. Expand the sections below for step-by-step instructions and troubleshooting tips.
 
 ### Expand a vDisk
 
 <details>
 <summary><strong>Expand</strong></summary>
 
-If your VM is running low on disk space, you can increase the size of its virtual disk (**vDisk**) directly from the **WebGUI**.
+If your %%VM|vm%% is running low on disk space, you can increase the size of its %%virtual disk (**vDisk**)|vdisk%% directly from the %%WebGUI|web-gui%%.
 
-To expand a vDisk:
+To expand a %%vDisk|vdisk%%:
 
-1. Go to the **VMs** tab in the **WebGUI**.
-2. Ensure the VM is stopped.
+1. Go to the **VMs** tab in the %%WebGUI|web-gui%%.
+2. Ensure the %%VM|vm%% is stopped.
 3. Click on the VM’s name to expand its details.
-4. Locate the vDisk you want to expand. Click the value in the **Capacity** field to make it editable.
+4. Locate the %%vDisk|vdisk%% you want to expand. Click the value in the **Capacity** field to make it editable.
 5. Enter the new desired size (e.g., `100G` for 100 gigabytes) and press **Enter**.
 6. The new capacity is now set.
 
 :::note
-You cannot shrink a vDisk from the Unraid GUI; only expansion is supported.
+You cannot shrink a %%vDisk|vdisk%% from the Unraid GUI; only expansion is supported.
 :::
 
 **Expanding the partition in your guest OS**
 
-After resizing the vDisk, start your VM. You must expand the partition within the guest operating system to use the new space:
+After resizing the %%vDisk|vdisk%%, start your %%VM|vm%%. You must expand the partition within the guest operating system to use the new space:
 
 - **Windows:**  
   Use the built-in Disk Management tool to extend your partition.  
@@ -355,7 +355,7 @@ After resizing the vDisk, start your VM. You must expand the partition within th
   Adjust device names as needed for your setup.
 
 :::tip
-Always back up your VM before making disk changes.
+Always back up your %%VM|vm%% before making disk changes.
 :::
 
 </details>
@@ -365,9 +365,9 @@ Always back up your VM before making disk changes.
 <details>
 <summary>**Expand**</summary>
 
-If your VM boots to a **UEFI shell** instead of your operating system, you can manually start the boot process:
+If your %%VM|vm%% boots to a %%UEFI|uefi%% shell instead of your operating system, you can manually start the boot process:
 
-1. At the UEFI shell prompt, enter:
+1. At the %%UEFI|uefi%% shell prompt, enter:
 
    ```bash
    fs0:
@@ -375,10 +375,10 @@ If your VM boots to a **UEFI shell** instead of your operating system, you can m
    bootx64.efi
    ```
 
-2. The VM should now continue booting into your OS.
+2. The %%VM|vm%% should now continue booting into your OS.
 
 :::tip
-If this happens frequently, check your VM’s boot order and ensure the correct vDisk or ISO is set as the primary boot device in the VM settings.
+If this happens frequently, check your VM’s boot order and ensure the correct %%vDisk|vdisk%% or ISO is set as the primary boot device in the VM settings.
 :::
 
 </details>
@@ -388,30 +388,30 @@ If this happens frequently, check your VM’s boot order and ensure the correct 
 <details>
 <summary><strong>Expand</strong></summary>
 
-If your VM starts but the display remains blank:
+If your %%VM|vm%% starts but the display remains blank:
 
 1. **Check BIOS settings:**
-   - Set primary graphics to integrated GPU (iGPU), not the passthrough GPU.
-   - Update motherboard and GPU BIOS to the latest versions.
+   - Set primary graphics to integrated %%GPU|gpu-passthrough%% (iGPU), not the passthrough %%GPU|gpu-passthrough%%.
+   - Update motherboard and %%GPU|gpu-passthrough%% BIOS to the latest versions.
 
-2. **Adjust VM settings:**
-   - Switch from SeaBIOS to **OVMF** (UEFI) in VM settings.
-   - Change **machine type** from `i440fx` to `Q35`.
+2. **Adjust %%VM|vm%% settings:**
+   - Switch from %%SeaBIOS|seabios%% to %%OVMF|ovmf%% (%%UEFI|uefi%%) in %%VM|vm%% settings.
+   - Change **machine type** from i440fx to Q35.
 
 3. **Manual ROM injection (last resort):**
    - [Inject GPU ROM manually](#manual-rom-injection).
 
 </details>
 
-### Error: "Failed to set iommu for container: operation not permitted"
+### Error: "Failed to set IOMMU for container: operation not permitted"
 
 <details>
 <summary><strong>Expand</strong></summary>
 
-This error typically indicates IOMMU group conflicts or missing interrupt remapping:
+This error typically indicates %%IOMMU|iommu%% group conflicts or missing interrupt remapping:
 
 1. **Enable PCIe ACS override:**
-   - Go to **Settings > VM Manager**.
+   - Go to ***Settings → VM Manager***.
    - Set **PCIe ACS override** to *Downstream* or *Both*.
    - Reboot Unraid.
 
@@ -422,10 +422,10 @@ This error typically indicates IOMMU group conflicts or missing interrupt remapp
      append vfio_iommu_type1.allow_unsafe_interrupts=1 initrd=/bzroot
      ```
 
-   - Only use this if you fully trust your VM guests.
+   - Only use this if you fully trust your %%VM|vm%% guests.
 
 :::note
-For detailed IOMMU group explanations, see [Alex Williamson’s blog](http://vfio.blogspot.com/2014/08/iommu-groups-inside-and-out.html).
+For detailed %%IOMMU|iommu%% group explanations, see [Alex Williamson’s blog](http://vfio.blogspot.com/2014/08/iommu-groups-inside-and-out.html).
 :::
 
 </details>

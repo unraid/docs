@@ -11,7 +11,7 @@ import TabItem from '@theme/TabItem';
 The USB flash device is critical to your Unraid server as it stores the operating system, configuration files, and license. If this device fails or becomes unreliable, prompt replacement is essential to avoid data loss and minimize downtime.
 
 :::caution
-When you replace your Unraid USB flash device, your license is transferred to the new device, and the old flash device is blacklisted. This action is permanent and cannot be undone.
+When you replace your Unraid USB flash device, your license is transferred to the new device, and the old flash device is blacklisted **and can no longer be used with Unraid.** This action is permanent and cannot be undone.
 :::
 
 Some common indicators that your USB flash device may need to be replaced include:
@@ -58,7 +58,7 @@ The [forum announcement on counterfeit SanDisk drives](https://forums.unraid.net
 
 :::caution Before you replace
 
-Before replacing your current flash device, consider running diagnostics:
+Before replacing your current flash device, consider checking it for errors:
 
 1. Shut down your server and remove the flash device.
 2. Insert the device into a Windows or Mac computer.
@@ -149,7 +149,7 @@ If you transfer a trial configuration to a new flash device, you will not be abl
 
 7. If needed, copy your existing license key file into `boot/config` on the new device.
 8. Ensure only one key file exists in the config folder.
-9.  In **Tools > Registration**, select **Replace key** and enter your email address.
+9.  In ***Tools → Registration***, select **Replace key** and enter your email address.
 
 <div style={{ margin: 'auto', maxWidth: '600px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
 
@@ -161,7 +161,7 @@ If you transfer a trial configuration to a new flash device, you will not be abl
 11. Once complete, select **Done**.
 
 :::important
-If you see a "keyfile is not valid" error, your key may be blacklisted or not the last valid key. Contact Unraid support for assistance.
+If you see a "keyfile is not valid" error, your key may be blacklisted or not the last valid key. [Contact Unraid support](https://unraid.net/support) for assistance.
 :::
 
 </TabItem>
@@ -184,7 +184,7 @@ Use the manual method only if you are comfortable with basic file management and
 
 </div>
 
-5. In **Tools > Registration**, select **Replace key** and enter your email address.
+5. In ***Tools → Registration***, select **Replace key** and enter your email address.
 
 <div style={{ margin: 'auto', maxWidth: '600px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
 
@@ -234,14 +234,14 @@ To safely reconfigure your array:
 
 1. Prepare a fresh Unraid flash drive, following the instructions provided earlier in this guide.
 2. Edit `/boot/config/disk.cfg` and set `startArray="no"` to prevent the array from starting automatically.  
-   - Alternatively, you can use **Settings > Disk Settings** in the GUI to disable auto-start.
-3. Navigate to **Tools > New Config** to create a new array configuration.
+   - Alternatively, you can use ***Settings → Disk Settings*** in the GUI to disable auto-start.
+3. Navigate to ***Tools → New Config*** to create a new array configuration.
    - Assign all drives as data drives and start the array.
    - Note the serial numbers of drives that do not mount; these are likely your parity drives.
    - You can also use the **Unassigned Devices** plugin to test-mount each drive, identifying parity by elimination.
-4. Go to **Tools > New Config** again and create a new array configuration, retaining all the currently configured drives.
+4. Go to ***Tools → New Config*** again and create a new array configuration, retaining all the currently configured drives.
 5. Assign the correct drives as parity and the rest as data drives in the **Main** tab.
-6. If you have a single parity drive, the order of data drives is not critical - check **Parity is Valid**. For dual parity, note that parity1 and parity2 are not interchangeable, and parity must be rebuilt.
+6. If you have a single parity drive, the order of data drives is not critical - check **Parity is Valid**. For dual parity, both the order of the data drives and the assignment of parity1 and parity2 are important.  Parity1 and parity2 are not interchangeable, and parity must be rebuilt.
 7. Start the array to commit assignments. Data drives should mount, and their contents should remain intact.
 8. If you checked **Parity is Valid**, run a correcting parity check to confirm that your configuration is correct.
 

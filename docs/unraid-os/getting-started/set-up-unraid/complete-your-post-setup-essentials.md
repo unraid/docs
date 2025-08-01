@@ -16,7 +16,7 @@ Always back up your Unraid flash device after making significant configuration c
 To back up your flash device, go to the **Main** tab, select the device, and click on **Flash Backup**.
 
 :::warning
-Store backups outside the Unraid array for easy access if the array isn't operational.
+Store backups outside the Unraid %%array|array%% for easy access if the %%array|array%% isn't operational.
 :::
 :::note
 Alternatively, use the [Unraid Connect](https://docs.unraid.net/connect/) plugin for automated backups to LimeTech's cloud servers.
@@ -24,7 +24,7 @@ Alternatively, use the [Unraid Connect](https://docs.unraid.net/connect/) plugin
 
 ## Use the built-in help
 
-Unraid provides extensive help text for settings in the WebGUI. Enable it by clicking the ![Help icon](/img/helpicon.png) icon at the top-right corner. You can also toggle help on individual fields by clicking their names. The WebGUI help will typically offer the most up-to-date information help information.
+Unraid provides extensive help text for settings in the %%WebGUI|web-gui%%. Enable it by clicking the ![Help icon](/img/helpicon.png) icon at the top-right corner. You can also toggle help on individual fields by clicking their names. The %%WebGUI|web-gui%% help will typically offer the most up-to-date information help information.
 
  <div style={{ margin: 'auto', maxWidth: '500px'}}>
 

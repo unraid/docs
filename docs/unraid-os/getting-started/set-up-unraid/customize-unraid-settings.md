@@ -5,24 +5,24 @@ sidebar_label: Customize Unraid settings
 
 # Customize Unraid settings
 
-Unraid OS automatically functions but allows further customization of settings such as IP address, hostname, disk tunables, and more via the **Settings** tab in the Unraid **WebGUI**.
+Unraid OS automatically functions but allows further customization of settings such as IP address, hostname, disk tunables, and more via the **Settings** tab in the Unraid **%%WebGUI|web-gui%%**.
  <div style={{ margin: 'auto', maxWidth: '700px'}}>
 
   ![Toolbar - Settings](/img/toolbar_settings.png)
   </div>
 
-Don't forget - the WebGUI includes built-in help. To access help for a specific field, click the prompt next to it, or use the **Help** icon ![Help icon](/img/helpicon.png) at the top right of the interface to toggle help for all fields.
+Don't forget - the %%WebGUI|web-gui%% includes built-in help. To access help for a specific field, click the prompt next to it, or use the **Help** icon ![Help icon](/img/helpicon.png) at the top right of the interface to toggle help for all fields.
 
 ## System Settings
 
-**System Settings** enable you to configure key functionalities like network, share, **VM**, and disk settings.
+**System Settings** enable you to configure key functionalities like network, share, %%VM|vm%%, and disk settings.
 
 ### CPU Pinning
 
-**CPU Pinning** allows you to assign specific CPU cores to **VMs** (Virtual Machines) or **Docker** containers. This is particularly important for performance-sensitive workloads, such as gaming VMs. Even if you manually assign Docker containers to avoid conflicts with your gaming VM, the host operating system may still utilize those cores for tasks like managing the **Web GUI**, running a **parity check**, or performing **BTRFS** operations.
+%%CPU Pinning|cpu-pinning%% allows you to assign specific CPU cores to %%VMs|vm%% (Virtual Machines) or **Docker** containers. This is particularly important for performance-sensitive workloads, such as gaming %%VMs|vm%%. Even if you manually assign Docker containers to avoid conflicts with your gaming %%VM|vm%%, the host operating system may still utilize those cores for tasks like managing the %%WebGUI|web-gui%%, running a %%parity check|parity-check%%, or performing %%BTRFS|btrfs%% operations.
 
-- When you pin a core to a VM or Docker container, that core is allocated to the VM or container. However, Unraid OS may still access it for routine tasks.
-- When you isolate a core, it becomes dedicated to the VM or container and is no longer accessible to Unraid OS.
+- When you pin a core to a %%VM|vm%% or Docker container, that core is allocated to the %%VM|vm%% or container. However, Unraid OS may still access it for routine tasks.
+- When you isolate a core, it becomes dedicated to the %%VM|vm%% or container and is no longer accessible to Unraid OS.
 - You can pin cores without needing to restart your server, but applying CPU isolation changes does require a system restart.
 
 ### Date & Time
@@ -36,7 +36,7 @@ On this page, you can set your time zone and toggle the use of up to four NTP se
 
 ### Disk Settings
 
-You can modify additional settings for your disk devices on this page. Enable your array to start automatically on boot, adjust disk **spin-down timers**, and even change advanced driver settings like **SMART polling frequency**.
+You can modify additional settings for your disk devices on this page. Enable your %%array|array%% to start automatically on boot, adjust disk %%spin-down timers|spin-down-timers%%, and even change advanced driver settings like %%SMART polling frequency|smart-polling%%.
 
 <div className="flex-container" style={{ margin: 'auto', maxWidth: '800px'}}>
 
@@ -61,7 +61,7 @@ Docker containers allow you to integrate pre-configured Linux applications into 
 
 ### Identification
 
-Unraid defaults to the hostname `tower`, but you can change it here. You can also add a description or model number for your system. This page lets you enable or disable SSL support, change the WebGUI port, and provision an SSL certificate for your server.
+Unraid defaults to the hostname `tower`, but you can change it here. You can also add a description or model number for your system. This page lets you enable or disable %%SSL|ssl%% support, change the %%WebGUI|web-gui%% port, and provision an %%SSL|ssl%% certificate for your server.
  <div style={{ margin: 'auto', maxWidth: '400px'}}>
 
   ![Settings - Identification](/img/settings-identification.png)
@@ -69,7 +69,7 @@ Unraid defaults to the hostname `tower`, but you can change it here. You can als
 
 ### Management Access
 
-You can configure various access settings for your Unraid server, including enabling Telnet or SSH, setting ports for SSL/TLS, HTTP, and HTTPS, and defining the default landing page for Unraid.
+You can configure various access settings for your Unraid server, including enabling Telnet or %%SSH|ssh%%, setting ports for %%SSL|ssl%%/%%TLS|tls%%, HTTP, and HTTPS, and defining the default landing page for Unraid.
  <div style={{ margin: 'auto', maxWidth: '400px'}}>
 
   ![Settings - Management Access](/img/settings-management-access.png)
@@ -77,7 +77,7 @@ You can configure various access settings for your Unraid server, including enab
 
 ### Network Settings
 
-By default, Unraid tries to obtain an IP address from a DHCP server on your local network, usually provided by your router. On this page, you can configure a static IP address, set up bonding, bridging, or explore other options. While setting a static IP is recommended, it is not necessary to use Unraid.
+By default, Unraid tries to obtain an IP address from a DHCP server on your local network, usually provided by your router. On this page, you can configure a static IP address, set up %%bonding|nic-bonding%%, %%bridging|nic-bridging%%, or explore other options. While setting a static IP is recommended, it is not necessary to use Unraid.
  <div style={{ margin: 'auto', maxWidth: '400px'}}>
 
   ![Network Settings](/img/settings-network.png)
@@ -95,7 +95,7 @@ Changes take effect immediately and do not require a system restart.
 
 ### Global Share Settings
 
-**User shares** can greatly simplify the organization and access of content across multiple disks in the array. You have the option to specify which disks are allowed to participate in **user shares** through global inclusion or exclusion settings. Additionally, if a **cache device** or **pool** is available, you can configure its usage with **user shares** from this section.
+%%User shares|user-share%% can greatly simplify the organization and access of content across multiple disks in the %%array|array%%. You have the option to specify which disks are allowed to participate in %%user shares|user-share%% through global inclusion or exclusion settings. Additionally, if a %%cache device|cache%% or %%pool|cache-pool%% is available, you can configure its usage with %%user shares|user-share%% from this section.
  <div style={{ margin: 'auto', maxWidth: '400px'}}>
 
   ![Global Share Settings](/img/settings-globalshare.png)
@@ -111,7 +111,7 @@ Unraid can be connected to an APC (or compatible) UPS (Uninterruptible Power Sup
 
 ### VM Manager
 
-**Virtual machines** (VMs) can turn your server into a desktop or media player, and run applications not designed for Linux. For details on managing VMs on Unraid, see the **VM Management** and **VM Guest Support** sections.
+**Virtual machines** (VMs) can turn your server into a desktop or media player, and run applications not designed for Linux. For details on managing %%VMs|vm%% on Unraid, see the **VM Management** and **VM Guest Support** sections.
  <div style={{ margin: 'auto', maxWidth: '400px'}}>
 
   ![VM Manager](/img/settings-vmmanager.png)
@@ -119,11 +119,11 @@ Unraid can be connected to an APC (or compatible) UPS (Uninterruptible Power Sup
 
 ## Network Services
 
-**Network Services** let you configure network communication protocols on your Unraid server, which are essential for user and disk shares. You can also enable an FTP server, a logging server, and set up a VPN for secure remote access.
+**Network Services** let you configure network communication protocols on your Unraid server, which are essential for user and disk shares. You can also enable an %%FTP|ftp%% server, a logging server, and set up a %%VPN|vpn-tunnel%% for secure remote access.
 
 ### NFS (Network File System)
 
-NFSv4 support was introduced in Unraid 6. You can enable or disable it for user shares and adjust the `fuse_remember` tunable to help resolve *NFS Stale File Handle* errors.
+NFSv4 support was introduced in Unraid 6. You can enable or disable it for %%user shares|user-share%% and adjust the `fuse_remember` tunable to help resolve *NFS Stale File Handle* errors.
  <div style={{ margin: 'auto', maxWidth: '400px'}}>
 
   ![NFS](/img/settings-nfs.png)
@@ -139,7 +139,7 @@ The SMB protocol is used by Microsoft Windows clients. From this page, you can e
 
 ### FTP (File Transfer Protocol)
 
-Users can connect via FTP only if they are added to the **FTP users** field on this page. If no users are added, the FTP service will not start.
+Users can connect via %%FTP|ftp%% only if they are added to the **FTP users** field on this page. If no users are added, the %%FTP|ftp%% service will not start.
  <div style={{ margin: 'auto', maxWidth: '400px'}}>
 
   ![FTP](/img/settings-ftp.png)
@@ -147,16 +147,16 @@ Users can connect via FTP only if they are added to the **FTP users** field on t
 
 ### Syslog Server
 
-The Syslog server permanently stores your system log, which is useful for troubleshooting since Unraid clears the log after each reboot.
+The %%Syslog server|syslog-server%% permanently stores your system log, which is useful for troubleshooting since Unraid clears the log after each reboot.
  <div style={{ margin: 'auto', maxWidth: '400px'}}>
 
   ![Syslog Server](/img/settings-syslog.png)
   </div>
 
 ### Tailscale
-The **Tailscale** section allows for secure remote access via the Tailscale VPN. Here, you can log in to connect your Unraid server to your **Tailnet**, view the assigned IP address and hostname, and enable or disable Tailscale connectivity.
+The %%Tailscale|tailscale%% section allows for secure remote access via the %%Tailscale|tailscale%% %%VPN|vpn-tunnel%%. Here, you can log in to connect your Unraid server to your %%Tailnet|tailnet%%, view the assigned IP address and hostname, and enable or disable %%Tailscale|tailscale%% connectivity.
 
-You can also configure your server as a **Subnet Router** for local devices or as an **Exit Node** to route internet traffic. This section enables management of advertised routes, exit node status, Docker container integration options, and connection status monitoring for troubleshooting.
+You can also configure your server as a %%Subnet Router|subnet-routing%% for local devices or as an **Exit Node** to route internet traffic. This section enables management of advertised routes, exit node status, Docker container integration options, and connection status monitoring for troubleshooting.
  <div style={{ margin: 'auto', maxWidth: '400px'}}>
 
   ![Tailscale Settings](/img/settings-tailscale.png)
@@ -164,7 +164,7 @@ You can also configure your server as a **Subnet Router** for local devices or a
 
 ### VPN Manager
 
-You can establish a VPN connection to your Unraid server using [WireGuard](https://www.wireguard.com/) for secure internet connections.
+You can establish a %%VPN|vpn-tunnel%% connection to your Unraid server using [%%Wireguard|wireguard%%](https://www.wireguard.com/) for secure internet connections.
  <div style={{ margin: 'auto', maxWidth: '400px'}}>
 
   ![VPN Manager](/img/settings-vpnmanager.png)
@@ -172,7 +172,7 @@ You can establish a VPN connection to your Unraid server using [WireGuard](https
 
 ## User Preferences
 
-User Preferences allow you to configure various aspects of your interactions with Unraid OS, including notifications, display settings, UI customization, and the Mover schedule.
+User Preferences allow you to configure various aspects of your interactions with Unraid OS, including notifications, display settings, UI customization, and the %%Mover|mover%% schedule.
 
 ### Confirmations
 
@@ -192,7 +192,7 @@ Allows you to customize the local system console. You can select the keyboard la
 
 ### Display Settings
 
-Customize the Unraid WebGUI appearance on this page by adjusting the date and time format, number format, and toggling between tabbed and non-tabbed views. You can also select the temperature unit and choose from different themes for the user interface.
+Customize the Unraid %%WebGUI|web-gui%% appearance on this page by adjusting the date and time format, number format, and toggling between tabbed and non-tabbed views. You can also select the temperature unit and choose from different themes for the user interface.
  <div style={{ margin: 'auto', maxWidth: '400px'}}>
 
   ![Display Settings](/img/settings-display.png)
@@ -200,7 +200,7 @@ Customize the Unraid WebGUI appearance on this page by adjusting the date and ti
 
 ### Notification Settings
 
-You can configure browser and email notifications on this page, subscribing to different types and setting custom alerts for SMART attribute values.
+You can configure browser and email notifications on this page, subscribing to different types and setting custom alerts for %%SMART|smart%% attribute values.
  <div style={{ margin: 'auto', maxWidth: '400px'}}>
 
   ![Notification Settings](/img/settings-notifications.png)
@@ -208,7 +208,7 @@ You can configure browser and email notifications on this page, subscribing to d
 
 ### Scheduler
 
-The scheduler settings page allows you to easily configure the frequency for two automated tasks: parity checks and the cache mover.
+The scheduler settings page allows you to easily configure the frequency for two automated tasks: %%parity checks|parity-check%% and the cache %%Mover|mover%%.
 
 ## User Utilities
 

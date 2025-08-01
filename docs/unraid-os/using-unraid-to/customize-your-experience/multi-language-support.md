@@ -5,7 +5,7 @@ sidebar_label: Multi-language support
  
 # Multi-language support
 
-Unraid supports multiple languages in the WebGUI, making it more accessible for users worldwide. Starting with Unraid 6.9, you can easily download and switch between language packs to use Unraid OS in your preferred language.
+Unraid supports multiple languages in the WebGUI, making it more accessible for users worldwide. You can easily download and switch between language packs to use Unraid OS in your preferred language.
 
 You can install and use Unraid in any of the following languages:
 
@@ -33,8 +33,7 @@ While every effort is made to keep translations accurate, the [English text](htt
 ## How to Download a Language Pack
 
 1. Open the [Community Applications plugin](https://unraid.net/community/apps) in Unraid.
-2. Make sure you’re running Unraid 6.9.0 or later and Community Applications version 2020.05.12 or later.
-3. Click the **Language** category on the left.
+2. Click the **Language** category on the left.
 
 <div style={{ margin: 'auto', maxWidth: '600px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
 

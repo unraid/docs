@@ -5,7 +5,7 @@ sidebar_label: Create your bootable media
 
 # Create your bootable media
 
-Unraid OS is installed on a USB flash drive, which acts as the boot device for your server. You can create this bootable media using our recommended [Automated install method](./create-your-bootable-media.md#automated-install-method) with our **USB Flash Creator** tool or by following the [Manual installation method](./create-your-bootable-media.md#manual-install-method). In both cases, you will need a high-quality USB flash drive (between 4 and 32 GB) that has a unique GUID.
+Unraid OS is installed on a USB flash drive, which acts as the boot device for your server. You can create this bootable media using our recommended [Automated install method](./create-your-bootable-media.md#automated-install-method) with our **USB Flash Creator** tool or by following the [Manual installation method](./create-your-bootable-media.md#manual-install-method). In both cases, you will need a high-quality USB flash drive (between 4 and 32 GB) that has a unique %%GUID|guid%%.
 
   :::important
 
@@ -29,7 +29,7 @@ The automated installation method is the best way to set up Unraid OS. It simpli
    Safely remove the USB drive and insert it into your server.
 5. **Configure your server's BIOS settings**
    - Set the boot device to the USB flash drive.
-   - Enable hardware virtualization features, including <u>IOMMU</u>.  (See <u>Advanced BIOS configuration</u> for details.)
+   - Enable %%hardware virtualization|hvm%% features, including %%IOMMU|iommu%%.  (See <u>Advanced BIOS configuration</u> for details.)
 6. **Boot into Unraid OS:**  
    Save your BIOS configuration, then exit to boot into **Unraid OS**. 
 
@@ -49,7 +49,7 @@ The manual installation method is designed for situations where the USB Flash Cr
   2. Extract the ZIP contents to the USB device.
   3. Confirm that the files have been copied.
 
-:::note If you need UEFI boot:
+:::note If you need %%UEFI|uefi%% boot:
 Rename the `EFI` directory to `-EFI`.
 :::
 

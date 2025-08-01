@@ -10,7 +10,7 @@ import TabItem from '@theme/TabItem';
 
 Community Applications provides a curated catalog of over 2,000 free Docker containers and plugins maintained by the Unraid community. Each container or plugin lets your server take on new roles, such as running a media server, dynamic DNS client, or backup solution.
 
-- **Docker containers** are lightweight packages that include everything needed to run an application, keeping it isolated from the rest of your array and cache pool.
+- **Docker containers** are lightweight packages that include everything needed to run an application, keeping it isolated from the rest of your %%array|array%% and %%cache pool|cache-pool%%.
 - **Plugins** enhance Unraid OS itself. For more information about plugins, visit the [Plugins](../customize-your-experience/plugins.md) page.
 
 :::caution
@@ -19,7 +19,7 @@ Lime Technology does not supply or directly support Community Applications. The 
 
 ## How Community Applications works
 
-The Community Applications plugin adds an “Apps” tab to the Unraid WebGUI, which provides an app store-like interface. You can browse, search, and filter applications by category or keyword. Each listing clearly indicates whether it is a Docker container or a plugin. Listings include labels such as:
+The Community Applications plugin adds an “Apps” tab to the Unraid %%WebGUI|web-gui%%, which provides an app store-like interface. You can browse, search, and filter applications by category or keyword. Each listing clearly indicates whether it is a Docker container or a plugin. Listings include labels such as:
 
 - **Beta:** The application is in active development and may have bugs.
 - **Installed:** The application is currently installed on your server.
@@ -34,7 +34,7 @@ Clicking on an app provides more details, support links, and installation option
 
 To install the Community Applications plugin:
 
-1. Open the WebGUI and navigate to the **Plugins** tab.
+1. Open the %%WebGUI|web-gui%% and navigate to the **Plugins** tab.
 2. Click on **Install**.
 
 <div style={{ margin: 'auto', maxWidth: '714px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
@@ -56,7 +56,7 @@ Before installing, consider backing up your flash drive to protect your configur
 <Tabs>
   <TabItem value="Installing applications" label="Installing applications">
 
-To install a Docker container or plugin, simply click the **Install** button from the application's tile or information panel located in the **Apps** tab of the **WebGUI**. This will start the installation process.
+To install a Docker container or plugin, simply click the **Install** button from the application's tile or information panel located in the **Apps** tab of the %%WebGUI|web-gui%%. This will start the installation process.
 <div style={{ margin: 'auto', maxWidth: '423px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
 
 ![Install application](/img/CA_Tile1.png)
@@ -66,7 +66,7 @@ To install a Docker container or plugin, simply click the **Install** button fro
 Keep the installation window open until the process is fully completed.
 
 :::tip Security tip
-Before you install, take a moment to read the application's description. Check the developer's reputation and ensure the source repository is trustworthy. It’s best to choose applications from well-known developers or those with active support threads. Always be cautious about granting access to your array, cache pool, or any sensitive data.
+Before you install, take a moment to read the application's description. Check the developer's reputation and ensure the source repository is trustworthy. It’s best to choose applications from well-known developers or those with active support threads. Always be cautious about granting access to your %%array|array%%, %%cache pool|cache-pool%%, or any sensitive data.
 :::
 
   </TabItem>
@@ -82,11 +82,11 @@ To remove an application:
   
   <TabItem value="Reinstalling applications" label="Reinstalling applications">
 
-If you need to reinstall a Docker container or plugin (for instance, if your `docker.img` file is corrupted), Community Applications simplifies this for you. All application settings are saved as an XML template in `/boot/config/plugins/dockerMan/templates-user`.
+If you need to reinstall a Docker container or plugin (for instance, if your `docker.img` file is corrupted), Community Applications simplifies this for you. All application settings are saved as a %%VM XML template|vm-xml-templates%% in `/boot/config/plugins/dockerMan/templates-user`.
 
 To reinstall an application:
 
-1. Go to the **Apps** tab in the **WebGUI**.
+1. Go to the **Apps** tab in the %%WebGUI|web-gui%%.
 2. Select the **Previous Apps** filter.
 3. Find the application you wish to reinstall and follow the prompts.
 
@@ -111,7 +111,7 @@ These resources will connect you to community forums and developer discussions w
 
 ## Updating applications (Action Center)
 
-The **Action Center** in the WebGUI is your go-to place for keeping track of applications that need updates. When there are updates available, you’ll see an alert. Just click on **Actions** for the app that needs updating, and then select **Update** to run the update script. Regular updates are essential for maintaining the security, stability, and compatibility of your Unraid installation.
+The **Action Center** in the %%WebGUI|web-gui%% is your go-to place for keeping track of applications that need updates. When there are updates available, you’ll see an alert. Just click on **Actions** for the app that needs updating, and then select **Update** to run the update script. Regular updates are essential for maintaining the security, stability, and compatibility of your Unraid installation.
 
 ---
 
@@ -139,7 +139,7 @@ Once published, developers are expected to:
 - Clearly label beta or experimental versions.
 - Notify the moderation team if discontinuing support for an application.
 
-:::tip
+:::note
 The moderation team reserves the right to remove applications that become incompatible with current Unraid versions or lack ongoing support. For time-sensitive security updates, they may temporarily take over maintenance of abandoned projects.
 :::
 
@@ -147,5 +147,5 @@ The moderation team reserves the right to remove applications that become incomp
 
 1. Prepare your application’s template files and documentation.
 2. Create a support thread in the [Unraid forums](https://forums.unraid.net/).
-3. Submit your application via the **Community Applications** submission portal in the WebGUI.
+3. Submit your application via the **Community Applications** submission portal in the %%WebGUI|web-gui%%.
 4. The moderation team typically reviews submissions within 48 hours.

@@ -60,7 +60,7 @@ These steps help prevent unauthorized changes or exposure of critical files.
 
 ## Permissions
 
-To enhance system security, starting with Unraid 6.8, files on the flash drive can no longer be given execute permission. This change prevents malicious or unintended code from running directly off the flash drive, reducing the risk of exploitation or accidental system modification.
+To enhance system security, files on the flash drive can no longer be given execute permission. This change prevents malicious or unintended code from running directly off the flash drive, reducing the risk of exploitation or accidental system modification.
 
 If you have custom scripts or programs stored on the flash drive, follow these steps:
 

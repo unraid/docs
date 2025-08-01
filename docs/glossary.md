@@ -1,4 +1,8 @@
 ---
-id: glossary
-title: Glossary
+sidebar_position: 999
+sidebar_label: Glossary
 ---
+
+# Glossary
+
+%%RemarkAutoGlossary::list_all%%

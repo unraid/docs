@@ -34,7 +34,6 @@ If you need help with Unraid OS, you have several support options:
 - [**Virtualization & Devices**](#virtualization--devices)
   - [Whenever I shut down my Windows VM with an AMD GPU assigned, it won't restart. What can I do?](#amd-gpu-vm-restart)
   - [How do I pass through my primary GPU to a VM if my CPU has no integrated graphics?](#primary-gpu-passthrough)
-  - [I’m having problems passing through my RTX-class GPU to a virtual machine](#rtx-gpu-passthrough)
 - [**Storage & RAID**](#storage--raid)
   - [Does Unraid support various RAID types such as RAID1/5/6/10?](#raid-types-support)
   - [I currently have an array of devices formatted with an MBR-style partition table and want to convert to GPT. How do I do that?](#mbr-to-gpt-conversion)
@@ -132,10 +131,10 @@ If you had [Unraid Connect](http://www.google.com) enabled for Flash Backups, yo
 <details>
 <summary>Click to expand/collapse</summary>
 
-Refer to [Resetting your Unraid password](../system-administration/secure-your-server/user-management.md#reset-your-password).
+Refer to [Reset your password](../system-administration/secure-your-server/user-management.md#reset-your-password).
 
 :::note
-If you’re using encrypted drives and forget the password, data recovery isn't possible - there is no backdoor.
+If you’re using encrypted drives and forget the encryption password, data recovery isn't possible - there is no backdoor.
 :::
 </details><br />
 
@@ -159,12 +158,12 @@ If you’re using encrypted drives and forget the password, data recovery isn't 
 <details>
 <summary>Click to expand/collapse</summary>
 
-To change your Unraid server's hostname, navigate the WebGUI to **Settings → System Settings → Identification**.
+To change your Unraid server's hostname, navigate the WebGUI to ***Settings → System Settings → Identification***.
 
 **Effects of changing your hostname:**
 - The new hostname will be used for network identification (e.g., access via `http://newname`).
 - You might need to reconnect any mapped network drives or shortcuts using the new hostname.
-- Some devices or services may cache the old name; a reboot may be required to recognize the new name.
+- Some devices or services may cache the old name; a full device reboot may be required to recognize the new name.
 </details><br />
 
 <a id="invalid-guid" class="anchor-fix" style={{ fontWeight: "bold" }}><h3>My flash drive is reporting an invalid GUID. What do I do?</h3></a>
@@ -202,44 +201,6 @@ Many AMD GPUs experience issues with function-level resets, which contribute to 
 <summary>Click to expand/collapse</summary>
 
 This is feasible but requires additional steps. Check out [SpaceInvaderOne’s video guide](https://forums.unraid.net/topic/51230-video-guidehow-to-pass-through-an-nvidia-gpu-as-primary-or-only-gpu-in-unraid/) for detailed instructions on how to do this properly.
-</details><br />
-
-<a id="rtx-gpu-passthrough" class="anchor-fix" style={{ fontWeight: "bold" }}><h3>I’m having problems passing through my RTX-class GPU to a virtual machine.</h3></a>
-
-<details>
-<summary>Click to expand/collapse</summary>
-
-Remember that these newer models come with an integrated USB controller, which is useful when troubleshooting GPU passthrough issues with RTX-class GPUs. This controller can enhance your Windows VM's USB device interaction, enabling features such as hot-plugging support.
-
-To ensure proper passthrough and avoid driver conflicts with Unraid OS, it's best to stub the GPU’s USB controller. Follow these steps:
-
-1. Identify the IOMMU group that includes your GPU and related devices on the **Tools → System Devices** page.
-2. Note the vendor and product IDs for the USB controller devices associated with your GPU. For example:
-
-```
-[10de:1f08] 02:00.0 VGA compatible controller: NVIDIA Corporation Device 1f08 (rev a1)
-[10de:10f9] 02:00.1 Audio device: NVIDIA Corporation Device 10f9 (rev a1)
-[10de:1ada] 02:00.2 USB controller: NVIDIA Corporation Device 1ada (rev a1)
-[10de:1adb] 03:00.3 Serial bus controller [0c80]: NVIDIA Corporation Device 1adb (rev a1)
-```
-
-3. Go to the Flash Device Settings page on the **Main** tab.
-4. Click on the flash device to edit its settings.
-5. Modify the Syslinux configuration by adding the following to the append line for your selected boot mode:
-
-```
-vfio-pci.ids=[vendor_id:product_id],[vendor_id:product_id]
-```
-
-For example:
-
-```
-append vfio-pci.ids=10de:1ada,10de:1adb initrd=/bzroot,/bzroot-gui
-```
-
-6. Apply the changes and reboot your server.
-7. When you edit or create your VM, you should see the additional PCI devices available for assignment without needing to edit the XML manually.
-
 </details><br />
 
 ---
@@ -369,12 +330,12 @@ You can set up UEFI boot mode in a few different ways:
 
 **Option 2: After booting in Legacy Mode**
 
-- In the WebGUI, head to the Flash Device **Settings → Flash Device** page.
+- In the WebGUI, head to the Flash Device ***Settings → Flash Device*** page.
 - Enable UEFI boot mode and reboot your server.
 
 **Option 3: Manual folder rename**
 
-- On the flash drive, rename the `efi-` folder to `efi` (remove the dash `-`).
+- On the flash drive, rename the `EFI-` folder to `EFI` (remove the dash `-`).
 - Insert the flash drive into your server, then enter your motherboard BIOS/UEFI settings.
 - Set the USB flash as the primary boot device and enable UEFI boot mode (be sure to disable CSM/Legacy/Compatibility mode, if available).
 </details><br />
@@ -419,9 +380,9 @@ You must use the same USB flash device to continue your trial. Changing the flas
 When you [purchase an Unraid OS license](https://unraid.net/pricing), you own a perpetual copy of the software. Your license is valid forever and does not expire, even if you choose not to pay for future updates.
 </details><br />
 
-<a id="purchase-unraid" class="anchor-fix" style={{ fontWeight: "bold" }}><h3>How do I purchase Unraid?</h3></a>
+<a class="anchor-fix" style={{ fontWeight: "bold" }}><h3>How do I purchase Unraid?</h3></a>
 
-<details>
+<details id="purchase-unraid">
 <summary>Click to expand/collapse</summary>
 
 You have two options for purchasing Unraid:  
@@ -429,6 +390,7 @@ You have two options for purchasing Unraid:
 2. **With an activation code:** Purchase an Unraid license activation code from the [Unraid website](https://unraid.net/pricing). Activation codes do not expire and can be redeemed at any time.
 
 All licenses are per server. Use the free 30-day trial to ensure Unraid meets your needs before purchasing, as all sales are final.
+
 </details><br />
 
 <a id="redeem-activation-code" class="anchor-fix" style={{ fontWeight: "bold" }}><h3>How do I redeem a license activation code?</h3></a>
@@ -457,13 +419,23 @@ Watch the [Activation Code Instructional Video](https://www.loom.com/share/3ceb4
 <details>
 <summary>Click to expand/collapse</summary>
 
-You can upgrade your license at any time from within the WebGUI (Tools → Registration) or at account.unraid.net/keys (select "Upgrade" from the menu).
+You can upgrade your license at any time from within the WebGUI (***Tools → Registration***) or [via the account portal](https://account.unraid.net/keys) (by clicking **••• More** and selecting **Upgrade Key**).
 
-All pricing information for each license can be found [here](https://unraid.net/pricing).
+| Upgrade Path             | One-Time Upgrade Fee | New Device Limit¹        |
+|--------------------------|----------------------|--------------------------|
+| Starter → Unleashed      | $69 USD              | Unlimited²               |
+| Starter → Lifetime       | $209 USD             | Unlimited²               |
+| Unleashed → Lifetime     | $149 USD             | Unlimited²               |
+| Basic → Unleashed        | $49 USD              | Unlimited²               |
+| Plus → Unleashed         | $19 USD              | Unlimited²               |
+| Basic → Plus             | $89 USD              | Up to 12 devices¹        |
+| Basic → Pro              | $139 USD             | Up to 30 devices¹        |
+| Plus → Pro               | $109 USD             | Up to 30 devices¹        |
 
-- **Starter:** Up to 6 attached storage devices  
-- **Unleashed:** Unlimited attached storage devices  
-- **Lifetime:** Unlimited attached storage devices, lifetime updates  
+**Annual extension fee** (Starter & Unleashed only): $36 USD
+
+<sup>1</sup> Attached storage devices refers to the total number of drives you may attach before starting the array (does not include the USB flash boot device).  
+<sup>2</sup> “Unlimited” means there is no license-imposed limit on attached storage devices; you’re only constrained by hardware and OS limits.
 </details><br />
 
 <a id="subscription" class="anchor-fix" style={{ fontWeight: "bold" }}><h3>Is Unraid OS a subscription?</h3></a>
@@ -471,14 +443,13 @@ All pricing information for each license can be found [here](https://unraid.net/
 <details>
 <summary>Click to expand/collapse</summary>
 
-Unraid is **not a traditional subscription service**:
+No. Unraid OS is a **perpetual license**:
 
-- You own your license permanently after purchase.
-- Your license never expires or stops working.
-- **Starter** and **Unleashed** include 1 year of updates, then optional extensions for an annual fee.
-- **Lifetime** includes updates for the product's lifetime.
-- If you don't pay for updates, you keep using your current version indefinitely.
-- You can re-enable updates at any time by paying the current extension fee.
+- **Starter** and **Unleashed** include one year of updates, after which you may pay a $36 USD annual extension fee (optional).  
+- **Lifetime** includes updates for the life of the product.
+- If you choose not to pay the extension fee, you retain your existing version indefinitely; you simply won’t receive new major updates.
+
+You continue to own your license even if you stop paying for updates.
 
 </details><br />
 
@@ -540,7 +511,7 @@ To transfer your license:
 1. Prepare a new, high-quality [USB flash device](../../getting-started/set-up-unraid/create-your-bootable-media.md).
 2. Install Unraid OS on the new device using the USB Flash Creator or a manual method.
 3. Boot your server with the new flash device.
-4. Go to **Tools → Registration** in the WebGUI.
+4. Go to ***Tools → Registration*** in the WebGUI.
 5. Click **Replace Key** and follow the prompts to transfer your license to the new device.
 
 The first transfer can be done at any time, while subsequent transfers are allowed once every 12 months using the automated system. If you need to transfer your license again before the 12-month period, contact Unraid support with your old and new USB GUIDs for manual assistance.
@@ -558,7 +529,7 @@ Routinely back up your USB device using Unraid Connect to simplify recovery and 
 <Tabs>
 <TabItem value="offline" label="Manual (Offline) method">
 
-1. Ensure you have a recent backup of your USB drive. Use [Unraid Connect](http://www.google.com) (recommended) or the local backup option at **Main → Flash → Flash Backup**.
+1. Ensure you have a recent backup of your USB drive. Use [Unraid Connect](http://www.google.com) (recommended) or the local backup option at ***Main → Flash → Flash Backup***.
 2. Shut down your Unraid server and remove the USB flash device.
 3. Insert the USB flash into another computer.
 4. Open the USB drive and copy your `.key` file into the `/config` folder.  
@@ -589,7 +560,7 @@ This error indicates that your USB flash device does not have a unique hardware 
 <details>
 <summary>Click to expand/collapse</summary>
 
-Navigate to **Tools → Registration** in the WebGUI. Here, you can find your current license type and registration details.
+Navigate to ***Tools → Registration*** in the WebGUI. Here, you can find your current license type and registration details.
 </details><br />
 
 <a id="trial-license" class="anchor-fix" style={{ fontWeight: "bold" }}><h3>How do Unraid trials work?</h3></a>
