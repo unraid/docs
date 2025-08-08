@@ -509,6 +509,7 @@ const config = {
       },
     ],
   ],
+  headTags: [],
 };
 
 module.exports = config;
