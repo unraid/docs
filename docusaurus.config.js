@@ -509,15 +509,7 @@ const config = {
       },
     ],
   ],
-  headTags: [
-    {
-      tagName: 'meta',
-      attributes: {
-        name: 'Cross-Origin-Embedder-Policy',
-        content: 'unsafe-none',
-      },
-    },
-  ],
+  headTags: [],
 };
 
 module.exports = config;
