@@ -1,4 +1,16 @@
+---
+title: CLI Reference
+description: Complete reference for all Unraid API CLI commands
+sidebar_position: 4
+---
+
 # CLI Commands
+
+:::info[Command Structure]
+All commands follow the pattern: `unraid-api <command> [options]`
+:::
+
+## 🚀 Service Management
 
 ### Start
 
@@ -39,7 +51,7 @@ View the API logs.
 
 - `-l, --lines`: Optional. Number of lines to tail (default: 100)
 
-## Configuration Commands
+## ⚙️ Configuration Commands
 
 ### Config
 
@@ -61,6 +73,10 @@ Switch between production and staging environments.
 
 ### Developer Mode
 
+:::tip Web GUI Management
+You can also manage developer options through the web interface at **Settings** → **Management Access** → **Developer Options**
+:::
+
 ```bash
 unraid-api developer                       # Interactive prompt for tools
 unraid-api developer --sandbox true        # Enable GraphQL sandbox
@@ -76,13 +92,17 @@ Configure developer features for the API:
 
 ## API Key Management
 
+:::tip Web GUI Management
+You can also manage API keys through the web interface at **Settings** → **Management Access** → **API Keys**
+:::
+
 ### API Key Commands
 
 ```bash
 unraid-api apikey [options]
 ```
 
-Create and manage API keys.
+Create and manage API keys via CLI.
 
 Options:
 
@@ -93,6 +113,10 @@ Options:
 - `-d, --description <description>`: Description for the key
 
 ## SSO (Single Sign-On) Management
+
+:::info OIDC Configuration
+For OIDC/SSO provider configuration, see the web interface at **Settings** → **Management Access** → **API** → **OIDC** or refer to the [OIDC Provider Setup](./oidc-provider-setup.md) guide.
+:::
 
 ### SSO Base Command
 

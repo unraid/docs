@@ -6,13 +6,22 @@ sidebar_position: 3
 
 # OIDC Provider Setup
 
+:::info[What is OIDC?]
+OpenID Connect (OIDC) is an authentication protocol that allows users to sign in using their existing accounts from providers like Google, Microsoft, or your corporate identity provider. It enables Single Sign-On (SSO) for seamless and secure authentication.
+:::
+
 This guide walks you through configuring OIDC (OpenID Connect) providers for SSO authentication in the Unraid API using the web interface.
 
-## Accessing OIDC Settings
+## 🚀 Quick Start
+
+<details open>
+<summary><strong>Getting to OIDC Settings</strong></summary>
 
 1. Navigate to your Unraid server's web interface
-2. The OIDC Providers section is available on the main configuration page
+2. Go to **Settings** → **Management Access** → **API** → **OIDC**
 3. You'll see tabs for different providers - click the **+** button to add a new provider
+
+</details>
 
 ### OIDC Providers Interface Overview
 
@@ -191,13 +200,17 @@ When "advanced" mode is selected, you'll see:
 
 ### Required Redirect URI
 
-All providers must be configured with this redirect URI:
+:::caution[Important Configuration]
+All providers must be configured with this exact redirect URI format:
+:::
 
-```
+```bash
 http://YOUR_UNRAID_IP/graphql/api/auth/oidc/callback
 ```
 
-Replace `YOUR_UNRAID_IP` with your actual server IP address.
+:::tip
+Replace `YOUR_UNRAID_IP` with your actual server IP address (e.g., `192.168.1.100` or `tower.local`).
+:::
 
 ### Issuer URL Format
 
@@ -214,7 +227,7 @@ The **Issuer URL** field accepts both formats, but **base URL is strongly recomm
 - Keycloak: `https://keycloak.example.com/realms/YOUR_REALM`
 - Authelia: `https://auth.yourdomain.com`
 
-## Testing Your Configuration
+## ✅ Testing Your Configuration
 
 ![Login Page with SSO Buttons](/img/api/sso-with-options.png)
 *Unraid login page displaying both traditional username/password authentication and SSO options with customized provider buttons*
@@ -225,7 +238,7 @@ The **Issuer URL** field accepts both formats, but **base URL is strongly recomm
 4. Your configured provider button should appear
 5. Click to test the login flow
 
-## Troubleshooting
+## 🔧 Troubleshooting
 
 ### Common Issues
 
@@ -247,7 +260,7 @@ The **Issuer URL** field accepts both formats, but **base URL is strongly recomm
 
 - Ensure the redirect URI in your provider matches exactly
 - Include the correct port if using a non-standard configuration
-- Use HTTP for local, HTTPS for production
+- Verify the redirect URI protocol matches your server's configuration (HTTP or HTTPS)
 
 #### Cannot see login button
 
@@ -270,39 +283,42 @@ LOG_LEVEL=debug unraid-api start --debug
 - Authorization rule evaluation
 - Token validation errors
 
-## Security Best Practices
+## 🔐 Security Best Practices
 
-1. **Always use HTTPS in production** - OAuth requires secure connections
-2. **Use Simple Mode for authorization** - Prevents overly accepting configurations and reduces misconfiguration risks
-3. **Be specific with authorization** - Don't use overly broad rules
-4. **Rotate secrets regularly** - Update client secrets periodically
-5. **Test thoroughly** - Verify only intended users can access
+1. **Use Simple Mode for authorization** - Prevents overly accepting configurations and reduces misconfiguration risks
+2. **Be specific with authorization** - Don't use overly broad rules
+3. **Rotate secrets regularly** - Update client secrets periodically
+4. **Test thoroughly** - Verify only intended users can access
 
-## Need Help?
+## 💡 Need Help?
 
 - Check provider's OIDC documentation
 - Review Unraid API logs for detailed error messages
 - Ensure your provider supports standard OIDC discovery
 - Verify network connectivity between Unraid and provider
 
-## Provider-Specific Setup
+## 🏢 Provider-Specific Setup
 
 ### Unraid.net Provider
 
 The Unraid.net provider is built-in and pre-configured. You only need to configure authorization rules in the interface.
 
 **Configuration:**
+
 - **Issuer URL**: Pre-configured (built-in provider)
 - **Client ID/Secret**: Pre-configured (built-in provider)
 - **Redirect URI**: `http://YOUR_UNRAID_IP/graphql/api/auth/oidc/callback`
 
-:::warning[Security Notice]
-**Always use HTTPS for production redirect URIs!** The examples above use HTTP for initial setup and testing only. In production environments, you MUST use HTTPS (e.g., `https://YOUR_UNRAID_IP/graphql/api/auth/oidc/callback`) to ensure secure communication and prevent credential interception. Most OIDC providers will reject HTTP redirect URIs for security reasons.
+:::tip[Redirect URI Protocol]
+**Match the protocol to your server setup:** Use `http://` if accessing your Unraid server without SSL/TLS (typical for local network access). Use `https://` if you've configured SSL/TLS on your server. Some OIDC providers (like Google) require HTTPS and won't accept HTTP redirect URIs.
 :::
 
 Configure authorization rules using Simple Mode (allowed email domains/addresses) or Advanced Mode for complex requirements.
 
 ### Google
+
+<details>
+<summary><strong>📋 Setup Steps</strong></summary>
 
 Set up OAuth 2.0 credentials in [Google Cloud Console](https://console.cloud.google.com/):
 
@@ -311,6 +327,8 @@ Set up OAuth 2.0 credentials in [Google Cloud Console](https://console.cloud.goo
 3. Choose **Web application** as the application type
 4. Add your redirect URI to **Authorized redirect URIs**
 5. Configure the OAuth consent screen if prompted
+
+</details>
 
 **Configuration:**
 
