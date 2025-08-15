@@ -270,6 +270,6 @@ Simple! Navigate to the Tools → Registration page and you can review your curr
 
 ---
 
-<div style={{textAlign: 'center', marginTop: '2rem'}}>
-  <p>Need additional help? <a href="https://unraid.net/contact">Contact our support team</a>.</p>
-</div>
+:::tip Need additional help?
+[Contact our support team](https://unraid.net/contact) for assistance with licensing questions.
+:::
