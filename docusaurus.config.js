@@ -13,7 +13,7 @@ module.exports = async function createConfigAsync() {
   const { default: remarkAutoGlossary } = await import('@renatonagliati/remark-auto-glossary');
 
   return {
-    title: "d Docs",
+    title: "Unraid Docs",
     tagline: "Documentation for Unraid",
     favicon: "img/favicon.svg", // Fixed: removed malformed "site here" text
 

@@ -56,7 +56,7 @@ For a deep dive into %%ZFS|zfs%% features, configuration, and best practices, ch
 - Always format and partition drives within Unraid to ensure compatibility.
 - Linux systems can read these file systems natively; however, Windows and macOS will require additional software for access.
 - You can <u>encrypt</u> drives for enhanced security, but keep in mind that encrypted drives might pose challenges for recovery if corruption occurs.
-- For transfer drives or external devices, it’s recommended to use the **Unassigned Devices** plugin, which supports additional file systems.
+- For transfer drives or external devices, it's recommended to use the **[Unassigned Devices](../customize-your-experience/plugins.md#unassigned-devices)** plugin, which supports additional file systems.
 :::
 
 :::tip Still need help choosing?
@@ -76,11 +76,11 @@ When adding a new drive to Unraid, you can select the file system type that work
 
 To set the file system type:
 
-1. **Set the default globally:**  
+1. **Set the default globally**:
    - Navigate to ***Settings → Disk Settings*** to set the default file system for new %%array|array%% drives and %%cache pools|cache-pool%%.  
    - Unraid defaults to %%XFS|xfs%% for %%array|array%% drives and %%BTRFS|btrfs%% for %%cache pools|cache-pool%%.
 
-2. **Set the file system for an individual drive:**  
+2. **Set the file system for an individual drive**:
    - Stop the %%array|array%%.
    - Click on the drive in the **Main** tab.
    - Choose your desired file system type from the drop-down menu.
@@ -95,13 +95,12 @@ Before using a new disk in Unraid, you must format it with the selected file sys
 
 To begin with formatting:
 
-1. Start the %%array|array%%.
-2. Drives that are not recognized will appear as **unmountable**.
-3. Verify that all unmountable drives are the ones you want to format.
-4. Check the box to confirm, read the warning dialog carefully, and click **Format**.
-5. The format process will begin.  
-   - For new disks, Unraid will first rewrite the partition table.
-6. Formatting usually takes a few minutes. If you don't see progress, refresh the **Main** tab.
+1. **Start the %%array|array%%**.
+2. **Identify unmountable drives**: Drives that are not recognized will appear as **unmountable**.
+3. **Verify drive selection**: Verify that all unmountable drives are the ones you want to format.
+4. **Confirm and format**: Check the box to confirm, read the warning dialog carefully, and click **Format**.
+5. **Monitor the process**: The format process will begin. For new disks, Unraid will first rewrite the partition table.
+6. **Wait for completion**: Formatting usually takes a few minutes. If you don't see progress, refresh the **Main** tab.
 
 Once formatting is complete, the drive is ready to store files.
 
@@ -117,19 +116,13 @@ Changing the file system type will **erase all existing data** on the drive. Alw
 
 To change the file system type on a particular drive:
 
-1. **Stop the array:** Begin by stopping your %%array|array%% to ensure no operations are occurring during the change.
-
-2. **Select the drive:** In the **Main** tab, click on the drive that you want to change the format for.
-
-3. **Choose the new file system:** From the drop-down menu, select the desired file system format. If you have multiple drives to change, repeat this step for each one.
-
-4. **Start the array:** Once you have selected the new file systems, start your %%array|array%% again.
-
-5. **Format unmountable drives:** The **Main** tab will display an option to format unmountable drives. Take a moment to check the list and ensure that only the drives you intend to change are included.
-
-6. **Confirm and format:** Check the confirmation box to acknowledge the change, then click the **Format** button to proceed.
-
-7. **Wait for the process to finish:** Formatting usually takes just a few minutes. If you notice that the status isn't updating, you can refresh the **Main** tab to check the progress.
+1. **Stop the array**: Begin by stopping your %%array|array%% to ensure no operations are occurring during the change.
+2. **Select the drive**: In the **Main** tab, click on the drive that you want to change the format for.
+3. **Choose the new file system**: From the drop-down menu, select the desired file system format. If you have multiple drives to change, repeat this step for each one.
+4. **Start the array**: Once you have selected the new file systems, start your %%array|array%% again.
+5. **Format unmountable drives**: The **Main** tab will display an option to format unmountable drives. Take a moment to check the list and ensure that only the drives you intend to change are included.
+6. **Confirm and format**: Check the confirmation box to acknowledge the change, then click the **Format** button to proceed.
+7. **Wait for the process to finish**: Formatting usually takes just a few minutes. If you notice that the status isn't updating, you can refresh the **Main** tab to check the progress.
 
 If you encounter any issues, feel free to visit the [Unraid forums](https://forums.unraid.net/). Attach your system diagnostics zip file (found under ***Tools → Diagnostics***) for assistance.
 
@@ -145,23 +138,13 @@ This process requires temporarily moving your data to another location. Make sur
 
 To safely convert to a new file system type:
 
-1. **Copy all data off the drive:** Move your files to another location. This could be another drive in your %%array|array%%, a %%cache pool|cache-pool%%, or an external backup.  
-   - If you’re converting multiple drives, do so one at a time to minimize risk and space requirements.
+1. **Copy all data off the drive**: Move your files to another location. This could be another drive in your %%array|array%%, a %%cache pool|cache-pool%%, or an external backup.  
+   - If you're converting multiple drives, do so one at a time to minimize risk and space requirements.
    - Many users schedule conversions after adding a new drive to the %%array|array%% to create the needed free space.
    
-:::info Emptying an array disk
-**As of Unraid 7.0**, you can use the new "Empty" feature in %%Mover|mover%% to automatically relocate all data from one %%array|array%% disk to other disks in the %%array|array%% according to your share settings. This is especially useful if you're migrating away from ReiserFS, or preparing a disk for encryption.
-
-To empty an %%array|array%% disk:  
-Go to ***Main → Array Devices***, click on the disk you want to empty, and select **Empty**.
-
-To empty a pool drive:  
-Use standard %%Mover|mover%% to transfer data to another pool or the %%array|array%%
-:::
-
-2. **Change the file system type:** Follow the procedure for changing a file system type. This will format the drive and erase all content, leaving you with a blank drive in the new format.
-3. **Copy your data back:** Move the saved files back to the newly formatted drive.
-4. **Repeat as needed:** If you have more than one drive to convert, repeat these steps for each drive, transferring data as needed.
+2. **Change the file system type**: Follow the procedure for [changing a file system type](#changing-a-file-system-type). This will format the drive and erase all content, leaving you with a blank drive in the new format.
+3. **Copy your data back**: Move the saved files back to the newly formatted drive.
+4. **Repeat as needed**: If you have more than one drive to convert, repeat these steps for each drive, transferring data as needed.
 
 :::note Timing
 The process can take several hours, depending on the amount of data and the speed of your drives. Most of the time is spent copying files, which can run unattended.
@@ -183,13 +166,13 @@ Reformatting will permanently erase all data on the drive. Always back up any im
 
 To **safely** reformat your drive:
 
-1. **Stop the array.**
-2. **Change the file system type:**
+1. **Stop the array**.
+2. **Change the file system type**:
    - Go to the **Main** tab and click on the drive you want to reformat.
    - Select a different file system type (for example, change from %%XFS|xfs%% to %%BTRFS|btrfs%%).
    - Start the %%array|array%%, and the drive will show as **unmountable**.
    - When prompted, format the drive.
-3. **(Optional) Change back to your original file system type:**
+3. **(Optional) Change back to your original file system type**:
    - Stop the %%array|array%% again.
    - Change the file system back to your preferred type.
    - Start the %%array|array%% and format the drive once more.
@@ -204,37 +187,37 @@ Sometimes, you'll need to reformat a %%cache|cache%% drive for the following rea
 - To fix persistent file system errors
 - To start fresh for new workloads
 
-**Recommended procedure for reformatting a cache drive**
+<h4>Recommended procedure for reformatting a cache drive</h4>
 
-1. **Stop the array.**
+1. **Stop the array**.
 2. **Disable Docker and %%VM|vm%% services** under **Settings**.
 3. **Start the array** (this will prevent the Docker and %%VM|vm%% tabs from appearing).
 
-**Move data off the cache:**
+To move data off the cache:
 
-4. For each share that has files in the %%cache|cache%%, set **Use cache** to **Yes**.
+4. **Set share cache settings**: For each share that has files in the %%cache|cache%%, set **Use cache** to **Yes**.
    - Note down any shares you change and their original settings.
-5. Run %%Mover|mover%% from the **Main** tab. Wait for it to finish and ensure that the %%cache|cache%% is empty.  
+5. **Run %%Mover|mover%%**: Run %%Mover|mover%% from the **Main** tab. Wait for it to finish and ensure that the %%cache|cache%% is empty.  
    - If any files remain, stop and check the forums for help.
 
-**Reformat the cache drive:**
+To reformat the cache drive:
 
-6. **Stop the array.**
+6. **Stop the array**.
 7. **Set the cache drive format** (choose between %%XFS|xfs%% or %%BTRFS|btrfs%%).
    - For a single-drive %%cache|cache%%, %%XFS|xfs%% is the recommended option.
    - Note that %%XFS|xfs%% is only available if you have one %%cache|cache%% slot.
-8. **Start the array.**
-9. **Format the cache drive:**  
+8. **Start the array**.
+9. **Format the cache drive**:  
    - Confirm that only the %%cache|cache%% drive is listed as unmountable.
    - Proceed to format the drive.
 
-**Restoring data and settings:**
+To restore data and settings:
 
-10. For each share you changed, set **Use cache** back to its original value (like Prefer, Only, or No).
-11. Run the %%Mover|mover%% again to move your data back to the %%cache|cache%%.
-12. **Stop the array.**
-13. **Re-enable Docker and %%VM|vm%% services.**
-14. **Start the array.**
+10. **Restore share settings**: For each share you changed, set **Use cache** back to its original value (like Prefer, Only, or No).
+11. **Move data back**: Run the %%Mover|mover%% again to move your data back to the %%cache|cache%%.
+12. **Stop the array**.
+13. **Re-enable Docker and %%VM|vm%% services**.
+14. **Start the array**.
 
 :::note Timing
 The time it takes to move data with the %%Mover|mover%% and format the drive can vary from several minutes to several hours, depending on the amount of data and the speed of the drive.
@@ -253,17 +236,17 @@ Let’s break down what each operation does and when to use them:
 
 The **Balance** operation redistributes data and metadata chunks across your %%BTRFS|btrfs%% pool. This process helps free up space, resolves allocation issues, and can fix “no space left on device” errors even when space seems available.
 
-**When to run Balance:**
+<h4>When to run Balance</h4>
 
 - When you encounter “no space left on device” errors but have free space.
 - After adding or removing drives in a pool.
 - To optimize space usage and improve performance.
 
-**How to run Balance:**
+<h4>How to run Balance</h4>
 
-1. In the %%WebGUI|web-gui%%, click on the pool in the **Main** tab and select **Balance**.
-2. Optionally, add parameters for advanced use (refer to Unraid Help for details).
-3. Click **Start** to begin the process.
+1. **Access the pool**: In the %%WebGUI|web-gui%%, click on the pool in the **Main** tab and select **Balance**.
+2. **Add parameters (optional)**: Optionally, add parameters for advanced use (refer to Unraid Help for details).
+3. **Start the process**: Click **Start** to begin the process.
 
 :::note Timing
 Balance operations can take a few minutes to several hours, depending on the pool size and amount of data.
@@ -275,21 +258,21 @@ Balance operations can take a few minutes to several hours, depending on the poo
 
 The **Scrub** operation reads all data and metadata, checks the integrity of checksums, and repairs any corrupt blocks using available redundant copies. Scrubbing helps identify and fix silent data corruption, known as “bit rot,” before it becomes a significant issue.
 
-**When to run Scrub:**
+<h4>When to run Scrub</h4>
 
 - As part of routine maintenance (see recommended schedule below).
 - After unclean shutdowns or if you suspect corruption.
 - More frequently on high-usage pools.
 
-**Recommended schedule:**
+<h4>Recommended schedule</h4>
 
 - High-usage pools: **Once a week**
 - All other pools: **Once a month**
 
-**How to run Scrub:**
+<h4>How to run Scrub</h4>
 
-1. In the %%WebGUI|web-gui%%, click on the pool in the **Main** tab and select **Scrub**.
-2. Click **Start** to initiate the process.
+1. **Access the pool**: In the %%WebGUI|web-gui%%, click on the pool in the **Main** tab and select **Scrub**.
+2. **Start the process**: Click **Start** to initiate the process.
 
 :::note Timing
 Scrub operations are usually quicker than a full disk scan because they only check allocated data. Based on pool size and usage, expect this to take anywhere from a few minutes to a few hours.
@@ -314,7 +297,8 @@ Unassigned drives are storage devices connected to your Unraid server that aren'
 All drives connected to your server when the %%array|array%% starts count toward your Unraid Attached Devices license limit, even if they aren’t assigned to the %%array|array%% or a pool.
 :::
 
-**Common uses for unassigned drives:**
+<h4>Common uses for unassigned drives</h4>
+
 - Connect removable drives for easy file transfers or backups.
 - Use dedicated drives for high-performance tasks like running %%virtual machines|vm%% or temporary data storage.
 
@@ -322,13 +306,11 @@ All drives connected to your server when the %%array|array%% starts count toward
 
 To make the most of your unassigned drives, consider installing the following plugins from the **Apps** tab:
 
-- **Unassigned Devices:**  
-  This plugin allows you to mount, share, and manage drives with file systems that Unraid supports, like %%XFS|xfs%%, %%BTRFS|btrfs%%, or NTFS.
+- **[Unassigned Devices](https://unraid-production-481d40bf.preview.craft.cloud/community/apps?q=dlandon&r=0#:~:text=and%20iso%20files.-,Unassigned%20Devices,-dlandon):** This plugin allows you to mount, share, and manage drives with file systems that Unraid supports, like %%XFS|xfs%%, %%BTRFS|btrfs%%, or NTFS.
 
-- **Unassigned Devices Plus:**  
-  This extension broadens your options by supporting additional file systems, including ExFAT and HFS+.
+- **[Unassigned Devices Plus](https://unraid-production-481d40bf.preview.craft.cloud/community/apps?q=dlandon&r=0#:~:text=and%20iso%20files.-,Unassigned%20Devices%20Plus,-(Addon)):** This extension broadens your options by supporting additional file systems, including ExFAT and HFS+.
 
-**Key features of these plugins include:**
+These plugins enable:
 
 - Easily mounting and unmounting drives from the Unraid web interface.
 - Sharing your unassigned drives over the network.
@@ -336,24 +318,7 @@ To make the most of your unassigned drives, consider installing the following pl
 - Formatting or erasing drives for future use.
 - Safely disconnecting USB or external drives without hassle.
 
-For more details on installing and managing plugins, check out [Plugins](../customize-your-experience/plugins.md) in “Customizing your experience.”
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+For more details on installing and managing plugins, check out [Plugins](../customize-your-experience/plugins.md).
 
 ---
 
@@ -363,22 +328,19 @@ For more details on installing and managing plugins, check out [Plugins](../cust
 
 If you see that a drive in Unraid is **unmountable**, it could be due to one of two main reasons:
 
-1. **New drive added**:  
-   If you just added a new drive to your setup, it will show as unmountable until you format it. Formatting creates a file system that allows the drive to store files. You can find the steps to format a drive [here](#creating-a-file-system-formatting).
+1. **New drive added**: If you just added a new drive to your setup, it will show as unmountable until you format it. Formatting creates a file system that allows the drive to store files. You can find the steps to format a drive [here](#creating-a-file-system-formatting).
 
-2. **File system problems**:  
-   If a drive that was previously working suddenly shows as unmountable, it likely has a file system issue. This can happen due to unexpected shutdowns, problems while writing data, or if the drive has been marked as disabled (which appears as a red 'x' in the %%WebGUI|web-gui%%).
+2. **File system problems**: If a drive that was previously working suddenly shows as unmountable, it likely has a file system issue. This can happen due to unexpected shutdowns, problems while writing data, or if the drive has been marked as disabled (which appears as a red 'x' in the %%WebGUI|web-gui%%).
 
 :::important
 Do not format an unmountable drive unless you are okay with losing all the data on it. Formatting will erase everything and update the %%parity|parity%% information, making recovery impossible. Always try to fix the file system first.
 :::
 
-**Steps to take if your drive is unmountable:**
+If your drive is unmountable:
 
-| Situation                                      | Action                                                                                                  |
-|------------------------------------------------|---------------------------------------------------------------------------------------------------------|
-| New drive that has never been used in Unraid   | Format the drive to create a new file system (check the [formatting steps](#creating-a-file-system-formatting)). |
-| Drive that was used before but is now unmountable | Perform a file system check or repair (see [Checking a file system](#checking-a-file-system)). Avoid formatting if you want to keep the data. |
+1. **Identify the situation**: Determine if it's a new drive or a previously working drive.
+2. **For new drives**: Format the drive to create a new file system (check the [formatting steps](#creating-a-file-system-formatting)).
+3. **For previously working drives**: Perform a file system check or repair (see [Checking a file system](#checking-a-file-system)). Avoid formatting if you want to keep the data.
 
 :::note
 If a drive is both unmountable and disabled (red 'x'), first run the file system check/repair on the **emulated** drive. If the emulated drive is also unmountable and you attempt to rebuild it, the new drive will also be unmountable.
@@ -386,14 +348,17 @@ If a drive is both unmountable and disabled (red 'x'), first run the file system
 
 Fixing the file system typically takes less time than rebuilding the drive, allowing you to access your data without losing anything. Remember, rebuilding a drive does **not** fix file system issues; it merely ensures that the physical drive matches the emulated one, carrying over any existing problems.
 
-**Why is parity not enough?**  
+:::important Why is parity not enough?
 While %%parity|parity%% helps recover a failed drive, it cannot fix file system problems. If the file system is corrupted, %%parity|parity%% will simply replicate that corruption to the new drive.
 
-**If you’re unsure:**  
+If you’re unsure: 
+
 - Download your system logs by navigating to ***Tools → Diagnostics***.
 - For expert help, post your issue along with the diagnostics on the [Unraid forums](https://forums.unraid.net/).
+:::
 
 :::note Just to reiterate
+
 - Only format unmountable drives if they are brand new or if you want to erase all data.
 - Use the file system check/repair for fixing corrupt files; don’t rely on %%parity|parity%% to solve these issues.
 - For %%cache pools|cache-pool%% with multiple drives, consider using either %%BTRFS|btrfs%% or %%ZFS|zfs%%.
@@ -410,20 +375,20 @@ If a disk that previously mounted without issues now shows as **unmountable**, i
 If the %%WebGUI|web-gui%% suggests formatting an unmountable drive, <strong>do not format</strong> unless you intend to erase all data. Formatting will destroy the contents of the drive and update %%parity|parity%%, making recovery impossible.
 :::
 
-**Preparing to check or repair**
+<h4>Preparing to check or repair</h4>
 
-1. **Identify the file system type:**  
+1. **Identify the file system type**:  
    - Navigate to the **Main** tab and select your disk (e.g., Disk 3, Cache).
    - Find the **File system type** (should be %%XFS|xfs%%, %%BTRFS|btrfs%%, or %%ZFS|zfs%%).
 
-2. **Start the array in the correct mode:**  
+2. **Start the array in the correct mode**:  
    - For **%%XFS|xfs%%**, start the %%array|array%% in **%%Maintenance Mode|maintenance-mode%%**.
    - For **%%BTRFS|btrfs%%**, start the %%array|array%% in **Normal mode** for a %%scrub|scrub%% or **%%Maintenance Mode|maintenance-mode%%** for a repair.
    - For **%%ZFS|zfs%%**, refer to the %%ZFS|zfs%% section below.
 
-3. **If the disk is disabled and being emulated:** Run the check/repair on the %%emulated disk|emulated-disk%% before attempting a rebuild. If the %%emulated disk|emulated-disk%% is unmountable, the rebuilt disk will also be unmountable.
+3. **Handle emulated disks**: If the disk is disabled and being emulated, run the check/repair on the %%emulated disk|emulated-disk%% before attempting a rebuild. If the %%emulated disk|emulated-disk%% is unmountable, the rebuilt disk will also be unmountable.
 
-**Common error messages**
+<h4>Common error messages</h4>
 
 | Message                                      | Meaning / Action                                                    |
 |-----------------------------------------------|--------------------------------------------------------------------|
@@ -436,13 +401,13 @@ If the %%WebGUI|web-gui%% suggests formatting an unmountable drive, <strong>do n
 
 #### Via the WebGUI
 
-1. Start the %%array|array%% in the correct mode (refer to the steps above).
-2. Go to the **Main** tab and select the disk you wish to check.
-3. Scroll to **Check Filesystem Status**.
-4. Enter any necessary options (for details, see **Help** in the upper right).
-5. Click **Check** to initiate the process.
-6. Monitor the progress in the output box. Use **Refresh** if required.
-7. Review the results. If uncertain, copy the output and post it on the [forums](https://forums.unraid.net/) for advice.
+1. **Start the array**: Start the %%array|array%% in the correct mode (refer to the steps above).
+2. **Select the disk**: Go to the **Main** tab and select the disk you wish to check.
+3. **Access check options**: Scroll to **Check Filesystem Status**.
+4. **Enter options**: Enter any necessary options (for details, see **Help** in the upper right).
+5. **Start the check**: Click **Check** to initiate the process.
+6. **Monitor progress**: Monitor the progress in the output box. Use **Refresh** if required.
+7. **Review results**: Review the results. If uncertain, copy the output and post it on the [forums](https://forums.unraid.net/) for advice.
 
 #### Via the command line
 
@@ -452,17 +417,10 @@ If the %%WebGUI|web-gui%% suggests formatting an unmountable drive, <strong>do n
 To check an %%XFS|xfs%% file system via command line:
 
 - Start the %%array|array%% in **%%Maintenance Mode|maintenance-mode%%**.
-- Run the following command:
-```
-xfs_repair -v /dev/mdX
-```
+- Run the following command: `xfs_repair -v /dev/mdX`
 - Replace `X` with the disk number (e.g., `/dev/md1`).
 - For encrypted %%XFS|xfs%%, use `/dev/mapper/mdX`.
-
-- For drives not in the %%array|array%%:
-```
-xfs_repair -v /dev/sdX1
-```
+- For drives not in the %%array|array%%: `xfs_repair -v /dev/sdX1`
 - Ensure you are using the correct device identifier.
 
 :::warning
@@ -475,25 +433,10 @@ Running this command on an %%array|array%% disk outside of **%%Maintenance Mode|
 
 To check a %%BTRFS|btrfs%% file system via command line:
 
-- To perform a %%scrub|scrub%% (which checks and repairs many errors automatically), start the %%array|array%% in **Normal mode** and run:
-
-```
-btrfs scrub start /mnt/diskX
-```
-
-- For a read-only check, start the %%array|array%% in **%%Maintenance Mode|maintenance-mode%%** and run:
-
-```
-btrfs check --readonly /dev/mdX1
-```
-
+- To perform a %%scrub|scrub%% (which checks and repairs many errors automatically), start the %%array|array%% in **Normal mode** and run: `btrfs scrub start /mnt/diskX`
+- For a read-only check, start the %%array|array%% in **%%Maintenance Mode|maintenance-mode%%** and run: `btrfs check --readonly /dev/mdX1`
 - Replace `X` with the disk number.
-
-- For drives not in the %%array|array%%:
-
-```
-btrfs check --readonly /dev/sdX1
-```
+- For drives not in the %%array|array%%: `btrfs check --readonly /dev/sdX1`
 
 :::warning
 Running this command on an %%array|array%% disk outside of **%%Maintenance Mode|maintenance-mode%%** will invalidate %%parity|parity%%.
@@ -505,35 +448,22 @@ Running this command on an %%array|array%% disk outside of **%%Maintenance Mode|
 
 To check a %%ZFS|zfs%% file system via the command line:
 
-**%%ZFS|zfs%% scrub (recommended method):**  
+<h4>Recommended method</h4>
+
 %%ZFS|zfs%% uses **scrubbing** instead of traditional filesystem checks like `fsck`. A %%scrub|scrub%% examines all data in the pool to verify checksums and automatically repairs any corruption found on redundant configurations.  
 
-- Start the %%array|array%% in **Normal mode** and run:  
-  ```
-  zpool scrub poolname
-  ```
-  Replace `poolname` with your actual %%ZFS|zfs%% pool name.
+- Start the %%array|array%% in **Normal mode** and run: `zpool scrub poolname`
+  - Replace `poolname` with your actual %%ZFS|zfs%% pool name.
 
-**Check pool status:**  
-To view the current health and any ongoing %%scrub|scrub%% progress, use the command:  
-```
-zpool status -v poolname
-```
+<h4>Check pool status</h4>
+To view the current health and any ongoing %%scrub|scrub%% progress, use the command: `zpool status -v poolname`
+
 This command shows detailed information about pool health, any errors, and %%scrub|scrub%% progress.  
 
-**Additional %%ZFS|zfs%% commands:**  
-- To pause a %%scrub|scrub%%:  
-  ```
-  zpool scrub -p poolname
-  ```
-- To stop a %%scrub|scrub%%:  
-  ```
-  zpool scrub -s poolname
-  ```
-- To list all pools:  
-  ```
-  zpool list
-  ```
+<h4>Additional %%ZFS|zfs%% commands</h4>
+- To pause a %%scrub|scrub%%: `zpool scrub -p poolname`
+- To stop a %%scrub|scrub%%: `zpool scrub -s poolname`
+- To list all pools: `zpool list`
 
 :::info  
 %%ZFS|zfs%% does not require or support traditional `fsck` utilities. The transactional nature of %%ZFS|zfs%% means it moves atomically from one consistent state to another, making scrubbing the preferred method for integrity checking.  
@@ -562,30 +492,28 @@ If a check of your file system finds errors, you might need to run a repair to g
 Repairs can take anywhere from several minutes to several hours, especially for larger or heavily corrupted file systems. Progress might seem slow, but you can check on the activity by looking at the read/write statistics on the Main page.
 :::
 
-**Preparing to repair:**
+<h4>Preparing to repair</h4>
 
-- **Identify the file system type:**  
-  Go to the **Main** tab, click on the disk, and find out what type of file system it is (%%XFS|xfs%%, %%BTRFS|btrfs%%, or %%ZFS|zfs%%).
+1. **Identify the file system type**: Go to the **Main** tab, click on the disk, and find out what type of file system it is (%%XFS|xfs%%, %%BTRFS|btrfs%%, or %%ZFS|zfs%%).
   
-- **Start the array in the correct mode:**  
-  - For **%%XFS|xfs%%**: Use **%%Maintenance Mode|maintenance-mode%%**.
-  - For **%%BTRFS|btrfs%%**: Use **Normal mode** for a %%scrub|scrub%%; use **%%Maintenance Mode|maintenance-mode%%** for a repair.
-  - For **%%ZFS|zfs%%**: Use **Normal mode** and run a %%scrub|scrub%% to check for errors.  See the [ZFS storage page](../../advanced-configurations/optimize-storage/zfs-storage.md) for guidance on %%ZFS|zfs%% pool maintenance and repair procedures.
+2. **Start the array in the correct mode**:
+
+     - **For %%XFS|xfs%%:** Use **%%Maintenance Mode|maintenance-mode%%**.
+     - **For %%BTRFS|btrfs%%:** Use **Normal mode** for a %%scrub|scrub%%; use **%%Maintenance Mode|maintenance-mode%%** for a repair.
+     - **For %%ZFS|zfs%%:** Use **Normal mode** and run a %%scrub|scrub%% to check for errors.  See the [ZFS storage page](../../advanced-configurations/optimize-storage/zfs-storage.md) for guidance on %%ZFS|zfs%% pool maintenance and repair procedures.
   
-- **If the disk is disabled and being emulated:**  
-  Run the repair on the %%emulated disk|emulated-disk%% before trying to do a rebuild.
+3. **Handle emulated disks**: If the disk is disabled and being emulated, run the repair on the %%emulated disk|emulated-disk%% before trying to do a rebuild.
 
 #### Via the WebGUI
 
-
-1. Start the %%array|array%% in the correct mode (refer to the section above).
-2. Go to the **Main** tab and click on the disk you want to repair.
-3. Scroll down to **Check Filesystem Status**.
-4. Remove any options that would run the process in check-only mode (like `-n` for %%XFS|xfs%% or `--readonly` for %%BTRFS|btrfs%%).
-5. If prompted (especially for %%XFS|xfs%%), add the suggested option (e.g., `-L` for %%XFS|xfs%%) as indicated in the check output.
-6. Click on **Check** to begin the repair.
-7. Keep an eye on the progress in the output box. Use **Refresh** if needed.
-8. If you notice a `lost+found` folder after the repair, it may contain files or folders that couldn't be fully recovered. Use backups or the Linux `file` command to identify the contents if necessary.
+1. **Start the array**: Start the %%array|array%% in the correct mode (refer to the section above).
+2. **Select the disk**: Go to the **Main** tab and click on the disk you want to repair.
+3. **Access repair options**: Scroll down to **Check Filesystem Status**.
+4. **Remove check-only options**: Remove any options that would run the process in check-only mode (like `-n` for %%XFS|xfs%% or `--readonly` for %%BTRFS|btrfs%%).
+5. **Add suggested options**: If prompted (especially for %%XFS|xfs%%), add the suggested option (e.g., `-L` for %%XFS|xfs%%) as indicated in the check output.
+6. **Start the repair**: Click on **Check** to begin the repair.
+7. **Monitor progress**: Keep an eye on the progress in the output box. Use **Refresh** if needed.
+8. **Check for lost files**: If you notice a `lost+found` folder after the repair, it may contain files or folders that couldn't be fully recovered. Use backups or the Linux `file` command to identify the contents if necessary.
 
 :::info
 If you're uncertain about the output, copy and share it on the [Unraid forums](https://forums.unraid.net/) for expert help. Use the code formatting option to keep it readable.
@@ -597,18 +525,10 @@ If you're uncertain about the output, copy and share it on the [Unraid forums](h
   <TabItem value="xfs" label="XFS">
 
 - Start the %%array|array%% in **%%Maintenance Mode|maintenance-mode%%**.
-- Run the following command:  
-`xfs_repair /dev/mdX`  
-  Replace `X` with the disk number (e.g., `/dev/md1`).
-- For encrypted %%XFS|xfs%%, use:  
-`/dev/mapper/mdX`.
-
-- If you're prompted to use `-L`, re-run the command like this:  
-`xfs_repair -L /dev/mdX`  
-  This is usually safe and necessary to complete the repair.
-
-- For drives that are not part of the %%array|array%%:  
-`xfs_repair /dev/sdX1`.
+- Run the following command: `xfs_repair /dev/mdX`. Replace `X` with the disk number (e.g., `/dev/md1`).
+- For encrypted %%XFS|xfs%%, use: `/dev/mapper/mdX`.
+- If you're prompted to use `-L`, re-run the command like this: `xfs_repair -L /dev/mdX`. This is usually safe and necessary to complete the repair.
+- For drives that are not part of the %%array|array%%: `xfs_repair /dev/sdX1`.
 
 :::caution
 Running this command on an %%array|array%% disk outside of **%%Maintenance Mode|maintenance-mode%%** will invalidate parity.
@@ -618,15 +538,16 @@ Running this command on an %%array|array%% disk outside of **%%Maintenance Mode|
 
   <TabItem value="btrfs" label="BTRFS">
 
-- To perform a %%scrub|scrub%% (which detects and repairs many errors automatically), start the %%array|array%% in **Normal mode** and run:  
-`btrfs scrub start /mnt/diskX`.
-  
-- For a full repair, start the %%array|array%% in **%%Maintenance Mode|maintenance-mode%%** and run:  
-`btrfs check --repair /dev/sdX1`.  
-  Only use `--repair` if advised by the [forums](https://forums.unraid.net/) or documentation, as it can sometimes lead to further issues.
+- To perform a %%scrub|scrub%% (which detects and repairs many errors automatically), start the %%array|array%% in **Normal mode** and run: `btrfs scrub start /mnt/diskX`.
+- For a full repair, start the %%array|array%% in **%%Maintenance Mode|maintenance-mode%%** and run: `btrfs check --repair /dev/sdX1`. Only use `--repair` if advised by the [forums](https://forums.unraid.net/) or documentation, as it can sometimes lead to further issues.
 
-:::caution
-Always get advice before using `--repair` with %%BTRFS|btrfs%%, as it may occasionally cause more problems.
+:::caution Use `--repair` with caution
+The `--repair` option can sometimes cause data loss or make corruption worse if used incorrectly. Only use it when:
+- You've consulted the [Unraid forums](https://forums.unraid.net/) for your specific error
+- You have a recent backup of your data
+- You understand the risks involved
+
+For most %%BTRFS|btrfs%% issues, try running a `scrub` first (which is safer) or seek expert advice before attempting repairs.
 :::
 
   </TabItem>
@@ -635,13 +556,13 @@ Always get advice before using `--repair` with %%BTRFS|btrfs%%, as it may occasi
 
 %%ZFS|zfs%% pools offer built-in integrity checking and self-healing capabilities, which often eliminate the need for traditional file system repairs.
 
-**For %%ZFS|zfs%% pools:**
+<h4>For %%ZFS|zfs%% pools</h4>
 
 - **Check pool health:** Use the command `zpool status poolname` to see the status of your pool.
 - **Run a scrub:** Execute `zpool scrub poolname`. This command detects and repairs any corruption automatically.
 - **Clear errors:** After addressing any underlying issues, run `zpool clear poolname` to clear the error state.
 
-**For %%ZFS|zfs%% disks in the array:**
+<h4>For %%ZFS|zfs%% disks in the array</h4>
 
 - **Check dataset health:** Use `zfs list -o name,health` to check the health of your datasets.
 - **Run a scrub:** You can also run `zpool scrub poolname` for any disks belonging to a specific pool.
@@ -656,9 +577,10 @@ For a comprehensive understanding of %%ZFS|zfs%% management, troubleshooting, an
 </Tabs>
 
 :::info After the repair  
+
 - Stop and restart the %%array|array%% in **Normal mode**.  
 - The drive should now mount and be accessible.  
 - If you see a `lost+found` folder, check its contents for any important files.
 :::
 
-If you don’t understand the repair output or if the process fails, share your diagnostics and repair log on the [Unraid forums](https://forums.unraid.net/) for further assistance.
+If you don't understand the repair output or if the process fails, share your diagnostics and repair log on the [Unraid forums](https://forums.unraid.net/) for further assistance.

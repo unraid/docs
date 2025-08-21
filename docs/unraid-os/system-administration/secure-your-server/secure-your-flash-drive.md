@@ -17,7 +17,7 @@ Having a recent backup of your flash drive ensures you can quickly recover from 
 - Before making any major configuration changes
 - Periodically, as part of your regular maintenance routine
 
-To back up your flash drive using the Unraid WebGUI, follow these steps:
+To back up your flash drive using the Unraid %%WebGUI|web-gui%%, follow these steps:
 
 1. Select your flash drive from the **Main** tab.
 2. In the **Flash Device Settings**, click **Flash Backup**.
@@ -31,10 +31,10 @@ To back up your flash drive using the Unraid WebGUI, follow these steps:
 3. Unraid will create a ZIP file containing the flash drive's contents.
 4. Save this ZIP file to a secure location outside your Unraid server (like a separate PC, NAS, or cloud storage).
 
-If you need to recreate your flash drive, use this backup with the [Limetech USB Creator tool](https://unraid.net/download).
+If you need to recreate your flash drive, use this backup with the [USB Creator tool](https://unraid.net/download).
 
 :::tip
-Keep a screenshot of your disk assignments after any hardware changes. This ensures correct drive placement if you need to restore from your backup.
+Consider keeping a screenshot of your [disk assignments](../../getting-started/set-up-unraid/configure-your-array.md#assign-parity-and-data-disks) after any hardware changes. This ensures correct drive placement if you need to restore from your backup.
 :::
 
 ---
@@ -48,12 +48,11 @@ You can control whether your flash drive is accessible over the network, similar
 
 :::important Reducing security risks
 
-- **Disable sharing:** Set the flash drive’s SMB export to **No** to prevent network access entirely.
+- **Disable sharing:** Set the flash drive's %%SMB|samba%% export to **No** to prevent network access entirely.
 - **Restrict access:** If you must share the flash drive, set security to **Private** and grant access only to trusted users with strong passwords.
 - **Avoid public access:** Never leave the flash drive share set to **Public** or **Secure** with guest write access.
 
 These steps help prevent unauthorized changes or exposure of critical files.
-
 :::
 
 ---

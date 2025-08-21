@@ -8,29 +8,25 @@ import TabItem from '@theme/TabItem';
 
 # Managing & customizing containers
 
-:::note Disclaimer
+:::caution Disclaimer
 
 This page is written to help users of all skill levels make the most out of Docker containers on Unraid OS. The tips and best practices come from the Unraid team, who ensure they are tailored to most users' needs. However, keep in mind that Docker is constantly evolving, so for the most up-to-date features, advanced configurations, or troubleshooting issues that go beyond what Unraid covers, it's always a good idea to check the [official Docker documentation](https://docs.docker.com/).
 :::
 
-Before customizing a Docker container in Unraid, it’s helpful to understand the basic configuration options. Each container template provides a user-friendly interface for setting up networking, storage, and environment variables, allowing you to tailor the container’s behavior to your needs without using complex command-line tools.
+Before customizing a Docker container in Unraid, it’s helpful to understand the basic configuration options. Each [container template](./community-applications.md) provides a user-friendly interface for setting up networking, storage, and environment variables, allowing you to tailor the container's behavior to your needs without using complex command-line tools.
 
 <Tabs>
   <TabItem value="Network type" label="Network type">
 
 Unraid supports several Docker network modes. The network type you choose determines how your container communicates with other devices and containers:
 
-- **Bridge (default):**  
-  The container is placed on an internal Docker network. Only ports you explicitly map will be accessible from your Unraid server or LAN. This is the safest and most common option for most applications.
+- **Bridge (default):** The container is placed on an internal Docker network. Only ports you explicitly map will be accessible from your Unraid server or LAN. This is the safest and most common option for most applications.
 
-- **Host:**  
-  The container shares the Unraid server’s network stack. It can use any available port, but you must ensure no port conflicts with other services. Use this mode only if the application requires direct network access.
+- **Host:** The container shares the Unraid server’s network stack. It can use any available port, but you must ensure no port conflicts with other services. Use this mode only if the application requires direct network access.
 
-- **None:**  
-  The container has no network access. Use this for isolated workloads that do not require any network connectivity.
+- **None:** The container has no network access. Use this for isolated workloads that do not require any network connectivity.
 
-- **Custom (macvlan/ipvlan):**  
-  The container is assigned its own IP address on your LAN, making it appear as a separate device. This is useful for advanced scenarios but may require additional configuration in your network environment.
+- **Custom (macvlan/ipvlan):** The container is assigned its own IP address on your LAN, making it appear as a separate device. This is useful for advanced scenarios but may require additional configuration in your network environment.
 
 :::tip
 The default network type specified in the container’s template is recommended for most users.
@@ -38,7 +34,7 @@ The default network type specified in the container’s template is recommended 
 
 :::caution Wi-Fi and Docker Networking Limitations
 
-Docker has a limitation that prevents it from participating in two networks that share the same subnet. If you switch between a wired and a wireless connection, you will need to restart Docker and reconfigure all existing containers to use the new interface. To avoid complications, we recommend choosing either a wired or wireless connection and sticking with it.
+Docker has a limitation that prevents it from participating in two networks that share the same subnet. If you switch between a wired and a wireless connection, you will need to restart Docker and reconfigure all existing containers to use the new interface. This [network configuration](../../system-administration/secure-your-server/securing-your-connection.md) change requires container reconfiguration.
 :::
 
 </TabItem>
@@ -51,7 +47,7 @@ Volume mappings control how your container accesses files on your Unraid server.
 - **Access mode:** Controls permissions - read-only or read/write. Use the most restrictive mode that still allows the container to function.
 
 :::tip Best practice
-Store application data (settings, libraries, etc.) outside the container, typically in the `appdata` %%user share|user-share%%. This keeps your data safe during updates or reinstalls.
+Store application data (settings, libraries, etc.) outside the container, typically in the `appdata` %%user share|user-share%%. This [share management](../manage-storage/shares.md) approach keeps your data safe during updates or reinstalls.
 :::
 
 :::note
@@ -69,11 +65,9 @@ Store application data (settings, libraries, etc.) outside the container, typica
 
 Port mappings determine how network traffic is routed from your Unraid server to the container.
 
-- **Bridge network:**  
-  You can map internal container ports to different host ports. For example, if three containers use port 8000 internally, you can map them to 8000, 8001, and 8002 on the host.
+- **Bridge network:** You can map internal container ports to different host ports. For example, if three containers use port 8000 internally, you can map them to 8000, 8001, and 8002 on the host.
 
-- **Host network:**  
-  The container can use any available port. Avoid running multiple containers with the same port to prevent conflicts.
+- **Host network:** The container can use any available port. Avoid running multiple containers with the same port to prevent conflicts.
 
 :::important
 Only modify the host port value. Do not change the container port unless you know the application supports it.
@@ -86,14 +80,14 @@ Most templates provide sensible defaults, but you can add or adjust port mapping
 
 Environment variables can customize how your Docker container behaves at runtime. They allow you to pass key-value pairs that your containerized application can read and utilize.
 
-**Common uses for environment variables include:**
+<h4>Common uses for environment variables</h4>
 
 - Setting the time zone
 - Configuring user and group IDs
 - Specifying language preferences
 - Adjusting application-specific settings, like API keys or feature toggles
 
-Managing environment variables in the %%WebGUI|web-gui%%:
+<h4>Managing environment variables in the %%WebGUI|web-gui%%</h4>
 
 - You can add, edit, or remove environment variables in the container's configuration screen through the %%WebGUI|web-gui%%.
 - Many container templates come with common environment variables that are already set, but you can always add more if needed.
@@ -116,7 +110,7 @@ Use environment variables to avoid hardcoding sensitive or environment-specific 
 
 ## Creating and starting containers
 
-Once you've configured your container’s network, volume mappings, port mappings, and environment variables, you're ready to create and launch your **Docker container**. This section will guide you through the creation process, explain how to manage startup order and dependencies, and provide tips for advanced startup customization.
+Once you've configured your container’s network, volume mappings, port mappings, and environment variables, you're ready to create and launch your Docker container. This section will guide you through the creation process, explain how to manage startup order and dependencies, and provide tips for advanced startup customization.
 
 ### Creating a container
 
@@ -129,7 +123,7 @@ After reviewing your configuration settings in the container template:
 
 ### Planning your startup sequence
 
-Some containers depend on others to function correctly. For example, an application might need a database container running first, or a service might require a %%VPN|vpn-tunnel%% container to be active before it starts.
+Some containers depend on others to function correctly. For example, an application might need a database container running first, or a service might require a [%%VPN|vpn-tunnel%% container](../../system-administration/secure-your-server/tailscale.md) to be active before it starts.
 
 :::important Plan your startup
 
@@ -180,7 +174,7 @@ Test your startup sequence after changing container dependencies or adding new s
 
 ## Controlling your containers
 
-Once you've created and started your **Docker container**, managing it is easy through the %%WebGUI|web-gui%%. This guide will walk you through using the context menu, understanding container health indicators, and accessing volume mappings within your container.
+Once you've created and started your Docker container, managing it is easy through the %%WebGUI|web-gui%%. This guide will walk you through using the context menu, understanding container health indicators, and accessing volume mappings within your container.
 
 To access the container's context menu, go to the **Docker** or **Dashboard** tab and click on the container icon you want to manage. This menu offers straightforward access to common actions:
 
@@ -224,7 +218,9 @@ When configuring your application through its web interface, reference the **con
 
 For instance, if you mapped `/mnt/user/media` on the host to `/unraid_media` in the container, you should use `/unraid_media` in the application’s settings.
 
-**Example scenarios**:
+<h3>Example scenarios</h3>
+
+Here are some examples showing common path mapping configurations that users frequently need when setting up Docker containers. They demonstrate how to translate between Unraid's host file system paths and the container's internal paths, helping you configure applications correctly.
 
 - **Media server**:  
   Host path: `/mnt/user/media`  
@@ -242,14 +238,14 @@ For instance, if you mapped `/mnt/user/media` on the host to `/unraid_media` in 
   Reference `/downloads` or `/torrents` in the application as needed.  
 
 :::important Best practice
-Always use the most restrictive access mode (read-only or read/write) that allows your container to function properly.
+Always use the most restrictive [access mode](../manage-storage/shares.md) (read-only or read/write) that allows your container to function properly.
 :::
 
 ---
 
 ## Scheduling start and stop
 
-Unraid does not natively support scheduled start or stop actions for **Docker containers**, but you can easily automate this process using the **User Scripts plugin**. This powerful tool allows you to run custom scripts on a schedule, enabling automatic control of your containers.
+Unraid does not natively support scheduled start or stop actions for **Docker containers**, but you can easily automate this process using the [**User Scripts plugin**](../customize-your-experience/plugins.md). This powerful tool allows you to run custom scripts on a schedule, enabling automatic control of your containers.
 
 ### User Scripts plugin
 
@@ -266,9 +262,8 @@ To automate the start or stop of your containers on a schedule:
 
 1. Install the **User Scripts plugin** from the **Apps** tab.
 2. Navigate to ***Settings → User Scripts***.
-3. Create a new script for each unique schedule.  
-   _You can include commands for multiple containers in a single script if they share the same schedule._
-4. Set the schedule using the dropdown menu or use a custom [cron](https://en.wikipedia.org/wiki/Cron) expression for more advanced timing options.
+3. Create a new script for each unique schedule. You can include commands for multiple containers in a single script if they share the same schedule.
+4. Set the schedule using the dropdown menu or use a custom `cron` expression for more advanced timing options.
 5. Click **Apply** to save and activate your script.
 
 :::tip
@@ -328,5 +323,5 @@ This displays recent log output for the specified container.
 </Tabs>
 
 :::tip
-You can find the container name on the Docker tab or by viewing the `docker run` command in the container's configuration screen.
+You can find the container name on the Docker tab or by viewing the `docker run` command in the [container's configuration screen](./managing-and-customizing-containers.md).
 :::

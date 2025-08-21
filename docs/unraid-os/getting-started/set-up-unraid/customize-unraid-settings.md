@@ -19,7 +19,7 @@ Don't forget - the %%WebGUI|web-gui%% includes built-in help. To access help for
 
 ### CPU Pinning
 
-%%CPU Pinning|cpu-pinning%% allows you to assign specific CPU cores to %%VMs|vm%% (Virtual Machines) or **Docker** containers. This is particularly important for performance-sensitive workloads, such as gaming %%VMs|vm%%. Even if you manually assign Docker containers to avoid conflicts with your gaming %%VM|vm%%, the host operating system may still utilize those cores for tasks like managing the %%WebGUI|web-gui%%, running a %%parity check|parity-check%%, or performing %%BTRFS|btrfs%% operations.
+%%CPU Pinning|cpu-pinning%% allows you to assign specific CPU cores to %%VMs|vm%% (Virtual Machines) or Docker containers. This is particularly important for performance-sensitive workloads, such as gaming %%VMs|vm%%. Even if you manually assign Docker containers to avoid conflicts with your gaming %%VM|vm%%, the host operating system may still utilize those cores for tasks like managing the %%WebGUI|web-gui%%, running a %%parity check|parity-check%%, or performing %%BTRFS|btrfs%% operations.
 
 - When you pin a core to a %%VM|vm%% or Docker container, that core is allocated to the %%VM|vm%% or container. However, Unraid OS may still access it for routine tasks.
 - When you isolate a core, it becomes dedicated to the %%VM|vm%% or container and is no longer accessible to Unraid OS.
@@ -52,7 +52,7 @@ You can modify additional settings for your disk devices on this page. Enable yo
 
 ### Docker
 
-Docker containers allow you to integrate pre-configured Linux applications into your Unraid server. For more details, see the [Docker Management](https://docs.unraid.net/unraid-os/manual/docker-management/) page.
+Docker containers allow you to integrate pre-configured Linux applications into your Unraid server. For more details, see the [Docker Management](../../using-unraid-to/run-docker-containers/managing-and-customizing-containers.md) page.
 
  <div style={{ margin: 'auto', maxWidth: '400px'}}>
 
@@ -111,7 +111,7 @@ Unraid can be connected to an APC (or compatible) UPS (Uninterruptible Power Sup
 
 ### VM Manager
 
-**Virtual machines** (VMs) can turn your server into a desktop or media player, and run applications not designed for Linux. For details on managing %%VMs|vm%% on Unraid, see the **VM Management** and **VM Guest Support** sections.
+**Virtual machines** (VMs) can turn your server into a desktop or media player, and run applications not designed for Linux. For details on managing %%VMs|vm%% on Unraid, see [VM setup](../../using-unraid-to/create-virtual-machines/vm-setup.md).
  <div style={{ margin: 'auto', maxWidth: '400px'}}>
 
   ![VM Manager](/img/settings-vmmanager.png)
@@ -156,7 +156,7 @@ The %%Syslog server|syslog-server%% permanently stores your system log, which is
 ### Tailscale
 The %%Tailscale|tailscale%% section allows for secure remote access via the %%Tailscale|tailscale%% %%VPN|vpn-tunnel%%. Here, you can log in to connect your Unraid server to your %%Tailnet|tailnet%%, view the assigned IP address and hostname, and enable or disable %%Tailscale|tailscale%% connectivity.
 
-You can also configure your server as a %%Subnet Router|subnet-routing%% for local devices or as an **Exit Node** to route internet traffic. This section enables management of advertised routes, exit node status, Docker container integration options, and connection status monitoring for troubleshooting.
+You can also configure your server as a %%Subnet Router|subnet-routing%% for local devices or as an Exit Node to route internet traffic. This section enables management of advertised routes, exit node status, Docker container integration options, and connection status monitoring for troubleshooting.
  <div style={{ margin: 'auto', maxWidth: '400px'}}>
 
   ![Tailscale Settings](/img/settings-tailscale.png)
@@ -208,8 +208,12 @@ You can configure browser and email notifications on this page, subscribing to d
 
 ### Scheduler
 
-The scheduler settings page allows you to easily configure the frequency for two automated tasks: %%parity checks|parity-check%% and the cache %%Mover|mover%%.
+The Scheduler settings page allows you to easily configure the frequency for two automated tasks: %%parity checks|parity-check%% and the cache %%Mover|mover%%.
 
 ## User Utilities
 
-Third-party plugins are displayed here, enhancing Unraid’s functionality and giving you more control over your server. For example, the Community Applications plugin is included. Other plugins offer features for system monitoring, maintenance, storage management, and `appdata` backups.
+Third-party plugins are displayed here, enhancing Unraid’s functionality and giving you more control over your server. For example, the [Community Applications plugin](../../using-unraid-to/run-docker-containers/community-applications.md) is included. Other plugins offer features for system monitoring, maintenance, storage management, and `appdata` backups.
+
+---
+
+\* *"%%WireGuard|wireguard%%" and the "%%WireGuard|wireguard%%" logo are registered trademarks of Jason A. Donenfeld.*

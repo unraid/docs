@@ -1,9 +1,9 @@
 ---
 sidebar_position: 1
-sidebar_label: Style Guide
+sidebar_label: Style guide
 ---
 
-# Unraid Docs Style Guide
+# Unraid Docs style guide
 
 Unraid OS is shaped by the LimeTech team and the Unraid community. Our documentation aims to be comprehensive, accurate, and current. Since our users come from diverse backgrounds worldwide, this guide sets the foundation for consistent, clear writing throughout Unraid docs.
 
@@ -42,7 +42,7 @@ We prioritize:
 
 ## Syntax
 
-Unraid Docs uses Markdown formatting combined with specific text styles to help users quickly identify interface elements and navigate the WebGUI.
+Unraid Docs uses Markdown formatting combined with specific text styles to help users quickly identify interface elements and navigate the %%WebGUI|web-gui%%.
 
 | Element Type           | Style Convention         | Markdown Syntax                | Example / Description                                 |
 |-----------------------|--------------------------|-------------------------------|-----------------------------------------------------|
@@ -79,7 +79,7 @@ Lists help users absorb, recall, and follow key points or steps. There are two m
   *Example:* "List of common Unraid OS tools."
 
 - **Ordered lists** (numbered): Use to show a required sequence or procedure.  
-  *Example:* "To start the array..."
+  *Example:* "To start the %%array|array%%..."
 
 :::tip Best practices
 
@@ -105,8 +105,8 @@ Tables are a great way to organize related data by grouping information into row
 To reduce confusion for readers, follow these principles regarding abbreviations:
 
 - **Abbreviations** are shortened forms of words that are usually unnecessary in Unraid Docs unless they are universally recognized.
-- **Acronyms** create new words from the initial letters of other words (e.g., RAID).
-- **Initialisms** use initials that are pronounced individually (e.g., OS, ZFS).
+- **Acronyms** create new words from the initial letters of other words (e.g., %%RAID|raid%%).
+- **Initialisms** use initials that are pronounced individually (e.g., OS, %%ZFS|zfs%%).
 
 **Recommendations:**
 
@@ -137,7 +137,7 @@ You can also check our [writing tips and guidelines](../unraid-styleguide/conven
 
 ### Adding glossary terminology
 
-Unraid Docs utilizes a centralized glossary system to ensure consistency and accessibility of technical terms. Glossary entries are kept in the `glossary.yaml` file located in the root directory.
+Unraid Docs utilizes a centralized glossary system to ensure consistency and accessibility of technical terms. Glossary entries are kept in the [glossary.yaml](../../glossary.yaml) file located in the root directory.
 
 To add or update a term:  
 
@@ -158,4 +158,4 @@ GlossaryTerm:
 
     ...where the left side of the pipe is the text you would like it displayed, while the right side is the corresponding term entry from the YAML file.
 
-3. The glossary page (`docs/glossary.md`) will automatically update to include new terms.
+3. 3. The [glossary page](../glossary.md) will automatically update to include new terms.

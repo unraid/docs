@@ -8,7 +8,7 @@ import TabItem from '@theme/TabItem';
 
 # Unraid as a VM
 
-Running Unraid as a **virtual machine** on your primary Unraid server can be very helpful for development, testing, and evaluation. This configuration allows you to:
+Running Unraid as a virtual machine on your primary Unraid server can be very helpful for development, testing, and evaluation. This configuration allows you to:
 
 - Develop and test plugins or Docker containers without putting your production server at risk.
 - Evaluate new Unraid releases before upgrading your main system.
@@ -31,7 +31,7 @@ Running Unraid as a **virtual machine** on your primary Unraid server can be ver
 To get Unraid up and running as a %%VM|vm%%:
 
 <details>
-<summary><strong>1. Prepare the flash drive for the %%VM|vm%%</strong></summary>
+<summary><strong>1. Prepare the flash drive for the VM</strong> - Click to expand/collapse</summary>
 
 Getting your flash drive ready is crucial for a seamless and dependable %%VM|vm%% boot process. Here's how to set up your %%VM|vm%% environment with a unique and properly configured boot device.
 
@@ -43,16 +43,19 @@ Getting your flash drive ready is crucial for a seamless and dependable %%VM|vm%
 2. Modify configuration files:
    - Rename the flash drive label from `UNRAID` to a unique name (e.g., `UNRAID-VM`).
    - Edit the `syslinux/syslinux.cfg` file on the flash drive:
+
      ```
      label Unraid OS
        menu default
        kernel /bzimage
        append unraidlabel=UNRAID-VM initrd=/bzroot
      ```
+
    - Make this change in all boot modes (GUI/Safe Mode) within the file.
    - Copy the updated `syslinux.cfg` file to `EFI/boot/syslinux.cfg`
 
 3. Create a file named `startup.nsh` in the root of the flash drive with this content:
+
    ```
    \EFI\boot\bootx64.efi
    ```
@@ -62,14 +65,14 @@ Getting your flash drive ready is crucial for a seamless and dependable %%VM|vm%
 </details>
 
 <details>
-<summary><strong>2. Set up the %%VM|vm%% on the host</strong></summary>
+<summary><strong>2. Set up the VM on the host</strong> - Click to expand/collapse</summary>
 
 Configuring the Unraid %%VM|vm%% requires some specific settings to ensure proper operation.
 
 To create the %%VM|vm%% template:
 
 1. On the host Unraid server, go to ***Settings → VM Manager*** and ensure that %%VM|vm%% are enabled.
-2. Navigate to the **%%VMs|vm%%** tab and click **Add VM**.
+2. Navigate to the **VMs** tab and click **Add VM**.
 3. Select the **Slackware** template, as it's the closest match to Unraid.
 4. (Optional) If available, replace the Slackware icon with the Unraid icon.
 5. Name the %%VM|vm%% (e.g., `UNRAID-VM`).
@@ -80,31 +83,31 @@ To create the %%VM|vm%% template:
 8. Set **Machine type** to **Q35 (latest)**.
 9. Set **BIOS** to **OVMF** and **USB controller** to **3.0 (QEMU XHCI)**.
 10. Configure virtual disks:
-    - Add vDisks for cache/data using **RAW** format and **SATA** bus.
-    - Size disks differently for easy identification (e.g., %%parity|parity%% > data > cache).
+    - Add %%vDisks|vdisk%% for cache/data using **RAW** format and **SATA** bus.
+    - Size disks differently for easy identification (e.g., %%parity|parity%% > data > %%cache|cache%%).
 11. Leave graphics, sound, and network at their default settings.
 12. Under **USB devices**, select the flash drive by **manufacturer**, not label.
 
 :::important
-The %%VM|vm%%'s flash drive must be from a different manufacturer than the host's boot drive. If they match, the VM drive won't be visible.
+The %%VM|vm%%'s flash drive must be from a different manufacturer than the host's boot drive. If they match, the %%VM|vm%% drive won't be visible.
 :::
 
 </details>
 
 <details>
-<summary><strong>3. Create and start the %%VM|vm%%</strong></summary>
+<summary><strong>3. Create and start the VM</strong> - Click to expand/collapse</summary>
 
 To launch the %%VM|vm%% after configuration:
 
 1. Uncheck **Start VM after creation** if you want manual control.
 2. Click **Create**.
-3. On the **VMs** tab, click the Unraid %%VM|vm%% icon and select **Start with console (VNC)**.
+3. On the **VMs** tab, click the Unraid %%VM|vm%% icon and select **Start with console (%%VNC|vnc-session%%)**.
 4. Watch the boot process in the %%VNC|vnc-session%% console and note the %%VM|vm%%'s IP address displayed before login.
 
 </details>
 
 <details>
-<summary><strong>4. Configure the %%VM|vm%%</strong></summary>
+<summary><strong>4. Configure the VM</strong> - Click to expand/collapse</summary>
 
 Once the %%VM|vm%% is running, set it up like a physical Unraid server:
 
@@ -113,7 +116,7 @@ Once the %%VM|vm%% is running, set it up like a physical Unraid server:
    - Set a unique **Server name** (e.g., `Unraid-VM`).
    - Add a description like "Development instance."
 3. (Optional) Go to ***Settings → Display settings*** and choose a different color theme to distinguish it from the host.
-4. Go to ***Settings → SMB settings → Workgroup settings*** and set **Local master** to *No* to avoid conflicts.
+4. Go to ***Settings → %%SMB|samba%% settings → Workgroup settings*** and set **Local master** to *No* to avoid conflicts.
 5. For UPS passthrough (if the host has UPS):
    - Go to ***Settings → UPS*** on the %%VM|vm%%.
    - Set **UPS cable** to *Ether*.
@@ -121,7 +124,7 @@ Once the %%VM|vm%% is running, set it up like a physical Unraid server:
    - Enter the host's IP in **Device**.
    - Configure **Runtime** to shut down the %%VM|vm%% before the host.
 6. Start the %%array|array%% with your configured devices.
-7. Install **Community Applications** for plugin/Docker testing.
+7. Install [**Community Applications**](https://unraid.net/community/apps) for plugin/Docker testing.
 8. Update the %%VM|vm%% via ***Tools → Update OS***, just like a physical server.
 
 </details>

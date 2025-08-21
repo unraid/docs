@@ -5,7 +5,7 @@ sidebar_label: Unraid.net
 
 # Unraid.net
 
-An Unraid.net account is your access point to Unraid’s online services, including forums, Unraid Connect, and license management. While it's not required for basic server functions, having an account provides several benefits such as streamlined license management, access to prerelease builds, and enhanced support.
+An Unraid.net account is your access point to Unraid's online services, including [forums](https://forums.unraid.net/), [Unraid Connect](../../unraid-connect/overview-and-setup.md), and license management. While it's not required for basic server functions, having an account provides several benefits such as streamlined license management, access to prerelease builds, and enhanced support.
  
 #### Benefits of an Unraid.net account include:
  

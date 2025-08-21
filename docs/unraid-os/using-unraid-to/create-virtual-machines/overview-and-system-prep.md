@@ -8,21 +8,23 @@ import TabItem from '@theme/TabItem';
 
 # Overview & system prep
 
-%%Virtual machines (VMs)|vm%% allow you to run full operating systems, such as Windows, macOS, or Linux, on your Unraid server, side-by-side with Docker containers. %%VMs|vm%% are ideal for:
+Virtual machines (VMs) allow you to run full operating systems, such as Windows, macOS, or Linux, on your Unraid server, side-by-side with Docker containers. 
+
+%%VMs|vm%% are ideal for:
 
 - Running applications that require a full OS or are unavailable as containers.
 - Assigning dedicated hardware to guest systems, such as GPUs or USB devices.
 - Testing, development, gaming, or running legacy software.
 - Hosting multiple isolated environments for different workloads.
 
-For a list of operating systems tested with Unraid, see the %%VM|vm%% Setup page.
+For a list of operating systems tested with Unraid, see the [%%VM|vm%% Setup](./vm-setup.md) page.
 
 <details>
 <summary>**Under the hood:** Expand to learn more about the technology stack behind Unraid virtualization</summary>
 
 Unraid’s virtualization stack is designed to be flexible and high-performing, utilizing several open-source technologies to support effective %%virtual machine (VM)|vm%% management. This overview explains the key components and their interaction in a user-friendly manner.
 
-**Core technologies**
+<h4>Core technologies</h4>
 
 | Technology | What it does | Why it matters |
 |------------|--------------|---------------|
@@ -35,7 +37,7 @@ Unraid’s virtualization stack is designed to be flexible and high-performing, 
 | %%HVM&#124;hvm%% | Supports hardware-assisted virtualization (%%Intel VT-x&#124;intel-vt-x%%, %%AMD-V&#124;amd-v%%). | Necessary for running %%VMs&#124;vm%% with full hardware acceleration. |
 | %%VFIO&#124;vfio%% & %%IOMMU&#124;iommu%% | Allow direct PCI device passthrough to %%VMs&#124;vm%% (such as GPU and USB devices). | Essential for achieving near-native performance and maintaining security isolation. |
 
-How Unraid implements %%VM|vm%% support
+<h4>How Unraid implements %%VM|vm%% support</h4>
 
 - %%KVM&#124;kvm%%/%%QEMU&#124;qemu%%: Unraid’s virtualization is fundamentally based on %%KVM&#124;kvm%% and %%QEMU&#124;qemu%%, providing robust %%VM|vm%% hosting capabilities.
 - %%Libvirt|libvirt%%: %%VM|vm%% definitions are stored as XML files in `libvirt.img` (typically found in the `system` share).
@@ -52,7 +54,7 @@ Most users don’t need to interact directly with these technologies, but unders
 
 </details>
 
-## Requirements (Revised 2025)
+## Requirements
 
 To run %%VMs|vm%% on Unraid, your system must meet the following requirements:
 
@@ -81,15 +83,12 @@ Your motherboard BIOS must enable Hardware-assisted virtualization and %%IOMMU|i
 - Plan for peak usage if running multiple %%VMs|vm%% simultaneously.
 - Always allocate resources based on guest OS and workload requirements.
 
----
-
 ### HVM & IOMMU: What they enable
 
 <Tabs>
 <TabItem value="hvm" label="HVM support">
 
-%%HVM|hvm%% (Hardware Virtual Machine)  
-Also known as %%Intel VT-x|intel-vt-x%% or %%AMD-V|amd-v%%, %%HVM|hvm%% enables your CPU to run %%virtual machines|vm%% with hardware acceleration.
+%%HVM|hvm%% (Hardware Virtual Machine), also known as %%Intel VT-x|intel-vt-x%% or %%AMD-V|amd-v%%, enables your CPU to run %%virtual machines|vm%% with hardware acceleration.
 
 - Required for creating and running any %%VM|vm%% on Unraid.
 - Provides efficient CPU virtualization and better performance compared to software-only virtualization.
@@ -99,10 +98,9 @@ Also known as %%Intel VT-x|intel-vt-x%% or %%AMD-V|amd-v%%, %%HVM|hvm%% enables 
 
 <TabItem value="iommu" label="IOMMU support">
 
-%%IOMMU|iommu%% (Input/Output Memory Management Unit)  
-Also known as Intel VT-d or AMD-Vi, %%IOMMU|iommu%% enables secure and efficient device passthrough to %%VMs|vm%%.
+%%IOMMU|iommu%% (Input/Output Memory Management Unit, also known as Intel VT-d or AMD-Vi, enables secure and efficient device passthrough to %%VMs|vm%%.
 
-- Required for assigning PCIe devices (%%GPUs|gpu-passthrough%%, USB controllers, NVMe drives) directly to a %%VM|vm%%.
+- Required for assigning PCIe devices (GPUs, USB controllers, NVMe drives) directly to a %%VM|vm%%.
 - Provides memory isolation and protection, preventing devices from accessing unauthorized memory regions.
 - Essential for %%GPU passthrough|gpu-passthrough%%, advanced networking, and high-performance workloads.
 
@@ -120,7 +118,7 @@ In the %%WebGUI|web-gui%%, click **Info** in the top menu.
 
 ### Graphics device passthrough
 
-Passing a %%GPU|gpu-passthrough%% to a %%VM|vm%% allows for near-native graphics performance, making it ideal for gaming, creative work, or machine learning.
+Passing a GPU to a %%VM|vm%% allows for near-native graphics performance, making it ideal for gaming, creative work, or machine learning.
 
 <Tabs>
 <TabItem value="nvidia" label="NVIDIA">
@@ -192,7 +190,7 @@ Unraid creates two default %%user shares|user-share%% for %%virtualization|virt%
 
 Consider creating a separate share for %%VM|vm%% backups to protect your data.
 
-#### Share configuration recommendations
+<h4>Share configuration recommendations</h4>
 
 - Store active %%VM|vm%% %%virtual disk images|virtual-disk-images%% on a %%cache|cache%%-only share for the best performance.
 - Using SSDs in your %%cache pool|cache-pool%% significantly improves %%VM|vm%% responsiveness.
