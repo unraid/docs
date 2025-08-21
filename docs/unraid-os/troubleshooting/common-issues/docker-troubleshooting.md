@@ -15,19 +15,16 @@ Docker makes it easy to run a variety of applications on your Unraid server, but
 
 ## Re-creating the Docker image file
 
-A corrupted Docker image file (`docker.img`) is a common issue, often caused by the cache pool running out of space or an unclean shutdown. Luckily, a well-configured container stores all variable data outside the image file (usually in the `appdata` share), so you can safely recreate the image without losing your application settings or data.
+A corrupted Docker image file (`docker.img`) is a common issue, often caused by the %%cache pool|cache-pool%% running out of space or an unclean shutdown. Luckily, a well-configured container stores all variable data outside the image file (usually in the `appdata` share), so you can safely recreate the image without losing your application settings or data.
 
 To recreate the Docker image file:
 
-1. Go to ***Settings → Docker*** in the **WebGUI**.
+1. Go to ***Settings → Docker*** in the %%WebGUI|web-gui%%.
 2. Set **Enable Docker** to **No** and click **Apply** to stop the Docker service.
-3. Select the option to delete the Docker vdisk file, then click **Apply**.  
-   _You can also manually delete the file if needed._
-4. Confirm the location and filename for the new Docker vdisk file.  
-   _Tip: This setting includes both the folder path and the filename._
+3. Select the option to delete the Docker vdisk file, then click **Apply**. You can also manually delete the file if needed.
+4. Confirm the location and filename for the new Docker vdisk file. This setting includes both the folder path and the filename.
 5. Set the desired size for the new image file. The default size is typically sufficient for most users.
-6. Set **Enable Docker** to **Yes** and click **Apply**.  
-   Unraid will create and format a new `docker.img` file using **BTRFS**.
+6. Set **Enable Docker** to **Yes** and click **Apply**. Unraid will create and format a new `docker.img` file using %%BTRFS|btrfs%%.
 
 Now you’re ready to reinstall your containers using their saved settings.
 
@@ -39,7 +36,7 @@ Unraid automatically saves a template for each installed container on your flash
 
 To reinstall your containers:
 
-1. Go to the **Apps** tab in the **WebGUI**.
+1. Go to the **Apps** tab in the %%WebGUI|web-gui%%.
 2. Open the **Previous Apps** section.
 3. Select the containers you want to reinstall.
 4. Proceed with the installation. Unraid will re-download each container and apply your previous settings automatically.

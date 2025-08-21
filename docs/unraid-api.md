@@ -8,7 +8,7 @@ import TabItem from '@theme/TabItem';
 
 # Unraid API
 
-The Unraid API is designed for users of all skill levels, including advanced users, system administrators, and developers. It allows you to automate, monitor, and enhance your Unraid server environment. With a modern GraphQL interface, this API provides powerful access to Unraid’s core functions, making it easy to integrate with third-party tools, create custom dashboards, and set up automation scripts.
+The Unraid API is designed for advanced users, system administrators, and developers. It allows you to automate, monitor, and enhance your Unraid server environment. With a modern %%GraphQL|graphql%% interface, this API provides powerful access to Unraid’s core functions, making it easy to integrate with third-party tools, create custom dashboards, and set up automation scripts.
 
 Whether you want to develop management apps, monitor system health, manage Docker containers, or automate everyday tasks, the Unraid API offers a flexible and secure foundation. Strong typing, granular permissions, and robust authentication make it a reliable and user-friendly solution.
 
@@ -25,11 +25,11 @@ The Unraid API is aimed at:
 
 ## How to access the API
 
-You can access the Unraid API through the Unraid Connect plugin:
+To access the Unraid API through Unraid Connect:
 
-1. Install the [**Unraid Connect plugin**](https://unraid.net/community/apps/p3?q=unraid+connect#r:~:text=device%3D/dev/dri%22.-,Unraid%20Connect,-beta) from the Apps tab.
-2. [Configure the plugin](#enabling-the-graphql-sandbox) to enable API access.
-3. Use the [GraphQL Sandbox](#accessing-the-graphql-sandbox) for interactive queries, testing, and development.
+1. Install the [Unraid Connect plugin](https://unraid.net/community/apps/p3?q=unraid+connect#r:~:text=device%3D/dev/dri%22.-,Unraid%20Connect,-beta) from the **Apps** tab.
+2. [Configure the plugin](#enabling-the-%%GraphQL|graphql%%-sandbox) to enable API access.
+3. Use the [%%GraphQL|graphql%% Sandbox](#enabling-the-graphql-sandbox) for interactive queries, testing, and development.
 
 ---
 
@@ -40,8 +40,8 @@ With the Unraid API, you can:
 - Automate routine or complex server tasks using scripts or external tools.
 - Monitor system health, resource usage, and events programmatically.
 - Integrate Unraid with third-party platforms, dashboards, or notification systems.
-- Manage array operations, Docker containers, and virtual machines remotely.
-- Test and develop using the built-in GraphQL sandbox for rapid prototyping.
+- Manage %%array|array%% operations, Docker containers, and %%VMs|vm%% remotely.
+- Test and develop using the built-in %%GraphQL|graphql%% sandbox for rapid prototyping.
 
 The API supports secure authentication through API keys or session cookies, as well as role-based access control, enabling effective management of permissions.
 
@@ -52,7 +52,7 @@ The API supports secure authentication through API keys or session cookies, as w
 The `unraid-api` CLI provides command-line tools for managing, configuring, and troubleshooting the Unraid API service.
 
 :::note
-Most commands require the Unraid API service to be installed and running. Some actions may need root permissions.
+Most commands require the Unraid API service to be installed and running. Some actions may need %%root|root-user%% permissions.
 :::
 
 Some important CLI commands advanced users should always keep in mind include:
@@ -63,7 +63,7 @@ Some important CLI commands advanced users should always keep in mind include:
 Use these commands to start, stop, or check the status of the Unraid API service. This is often the first step when troubleshooting or applying configuration changes.
 
 <details>
-<summary>`start` - Starts the Unraid API service.</summary>
+<summary><strong>`start` - Starts the Unraid API service.</strong> - Click to expand/collapse</summary>
 
 **Syntax:**
 ```
@@ -82,7 +82,7 @@ unraid-api start --log-level debug
 </details>
 
 <details>
-<summary>`stop` - Stops the Unraid API service.</summary>
+<summary><strong>`stop` - Stops the Unraid API service.</strong> - Click to expand/collapse</summary>
 
 **Syntax:**
 ```
@@ -101,7 +101,7 @@ unraid-api stop --delete
 </details>
 
 <details>
-<summary>`restart` - Restarts the Unraid API service.</summary>
+<summary><strong>`restart` - Restarts the Unraid API service.</strong> - Click to expand/collapse</summary>
 
 **Syntax:**
 ```
@@ -110,7 +110,7 @@ unraid-api restart
 </details>
 
 <details>
-<summary>`logs` - Displays recent log output from the API service.</summary>
+<summary><strong>`logs` - Displays recent log output from the API service.</strong> - Click to expand/collapse</summary>
 
 **Syntax:**
 ```
@@ -135,7 +135,7 @@ unraid-api logs -l 50
 Configuration commands help you view or adjust the API environment. Use these when setting up, troubleshooting, or developing integrations.
 
 <details>
-<summary>`config` - Displays the current API configuration.</summary>
+<summary><strong>`config` - Displays the current API configuration.</strong> - Click to expand/collapse</summary>
 
 **Syntax:**
 ```
@@ -147,7 +147,7 @@ Check environment variables, port settings, and other runtime configurations. He
 </details>
 
 <details>
-<summary>`switch-env` - Switches the API between production and staging environments.</summary>
+<summary><strong>`switch-env` - Switches the API between production and staging environments.</strong> - Click to expand/collapse</summary>
 
 **Syntax:**
 ```
@@ -169,7 +169,7 @@ unraid-api switch-env -e staging
 </details>
 
 <details>
-<summary>`developer` - Enables developer mode, unlocking features like the GraphQL sandbox.</summary>
+<summary><strong>`developer` - Enables developer mode, unlocking features like the GraphQL sandbox.</strong> - Click to expand/collapse</summary>
 
 **Syntax:**
 ```
@@ -177,7 +177,7 @@ unraid-api developer
 ```
 
 **Why use this?**  
-Ideal for developers constructing or testing GraphQL queries and mutations in a secure environment.
+Ideal for developers constructing or testing %%GraphQL|graphql%% queries and mutations in a secure environment.
 </details>
 
   </TabItem>
@@ -191,7 +191,7 @@ Always keep API keys secure. Anyone with an API key can access your system with 
 :::
 
 <details>
-<summary>`apikey` - Create or manage API keys.</summary>
+<summary><strong>`apikey` - Create or manage API keys.</strong> - Click to expand/collapse</summary>
 
 **Syntax:**
 ```
@@ -218,12 +218,12 @@ unraid-api apikey --create --name backup-script -r admin -p read,write -d "Used 
 
   <TabItem value="sso" label="SSO management">
 
-Single sign-on (SSO) lets you manage user authentication through a central identity provider. This is useful for organizations or anyone managing multiple users across systems.
+Single sign-on (%%SSO|sso%%) lets you manage user authentication through a central identity provider. This is useful for organizations or anyone managing multiple users across systems.
 
-SSO configuration changes may require a service restart.
+%%SSO|sso%% configuration changes may require a service restart.
 
 <details>
-<summary>`sso` - Base command for SSO operations.</summary>
+<summary><strong>`sso` - Base command for SSO operations.</strong> - Click to expand/collapse</summary>
 
 **Syntax:**
 ```
@@ -232,7 +232,7 @@ unraid-api sso
 </details>
 
 <details>
-<summary>`sso add-user` - Adds a new user to the SSO configuration.</summary>
+<summary><strong>`sso add-user` - Adds a new user to the SSO configuration.</strong> - Click to expand/collapse</summary>
 
 **Syntax:**
 ```
@@ -253,7 +253,7 @@ unraid-api sso a
 </details>
 
 <details>
-<summary>`sso remove-user` - Removes an existing SSO user or all users.</summary>
+<summary><strong>`sso remove-user` - Removes an existing SSO user or all users.</strong> - Click to expand/collapse</summary>
 
 **Syntax:**
 ```
@@ -274,7 +274,7 @@ unraid-api sso r
 </details>
 
 <details>
-<summary>`sso list-users` - Lists all configured SSO users.</summary>
+<summary><strong>`sso list-users` - Lists all configured SSO users.</strong> - Click to expand/collapse</summary>
 
 **Syntax:**
 ```
@@ -295,7 +295,7 @@ unraid-api sso l
 </details>
 
 <details>
-<summary>`sso validate-token` - Validates a provided SSO token and returns its status.</summary>
+<summary><strong>`sso validate-token` - Validates a provided SSO token and returns its status.</strong> - Click to expand/collapse</summary>
 
 **Syntax:**
 ```
@@ -318,7 +318,7 @@ unraid-api sso v
 ```
 unraid-api sso validate-token eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 ```
-*Validates the provided SSO token and returns its status (e.g., valid or expired).*
+*Validates the provided %%SSO|sso%% token and returns its status (e.g., valid or expired).*
 </details>
 
   </TabItem>
@@ -328,7 +328,7 @@ unraid-api sso validate-token eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 Generate a system report to collect configuration, environment, and diagnostic information. Useful for troubleshooting, support, or auditing.
 
 <details>
-<summary>`report` - Generates a system report.</summary>
+<summary><strong>`report` - Generates a system report.</strong> - Click to expand/collapse</summary>
 
 **Syntax:**
 ```
@@ -347,7 +347,7 @@ Collect diagnostic data for support or to audit system state.
 ```
 unraid-api report --json
 ```
-*Generates a system report and outputs it in JSON format, summarizing server version, uptime, array status, resource usage, and more.*
+*Generates a system report and outputs it in JSON format, summarizing server version, uptime, %%array|array%% status, resource usage, and more.*
 
 **Example Output (truncated):**
 ```
@@ -370,11 +370,11 @@ unraid-api report --json
 
 ## Using the Unraid API
 
-The Unraid API offers a modern GraphQL interface, enabling you to manage your Unraid server effectively.
+The Unraid API offers a modern %%GraphQL|graphql%% interface, enabling you to manage your Unraid server effectively.
 
 ### Enabling the GraphQL sandbox
 
-To get started with the GraphQL sandbox and interactive playground, follow these steps:
+To get started with the %%GraphQL|graphql%% sandbox and interactive playground, follow these steps:
 
 1. Enable developer mode using the command line interface (CLI):
 
@@ -394,7 +394,7 @@ To get started with the GraphQL sandbox and interactive playground, follow these
 Most queries and mutations you'll perform require authentication. There are two primary methods for authenticating:
 
 1. API keys
-2. Cookies (this is the default method when logged into the WebGUI)
+2. Cookies (this is the default method when logged into the %%WebGUI|web-gui%%)
 
 ### Creating an API key
 
@@ -408,7 +408,7 @@ Follow the prompts to set up your API key by specifying:
 - Roles
 - Permissions
 
-Once generated, you should include the API key in your GraphQL requests as a header:
+Once generated, you should include the API key in your %%GraphQL|graphql%% requests as a header:
 
 ```json
 {
@@ -418,7 +418,7 @@ Once generated, you should include the API key in your GraphQL requests as a hea
 
 ### Available Schemas
 
-Unraid’s GraphQL API exposes multiple schemas, each grouping related queries and mutations. Use the tabs below to explore the capabilities of each schema.
+Unraid’s %%GraphQL|graphql%% API exposes multiple schemas, each grouping related queries and mutations. Use the tabs below to explore the capabilities of each schema.
 
 <Tabs>
   <TabItem value="system-info" label="System information">
@@ -433,12 +433,12 @@ Unraid’s GraphQL API exposes multiple schemas, each grouping related queries a
 
 <TabItem value="array-management" label="Array management">
 
-**Array management** provides controls and insights for your storage array.
+**%%Array|array%% management** provides controls and insights for your storage %%array|array%%.
 
-- Check array status and configuration  
-- Start or stop the array  
+- Check %%array|array%% status and configuration  
+- Start or stop the %%array|array%%  
 - Monitor individual disk health and status  
-- Run and review parity checks  
+- Run and review %%parity check|parity-check%%s  
 
 </TabItem>
 
@@ -454,10 +454,10 @@ Unraid’s GraphQL API exposes multiple schemas, each grouping related queries a
 
 <TabItem value="remote-access" label="Remote access">
 
-**Remote access** covers configuration for Unraid Connect and SSO.
+**Remote access** covers configuration for Unraid Connect and %%SSO|sso%%.
 
 - Configure dynamic or static remote access settings  
-- Manage single sign-on (SSO) users and tokens  
+- Manage single sign-on (%%SSO|sso%%) users and tokens  
 - Define and review permitted origins for API or web access  
 
 </TabItem>
@@ -465,7 +465,7 @@ Unraid’s GraphQL API exposes multiple schemas, each grouping related queries a
 
 #### Example Queries
 
-Use these sample GraphQL queries in the Apollo Sandbox or your preferred client. Each tab shows the query and its purpose.
+Use these sample %%GraphQL|graphql%% queries in the Apollo Sandbox or your preferred client. Each tab shows the query and its purpose.
 
 <Tabs>
   <TabItem value="system-status" label="Check system status">
@@ -495,7 +495,7 @@ query {
 
   <TabItem value="array-status" label="Monitor array status">
 
-**Purpose:** Get array state, capacity summary, and per-disk details.
+**Purpose:** Get %%array|array%% state, capacity summary, and per-disk details.
 
 ```graphql
 query {
@@ -546,7 +546,7 @@ The API includes several core types:
 <Tabs>
   <TabItem value="base-types" label="Base types">
 
-**Base types** are foundational GraphQL types used across the API:
+**Base types** are foundational %%GraphQL|graphql%% types used across the API:
 
 | Type      | Description                                 |
 |-----------|---------------------------------------------|
@@ -563,7 +563,7 @@ The API includes several core types:
 
 | Type      | Purpose                                      |
 |-----------|----------------------------------------------|
-| `Array`   | Manage arrays, disks, and parity operations  |
+| `%%Array&#124;array%%`   | Manage %%array&#124;array%%s, disks, and %%parity&#124;parity%% operations  |
 | `Docker`  | List and control Docker containers and networks|
 | `Info`    | Retrieve system details (OS, CPU, memory)    |
 | `Config`  | Access and modify server configuration values|
@@ -578,7 +578,7 @@ The API includes several core types:
 | Role     | Permissions                   | Typical use cases                          |
 |----------|-------------------------------|--------------------------------------------|
 | `admin`  | Full read/write, manage all   | Automation scripts, admin dashboards       |
-| `connect`| Remote access settings only   | Managing Unraid Connect and SSO features   |
+| `connect`| Remote access settings only   | Managing Unraid Connect and %%SSO&#124;sso%% features   |
 | `guest`  | Read-only access              | Monitoring dashboards, analytics tools     |
 
   </TabItem>
@@ -615,7 +615,7 @@ The API contains limits on the number of requests to ensure stable and fair serv
 
 ### Error handling
 
-When an error occurs, the API returns a structured GraphQL error response.
+When an error occurs, the API returns a structured %%GraphQL|graphql%% error response.
 
 Common error types include:
 

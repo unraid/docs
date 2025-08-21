@@ -8,37 +8,37 @@ import TabItem from '@theme/TabItem';
 
 # Command line interface
 
-While most tasks in Unraid can be performed through the WebGUI, certain operations—especially those related to diagnostics, drive management, or scripting—require using the system console or SSH terminal. This page offers Unraid-specific command-line tools and examples that can be used without needing extensive Linux knowledge.
+While most tasks in Unraid can be performed through the %%WebGUI|web-gui%%, certain operations - especially those related to diagnostics, drive management, or scripting - require using the system console or %%SSH|ssh%% terminal. This page offers Unraid-specific command-line tools and examples that can be used without needing extensive Linux knowledge.
 
 :::tip Device paths
-Many disk-level Unraid operations depend on Linux device names, like `/dev/sdX`. You can find the **device identifier** for any drive in the **Main tab** of the WebGUI. Look for the three-letter label `sdX` or `nvmeX` next to each disk. Use the appropriate identifier in all commands, replacing `sdX` with your specific disk.
+Many disk-level Unraid operations depend on Linux device names, like `/dev/sdX`. You can find the device identifier for any drive in the **Main** tab of the %%WebGUI|web-gui%%. Look for the three-letter label `sdX` or `nvmeX` next to each disk. Use the appropriate identifier in all commands, replacing `sdX` with your specific disk.
 :::
 
 ## Accessing the terminal
 
-Unraid includes a built-in **web terminal** that you can access directly from the WebGUI. Simply use the top-right dropdown menu and select ">_". This opens a command-line session as the `root` user, giving you full administrative access to your system.
+Unraid includes a built-in web terminal that you can access directly from the %%WebGUI|web-gui%%. Simply use the top-right dropdown menu and select ">_". This opens a command-line session as the %%root user|root-user%%, giving you full administrative access to your system.
 
-You can also connect to your Unraid server externally using SSH (secure shell) with a client like **PuTTY**.
+You can also connect to your Unraid server externally using %%SSH|ssh%% (secure shell) with a client like %%PuTTY|putty%%.
 
 :::tip When should I use the terminal?
 Terminal access is useful for:
 
 - Running diagnostics and command-line tools like `smartctl`, `xfs_repair`, `tail`, or `top`
 - Executing plugin scripts or tools that don't require a user interface
-- Troubleshooting issues related to connectivity, system services, or user shares
+- Troubleshooting issues related to connectivity, system services, or %%user shares|user-share%%
 :::
 
 ### Using PuTTY (Windows only)
 
-If you're using Windows, you might prefer **PuTTY** for SSH access instead of the built-in terminal. It's lightweight, free, and allows you to save sessions for easy access later.
+If you're using Windows, you might prefer %%PuTTY|putty%% for %%SSH|ssh%% access instead of the built-in terminal. It's lightweight, free, and allows you to save sessions for easy access later.
 
 <details>
-<summary>How to install and use PuTTY</summary>
+<summary><strong>How to install and use PuTTY</strong> - Click to expand/collapse</summary>
 
-1. Download PuTTY from the [official site](https://www.putty.org/).
-2. Launch the PuTTY application.
+1. Download %%PuTTY|putty%% from the [official site](https://www.putty.org/).
+2. Launch the %%PuTTY|putty%% application.
 3. Enter your Unraid server’s IP address or hostname (e.g., `tower.local`).
-4. Set the **connection type** to `SSH`.
+4. Set the connection type to `%%SSH|ssh%%`.
 5. (Optional) Save the session name for future use.
 6. Click **Open** to start the session.
 7. When prompted, log in as `root` and then enter your password.
@@ -53,14 +53,14 @@ Unraid automatically configures the SSH server on the first boot. Ensure your ne
 
 ## Drive testing and monitoring
 
-These tools assist with evaluating performance, checking drive health, and troubleshooting array slowness. All commands should be executed from the terminal or via SSH.
+These tools assist with evaluating performance, checking drive health, and troubleshooting %%array|array%% slowness. All commands should be executed from the terminal or via %%SSH|ssh%%.
 
 ### `hdparm`
 
 Use this command to test read speed and display drive characteristics.
 
 <details>
-<summary>View hdparm options</summary>
+<summary><strong>View hdparm options</strong> - Click to expand/collapse</summary>
 
 **Test drive read speed:**
 
@@ -88,12 +88,12 @@ This displays the model, firmware, cache size, and supported features, which hel
 
 ### `smartctl`
 
-This command runs SMART diagnostics and monitors drive health.
+This command runs %%SMART|smart%% diagnostics and monitors drive health.
 
 <details>
-<summary>View smartctl options</summary>
+<summary><strong>View smartctl options</strong> - Click to expand/collapse</summary>
 
-**Basic SMART report:**
+**Basic %%SMART|smart%% report:**
 
 ```bash
 smartctl -a /dev/sdX
@@ -101,7 +101,7 @@ smartctl -a /dev/sdX
 
 If this command returns an error, try specifying the device type: `smartctl -a -d ata /dev/sdX` (use `-d nvme` for NVMe drives).
 
-**Start SMART self-tests:**
+**Start %%SMART|smart%% self-tests:**
 
 Short test (takes a few minutes)
 
@@ -115,13 +115,13 @@ Extended test (may take hours)
 smartctl -t long /dev/sdX
 ```
 
-**Save SMART report to a file:**
+**Save %%SMART report|smart-report%% to a file:**
 
 ```bash
 smartctl -a /dev/sdX > /boot/smart_report.txt
 ```
 
-This saves the report to your Unraid flash drive for later review or sharing on forums.
+This saves the report to your Unraid flash drive for later review or sharing on the [forums](https://forums.unraid.net/).
 
 </details>
 
@@ -130,11 +130,11 @@ This saves the report to your Unraid flash drive for later review or sharing on 
 This script allows for comprehensive surface-level performance testing with visual reports.
 
 <details>
-<summary>View diskspeed.sh usage</summary>
+<summary><strong>View diskspeed.sh usage</strong> - Click to expand/collapse</summary>
 
-This used to be a script you would download from the Unraid forums. **DiskSpeed** is available now in a more refined package:
+This used to be a script you would download from the Unraid forums. DiskSpeed is available now in a more refined package:
 
-- Install **DiskSpeed** from Community Applications (**Apps tab**) by searching for "DiskSpeed", or visit the [GitHub repository](https://github.com/jbartlett777/DiskSpeed) for manual installation instructions.
+Install DiskSpeed from [Community Applications](../../using-unraid-to/run-docker-containers/community-applications.md) (***Apps tab***) by searching for "DiskSpeed", or visit the [GitHub repository](https://github.com/jbartlett777/DiskSpeed) for manual installation instructions.
 
 </details>
 
@@ -142,14 +142,14 @@ This used to be a script you would download from the Unraid forums. **DiskSpeed*
 
 ## System monitoring
 
-Use these commands to monitor memory, processes, and system performance when the WebGUI is unavailable or for more detailed diagnostics.
+Use these commands to monitor memory, processes, and system performance when the %%WebGUI|web-gui%% is unavailable or for more detailed diagnostics.
 
 ### `top`
 
 This command provides a real-time process and resource monitor.
 
 <details>
-<summary>View top usage</summary>
+<summary><strong>View top usage</strong> - Click to expand/collapse</summary>
 
 ```bash
 top
@@ -170,7 +170,7 @@ Consider using `htop` for a more user-friendly interface with enhanced controls.
 This command shows memory usage statistics.
 
 <details>
-<summary>View free usage</summary>
+<summary><strong>View free usage</strong> - Click to expand/collapse</summary>
 
 ```bash
 free -h
@@ -189,7 +189,7 @@ A low "available" memory reading doesn’t necessarily indicate a problem—Linu
 Use this command to display running processes with detailed information.
 
 <details>
-<summary>View ps options</summary>
+<summary><strong>View ps options</strong> - Click to expand/collapse</summary>
 
 **List all processes with full details:**
 
@@ -222,13 +222,13 @@ These commands help check disk usage, partition info, and identify storage devic
 This command displays filesystem disk space usage.
 
 <details>
-<summary>View df usage</summary>
+<summary><strong>View df usage</strong> - Click to expand/collapse</summary>
 
 ```bash
 df -h
 ```
 
-This command displays the used and available space on all mounted file systems. It’s convenient for checking `/var/log` (which utilizes RAM-based logging) in Unraid.
+This command displays the used and available space on all mounted file systems. It’s convenient for checking `/var/log` (which utilizes RAM-based logging) in Unraid. For more information on [system logging](../../troubleshooting/diagnostics/capture-diagnostics-and-logs.md).
 
 </details>
 
@@ -237,13 +237,13 @@ This command displays the used and available space on all mounted file systems. 
 View disk partition tables and geometry.
 
 <details>
-<summary>View fdisk usage</summary>
+<summary><strong>View fdisk usage</strong> - Click to expand/collapse</summary>
 
 ```bash
 fdisk -l /dev/sdX
 ```
 
-This command displays the partition layout, sizes, and disk geometry. It helps troubleshoot mismatched disk sizes, especially when replacing disks.
+This command displays the partition layout, sizes, and disk geometry. It helps troubleshoot mismatched disk sizes, especially when [replacing disks](../../using-unraid-to/manage-storage/array-configuration.md#replacing-disks).
 
 </details>
 
@@ -252,7 +252,7 @@ This command displays the partition layout, sizes, and disk geometry. It helps t
 List all block devices in tree format.
 
 <details>
-<summary>View lsblk usage</summary>
+<summary><strong>View lsblk usage</strong> - Click to expand/collapse</summary>
 
 ```bash
 lsblk
@@ -267,7 +267,7 @@ This command displays all storage devices, along with their mount points, in a s
 Helps determine if a replacement drive has enough space before rebuild.
 
 <details>
-<summary><strong>View blockdev usage</strong></summary>
+<summary><strong>View blockdev usage</strong> - Click to expand/collapse</summary>
 
 **Syntax:**
 ```
@@ -283,7 +283,7 @@ Returns the raw number of 512-byte sectors on a device - handy for confirming th
 Identify filesystem labels.
 
 <details>
-<summary><strong>View blkid usage</strong></summary>
+<summary><strong>View blkid usage</strong> - Click to expand/collapse</summary>
 
 **Syntax:**
 ```
@@ -305,7 +305,7 @@ Tools for troubleshooting network connectivity and interface configuration.
 Display socket statistics and network connections. This is the modern replacement for `netstat`.
 
 <details>
-<summary>View ss options</summary>
+<summary><strong>View ss options</strong> - Click to expand/collapse</summary>
 
 **Show all listening ports:**
 ```bash
@@ -331,7 +331,7 @@ This command shows active connections along with process information.
 Configure and display network interface information. This is the modern replacement for `ifconfig`.
 
 <details>
-<summary>View ip options</summary>
+<summary><strong>View ip options</strong> - Click to expand/collapse</summary>
 
 **Show all network interfaces:**
 ```bash
@@ -355,7 +355,7 @@ ip route show
 Test network connectivity.
 
 <details>
-<summary>View ping usage</summary>
+<summary><strong>View ping usage</strong> - Click to expand/collapse</summary>
 
 **Test connectivity by sending a limited number of packets:**
 ```bash
@@ -371,7 +371,7 @@ This command sends four packets to the destination and stops, making it suitable
 Handy tool for querying and adjusting network interface card (NIC) parameters, such as link speed, offload features, and statistics.
 
 <details>
-<summary>Click to expand/collapse</summary>
+<summary><strong>View ethtool usage</strong> - Click to expand/collapse</summary>
 
 **Basic driver and firmware info:**
 
@@ -466,7 +466,7 @@ Commands for system shutdown, log monitoring, and service management.
 Monitor log files in real-time.
 
 <details>
-<summary>View tail usage</summary>
+<summary><strong>View tail usage</strong> - Click to expand/collapse</summary>
 
 ```bash
 tail -f /var/log/syslog
@@ -486,12 +486,12 @@ tail -n 50 /var/log/syslog
 Safely shut down the system.
 
 <details>
-<summary>View powerdown usage</summary>
+<summary><strong>View powerdown usage</strong> - Click to expand/collapse</summary>
 
 ```bash
 powerdown
 ```
 
-This command utilizes Unraid's built-in shutdown process to stop the array and power down the system safely. It's preferred over manual shutdown methods.
+This command utilizes Unraid's built-in shutdown process to stop the %%array|array%% and power down the system safely. It's preferred over manual shutdown methods.
 
 </details>

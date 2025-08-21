@@ -14,12 +14,26 @@ System crashes and stability issues can be tough to diagnose and resolve. They o
 
 ## RAM issues
 
-RAM can wear out over time, leading to unpredictable errors, including file system corruption. To diagnose RAM problems, careful testing and observation are essential.
+Memory problems are among the most common causes of system instability and data corruption. RAM can wear out over time, leading to unpredictable errors that are often difficult to diagnose. This section covers how to identify and resolve memory-related stability issues.
 
-Running memory tests is a good idea if you notice unexplained crashes, data corruption, or system instability. The Unraid boot menu includes Memtest86+ for RAM testing, which works on both Legacy and UEFI systems
+Common symptoms of RAM problems include:
+
+- Unexplained system crashes or freezes
+- Data corruption in files or %%array|array%%
+- Random application errors
+- System instability under load
+- Failed %%parity checks|parity-check%%
 
 ### Testing RAM
-To test your RAM, restart your server and select **Memtest86+** from the boot menu. Modern versions (v6.0+) support both UEFI and Legacy modes with enhanced DDR4/DDR5 compatibility. For the latest version, download from [memtest.org](https://www.memtest86.com/).
+
+Memory testing is essential for diagnosing stability issues. The Unraid boot menu includes Memtest86+ for comprehensive RAM testing, which works on both Legacy and %%UEFI|uefi%% systems.
+
+To test your RAM:
+
+1. Restart your server and select **Memtest86+** from the boot menu.
+2. Let the test run for at least 2-4 hours for thorough coverage.
+3. Monitor for any error messages or failed tests.
+4. For the latest version with enhanced DDR4/DDR5 compatibility, download from [memtest.org](https://www.memtest86.com/).
 
 :::note Other RAM testing tools
 
@@ -34,25 +48,68 @@ If Memtest86+ shows errors, try reseating the RAM modules and rerunning the test
 
 ### Overclocking RAM
 
-Many users want to run their RAM at the highest speed specified by the manufacturer. However, motherboard and CPU combinations often have maximum reliable RAM speeds that are lower than what the RAM is rated for.
+RAM overclocking can significantly impact system stability. Many users want to run their RAM at the highest speed specified by the manufacturer, but motherboard and CPU combinations often have maximum reliable RAM speeds that are lower than what the RAM is rated for.
 
-Overclocking RAM beyond supported speeds can lead to system instability, crashes, and data corruption. Always check your motherboard and CPU specifications before attempting to overclock RAM. If you notice instability after overclocking, switch back to the default or a lower RAM speed. It's wise to test the stability of Memtest86+ after any changes.
+:::caution Risks of overclocking
+
+- System instability and random crashes
+- Data corruption and file system errors
+- Reduced hardware lifespan
+- Incompatibility with other components
+:::
+
+<h4>Best practices</h4>
+1. Always check your motherboard and CPU specifications before attempting to overclock.
+2. Start with conservative settings and gradually increase.
+3. Test stability with Memtest86+ after any changes.
+4. If you notice instability, immediately revert to default or lower speeds.
+5. Consider the trade-off between performance and stability for server environments.
 
 ## Critical stability factors
 
-System stability relies on more than just RAM or CPU performance. Here are important areas influencing your Unraid server's reliability, along with tips on how to prevent issues and troubleshoot effectively.
+System stability relies on more than just RAM or CPU performance. Multiple hardware and software components work together to maintain reliable operation. This section covers the key areas that influence your Unraid server's stability and provides actionable steps to prevent and resolve issues.
+
+System stability typically depends on:
+
+- Power supply quality and reliability
+- Proper thermal management
+- Disk health and I/O performance
+- Plugin and application compatibility
+- Current firmware and BIOS versions
+- Proactive monitoring and maintenance
 
 ### Power supply reliability
 
 <details>
 <summary><strong>Click to expand/collapse</strong></summary>
 
-A stable and sufficient power supply is crucial for uninterrupted server operation. Unstable power or a failing PSU can lead to random crashes, data corruption, or sudden shutdowns. Always use a high-quality, appropriately rated PSU for your hardware. For enhanced resilience, consider using redundant power supplies for enterprise and multi-bay systems, ensuring that each unit is properly seated and connected. If your server allows, keep an eye on PSU health indicators (like AC OK LEDs) and replace failed units immediately to avoid downtime. Regularly check that all power cords are secure and that circuits are not overloaded.
+A stable and sufficient power supply is crucial for uninterrupted server operation. Power issues are often overlooked but can cause the most frustrating stability problems.
+
+Common power-related issues include:
+
+- Random system crashes or freezes
+- Data corruption during writes
+- Sudden shutdowns without warning
+- Hardware component failures
+- Inconsistent performance
+
+<h4>Prevention and maintenance</h4>
+
+Proactive power supply maintenance prevents the most common stability issues. Regular checks and proper component selection can avoid costly downtime and data loss.
+
+1. Always use a high-quality, appropriately rated PSU for your hardware.
+2. Consider redundant power supplies for enterprise and multi-bay systems.
+3. Ensure each PSU unit is properly seated and connected.
+4. Monitor PSU health indicators (like AC OK LEDs) if available.
+5. Replace failed units immediately to avoid downtime.
+6. Regularly check that all power cords are secure.
+7. Verify circuits are not overloaded.
 
 :::tip Realtime monitoring
 Use [HWiNFO64](https://www.hwinfo.com/download/) or [AIDA64](https://www.aida64.com/) to monitor voltage rails in real-time. 
 
-Critical thresholds:  
+Critical thresholds:
+
 - 12V rail: ±5% tolerance (11.4V-12.6V)  
 - 5V rail: ±0.25V variation  
 
@@ -66,7 +123,35 @@ Run simultaneous CPU+GPU stress tests to validate stability under load.
 <details>
 <summary><strong>Click to expand/collapse</strong></summary>
 
-Overheating is one of the leading causes of hardware failure and erratic server behavior. Ensure your server is located in a well-ventilated area with controlled ambient temperatures. Utilize adequate cooling solutions—such as high-quality fans or rack-mounted air conditioning—and keep an eye on system temperatures using hardware sensors. Aim to maintain low temperatures and avoid placing servers in confined or poorly ventilated spaces. Proactive thermal management can significantly reduce the risk of irreversible hardware damage.
+Overheating is one of the leading causes of hardware failure and erratic server behavior. Thermal issues can cause components to throttle performance or fail completely.
+
+Signs of thermal problems include:
+
+- System throttling or reduced performance
+- Random crashes during high load
+- Fan noise or unusual cooling behavior
+- Hardware component failures
+- Inconsistent system behavior
+
+<h4>Cooling solutions and best practices</h4>
+
+Proper cooling is essential for maintaining system stability and preventing thermal throttling. These practices help ensure your server operates within safe temperature ranges.
+
+1. Ensure your server is located in a well-ventilated area.
+2. Maintain controlled ambient temperatures (ideally 18-24°C/64-75°F).
+3. Utilize adequate cooling solutions (high-quality fans, rack-mounted air conditioning).
+4. Monitor system temperatures using hardware sensors.
+5. Clean dust and debris from cooling components regularly.
+6. Avoid placing servers in confined or poorly ventilated spaces.
+7. Consider additional cooling for high-performance systems.
+
+<h4>Temperature monitoring tools</h4>
+
+Monitoring temperatures proactively helps identify cooling issues before they cause system instability. These tools provide real-time data and historical trends for thermal management.
+
+- Unraid's built-in temperature sensors
+- [HWiNFO64](https://www.hwinfo.com/download/) for detailed thermal data
+- [AIDA64](https://www.aida64.com/) for comprehensive system monitoring
 </details>
 
 ### Disk health and I/O errors
@@ -74,7 +159,34 @@ Overheating is one of the leading causes of hardware failure and erratic server 
 <details>
 <summary><strong>Click to expand/collapse</strong></summary>
 
-Disk errors, whether due to aging drives or sudden failures, can disrupt system stability and compromise data. Regularly monitor drive SMART data and use Unraid’s built-in disk health tools to catch early signs of failure. Disk I/O errors may also show up as high server load or slow performance. Promptly replace failing drives and consider periodic parity checks to ensure data integrity. If you notice persistent I/O errors, investigate the cabling, power supply, and drive controller health.
+Disk errors, whether due to aging drives or sudden failures, can disrupt system stability and compromise data. I/O issues often manifest as performance problems before causing complete failures.
+
+Symptoms of disk problems include:
+
+- High server load or slow performance
+- Failed %%parity checks|parity-check%%
+- Data corruption or read/write errors
+- Unusual disk activity or noise
+- System freezes during disk operations
+
+<h4>Preventive maintenance</h4>
+
+Regular maintenance helps catch disk issues before they cause data loss or system instability. These proactive steps can significantly extend drive lifespan and maintain performance.
+
+1. Regularly monitor drive %%SMART|smart%% data using Unraid's built-in [disk health tools](../../system-administration/monitor-performance/smart-reports-and-disk-health.md).
+2. Run periodic [%%parity checks|parity-check%%s](../../using-unraid-to/manage-storage/array-configuration.md#parity--read-checks) to ensure data integrity.
+3. Monitor disk temperatures and performance metrics.
+4. Keep drives properly ventilated and cooled.
+
+<h4>When problems occur</h4>
+
+Quick response to disk issues can prevent data loss and minimize downtime. Follow these steps systematically to identify and resolve problems.
+
+1. Promptly replace failing drives to prevent data loss.
+2. Investigate cabling, power supply, and drive controller health.
+3. Check for loose connections or damaged cables.
+4. Consider running extended %%SMART|smart%% tests for suspect drives.
+5. Monitor system logs for I/O error patterns.
 </details>
 
 ### Application and plugin stability
@@ -82,7 +194,14 @@ Disk errors, whether due to aging drives or sudden failures, can disrupt system 
 <details>
 <summary><strong>Click to expand/collapse</strong></summary>
 
-Unraid’s flexibility comes from its support for plugins and Docker containers. However, third-party plugins can introduce instability, especially if they are outdated or incompatible with your current Unraid version. When troubleshooting, use Safe Mode to temporarily disable plugins and identify the source of issues. Prefer Docker containers over plugins for added features since containers provide better isolation from the core operating system and are less likely to cause system-wide problems. Regularly update or remove unused or unsupported plugins to maintain stability.
+Unraid’s flexibility comes from its support for plugins and Docker containers. However, third-party plugins can introduce instability, especially if they are outdated or incompatible with your current Unraid version.
+
+When troubleshooting...
+
+   - Use [Safe Mode](../../using-unraid-to/customize-your-experience/plugins.md#troubleshooting-with-safe-mode) to temporarily disable plugins and identify the source of issues. 
+   - Prefer Docker containers over plugins for added features since containers provide better isolation from the core operating system and are less likely to cause system-wide problems. 
+   - Regularly update or remove unused or unsupported plugins to maintain stability.
+
 </details>
 
 ### Firmware and BIOS updates
@@ -90,9 +209,16 @@ Unraid’s flexibility comes from its support for plugins and Docker containers.
 <details>
 <summary><strong>Click to expand/collapse</strong></summary>
 
-Outdated firmware or BIOS can lead to instability, security vulnerabilities, and hardware compatibility issues. Schedule regular checks for firmware and BIOS updates for your motherboard and critical components. Always back up your configuration before updating, and if possible, test updates in a controlled environment. Document your update process and review it from time to time to ensure you’re following best practices. Keeping your system firmware current helps prevent unexpected crashes and unlocks new hardware features.
+Outdated firmware or BIOS can lead to instability, security vulnerabilities, and hardware compatibility issues. Regular updates are essential for maintaining system stability and security. 
+
+- Schedule regular checks for firmware and BIOS updates for your motherboard and critical components. 
+- Always back up your configuration before updating, and if possible, test updates in a controlled environment. 
+- Document your update process and review it from time to time to ensure you’re following best practices. 
+
+Keeping your system firmware current helps prevent unexpected crashes and unlocks new hardware features.
 
 :::tip Recommendations
+
 - Use manufacturer utilities for risk-free updates, such as [ASUS Armoury Crate](https://www.asus.com/supportonly/armoury%20crate/helpdesk_download/), [Gigabyte @BIOS](https://www.gigabyte.com/Support/Consumer/Download), or [MSI Center](https://www.msi.com/Landing/MSI-Center).
 - Check your motherboard's BIOS settings for automatic update options if available.
 :::
@@ -104,6 +230,10 @@ Outdated firmware or BIOS can lead to instability, security vulnerabilities, and
 <details>
 <summary><strong>Click to expand/collapse</strong></summary>
 
-Consistent monitoring is essential for early problem detection. Enable persistent logging in Unraid to retain logs across reboots. Utilize system monitoring tools to track temperatures, voltages, and drive health. Set up alerts for critical thresholds to take action before minor issues escalate. Regularly reviewing system logs allows you to spot patterns and address underlying causes before they lead to downtime.
+Consistent monitoring is essential for early problem detection.
+
+- Enable [persistent logging](../../troubleshooting/diagnostics/capture-diagnostics-and-logs.md) in Unraid to retain logs across reboots. 
+- Utilize system monitoring tools to track temperatures, voltages, and drive health. Set up alerts for critical thresholds to take action before minor issues escalate. 
+- Regularly reviewing system logs allows you to spot patterns and address underlying causes before they lead to downtime.
 
 </details>

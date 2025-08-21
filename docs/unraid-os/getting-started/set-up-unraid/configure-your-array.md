@@ -14,6 +14,7 @@ If you're struggling with any part of the Unraid installation, be sure to check 
 ## Assign Parity and Data disks
 
 You’ll use the **Main** tab in the Unraid %%WebGUI|web-gui%% to assign and review devices, including %%array|array%% and pool assignments along with any unassigned devices and your boot device (the **USB flash device**).
+
 ![Configuring array](/img/configuringarray1.png)
 
 ### Device Roles
@@ -21,8 +22,8 @@ You’ll use the **Main** tab in the Unraid %%WebGUI|web-gui%% to assign and rev
 Unraid OS uses drives for various purposes:
 
   - **Array Devices**, which fall into two categories: 
-  - **Parity Devices:** Provide fault tolerance, allowing recovery of data if a data drive fails. You can assign up to two parity drives.
-  - **Data Devices:** Store your custom shares and folders, as well as any files you add to them, i.e., media files.
+    - **Parity Devices:** Provide fault tolerance, allowing recovery of data if a data drive fails. You can assign up to two parity drives.
+    - **Data Devices:** Store your custom shares and folders, as well as any files you add to them, i.e., media files.
 
 - **Pool Devices:** High-performance drives used primarily as a **cache**, storing files temporarily to enhance performance before transferring them to the %%array|array%%.
 
@@ -43,11 +44,11 @@ Unraid OS uses drives for various purposes:
     To safeguard cached data, assign more than one device to the %%cache pool|cache-pool%%. A single device does not offer protection from data loss. %%Cache pools|cache-pool%% can be expanded on demand.
 
     :::warning
-    SSD support is experimental in the %%array|array%%. Some SSDs may not perform well due to variations in %%TRIM/Discard|trim-discard%% implementation, which could lead to undesirable results. This does not apply to %%cache pools|cache-pool%%.
+    SSD support is experimental in the %%array|array%%. Some SSDs may not perform well due to variations in %%TRIM/Discard|trim-discard%% implementation, which could lead to undesirable results. This does not apply to %%cache pools|cache-pool%%. [Learn more about filesystem options here](../../using-unraid-to/manage-storage/file-systems.md).
     :::
 
-    :::note 
-    SSD-based pools are optimal for applications and virtual machines, leveraging SSD performance for faster interactions.
+    :::note
+    SSD-based pools are optimal for applications and virtual machines, leveraging SSD performance for faster interactions. [Learn more about running applications here](../../using-unraid-to/run-docker-containers/overview.md).
     :::
 
 </details>
@@ -79,7 +80,7 @@ To change the filesystem of an existing drive:
 4. **Start the array** and format the drive.
 
 :::caution
-Reformatting a drive will erase all its data. For %%RAID|raid%% setups, check the %%parity|parity%% to avoid data loss during rebuilds. Use the Unassigned Devices plugin to back up your files before reformatting.
+Reformatting a drive will erase all its data. For %%RAID|raid%% setups, check the %%parity|parity%% to avoid data loss during rebuilds. Use the [Unassigned Devices plugin](https://unraid.net/community/apps?q=unassigned+devices#r:~:text=don%27t%20be%20carefull!!!-,Unassigned%20Devices,-dlandon) to back up your files before reformatting.
 :::
 
 :::info

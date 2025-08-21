@@ -40,7 +40,7 @@ Ensure **%%SMB|samba%%** is enabled in the %%WebGUI|web-gui%%:
 To create a Time Machine share:
 
 1. In the %%WebGUI|web-gui%%, go to **Shares** and click **Add %%user share|user-share%%**.
-2. Configure the following key settings:
+2. Configure the following settings:
 
     | Setting                     | Description                                                                                  |
     |-----------------------------|----------------------------------------------------------------------------------------------|
@@ -53,6 +53,8 @@ To create a Time Machine share:
     | **Security settings**       | Configure %%SMB&#124;samba%% security parameters as desired.                                               |
 
 3. Click **Apply** to create the %%user share|user-share%%.
+
+For more details on creating and managing shares, see [User shares](../manage-storage/shares.md).
 
 ## Connect from macOS
 
@@ -84,11 +86,9 @@ For families or settings with multiple Macs, this method offers clear separation
 
 To create separate backups for different users or Macs on your Unraid server:
 
-1. **Create unique Unraid %%root user|root-user%% accounts** for each person or Mac that will back up data. For example, users named `larry`, `curly`, and `moe`.
-   - This ensures that each user has their own identity and permissions.
+1. **Create unique Unraid %%root user|root-user%% accounts** for each person or Mac that will back up data. For example, users named `larry`, `curly`, and `moe`. This ensures that each user has their own identity and permissions.
 
-2. **Create individual Time Machine %%user shares|user-share%%** for each user, naming them clearly to match the user, such as `tm-larry`, `tm-curly`, and `tm-moe`.
-   - Keeping shares separate helps with managing storage and access for each user.
+2. **Create individual Time Machine %%user shares|user-share%%** for each user, naming them clearly to match the user, such as `tm-larry`, `tm-curly`, and `tm-moe`. Keeping shares separate helps with managing storage and access for each user.
 
 3. **Assign appropriate user permissions** for each %%user share|user-share%%:
    - Set the %%user share|user-share%%'s %%SMB|samba%% security settings to ensure that only the corresponding user has access.
@@ -102,6 +102,8 @@ To create separate backups for different users or Macs on your Unraid server:
    - You can optionally set volume size limits on each Time Machine %%user share|user-share%% to prevent one user from taking up too much space.
    - Regularly check usage and adjust quotas as necessary.
 
+For more information on user management and security, see [User management](../../system-administration/secure-your-server/user-management.md).
+
 ## Troubleshooting
 
 If Time Machine backups fail or become unreliable:
@@ -109,3 +111,5 @@ If Time Machine backups fail or become unreliable:
 1. **Try the Time Machine Docker container**: [Available through Community Applications](https://unraid.net/community/apps?q=time+machine#r), this option can provide more stable backups than direct %%SMB|samba%% %%user shares|user-share%%.
 2. **Check macOS firewall**: Temporarily disable the firewall to see if it’s blocking connections.
 3. **Create a fresh backup destination**: Delete and recreate the Time Machine %%user share|user-share%% if issues continue.
+
+For additional troubleshooting help, see [Common issues](../../troubleshooting/common-issues.md) or visit the [Unraid forums](https://forums.unraid.net/).

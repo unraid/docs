@@ -14,23 +14,23 @@ When you have issues with your Unraid server, gathering detailed information is 
 
 The diagnostics zip file contains several anonymized text files that create a detailed snapshot of your Unraid system, including:
 
-- **System configuration**: Information about your **array**, shares, network settings, and installed plugins.
-- **System logs**: Logs from the kernel, **WebGUI**, and system services, documenting events that may have led to the issue.
+- **System configuration**: Information about your %%array|array%%, shares, network settings, and installed plugins.
+- **System logs**: Logs from the kernel, %%WebGUI|web-gui%%, and system services, documenting events that may have led to the issue.
 - **Hardware information**: Details about connected drives, controllers, and other hardware components.
-- **Docker and VM info**: Overall configuration for Docker and virtual machines (no information about your individual containers or VMs is included).
+- **Docker and %%VM|vm%% info**: Overall configuration for Docker and virtual machines (no information about your individual containers or %%VMs|vm%% is included).
 :::
 
 ---
 
 ## System diagnostics
 
-Unraid provides a **Diagnostics** tool located under ***Tools → Diagnostics*** in the **WebGUI** to capture comprehensive system information for troubleshooting. This tool will generate a zip file you can download and attach to forum posts for support. All diagnostics files are text-based, and users can review them to understand what information is included.
+Unraid provides a **Diagnostics** tool located under ***Tools → Diagnostics*** in the %%WebGUI|web-gui%% to capture comprehensive system information for troubleshooting. This tool will generate a zip file you can download and attach to forum posts for support. All diagnostics files are text-based, and users can review them to understand what information is included.
 
 | Scenario                       | How to capture                                                                                          | Notes                                                                                                     |
 |--------------------------------|---------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------|
-| WebGUI available              | Use ***Tools → Diagnostics*** in the **WebGUI** to generate and download the diagnostics zip file.                 | Diagnostics are anonymized by default to protect sensitive data.                                          |
-| WebGUI not available            | Access via SSH, telnet, or direct console to run the `diagnostics` command. The zip file saves to `/boot/logs`.   | Always capture diagnostics before rebooting to keep logs intact.                                         |
-| Array started in normal mode   | This is the preferred method for capturing diagnostics, as it provides the most complete information, especially about drive status. | If this isn't possible, see the [Persistent logs section](#persistent-logs-syslog-server) for alternative capture methods.                 |
+| %%WebGUI&#124;web-gui%% available              | Use ***Tools → Diagnostics*** in the **%%WebGUI&#124;web-gui%%** to generate and download the diagnostics zip file.                 | Diagnostics are anonymized by default to protect sensitive data.                                          |
+| %%WebGUI&#124;web-gui%% not available            | Access via **%%SSH&#124;ssh%%**, telnet, or direct console to run the `diagnostics` command. The zip file saves to `/boot/logs`.   | Always capture diagnostics before rebooting to keep logs intact.                                         |
+| %%Array&#124;array%% started in normal mode   | This is the preferred method for capturing diagnostics, as it provides the most complete information, especially about drive status. | If this isn't possible, see the [Persistent logs section](#persistent-logs-syslog-server) for alternative capture methods.                 |
 
 <div style={{ margin: 'auto', maxWidth: '600px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
 
@@ -44,23 +44,23 @@ Attach the single diagnostics zip file when posting on forums - avoid uploading 
 
 ### Anonymization of diagnostic data
 
-By default, diagnostics are automatically anonymized. If you enable Mover logging under ***Settings → Mover Settings***, the syslog will include details about files the Mover processes. It’s best to allow Mover logging only when troubleshooting specific Mover-related issues, as it may reveal file paths and names.
+By default, diagnostics are automatically anonymized. If you enable %%Mover|mover%% logging under ***Settings → Mover Settings***, the %%syslog|syslog%% will include details about files the %%Mover|mover%% processes. It's best to allow %%Mover|mover%% logging only when troubleshooting specific %%Mover|mover%%-related issues, as it may reveal file paths and names.
 
-When your system shuts down gracefully, the session log is saved automatically to the flash drive. You can access it after rebooting by going to ***Tools → Syslog → syslog-previous***. This log is also included in diagnostics on the next boot. However, if the system crashes, the system log will be lost. In these cases, enabling syslog mirroring to the flash or using a remote syslog server is recommended to preserve logs for troubleshooting.
+When your system shuts down gracefully, the session log is saved automatically to the flash drive. You can access it after rebooting by going to ***Tools → Syslog → syslog-previous***. This log is also included in diagnostics on the next boot. However, if the system crashes, the system log will be lost. In these cases, enabling %%syslog|syslog%% mirroring to the flash or using a remote %%syslog server|syslog-server%% is recommended to preserve logs for troubleshooting.
 
 ---
 ## Testing drive read performance
 
-You can use built-in Linux tools to evaluate the read performance of your hard drives. This is helpful when diagnosing slow parity syncs, sluggish disk responses, or mismatched speeds among drives in an array or cache.
+You can use built-in Linux tools to evaluate the read performance of your hard drives. This is helpful when diagnosing slow %%parity|parity%% syncs, sluggish disk responses, or mismatched speeds among drives in an %%array|array%% or %%cache|cache%%.
 
 :::important When and why to test drive speed
 
 Consider running disk read benchmarks if you experience:
 
-- Extremely slow parity builds or checks
+- Extremely slow %%parity|parity%% builds or %%parity check|parity-check%%s
 - Suspiciously slow file transfers from a specific disk
 - Drive mismatches after adding or replacing disks, particularly when mixing SSDs and HDDs
-- Reallocated sectors or UDMA CRC errors, which may indicate failing drives
+- Reallocated sectors or %%UDMA|udma%% %%CRC errors|crc-errors%%, which may indicate failing drives
 
 While these tests won’t give you exact real-world file transfer speeds, they can point out underperforming disks and any controller bottlenecks.
 :::
@@ -79,7 +79,7 @@ hdparm -tT /dev/sdX
 - The `-t` result shows the buffered (sequential) disk read performance.
 
 :::tip
-Run this test multiple times to get a more reliable benchmark. You can use the following one-liner to run the test 12 times:
+Run this test multiple times to get a more reliable benchmark. For example, you can use the following one-liner to run the test 12 times:
 
 ```
 for ((i=0;i<12;i++)); do hdparm -tT /dev/sdX; done
@@ -87,12 +87,12 @@ for ((i=0;i<12;i++)); do hdparm -tT /dev/sdX; done
 :::
 
 :::note
-Make sure to replace `/dev/sdX` with a valid physical device. Avoid logical Unraid devices, such as `/dev/md1`, which include parity processes that may distort the raw performance readings.
+Make sure to replace `/dev/sdX` with a valid physical device. Avoid logical Unraid devices, such as `/dev/md1`, which include %%parity|parity%% processes that may distort the raw performance readings.
 :::
 
 ### Comprehensive test (diskspeed.sh)
 
-For a more detailed assessment of all attached drives, including parity and data drives, consider using the community script `diskspeed.sh`.
+For a more detailed assessment of all attached drives, including %%parity|parity%% and data drives, consider using the community script `diskspeed.sh`.
 
 This script:
 
@@ -117,14 +117,14 @@ bash /boot/scripts/diskspeed.sh
 ```
 
 :::note
-This script only performs read-only operations and won’t modify any data on your drives. However, it's best to schedule the test during idle periods, as it may affect disk I/O and interfere with array performance.
+This script only performs read-only operations and won't modify any data on your drives. However, it's best to schedule the test during idle periods, as it may affect disk I/O and interfere with %%array|array%% performance.
 :::
 
 ---
 
 ## Persistent logs (syslog server)
 
-Persistent logs are essential for keeping a record of system events between reboots. Unlike standard logs that reset when the system restarts, persistent logs use Unraid's built-in syslog server to ensure you can diagnose crashes or intermittent issues that arise over time.
+Persistent logs are essential for keeping a record of system events between reboots. Unlike standard logs that reset when the system restarts, persistent logs use Unraid's built-in %%syslog server|syslog-server%% to ensure you can diagnose crashes or intermittent issues that arise over time.
 
 ### Choosing the right logging method
 
@@ -133,8 +133,8 @@ Go to ***Settings → Syslog Server*** to set up persistent logging. Each method
 | Method               | Pros                                      | Cons                                      | Best for                                  |
 |----------------------|-------------------------------------------|-------------------------------------------|-------------------------------------------|
 | **Mirror to flash**  | Captures boot process events              | Can wear out flash drive quickly          | Short-term diagnostics (a few days)       |
-| **Remote syslog**    | Logs are stored on another device         | Needs a separate always-on server        | Long-term monitoring (weeks to months)    |
-| **Local syslog**     | Keeps logs on the array or cache, reducing wear on flash | Less accessible if there’s a system crash | Continuous logging without external devices |
+| **Remote %%syslog&#124;syslog%%**    | Logs are stored on another device         | Needs a separate always-on server        | Long-term monitoring (weeks to months)    |
+| **Local %%syslog&#124;syslog%%**     | Keeps logs on the %%array&#124;array%% or %%cache&#124;cache%%, reducing wear on flash | Less accessible if there's a system crash | Continuous logging without external devices |
 
 :::tip
 For detailed configuration help, check the **Help** icon in the WebGUI toolbar.
@@ -145,21 +145,20 @@ For detailed configuration help, check the **Help** icon in the WebGUI toolbar.
 <Tabs>
 <TabItem value="mirror" label="Mirror to flash">
 
-1. Select *Yes* under **Mirror to flash**.  
-2. Click **Apply**.  
-   - Logs will be saved to `/boot/logs/syslog` on your flash drive  
+1. Select **Yes** under **Mirror to flash**.  
+2. Click **Apply**. Logs will be saved to `/boot/logs/syslog` on your flash drive  
 
 On the next reboot, this file will be renamed to `/boot/logs/syslog-previous`. You can view this file through **Tools → Syslog → syslog-previous**, and it will also be included (anonymized) in diagnostics.
 
-How it works:
+<h4>How it works</h4>
 
-- By default, Unraid copies the syslog to the flash drive during every graceful shutdown. This is managed through the "copy syslog to flash on shutdown" setting, which is enabled by default.  
-- If you're troubleshooting crashes, you can enable "Mirror to flash." This will write the syslog to both `/var/log/syslog` and `/boot/logs/syslog` in real time. If a crash happens, any syslog entries recorded to flash before the crash will be preserved.
+- By default, Unraid copies the %%syslog|syslog%% to the flash drive during every graceful shutdown. This is managed through the "copy %%syslog|syslog%% to flash on shutdown" setting, which is enabled by default.  
+- If you're troubleshooting crashes, you can enable "Mirror to flash." This will write the %%syslog|syslog%% to both `/var/log/syslog` and `/boot/logs/syslog` in real time. If a crash happens, any %%syslog|syslog%% entries recorded to flash before the crash will be preserved.
 
-Both methods result in the creation of a `/boot/logs/syslog-previous` file after the next boot, which you can access via the syslog viewer and will be included in diagnostics.
+Both methods result in the creation of a `/boot/logs/syslog-previous` file after the next boot, which you can access via the %%syslog|syslog%% viewer and will be included in diagnostics.
 
 :::caution
-The "Copy syslog to flash on shutdown" setting is safe for your flash drive. However, enabling "Mirror to flash" can lead to excessive writes if left on for an extended period. For long-term logging needs, consider using a local or remote syslog server instead.
+The **Copy %%syslog|syslog%% to flash on shutdown** setting is safe for your flash drive. However, enabling **Mirror to flash** can lead to excessive writes if left on for an extended period. For long-term logging needs, consider using a local or remote %%syslog server|syslog-server%% instead.
 :::
 
 </TabItem>
@@ -177,26 +176,26 @@ The "Copy syslog to flash on shutdown" setting is safe for your flash drive. How
 </div>
 
 :::note
-If you upload files from a remote syslog server to the forum, they will **not** be anonymized.
+If you upload files from a remote %%syslog server|syslog-server%% to the forum, they will **not** be anonymized.
 :::
 
 </TabItem>
 <TabItem value="local" label="Local syslog server">
 
-To create a persistent, reliable copy of your Unraid syslog on your server:
+To create a persistent, reliable copy of your Unraid %%syslog|syslog%% on your server:
 
 1. Set **Local syslog server** to *Enabled*.  
 2. Configure the following options:  
-   - **Local syslog folder**: Use a cache-only or preferred share (best for SSDs).  
+   - **Local %%syslog|syslog%% folder**: Use a cache-only or preferred share (best for SSDs).  
    - **Rotation settings**: Adjust the file size and number limits.  
-3. For best results and to ensure all syslog data (including boot events) is captured, also set the **Remote syslog server** field to your server’s own IP address (the "Loopback method").
-   - This ensures syslog events are both stored locally and persist across reboots, without writing to the flash drive.
+3. For best results and to ensure all %%syslog|syslog%% data (including boot events) is captured, also set the **Remote %%syslog server|syslog-server%%** field to your server's own IP address (the "Loopback method").
+   - This ensures %%syslog|syslog%% events are both stored locally and persist across reboots, without writing to the flash drive.
 4. Click **Apply**.  
    - Logs will be saved to the share you specified.  
 
 :::note
 
-- If you upload files from the local syslog server to the forum, they will **not** be anonymized.
+- If you upload files from the local %%syslog server|syslog-server%% to the forum, they will **not** be anonymized.
 - Logs saved using this method are not included in standard diagnostics. Attach them separately if you need support.
 
 :::
@@ -208,13 +207,13 @@ To create a persistent, reliable copy of your Unraid syslog on your server:
 
 ## Accessing Docker container logs
 
-While standard diagnostics only provide limited data for Docker and VM, you can access container logs directly for more detailed troubleshooting.
+While standard diagnostics only provide limited data for Docker and %%VM|vm%%, you can access container logs directly for more detailed troubleshooting.
 
 To retrieve Docker logs:
 
 <Tabs>
 <TabItem value="via-webgui" label="Via WebGui" default>
-   - Navigate to **Docker > Containers**  
+   - Navigate to ***Docker > Containers***  
    - Click the **Logs** icon for the desired container
 </TabItem>
 
@@ -241,8 +240,8 @@ To retrieve Docker logs:
 
 ### Virtual machine logs
 
-VM logs can be accessed through their respective hypervisors (for example, QEMU logs are located in `/var/log/libvirt/`). Check your VM platform’s documentation for more details.
+%%VM|vm%% logs can be accessed through their respective hypervisors (for example, %%QEMU|qemu%% logs are located in `/var/log/libvirt/`). Check your %%VM|vm%% platform's documentation for more details.
 
 :::important
-Remember to attach the relevant container or VM logs separately when seeking support for application-specific issues.
+Remember to attach the relevant container or %%VM|vm%% logs separately when seeking support for application-specific issues.
 :::

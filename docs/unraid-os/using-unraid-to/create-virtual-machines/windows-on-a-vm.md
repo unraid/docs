@@ -14,7 +14,7 @@ Windows is one of the most popular guest operating systems for Unraid users, esp
 
 - Microsoft ended support for Windows 7 in Jan. 2020, Windows 8.1 in January 2023, and Windows 10 in October 2025. Use Windows 11 (or later) or Server 2022 (or later) for ongoing security updates.
 - Always test %%VM|vm%% stability before activating your Windows license.
-- For GPU passthrough, use %%OVMF&#124;ovmf%% (%%UEFI&#124;uefi%%) BIOS with Windows 11 or newer.
+- For %%GPU passthrough|gpu-passthrough%%, use %%OVMF&#124;ovmf%% (%%UEFI&#124;uefi%%) BIOS with Windows 11 or newer.
 :::
 
 ### Supported configurations
@@ -37,7 +37,7 @@ To install or update drivers:
 <Tabs>
   <TabItem value="Automatic" label="Automatic installation">
 
-1. In **Settings → VM Manager**, set a default %%VirtIO|virtio%% ISO path (e.g., `/mnt/user/isos/virtio-win.iso`).
+1. In ***Settings → VM Manager***, set a default %%VirtIO|virtio%% ISO path (e.g., `/mnt/user/isos/virtio-win.iso`).
 2. When creating a Windows %%VM|vm%%, the ISO will auto-attach as a virtual CD-ROM.
 3. During Windows setup, load drivers from the %%VirtIO|virtio%% ISO when prompted for storage controllers.
 
@@ -56,7 +56,7 @@ To install or update drivers:
 </Tabs>
 
 :::tip
-Using Unraid 7 or later, you can automatically inject %%VirtIO|virtio%% drivers during the Windows installation. Enable this in **VM Settings → Advanced Options**.
+Using Unraid 7 or later, you can automatically inject %%VirtIO|virtio%% drivers during the Windows installation. Enable this in ***VM Settings → Advanced Options***.
 :::
 
 ---
@@ -75,7 +75,7 @@ Hibernation lets you save your entire Windows %%VM|vm%% state - including open a
 To use hibernation reliably, you must install the %%QEMU|qemu%% %%Guest Agent|guest-agent%% in your Windows %%VM|vm%%. This agent allows Unraid to communicate with the %%VM|vm%% for advanced operations like hibernation, shutdown, and live statistics reporting.
 
 <details>
-<summary><strong>How to install the %%QEMU|qemu%% %%Guest Agent|guest-agent%%</strong></summary>
+<summary><strong>How to install the %%QEMU|qemu%% %%Guest Agent|guest-agent%%</strong> - Click to expand/collapse</summary>
 
 1. Start your Windows %%VM|vm%% with the %%VirtIO|virtio%% drivers ISO mounted.
 2. Open **File Explorer** and navigate to the %%VirtIO|virtio%% drivers media.
@@ -85,7 +85,7 @@ To use hibernation reliably, you must install the %%QEMU|qemu%% %%Guest Agent|gu
 </details>
 
 <details>
-<summary><strong>How to enable hibernation in Windows</strong></summary>
+<summary><strong>How to enable hibernation in Windows</strong> - Click to expand/collapse</summary>
 
 1. Open **Control Panel** and search for **Power Options**.
 2. Click on **Choose what the power buttons do**.
@@ -112,7 +112,7 @@ Optimizing your Windows %%VM|vm%% can improve responsiveness, reduce disk usage,
 Disabling fast startup can help prevent issues with device passthrough. It ensures your %%VM|vm%% hardware initializes correctly every time it boots. While this setting is designed for physical PCs, in a virtual environment, it can often cause more problems than benefits.
 
 <details>
-<summary><strong>How to disable Fast Startup</strong></summary>
+<summary><strong>How to disable Fast Startup</strong> - Click to expand/collapse</summary>
 
 1. Open **Control Panel** and search for **Power**.
 2. Click on **Choose what the power buttons do**.
@@ -127,7 +127,7 @@ Disabling fast startup can help prevent issues with device passthrough. It ensur
 Hibernation in Windows creates a large hidden file called `hiberfil.sys`. This file can consume significant disk space and increase disk activity in your %%VM|vm%%. If you don't rely on hibernation, disabling it will free up storage and reduce unnecessary I/O activity.
 
 <details>
-<summary><strong>How to disable hibernation and remove hiberfil.sys</strong></summary>
+<summary><strong>How to disable hibernation and remove hiberfil.sys</strong> - Click to expand/collapse</summary>
 
 1. Right-click the **Start** button and select **Windows Terminal (Admin)** or **Command Prompt (Admin)**.
 2. Type: `powercfg /h off`
@@ -137,14 +137,15 @@ Hibernation in Windows creates a large hidden file called `hiberfil.sys`. This f
 
 #### Disable Windows indexing
 
-Windows Search indexing continuously scans your virtual machine's storage to catalog files for faster search results. However, on a virtual machine, this can cause unnecessary disk I/O, slow down performance, and increase wear on your physical storage, especially SSDs in your cache pool.
+Windows Search indexing continuously scans your %%virtual machine|vm%%'s storage to catalog files for faster search results. However, on a %%virtual machine|vm%%, this can cause unnecessary disk I/O, slow down performance, and increase wear on your physical storage, especially SSDs in your [%%cache pool|cache-pool%%](../manage-storage/cache-pools.md).
 
 <details>
-<summary><strong>How to disable Windows indexing</strong></summary>
+<summary><strong>How to disable Windows indexing</strong> - Click to expand/collapse</summary>
 
 1. Press **Windows + R** to open the Run dialog, type `services.msc`, and press Enter.
 2. In the Services window, scroll down and right-click **Windows Search**, then select **Stop**.
 3. Double-click **Windows Search**, change **Startup type** to **Disabled**, and click **OK**.
+
 </details>
 
 #### Disable automatic disk defragmenting
@@ -152,12 +153,13 @@ Windows Search indexing continuously scans your virtual machine's storage to cat
 Windows is designed to defrag physical hard drives on a regular schedule automatically. On a %%VM|vm%% - especially when using SSD storage or thin-provisioned %%vDisks|vdisk%% - automatic defragmenting is unnecessary and can also reduce disk lifespan and degrade performance.
 
 <details>
-<summary><strong>How to disable automatic disk defragmenting</strong></summary>
+<summary><strong>How to disable automatic disk defragmenting</strong> - Click to expand/collapse</summary>
 
 1. Open **File Explorer**, right-click the C: drive, and select **Properties**.
 2. Go to the **Tools** tab and click **Optimize**.
 3. Click **Change settings**.
 4. Uncheck **Run on a schedule** and click **OK**.
+
 </details>
 
 #### Enable high-performance power mode
@@ -167,7 +169,7 @@ Power management features in Windows are designed for laptops and desktops to sa
 Enabling **High Performance** mode ensures your %%VM|vm%% always runs at full speed and is less likely to pause or suspend unexpectedly.
 
 <details>
-<summary><strong>How to enable high performance power mode</strong></summary>
+<summary><strong>How to enable high performance power mode</strong> - Click to expand/collapse</summary>
 
 1. Open **Control Panel** and search for "power."
 2. Click **Choose a power plan**.
@@ -177,14 +179,14 @@ Enabling **High Performance** mode ensures your %%VM|vm%% always runs at full sp
 
 #### Enable remote desktop access
 
-Remote desktop protocol (RDP) allows you to access your Windows %%VM|vm%% from another device. It offers better performance and compatibility compared to VNC. Note that RDP is supported only on Windows Professional and Enterprise editions. Also, your Windows user account **must** have a password set.
+Remote desktop protocol (RDP) allows you to access your Windows %%VM|vm%% from another device. It offers better performance and compatibility compared to %%VNC|vnc-session%%. Note that RDP is supported only on Windows Professional and Enterprise editions. Also, your Windows user account **must** have a password set.
 
 :::caution
 RDP is not available on Windows Home editions. Always set a secure password for your Windows user account before enabling RDP.
 :::
 
 <details>
-<summary><strong>How to enable remote desktop access (RDP)</strong></summary>
+<summary><strong>How to enable remote desktop (RDP) access</strong> - Click to expand/collapse</summary>
 
 To enable RDP access, follow these steps:
 
@@ -201,18 +203,18 @@ Official Microsoft RDP clients are available for Windows, Mac, Android, and iOS.
 
 #### Fix HDMI audio with MSI interrupts
 
-If you're having trouble with HDMI audio in a Windows %%VM|vm%% that uses GPU passthrough (which often occurs with NVIDIA graphics cards), enabling Message Signaled Interrupts (MSI) might help. MSI enhances the way interrupts are managed for passed-through devices.
+If you're having trouble with HDMI audio in a Windows %%VM|vm%% that uses %%GPU passthrough|gpu-passthrough%% (which often occurs with NVIDIA graphics cards), enabling Message Signaled Interrupts (MSI) might help. MSI enhances the way interrupts are managed for passed-through devices.
 
 <details>
-<summary><strong>How to enable MSI interrupts</strong></summary>
+<summary><strong>How to enable MSI interrupts</strong> - Click to expand/collapse</summary>
 
 :::caution
 Back up your %%VM|vm%% before making any registry changes. Incorrect modifications can cause system instability.
 :::
 
 1. **Verify MSI capability:**
-   - Start your %%VM|vm%% with GPU passthrough enabled.
-   - Access Unraid via SSH or telnet.
+   - Start your %%VM|vm%% with %%GPU passthrough|gpu-passthrough%% enabled.
+   - Access Unraid via [SSH or telnet](../../system-administration/advanced-tools/command-line-interface.md).
    - Run the command `lspci -v -s 01:00.0` (replace `01:00.0` with your GPU's PCI address).
    - Look for the line: `Capabilities: [68] MSI: Enable+ Count=1/1 Maskable- 64bit+`.
 
@@ -241,7 +243,7 @@ To add TPM support:
 
 1. Shut down your Windows 10 %%VM|vm%%.
 2. Edit the %%VM|vm%% settings.
-3. Change **BIOS** from *OVMF* to *OVMF-TPM*.
+3. Change **BIOS** from *%%OVMF|ovmf%%* to *%%OVMF|ovmf%%-TPM*.
 4. Save the changes and start the %%VM|vm%%.
 
 #### Upgrade methods

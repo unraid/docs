@@ -9,7 +9,7 @@ Unraid is an embedded operating system designed to give you complete control ove
 
 Unraid installs on a USB flash drive and boots from it, loading into a root RAM file system.  It uses a modern Linux kernel with updated hardware drivers, allowing it to run on nearly any 64-bit x86_64 system while maintaining a minimal memory footprint.  All configuration data for the operating system is stored on the flash drive and loads simultaneously with the operating system.
 
-Unraid features a user-friendly web interface for easy management.  It offers basic controls for common tasks and advanced settings for experienced users.  While it defaults to settings that suit most people, it also allows customization.  This blend of simplicity and flexibility helps you store, protect, share, and enjoy your content effectively.
+Unraid features a [user-friendly web interface](./explore-the-user-interface/tour-the-web-gui.md) for easy management.  It offers basic controls for common tasks and advanced settings for experienced users.  While it defaults to settings that suit most people, it also allows customization.  This blend of simplicity and flexibility helps you store, protect, share, and enjoy your content effectively.
 
 **Unraid's core capabilities lie within three main areas:**
 
@@ -23,7 +23,7 @@ Unraid provides a simple and flexible solution for turning any 64-bit capable sy
 The main job of an Unraid %%array|array%% is to organize and protect the data stored across several drives. It does this by using up to two special drives called %%parity drive|parity-drives%%s. These %%parity drive|parity-drives%%s are important because they help reconstruct your data if one of the other drives fails. In fact, with just one %%parity drive|parity-drives%%, you can protect all the other drives in your %%array|array%%, keeping your data safe. Plus, you can mix different sized drives and easily expand your storage over time, making Unraid a user-friendly option for anyone looking to manage their data effectively.
 
 <details>
-    <summary><h4>How Parity Works</h4></summary>
+    <summary><strong>How Parity Works</strong> - Click to expand/collapse</summary>
 
 In Unraid, %%parity|parity%% information is updated in real time.  To understand how this works, imagine the contents of a hard drive as a long stream of bits, where each bit is either a zero or a one.  By summing the nth bit values across all drives and determining whether that sum is even or odd, the corresponding nth %%parity|parity%% bit can be set accordingly.  If a data drive ever fails, this %%parity|parity%% information allows for an accurate determination of the exact bit values, facilitating a precise rebuild on the replacement drive.
 
@@ -81,7 +81,9 @@ You can also customize these shares to include or leave out certain drives and d
 
 One of the standout features of Unraid is the %%cache drive|cache%%, which helps speed up data transfer. When you use a %%cache drive|cache%% alongside three or more drives, you can write data up to **three times faster**. When you save files to a %%user shares|user-share%% with a %%cache drive|cache%%, the data is first stored on the %%cache drive|cache%%. This allows for quick writing, and later, a process called %%Mover|mover%% transfers the data to the main storage %%array|array%% - often during the night—making room on the %%cache drive|cache%%.
 
-For added data safety, you can set up a %%cache pool|cache-pool%% with multiple drives. This setup not only increases storage space but also uses technologies like %%ZFS|zfs%% or %%BTRFS|btrfs%% to provide extra protection for your data, similar to %%RAID 1|raid1%%. Overall, Unraid’s management of shares and %%cache drive|cache%%s creates a flexible, efficient, and secure storage solution.
+For added data safety, you can set up a %%cache pool|cache-pool%% with multiple drives. This setup not only increases storage space but also uses technologies like %%ZFS|zfs%% or %%BTRFS|btrfs%% to provide extra protection for your data, similar to %%RAID 1|raid1%%. Overall, Unraid’s management of shares and %%cache drives|cache%% creates a flexible, efficient, and secure storage solution.
+
+[Learn more about configuring shares and cache here.](../../using-unraid-to/manage-storage/array-configuration.md)
 
 <div style={{ maxWidth: '600px', margin: '1rem auto' }}>
 
@@ -94,7 +96,7 @@ For added data safety, you can set up a %%cache pool|cache-pool%% with multiple 
 <details>
   <summary><h3>Application Server</h3>Enabling the execution of containerized applications.</summary>
 
-Unraid transforms your storage solution into a versatile %%application server|application-server%% through **Docker containerization**. This approach overcomes traditional NAS limitations while maintaining system stability and ease of use.
+Unraid transforms your storage solution into a versatile %%application server|application-server%% through Docker containerization. This approach overcomes traditional NAS limitations while maintaining system stability and ease of use.
 
 Traditional NAS solutions present three key challenges for application hosting:
 
@@ -108,11 +110,11 @@ Unraid's use of Docker addresses these challenges in three key ways:
 2. **Image-based Deployment** - Preconfigured application packages allow for one-click installation and complete uninstallation of applications. 
 3. **Process Isolation** - Containerized applications operate in separate user spaces, preventing any conflicts between software.  
 
-Docker containers allow you to run applications in isolated, lightweight environments without the overhead associated with %%virtual machines|vm%%. Unraid simplifies the use of Docker by providing access to thousands of pre-configured apps through <u>Docker Hub</u> and <u>Community Applications</u>. This containerized approach enables Unraid users to run multiple applications simultaneously without compatibility issues. It also helps keep the system organized by using self-contained application packages and makes it easy to enhance server capabilities through Docker's ecosystem.
+Docker containers allow you to run applications in isolated, lightweight environments without the overhead associated with %%virtual machines|vm%%. Unraid simplifies the use of Docker by providing access to thousands of pre-configured apps through [Docker Hub](https://hub.docker.com/) and [Community Applications](../../using-unraid-to/run-docker-containers/community-applications.md).. This containerized approach enables Unraid users to run multiple applications simultaneously without compatibility issues. It also helps keep the system organized by using self-contained application packages and makes it easy to enhance server capabilities through Docker's ecosystem.
 
 :::note
 
-For advanced Docker settings, check out <u>Using Unraid to > Run Docker Containers</u>.
+For advanced Docker settings, check out [Run Docker Containers](../../using-unraid-to/run-docker-containers/managing-and-customizing-containers.md).
 
 :::
 
@@ -125,12 +127,12 @@ For advanced Docker settings, check out <u>Using Unraid to > Run Docker Containe
 
   :::tip
 
-  To use hardware virtualization in Unraid, ensure your CPU, chipset, BIOS, and device drivers are compatible. A full list of requirements is available <u>here</u>. If your server doesn't meet these requirements, the %%VMs|vm%% menu will be disabled in the Unraid %%WebGUI|web-gui%%.
+  To use hardware virtualization in Unraid, ensure your CPU, chipset, BIOS, and device drivers are compatible. A full list of requirements is available in the [VM setup guide](../../using-unraid-to/create-virtual-machines/overview-and-system-prep.md). If your server doesn't meet these requirements, the %%VMs|vm%% menu will be disabled in the Unraid %%WebGUI|web-gui%%.
 
   :::
 
 <details>
-    <summary><h4>Benefits of Using Virtual Machines (VMs)</h4></summary>
+    <summary><strong>Benefits of Using Virtual Machines (VMs)</strong> - Click to expand/collapse</summary>
 
     While Docker containers are popular for Linux-based applications, %%VMs|vm%% enhance the flexibility and efficiency of your Unraid server setup and offer distinct advantages on your Unraid server:
   
@@ -153,7 +155,7 @@ For advanced Docker settings, check out <u>Using Unraid to > Run Docker Containe
 </details>
 
 <details>
-    <summary><h4>Assignable Device Support for Virtualization</h4></summary>
+    <summary><strong>Assignable Device Support for Virtualization</strong> - Click to expand/collapse</summary>
 
     Unraid's %%KVM|kvm%%-based virtualization uses modern tools for flexible hardware assignment while maintaining host stability. 
     
@@ -185,13 +187,12 @@ For advanced Docker settings, check out <u>Using Unraid to > Run Docker Containe
   
 </details>
 
-For %%VM|vm%% setup steps, check out <u>Using Unraid to > Create virtual machines</u>
+For %%VM|vm%% setup steps, check out [Create virtual machines](../../using-unraid-to/create-virtual-machines/overview-and-system-prep.md).
 
 :::caution
 
-%%GPU passthrough|gpu-passthrough%% requires compatible hardware (see <u>VM setup</u>).
+%%GPU passthrough|gpu-passthrough%% requires compatible hardware (see [VM setup](../using-unraid-to/create-virtual-machines/vm-setup.md)).
 
 :::
-
 
 </details>

@@ -10,7 +10,8 @@ Unraid makes managing users on your NAS simple and secure, catering to everyone 
 :::note Simplified approach
 
 Unlike traditional Linux systems, Unraid offers a straightforward user model:  
-- **Single Administrator (root)**: There’s only one main user, which simplifies permissions and enhances security.  
+
+- **Single Administrator (%%root|root-user%%)**: There’s only one main user, which simplifies permissions and enhances security.  
 - **Share-Centric Access**: The focus is on sharing data, making it less complicated for users who don’t need the intricacies of multiple user environments.  
 
 This way, even if you're not familiar with Linux, you can easily manage your NAS safely.  
@@ -18,14 +19,16 @@ This way, even if you're not familiar with Linux, you can easily manage your NAS
 
 ## Overview
 
-### Root User  
-Unraid operates with a single superuser, known as `root`, who has complete control over everything.
+### Root User
 
-Root users...  
-- Have full access to the **WebGUI**, **SSH**, and **Telnet** interfaces.  
-- Are responsible for managing all user accounts and settings.  
-- Cannot directly access file shares through **SMB**, **NFS**, or **FTP** for security reasons.  
-- Allow for SSH key-based authentication to log in without a password.  
+Unraid operates with a single superuser, known as %%root|root-user%%, who has complete control over everything.
+
+%%Root users|root-user%%...
+
+- Have full access to the %%WebGUI|web-gui%%, %%SSH|ssh%%, and Telnet interfaces.
+- Are responsible for managing all user accounts and settings.
+- Cannot directly access file shares through **%%SMB|samba%%**, **%%NFS|nfs%%**, or **%%FTP|ftp%%** for security reasons.
+- Allow for [%%SSH|ssh%% key-based authentication](../../system-administration/advanced-tools/command-line-interface.md#accessing-the-terminal) to log in without a password.  
 
 <div style={{ margin: 'auto', maxWidth: '359px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
 
@@ -34,16 +37,18 @@ Root users...
 </div>
 
 :::important  
-The `root` user is vital for maintaining security. Always ensure a [strong password](../security/good-practices.md#1-set-a-strong-root-password) is set and limit SSH access to keep your system safe.  
+The %%root user|root-user%% is vital for maintaining security. Always ensure a [strong password](./security-fundamentals.md#set-a-strong-root-password) is set and limit %%SSH|ssh%% access to keep your system safe.
 :::
 
 ### Share Users  
+
 These accounts are designed for accessing specific shares, without any system-level controls.
 
 Share users...
-- Can only be created and managed by the `root` user.  
-- Can access shares via **SMB**, **NFS**, or **FTP** (if enabled).  
-- Don’t have access to the **WebGUI**, **SSH**, or **Telnet**.
+
+- Can only be created and managed by the %%root user|root-user%%.
+- Can access shares via **%%SMB|samba%%**, **%%NFS|nfs%%**, or **%%FTP|ftp%%** (if enabled).
+- Don't have access to the **%%WebGUI|web-gui%%**, **%%SSH|ssh%%**, or **Telnet**.
 
 <div style={{ margin: 'auto', maxWidth: '359px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
 
@@ -64,15 +69,14 @@ To add a user:
    - Click on **Add User**.
 
 2. **Set up user credentials**
-   - **User Name**:  
-  Choose a unique name (like `john_media`).  Use only lowercase letters to avoid conflicts, and keep it under 30 characters due to Windows limits.
+   - **User Name**: Choose a unique name (like `john_media`).  Use only lowercase letters to avoid conflicts, and keep it under 30 characters due to Windows limits.
   
-   - **Password**:  
-  Create a strong password using a mix of letters, numbers, and symbols. Follow the password strength meter for guidance.
+   - **Password**: Create a strong password using a mix of letters, numbers, and symbols. Follow the password strength meter for guidance.
 
 :::note Optionally
-   - **Add a description**: Write a note like "Media Library Access."  
-   - **Custom image**: Upload a PNG image (like a user avatar) for visual identification.
+
+- **Add a description**: Write a note like "Media Library Access."  
+- **Custom image**: Upload a PNG image (like a user avatar) for visual identification.
 :::
 
 <div style={{ margin: 'auto', maxWidth: '359px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
@@ -82,8 +86,6 @@ To add a user:
 </div>
 
 3. Select **Add** to create the user.
-
-For more information, check out [Network Access Configuration](../shares/network-access.md#share-security).
 
 ---
 
@@ -119,7 +121,7 @@ To modify a user account:
 
 ## Reset your password
 
-If you've forgotten your **root password**, don't worry! Here are two simple methods to regain access to your Unraid server. You'll need physical access to your **USB flash device** and another computer.
+If you've forgotten your %%root|root-user%% password, don't worry! Here are two simple methods to regain access to your Unraid server. You'll need physical access to your **[USB flash device](../../system-administration/maintain-and-update/changing-the-flash-device.md)** and another computer.
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
@@ -127,7 +129,7 @@ import TabItem from '@theme/TabItem';
 <Tabs>
   <TabItem value="basic" label="Basic" default>
 
-This method clears **all user passwords**, including **root** and **share users**.  
+This method clears **all user passwords**, including*%%root|root-user%% and share users.  
 
 For the simplest way to reset your password:
 
@@ -142,7 +144,7 @@ For the simplest way to reset your password:
 </TabItem>
   <TabItem value="advanced" label="Advanced">
 
-This method will only remove the **root password** and leave other users intact.
+This method will only remove the **%%root|root-user%% password** and leave other users intact.
 
 To reset via this method:
 
@@ -163,5 +165,5 @@ To reset via this method:
 </Tabs>
 
 :::tip Be aware  
-Anyone with physical access to the USB can use these methods to reset your root password and gain full administrative access.  Always keep your USB secure!
+Anyone with physical access to the USB can use these methods to reset your %%root|root-user%% password and gain full administrative access.  Always keep your USB secure!
 :::

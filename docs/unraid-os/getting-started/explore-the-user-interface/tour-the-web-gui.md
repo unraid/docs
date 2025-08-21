@@ -8,36 +8,37 @@ The %%WebGUI|web-gui%% is the primary interface for managing and configuring you
 
 ## The Navigation Bar
 
-The horizontal navigation bar gives users access to the main functional areas of the Unraid system. You can customize it with plugins to add extra menus and options, available in the <u>Community Applications section</u>.
+The horizontal navigation bar gives users access to the main functional areas of the Unraid system. You can customize it with plugins to add extra menus and options, available in the [Community Applications section](../../using-unraid-to/run-docker-containers/community-applications.md).
 
   ![Navigation Bar - Annotated](/img/navbar3.png)
 
 ### 1. Dashboard
 
-The Dashboard tab provides real-time monitoring of hardware and software components on your Unraid server. It displays various aspects of management - such as system identification, CPU, RAM, storage, network information, Containers, %%VMs|vm%%, users, and shares - in a grid of tiles.
+The **Dashboard** tab provides real-time monitoring of hardware and software components on your Unraid server. It displays various aspects of management - such as system identification, CPU, RAM, storage, network information, Containers, %%VMs|vm%%, users, and shares - in a grid of tiles.
   ![Dashboard tab](/img/dashboard.png)
-You can enhance the Dashboard with plugins from <u>Community Applications</u> and customize the display by toggling tiles on and off using the padlock in the navigation bar.
+You can enhance the Dashboard with plugins from [Community Applications](../../using-unraid-to/run-docker-containers/community-applications.md)
 
 ### 2. Main
 
-The Main screen enables efficient management of your Unraid storage and disk operations. You can configure your %%array|array%%, %%cache pools|cache-pool%%, and flash devices, as well as manage USB storage and unassigned devices, including remote shares. It displays key information about each storage device, such as health, capacity, and file systems.
+The **Main** screen enables efficient management of your Unraid storage and disk operations. You can configure your %%array|array%%, %%cache pools|cache-pool%%, and flash devices, as well as manage USB storage and unassigned devices, including remote shares. It displays key information about each storage device, such as health, capacity, and file systems.
   ![Main tab](/img/maintab.png)
 At the bottom, the Array Operation section provides maintenance options to keep your %%array|array%% running smoothly.
 
 ### 3. Shares
 
-The Shares screen allows you to manage individual shares on your Unraid server. It is divided into <u>User Shares</u> and <u>Disk Shares</u>.
+The **Shares** tab is divided into [User Shares](../../using-unraid-to/manage-storage/shares.md#user-shares) and [Disk Shares](../../using-unraid-to/manage-storage/shares.md#disk-shares).
 
 You can access detailed information and management options for each share by selecting its name.
 
 ### 4. Users
 
-The Users screen allows management of all user accounts on the Unraid server, as detailed in the <u>User Management section</u>.
+The **Users** screen allows management of all user accounts on the Unraid server, as detailed in the [User Management section](../../system-administration/secure-your-server/user-management.md).
+
   ![Users tab](/img/userstab.png)
 
 ### 5. Settings
 
-The Settings screen allows you to manage all system settings on your Unraid server, including:
+The **Settings** screen allows you to manage all system settings on your Unraid server, including:
 
 - **System Settings**: Configure parameters and behaviors for the core components of Unraid.
 - **Network Services**: Set up various communication protocols and configure your %%Wireguard|wireguard%% %%VPN|vpn-tunnel%%.
@@ -48,24 +49,25 @@ The Settings screen allows you to manage all system settings on your Unraid serv
 
 ### 6. Plugins
 
-The Plugins screen shows all the plugins installed on your Unraid server.
+The **Plugins** screen shows all the plugins installed on your Unraid server.
+
 ![Plugins tab](/img/pluginstab.png)
 
 :::note
-For plugin installation steps, see <u>Extend with Community Applications</u>.
+For plugin installation steps, see [Community Applications](../../using-unraid-to/run-docker-containers/community-applications.md).
 :::
 
 ### 7. Docker
 
-The Docker screen displays all containers installed from <u>Community Applications</u>. You can launch, stop, and configure each container, including their auto-start settings.
+The **Docker** screen displays all containers installed from [Community Applications](../../using-unraid-to/run-docker-containers/community-applications.md). You can launch, stop, and configure each container, including their auto-start settings.
 
 :::note
-For details on running Docker containers, see <u>Using Unraid to... > Run Docker containers</u>.
+For details on running Docker containers, see [Run Docker containers](../../using-unraid-to/run-docker-containers/overview.md).
 :::
 
 ### 8. VMs
 
-The VMs screen lets you manage %%virtual machines (VMs)|vm%% on your Unraid server. It displays all your created %%VMs|vm%% along with their main attributes, such as CPU assignments, %%vDisk allocation|vdisk-allocation%%, and graphics card settings.
+The **VMs** screen lets you manage %%virtual machines (VMs)|vm%% on your Unraid server. It displays all your created %%VMs|vm%% along with their main attributes, such as CPU assignments, %%vDisk allocation|vdisk-allocation%%, and graphics card settings.
 
 :::note
 This option will **only** appear in the Navigation Bar if your Unraid server meets the %%hardware virtualization|hvm%% requirements.
@@ -73,20 +75,25 @@ This option will **only** appear in the Navigation Bar if your Unraid server mee
 
 ### 9. Apps
 
-The Apps screen, or "Community Applications," is the official source for Unraid apps.
+The **Apps** screen, or "Community Applications," is the official source for Unraid apps.
+
 ![Apps tab](/img/appstab.png)
-It provides community-sourced plugins and Docker containers that enhance Unraid’s functionality beyond a basic NAS. For more details, check the <u>Community Applications section</u>.
+
+It provides community-sourced plugins and Docker containers that enhance Unraid’s functionality beyond a basic NAS. For more details, check the [Community Applications section](../../using-unraid-to/run-docker-containers/community-applications.md).
 
 ### 10. Tools
 
-The Tools screen offers various tools for managing Unraid OS, customizing the look of the %%WebGUI|web-gui%%, and system updates.
+The **Tools** screen offers various tools for managing Unraid OS, customizing the look of the %%WebGUI|web-gui%%, and system updates.
+
 ![Tools tab](/img/toolstab.png)
 
 ### 11. System Shortcuts
 
+The **System Shortcuts** section provides quick access to essential Unraid features and tools directly from the navigation bar.
+
 ![System Shortcuts](/img/systemshortcuts.png)
 
-The section of the Navigation bar displays shortcuts to Unraid features, such as:
+The Navigation bar displays shortcuts to Unraid features, such as:
 
 - ![Logout](/img/logout.png) **Logout :** Log out of the Unraid server.
 - ![Terminal](/img/terminal.png) **Terminal:** Open a terminal window.
@@ -99,11 +106,15 @@ The section of the Navigation bar displays shortcuts to Unraid features, such as
 
 ### 12. Account Options
 
-In the top-right corner of the %%WebGUI|web-gui%%, next to your server name, is the hamburger menu. This menu allows you to manage your Unraid account, access Unraid Connect, upgrade your license key, and log out.
+In the top-right corner of the %%WebGUI|web-gui%%, next to your server name, is the hamburger (☰) menu for **Account Options**. This menu allows you to manage your Unraid account, access [Unraid Connect](../../../unraid-connect/overview-and-setup.md), upgrade your license key, and log out.
 
-If you're in trial mode, you can also redeem your license key here to activate Unraid as Basic, Plus, or Pro.
+If you're in trial mode, you can also redeem your license key here to activate Unraid as Starter, Unleashed, or Lifetime.
 
 ### 13. Status Bar
 
 ![Status Bar](/img/status-bar2.png)
-The status bar at the bottom of the %%WebGUI|web-gui%% shows the current state of your %%array|array%% and the status of ongoing operations like %%Mover|mover%% or %%parity checks|parity-check%%. Some plugins also display important information, like system temperatures.
+The **Status Bar** at the bottom of the %%WebGUI|web-gui%% shows the current state of your %%array|array%% and the status of ongoing operations like %%Mover|mover%% or %%parity checks|parity-check%%. Some plugins also display important information, like system temperatures.
+
+---
+
+\* *"%%WireGuard|wireguard%%" and the "%%WireGuard|wireguard%%" logo are registered trademarks of Jason A. Donenfeld.*

@@ -10,7 +10,7 @@ import TabItem from '@theme/TabItem';
 
 Community Applications provides a curated catalog of over 2,000 free Docker containers and plugins maintained by the Unraid community. Each container or plugin lets your server take on new roles, such as running a media server, dynamic DNS client, or backup solution.
 
-- **Docker containers** are lightweight packages that include everything needed to run an application, keeping it isolated from the rest of your %%array|array%% and %%cache pool|cache-pool%%.
+- **Docker containers** are lightweight packages that include everything needed to run an application, keeping it isolated from the rest of your %%array|array%% and %%cache pool|cache-pool%%.  Learn more about [array configuration](./manage-storage/array-configuration.md) and [cache pools](./manage-storage/cache-pools.md).
 - **Plugins** enhance Unraid OS itself. For more information about plugins, visit the [Plugins](../customize-your-experience/plugins.md) page.
 
 :::caution
@@ -19,7 +19,9 @@ Lime Technology does not supply or directly support Community Applications. The 
 
 ## How Community Applications works
 
-The Community Applications plugin adds an “Apps” tab to the Unraid %%WebGUI|web-gui%%, which provides an app store-like interface. You can browse, search, and filter applications by category or keyword. Each listing clearly indicates whether it is a Docker container or a plugin. Listings include labels such as:
+The Community Applications plugin adds an **Apps** tab to the Unraid %%WebGUI|web-gui%%, which provides an app store-like interface. You can browse, search, and filter applications by category or keyword. Each listing clearly indicates whether it is a Docker container or a plugin. 
+
+Listings include labels such as:
 
 - **Beta:** The application is in active development and may have bugs.
 - **Installed:** The application is currently installed on your server.
@@ -46,7 +48,7 @@ To install the Community Applications plugin:
 3. Once the installation is complete, refresh the page. The screen will automatically open the **Apps** tab and introduce you to Community Applications.
 
 :::tip
-Before installing, consider backing up your flash drive to protect your configuration.
+Before installing, consider backing up your flash drive to protect your configuration. See [Secure your flash drive](../../system-administration/secure-your-server/secure-your-flash-drive.md) for backup guidance.
 :::
 
 ---
@@ -66,7 +68,7 @@ To install a Docker container or plugin, simply click the **Install** button fro
 Keep the installation window open until the process is fully completed.
 
 :::tip Security tip
-Before you install, take a moment to read the application's description. Check the developer's reputation and ensure the source repository is trustworthy. It’s best to choose applications from well-known developers or those with active support threads. Always be cautious about granting access to your %%array|array%%, %%cache pool|cache-pool%%, or any sensitive data.
+Before you install, take a moment to read the application's description. Check the developer's reputation and ensure the source repository is trustworthy. It’s best to choose applications from well-known developers or those with active support threads. Always be cautious about granting access to your %%array|array%%, %%cache pool|cache-pool%%, or any sensitive data.  Learn more about [security fundamentals](../../system-administration/secure-your-server/security-fundamentals.md).
 :::
 
   </TabItem>
@@ -82,7 +84,7 @@ To remove an application:
   
   <TabItem value="Reinstalling applications" label="Reinstalling applications">
 
-If you need to reinstall a Docker container or plugin (for instance, if your `docker.img` file is corrupted), Community Applications simplifies this for you. All application settings are saved as a %%VM XML template|vm-xml-templates%% in `/boot/config/plugins/dockerMan/templates-user`.
+If you need to reinstall a Docker container or plugin (for instance, if your `docker.img` file is corrupted), Community Applications simplifies this for you. All application settings are saved as a %%VM XML template|vm-xml-templates%% in `/boot/config/plugins/dockerMan/templates-user`.  For more information on templates, see [VM setup](../create-virtual-machines/vm-setup.md).
 
 To reinstall an application:
 
@@ -111,7 +113,7 @@ These resources will connect you to community forums and developer discussions w
 
 ## Updating applications (Action Center)
 
-The **Action Center** in the %%WebGUI|web-gui%% is your go-to place for keeping track of applications that need updates. When there are updates available, you’ll see an alert. Just click on **Actions** for the app that needs updating, and then select **Update** to run the update script. Regular updates are essential for maintaining the security, stability, and compatibility of your Unraid installation.
+The **Action Center** in the %%WebGUI|web-gui%% is your go-to place for keeping track of applications that need updates. When there are updates available, you’ll see an alert. Just click on **Actions** for the app that needs updating, and then select **Update** to run the update script. Regular updates are essential for maintaining the security, stability, and compatibility of your Unraid installation. See [Upgrading Unraid](../../system-administration/maintain-and-update/upgrading-unraid.md) for more information.
 
 ---
 
@@ -132,6 +134,8 @@ Submissions are reviewed by the Community Applications moderation team, which pe
 
 ### Maintenance expectations
 
+Developers who publish applications in Community Applications are expected to maintain their projects to ensure compatibility and reliability for the Unraid community. This section outlines the ongoing responsibilities that help maintain the quality of available applications.
+
 Once published, developers are expected to:
 
 - Regularly update applications to maintain compatibility with new Unraid releases.
@@ -145,7 +149,9 @@ The moderation team reserves the right to remove applications that become incomp
 
 ### Publishing workflow
 
-1. Prepare your application’s template files and documentation.
+If you're a developer interested in contributing to the Unraid community by publishing your application, this workflow ensures quality control and provides users with reliable, well-documented applications.
+
+1. Prepare your application's template files and documentation.
 2. Create a support thread in the [Unraid forums](https://forums.unraid.net/).
 3. Submit your application via the **Community Applications** submission portal in the %%WebGUI|web-gui%%.
 4. The moderation team typically reviews submissions within 48 hours.

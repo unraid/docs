@@ -8,10 +8,10 @@ import TabItem from '@theme/TabItem';
 
 # Upgrading Unraid
 
-Upgrading **Unraid OS** ensures that you have the latest features, security updates, and hardware support. This page outlines the standard upgrade process, along with troubleshooting tips and manual upgrade options.
+Upgrading Unraid OS ensures that you have the latest features, security updates, and hardware support. This page outlines the standard upgrade process, along with troubleshooting tips and manual upgrade options.
 
 :::note Prerequisites
-Before you start upgrading, make sure to create a complete backup of your USB flash device. For more details, refer to [Changing your flash device](../maintain-and-update/changing-the-flash-device.md#backing-up-your-flash-device).
+Before you start upgrading, make sure to create a complete backup of your USB flash device. For more details, refer to [Changing your flash device](../maintain-and-update/changing-the-flash-device.md).
 :::
 
 :::tip Best practices before upgrading
@@ -24,7 +24,7 @@ Before you start upgrading, make sure to create a complete backup of your USB fl
 6. **Reboot** your server to complete the upgrade.
 :::
 
----
+When upgrading to Unraid 7.x, you may see warnings about [%%ZFS|zfs%%](../../advanced-configurations/optimize-storage/zfs-storage.md) pool feature upgrades during boot or in the %%WebGUI|web-gui%%.
 
 ## Standard upgrade process
 
@@ -33,7 +33,7 @@ Before you start upgrading, make sure to create a complete backup of your USB fl
 
 Upgrading Unraid is done using the new **Update OS tool** with a user-friendly interface:
 
-1. In the WebGUI, click the top-right dropdown menu and select **Check for Update** or navigate to **Tools → Update OS**.
+1. In the %%WebGUI|web-gui%%, click the top-right dropdown menu and select **Check for Update** or navigate to ***Tools → Update OS***.
 2. Click **View Changelog to Start Update**. The Changelog will appear for you to review before hitting **Continue**.
 3. Click **Confirm and start update** to apply the latest stable release.
 4. When prompted, reboot your server to complete the upgrade.
@@ -47,7 +47,7 @@ You may need to log into your Unraid account to access updates, especially for "
 
 For Unraid versions 6.11 and 6.12, follow this traditional update method:
 
-1. In the WebGUI, go to **Tools → Update OS**.
+1. In the %%WebGUI|web-gui%%, go to ***Tools → Update OS***.
 2. Click **Check for Updates**.
 3. If a new release is available, click **Update**.
 4. Reboot your server when prompted.
@@ -57,11 +57,11 @@ For Unraid versions 6.11 and 6.12, follow this traditional update method:
 
 :::caution ZFS pool upgrade warnings
 
-When upgrading to Unraid 7.x, you may see warnings about ZFS pool feature upgrades during boot or in the WebGUI. These warnings are not a sign of a problem; they simply indicate that your ZFS pool is using features from an older version
+When upgrading to Unraid 7.x, you may see warnings about [%%ZFS|zfs%%](../../advanced-configurations/optimize-storage/zfs-storage.md) pool feature upgrades during boot or in the %%WebGUI|web-gui%%. These warnings are not a sign of a problem; they simply indicate that your %%ZFS|zfs%% pool is using features from an older version
 
 Upgrading your pool isn't urgent, but if you do decide to upgrade, keep in mind that it will no longer work with older versions of Unraid. This means you won't be able to revert to a previous Unraid version after making the upgrade.
 
-As always, remember to back up your data before upgrading your ZFS pools
+As always, remember to back up your data before upgrading your %%ZFS|zfs%% pools
 :::
 
 ---
@@ -73,7 +73,7 @@ The Update Assistant is a useful tool for checking plugin compatibility and iden
 To use the Update Assistant:
 
 1. Install the [**Fix Common Problems**](https://unraid.net/community/apps/c/plugins?q=fix+common+problems#r) plugin from the Community Applications.
-2. Once installed, navigate to **Tools → About → Update Assistant**.
+2. Once installed, navigate to ***Tools → About → Update Assistant***.
 3. Run the assistant to detect any plugin conflicts or blockers for the upgrade.
 
 ---
@@ -83,17 +83,17 @@ To use the Update Assistant:
 If you run into problems after upgrading, check the relevant section below for assistance.
 
 <details>
-<summary><strong>Array or docker containers are slow to start after upgrade</strong></summary>
+<summary><strong>Array or docker containers are slow to start after upgrade</strong> - Click to expand/collapse</summary>
 
 A one-time migration may be necessary for Docker containers after certain upgrades. This process can take time, especially if you have many images. Be patient during this process; performance should normalize after the initial start.
 </details>
 
 <details>
-<summary><strong>Docker containers are not working correctly after upgrade</strong></summary>
+<summary><strong>Docker containers are not working correctly after upgrade</strong> - Click to expand/collapse</summary>
 
 If you encounter errors like *"layers from manifest don't match image configuration,"* you may need to rebuild your Docker image file. Here’s how:
 
-1. Go to **Settings → Docker** and stop the Docker service.
+1. Go to ***Settings → Docker*** and stop the Docker service.
 2. Check the box to delete the Docker image and click the delete button.
 3. Restart Docker to recreate the image.
 4. Navigate to the **Docker** tab and click **Add Container**.
@@ -104,63 +104,63 @@ Repeat this for all containers. No need to reconfigure; your app settings will b
 </details>
 
 <details>
-<summary><strong>VMs show "cannot get interface MTU" or network errors</strong></summary>
+<summary><strong>VMs show "cannot get interface MTU" or network errors</strong> - Click to expand/collapse</summary>
 
-If you’ve used a custom bridge name for VM networking, update all VMs to use the default `br0` bridge by following these steps:
+If you've used a custom bridge name for %%VM|vm%% networking, update all %%VMs|vm%% to use the default `br0` bridge by following these steps:
 
-1. Go to the **VMs** tab and edit each VM (make sure to enable **Advanced View**).
+1. Go to the **VMs** tab and edit each %%VM|vm%% (make sure to enable **Advanced View**).
 2. Set the network bridge to `br0` and click **Apply**.
-3. Navigate to **Settings → VM Manager** (in Advanced View) and set the default bridge to `br0`.
+3. Navigate to ***Settings → VM Manager*** (in **Advanced View**) and set the default bridge to `br0`.
 
 </details>
 
 <details>
-<summary><strong>VNC access to VMs is not working or is slow</strong></summary>
+<summary><strong>VNC access to VMs is not working or is slow</strong> - Click to expand/collapse</summary>
 
-For older VMs, you may need to update the VNC video driver. Here's how:
+For older %%VMs|vm%%, you may need to update the %%VNC|vnc-session%% video driver:
 
-1. Edit the VM from the **VMs** tab (select **Advanced View**).
-2. Set the **VNC Video Driver** to **QXL** (recommended). Try **Cirrus** or **vmvga** if you have limited success with QXL.
+1. Edit the %%VM|vm%% from the **VMs** tab (select **Advanced View**).
+2. Set the **%%VNC|vnc-session%% Video Driver** to **QXL** (recommended). Try **Cirrus** or **vmvga** if you have limited success with QXL.
 3. Click **Apply** to save the changes.
 
 </details>
 
 <details>
-<summary><strong>VM will not boot (EFI shell appears)</strong></summary>
+<summary><strong>VM will not boot (EFI shell appears)</strong> - Click to expand/collapse</summary>
 
-If you have OVMF-based VMs created in older Unraid versions, you might encounter an EFI shell. You can boot the VM by entering the following commands:
+If you have %%OVMF|ovmf%%-based %%VMs|vm%% created in older Unraid versions, you might encounter an EFI shell. You can boot the %%VM|vm%% by entering the following commands:
 
 1. Type `fs0:`.
 2. Then type `cd efi/boot`.
 3. Finally, type `bootx64.efi`.
 
-If `fs0:` doesn’t work, you can try `fs1:` instead. If you continue to have issues, please visit the [Unraid forums](https://forums.unraid.net/) for assistance.
+If `fs0:` doesn't work, you can try `fs1:` instead. If you continue to have issues, please visit the [Unraid forums](https://forums.unraid.net/) for assistance.
 </details>
 
 <details>
-<summary><strong>Trying to start my VM gives an "Invalid machine type" error</strong></summary>
+<summary><strong>Trying to start my VM gives an "Invalid machine type" error</strong> - Click to expand/collapse</summary>
 
-To resolve this, edit the VM in the **WebGUI** and click **Apply** without making any changes. This action will update the machine type to the latest supported version.
+To resolve this, edit the %%VM|vm%% in the %%WebGUI|web-gui%% and click **Apply** without making any changes. This action will update the machine type to the latest supported version.
 </details>
 
 <details>
-<summary><strong>Poor VM performance after upgrading</strong></summary>
+<summary><strong>Poor VM performance after upgrading</strong> - Click to expand/collapse</summary>
 
-If your VM is slow after an upgrade, go to the VM settings (in **Advanced View**) and update the **Machine** type version to the latest revision (e.g., change from `i440fx-2.5` to `i440fx-2.7`). Make sure not to change the prefix (for example, don’t switch from `i440fx` to `Q35`).
+If your %%VM|vm%% is slow after an upgrade, go to the %%VM|vm%% settings (in **Advanced View**) and update the **Machine** type version to the latest revision (e.g., change from `i440fx-2.5` to `i440fx-2.7`). Make sure not to change the prefix (for example, don't switch from `i440fx` to `Q35`).
 </details>
 
 ---
 
 ## Manual upgrade or downgrade
 
-Manual upgrades are infrequently necessary but may be needed if you can’t access the **WebGUI** or need to revert to a prior version. Before proceeding, it’s important to back up your USB flash device, details of which you can find in [Changing your flash device](../maintain-and-update/changing-the-flash-device.md#backing-up-your-flash-device).
+Manual upgrades are infrequently necessary but may be needed if you can't access the %%WebGUI|web-gui%% or need to revert to a prior version. Before proceeding, it's important to back up your USB flash device, details of which you can find in [Changing your flash device](../maintain-and-update/changing-the-flash-device.md).
 
 ### Downgrade using the OS tool (if WebGUI is accessible)
 
 If you can reach the WebGUI:
 
-1. Log in to the **WebGUI**.
-2. Navigate to **Tools → Downgrade OS**.
+1. Log in to the %%WebGUI|web-gui%%.
+2. Navigate to ***Tools → Downgrade OS***.
 3. Your previous version will be listed as the available downgrade option.
 4. Click **Downgrade** and follow the prompts.
 5. Reboot your server when prompted.
@@ -171,15 +171,15 @@ Keep in mind that downgrading can lead to compatibility issues with plugins or D
 
 ### Manual methods (if WebGUI is inaccessible)
 
-Only use these methods if you can’t access the WebGUI:
+Only use these methods if you can't access the %%WebGUI|web-gui%%:
 
 <Tabs>
   <TabItem value="Simplest method" label="Simplest method">
 
-1. Download the Unraid version ZIP file from the [Download Archive](../download_list.mdx).
+1. Download the Unraid version ZIP file from the [Version History](../../download_list.mdx).
 2. Unzip the file on your computer.
 3. Access the `flash` share or connect the USB flash device to your computer.
-4. Create a `previous` directory if it doesn’t already exist.
+4. Create a `previous` directory if it doesn't already exist.
 5. Move all `bz*` and `changes.txt` files into the `previous` directory.
 6. Copy the new `bz*` and `changes.txt` files to the root of the flash drive.
 7. Safely eject the drive and reboot your system.
@@ -191,25 +191,27 @@ Only use these methods if you can’t access the WebGUI:
 This method should only be used if you are comfortable with the Linux command line, as mistakes might make your system unbootable.
 :::
 
-1. Copy the URL of the desired Unraid version ZIP file from the [Download Archive](../download_list.mdx).
-2. Log in via SSH or console.
+1. Copy the URL of the desired Unraid version ZIP file from the [Version History](../../download_list.mdx).
+2. Log in via %%SSH|ssh%% or console.
 3. Execute the following commands *one at a time* (replace `<URL>` with the copied link):
-```bash
-cd /tmp
-rm -f unraid.zip
-rm -rf unraid_install
-wget -O unraid.zip <URL>
-[[ -s unraid.zip ]] && echo "OK to continue" || echo "STOP: the file was not downloaded"
-unzip -d unraid_install unraid.zip
-[[ -s unraid_install/bzroot ]] && echo "OK to continue" || echo "STOP: the file was not extracted properly"
-[[ ! -d /boot/previous ]] && mkdir /boot/previous
-mv /boot/bz* /boot/previous
-mv /boot/changes.txt /boot/previous
-cp unraid_install/bz* /boot
-cp unraid_install/changes.txt /boot
-sync -f /boot
-sleep 5
-reboot
-```
+
+    ```bash
+    cd /tmp
+    rm -f unraid.zip
+    rm -rf unraid_install
+    wget -O unraid.zip <URL>
+    [[ -s unraid.zip ]] && echo "OK to continue" || echo "STOP: the file was not downloaded"
+    unzip -d unraid_install unraid.zip
+    [[ -s unraid_install/bzroot ]] && echo "OK to continue" || echo "STOP: the file was not extracted properly"
+    [[ ! -d /boot/previous ]] && mkdir /boot/previous
+    mv /boot/bz* /boot/previous
+    mv /boot/changes.txt /boot/previous
+    cp unraid_install/bz* /boot
+    cp unraid_install/changes.txt /boot
+    sync -f /boot
+    sleep 5
+    reboot
+    ```
+
   </TabItem>
 </Tabs>

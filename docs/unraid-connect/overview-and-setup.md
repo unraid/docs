@@ -28,7 +28,7 @@ Unraid Connect is more than just an add-on; it's an essential extension of the U
 ## Data collection and privacy
 
 <details>
-<summary>Click to see what data is collected and how we handle it</summary>
+<summary><strong>Click to see what data is collected and how we handle it</strong></summary>
 
 Unraid Connect prioritizes your privacy and transparency. Here’s what you need to know about how we handle your data:
 
@@ -37,13 +37,13 @@ Unraid Connect prioritizes your privacy and transparency. Here’s what you need
 When your server connects to Unraid.net, it establishes a secure connection to our infrastructure and transmits only the necessary data required for a seamless experience in the Unraid Connect Dashboard. This includes:
 
 - Server hostname, description, and icon
-- Keyfile details and flash GUID
+- Keyfile details and flash %%GUID|guid%%
 - Local access URL and LAN IP (only if a certificate is installed)
 - Remote access URL and WAN IP (if remote access is turned on)
 - Installed Unraid version and uptime
 - Unraid Connect plugin version and unraid-api version/uptime
-- Array size and usage (only numbers, no file specifics)
-- Number of Docker containers and VMs installed and running
+- %%Array|array%% size and usage (only numbers, no file specifics)
+- Number of Docker containers and %%VMs|vm%% installed and running
 
 We use this data solely to enable Unraid Connect features, such as remote monitoring, management, and notifications. It is not used for advertising or profiling.
 
@@ -51,7 +51,7 @@ We use this data solely to enable Unraid Connect features, such as remote monito
 
 - We only keep the most recent update from your server; no past data is stored.
 - Data is retained as long as your server is registered and using Unraid Connect.
-- To delete your data, simply uninstall the plugin and remove any SSL certificates issued through Let's Encrypt.
+- To delete your data, simply uninstall the plugin and remove any %%SSL|ssl%% certificates issued through Let's Encrypt.
 
 <h3>Data sharing</h3>
 
@@ -67,9 +67,9 @@ Unraid Connect is available as a plugin that requires Unraid OS 6.10 or later. B
 
 To install Unraid Connect:
 
-1. Navigate to the **Apps** tab in the Unraid WebGUI.
+1. Navigate to the **Apps** tab in the Unraid %%WebGUI|web-gui%%.
 2. Search for **Unraid Connect** and proceed to install the plugin. Wait for the installation to fully complete before closing the dialog.
-3. In the top right corner of your Unraid WebGUI, click on the Unraid logo and select **Sign In**.
+3. In the top right corner of your Unraid %%WebGUI|web-gui%%, click on the Unraid logo and select **Sign In**.
 
 <div style={{ margin: 'auto', maxWidth: '358px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
 
@@ -79,10 +79,10 @@ To install Unraid Connect:
 
 4. Sign in with your Unraid.net credentials or create a new account if necessary.
 5. Follow the on-screen instructions to register your server with Unraid Connect.
-6. After registration, you can access the Unraid Connect Dashboard for centralized management.
+6. After registration, you can access the [Unraid Connect Dashboard](https://connect.myunraid.net) for centralized management.
 
 :::note
-Unraid Connect requires a myunraid.net certificate for secure remote management and access. To provision a certificate, go to ***Settings → Management Access*** in the WebGUI and click **Provision** under the Certificate section.
+Unraid Connect requires a myunraid.net certificate for secure remote management and access. To provision a certificate, go to ***Settings → Management Access*** in the %%WebGUI|web-gui%% and click **Provision** under the Certificate section.
 :::
 
 ## Dashboard
@@ -116,10 +116,10 @@ With a valid **myunraid.net** certificate, Unraid Connect enables secure, remote
 
 Remote management features include:
 
-- **Remote WebGUI access:** Access the WebGUI from anywhere.
-- **Array controls:** Start or stop arrays and manage storage pools.
-- **Docker and VM management:** View, start, stop, and monitor containers and VMs.
-- **Parity & Scrub:** Launch parity-check or ZFS/BTRFS scrub jobs
+- **Remote WebGUI access:** Access the %%WebGUI|web-gui%% from anywhere.
+- **Array controls:** Start or stop %%array|array%%s and manage storage pools.
+- **Docker and VM management:** View, start, stop, and monitor containers and %%VM|vm%%s.
+- **Parity & Scrub:** Launch %%parity check|parity-check%% or %%ZFS|zfs%%/%%BTRFS|btrfs%% scrub jobs
 - **Flash backup:** Trigger and monitor flash device backups to the cloud.
 - **Diagnostics:** Download a diagnostics zip for support
 - **Notifications:** Review and acknowledge system alerts.
@@ -130,9 +130,9 @@ You can manage multiple servers from any device - phone, tablet, or computer - w
 
 ### DNS rebinding protection
 
-DNS rebinding protection is a security feature on many routers that prevents public DNS entries from resolving to local IP addresses. This helps protect your network from certain attacks, but can cause issues when trying to use SSL certificates for local access to the Unraid WebGUI.
+DNS rebinding protection is a security feature on many routers that prevents public DNS entries from resolving to local IP addresses. This helps protect your network from certain attacks, but can cause issues when trying to use %%SSL|ssl%% certificates for local access to the Unraid %%WebGUI|web-gui%%.
 
-If you encounter a DNS rebinding error while trying to provision an SSL certificate (e.g., after clicking the **Provision** button), consider the following steps:
+If you encounter a DNS rebinding error while trying to provision an %%SSL|ssl%% certificate (e.g., after clicking the **Provision** button), consider the following steps:
 
 - Click **OK** on the error message, wait for 2 to 5 minutes, and try again.
 - If the error continues, check your router settings for options related to "DNS rebinding protection" or similar terms.
@@ -143,7 +143,7 @@ The exact steps may vary based on your router model and firmware.
 
 ### Accessing your server when DNS is down
 
-When SSL is enabled, you typically access your Unraid server using a fully qualified domain name (FQDN), such as:
+When %%SSL|ssl%% is enabled, you typically access your Unraid server using a fully qualified domain name (FQDN), such as:
 
 ```
 https://ip.yourpersonalhash.myunraid.net
@@ -155,9 +155,9 @@ Or, if you're using a custom HTTPS port:
 https://ip.yourpersonalhash.myunraid.net:<https_port>
 ```
 
-This ensures you're using a valid SSL certificate for secure access. However, if your Internet connection goes down and your browser hasn't cached the DNS entry, you may lose access to the WebGUI.
+This ensures you're using a valid %%SSL|ssl%% certificate for secure access. However, if your Internet connection goes down and your browser hasn't cached the DNS entry, you may lose access to the %%WebGUI|web-gui%%.
 
-**If you lose DNS or Internet access:**
+If you lose DNS or Internet access:
 
 - If **Use SSL/TLS** is set to **Yes**, try accessing your server at:
   ```
@@ -174,7 +174,7 @@ This ensures you're using a valid SSL certificate for secure access. However, if
       ```bash
       use_ssl no
       ```
-   3. You can now access the WebGUI at:
+   3. You can now access the %%WebGUI|web-gui%% at:
       ```
       http://<ip_address>
       ```
@@ -184,33 +184,33 @@ This ensures you're using a valid SSL certificate for secure access. However, if
       ```
       (Note: this uses HTTP, not HTTPS.)
 
-- Once Internet access is restored, go to ***Settings → Management Access*** and set **Use SSL/TLS** back to **Strict** to re-enable local SSL.
+Once Internet access is restored, go to ***Settings → Management Access*** and set **Use SSL/TLS** back to **Strict** to re-enable local SSL.
 
 ### Disabling SSL for local access
 
-You should disable SSL for local access if you prefer a simple HTTP connection on your trusted home network or if you're facing ongoing issues with SSL certificate provisioning, DNS rebinding, or browser compatibility.
+You should disable %%SSL|ssl%% for local access if you prefer a simple HTTP connection on your trusted home network or if you're facing ongoing issues with %%SSL|ssl%% certificate provisioning, DNS rebinding, or browser compatibility.
 
-**To disable SSL for local access:**
+To disable %%SSL|ssl%% for local access:
 
 1. Go to ***Settings → Management Access*** in the WebGUI.
 2. Set **Use SSL/TLS** to **No**.
 3. Click **Apply**.
 
-This change will also disable the Remote Access feature, as SSL is necessary for secure remote connections.
+This change will also disable the Remote Access feature, as %%SSL|ssl%% is necessary for secure remote connections.
 
 :::caution
-Disabling SSL means your WebGUI will be accessible over unencrypted HTTP. This exposes your login credentials and session data to anyone on your local network and is not recommended unless you are confident your network is secure and you do not need remote access. For the best security, keep SSL enabled whenever possible.
+Disabling %%SSL|ssl%% means your %%WebGUI|web-gui%% will be accessible over unencrypted HTTP. This exposes your login credentials and session data to anyone on your local network and is not recommended unless you are confident your network is secure and you do not need remote access. For the best security, keep %%SSL|ssl%% enabled whenever possible.
 :::
 
 :::note
-You do not need to uninstall the Unraid Connect plugin to disable SSL. SSL management is a core feature of Unraid and does not rely on the plugin.
+You do not need to uninstall the Unraid Connect plugin to disable %%SSL|ssl%%. %%SSL|ssl%% management is a core feature of Unraid and does not rely on the plugin.
 :::
 
 ---
 
 ## Deep linking
 
-Deep linking in Unraid Connect lets you jump directly to specific sections of your Unraid WebGUI with a single click. Simply click any of the circled link buttons (below) in the Connect interface to go straight to the relevant management page for your server.
+Deep linking in Unraid Connect lets you jump directly to specific sections of your Unraid %%WebGUI|web-gui%% with a single click. Simply click any of the circled link buttons (below) in the Connect interface to go straight to the relevant management page for your server.
 
 <div style={{ margin: 'auto', maxWidth: '600px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
 
@@ -227,7 +227,7 @@ Unraid Connect provides a flexible dashboard experience, allowing you to persona
 <Tabs>
 <TabItem value="banner" label="Change banner image">
 
-To display your server’s banner image on the Connect dashboard, upload or select a banner image from your WebGUI under ***Settings → Display Settings → Banner***. This banner will automatically appear in your Connect dashboard for that server.
+To display your server’s banner image on the Connect dashboard, upload or select a banner image from your %%WebGUI|web-gui%% under ***Settings → Display Settings → Banner***. This banner will automatically appear in your Connect dashboard for that server.
 
 </TabItem>
 <TabItem value="arrange" label="Rearrange dashboard tiles">
@@ -265,7 +265,7 @@ You don’t need to leave the Connect interface to manage or upgrade your licens
 
 ## Language localization
 
-Unraid Connect supports multiple languages to cater to a global user base. You can use the Connect interface in English, German, French, Spanish, Chinese (Simplified), Turkish, or Japanese.
+Unraid Connect supports multiple languages to cater to a global user base. You can change your language preference through the language selector in the Connect interface.
 
 To change your language preference:
 
@@ -288,7 +288,7 @@ The interface will update automatically to reflect your selection.
 
 You can sign out of Unraid Connect anytime from ***Settings → Management Access → Unraid Connect → Account Status*** by clicking the **Sign Out** button.
 
-**What happens when you sign out:**
+When you sign out:
 
 - Your server remains listed on the Connect dashboard, but you lose access to remote management features.
 - Remote access, cloud-based flash backups, and other Unraid Connect features will be disabled for that server.
@@ -302,7 +302,7 @@ You can sign out of Unraid Connect anytime from ***Settings → Management Acces
 When you uninstall the Unraid Connect plugin:
 
 - All flash backup files will be deactivated and deleted from your local flash drive.
-- Cloud backups are marked for removal from Unraid servers; they will be retained for 30 days, after which they are permanently purged. For immediate deletion, disable Flash Backup before uninstalling.
+- Cloud backups are marked for removal from Unraid servers; they will be retained for 30 days, after which they are permanently purged. For immediate deletion, [disable Flash Backup](./automated-flash-backup.md) before uninstalling.
 - Remote access will be disabled. Ensure that you remove any related port forwarding rules from your router.
 - Your server will be signed out of Unraid.net.
 
@@ -314,7 +314,7 @@ Uninstalling the plugin does **not** revert your server’s URL from `https://yo
 
 ## Connection errors
 
-If you encounter connection errors in Unraid Connect, open a terminal from the Unraid WebGUI and run:
+If you encounter connection errors in Unraid Connect, [open a terminal](../unraid-os/system-administration/advanced-tools/command-line-interface.md) from the %%WebGUI|web-gui%% and run:
 
 ```
 unraid-api restart
