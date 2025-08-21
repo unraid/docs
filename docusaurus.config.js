@@ -489,6 +489,10 @@ const config = {
             to: "/unraid-os/manual/additional-settings/#ups-settings",
             from: "/go/ups-settings",
           },
+          {
+            to: "/API/how-to-use-the-api/#managing-api-keys",
+            from: "/go/managing-api-keys",
+          },
         ],
         createRedirects(existingPath) {
           // Create automatic redirects for release notes paths
