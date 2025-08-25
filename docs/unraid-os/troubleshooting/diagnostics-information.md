@@ -34,7 +34,7 @@ The diagnostics are a single zip file containing multiple files. If it seems to 
 
 ### Anonymization of diagnostic data
 
-While diagnostic data is anonymized, if you enable mover logging under ***Settings > Mover Settings***, the syslog will give details of files that mover is operating on.
+While diagnostic data is anonymized, if you enable mover logging under ***Settings > Scheduler > Mover Settings***, the syslog will give details of files that mover is operating on.
 
 In this particular scenario, you have intentionally enabled mover logging to investigate a problem where it is beneficial to gather as much detail as possible, in order to resolve an issue.
 
