@@ -22,6 +22,20 @@
             border-radius: 5px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
+        .iframe-wrapper {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        .iframe-section {
+            flex: 1;
+        }
+        .iframe-section h2 {
+            margin-top: 0;
+            margin-bottom: 10px;
+            font-size: 18px;
+            color: #333;
+        }
         .iframe-container {
             width: 100%;
             border-radius: 5px;
@@ -87,12 +101,13 @@
                 <label for="preset-urls">Preset URLs:</label>
                 <select id="preset-urls">
                     <option value="">-- Select a page --</option>
-                    <option value="http://localhost:3000" selected>localhost:3000 (Home)</option>
-                    <option value="/">Home</option>
-                    <option value="/docs/unraid-os/getting-started">Getting Started</option>
-                    <option value="/docs/unraid-os/manual">Manual</option>
-                    <option value="/docs/unraid-os/faq">FAQ</option>
-                    <option value="/docs/connect">Connect</option>
+                    <option value="/" selected>Home</option>
+                    <option value="/unraid-os/getting-started/getting-started">Getting Started</option>
+                    <option value="/unraid-os/manual/storage-management">Storage Management</option>
+                    <option value="/unraid-os/faq/os-faq">OS FAQ</option>
+                    <option value="/connect">Connect</option>
+                    <option value="/unraid-os/release-notes/7.2.0">Release Notes 7.2.0</option>
+                    <option value="/unraid-os/manual/security/security">Security</option>
                 </select>
 
                 <label for="custom-url">Custom URL:</label>
@@ -122,8 +137,19 @@
             </div>
         </div>
         
-        <div class="iframe-container">
-            <iframe id="test-iframe" src="http://localhost:3000" title="Documentation iframe"></iframe>
+        <div class="iframe-wrapper">
+            <div class="iframe-section">
+                <h2>Localhost</h2>
+                <div class="iframe-container">
+                    <iframe id="test-iframe" src="http://localhost:3000/" title="Documentation iframe (localhost)"></iframe>
+                </div>
+            </div>
+            <div class="iframe-section">
+                <h2>Cloudflare</h2>
+                <div class="iframe-container">
+                    <iframe id="cloudflare-iframe" src="https://docs.unraid.net/" title="Documentation iframe (Cloudflare)"></iframe>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -134,9 +160,10 @@
             const loadButton = document.getElementById('load-iframe');
             const resizeButton = document.getElementById('resize-iframe');
             const iframe = document.getElementById('test-iframe');
+            const cloudflareIframe = document.getElementById('cloudflare-iframe');
             const widthInput = document.getElementById('iframe-width');
             const heightInput = document.getElementById('iframe-height');
-            const iframeContainer = document.querySelector('.iframe-container');
+            const iframeContainers = document.querySelectorAll('.iframe-container');
             const themeMode = document.getElementById('theme-mode');
             const applyThemeButton = document.getElementById('apply-theme');
             const themeStatus = document.getElementById('theme-status');
@@ -163,14 +190,19 @@
             // Initialize theme status
             updateThemeStatus(false);
             
-            // Function to send theme to iframe
-            function sendThemeToIframe(theme) {
+            // Function to send theme to iframes
+            function sendThemeToIframes(theme) {
                 if (isThemeSyncReady) {
-                    iframe.contentWindow.postMessage(
-                        { type: 'theme-update', theme: theme },
-                        '*'
-                    );
-                    console.log('Sent theme to iframe:', theme);
+                    // Send to both iframes
+                    [iframe, cloudflareIframe].forEach(frame => {
+                        if (frame && frame.contentWindow) {
+                            frame.contentWindow.postMessage(
+                                { type: 'theme-update', theme: theme },
+                                '*'
+                            );
+                        }
+                    });
+                    console.log('Sent theme to iframes:', theme);
                 } else {
                     console.log('Theme sync not ready yet, cannot send theme');
                 }
@@ -179,7 +211,7 @@
             // Apply theme when button is clicked
             applyThemeButton.addEventListener('click', function() {
                 const selectedTheme = themeMode.value;
-                sendThemeToIframe(selectedTheme);
+                sendThemeToIframes(selectedTheme);
             });
             
             // Auto-apply theme when iframe loads
@@ -201,10 +233,10 @@
                 iframe.syncTimeoutId = syncTimeout;
             });
             
-            // Listen for messages from the iframe
+            // Listen for messages from the iframes
             window.addEventListener('message', function(event) {
-                // Check if the message is from our iframe
-                if (event.source === iframe.contentWindow) {
+                // Check if the message is from our iframes
+                if (event.source === iframe.contentWindow || event.source === cloudflareIframe.contentWindow) {
                     // Handle theme-ready message
                     if (event.data && event.data.type === 'theme-ready') {
                         console.log('Docusaurus is ready for theme sync');
@@ -218,7 +250,7 @@
                         updateThemeStatus(true);
                         
                         // Send current theme
-                        sendThemeToIframe(themeMode.value);
+                        sendThemeToIframes(themeMode.value);
                     }
                     
                     // Handle theme change notifications from Docusaurus
@@ -228,6 +260,30 @@
                         themeMode.value = newTheme;
                         console.log('Theme changed in Docusaurus to:', newTheme);
                     }
+                }
+            });
+            
+            // Load URL into both iframes with their respective base URLs
+            loadButton.addEventListener('click', function() {
+                const selectedUrl = presetUrls.value || customUrl.value;
+                if (selectedUrl) {
+                    let path = selectedUrl;
+                    
+                    // Extract path from full URLs
+                    if (selectedUrl.includes('http://localhost:3000')) {
+                        path = selectedUrl.replace('http://localhost:3000', '');
+                    } else if (selectedUrl.includes('https://docs.unraid.net')) {
+                        path = selectedUrl.replace('https://docs.unraid.net', '');
+                    }
+                    
+                    // Ensure path starts with /
+                    if (!path.startsWith('/')) {
+                        path = '/' + path;
+                    }
+                    
+                    // Load the same path into both iframes
+                    iframe.src = 'http://localhost:3000' + path;
+                    cloudflareIframe.src = 'https://docs.unraid.net' + path;
                 }
             });
             
@@ -245,13 +301,20 @@
                 }
             });
             
-            // Resize iframe
+            // Resize iframes
             resizeButton.addEventListener('click', function() {
                 const width = widthInput.value + '%';
                 const height = heightInput.value + 'px';
                 
-                iframeContainer.style.width = width;
-                iframe.style.height = height;
+                // Update both iframe containers
+                iframeContainers.forEach(container => {
+                    container.style.width = width;
+                });
+                
+                // Update both iframes
+                [iframe, cloudflareIframe].forEach(frame => {
+                    frame.style.height = height;
+                });
             });
         });
     </script>
