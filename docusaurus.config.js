@@ -15,11 +15,7 @@ module.exports = async function createConfigAsync() {
   return {
     title: "Unraid Docs",
     tagline: "Documentation for Unraid",
-<<<<<<< HEAD
-    favicon: "img/favicon.svg", // Fixed: removed malformed "site here" text
-=======
     favicon: "img/favicon.svg",
->>>>>>> 44c7611635bfc51e13a33df7697773fd739ac8cb
 
     // Set the production url of your site here
     url: "https://docs.unraid.net/",
@@ -69,11 +65,7 @@ module.exports = async function createConfigAsync() {
               // @ts-ignore
               return sortSidebarItems(sidebarItems);
             },
-<<<<<<< HEAD
-            // CORRECTED: Use the dynamically imported plugin
-=======
             // Use the dynamically imported plugin
->>>>>>> 44c7611635bfc51e13a33df7697773fd739ac8cb
             remarkPlugins: [
               [remarkAutoGlossary, { yamlFile: "glossary.yaml" }]
             ],
@@ -186,11 +178,7 @@ module.exports = async function createConfigAsync() {
           additionalLanguages: ["diff", "json", "bash"],
         },
         zoom: {
-<<<<<<< HEAD
-          selector: ".markdown :not(em) > img", // Fixed: corrected HTML entity
-=======
           selector: ".markdown :not(em) > img",
->>>>>>> 44c7611635bfc51e13a33df7697773fd739ac8cb
           background: {
             light: "rgb(255, 255, 255)",
             dark: "rgb(50, 50, 50)",
@@ -212,13 +200,6 @@ module.exports = async function createConfigAsync() {
           disableInDev: false,
         },
       ],
-<<<<<<< HEAD
-      // Removed all conflicting glossary plugins
     ],
   };
 };
-=======
-    ],
-  };
-};
->>>>>>> 44c7611635bfc51e13a33df7697773fd739ac8cb
