@@ -229,7 +229,7 @@ The **Issuer URL** field accepts both formats, but **base URL is strongly recomm
 
 ## ✅ Testing Your Configuration
 
-![Login Page with SSO Buttons](/img/api/sso-with-options.png)
+![Login Page with SSO Buttons](images/sso-with-options.png)
 *Unraid login page displaying both traditional username/password authentication and SSO options with customized provider buttons*
 
 1. Save your provider configuration
