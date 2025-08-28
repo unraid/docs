@@ -38,7 +38,7 @@ export default function NotFound() {
                 </Translate>
               </p>
               <p>
-                <a href="https://docs.unraid.net">Documentation homepage</a>
+                <a href="/">Documentation homepage</a>
               </p>
             </div>
           </div>
