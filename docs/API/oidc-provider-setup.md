@@ -25,7 +25,7 @@ This guide walks you through configuring OIDC (OpenID Connect) providers for SSO
 
 ### OIDC Providers Interface Overview
 
-![Login Page with SSO Options](/img/api/sso-with-options.png)
+![Login Page with SSO Options](images/sso-with-options.png)
 *Login page showing traditional login form with SSO options - "Login With Unraid.net" and "Sign in with Google" buttons*
 
 The interface includes:
@@ -75,7 +75,7 @@ Advanced mode provides granular control using claim-based rules. You can:
 
 ## Authorization Rules
 
-![Authorization Rules Configuration](/img/api/advanced-rules.png)
+![Authorization Rules Configuration](images/advanced-rules.png)
 *Advanced authorization rules showing JWT claim configuration with email endsWith operator for domain-based access control*
 
 ### Simple Mode Examples
@@ -229,7 +229,7 @@ The **Issuer URL** field accepts both formats, but **base URL is strongly recomm
 
 ## ✅ Testing Your Configuration
 
-![Login Page with SSO Buttons](/img/api/sso-with-options.png)
+![Login Page with SSO Buttons](images/sso-with-options.png)
 *Unraid login page displaying both traditional username/password authentication and SSO options with customized provider buttons*
 
 1. Save your provider configuration
