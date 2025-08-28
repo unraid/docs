@@ -5,7 +5,7 @@ sidebar_label: Cache pools
 
 # Cache pools
 
-In Unraid, a %%cache pool|cache-pool%% is a collection of one or more drives, typically SSDs or high-speed HDDs. These drives temporarily store data before it's moved to your main [%%array|array%%](../manage-storage/array-configuration.md). Using %%cache pools|cache-pool%% can significantly enhance write speeds, protect your data, and provide dedicated storage for specific tasks like running Docker containers or [%%virtual machines|vm%%](../create-virtual-machines/overview-and-system-prep.md).
+In Unraid, a %%cache pool|cache-pool%% is a collection of one or more drives, typically SSDs or high-speed HDDs. These drives temporarily store data before it's moved to your main [%%array|array%%](./array-configuration.md). Using %%cache pools|cache-pool%% can significantly enhance write speeds, protect your data, and provide dedicated storage for specific tasks like running Docker containers or [%%virtual machines|vm%%](../create-virtual-machines/overview-and-system-prep.md).
 
 %%Cache pools|cache-pool%% offer several advantages, making them a valuable addition to your Unraid setup, such as:
 
@@ -22,8 +22,8 @@ In Unraid, a %%cache pool|cache-pool%% is a collection of one or more drives, ty
 - **Multiple pools:** You can create and name different %%cache pools|cache-pool%%, tailoring them to match your specific needs.
 - **SSD vs. HDD:** SSDs are great for speed, while you can use HDDs for large, sequential data workloads. Additionally, HDDs can help prolong the lifespan of your SSDs.
 - **Redundancy matters:** To protect your data, use more than one drive in a %%cache pool|cache-pool%%. A single drive pool won't protect you from potential drive failure.
-- **File system choice:** The default file system for %%cache pools|cache-pool%% is %%BTRFS|btrfs%%, which supports various %%RAID|raid%% options for added redundancy and flexibility. For more details on file system selection, see [File systems](../manage-storage/file-systems.md).
-- **%%Mover|mover%% integration:** Data written to a %%cache pool|cache-pool%% is automatically transferred to your main %%array|array%% based on a schedule you set. This keeps your [%%user shares|user-share%%](../manage-storage/shares.md) organized and easy to manage.
+- **File system choice:** The default file system for %%cache pools|cache-pool%% is %%BTRFS|btrfs%%, which supports various %%RAID|raid%% options for added redundancy and flexibility. For more details on file system selection, see [File systems](./file-systems.md).
+- **%%Mover|mover%% integration:** Data written to a %%cache pool|cache-pool%% is automatically transferred to your main %%array|array%% based on a schedule you set. This keeps your [%%user shares|user-share%%](./shares.md) organized and easy to manage.
 - **Application performance:** By placing Docker containers, app data, and %%VM|vm%% disks on a %%cache pool|cache-pool%%, you enhance access speed and minimize strain on your main storage.
 :::
 
@@ -44,8 +44,8 @@ In **single device mode**, your %%cache pool|cache-pool%% consists of only one d
 - **No redundancy:** If the device fails, any data stored on it that hasn't been transferred to your %%array|array%% will be lost.
 - **File system options:** You can use file systems other than %%BTRFS|btrfs%%, like %%XFS|xfs%% or %%ZFS|zfs%%.
 
-:::important 
-If you choose a non-%%BTRFS|btrfs%% file system in single device mode and later decide to add more devices to the pool, you will need to reformat the device as %%BTRFS|btrfs%% first. That's why %%BTRFS|btrfs%% is the default file system for %%cache pools|cache-pool%%, even when using just one device. For more information on file system selection and compatibility, see [File systems](../manage-storage/file-systems.md).
+:::important
+If you choose a non-%%BTRFS|btrfs%% or non-%%ZFS|zfs%% file system in single device mode and later decide to add more devices to the pool, you will need to reformat the device as %%BTRFS|btrfs%% or %%ZFS|zfs%% first. That's why %%BTRFS|btrfs%% is the default file system for %%cache pools|cache-pool%%, even when using just one device. Both %%BTRFS|btrfs%% and %%ZFS|zfs%% support adding devices later to create mirrored pools. For more information on file system selection and compatibility, see [File systems](./file-systems.md).
 :::
 
 Single device mode is straightforward. You can easily add or remove the device, but you won't have options for advanced features like redundancy or expansion.
@@ -55,9 +55,9 @@ Single device mode is straightforward. You can easily add or remove the device, 
 
 When you set up a %%cache pool|cache-pool%% with more than one device, it enters **multi-device mode**. Here's what you should know:
 
-- **Data protection:** This mode uses %%BTRFS|btrfs%% to mirror data across devices, helping protect your cached data from drive failure. You can lose one device without losing any data.
+- **Data protection:** This mode uses %%BTRFS|btrfs%% or %%ZFS|zfs%% to mirror data across devices, helping protect your cached data from drive failure. You can lose one device without losing any data.
 - **Mix and match:** You can add or remove devices of different sizes and types, including mixing SSDs and HDDs.
-- **Capacity management:** Use the [BTRFS disk usage calculator](http://carfax.org.uk/btrfs-usage/) to estimate how much space you'll have based on the %%RAID|raid%% level and sizes of the devices you're using.
+- **Capacity management:** Use the [BTRFS disk usage calculator](http://carfax.org.uk/btrfs-usage/) to estimate how much space you'll have based on the %%RAID|raid%% level and sizes of the devices you're using. For %%ZFS|zfs%% pools, use the [ZFS storage guide](../advanced-configurations/optimize-storage/zfs-storage.md) for configuration details.
 
 </TabItem>
 </Tabs>
@@ -86,15 +86,15 @@ This process will stop all Docker containers and %%virtual machines|vm%%, so mak
 To back up your %%cache pool|cache-pool%%:
 
 1. **Stop all running Docker containers and %%virtual machines|vm%%**: This is essential for a smooth backup process.
-2. **Disable %%virtual machines|vm%%**: 
+2. **Disable %%virtual machines|vm%%**:
    - Go to ***Settings → VM Manager***.
    - Turn off %%VMs|vm%% and click **Apply**.
-3. **Disable Docker**: 
+3. **Disable Docker**:
    - Navigate to ***Settings → Docker***.
    - Turn off Docker and click **Apply**.
-4. **Set %%User Shares|user-share%% to Use Cache**:
+4. **Set %%User Shares|user-share%% to use %%array|array%% storage**:
    - Go to the **Shares** tab.
-   - For each %%user share|user-share%%, change **Use cache disk** to **Yes** if it's currently set to **Only** or **Prefer**.
+   - For each %%user share|user-share%%, change the **Primary storage** to your main %%array|array%% and set **Secondary storage** to **None** if it's currently set to use a %%cache pool|cache-pool%%.
 5. **Check space on the %%array|array%%**: Ensure there's enough free space for your files.
 6. **Move files to the %%array|array%%**: From the **Main** page, click **Move Now**. This starts the process of transferring files from your %%cache pool|cache-pool%% to the %%array|array%%.
 7. **Verify your pool is empty**: Once the %%Mover|mover%% has finished, check that there are no remaining files in the %%cache pool|cache-pool%%.
@@ -107,9 +107,9 @@ Remember that files located directly on the pool device (not part of any share) 
 
 After you've completed your maintenance or replaced your device, you can restore files from the %%array|array%% back to the %%cache pool|cache-pool%% by following these steps:
 
-1. **Set %%User Shares|user-share%% to Use Cache**: 
+1. **Set %%User Shares|user-share%% to use %%cache pool|cache-pool%% storage**:
    - Go to the **Shares** tab.
-   - Change the "Use cache" option to "Only" or "Prefer" for each share you want on the %%cache pool|cache-pool%%.
+   - Change the **Primary storage** to your %%cache pool|cache-pool%% for each share you want to store on the pool.
 2. **Check space on the pool**: Make sure there's enough free space on the %%cache pool|cache-pool%%.
 3. **Move files back to the pool**: Go to the **Main** page and click **Move Now** to transfer files back to the %%cache pool|cache-pool%%.
 4. **Verify content in the pool**: After the move completes, check that your %%cache pool|cache-pool%% contains the expected files and that the shares are empty on the %%array|array%%.
@@ -121,24 +121,24 @@ After you've completed your maintenance or replaced your device, you can restore
 
 ## Switching to Multi-Device Mode
 
-%%Cache pools|cache-pool%% in Unraid can be expanded from a single device to multiple devices, allowing for increased capacity and redundancy. To take advantage of multi-device mode, your pool must be formatted as %%BTRFS|btrfs%%.
+%%Cache pools|cache-pool%% in Unraid can be expanded from a single device to multiple devices, allowing for increased capacity and redundancy. To take advantage of multi-device mode, your pool must be formatted as %%BTRFS|btrfs%% or %%ZFS|zfs%%.
 
-### Converting a pool to BTRFS
+### Converting a pool to BTRFS or ZFS
 
-If your %%cache pool|cache-pool%% isn't already formatted as %%BTRFS|btrfs%%, follow these simple steps:
+If your %%cache pool|cache-pool%% isn't already formatted as %%BTRFS|btrfs%% or %%ZFS|zfs%%, follow these simple steps:
 
 1. **Back up your data**: First, ensure you back up any important content. (See [Backing up your cache pool to the array](#backing-up-your-cache-pool-to-the-array))
 2. **Stop the %%array|array%%**: Make sure to stop the %%array|array%% to begin the conversion process.
-3. **Change the file system**: Click on the pool in the **Main** tab and select **BTRFS** as the file system format.
+3. **Change the file system**: Click on the pool in the **Main** tab and select **BTRFS** or **ZFS** as the file system format.
 4. **Start the %%array|array%%**: After changing the format, start the %%array|array%%.
 5. **Format the pool**: The pool will appear as **unmountable** and offer the option to format. Confirm and click the **Format** button.
-6. **Complete formatting**: Once formatting is complete, you'll have a %%BTRFS|btrfs%% pool, though it will only have one device at this stage.
+6. **Complete formatting**: Once formatting is complete, you'll have a %%BTRFS|btrfs%% or %%ZFS|zfs%% pool, though it will only have one device at this stage.
 7. **Add additional drives if desired**: You can proceed to add more drives to your pool if you wish.
 8. **Restore your data**: Finally, follow the restore steps from the backup procedure to move your data back to the pool.
 
 ### Adding drives to create a multi-device pool
 
-Once your pool is formatted as %%BTRFS|btrfs%%, you can add more drives for redundancy and to expand storage.
+Once your pool is formatted as %%BTRFS|btrfs%% or %%ZFS|zfs%%, you can add more drives for redundancy and to expand storage.
 
 To add more drives for redundancy:
 
@@ -160,7 +160,7 @@ You can use the [BTRFS Disk Usage Calculator](http://carfax.org.uk/btrfs-usage/)
 As your storage needs grow, you may want to expand your cache pool by adding additional disks. This process allows you to increase both capacity and performance while maintaining data protection through RAID configurations.
 
 :::note
-If you want to add disks to your pool, just make sure your pool is already formatted as %%BTRFS|btrfs%%. If it's not, you'll need to format it first, as explained in [the previous section](#converting-a-pool-to-btrfs).
+If you want to add disks to your pool, just make sure your pool is already formatted as %%BTRFS|btrfs%% or %%ZFS|zfs%%. If it's not, you'll need to format it first, as explained in [the previous section](#converting-a-pool-to-btrfs-or-zfs).
 :::
 
 To add a disk to a pool:
@@ -174,14 +174,14 @@ To add a disk to a pool:
 7. **Format the devices**: You'll need to format the new disks. To do this, check the box that appears and click the button under **Array Operations** to start formatting.
 
 :::important
-Before you format, double-check that the devices listed are the ones you actually want to add. This is crucial to avoid accidentally formatting a disk that contains important data you want to keep. For more information on array operations and disk management, see [Array configuration](../manage-storage/array-configuration.md).
+Before you format, double-check that the devices listed are the ones you actually want to add. This is crucial to avoid accidentally formatting a disk that contains important data you want to keep. For more information on array operations and disk management, see [Array configuration](./array-configuration.md).
 :::
 
 ---
 
 ## Removing disks from a pool
 
-Removing a disk from a %%BTRFS|btrfs%% multi-device %%cache pool|cache-pool%% can help you reclaim hardware, replace a failing drive, or reconfigure your storage. This process is only possible if your pool is set up for redundancy (like %%RAID 1|raid1%% for both data and metadata) and the remaining devices have enough space to hold all of your data.
+Removing a disk from a %%BTRFS|btrfs%% or %%ZFS|zfs%% multi-device %%cache pool|cache-pool%% can help you reclaim hardware, replace a failing drive, or reconfigure your storage. This process is only possible if your pool is set up for redundancy (like %%RAID 1|raid1%% for both data and metadata) and the remaining devices have enough space to hold all of your data.
 
 <Tabs>
   <TabItem value="gui" label="Using the WebGUI" default>
@@ -189,7 +189,7 @@ Removing a disk from a %%BTRFS|btrfs%% multi-device %%cache pool|cache-pool%% ca
 :::note Before you start  
 - You can only remove one drive at a time using the GUI.
 - Make sure your pool is using a redundant %%RAID|raid%% profile (like %%RAID 1|raid1%% for both data and metadata).
-- To check your pool's %%RAID|raid%% level, navigate to the Main tab and click on the pool. Scroll down to the Balance Status section.
+- To check your pool's %%RAID|raid%% level, navigate to the Main tab and click on the pool. Scroll down to the Balance Status section (for %%BTRFS|btrfs%%) or ZFS pool status (for %%ZFS|zfs%%).
 :::
 
 To remove a disk using the %%WebGUI|web-gui%%:
@@ -260,7 +260,7 @@ If you have only one device left in the pool, you will need to convert the %%RAI
 
 ### Changing pool RAID levels
 
-%%BTRFS|btrfs%% provides the ability to change %%RAID|raid%% levels for %%cache pools|cache-pool%% dynamically, allowing you to adjust settings without stopping the %%array|array%% or losing any data. This flexibility lets you optimize for performance, redundancy, or storage efficiency as your requirements change.
+%%BTRFS|btrfs%% and %%ZFS|zfs%% provide the ability to change %%RAID|raid%% levels for %%cache pools|cache-pool%% dynamically, allowing you to adjust settings without stopping the %%array|array%% or losing any data. This flexibility lets you optimize for performance, redundancy, or storage efficiency as your requirements change.
 
 <h4>Supported %%RAID|raid%% Levels</h4>
 
@@ -274,7 +274,7 @@ If you have only one device left in the pool, you will need to convert the %%RAI
 | %%RAID 6&#124;raid6%%*    | 2 disk failures | 50-88%           | **Experimental.** Provides extra protection for archival storage with large drives.  |
 
 :::important
-%%RAID 5|raid5%% and %%RAID 6|raid6%% are considered experimental in %%BTRFS|btrfs%%. Use with caution and ensure you have backups. Avoid using for critical data.
+%%RAID 5|raid5%% and %%RAID 6|raid6%% are considered experimental in %%BTRFS|btrfs%%. %%ZFS|zfs%% provides more mature support for these %%RAID|raid%% levels. Use with caution and ensure you have backups. Avoid using experimental %%RAID|raid%% levels for critical data.
 :::
 
 To change a pool's %%RAID|raid%% level:
@@ -319,7 +319,7 @@ Replacing a disk in your %%cache pool|cache-pool%% is an important task that hel
 
 :::note Prerequisites
 
-- **Check your pool configuration:** Make sure your pool is set up with a redundant %%RAID|raid%% profile, like %%RAID 1|raid1%%. You can do this by going to ***Main → Pool → Balance Status*** in your management interface.
+- **Check your pool configuration:** Make sure your pool is set up with a redundant %%RAID|raid%% profile, like %%RAID 1|raid1%%. You can do this by going to ***Main → Pool → Balance Status*** (for %%BTRFS|btrfs%%) or ZFS pool status (for %%ZFS|zfs%%) in your management interface.
 - **Choose the right replacement disk:** The new disk must be the same size or larger than the one you're replacing.
 - **Hot-swap capability:** If your hardware supports hot-swapping, you won't need to power down your system to replace the disk.
 :::
@@ -354,9 +354,9 @@ You can access Minimum free space by clicking on the pool name in the **Main** t
 
 - Unraid needs to know how much space is left before starting a file transfer. If it runs out of space, the operation fails and can cause errors.
 - The minimum free space setting tells Unraid to stop using the %%cache pool|cache-pool%% when free space drops below this amount.
-- If your share uses **Use cache: Yes** or **Prefer**, files go to the pool until it reaches the minimum free space, then they are sent directly to the %%array|array%%.
-- If set to **Use cache: Only**, this setting is not applied.
-- If set to **Use cache: No**, files go straight to the %%array|array%%.
+- If your share uses a %%cache pool|cache-pool%% as **Primary storage**, files go to the pool until it reaches the minimum free space, then they are sent directly to the %%array|array%%.
+- If set to use a %%cache pool|cache-pool%% exclusively (no **Secondary storage**), this setting is not applied.
+- If set to use only the %%array|array%% as **Primary storage**, files go straight to the %%array|array%%.
 
 :::tip Best practice
 Set the minimum free space to at least the size of the largest file you expect, preferably double that size. For example, if your largest file is 30 GB, set the minimum to 60 GB.
@@ -386,7 +386,7 @@ Moving files off the %%cache pool|cache-pool%% to the %%array|array%% before per
 To move files from your pool to the %%array|array%%:
 
 1. **Disable Docker and %%VM|vm%% services**: Go to **Settings** and turn off Docker and %%VM|vm%% Manager. This prevents any files from being held open, allowing the %%Mover|mover%% to transfer everything smoothly.
-2. **Set share to Use cache: Yes**: In the **Shares** tab, for each share you want to move (like `appdata` or `system`), set the **Use cache** option to **Yes**.
+2. **Set share to use %%array|array%% storage**: In the **Shares** tab, for each share you want to move (like `appdata` or `system`), set the **Primary storage** to your main %%array|array%% and **Secondary storage** to **None**.
 3. **Run %%Mover|mover%%**: Go to the **Main** tab and click on **Move Now** to start the %%Mover|mover%% process. This will transfer files from the %%cache pool|cache-pool%% to the %%array|array%%.
 4. **Verify the move**: After the %%Mover|mover%% finishes, check that the files have been moved by clicking the folder icon next to the cache entry on the **Main** tab.
 5. **Re-enable Docker and %%VM|vm%% services**: Once all files are on the %%array|array%%, you can safely turn these services back on.
@@ -402,11 +402,11 @@ Moving files back to the %%cache pool|cache-pool%% after maintenance or when you
 To move files from the %%array|array%% to a pool:
 
 1. **Disable Docker and %%VM|vm%% services**: Go to **Settings** and turn off Docker and %%VM|vm%% Manager to prevent any open files from interfering.
-2. **Set share to use cache: Prefer**: In the **Shares** tab, for each share you want to move (like `appdata` or `system`), set the **Use cache** option to **Prefer**.
+2. **Set share to use %%cache pool|cache-pool%% storage**: In the **Shares** tab, for each share you want to move (like `appdata` or `system`), set the **Primary storage** to your %%cache pool|cache-pool%%.
 3. **Run the %%Mover|mover%%**: Go to the **Main** tab and click on **Move Now** to start moving files from the %%array|array%% to the %%cache pool|cache-pool%%.
 4. **Verify the move**: After the %%Mover|mover%% finishes, check that the files are now on the %%cache pool|cache-pool%%.
 5. **Re-enable Docker and %%VM|vm%% services**: Once the move is complete, turn Docker and %%VM|vm%% Manager back on in **Settings**.
-6. **(Optional) Set share to use cache: Only**: If you want all files for a share to remain on the %%cache pool|cache-pool%%, set the **Use cache** option to **Only** for that share.
+6. **(Optional) Set share to use %%cache pool|cache-pool%% exclusively**: If you want all files for a share to remain on the %%cache pool|cache-pool%%, set the **Primary storage** to your %%cache pool|cache-pool%% and **Secondary storage** to **None** for that share.
 
   </TabItem>
 </Tabs>
@@ -429,7 +429,7 @@ These methods help prevent files from ending up in the wrong location.
 
 ## Multiple pools
 
-Unraid allows you to create and manage up to 35 separate storage pools, each with up to 30 devices. Multiple pools give you flexibility to allocate storage for different tasks, improve performance, and customize redundancy based on your needs. Each pool can use a different file system, %%RAID|raid%% level, and device type (SSD, HDD, NVMe, etc.).
+Unraid allows you to create and manage up to 35 separate storage pools, each with up to 60 devices. Multiple pools give you flexibility to allocate storage for different tasks, improve performance, and customize redundancy based on your needs. Each pool can use a different file system, %%RAID|raid%% level, and device type (SSD, HDD, NVMe, etc.).
 
 <h4>Why use multiple pools?</h4>
 
@@ -443,7 +443,7 @@ Unraid allows you to create and manage up to 35 separate storage pools, each wit
 | Use case                          | Configuration example                   | Benefit                                 |
 |------------------------------------|----------------------------------------------|-----------------------------------------|
 | High-performance %%VMs&#124;vm%%               | NVMe SSD pool, %%RAID 1&#124;raid1%%, %%BTRFS&#124;btrfs%% or %%ZFS&#124;zfs%%          | Fast I/O with redundancy                 |
-| Docker/Appdata storage             | SSD pool, %%RAID 1&#124;raid1%%, %%BTRFS&#124;btrfs%%                      | Quick access and data protection        |
+| Docker/Appdata storage             | SSD pool, %%RAID 1&#124;raid1%%, %%BTRFS&#124;btrfs%% or %%ZFS&#124;zfs%%          | Quick access and data protection        |
 | Bulk media downloads               | Large HDD pool, %%RAID 0&#124;raid0%% or single, %%XFS&#124;xfs%%/%%BTRFS&#124;btrfs%%  | High capacity with less redundancy      |
 | Project/Team isolation             | Separate pools for each team/project          | Reduces resource conflicts              |
 | Snapshots and backup targets       | %%ZFS&#124;zfs%% pool, %%RAIDZ1&#124;raidz1%%/%%RAIDZ2&#124;raidz2%% (multi-device)            | Supports native snapshots and backups    |
@@ -451,7 +451,7 @@ Unraid allows you to create and manage up to 35 separate storage pools, each wit
 :::info Supported File Systems
 
 - %%BTRFS|btrfs%%: Best for multi-device pools (supports %%RAID 0|raid0%%, %%RAID 1|raid1%%, %%RAID 10|raid10%%, %%RAID 5|raid5%%, %%RAID 6|raid6%%).
-- %%ZFS|zfs%%: Can be used for both single and multi-device pools (Unraid 6.12+). For advanced ZFS features and configuration, see [ZFS storage](../../advanced-configurations/optimize-storage/zfs-storage.md).
+- %%ZFS|zfs%%: Excellent for both single and multi-device pools (Unraid 6.12+), with mature support for %%RAIDZ1|raidz1%% and %%RAIDZ2|raidz2%%. For advanced ZFS features and configuration, see [ZFS storage](../../advanced-configurations/optimize-storage/zfs-storage.md).
 - %%XFS|xfs%%: Suitable for single-device pools.
 :::
 
@@ -474,10 +474,10 @@ Any the files belong to a Docker container and/or %%VM|vm%% then the services mu
 
 1. **Disable Docker and %%VM|vm%% services**: Go to **Settings** and turn off Docker and %%VM|vm%% Manager to prevent open files.
 2. **Move files from pool1 to the %%array|array%%**:
-   - Go to the **Shares** tab. For each share, set **Use cache** to **Yes** (if files are on pool1).
+   - Go to the **Shares** tab. For each share, set **Primary storage** to your main %%array|array%% and **Secondary storage** to **None** (if files are on pool1).
    - In the **Main** tab, click **Move Now** to run %%Mover|mover%%. Wait for it to finish.
 3. **Move files from the %%array|array%% to pool2**:  
-   - In the **Shares** tab, set **Use cache** to **Prefer** and assign the share to pool2.
+   - In the **Shares** tab, set **Primary storage** to pool2 for each share.
    - In the **Main** tab, click **Move Now** again. Files will move from the %%array|array%% to pool2.
 4. **Re-enable Docker and %%VM|vm%% services** (if needed).
 
@@ -500,5 +500,5 @@ Always check your file paths and use the correct share names to prevent data los
 </Tabs>
 
 :::warning
-If you remove a device from a %%BTRFS|btrfs%% pool and move it to a new pool, Unraid will erase all data on it when the %%array|array%% restarts. Always back up important data before changing pool configurations.
+If you remove a device from a %%BTRFS|btrfs%% or %%ZFS|zfs%% pool and move it to a new pool, Unraid will erase all data on it when the %%array|array%% restarts. Always back up important data before changing pool configurations.
 :::

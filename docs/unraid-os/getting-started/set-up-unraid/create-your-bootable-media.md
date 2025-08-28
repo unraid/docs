@@ -49,11 +49,11 @@ The manual installation method is designed for situations where the USB Flash Cr
   2. Extract the ZIP contents to the USB device.
   3. Confirm that the files have been copied.
 
-:::note For UEFI boot
-Rename the `EFI` directory to `-EFI`.
-:::
-
 ### Make the USB device bootable
+
+:::note
+This section is only needed to enable Legacy boot. If setting up for UEFI boot, there is no need to run these scripts.
+:::
 
   Run the appropriate script for your OS:
 

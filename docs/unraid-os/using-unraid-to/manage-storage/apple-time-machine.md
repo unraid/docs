@@ -45,16 +45,16 @@ To create a Time Machine share:
     | Setting                     | Description                                                                                  |
     |-----------------------------|----------------------------------------------------------------------------------------------|
     | **%%User share&#124;user-share%% name**              | Name your %%user share&#124;user-share%% (e.g., Time Machine).                                                       |
-    | **Minimum free space**      | Set the **Minimum free space** to allow writing to any disk in the %%user share&#124;user-share%% (default is usually fine). |
+    | **Minimum free space**      | Set to **1** (1 KB) for best results. This prevents Time Machine from failing when disks approach capacity. |
     | **Included disk(s)**        | Select the disk(s) in the %%array&#124;array%% to use for the Time Machine %%user share&#124;user-share%%.                          |
     | **Enable copy-on-write**    | Keep at **Auto** for best performance.                                                      |
     | **%%SMB&#124;samba%% export**              | Set to **Yes (Time Machine)** to enable Time Machine support.                               |
-    | **Time Machine volume size**| Limit the reported volume size to prevent Time Machine from using all disk space.           |
+    | **Time Machine volume size**| Set to your desired maximum size, or leave unset. If not setting minimum free space to 1, apply the share first, then re-edit and set volume size to less than the calculated minimum free space that appears. |
     | **Security settings**       | Configure %%SMB&#124;samba%% security parameters as desired.                                               |
 
 3. Click **Apply** to create the %%user share|user-share%%.
 
-For more details on creating and managing shares, see [User shares](../manage-storage/shares.md).
+For more details on creating and managing shares, see [User shares](./shares.md).
 
 ## Connect from macOS
 
@@ -112,4 +112,4 @@ If Time Machine backups fail or become unreliable:
 2. **Check macOS firewall**: Temporarily disable the firewall to see if it’s blocking connections.
 3. **Create a fresh backup destination**: Delete and recreate the Time Machine %%user share|user-share%% if issues continue.
 
-For additional troubleshooting help, see [Common issues](../../troubleshooting/common-issues.md) or visit the [Unraid forums](https://forums.unraid.net/).
+For additional troubleshooting help, see [Troubleshooting](../../troubleshooting/troubleshooting.md) or visit the [Unraid forums](https://forums.unraid.net/).

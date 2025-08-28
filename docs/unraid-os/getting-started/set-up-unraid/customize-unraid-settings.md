@@ -6,6 +6,11 @@ sidebar_label: Customize Unraid settings
 # Customize Unraid settings
 
 Unraid OS automatically functions but allows further customization of settings such as IP address, hostname, disk tunables, and more via the **Settings** tab in the Unraid **%%WebGUI|web-gui%%**.
+
+:::tip Tailscale integration
+**Tailscale** is an optional plugin that you can install via the **Apps** tab by searching for "Tailscale". It provides secure remote access to your network and adds a **Tailscale** section to your **Settings** for enhanced remote management capabilities.
+:::
+
  <div style={{ margin: 'auto', maxWidth: '700px'}}>
 
   ![Toolbar - Settings](/img/toolbar_settings.png)
@@ -61,7 +66,7 @@ Docker containers allow you to integrate pre-configured Linux applications into 
 
 ### Identification
 
-Unraid defaults to the hostname `tower`, but you can change it here. You can also add a description or model number for your system. This page lets you enable or disable %%SSL|ssl%% support, change the %%WebGUI|web-gui%% port, and provision an %%SSL|ssl%% certificate for your server.
+Unraid defaults to the hostname `tower`, but you can change it here. You can also add a description or model number for your system.
  <div style={{ margin: 'auto', maxWidth: '400px'}}>
 
   ![Settings - Identification](/img/settings-identification.png)
@@ -69,7 +74,7 @@ Unraid defaults to the hostname `tower`, but you can change it here. You can als
 
 ### Management Access
 
-You can configure various access settings for your Unraid server, including enabling Telnet or %%SSH|ssh%%, setting ports for %%SSL|ssl%%/%%TLS|tls%%, HTTP, and HTTPS, and defining the default landing page for Unraid.
+You can configure various access settings for your Unraid server, including enabling Telnet or %%SSH|ssh%%, setting ports for %%SSL|ssl%%/%%TLS|tls%%, HTTP, and HTTPS, and defining the default landing page for Unraid. For detailed information about securing your %%WebGUI|web-gui%% with %%SSL|ssl%% certificates, see [Securing your connection](../../system-administration/secure-your-server/securing-your-connection.md).
  <div style={{ margin: 'auto', maxWidth: '400px'}}>
 
   ![Settings - Management Access](/img/settings-management-access.png)
@@ -95,7 +100,7 @@ Changes take effect immediately and do not require a system restart.
 
 ### Global Share Settings
 
-%%User shares|user-share%% can greatly simplify the organization and access of content across multiple disks in the %%array|array%%. You have the option to specify which disks are allowed to participate in %%user shares|user-share%% through global inclusion or exclusion settings. Additionally, if a %%cache device|cache%% or %%pool|cache-pool%% is available, you can configure its usage with %%user shares|user-share%% from this section.
+%%User shares|user-share%% can greatly simplify the organization and access of content across multiple disks in the %%array|array%%. You have the option to specify which disks are allowed to participate in %%user shares|user-share%% through global inclusion or exclusion settings.
  <div style={{ margin: 'auto', maxWidth: '400px'}}>
 
   ![Global Share Settings](/img/settings-globalshare.png)
@@ -103,7 +108,7 @@ Changes take effect immediately and do not require a system restart.
 
 ### UPS Settings
 
-Unraid can be connected to an APC (or compatible) UPS (Uninterruptible Power Supply) to allow the system to safely shut down during a power loss while still receiving battery power. You can configure the UPS connection and set policies for the shutdown command on this page. For the complete manual, visit the [APCupsd Manual](http://apcupsd.org/manual/manual.html).
+Unraid can be connected to an APC (or compatible) UPS (Uninterruptible Power Supply) to allow the system to safely shut down during a power loss while still receiving battery power. You can configure the UPS connection and set policies for the shutdown command on this page.
  <div style={{ margin: 'auto', maxWidth: '400px'}}>
 
   ![UPS Settings](/img/settings-ups.png)
@@ -123,7 +128,7 @@ Unraid can be connected to an APC (or compatible) UPS (Uninterruptible Power Sup
 
 ### NFS (Network File System)
 
-NFSv4 support was introduced in Unraid 6. You can enable or disable it for %%user shares|user-share%% and adjust the `fuse_remember` tunable to help resolve *NFS Stale File Handle* errors.
+NFSv4 support is available in Unraid. You can enable or disable it for %%user shares|user-share%% and adjust the `fuse_remember` tunable to help resolve *NFS Stale File Handle* errors.
  <div style={{ margin: 'auto', maxWidth: '400px'}}>
 
   ![NFS](/img/settings-nfs.png)
@@ -154,6 +159,11 @@ The %%Syslog server|syslog-server%% permanently stores your system log, which is
   </div>
 
 ### Tailscale
+
+:::note
+The Tailscale section is only available if you have installed the Tailscale plugin.
+:::
+
 The %%Tailscale|tailscale%% section allows for secure remote access via the %%Tailscale|tailscale%% %%VPN|vpn-tunnel%%. Here, you can log in to connect your Unraid server to your %%Tailnet|tailnet%%, view the assigned IP address and hostname, and enable or disable %%Tailscale|tailscale%% connectivity.
 
 You can also configure your server as a %%Subnet Router|subnet-routing%% for local devices or as an Exit Node to route internet traffic. This section enables management of advertised routes, exit node status, Docker container integration options, and connection status monitoring for troubleshooting.
@@ -208,7 +218,7 @@ You can configure browser and email notifications on this page, subscribing to d
 
 ### Scheduler
 
-The Scheduler settings page allows you to easily configure the frequency for two automated tasks: %%parity checks|parity-check%% and the cache %%Mover|mover%%.
+The Scheduler settings page allows you to easily configure the frequency for automated tasks including %%parity checks|parity-check%%, the cache %%Mover|mover%%, and %%TRIM/Discard|trim-discard%% operations for SSDs.
 
 ## User Utilities
 

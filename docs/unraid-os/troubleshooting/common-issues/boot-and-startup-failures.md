@@ -165,6 +165,11 @@ This procedure helps you restore your array configuration when you've lost your 
 6. Correct drive assignments on the ***Main*** tab, making sure to distinguish between %%parity|parity%% and data drives.
 7. Start the %%array|array%% to commit the drive assignments.
 8. If the %%parity|parity%% is valid, check the box for ***Parity is Already Valid***. If not, allow the %%parity|parity%% to rebuild.
+
+:::warning Multiple parity drives
+If you have multiple %%parity drives|parity-drives%% and had to identify them based on which drives were unmountable, **do not** use the **Parity is Already Valid** option. There's a 50:50 chance of getting the assignments wrong, and if you do, your %%array|array%% may appear protected but actually isn't. Always allow parity to rebuild in this scenario to ensure proper protection.
+:::
+
 9. Review and adjust any user share includes/excludes based on the new assignments.
 10. Run a %%parity check|parity-check%% to verify integrity, especially if %%parity|parity%% wasn’t rebuilt.
 
@@ -179,7 +184,7 @@ This method does not require plugins, but it will invalidate %%parity|parity%%, 
 
 To use this method:
 
-1. Assign all data drives to the %%array|array%% and start it.
+1. Assign all drives as %%parity drives|parity-drives%% and start it.
 2. %%Parity drives|parity-drives%% will show as unmountable since they lack a valid file system.
 3. Confirm that the number of unmountable drives matches your %%parity|parity%% count.
 4. Take note of the serial numbers of these drives.

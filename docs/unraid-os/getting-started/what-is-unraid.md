@@ -110,7 +110,7 @@ Unraid's use of Docker addresses these challenges in three key ways:
 2. **Image-based Deployment** - Preconfigured application packages allow for one-click installation and complete uninstallation of applications. 
 3. **Process Isolation** - Containerized applications operate in separate user spaces, preventing any conflicts between software.  
 
-Docker containers allow you to run applications in isolated, lightweight environments without the overhead associated with %%virtual machines|vm%%. Unraid simplifies the use of Docker by providing access to thousands of pre-configured apps through [Docker Hub](https://hub.docker.com/) and [Community Applications](../../using-unraid-to/run-docker-containers/community-applications.md).. This containerized approach enables Unraid users to run multiple applications simultaneously without compatibility issues. It also helps keep the system organized by using self-contained application packages and makes it easy to enhance server capabilities through Docker's ecosystem.
+Docker containers allow you to run applications in isolated, lightweight environments without the overhead associated with %%virtual machines|vm%%. Unraid simplifies the use of Docker by providing access to thousands of pre-configured apps through [Docker Hub](https://hub.docker.com/) and [Community Applications](../using-unraid-to/run-docker-containers/community-applications.md). This containerized approach enables Unraid users to run multiple applications simultaneously without compatibility issues. It also helps keep the system organized by using self-contained application packages and makes it easy to enhance server capabilities through Docker's ecosystem.
 
 :::note
 

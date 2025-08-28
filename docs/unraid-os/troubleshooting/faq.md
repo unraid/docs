@@ -11,7 +11,7 @@ import TabItem from '@theme/TabItem';
 If you need help with Unraid OS, you have several support options:
 
 - **Unraid Forums:** [General Support](https://forums.unraid.net/forum/55-general-support/), [Compulsive Design](https://forums.unraid.net/forum/35-unraid-compulsive-design/)
-- **Official Documentation:** [Unraid Docs](https://docs.unraid.net/)
+- **Official Documentation:** [Unraid Docs](../../docs-home.md)
 - **Discord:** [Unraid Discord Community](https://discord.unraid.net)
 - **Support Portal:** [Unraid Support](https://unraid.net/support)
 
@@ -239,14 +239,18 @@ Before starting the conversion process, put your %%array|array%% into **Maintena
 2. Enter **Maintenance Mode** from the ***Main*** tab.
 3. Replace and rebuild your %%parity|parity%% drive first.
 4. Swap out each data drive one at a time, rebuilding the %%array|array%% after each replacement.
-5. The new drive will be formatted with GPT partitioning each time you rebuild.
+5. The new drive will be formatted with the appropriate partitioning style based on its size:
+   - **2TB or smaller**: Uses MBR partitioning
+   - **Larger than 2TB**: Uses GPT partitioning
 6. Once all drives are replaced and rebuilt, exit **Maintenance Mode**.
 
 This process keeps your data safe while changing the partitioning style.
 
 :::note Additional notes
 
-- Drives of 2TB or smaller usually use MBR; drives larger than 2TB typically use GPT.
+- **Partitioning is automatic**: Unraid automatically chooses the partitioning style based on drive size:
+  - **2TB or smaller**: Always uses MBR partitioning
+  - **Larger than 2TB**: Always uses GPT partitioning
 - Starting with Unraid OS 6.9, partition 1 starts at 32KiB for rotational devices and 1MiB for non-rotational devices, regardless of the partition style.
 - Always [back up your flash drive](../system-administration/secure-your-server/secure-your-flash-drive.md#backups) before starting this conversion process.
 :::

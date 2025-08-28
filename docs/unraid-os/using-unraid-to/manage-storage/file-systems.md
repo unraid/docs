@@ -77,8 +77,9 @@ When adding a new drive to Unraid, you can select the file system type that work
 To set the file system type:
 
 1. **Set the default globally**:
-   - Navigate to ***Settings → Disk Settings*** to set the default file system for new %%array|array%% drives and %%cache pools|cache-pool%%.  
-   - Unraid defaults to %%XFS|xfs%% for %%array|array%% drives and %%BTRFS|btrfs%% for %%cache pools|cache-pool%%.
+   - Navigate to ***Settings → Disk Settings*** to set the default file system for new %%array|array%% drives only.  
+   - Unraid defaults to %%XFS|xfs%% for %%array|array%% drives.
+   - **Note:** There is currently no global default setting for %%cache pools|cache-pool%%. They will always default to %%BTRFS|btrfs%% if left to "auto".
 
 2. **Set the file system for an individual drive**:
    - Stop the %%array|array%%.
@@ -195,7 +196,7 @@ Sometimes, you'll need to reformat a %%cache|cache%% drive for the following rea
 
 To move data off the cache:
 
-4. **Set share cache settings**: For each share that has files in the %%cache|cache%%, set **Use cache** to **Yes**.
+4. **Set share storage settings**: For each share that has files in the %%cache|cache%%, set **Primary storage** to your main %%array|array%% and **Secondary storage** to **None**.
    - Note down any shares you change and their original settings.
 5. **Run %%Mover|mover%%**: Run %%Mover|mover%% from the **Main** tab. Wait for it to finish and ensure that the %%cache|cache%% is empty.  
    - If any files remain, stop and check the forums for help.
@@ -213,7 +214,7 @@ To reformat the cache drive:
 
 To restore data and settings:
 
-10. **Restore share settings**: For each share you changed, set **Use cache** back to its original value (like Prefer, Only, or No).
+10. **Restore share settings**: For each share you changed, set **Primary storage** and **Secondary storage** back to their original values.
 11. **Move data back**: Run the %%Mover|mover%% again to move your data back to the %%cache|cache%%.
 12. **Stop the array**.
 13. **Re-enable Docker and %%VM|vm%% services**.
@@ -404,10 +405,25 @@ If the %%WebGUI|web-gui%% suggests formatting an unmountable drive, <strong>do n
 1. **Start the array**: Start the %%array|array%% in the correct mode (refer to the steps above).
 2. **Select the disk**: Go to the **Main** tab and select the disk you wish to check.
 3. **Access check options**: Scroll to **Check Filesystem Status**.
-4. **Enter options**: Enter any necessary options (for details, see **Help** in the upper right).
-5. **Start the check**: Click **Check** to initiate the process.
-6. **Monitor progress**: Monitor the progress in the output box. Use **Refresh** if required.
-7. **Review results**: Review the results. If uncertain, copy the output and post it on the [forums](https://forums.unraid.net/) for advice.
+4. **For XFS (Unraid 7.0+)**: You will see a **CHECK** button without any options to enter. The system automatically determines the necessary actions based on the check results.
+5. **For other file systems**: Enter any necessary options (for details, see **Help** in the upper right).
+6. **Start the check**: Click **Check** to initiate the process.
+7. **Monitor progress**: Monitor the progress in the output box. Use **Refresh** if required.
+8. **Review results**: Review the results. If uncertain, copy the output and post it on the [forums](https://forums.unraid.net/) for advice.
+
+#### XFS Automatic Repair Workflow (Unraid 7.0+)
+
+Starting with Unraid 7.0, XFS file system repair is now fully automated through the WebGUI:
+
+1. **Initial Check**: Click the **CHECK** button (no options to enter)
+2. **Check Results**:
+   - **No corruption detected**: Shows "no filesystem corruption detected" and the **CHECK** button remains
+   - **Corruption detected**: Shows "filesystem corruption detected" and a **FIX** button appears
+3. **Repair Process**: Click **FIX** to automatically repair the file system
+4. **Additional Actions**: If needed, a **ZERO LOG** button may appear
+5. **Completion**: Shows "filesystem repaired" when the process is complete
+
+This automated system eliminates the need for users to manually enter repair options and ensures the correct repair sequence is followed.
 
 #### Via the command line
 
@@ -417,8 +433,8 @@ If the %%WebGUI|web-gui%% suggests formatting an unmountable drive, <strong>do n
 To check an %%XFS|xfs%% file system via command line:
 
 - Start the %%array|array%% in **%%Maintenance Mode|maintenance-mode%%**.
-- Run the following command: `xfs_repair -v /dev/mdX`
-- Replace `X` with the disk number (e.g., `/dev/md1`).
+- Run the following command: `xfs_repair -v /dev/mdXp1`
+- Replace `X` with the disk number (e.g., `/dev/md1p1`).
 - For encrypted %%XFS|xfs%%, use `/dev/mapper/mdX`.
 - For drives not in the %%array|array%%: `xfs_repair -v /dev/sdX1`
 - Ensure you are using the correct device identifier.
@@ -434,7 +450,7 @@ Running this command on an %%array|array%% disk outside of **%%Maintenance Mode|
 To check a %%BTRFS|btrfs%% file system via command line:
 
 - To perform a %%scrub|scrub%% (which checks and repairs many errors automatically), start the %%array|array%% in **Normal mode** and run: `btrfs scrub start /mnt/diskX`
-- For a read-only check, start the %%array|array%% in **%%Maintenance Mode|maintenance-mode%%** and run: `btrfs check --readonly /dev/mdX1`
+- For a read-only check, start the %%array|array%% in **%%Maintenance Mode|maintenance-mode%%** and run: `btrfs check --readonly /dev/mdXp1`
 - Replace `X` with the disk number.
 - For drives not in the %%array|array%%: `btrfs check --readonly /dev/sdX1`
 
@@ -509,11 +525,12 @@ Repairs can take anywhere from several minutes to several hours, especially for 
 1. **Start the array**: Start the %%array|array%% in the correct mode (refer to the section above).
 2. **Select the disk**: Go to the **Main** tab and click on the disk you want to repair.
 3. **Access repair options**: Scroll down to **Check Filesystem Status**.
-4. **Remove check-only options**: Remove any options that would run the process in check-only mode (like `-n` for %%XFS|xfs%% or `--readonly` for %%BTRFS|btrfs%%).
-5. **Add suggested options**: If prompted (especially for %%XFS|xfs%%), add the suggested option (e.g., `-L` for %%XFS|xfs%%) as indicated in the check output.
-6. **Start the repair**: Click on **Check** to begin the repair.
-7. **Monitor progress**: Keep an eye on the progress in the output box. Use **Refresh** if needed.
-8. **Check for lost files**: If you notice a `lost+found` folder after the repair, it may contain files or folders that couldn't be fully recovered. Use backups or the Linux `file` command to identify the contents if necessary.
+4. **For XFS (Unraid 7.0+)**: The repair process is fully automated. Click **CHECK**, then **FIX** if corruption is detected, and **ZERO LOG** if prompted.
+5. **For other file systems**: Remove any options that would run the process in check-only mode (like `--readonly` for %%BTRFS|btrfs%%).
+6. **Add suggested options**: If prompted, add the suggested options as indicated in the check output.
+7. **Start the repair**: Click on **Check** to begin the repair.
+8. **Monitor progress**: Keep an eye on the progress in the output box. Use **Refresh** if needed.
+9. **Check for lost files**: If you notice a `lost+found` folder after the repair, it may contain files or folders that couldn't be fully recovered. Use backups or the Linux `file` command to identify the contents if necessary.
 
 :::info
 If you're uncertain about the output, copy and share it on the [Unraid forums](https://forums.unraid.net/) for expert help. Use the code formatting option to keep it readable.
@@ -525,9 +542,9 @@ If you're uncertain about the output, copy and share it on the [Unraid forums](h
   <TabItem value="xfs" label="XFS">
 
 - Start the %%array|array%% in **%%Maintenance Mode|maintenance-mode%%**.
-- Run the following command: `xfs_repair /dev/mdX`. Replace `X` with the disk number (e.g., `/dev/md1`).
+- Run the following command: `xfs_repair /dev/mdXp1`. Replace `X` with the disk number (e.g., `/dev/md1p1`).
 - For encrypted %%XFS|xfs%%, use: `/dev/mapper/mdX`.
-- If you're prompted to use `-L`, re-run the command like this: `xfs_repair -L /dev/mdX`. This is usually safe and necessary to complete the repair.
+- If you're prompted to use `-L`, re-run the command like this: `xfs_repair -L /dev/mdXp1`. This is usually safe and necessary to complete the repair.
 - For drives that are not part of the %%array|array%%: `xfs_repair /dev/sdX1`.
 
 :::caution
@@ -539,7 +556,7 @@ Running this command on an %%array|array%% disk outside of **%%Maintenance Mode|
   <TabItem value="btrfs" label="BTRFS">
 
 - To perform a %%scrub|scrub%% (which detects and repairs many errors automatically), start the %%array|array%% in **Normal mode** and run: `btrfs scrub start /mnt/diskX`.
-- For a full repair, start the %%array|array%% in **%%Maintenance Mode|maintenance-mode%%** and run: `btrfs check --repair /dev/sdX1`. Only use `--repair` if advised by the [forums](https://forums.unraid.net/) or documentation, as it can sometimes lead to further issues.
+- For a full repair, start the %%array|array%% in **%%Maintenance Mode|maintenance-mode%%** and run: `btrfs check --repair /dev/mdXp1`. Only use `--repair` if advised by the [forums](https://forums.unraid.net/) or documentation, as it can sometimes lead to further issues.
 
 :::caution Use `--repair` with caution
 The `--repair` option can sometimes cause data loss or make corruption worse if used incorrectly. Only use it when:

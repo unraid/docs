@@ -81,8 +81,8 @@ To add a share:
    - **Minimum Free Space:** Decide on a minimum amount of free space (e.g., `50GB` for large files).  (For more details, see [Minimum free space](#minimum-free-space))
 
 4. **Select storage locations:**
-   - **Primary Storage:** Choose where the share will mainly be stored (e.g., **%%cache|cache%%**, **%%array|array%%**, or a specific %%pool|cache-pool%%).
-   - **Secondary Storage:** Set a backup location (like the %%array|array%% if the %%cache|cache%% runs out of space).  
+   - **Primary Storage:** Choose where the share will initially be stored (e.g., **%%cache|cache%%**, **%%array|array%%**, or a specific %%pool|cache-pool%%).
+   - **Secondary Storage:** Set an overflow location that can be used when primary storage is full, and also serves as the final destination for the share once the %%Mover|mover%% runs.
 
     (For more details, see [Primary and secondary storage](#primary-and-secondary-storage).)
 
@@ -227,6 +227,8 @@ import TabItem from '@theme/TabItem';
 
 The **Primary Storage** setting determines where new files for a share are initially written—this can be the **%%cache|cache%%**, the **%%array|array%%**, or any named **%%pool|cache-pool%%**. The **Secondary Storage** setting specifies an alternate location for new files and folders if the primary storage falls below the **Minimum Free Space** threshold.
 
+The **%%Mover|mover%%** function automatically transfers files between primary and secondary storage based on your schedule, ensuring optimal performance and storage utilization.
+
 <div style={{ margin: 'auto', maxWidth: '312px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
 
 ![Primary to Secondary Storage](/img/primarytosecondarystorage.png)
@@ -237,14 +239,16 @@ The **Primary Storage** setting determines where new files for a share are initi
 If you select an %%array|array%% or any named %%pool|cache-pool%% for primary or secondary storage, you must also configure its **%%allocation method|allocation-method%%**, **%%split level|split-level%%**, and any **%%included or excluded disks|included-or-excluded-disks%%**.
 :::
 
-**Primary Storage Drop-down:**
+**Primary storage drop-down:**
+
 - This setting is required for each share.
 - You must select a primary storage device or %%pool|cache-pool%% (default is **Cache**).
 - You can choose any named %%pool|cache-pool%% or the %%array|array%%.
 
-**Secondary Storage Drop-down:**
+**Secondary storage drop-down:**
+
 - **None:** No secondary storage is set for the share (optional).
-- If the primary storage is a %%pool|cache-pool%%, only **None** and **Array** are available.
+- If the primary storage is a %%pool|cache-pool%%, **None**, **Array**, and **Another pool** are available.
 - If the primary storage is the **Array**, only **None** is available.
 </TabItem>
   <TabItem value="6.11" label="Unraid 6.11 and earlier">
@@ -498,7 +502,13 @@ The settings for %%included and excluded disks|included-or-excluded-disks%% only
 
 ### Default shares  
 
-When you use Unraid with **Docker** or **Virtual Machines (VMs)**, it automatically creates some default shares. You don’t have to use these shares if you don’t want to, and you can remove them if you prefer, but we usually recommend keeping them for convenience. These shares help keep things organized and make it easier for everyone to get support if they run into issues.
+When you use Unraid with **Docker** or **Virtual Machines (VMs)**, it automatically creates some default shares.
+
+:::important
+These shares are only created after you start their respective services (Docker or VM Manager). If you don't see these shares, make sure Docker and/or VM Manager are enabled and running.
+:::
+
+You don’t have to use these shares if you don’t want to, and you can remove them if you prefer, but we usually recommend keeping them for convenience. These shares help keep things organized and make it easier for everyone to get support if they run into issues.
 
 Here’s a quick overview of what each default share is for:
 
@@ -556,11 +566,9 @@ For security, it's best to keep your shares in *Private* mode and only grant acc
    - Connect external drives using the **[Unassigned Devices plugin](https://unraid.net/community/apps?q=unassigned+devices#r:~:text=don%27t%20be%20carefull!!!-,Unassigned%20Devices,-dlandon)** to prevent issues.  
    - Copy files from `/mnt/disks/` instead of from the main %%array|array%% or %%cache|cache%% paths.  
 
-3. **Verify your copies:**  
-   - When moving files locally, you can use `rsync -c` to check that the files copied over correctly.  
-   - *Example command:* `rsync -avc /mnt/disk1/share/ /mnt/user/share/`  
+3. **Verify your copies:** When moving files locally, you can use `rsync -c` to check that the files copied over correctly.  
 
-4. **Don’t mix share types:** Avoid using paths that mix %%user shares|user-share%% and disk shares, such as `/mnt/user/share/` with `/mnt/disk1/share/` in the same command.
+1. **Don’t mix share types:** Avoid using paths that mix %%user shares|user-share%% and disk shares, such as `/mnt/user/share/` with `/mnt/disk1/share/` in the same command.
 
 ---
 

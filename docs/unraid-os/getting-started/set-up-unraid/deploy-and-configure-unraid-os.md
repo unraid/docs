@@ -16,7 +16,7 @@ It may be easier for users to follow this guide after configuring their language
 
 You can connect to the %%WebGUI|web-gui%% in two ways:
 
-- **GUI Mode:** Boot Unraid in GUI mode and sign in using `root` as the username with no initial password.
+- **GUI Mode:** Boot Unraid in GUI mode and sign in using a keyboard and monitor connected to the server. Use `root` as the username with no initial password.
 - **Web Browser:** On another device on your local network, visit `http://tower.local`. If you set a different hostname, use that instead of `tower` (i.e., for the hostname `unraidserver`, you'd visit `http://unraidserver.local`). %%mDNS|mdns%% handles the resolution of these `.local` addresses.
 
 :::important

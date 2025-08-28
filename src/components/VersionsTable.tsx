@@ -162,7 +162,7 @@ const supportPolicies = {
     details: [
       { type: "header", content: "Kernel: Linux 6.12 LTS" },
       { type: "header", content: "ZFS Version: OpenZFS 2.1.x" },
-      { type: "text", content: "Primary features are detailed in the 7.1.0 Release Notes." },
+      { type: "text", content: "Primary features are detailed in the <a href='/unraid-os/release-notes/7.1.0'>7.1.0 Release Notes</a>." },
       { type: "header", content: "License Information:" },
       { type: "bullet", content: "If your license extension expires on or after 2025-05-05, you are eligible for all releases in this series." },
       { type: "header", content: "Update Recommendations:" },
@@ -172,7 +172,7 @@ const supportPolicies = {
       { type: "bullet", content: "Bug fixes will be backported to 7.1.x as appropriate until the release of 7.2.0." },
       { type: "bullet", content: "Security updates will be provided for 7.1.x as appropriate until the release of 7.3.0." },
       { type: "header", content: "Future Releases:" },
-      { type: "bullet", content: "Additional public beta/RC releases for 7.1.x are unlikely, but any announcements will be made in the prerelease forum." },
+      { type: "bullet", content: "Additional public beta/RC releases for 7.1.x are unlikely, but any announcements will be made in the <a href='https://forums.unraid.net/forum/7-announcements/'>main forum</a>." },
       { type: "bullet", content: "New stable releases of 7.1.x will be announced in the forum." }
     ]
   },
@@ -181,14 +181,14 @@ const supportPolicies = {
     description: "The 7.0.x series is no longer being actively developed",
     details: [
       { type: "header", content: "Kernel: Linux 6.6 LTS" },
-      { type: "text", content: "Primary features are detailed in the 7.0.0 Release Notes." },
+      { type: "text", content: "Primary features are detailed in the <a href='/unraid-os/release-notes/7.0.0'>7.0.0 Release Notes</a>." },
       { type: "header", content: "License Information:" },
       { type: "bullet", content: "If your license extension expires on or after 2025-01-09, you are eligible for all releases in this series." },
       { type: "header", content: "Update Recommendations:" },
       { type: "bullet", content: "Until Unraid 7.2.0 is released, 7.0.x will only receive updates for serious security issues, with no bug fixes or new features." },
       { type: "bullet", content: "All users are encouraged to upgrade to the current release." },
       { type: "header", content: "Future Releases:" },
-      { type: "bullet", content: "Additional public beta/RC releases for 7.0.x are unlikely, but any announcements will be made in the prerelease forum." },
+      { type: "bullet", content: "Additional public beta/RC releases for 7.0.x are unlikely, but any announcements will be made in the <a href='https://forums.unraid.net/forum/7-announcements/'>main forum</a>." },
       { type: "bullet", content: "Any new stable releases of 7.0.x will be announced in the forum." }
     ]
   },
@@ -220,18 +220,14 @@ const supportPolicies = {
 const upcoming = [
   {
     version: "7.2.x",
-    status:  "In development – target Q4 2025",
-    highlights: [
-      "Built-in WireGuard GUI v2",
-      "UI dark-mode scheduler", 
-      "ZFS automatic pool trimming",
-    ],
+    status: "Currently in beta. Check out the <a href='https://docs.unraid.net/unraid-os/release-notes/7.2.0/'>release notes</a> to see what's coming.",
+    highlights: [],
   },
   // Add more upcoming versions here if needed:
   // {
   //   version: "8.0.x",
-  //   status: "Planning phase – target 2026",
-  //   highlights: ["New feature X", "Improvement Y"],
+  //   status: "Planning phase",
+  //   highlights: [],
   // },
 ];
 
@@ -256,7 +252,7 @@ const getSupportInfo = (currentMinor: string, previousMinor: string) => ({
       "While there may be additional releases in this series, no new features are expected; this series is feature complete",
       `Until ${getNextMinor(currentMinor)}.0 is released we will backport bug fixes to ${currentMinor}.x as appropriate`,
       `Until ${getNextMinor(getNextMinor(currentMinor))}.0 is released we will provide security updates to ${currentMinor}.x as appropriate`,
-      `There probably won't be additional public beta/rc releases for ${currentMinor}.x, but if there are they will be announced in the prerelease forum`,
+      `There probably won't be additional public beta/rc releases for ${currentMinor}.x, but if there are they will be announced in the <a href='https://forums.unraid.net/forum/7-announcements/'>main forum</a>`,
       `New stable releases of ${currentMinor}.x will be announced in the forum`
     ]
   },
@@ -269,8 +265,8 @@ const getSupportInfo = (currentMinor: string, previousMinor: string) => ({
       "If your license extension expires on or after 2025-01-09 you are eligible for all releases in this series",
       `Until Unraid ${getNextMinor(currentMinor)}.0 is released, ${previousMinor}.x will get updates for serious security issues only, no bug fixes or new features`,
       "All users are encouraged to upgrade to the current release",
-      "For more information about license extensions, see the <a href='https://docs.unraid.net/unraid-os/faq/licensing-faq/#what-happens-if-i-dont-extend-my-starter-or-unleashed-license'>licensing FAQ</a>",
-      `There probably won't be additional public beta/rc releases for ${previousMinor}.x, but if there are they will be announced in the prerelease forum`,
+      "For more information about license extensions, see the <a href='../docs/unraid-os/troubleshooting/licensing-faq.md#no-extension'>licensing FAQ</a>",
+      `There probably won't be additional public beta/rc releases for ${previousMinor}.x, but if there are they will be announced in the <a href='https://forums.unraid.net/forum/7-announcements/'>main forum</a>`,
       `Any new stable releases of ${previousMinor}.x will be announced in the forum`
     ]
   },
@@ -573,7 +569,7 @@ function Viewer() {
                     left: "0",
                     top: "0"
                   }}>•</span>
-                  <span>{detail.content}</span>
+                  <span dangerouslySetInnerHTML={{__html: detail.content}} />
                 </li>
               );
             } else if (detail.type === "header") {
@@ -594,7 +590,7 @@ function Viewer() {
                   marginBottom: "0.5rem",
                   paddingLeft: "0"
                 }}>
-                  {detail.content}
+                  <span dangerouslySetInnerHTML={{__html: detail.content}} />
                 </div>
               );
             }
@@ -637,12 +633,14 @@ function Viewer() {
       */}
       {upcoming.length > 0 && (
         <>
-          <h2 style={{marginTop: "2rem", marginBottom: "1rem"}}>What's Next?</h2>
+          <h2 style={{marginTop: "2rem", marginBottom: "1rem"}}>What's next?</h2>
           {upcoming.map((u) => (
             <div key={u.version} style={{marginBottom:"1.5rem"}}>
               <h3>{u.version}</h3>
-              <p>{u.status}</p>
-              <ul>{u.highlights.map((h) => <li key={h}>{h}</li>)}</ul>
+              <p dangerouslySetInnerHTML={{__html: u.status}} />
+              {u.highlights.length > 0 && (
+                <ul>{u.highlights.map((h) => <li key={h}>{h}</li>)}</ul>
+              )}
             </div>
           ))}
         </>
@@ -669,11 +667,11 @@ function Viewer() {
             Future release information
           </summary>
           <div style={{marginTop: "1rem"}}>
-            <p>We are currently working on Unraid 7.2.x and will announce features as we get closer to a public beta, which will be announced in the <a href='https://forums.unraid.net/'>prerelease forum</a>.</p>
-            <p>If you are interested in running betas and RCs, check the <a href='https://forums.unraid.net/'>prerelease forum</a> for upgrade instructions and support. We appreciate the community's involvement in testing on a wide range of hardware and with varied use cases to help identify potential issues.</p>
+            <p>We are currently working on Unraid 7.2.x and will announce features as we get closer to a public beta, which will be announced in the <a href='https://forums.unraid.net/forum/7-announcements/'>main forum</a>.</p>
+            <p>If you are interested in running betas and RCs, check the <a href='https://forums.unraid.net/forum/7-announcements/'>main forum</a> for upgrade instructions and support. We appreciate the community's involvement in testing on a wide range of hardware and with varied use cases to help identify potential issues.</p>
             <ul>
-              <li>If you find an issue in a beta or RC, please start a new thread in the <a href='https://forums.unraid.net/'>prerelease forum</a>, providing as much detail as you can for us to be able to reproduce the problem. Please include your diagnostics.</li>
-              <li>For more information about pre-releases, see the <a href="../troubleshooting/licensing-faq.md">licensing FAQ</a>.</li>
+              <li>If you find an issue in a beta or RC, please start a new thread in the <a href='https://forums.unraid.net/bug-reports/prereleases/'>prerelease forum</a>, providing as much detail as you can for us to be able to reproduce the problem. Please include your diagnostics.</li>
+              <li>For more information about pre-releases, see the <a href="/unraid-os/troubleshooting/licensing-faq/">licensing FAQ</a>.</li>
             </ul>
           </div>
         </details>

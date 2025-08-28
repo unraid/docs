@@ -30,6 +30,10 @@ UDMA CRC errors indicate data transmission problems between your drives and the 
 - **Power delivery issues:** Insufficient or unstable power, often due to splitter cables or an overloaded power supply, can cause intermittent errors.
 - **Unseated disk controller:** Communication errors may occur if the controller card isn't fully inserted into its slot.
 - **Drive hardware faults:** While rare, a failing drive can also produce CRC errors.
+- **Cable management issues:**
+  - **Tie straps:** If using tie straps for cable management, keep them loose, not tight or over-tight. Ideally use Velcro straps instead.
+  - **Power and data cable routing:** Avoid routing power cables alongside SATA data cables. If they must touch or be very close, they should cross at 90 degrees to minimize interference.
+  - **SATA cable bending:** Never force-bend SATA cables to make 90-degree turns. This can damage the cable and cause communication issues.
 
 ---
 

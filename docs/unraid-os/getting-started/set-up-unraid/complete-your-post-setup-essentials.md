@@ -46,3 +46,45 @@ Since your Unraid server contains valuable data, it's wise to review the [securi
 Unraid Connect uses your Unraid.net credentials for access management and communicates with our cloud servers over a secure connection. 
 
 For more information on how we handle your data, please refer to the [Privacy section](../../../unraid-connect/overview-and-setup.md#data-collection-and-privacy) in our Unraid Connect documentation.
+
+## Link your license key to your account
+
+If you have an existing Unraid license key but haven't linked it to your Unraid.net account yet, you can do so to enable additional features and easier license management.
+
+Benefits of linking your license key include:
+
+- **Centralized management:** View and manage all your licenses from your Unraid.net account
+- **Easy access:** Download your license key files from anywhere
+- **Enhanced support:** Streamlined support experience with linked account information
+- **Prerelease access:** Download beta and release candidate versions if eligible
+
+To link your license key:
+
+1. **From the WebGUI:**
+   - Go to ***Tools → Registration*** in your Unraid server's WebGUI
+   - Click **Sign in to Unraid.net** if you haven't already
+   - Your license key will automatically be linked to your account
+
+2. **From the account portal:**
+   - Visit [account.unraid.net/keys](https://account.unraid.net/keys)
+   - Sign in with your Unraid.net credentials
+   - Click **Link Existing Key** and follow the prompts
+
+3. **During server setup:**
+   - If you're setting up a new server with an existing license, you can sign in to your Unraid.net account during the initial configuration
+   - Your license will be automatically linked
+
+:::note
+Linking your license key to your account is a one-time process. Once linked, you can manage your license from either the WebGUI or your online account portal.
+:::
+
+:::important
+If you're having trouble linking your license key, ensure that:
+
+- Your Unraid.net account email matches the email associated with your license purchase
+- You're using the correct license key file
+- Your server has internet access for account verification
+
+:::
+
+For more detailed information about license management, see the [licensing FAQ](../../troubleshooting/licensing-faq.md).

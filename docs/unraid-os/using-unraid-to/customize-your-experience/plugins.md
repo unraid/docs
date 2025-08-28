@@ -72,5 +72,3 @@ Preferred, as it doesn't even require a display connected to your server.
 3. Press Enter to continue.
  </TabItem>
 </Tabs>
-
-While in safe mode, review your installed plugins and consider removing or updating those that may not be compatible with your current Unraid release.

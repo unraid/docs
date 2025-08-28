@@ -44,7 +44,7 @@ Attach the single diagnostics zip file when posting on forums - avoid uploading 
 
 ### Anonymization of diagnostic data
 
-By default, diagnostics are automatically anonymized. If you enable %%Mover|mover%% logging under ***Settings → Mover Settings***, the %%syslog|syslog%% will include details about files the %%Mover|mover%% processes. It's best to allow %%Mover|mover%% logging only when troubleshooting specific %%Mover|mover%%-related issues, as it may reveal file paths and names.
+By default, diagnostics are automatically anonymized. If you enable %%Mover|mover%% logging under ***Settings → Scheduler → Mover Settings***, the %%syslog|syslog%% will include details about files the %%Mover|mover%% processes. It's best to allow %%Mover|mover%% logging only when troubleshooting specific %%Mover|mover%%-related issues, as it may reveal file paths and names.
 
 When your system shuts down gracefully, the session log is saved automatically to the flash drive. You can access it after rebooting by going to ***Tools → Syslog → syslog-previous***. This log is also included in diagnostics on the next boot. However, if the system crashes, the system log will be lost. In these cases, enabling %%syslog|syslog%% mirroring to the flash or using a remote %%syslog server|syslog-server%% is recommended to preserve logs for troubleshooting.
 

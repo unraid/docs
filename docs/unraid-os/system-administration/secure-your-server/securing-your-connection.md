@@ -214,3 +214,87 @@ For wildcard certificates, ensure the certificate's Subject Alternative Name or 
 :::
 
 </details>
+
+---
+
+## SSL troubleshooting and advanced configuration
+
+This section covers common SSL-related issues and advanced configuration options that apply when using myunraid.net certificates, regardless of whether you have Unraid Connect installed.
+
+### DNS rebinding protection
+
+DNS rebinding protection is a security feature on many routers that prevents public DNS entries from resolving to local IP addresses. This helps protect your network from certain attacks, but can cause issues when trying to use %%SSL|ssl%% certificates for local access to the Unraid %%WebGUI|web-gui%%.
+
+If you encounter a DNS rebinding error while trying to provision an %%SSL|ssl%% certificate (e.g., after clicking the **Provision** button), consider the following steps:
+
+- Click **OK** on the error message, wait for 2 to 5 minutes, and try again.
+- If the error continues, check your router settings for options related to "DNS rebinding protection" or similar terms.
+- Allow DNS rebinding for the `myunraid.net` domain.
+- Keep in mind that DNS changes can take time to propagate, so you may see the error again after making updates.
+
+The exact steps may vary based on your router model and firmware.
+
+### Accessing your server when DNS is down
+
+When %%SSL|ssl%% is enabled with a myunraid.net certificate, you typically access your Unraid server using a fully qualified domain name (FQDN), such as:
+
+```
+https://ip.yourpersonalhash.myunraid.net
+```
+
+Or, if you're using a custom HTTPS port:
+
+```
+https://ip.yourpersonalhash.myunraid.net:<https_port>
+```
+
+This ensures you're using a valid %%SSL|ssl%% certificate for secure access. However, if your Internet connection goes down and your browser hasn't cached the DNS entry, you may lose access to the %%WebGUI|web-gui%%.
+
+If you lose DNS or Internet access:
+
+- If **Use SSL/TLS** is set to **Yes**, try accessing your server at:
+  ```
+  https://[servername].[localTLD]
+  ```
+  Or with a custom port:
+  ```
+  https://servername.[localTLD]:<https_port>
+  ```
+
+- If this doesn't work, or if **Use SSL/TLS** is set to **Strict**:
+   1. Use telnet, %%SSH|ssh%%, or a directly connected keyboard/monitor to log into your server.
+   2. Run the command:
+      ```bash
+      use_ssl no
+      ```
+   3. You can now access the %%WebGUI|web-gui%% at:
+      ```
+      http://<ip_address>
+      ```
+      Or, if using a custom port:
+      ```
+      http://<server_ip>:<http_port>
+      ```
+      (Note: this uses HTTP, not HTTPS.)
+
+Once Internet access is restored, go to ***Settings → Management Access*** and set **Use SSL/TLS** back to **Strict** to re-enable local SSL.
+
+### Disabling SSL for local access
+
+You should disable %%SSL|ssl%% for local access if you prefer a simple HTTP connection on your trusted home network or if you're facing ongoing issues with %%SSL|ssl%% certificate provisioning, DNS rebinding, or browser compatibility.
+
+To disable %%SSL|ssl%% for local access:
+
+1. Go to ***Settings → Management Access*** in the WebGUI.
+2. Set **Use SSL/TLS** to **No**.
+3. Click **Apply**.
+
+This change will also disable the Remote Access feature, as %%SSL|ssl%% is necessary for secure remote connections.
+
+:::caution
+Disabling %%SSL|ssl%% means your %%WebGUI|web-gui%% will be accessible over unencrypted HTTP. This exposes your login credentials and session data to anyone on your local network and is not recommended unless you are confident your network is secure and you do not need remote access. For the best security, keep %%SSL|ssl%% enabled whenever possible.
+:::
+
+:::note
+%%SSL|ssl%% management is a core feature of Unraid and does not rely on the Unraid Connect plugin. You can disable %%SSL|ssl%% without affecting other Unraid functionality.
+:::

@@ -422,7 +422,7 @@ Some indications include:
 
 :::tip Tips for Safe Rebuilds
 
-- **For Single Parity:** It's best to replace one disk at a time. If another disk fails during the rebuild, you could lose data.
+- **For Single Parity:** You can only replace one disk at a time. If another disk fails during the rebuild, you could lose data.
 - **For Dual Parity:** You can replace one or two disks at the same time, but be cautious if more than two disks fail.
 
 :::
@@ -561,7 +561,7 @@ First, assign the new 4TB drive as the parity drive, which will replace the 2TB 
 
 After these changes, you’ll have a 4TB drive as your new parity, ensuring you can add future data drives up to 4TB. The 2TB drive will now hold your existing data, while the 1TB drive can be repurposed.
 
-This swap keeps your data secure and your array protected, allowing for future upgrades. Always check ***Tools → New Config → Confirm*** before starting, and monitor the rebuild in ***Main → Array Operation***.
+This swap keeps your data secure and your array protected, allowing for future upgrades.
 
 </details>
 
@@ -696,10 +696,7 @@ To remove a disk using the parity-preserve method:
 4. **(Optional) Enable Turbo Write:** For faster zeroing, enable Reconstruct Write ("Turbo Write") in **Settings → Disk Settings**, but only if all drives are healthy.
 5. **Ensure disk is empty:** Check that the disk is completely empty. Reformatting the disk is a quick way to clear it, but confirm that no important data remains.
 6. **Create a placeholder folder:** On the disk, create a single folder named `clear-me`.
-7. **Run the clearance script:** Use the [User Scripts](https://unraid.net/community/apps?q=user+scripts#r:~:text=CA-,User%20scripts,-is%20designed%20to) plugin or run the following script from the command line:
-   - The script will only execute if the disk is empty and correctly prepared.
-   - Note that this process can take several hours depending on the disk size and system activity.
-   - Avoid accessing the disk while this process runs.
+7. **Zero out the disk:** Use the alternative command-line method below to manually zero out the disk.
 8. **Stop the array:** Once the clearing is complete, stop the array.
 9.  **Reset array configuration:** Retain all current assignments when resetting the array configuration.
 10. **Unassign the disk:** Unassign the disk you wish to remove, double-checking all assignments, especially the %%parity drive|parity-drives%%.
@@ -734,7 +731,7 @@ If you're comfortable using the Linux command line, you can manually zero out yo
    dd bs=1M if=/dev/zero of=/dev/mdX status=progress
    ```
 
-:::note 
+:::note
 Remember to replace `X` with the specific number of the data disk you are removing.
 :::
 
@@ -742,11 +739,7 @@ Remember to replace `X` with the specific number of the data disk you are removi
 Before executing these commands, double-check the drive number to avoid accidentally erasing data on the wrong disk.
 :::
 
-**Troubleshooting**
-
-- If you encounter any issues with the commands, ensure that the disk is empty and only contains a folder named `clear-me`. The process will not proceed if there are additional files or folders present, including hidden ones.
-
-- For further assistance, don’t hesitate to reach out to the [Unraid forums](https://forums.unraid.net/). There, you can find helpful resources and community support.
+Don’t hesitate to reach out to the [Unraid forums](https://forums.unraid.net/). There, you can find helpful resources and community support.
 
 </details>
 
@@ -1113,31 +1106,33 @@ When using Unraid, the speed at which you can read files is mainly determined by
 
 ## Cache pools
 
-%%Cache pools|cache-pool%% in Unraid provide significant advantages, particularly for write-heavy tasks, virtual machines (VMs), and Docker containers. These pools operate separately from the main array and can be set up with multiple drives using the %%BTRFS|btrfs%% file system, supporting various %%RAID|raid%% configurations for speed and data protection.
+%%Cache pools|cache-pool%% in Unraid provide significant advantages, particularly for write-heavy tasks, virtual machines (VMs), and Docker containers. These pools operate separately from the main array and can be set up with multiple drives using either the %%BTRFS|btrfs%% or %%ZFS|zfs%% file system, supporting various %%RAID|raid%% configurations for speed and data protection.
 
 <h3>Cache pools vs. the main array</h3>
 
-| Feature                | Cache pool (BTRFS)                       | Main array (Unraid)           |
-|------------------------|------------------------------------------|-------------------------------|
-| **Read speed**         | SSD: 400–550 MB/s, NVMe: 250–7,000 MB/s* | HDD: 70–250 MB/s (per disk)   |
-| **Write speed**        | SSD: 400–550 MB/s, NVMe: 250–7,000 MB/s* | 20–120 MB/s (parity mode dependent) |
-| **Data protection**    | %%RAID 1&#124;raid1%%/%%RAID 10&#124;raid10%% (recommended)  %%RAID 5&#124;raid5%%/%%RAID 6&#124;raid6%% (experimental, not for critical data) | Parity-based, file system agnostic |
-| **Expansion**          | Mix drive sizes; add/remove devices dynamically | Add drives, but no striping or performance scaling |
-| **Recovery complexity**| Higher risk of data loss; %%BTRFS&#124;btrfs%% tools required | Easier parity-based rebuilds  |
-| **Best for**           | Apps, VMs, frequent writes               | Bulk storage, media libraries |
+| Feature                | Cache pool (BTRFS)                       | Cache pool (ZFS)              | Main array (Unraid)           |
+|------------------------|------------------------------------------|-------------------------------|-------------------------------|
+| **Read speed**         | SSD: 400–550 MB/s, NVMe: 250–7,000 MB/s* | SSD: 400–550 MB/s, NVMe: 250–7,000 MB/s* | HDD: 70–250 MB/s (per disk)   |
+| **Write speed**        | SSD: 400–550 MB/s, NVMe: 250–7,000 MB/s* | SSD: 400–550 MB/s, NVMe: 250–7,000 MB/s* | 20–120 MB/s (parity mode dependent) |
+| **Data protection**    | %%RAID 1&#124;raid1%%/%%RAID 10&#124;raid10%% (recommended)  %%RAID 5&#124;raid5%%/%%RAID 6&#124;raid6%% (experimental, not for critical data) | %%RAID 1&#124;raid1%%/%%RAID 10&#124;raid10%% (recommended)  %%RAID 5&#124;raid5%%/%%RAID 6&#124;raid6%% (stable, production-ready) | Parity-based, file system agnostic |
+| **Expansion**          | Mix drive sizes; add/remove devices dynamically | Mix drive sizes; add/remove devices dynamically | Add drives, but no striping or performance scaling |
+| **Recovery complexity**| Higher risk of data loss; %%BTRFS&#124;btrfs%% tools required | Higher risk of data loss; %%ZFS&#124;zfs%% tools required | Easier parity-based rebuilds  |
+| **Best for**           | Apps, VMs, frequent writes               | Apps, VMs, frequent writes, enterprise workloads | Bulk storage, media libraries |
 
 **Actual NVMe speeds depend on PCIe generation, cooling, and network bandwidth (e.g., 10GbE caps at ~1,100 MB/s).*
 
 <h4>Pros of cache pools</h4>
 
 - **Higher performance:** NVMe pools can saturate 10GbE/40GbE networks (1,100–3,500 MB/s).
-- **Flexible RAID:** %%BTRFS|btrfs%% supports %%RAID 1|raid1%%/%%RAID 10|raid10%% for redundancy without matching drive sizes.
+- **Flexible RAID:** Both %%BTRFS|btrfs%% and %%ZFS|zfs%% support %%RAID 1|raid1%%/%%RAID 10|raid10%% for redundancy without matching drive sizes.
 - **Low latency:** Ideal for databases, VMs, and Docker containers.
+- **ZFS advantages:** %%ZFS|zfs%% provides enterprise-grade features like data integrity checking, compression, and snapshots.
 
 <h4>Cons of cache pools</h4>
 
 - **No parity protection:** Data is unprotected until moved to the array.
 - **Recovery risks:** %%BTRFS|btrfs%% %%RAID 5|raid5%%/%%RAID 6|raid6%% is unstable; single-drive pools lack redundancy.
+- **ZFS considerations:** %%ZFS|zfs%% requires more RAM and has stricter hardware requirements than %%BTRFS|btrfs%%.
 
 For more detailed information about %%cache pools|cache-pool%%, including how to set them up, manage them, and advanced features, check the [Cache pools](./cache-pools.md) page.
 

@@ -10,7 +10,7 @@ import TabItem from '@theme/TabItem';
 
 Community Applications provides a curated catalog of over 2,000 free Docker containers and plugins maintained by the Unraid community. Each container or plugin lets your server take on new roles, such as running a media server, dynamic DNS client, or backup solution.
 
-- **Docker containers** are lightweight packages that include everything needed to run an application, keeping it isolated from the rest of your %%array|array%% and %%cache pool|cache-pool%%.  Learn more about [array configuration](./manage-storage/array-configuration.md) and [cache pools](./manage-storage/cache-pools.md).
+- **Docker containers** are lightweight packages that include everything needed to run an application, keeping it isolated from the rest of your %%array|array%% and %%cache pool|cache-pool%%.  Learn more about [array configuration](../manage-storage/array-configuration.md) and [cache pools](../manage-storage/cache-pools.md).
 - **Plugins** enhance Unraid OS itself. For more information about plugins, visit the [Plugins](../customize-your-experience/plugins.md) page.
 
 :::caution
@@ -59,9 +59,16 @@ Before installing, consider backing up your flash drive to protect your configur
   <TabItem value="Installing applications" label="Installing applications">
 
 To install a Docker container or plugin, simply click the **Install** button from the application's tile or information panel located in the **Apps** tab of the %%WebGUI|web-gui%%. This will start the installation process.
-<div style={{ margin: 'auto', maxWidth: '423px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
 
+<div style={{ margin: 'auto', maxWidth: '800px', display: 'flex', flexDirection: 'row', justifyContent: 'center', gap: '20px', alignItems: 'flex-start' }}>
+
+<div style={{ maxWidth: '390px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
 ![Install application](/img/CA_Tile1.png)
+</div>
+
+<div style={{ maxWidth: '390px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+![Application tile example](/img/CA_Tile3.png)
+</div>
 
 </div>
 
@@ -84,7 +91,7 @@ To remove an application:
   
   <TabItem value="Reinstalling applications" label="Reinstalling applications">
 
-If you need to reinstall a Docker container or plugin (for instance, if your `docker.img` file is corrupted), Community Applications simplifies this for you. All application settings are saved as a %%VM XML template|vm-xml-templates%% in `/boot/config/plugins/dockerMan/templates-user`.  For more information on templates, see [VM setup](../create-virtual-machines/vm-setup.md).
+If you need to reinstall a Docker container or plugin (for instance, if your `docker.img` file is corrupted), Community Applications simplifies this for you. All application settings are saved as Docker template XML files in `/boot/config/plugins/dockerMan/templates-user`. For more information on the Docker template XML schema and custom tags, see the [Docker Template XML Schema documentation](https://forums.unraid.net/topic/38619-docker-template-xml-schema/) on the Unraid forums.
 
 To reinstall an application:
 
@@ -107,13 +114,27 @@ If you’re using Docker containers and plugins, you'll find that most come with
 
 - **Plugins Tab**: On the **Plugins** tab, each plugin will have a **Support Thread** link right in its summary for quick access.
 
+:::tip Support preferences
+When accessing support options, look for these dropdown options:
+
+- **Discord**: If available, Discord is typically maintainers' preferred support venue instead of the forum.
+- **Project**: Questions about the application itself are best answered via the project's official channels.
+:::
+
 These resources will connect you to community forums and developer discussions where you can find help, troubleshoot issues, and stay updated.
 
 ---
 
 ## Updating applications (Action Center)
 
-The **Action Center** in the %%WebGUI|web-gui%% is your go-to place for keeping track of applications that need updates. When there are updates available, you’ll see an alert. Just click on **Actions** for the app that needs updating, and then select **Update** to run the update script. Regular updates are essential for maintaining the security, stability, and compatibility of your Unraid installation. See [Upgrading Unraid](../../system-administration/maintain-and-update/upgrading-unraid.md) for more information.
+The **Action Center** is located within the **Apps** tab in the %%WebGUI|web-gui%% and serves as your central hub for managing application status. It provides information about:
+
+- **Updates available**: Applications that have newer versions ready for installation
+- **Deprecated applications**: Applications that are no longer maintained or recommended
+- **Incompatible applications**: Applications that may not work with your current Unraid version
+- **Blacklisted applications**: Applications that have been removed from the catalog for security or compatibility reasons
+
+When you access the Action Center, you'll see alerts for any applications requiring attention. To update an application, click on Actions for the app that needs updating, and then select **Update** to run the update script. Regular updates are essential for maintaining the security, stability, and compatibility of your Unraid installation. See [Upgrading Unraid](../../system-administration/maintain-and-update/upgrading-unraid.md) for more information.
 
 ---
 
@@ -153,5 +174,5 @@ If you're a developer interested in contributing to the Unraid community by publ
 
 1. Prepare your application's template files and documentation.
 2. Create a support thread in the [Unraid forums](https://forums.unraid.net/).
-3. Submit your application via the **Community Applications** submission portal in the %%WebGUI|web-gui%%.
+3. Submit your application via the [Community Applications submission form](https://form.asana.com/?k=qtIUrf5ydiXvXzPI57BiJw&d=714739274360802).
 4. The moderation team typically reviews submissions within 48 hours.

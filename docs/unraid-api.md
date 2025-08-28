@@ -28,11 +28,7 @@ The Unraid API is aimed at:
 To access the Unraid API through Unraid Connect:
 
 1. Install the [Unraid Connect plugin](https://unraid.net/community/apps/p3?q=unraid+connect#r:~:text=device%3D/dev/dri%22.-,Unraid%20Connect,-beta) from the **Apps** tab.
-<<<<<<< HEAD
-2. [Configure the plugin](#enabling-the-%%GraphQL|graphql%%-sandbox) to enable API access.
-=======
 2. [Configure the plugin](#enabling-the-graphql-sandbox) to enable API access.
->>>>>>> 44c7611635bfc51e13a33df7697773fd739ac8cb
 3. Use the [%%GraphQL|graphql%% Sandbox](#enabling-the-graphql-sandbox) for interactive queries, testing, and development.
 
 ---

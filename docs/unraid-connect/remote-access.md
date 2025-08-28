@@ -150,8 +150,8 @@ To enable secure local access:
 1. Go to ***Settings → Management Access***.
 2. In the **CA-signed certificate** section, check for DNS Rebinding warnings.
    - If no warnings show, set **Use SSL/TLS** to **Strict**.
-   - If warnings are present, review [DNS Rebinding Protection](../unraid-connect/overview-and-setup.md#dns-rebinding-protection).
+   - If warnings are present, review [DNS Rebinding Protection](../unraid-os/system-administration/secure-your-server/securing-your-connection.md#dns-rebinding-protection).
 
 :::important  
-With %%SSL|ssl%%/%%TLS|tls%% set to Strict, client devices must resolve your server’s DNS name. If your Internet connection fails, access to the %%WebGUI|web-gui%% may be lost. See [Accessing your server when DNS is down](../unraid-connect/overview-and-setup.md#accessing-your-server-when-dns-is-down) for recovery steps.
+With %%SSL|ssl%%/%%TLS|tls%% set to Strict, client devices must resolve your server’s DNS name. If your Internet connection fails, access to the %%WebGUI|web-gui%% may be lost. See [Accessing your server when DNS is down](../unraid-os/system-administration/secure-your-server/securing-your-connection.md#accessing-your-server-when-dns-is-down) for recovery steps.
 :::

@@ -65,7 +65,11 @@ To run %%VMs|vm%% on Unraid, your system must meet the following requirements:
 | RAM               | 8 GB                                   | 16 GB or more (add RAM for each active %%VM&#124;vm%%)   |
 | Storage           | SSD/NVMe for %%VM&#124;vm%% disks                  | High-end NVMe for best performance           |
 | Network           | Gigabit Ethernet (PCIe recommended)    | 2.5G/10G Ethernet for demanding workloads    |
-| GPU (optional)    | Modern NVIDIA RTX or AMD Radeon RX     | RTX 3000/4000 or Radeon 6000/7000 series     |
+| GPU (optional)    | Modern NVIDIA RTX (recommended) or AMD Radeon RX     | RTX 3000/4000 series (NVIDIA recommended for better passthrough compatibility)     |
+
+:::tip GPU passthrough compatibility
+NVIDIA GPUs are **generally recommended** for %%VM|vm%% passthrough due to better compatibility and reliability. AMD GPUs can be more challenging to pass through, and some newer models (including RX 7000/9000 series) may not work reliably or at all with %%VMs|vm%%. If you're planning to use %%GPU passthrough|gpu-passthrough%%, consider NVIDIA options for the best experience.
+:::
 
 :::note
 Your motherboard BIOS must enable Hardware-assisted virtualization and %%IOMMU|iommu%% support. Look for settings labeled “%%Intel VT-x|intel-vt-x%%,” “Intel VT-d,” “%%AMD-V|amd-v%%,” or “AMD-Vi.”

@@ -29,6 +29,10 @@ For WoL to work properly, make sure you meet the following requirements:
   
 - **Network connection**: Connect your server to your LAN with an Ethernet cable (WiFi WoL is not supported).
 
+:::caution Hardware compatibility
+Not all hardware supports S3 sleep or WoL reliably. Some systems may experience issues entering sleep, fail to wake up correctly, or require additional BIOS/%%UEFI|uefi%% settings. Always test these features thoroughly before relying on them.
+:::
+
 ## Putting an Unraid server to sleep
 
 The preferred and user-friendly way to manage sleep on Unraid is by using the [**Dynamix S3 Sleep plugin**](https://unraid.net/community/apps/c/plugins/p3?srsltid=AfmBOorpfP2Psw_bCorklf-QVCUHvADYGsdbsAH-4CldU4V2hWgoO-09#r:~:text=%3E%3E-,Dynamix%20S3%20Sleep,-Dynamix%20Repository). This plugin offers a graphical interface to help schedule sleep, wake, and idle behavior, while also addressing common issues that may arise with various hardware configurations.
@@ -38,18 +42,13 @@ To install and configure:
 1. Open the ***Apps tab*** in the Unraid %%WebGUI|web-gui%%.
 2. Search for "Dynamix S3 Sleep" and install the plugin.
 3. Navigate to ***Settings → Sleep Settings*** to set up your sleep and wake options.
-4. Follow the on-screen instructions to configure idle timers, %%Wake-on-LAN (WOL)|wake-on-lan%% (WoL), and exclusion periods.
 
-The plugin automatically manages most configuration steps and receives regular updates to support a wide range of hardware.
+The plugin manages most sleep configuration options.
 
 <details>
 <summary><strong>Alternative manual method</strong> - Click to expand/collapse</summary>
 
 If you want more control or need advanced customization, you can configure sleep and WoL settings through the command line. This method is recommended for advanced users.
-
-:::caution
-Not all hardware supports S3 sleep or WoL reliably. Some systems may experience issues entering sleep, fail to wake up correctly, or require additional BIOS/%%UEFI|uefi%% settings. Always test these features thoroughly before relying on them.
-:::
 
 To configure sleep manually:
 

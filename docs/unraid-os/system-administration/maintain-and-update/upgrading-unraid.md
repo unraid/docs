@@ -24,8 +24,6 @@ Before you start upgrading, make sure to create a complete backup of your USB fl
 6. **Reboot** your server to complete the upgrade.
 :::
 
-When upgrading to Unraid 7.x, you may see warnings about [%%ZFS|zfs%%](../../advanced-configurations/optimize-storage/zfs-storage.md) pool feature upgrades during boot or in the %%WebGUI|web-gui%%.
-
 ## Standard upgrade process
 
 <Tabs>
@@ -34,9 +32,10 @@ When upgrading to Unraid 7.x, you may see warnings about [%%ZFS|zfs%%](../../adv
 Upgrading Unraid is done using the new **Update OS tool** with a user-friendly interface:
 
 1. In the %%WebGUI|web-gui%%, click the top-right dropdown menu and select **Check for Update** or navigate to ***Tools → Update OS***.
-2. Click **View Changelog to Start Update**. The Changelog will appear for you to review before hitting **Continue**.
-3. Click **Confirm and start update** to apply the latest stable release.
-4. When prompted, reboot your server to complete the upgrade.
+2. Choose the **Stable** channel for stable releases, or the **Next** channel for betas and RCs.
+3. Click **View Changelog to Start Update**. The Changelog will appear for you to review before hitting **Continue**.
+4. Click **Confirm and start update** to apply the latest stable release.
+5. When prompted, reboot your server to complete the upgrade.
 
 :::note
 You may need to log into your Unraid account to access updates, especially for "Next" branch releases.

@@ -50,20 +50,29 @@ If Memtest86+ shows errors, try reseating the RAM modules and rerunning the test
 
 RAM overclocking can significantly impact system stability. Many users want to run their RAM at the highest speed specified by the manufacturer, but motherboard and CPU combinations often have maximum reliable RAM speeds that are lower than what the RAM is rated for.
 
-:::caution Risks of overclocking
+:::caution RAM overclocking risks and recommendations
+
+**Purchasing:** When possible, always purchase RAM that is listed on your motherboard's QVL (Qualified Vendor List), not from the RAM manufacturer's QVL. This ensures better compatibility and stability.
+
+**Intel XMP and AMD AMP profiles are overclocks.** For the best stability, always run RAM at SPD speeds, not XMP/AMP speeds.
+
+**Risks of overclocking:**
 
 - System instability and random crashes
 - Data corruption and file system errors
 - Reduced hardware lifespan
 - Incompatibility with other components
+
+**Troubleshooting:** If Memtest86+ passes but you're still experiencing issues, disable XMP/AMP and try again. The performance difference is usually minimal, but the stability improvement can be significant.
 :::
 
 <h4>Best practices</h4>
 1. Always check your motherboard and CPU specifications before attempting to overclock.
-2. Start with conservative settings and gradually increase.
-3. Test stability with Memtest86+ after any changes.
-4. If you notice instability, immediately revert to default or lower speeds.
-5. Consider the trade-off between performance and stability for server environments.
+2. **For maximum stability:** Disable XMP/AMP profiles and run RAM at default SPD speeds.
+3. Start with conservative settings and gradually increase.
+4. Test stability with Memtest86+ after any changes.
+5. If you notice instability, immediately revert to default or lower speeds.
+6. Consider the trade-off between performance and stability for server environments.
 
 ## Critical stability factors
 
@@ -98,23 +107,14 @@ Common power-related issues include:
 Proactive power supply maintenance prevents the most common stability issues. Regular checks and proper component selection can avoid costly downtime and data loss.
 
 1. Always use a high-quality, appropriately rated PSU for your hardware.
-2. Consider redundant power supplies for enterprise and multi-bay systems.
-3. Ensure each PSU unit is properly seated and connected.
-4. Monitor PSU health indicators (like AC OK LEDs) if available.
-5. Replace failed units immediately to avoid downtime.
-6. Regularly check that all power cords are secure.
-7. Verify circuits are not overloaded.
-
-:::tip Realtime monitoring
-Use [HWiNFO64](https://www.hwinfo.com/download/) or [AIDA64](https://www.aida64.com/) to monitor voltage rails in real-time. 
-
-Critical thresholds:
-
-- 12V rail: ±5% tolerance (11.4V-12.6V)  
-- 5V rail: ±0.25V variation  
-
-Run simultaneous CPU+GPU stress tests to validate stability under load.
-:::
+2. **Critical:** Ensure your power supply can handle simultaneous spin-up of ALL attached storage devices. The 12V rail current rating must account for the spin-up current of all drives at once, not staggered.
+3. Avoid power splitters whenever possible. They can cause voltage drops and instability, especially during high-current events like drive spin-up.
+4. Consider redundant power supplies for enterprise and multi-bay systems.
+5. Ensure each PSU unit is properly seated and connected.
+6. Monitor PSU health indicators (like AC OK LEDs) if available.
+7. Replace failed units immediately to avoid downtime.
+8. Regularly check that all power cords are secure.
+9. Verify circuits are not overloaded.
 
 </details>
 
@@ -145,13 +145,7 @@ Proper cooling is essential for maintaining system stability and preventing ther
 6. Avoid placing servers in confined or poorly ventilated spaces.
 7. Consider additional cooling for high-performance systems.
 
-<h4>Temperature monitoring tools</h4>
-
-Monitoring temperatures proactively helps identify cooling issues before they cause system instability. These tools provide real-time data and historical trends for thermal management.
-
-- Unraid's built-in temperature sensors
-- [HWiNFO64](https://www.hwinfo.com/download/) for detailed thermal data
-- [AIDA64](https://www.aida64.com/) for comprehensive system monitoring
+Monitoring temperatures proactively helps identify cooling issues before they cause system instability. Use Unraid's built-in temperature sensors or hardware monitoring tools compatible with your system.
 </details>
 
 ### Disk health and I/O errors
@@ -194,7 +188,7 @@ Quick response to disk issues can prevent data loss and minimize downtime. Follo
 <details>
 <summary><strong>Click to expand/collapse</strong></summary>
 
-Unraid’s flexibility comes from its support for plugins and Docker containers. However, third-party plugins can introduce instability, especially if they are outdated or incompatible with your current Unraid version.
+Unraid’s flexibility comes from its support for plugins and Docker containers. However, third-party plugins can introduce instability, especially if they are outdated or incompatible with your current Unraid version. 
 
 When troubleshooting...
 
