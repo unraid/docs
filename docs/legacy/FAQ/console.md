@@ -299,7 +299,7 @@ then.
 
 To shutdown the server properly from the command prompt, simply type in
 
-powerdown
+`powerdown`
 
 To cleanly stop the array from the linux command line prior to a reboot
 requires the use of several commands in turn. They will stop SAMBA,
