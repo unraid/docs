@@ -82,12 +82,12 @@ Before deploying Unraid OS, it's important to verify your system's BIOS and stor
  ✅ Set the USB flash drive as the primary boot device.  
  ✅ Configure the storage controller to **%%AHCI|ahci%%** mode with SATA connections.  
  ✅ Set the controller to **%%HBA mode|hba-mode%%** (not **%%RAID|raid%%**).  
- ✅ Avoid front panel USB ports, and instead opt for USB ports located directly on the motherboard I/O panel.  
+ ✅ Disable **Secure Boot** as it is not supported by Unraid OS.  
 
 ### Advanced Settings
 
  ✅ Enable **%%hardware virtualization|hvm%%** features (e.g., **%%Intel VT-x|intel-vt-x%%** or **%%AMD-V|amd-v%%**) for **%%virtual machines (VMs)|vm%%**.  
- ✅ Enable **%%IOMMU|iommu%%** support for PCI device assignment to VMs.
+ ✅ Enable **%%IOMMU|iommu%%** support (Intel VT-d or AMD-Vi) for PCI device assignment to VMs.
 
 ### Troubleshooting Tips
 
@@ -102,6 +102,8 @@ For further assistance, visit the [Unraid general support forum](https://forums.
 
 :::important
 Many motherboards limit boot device selection to 12 hard drives. If your USB flash drive is recognized as a hard drive, you may not be able to boot from it after installing 12 physical hard drives. Configure the BIOS to treat the flash drive as a removable device whenever possible.
+
+If using an add-on HBA, you may be able to disable INT 13h support to prevent its connected drives from appearing in the bootable devices list, helping to stay within the 12-drive limit.
 :::
 
 </details>

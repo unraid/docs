@@ -43,10 +43,10 @@ For more guidance on selecting the best flash device for Unraid, check out [Spac
 
 :::tip Rules of thumb for replacement
 
-- Avoid auction sites and unknown sellers by buying USB drives from reputable retailers.
+- Buy USB drives from reputable retailers and avoid auction sites and unknown sellers.
 - Avoid second-hand or previously used drives.
 - Test the new drive on your server before transferring your license.
-- Be cautious with well-known brands, as counterfeit products are common.
+- Be cautious of counterfeit products, even from well-known brands.
 
    :::note
    The [forum announcement on counterfeit SanDisk drives](https://forums.unraid.net/topic/119052-psa-on-sandisk-usbs/) from January 2022 confirms SanDisk is not recommended due to counterfeit devices and manufacturing changes resulting in non-unique GUIDs. This affects both counterfeit and legitimate SanDisk drives.
@@ -129,7 +129,7 @@ If you transfer a trial configuration to a new flash device, you will not be abl
 
 1. Download the [Unraid USB flash creator tool](https://unraid.net/download) for Windows or macOS.
 2. Insert your new USB flash device into your computer.
-3. In the creator tool, select **Local zip** and browse to your backup ZIP file.
+3. In the creator tool, click the Operating System, scroll down to **Use custom** and browse to your backup ZIP file.
 
 <div style={{ margin: 'auto', maxWidth: '600px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
 

@@ -188,7 +188,7 @@ To create a persistent, reliable copy of your Unraid %%syslog|syslog%% on your s
 2. Configure the following options:  
    - **Local %%syslog|syslog%% folder**: Use a cache-only or preferred share (best for SSDs).  
    - **Rotation settings**: Adjust the file size and number limits.  
-3. For best results and to ensure all %%syslog|syslog%% data (including boot events) is captured, also set the **Remote %%syslog server|syslog-server%%** field to your server's own IP address (the "Loopback method").
+3. For best results and to ensure all %%syslog|syslog%% data (including boot events) is captured.  Be sure to set the **Remote %%syslog server|syslog-server%%** field to your server's own IP address (the "Loopback method"), or the %%syslog|syslog%% will not be saved to the set share.
    - This ensures %%syslog|syslog%% events are both stored locally and persist across reboots, without writing to the flash drive.
 4. Click **Apply**.  
    - Logs will be saved to the share you specified.  

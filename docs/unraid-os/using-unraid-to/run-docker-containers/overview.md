@@ -8,7 +8,7 @@ import TabItem from '@theme/TabItem';
 
 # Overview
 
-Docker allows you to run Linux applications in isolated environments known as "containers." On Unraid, Docker is the ideal method for deploying and managing a wide variety of applications without concerns about compatibility or system conflicts. This approach transforms your Unraid server into a flexible %%application server|application-server%%, enabling you to run popular apps like **Plex**, **Sonarr**, and many more directly on your system.
+Docker allows you to run Linux applications in isolated environments known as "containers." On Unraid, Docker is the ideal method for deploying and managing a wide variety of applications without concerns about compatibility or system conflicts. This approach transforms your Unraid server into a flexible %%application server|application-server%%, enabling you to run popular apps like **Plex**, **Home Assistant**, and many more directly on your system.
 
 If you want to learn more about Docker's foundational technology or explore advanced usage, check out the [official Docker documentation](https://docs.docker.com/).
 

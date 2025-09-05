@@ -159,7 +159,7 @@ If you are migrating from ReiserFS, this is the safest way to preserve your data
 
 ## Reformatting a drive
 
-Reformatting a drive in Unraid will erase all of your data and create a new, empty file system. This process is useful for securely erasing a drive, resolving persistent file system errors, or starting fresh with a new format.
+Reformatting a drive in Unraid will erase all of your data and create a new, empty file system. This process is useful for resolving persistent file system errors or starting fresh with a new format.
 
 :::warning
 Reformatting will permanently erase all data on the drive. Always back up any important files before you begin.
@@ -196,7 +196,7 @@ Sometimes, you'll need to reformat a %%cache|cache%% drive for the following rea
 
 To move data off the cache:
 
-4. **Set share storage settings**: For each share that has files in the %%cache|cache%%, set **Primary storage** to your main %%array|array%% and **Secondary storage** to **None**.
+4. **Set share storage and Mover action (cache → array)**: For each share that has files in the %%cache|cache%%, set **Primary storage** to the source %%cache|cache%% pool and **Secondary storage** to the %%array|array%%. Set **Mover action** to **cache → array**.
    - Note down any shares you change and their original settings.
 5. **Run %%Mover|mover%%**: Run %%Mover|mover%% from the **Main** tab. Wait for it to finish and ensure that the %%cache|cache%% is empty.  
    - If any files remain, stop and check the forums for help.
@@ -215,7 +215,7 @@ To reformat the cache drive:
 To restore data and settings:
 
 10. **Restore share settings**: For each share you changed, set **Primary storage** and **Secondary storage** back to their original values.
-11. **Move data back**: Run the %%Mover|mover%% again to move your data back to the %%cache|cache%%.
+11. **Move data back (array → cache)**: Set **Primary storage** to the destination %%cache|cache%% pool and **Secondary storage** to the %%array|array%% for each share you changed. Set **Mover action** to **array → cache**, then run the %%Mover|mover%% again to move your data back to the %%cache|cache%%.
 12. **Stop the array**.
 13. **Re-enable Docker and %%VM|vm%% services**.
 14. **Start the array**.
@@ -435,7 +435,7 @@ To check an %%XFS|xfs%% file system via command line:
 - Start the %%array|array%% in **%%Maintenance Mode|maintenance-mode%%**.
 - Run the following command: `xfs_repair -v /dev/mdXp1`
 - Replace `X` with the disk number (e.g., `/dev/md1p1`).
-- For encrypted %%XFS|xfs%%, use `/dev/mapper/mdX`.
+- For encrypted %%XFS|xfs%%, use `/dev/mapper/mdXp1`.
 - For drives not in the %%array|array%%: `xfs_repair -v /dev/sdX1`
 - Ensure you are using the correct device identifier.
 
@@ -543,7 +543,7 @@ If you're uncertain about the output, copy and share it on the [Unraid forums](h
 
 - Start the %%array|array%% in **%%Maintenance Mode|maintenance-mode%%**.
 - Run the following command: `xfs_repair /dev/mdXp1`. Replace `X` with the disk number (e.g., `/dev/md1p1`).
-- For encrypted %%XFS|xfs%%, use: `/dev/mapper/mdX`.
+- For encrypted %%XFS|xfs%%, use: `/dev/mapper/mdXp1`.
 - If you're prompted to use `-L`, re-run the command like this: `xfs_repair -L /dev/mdXp1`. This is usually safe and necessary to complete the repair.
 - For drives that are not part of the %%array|array%%: `xfs_repair /dev/sdX1`.
 

@@ -7,12 +7,6 @@ sidebar_label: Create your bootable media
 
 Unraid OS is installed on a USB flash drive, which acts as the boot device for your server. You can create this bootable media using our recommended [Automated install method](./create-your-bootable-media.md#automated-install-method) with our [USB Flash Creator](https://unraid.net/download) tool or by following the [Manual installation method](./create-your-bootable-media.md#manual-install-method). In both cases, you will need a high-quality USB flash drive (between 4 and 32 GB) that has a unique %%GUID|guid%%.
 
-  :::important
-
-  For drives larger than 32 GB, use a tool like [Rufus](https://rufus.ie/en/) to format as FAT32.
-
-  :::
-
 ## Automated install method
 
 The automated installation method is the best way to set up Unraid OS. It simplifies the process, reduces errors, and ensures your USB flash drive is ready for most hardware configurations. This method offers the quickest and most reliable path to a successful installation for most users.
@@ -42,6 +36,10 @@ The manual installation method is designed for situations where the USB Flash Cr
   1. Plug in the USB flash device.
   2. Format it to FAT32 (**not** ex-FAT or NTFS).  
   3. Set the volume label to `UNRAID` (case-sensitive, all caps).
+
+  :::important
+  On Windows, drives larger than 32 GB cannot be formatted as FAT32 using the built-in formatting tools (they default to exFAT). For drives larger than 32 GB, you'll need to use a third-party tool like [Rufus](https://rufus.ie/en/) to format as FAT32.
+  :::
 
 ### Download and extract
 

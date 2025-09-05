@@ -76,6 +76,16 @@ Once enabled, the container appears as its own device on your Tailnet, ready for
 
 </details>
 
+:::warning Container compatibility
+Tailscale integration does not work with all containers. Some containers may not function at all if Tailscale is enabled, particularly those with:
+
+- Custom networking requirements
+- Specific network isolation needs
+- Applications that conflict with Tailscale's network modifications
+
+Test Tailscale integration on non-critical containers first, and be prepared to disable it if the container stops working properly.
+:::
+
 :::note Prerequisites
 
 - First, install %%Tailscale|tailscale%% on any computer that will access your Docker containers.

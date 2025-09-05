@@ -62,18 +62,18 @@ When using the **%%WebGUI|web-gui%%**, device paths are managed automatically. I
 | Label           | Typical path      | Usage                  | %%Parity&#124;parity%% protected?    |
 |-----------------|------------------|------------------------|----------------------|
 | Disk 7          | /mnt/disk7       | Unraid mount point     | Yes (if %%array&#124;array%% disk)  |
-| %%Array&#124;array%% partition | /dev/md7         | Unraid-managed device  | Yes                  |
+| %%Array&#124;array%% partition | /dev/md7p1         | Unraid-managed device  | Yes                  |
 | Raw partition   | /dev/sdj1        | Direct device access   | No                   |
 
 :::warning
-Never run file system repair tools on entire drives (like `/dev/sdj`); always use partition paths (like `/dev/sdj1` or Unraid-managed `/dev/mdX`).  
+Never run file system repair tools on entire drives (like `/dev/sdj`); always use partition paths (like `/dev/sdj1` or Unraid-managed `/dev/mdXp1`).  
 
-- For %%array|array%% drives, always use the Unraid-managed device (such as `/dev/md5`) to **preserve %%parity|parity%% protection**.  
+- For %%array|array%% drives, always use the Unraid-managed device (such as `/dev/md5p1`) to **preserve %%parity|parity%% protection**.  
 - Using the raw partition (for example, `/dev/sdj1`) will not update %%parity|parity%%, leaving it invalid.
 
 :::
 
-- Always use `/dev/mdX` for %%array|array%% drives to maintain valid %%parity|parity%%.
+- Always use `/dev/mdXp1` for %%array|array%% drives to maintain valid %%parity|parity%%.
 - For non-%%array|array%% drives (like %%cache|cache%%-only devices), use the direct partition path, e.g., `/dev/sdj1`.
 
 ### Choosing the right repair method
@@ -89,7 +89,7 @@ For most users, the recommended method is:
 
 If you prefer using the command line, always:
 
-- Identify the correct Unraid-managed partition (`/dev/mdX`) for %%array|array%% drives.
+- Identify the correct Unraid-managed partition (`/dev/mdXp1`) for %%array|array%% drives.
 - Use the appropriate repair tools for your file system:  
   - **XFS:** `xfs_repair`
   - **BTRFS:** `btrfs scrub`
@@ -126,8 +126,17 @@ This section covers how to diagnose and repair file system corruption on data dr
 <Tabs>
 <TabItem value="xfs-drives" label="For XFS drives">
 
-1. If issues are found, a message will indicate required repair actions; typically, this involves rerunning the check _without_ the `-n` option, allowing repairs.
-2. On repair success, rerun a read-only check to verify.
+Starting with Unraid 7.0, XFS file system repair is now fully automated through the WebGUI:
+
+1. **Initial Check**: Click the **CHECK** button (no options to enter)
+2. **Check Results**:
+   - **No corruption detected**: Shows "no filesystem corruption detected" and the **CHECK** button remains
+   - **Corruption detected**: Shows "filesystem corruption detected" and a **FIX** button appears
+3. **Repair Process**: Click **FIX** to automatically repair the file system
+4. **Additional Actions**: If needed, a **ZERO LOG** button may appear
+5. **Completion**: Shows "filesystem repaired" when the process is complete
+
+This automated system eliminates the need for users to manually enter repair options and ensures the correct repair sequence is followed.
 
 :::note
 
@@ -186,10 +195,10 @@ The %%WebGUI|web-gui%% process maintains %%parity|parity%% during repair.
 At the console or via %%SSH|ssh%%, run:
 
 ```
-xfs_repair -v /dev/mdX
+xfs_repair -v /dev/mdXp1
 ```
 
-Replace **X** with the correct disk number (e.g., `md1` for Disk 1).
+Replace **X** with the correct disk number (e.g., `md1p1` for Disk 1).
 
 - Review the repair report for further remediation steps if required. If only minor issues, running `-v` is generally sufficient.
 - If repair produces a `lost+found` directory, review and manage as above.
@@ -221,21 +230,21 @@ Here’s how to proceed:
 2. For disks using the %%XFS|xfs%% file system (the default for most Unraid setups), run:
 
     ```
-    xfs_repair -v /dev/[disk]
+    xfs_repair -v /dev/mdXp1
     ```
 
-    The `-v` flag provides detailed progress information. This command checks and attempts to repair the file system on the specified disk.
+    Replace **X** with the correct disk number. The `-v` flag provides detailed progress information. This command checks and attempts to repair the file system on the specified disk.
 
 3. For disks formatted with %%BTRFS|btrfs%%, first run a read-only check:
 
     ```
-    btrfs check /dev/[disk]
+    btrfs check /dev/mdXp1
     ```
 
-    Only use repair mode if absolutely necessary and after understanding the risks:
+    Replace **X** with the correct disk number. Only use repair mode if absolutely necessary and after understanding the risks:
 
     ```
-    btrfs check --repair /dev/[disk]
+    btrfs check --repair /dev/mdXp1
     ```
 
 :::danger

@@ -20,7 +20,7 @@ Always [back up your flash drive](../../system-administration/maintain-and-updat
 
 ## Enabling UEFI boot
 
-Modern systems typically require **UEFI boot mode** for enhanced security and faster startup times. When creating your Unraid boot device, you can enable %%UEFI|uefi%% support during setup. If you need to enable %%UEFI|uefi%% boot later, simply rename the folder on the flash device from `EFI-` to `EFI` by removing the trailing hyphen `-`.
+Modern systems typically require **UEFI boot mode** for enhanced security and faster startup times.
 
 To configure %%UEFI|uefi%% boot in your system BIOS/%%UEFI|uefi%% settings:
 
@@ -184,7 +184,7 @@ This method does not require plugins, but it will invalidate %%parity|parity%%, 
 
 To use this method:
 
-1. Assign all drives as %%parity drives|parity-drives%% and start it.
+1. Assign all drives as data drives and start it.
 2. %%Parity drives|parity-drives%% will show as unmountable since they lack a valid file system.
 3. Confirm that the number of unmountable drives matches your %%parity|parity%% count.
 4. Take note of the serial numbers of these drives.

@@ -58,22 +58,10 @@ For Unraid versions 6.11 and 6.12, follow this traditional update method:
 
 When upgrading to Unraid 7.x, you may see warnings about [%%ZFS|zfs%%](../../advanced-configurations/optimize-storage/zfs-storage.md) pool feature upgrades during boot or in the %%WebGUI|web-gui%%. These warnings are not a sign of a problem; they simply indicate that your %%ZFS|zfs%% pool is using features from an older version
 
-Upgrading your pool isn't urgent, but if you do decide to upgrade, keep in mind that it will no longer work with older versions of Unraid. This means you won't be able to revert to a previous Unraid version after making the upgrade.
+Upgrading your pool isn't urgent, but if you do decide to upgrade, keep in mind that it may not work with previous versions of Unraid. This means you may not be able to revert to a previous Unraid version after making the upgrade.
 
 As always, remember to back up your data before upgrading your %%ZFS|zfs%% pools
 :::
-
----
-
-## Update Assistant
-
-The Update Assistant is a useful tool for checking plugin compatibility and identifying potential issues before upgrading. It’s not included by default, so you will need to install the [**Fix Common Problems**](https://unraid.net/community/apps/c/plugins?q=fix+common+problems#r) plugin first.
-
-To use the Update Assistant:
-
-1. Install the [**Fix Common Problems**](https://unraid.net/community/apps/c/plugins?q=fix+common+problems#r) plugin from the Community Applications.
-2. Once installed, navigate to ***Tools → About → Update Assistant***.
-3. Run the assistant to detect any plugin conflicts or blockers for the upgrade.
 
 ---
 
@@ -95,10 +83,7 @@ If you encounter errors like *"layers from manifest don't match image configurat
 1. Go to ***Settings → Docker*** and stop the Docker service.
 2. Check the box to delete the Docker image and click the delete button.
 3. Restart Docker to recreate the image.
-4. Navigate to the **Docker** tab and click **Add Container**.
-5. Select your previous templates (those prefixed with "my-") from the drop-down and click **Apply** for each container.
-
-Repeat this for all containers. No need to reconfigure; your app settings will be preserved.
+4. Navigate to the **Apps** tab, **Previous Apps** and check off what you wish to reinstall and click **"Install xx Applications"**.
 
 </details>
 

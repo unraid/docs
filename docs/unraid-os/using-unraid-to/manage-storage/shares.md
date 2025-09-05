@@ -20,7 +20,7 @@ Unraid offers two types of shares to optimize your data management:
 
 It's important to remember that both share types present different views of the same underlying file system; any file or folder visible in a %%user share|user-share%% will also appear under the disk share for its respective physical drive.
 
-When you first initialize your %%array|array%%, Unraid automatically creates a [set of default user shares](#default-shares) designed to support common plugins, Docker containers, and **virtual machines (VMs)**. You can conveniently create additional shares for your personal data as needed.
+When you start services like Docker or VM Manager, Unraid automatically creates a [set of default user shares](#default-shares) designed to support common plugins, Docker containers, and **virtual machines (VMs)**. You can conveniently create additional shares for your personal data as needed.
 
 :::note
 To manage your shares, simply navigate to the **Shares** tab in the WebGUI. Here, you can easily enable or disable shares through ***Settings → Global Share Settings***. By default, %%user shares|user-share%% are enabled, providing a straightforward starting point for your file organization.
@@ -236,7 +236,7 @@ The **%%Mover|mover%%** function automatically transfers files between primary a
 </div>
 
 :::note
-If you select an %%array|array%% or any named %%pool|cache-pool%% for primary or secondary storage, you must also configure its **%%allocation method|allocation-method%%**, **%%split level|split-level%%**, and any **%%included or excluded disks|included-or-excluded-disks%%**.
+If you select the %%array|array%% for primary or secondary storage, you must also configure its **%%allocation method|allocation-method%%**, **%%split level|split-level%%**, and any **%%included or excluded disks|included-or-excluded-disks%%. These settings do not apply to %%pools|cache-pool%%.
 :::
 
 **Primary storage drop-down:**

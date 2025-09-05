@@ -92,11 +92,12 @@ To back up your %%cache pool|cache-pool%%:
 3. **Disable Docker**:
    - Navigate to ***Settings → Docker***.
    - Turn off Docker and click **Apply**.
-4. **Set %%User Shares|user-share%% to use %%array|array%% storage**:
+4. **Set share storage and Mover action (cache → array)**:
    - Go to the **Shares** tab.
-   - For each %%user share|user-share%%, change the **Primary storage** to your main %%array|array%% and set **Secondary storage** to **None** if it's currently set to use a %%cache pool|cache-pool%%.
+   - For each %%user share|user-share%% you want to move, set **Primary storage** to the source %%cache pool|cache-pool%% and **Secondary storage** to the %%array|array%%.
+   - Set **Mover action** to **cache → array**.
 5. **Check space on the %%array|array%%**: Ensure there's enough free space for your files.
-6. **Move files to the %%array|array%%**: From the **Main** page, click **Move Now**. This starts the process of transferring files from your %%cache pool|cache-pool%% to the %%array|array%%.
+6. **Move files to the %%array|array%%**: From the **Main** page, click **Move Now**. This transfers files from the %%cache pool|cache-pool%% to the %%array|array%% based on the Mover action.
 7. **Verify your pool is empty**: Once the %%Mover|mover%% has finished, check that there are no remaining files in the %%cache pool|cache-pool%%.
 
 :::note
@@ -107,9 +108,10 @@ Remember that files located directly on the pool device (not part of any share) 
 
 After you've completed your maintenance or replaced your device, you can restore files from the %%array|array%% back to the %%cache pool|cache-pool%% by following these steps:
 
-1. **Set %%User Shares|user-share%% to use %%cache pool|cache-pool%% storage**:
+1. **Set share storage and Mover action (array → cache)**:
    - Go to the **Shares** tab.
-   - Change the **Primary storage** to your %%cache pool|cache-pool%% for each share you want to store on the pool.
+   - For each %%user share|user-share%% you want to restore, set **Primary storage** to the destination %%cache pool|cache-pool%% and **Secondary storage** to the %%array|array%%.
+   - Set **Mover action** to **array → cache**.
 2. **Check space on the pool**: Make sure there's enough free space on the %%cache pool|cache-pool%%.
 3. **Move files back to the pool**: Go to the **Main** page and click **Move Now** to transfer files back to the %%cache pool|cache-pool%%.
 4. **Verify content in the pool**: After the move completes, check that your %%cache pool|cache-pool%% contains the expected files and that the shares are empty on the %%array|array%%.
@@ -145,8 +147,8 @@ To add more drives for redundancy:
 1. **Stop the %%array|array%%**: Again, start by stopping the %%array|array%%.
 2. **Assign additional drives**: In the **Main** tab, you can assign one or more new devices to your pool.
 3. **Start the %%array|array%%**: Once the drives are assigned, start the %%array|array%%.
-4. **Automatic balancing**: Unraid will automatically incorporate the new devices into the pool and initiate the balancing process to distribute data across all drives.
-5. **Monitor the balance operation**: Keep an eye on the balance operation in the **Main** tab; this may take some time based on the amount of data and the number of drives.
+4. **Automatic balance/resilver**: Unraid will automatically incorporate the new devices into the pool and initiate a **balance** (%%BTRFS|btrfs%%) or **resilver** (%%ZFS|zfs%%) to distribute and protect data across devices.
+5. **Monitor progress**: In the **Main** tab, click the first pool device, then check **Balance Status** (for %%BTRFS|btrfs%%) or **zpool status** (for %%ZFS|zfs%%) to follow progress and confirm the new device was successfully added.
 6. **Pool now in multi-device mode**: Once the balancing is complete, your pool will be operating in **multi-device mode** with enhanced capacity and redundancy.
 
 :::tip
@@ -168,14 +170,9 @@ To add a disk to a pool:
 1. **Stop the %%array|array%%**: Begin by stopping the current %%array|array%% to ensure the process goes smoothly.
 2. **Open the Main tab**: Go to the **Main** tab in the %%WebGUI|web-gui%%. This is where you'll manage your disks.
 3. **Find the Pool Devices section**: Scroll down until you see the _Pool Devices_ section. This is where you can make changes to your disk setup.
-4. **Adjust the number of slots**: Look for the option labeled **Slots**. Change this number to be at least equal to how many disks you want to add. This allows you to assign space for each new device.
+4. **Adjust the number of slots**: Set **Slots** to exactly the number of additional devices you are adding. You cannot leave extra empty slots; the array will not start with unused pool slots.
 5. **Assign your devices**: Choose which devices (disks) you want to add to the pool and assign them to the available slot(s).
 6. **Start the %%array|array%%**: After you've assigned your devices, start the %%array|array%% again to enable these changes.
-7. **Format the devices**: You'll need to format the new disks. To do this, check the box that appears and click the button under **Array Operations** to start formatting.
-
-:::important
-Before you format, double-check that the devices listed are the ones you actually want to add. This is crucial to avoid accidentally formatting a disk that contains important data you want to keep. For more information on array operations and disk management, see [Array configuration](./array-configuration.md).
-:::
 
 ---
 
@@ -197,9 +194,7 @@ To remove a disk using the %%WebGUI|web-gui%%:
 1. **Stop the %%array|array%%**: Go to the **Main** tab and look for the option to stop your %%array|array%%.
 2. **Unassign the pool drive**: Find the drive you want to remove and unassign it in the **Main** tab.
 3. **Start the %%array|array%%**: Restart the %%array|array%% to apply the changes.
-4. **Click on the pool**: Return to the **Main** tab and select the pool you just modified.
-5. **Balance the pool**: If you still have more than one drive in the pool, run a **Balance** operation to redistribute data. This helps optimize space.
-6. **Switch to single %%RAID|raid%% profile**: If there's only one drive left in the pool, change the %%RAID|raid%% profile to **single** for compatibility and data access.
+4. **Verify removal**: Click on the first pool device in the **Main** tab, then check **Balance Status** (for %%BTRFS|btrfs%%) or **zpool status** (for %%ZFS|zfs%%) to confirm the device was correctly removed.
 
 :::note Timing
 Keep in mind that removing a drive and rebalancing the pool may take several hours, depending on how much data you have and your device speeds.
@@ -260,7 +255,7 @@ If you have only one device left in the pool, you will need to convert the %%RAI
 
 ### Changing pool RAID levels
 
-%%BTRFS|btrfs%% and %%ZFS|zfs%% provide the ability to change %%RAID|raid%% levels for %%cache pools|cache-pool%% dynamically, allowing you to adjust settings without stopping the %%array|array%% or losing any data. This flexibility lets you optimize for performance, redundancy, or storage efficiency as your requirements change.
+%%BTRFS|btrfs%% provides the ability to change %%RAID|raid%% levels for %%cache pools|cache-pool%% dynamically, allowing you to adjust settings without stopping the %%array|array%% or losing any data. This flexibility lets you optimize for performance, redundancy, or storage efficiency as your requirements change.
 
 <h4>Supported %%RAID|raid%% Levels</h4>
 
@@ -342,7 +337,7 @@ Rebuilding can take some time, depending on the size of the disk and the current
 
 ## Minimum free space for a cache pool
 
-Setting a minimum free space for your %%cache pool|cache-pool%% is essential to prevent errors and ensure smooth operation, especially when dealing with large files like high-resolution videos. This setting helps Unraid know when to stop writing to the pool and start writing directly to the larger storage %%array|array%%, avoiding interruptions or data corruption.
+Setting a minimum free space for your %%cache pool|cache-pool%% can provide better control over file placement, especially when dealing with large files like high-resolution videos. This setting helps Unraid know when to stop writing to the pool and start writing directly to the larger storage %%array|array%%, avoiding interruptions or data corruption.
 
 :::tip Example
 If you often download files around 10 GB, set the minimum free space to at least 10 GB, but ideally 20 GB to allow for adjustments.
@@ -352,11 +347,15 @@ You can access Minimum free space by clicking on the pool name in the **Main** t
 
 <h4>How it works</h4>
 
-- Unraid needs to know how much space is left before starting a file transfer. If it runs out of space, the operation fails and can cause errors.
+- When you transfer a file to a share that includes a pool, Unraid will respect the first floor setting it encounters (either the share's minimum free space or the pool's minimum free space, whichever is reached first).
 - The minimum free space setting tells Unraid to stop using the %%cache pool|cache-pool%% when free space drops below this amount.
 - If your share uses a %%cache pool|cache-pool%% as **Primary storage**, files go to the pool until it reaches the minimum free space, then they are sent directly to the %%array|array%%.
 - If set to use a %%cache pool|cache-pool%% exclusively (no **Secondary storage**), this setting is not applied.
 - If set to use only the %%array|array%% as **Primary storage**, files go straight to the %%array|array%%.
+
+:::tip Use case example
+Media share has the floor set to 20GB, which is appropriate for the files in that share. However, if you also use the pool for a VM and want to leave a cushion in case the vdisk grows, you could set the pool floor to 50GB. This way, any transfer to the Media share after the pool has less than 50GB free would go directly to the array.
+:::
 
 :::tip Best practice
 Set the minimum free space to at least the size of the largest file you expect, preferably double that size. For example, if your largest file is 30 GB, set the minimum to 60 GB.
@@ -386,8 +385,8 @@ Moving files off the %%cache pool|cache-pool%% to the %%array|array%% before per
 To move files from your pool to the %%array|array%%:
 
 1. **Disable Docker and %%VM|vm%% services**: Go to **Settings** and turn off Docker and %%VM|vm%% Manager. This prevents any files from being held open, allowing the %%Mover|mover%% to transfer everything smoothly.
-2. **Set share to use %%array|array%% storage**: In the **Shares** tab, for each share you want to move (like `appdata` or `system`), set the **Primary storage** to your main %%array|array%% and **Secondary storage** to **None**.
-3. **Run %%Mover|mover%%**: Go to the **Main** tab and click on **Move Now** to start the %%Mover|mover%% process. This will transfer files from the %%cache pool|cache-pool%% to the %%array|array%%.
+2. **Set share storage and Mover action (cache → array)**: In the **Shares** tab, for each share you want to move (like `appdata` or `system`), set **Primary storage** to the source %%cache pool|cache-pool%% and **Secondary storage** to the %%array|array%%. Set **Mover action** to **cache → array**.
+3. **Run %%Mover|mover%%**: Go to the **Main** tab and click **Move Now** to transfer files from the %%cache pool|cache-pool%% to the %%array|array%%.
 4. **Verify the move**: After the %%Mover|mover%% finishes, check that the files have been moved by clicking the folder icon next to the cache entry on the **Main** tab.
 5. **Re-enable Docker and %%VM|vm%% services**: Once all files are on the %%array|array%%, you can safely turn these services back on.
 
@@ -402,8 +401,8 @@ Moving files back to the %%cache pool|cache-pool%% after maintenance or when you
 To move files from the %%array|array%% to a pool:
 
 1. **Disable Docker and %%VM|vm%% services**: Go to **Settings** and turn off Docker and %%VM|vm%% Manager to prevent any open files from interfering.
-2. **Set share to use %%cache pool|cache-pool%% storage**: In the **Shares** tab, for each share you want to move (like `appdata` or `system`), set the **Primary storage** to your %%cache pool|cache-pool%%.
-3. **Run the %%Mover|mover%%**: Go to the **Main** tab and click on **Move Now** to start moving files from the %%array|array%% to the %%cache pool|cache-pool%%.
+2. **Set share storage and Mover action (array → cache)**: In the **Shares** tab, for each share you want to move (like `appdata` or `system`), set **Primary storage** to the destination %%cache pool|cache-pool%% and **Secondary storage** to the %%array|array%%. Set **Mover action** to **array → cache**.
+3. **Run the %%Mover|mover%%**: Go to the **Main** tab and click **Move Now** to start moving files from the %%array|array%% to the %%cache pool|cache-pool%%.
 4. **Verify the move**: After the %%Mover|mover%% finishes, check that the files are now on the %%cache pool|cache-pool%%.
 5. **Re-enable Docker and %%VM|vm%% services**: Once the move is complete, turn Docker and %%VM|vm%% Manager back on in **Settings**.
 6. **(Optional) Set share to use %%cache pool|cache-pool%% exclusively**: If you want all files for a share to remain on the %%cache pool|cache-pool%%, set the **Primary storage** to your %%cache pool|cache-pool%% and **Secondary storage** to **None** for that share.
@@ -473,11 +472,13 @@ Any the files belong to a Docker container and/or %%VM|vm%% then the services mu
   <TabItem value="using-mover" label="Using Mover" default>
 
 1. **Disable Docker and %%VM|vm%% services**: Go to **Settings** and turn off Docker and %%VM|vm%% Manager to prevent open files.
-2. **Move files from pool1 to the %%array|array%%**:
-   - Go to the **Shares** tab. For each share, set **Primary storage** to your main %%array|array%% and **Secondary storage** to **None** (if files are on pool1).
+2. **Move files from pool1 to the %%array|array%% (cache → array)**:
+   - Go to the **Shares** tab. For each share that currently resides on pool1, set **Primary storage** to pool1 and **Secondary storage** to the %%array|array%%.
+   - Set **Mover action** to **cache → array**.
    - In the **Main** tab, click **Move Now** to run %%Mover|mover%%. Wait for it to finish.
-3. **Move files from the %%array|array%% to pool2**:  
-   - In the **Shares** tab, set **Primary storage** to pool2 for each share.
+3. **Move files from the %%array|array%% to pool2 (array → cache)**:  
+   - In the **Shares** tab, set **Primary storage** to pool2 and **Secondary storage** to the %%array|array%% for each share.
+   - Set **Mover action** to **array → cache**.
    - In the **Main** tab, click **Move Now** again. Files will move from the %%array|array%% to pool2.
 4. **Re-enable Docker and %%VM|vm%% services** (if needed).
 

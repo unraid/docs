@@ -67,7 +67,7 @@ After assigning all your devices, click the **Start** button under **Array Opera
 
 </div>
 
-New devices will appear as *Unformatted* and cannot be used until formatted. Unraid defaults to the %%XFS|xfs%% filesystem, but %%BTRFS|btrfs%% will be used for devices in a %%cache pool|cache-pool%%. You can change the default filesystem in ***Settings → System Settings → Disk Settings***.
+New devices will appear as *Unformatted* and cannot be used until formatted. Unraid defaults to the %%XFS|xfs%% filesystem for array devices. For %%cache pools|cache-pool%%, %%BTRFS|btrfs%% is always used by default when using auto mode, but you can choose your desired filesystem when adding devices to a pool. You can change the default filesystem for the array in ***Settings → System Settings → Disk Settings***.
 
 To format your devices, check the **Format** box under **Array Operation**, read the prompt carefully, and click the **Format** button.
 
@@ -75,21 +75,16 @@ A parity sync will run in the background to protect the %%array|array%% even bef
 
 ### Changing filesystems on existing drives  
 
-To change the filesystem of an existing drive:  
-1. **Back up your data**: Reformatting will erase all data on the drive. 
-2. **Stop the array** and unassign the drive.
-3. **Reassign the drive** to the same slot and select the desired filesystem type (e.g., %%XFS|xfs%%, %%BTRFS|btrfs%%).
-4. **Start the array** and format the drive.
+To change the filesystem of an existing drive:
+
+1. **Back up your data**: Reformatting will erase all data on the drive.
+2. **Stop the array**.
+3. **Click on the drive** and change the filesystem type (e.g., %%XFS|xfs%%, %%BTRFS|btrfs%%).
+4. **Start the array** and check the **Format** box under **Array Operation**.
+5. **Click Format** to apply the new filesystem.
 
 :::caution
 Reformatting a drive will erase all its data. For %%RAID|raid%% setups, check the %%parity|parity%% to avoid data loss during rebuilds. Use the [Unassigned Devices plugin](https://unraid.net/community/apps?q=unassigned+devices#r:~:text=don%27t%20be%20carefull!!!-,Unassigned%20Devices,-dlandon) to back up your files before reformatting.
-
-**To reformat a drive and change its filesystem:**
-1. Stop the array
-2. Unassign the drive you want to reformat
-3. Reassign the drive to the same slot and select the desired filesystem type
-4. Start the array and check the **Format** box under **Array Operation**
-5. Click **Format** to apply the new filesystem
 :::
 
 :::info
