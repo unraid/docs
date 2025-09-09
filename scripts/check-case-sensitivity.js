@@ -23,6 +23,22 @@ imageFiles.forEach(file => {
   imageMap.set(lowercaseName, file);
 });
 
+// Create a map for /img/ references (Docusaurus static path)
+const docusaurusImageMap = new Map();
+imageFiles.forEach(file => {
+  // Handle both Windows and Unix path separators
+  const relativePath = file.replace(/^static[\/\\]/, '').replace(/\\/g, '/');
+  const filename = path.basename(file);
+  const lowercaseName = filename.toLowerCase();
+  const lowercasePath = relativePath.toLowerCase();
+  
+  // Map both filename and full path for flexibility
+  docusaurusImageMap.set(lowercaseName, relativePath);
+  docusaurusImageMap.set(lowercasePath, relativePath);
+});
+
+
+
 // Get all markdown files
 const markdownFiles = glob.sync('docs/**/*.md');
 
@@ -37,23 +53,25 @@ markdownFiles.forEach(file => {
   
   while ((match = imageRegex.exec(content)) !== null) {
     const referencedImage = match[1];
-    const lowercaseReferenced = referencedImage.toLowerCase();
+    const fullPath = path.join('img', referencedImage).replace(/\\/g, '/');
+    const lowercaseReferenced = fullPath.toLowerCase();
     
     // Check if the referenced image exists (case-insensitive)
-    if (!imageMap.has(lowercaseReferenced)) {
+    if (!docusaurusImageMap.has(lowercaseReferenced)) {
       console.error(`❌ Image not found: ${referencedImage} in ${file}`);
       hasErrors = true;
       continue;
     }
     
     // Check if the case matches exactly
-    const actualFile = imageMap.get(lowercaseReferenced);
-    const actualFilename = path.basename(actualFile);
+    const actualPath = docusaurusImageMap.get(lowercaseReferenced);
+    const actualFilename = path.basename(actualPath);
     
-    if (referencedImage !== actualFilename) {
+    // Compare the full path
+    if (fullPath !== actualPath) {
       console.error(`❌ Case sensitivity issue in ${file}:`);
-      console.error(`   Referenced: ${referencedImage}`);
-      console.error(`   Actual:     ${actualFilename}`);
+      console.error(`   Referenced: ${fullPath}`);
+      console.error(`   Actual:     ${actualPath}`);
       hasErrors = true;
     }
   }

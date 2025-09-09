@@ -312,7 +312,6 @@ module.exports = async function createConfigAsync() {
       
       // Additional missing redirects
       { from: "/category/getting-started/", to: "/unraid-os/getting-started/what-is-unraid/" },
-      { from: "/category/unraid-connect/", to: "/unraid-connect/overview-and-setup/" },
       { from: "/connect/about/", to: "/unraid-connect/overview-and-setup/" },
       { from: "/legacy/FAQ/Shrink_array/", to: "/unraid-os/using-unraid-to/manage-storage/array-configuration/" },
       { from: "/unraid-os/faq/unraid-account/", to: "/unraid-connect/overview-and-setup/" },
