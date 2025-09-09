@@ -243,7 +243,7 @@ To safely reconfigure your %%array|array%%:
 5. Assign the correct drives as %%parity|parity%% and the rest as data drives in the **Main** tab.
 6. If you have a single %%parity|parity%% drive, the order of data drives is not critical - check **Parity is Valid**. For dual %%parity|parity%%, both the order of the data drives and the assignment of parity1 and parity2 are important.  Parity1 and parity2 are not interchangeable, and %%parity|parity%% must be rebuilt.
 7. Start the %%array|array%% to commit assignments. Data drives should mount, and their contents should remain intact.
-8. If you checked **Parity is Valid**, run a correcting [%%parity|parity%% check](../../../using-unraid-to/manage-storage/array-configuration.md#checking-array-devices) to confirm that your configuration is correct.
+8. If you checked **Parity is Valid**, run a correcting [%%parity|parity%% check](../../using-unraid-to/manage-storage/array-configuration.md#checking-array-devices) to confirm that your configuration is correct.
 
 :::note
 After restoring your %%array|array%%, verify any share-specific include/exclude settings, as the order of data drives may have changed.

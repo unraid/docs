@@ -1,6 +1,6 @@
 # Cómo Canjear un Código de Activación de Licencia
 
-Primero, siga nuestra [guía de inicio](/unraid-os/manual/getting-started.md) para configurar un servidor
+Primero, siga nuestra [guía de inicio](/unraid-os/getting-started/what-is-unraid.md) para configurar un servidor
 Unraid.
 
 Una vez que su servidor esté funcionando con una versión de prueba:

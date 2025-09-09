@@ -48,7 +48,7 @@ The %%WebGUI|web-gui%% will automatically use the selected proxy for outgoing sy
 - **If your organization provides a proxy:** Use the address and credentials supplied by your network administrator.
 - **If you need to set up your own:**  
   - The [Proxy Server Docker container by @ich777](https://forums.unraid.net/profile/72388-ich777/) is tested and works well with Unraid.
-  - You can configure this container to route traffic through a commercial %%VPN|vpn-tunnel%% using Unraid's [%%WireGuard|wireguard%% %%VPN|vpn-tunnel%%](../security/vpn/) or connect it to another Docker-based %%VPN|vpn-tunnel%% service.
+  - You can configure this container to route traffic through a commercial %%VPN|vpn-tunnel%% using Unraid's [%%WireGuard|wireguard%% %%VPN|vpn-tunnel%%](wireguard.md) or connect it to another Docker-based %%VPN|vpn-tunnel%% service.
   - For reliability, host the proxy server on a separate system from Unraid to ensure network availability during boot.
 
 To monitor proxy traffic, go to the **Docker** tab on the proxy host system, select the **Proxy Server** container, and view **Logs**.

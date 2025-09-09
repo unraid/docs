@@ -960,7 +960,7 @@ If you find that you need to reverse a reset:
 1. Access your flash device over the network (SMB).
 2. Locate and open the `config` folder.
 3. Rename the file `super.old` to `super.dat`.
-4. Refresh the **Main** page in your browser, and your prior array configuration should be restored.
+4. Reboot your server, and your prior array configuration should be restored.
 
 ---
 

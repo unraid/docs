@@ -57,7 +57,7 @@ When you set up a %%cache pool|cache-pool%% with more than one device, it enters
 
 - **Data protection:** This mode uses %%BTRFS|btrfs%% or %%ZFS|zfs%% to mirror data across devices, helping protect your cached data from drive failure. You can lose one device without losing any data.
 - **Mix and match:** You can add or remove devices of different sizes and types, including mixing SSDs and HDDs.
-- **Capacity management:** Use the [BTRFS disk usage calculator](http://carfax.org.uk/btrfs-usage/) to estimate how much space you'll have based on the %%RAID|raid%% level and sizes of the devices you're using. For %%ZFS|zfs%% pools, use the [ZFS storage guide](../advanced-configurations/optimize-storage/zfs-storage.md) for configuration details.
+- **Capacity management:** Use the [BTRFS disk usage calculator](http://carfax.org.uk/btrfs-usage/) to estimate how much space you'll have based on the %%RAID|raid%% level and sizes of the devices you're using. For %%ZFS|zfs%% pools, use the [ZFS storage guide](../../advanced-configurations/optimize-storage/zfs-storage.md) for configuration details.
 
 </TabItem>
 </Tabs>

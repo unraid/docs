@@ -52,4 +52,4 @@ Found an error or have a suggestion? The documentation is open source and hosted
 
 ---
 
-**Ready to dive in?** Start with the [Getting Started](unraid-os/getting-started/) section, or use the search function to find specific information. If you can't find what you're looking for, the [Unraid Forums](https://forums.unraid.net/) are always there to help!
+**Ready to dive in?** Start with the [Getting Started](unraid-os/getting-started/what-is-unraid.md) section, or use the search function to find specific information. If you can't find what you're looking for, the [Unraid Forums](https://forums.unraid.net/) are always there to help!

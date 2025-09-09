@@ -161,7 +161,7 @@ const supportPolicies = {
     description: "The 7.1.x series is our current/stable release",
     details: [
       { type: "header", content: "Kernel: Linux 6.12 LTS" },
-      { type: "header", content: "ZFS Version: OpenZFS 2.1.x" },
+      { type: "header", content: "ZFS Version: OpenZFS 2.3.x" },
       { type: "text", content: "Primary features are detailed in the <a href='/unraid-os/release-notes/7.1.0'>7.1.0 Release Notes</a>." },
       { type: "header", content: "License Information:" },
       { type: "bullet", content: "If your license extension expires on or after 2025-05-05, you are eligible for all releases in this series." },
@@ -246,7 +246,7 @@ const getSupportInfo = (currentMinor: string, previousMinor: string) => ({
     description: `The ${currentMinor}.x series is our current/stable release`,
     details: [
       `The primary features are listed in the ${currentMinor}.0 release notes`,
-      "This series uses the Linux 6.12 LTS kernel with OpenZFS 2.1.x",
+      "This series uses the Linux 6.12 LTS kernel with OpenZFS 2.3.x",
       "If your license extension expires on or after 2025-05-05 you are eligible for all releases in this series",
       "If you are having issues with earlier releases, we generally recommend updating to the latest release as it may resolve the issue",
       "While there may be additional releases in this series, no new features are expected; this series is feature complete",

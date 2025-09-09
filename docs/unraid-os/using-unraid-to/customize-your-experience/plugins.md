@@ -48,7 +48,7 @@ You can manage plugins from the **Plugins** tab in the Unraid **%%WebGUI|web-gui
 If a plugin is available in **[Community Applications](../run-docker-containers/community-applications.md)**, installing it from the **Apps** tab is recommended for extra vetting and compatibility checks.
 
 :::note
-As Unraid continues to evolve, some plugin features may be added to the base OS. Community Applications will only offer plugins believed to be compatible with your current release, but they won’t automatically remove incompatible plugins already installed. Before upgrading Unraid, read the [Release Notes](../../release-notes/) for the target version to check for any special notes related to your installed plugins.
+As Unraid continues to evolve, some plugin features may be added to the base OS. Community Applications will only offer plugins believed to be compatible with your current release, but they won't automatically remove incompatible plugins already installed. Before upgrading Unraid, read the Release Notes for the target version to check for any special notes related to your installed plugins.
 :::
 
 ## Troubleshooting with safe mode

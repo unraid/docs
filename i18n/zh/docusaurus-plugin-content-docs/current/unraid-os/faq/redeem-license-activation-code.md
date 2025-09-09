@@ -1,6 +1,6 @@
 # 兑换许可证激活码
 
-首先，按照 **[入门指南](/unraid-os/manual/getting-started)** 设置好
+首先，按照 **[入门指南](/unraid-os/getting-started/what-is-unraid)** 设置好
 Unraid 服务器。当成功启动并运行好后，参照下列步骤进行兑换：
 
 1. 通过 WebGUI 登录到您的 Unraid 服务器。 （默认地址为 `http://tower`

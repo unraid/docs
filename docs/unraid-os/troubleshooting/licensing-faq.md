@@ -71,7 +71,7 @@ All licenses are per server. Use the free 30-day trial to ensure Unraid meets yo
 <summary>Click to expand/collapse</summary>
 
 1. Purchase an activation code from the [Unraid website](https://unraid.net/pricing). Your code will be on your purchase receipt.
-2. Set up your Unraid server using the [Getting started guide](../getting-started/set-up-unraid/).
+2. Set up your Unraid server using the [Getting started guide](../getting-started/set-up-unraid/create-your-bootable-media).
 3. Log in to your Unraid server's %%WebGUI|web-gui%% (`http://tower` or `http://tower.local` by default).
 4. Sign in to your Unraid.net account.
 5. Select **Redeem activation code** and enter your code.
@@ -238,7 +238,7 @@ No, you do not need to repurchase your license if your USB flash device fails.
 
 To transfer your license:
 
-1. Prepare a new, high-quality [USB flash device](../../getting-started/set-up-unraid/create-your-bootable-media.md).
+1. Prepare a new, high-quality [USB flash device](../getting-started/set-up-unraid/create-your-bootable-media).
 2. Install Unraid OS on the new device using the USB Flash Creator or a manual method.
 3. Boot your server with the new flash device.
 4. Go to ***Tools → Registration*** in the %%WebGUI|web-gui%%.
@@ -270,7 +270,7 @@ This error indicates that your USB flash device does not have a unique hardware 
 
 - Trial licenses last 30 days and provide full Unraid Pro functionality without a storage device limit. 
 - You'll need a quality USB flash drive and the Unraid USB Creator tool.
-- Consult the [Getting Started guide](../getting-started/set-up-unraid/) for server setup instructions.
+- Consult the [Getting Started guide](../getting-started/set-up-unraid/create-your-bootable-media) for server setup instructions.
 - Trial licenses require an internet connection at boot for initial validation.
 - You can extend your trial up to two times (details below).
 </details><br />
