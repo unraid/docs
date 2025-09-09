@@ -14,13 +14,13 @@ Creator Tool。
 
 ## Manual Install Method
 
-您也[可以通过手动方式](/unraid-os/manual/getting-started/manual-install-method)来准备您的闪存设备
+您也[可以通过手动方式](/docs/unraid-os/getting-started/set-up-unraid/create-your-bootable-media.md#manual-install-method)来准备您的闪存设备
 
 ### 如果您需要帮助，请访问[我们的中文论坛](https://forums.unraid.net/forum/88-chinese-%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87/)!
 
 更多 Unraid BIOS 和启动的相关信息，敬请参阅 :
 
-[Advanced BIOS Configuration Guide](https://docs.unraid.net/unraid-os/manual/getting-started#advanced-bios-configuration-guide)
+[Advanced BIOS Configuration Guide](/docs/unraid-os/getting-started/set-up-unraid/deploy-and-configure-unraid-os.md)
 
 ## **查找您的局域网 IP** {#查找您的局域网_ip}
 

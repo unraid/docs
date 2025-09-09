@@ -1,15 +1,17 @@
----
-sidebar_position: 6
----
-
 # Troubleshooting
 
-Most of the time Unraid systems function with minimal problems. This section is intended to help with resolving issues that are most commonly encountered.
+Unraid systems are designed for reliability, but issues can occasionally arise. This section will guide you through resolving common problems and provide best practices for effective troubleshooting.
 
-There are some important general guidelines that we recommend users follow to help with any troubleshooting:
+:::info Built-in help
+The WebGUI offers detailed, context-sensitive help for nearly every setting. Click any field name or use the ![Help](/img/Help-icon.jpg) icon in the top right corner to access help for the entire page.
+:::
 
-* **Use the built-in Help**: The Unraid GUI has extensive built-in Help for most fields in the GUI. This can be accessed at the individual field level by clicking on the field name, or toggled  on/off for the whole page by clicking on the ![Help](../assets/Help-icon.jpg) icon at the top right of the GUI.
-* **Use the link to this online manual**: the status bar at the bottom of the WebGUI contains a direct link to this online manual.
-* **Enable Notifications**: Unraid has a notification system that can be used to keep you informed about the health of your Unraid system. This can be enabled and the level of notifications you receive tuned under ***Settings > User Preferences > Notification Settings***. Since Unraid systems often function for very long times without needing any user oversight, it can be important that you are informed of problems when they first occur, as unresolved ones can grow into more serious problems.
-* **Ask for help in the forums**: Unraid has a vibrant user community and many knowledgeable users who are active in the Unraid forums. Any time you encounter a problem and you are not sure how to proceed, it is a good idea to ask questions in the forums. There is nothing worse than rushing into trying to fix a problem using a process you do not understand and as a result turning the problem into something more serious.
-* **Capture diagnostics**: If you want to ask a question in the forums about a problem you are encountering you are frequently going to be asked to provide your system diagnostics file. You need to do so **BEFORE YOU REBOOT** so that the logs show what went wrong. The system diagnostics log is cleared at every reboot.
+:::tip Stay informed
+Enable notifications under ***Settings → User Preferences → Notification Settings*** to receive alerts about your system’s health. Unresolved issues can worsen if left unattended.
+:::
+
+For additional support, the Unraid community forums are a fantastic resource. When seeking help, remember to:
+
+- **Capture diagnostics before rebooting.**  
+  Go to ***Tools → Diagnostics*** to generate a diagnostics file that preserves logs and system details necessary for troubleshooting.  
+- **Share the diagnostics file** in a [post on the Unraid forums](http://forums.unraid.net/) to assist others in helping you effectively.
