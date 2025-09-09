@@ -71,7 +71,7 @@ All licenses are per server. Use the free 30-day trial to ensure Unraid meets yo
 <summary>Click to expand/collapse</summary>
 
 1. Purchase an activation code from the [Unraid website](https://unraid.net/pricing). Your code will be on your purchase receipt.
-2. Set up your Unraid server using the [Getting started guide](../getting-started/set-up-unraid/create-your-bootable-media).
+2. Set up your Unraid server using the [Getting started guide](../getting-started/set-up-unraid/create-your-bootable-media.md).
 3. Log in to your Unraid server's %%WebGUI|web-gui%% (`http://tower` or `http://tower.local` by default).
 4. Sign in to your Unraid.net account.
 5. Select **Redeem activation code** and enter your code.

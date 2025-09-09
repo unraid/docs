@@ -83,7 +83,7 @@ One of the standout features of Unraid is the %%cache drive|cache%%, which helps
 
 For added data safety, you can set up a %%cache pool|cache-pool%% with multiple drives. This setup not only increases storage space but also uses technologies like %%ZFS|zfs%% or %%BTRFS|btrfs%% to provide extra protection for your data, similar to %%RAID 1|raid1%%. Overall, Unraid’s management of shares and %%cache drives|cache%% creates a flexible, efficient, and secure storage solution.
 
-[Learn more about configuring shares and cache here.](../using-unraid-to/manage-storage/array-configuration)
+[Learn more about configuring shares and cache here.](../using-unraid-to/manage-storage/array-configuration.md)
 
 <div style={{ maxWidth: '600px', margin: '1rem auto' }}>
 
@@ -114,7 +114,7 @@ Docker containers allow you to run applications in isolated, lightweight environ
 
 :::note
 
-For advanced Docker settings, check out [Run Docker Containers](../using-unraid-to/run-docker-containers/managing-and-customizing-containers).
+For advanced Docker settings, check out [Run Docker Containers](../using-unraid-to/run-docker-containers/managing-and-customizing-containers.md).
 
 :::
 
@@ -127,7 +127,7 @@ For advanced Docker settings, check out [Run Docker Containers](../using-unraid-
 
   :::tip
 
-  To use hardware virtualization in Unraid, ensure your CPU, chipset, BIOS, and device drivers are compatible. A full list of requirements is available in the [VM setup guide](../using-unraid-to/create-virtual-machines/overview-and-system-prep). If your server doesn't meet these requirements, the %%VMs|vm%% menu will be disabled in the Unraid %%WebGUI|web-gui%%.
+  To use hardware virtualization in Unraid, ensure your CPU, chipset, BIOS, and device drivers are compatible. A full list of requirements is available in the [VM setup guide](../using-unraid-to/create-virtual-machines/overview-and-system-prep.md). If your server doesn't meet these requirements, the %%VMs|vm%% menu will be disabled in the Unraid %%WebGUI|web-gui%%.
 
   :::
 
@@ -187,7 +187,7 @@ For advanced Docker settings, check out [Run Docker Containers](../using-unraid-
   
 </details>
 
-For %%VM|vm%% setup steps, check out [Create virtual machines](../using-unraid-to/create-virtual-machines/overview-and-system-prep).
+For %%VM|vm%% setup steps, check out [Create virtual machines](../using-unraid-to/create-virtual-machines/overview-and-system-prep.md).
 
 :::caution
 

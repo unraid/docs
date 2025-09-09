@@ -235,14 +235,14 @@ When you uninstall the Unraid Connect plugin:
 - Your server will be signed out of Unraid.net.
 
 :::note
-Uninstalling the plugin does **not** revert your server's URL from `https://yourpersonalhash.unraid.net` to `http://computername`. If you wish to change your access URL, refer to [Disabling SSL for local access](../unraid-os/system-administration/secure-your-server/securing-your-connection#disabling-ssl-for-local-access).
+Uninstalling the plugin does **not** revert your server's URL from `https://yourpersonalhash.unraid.net` to `http://computername`. If you wish to change your access URL, refer to [Disabling SSL for local access](../unraid-os/system-administration/secure-your-server/securing-your-connection.md#disabling-ssl-for-local-access).
 :::
 
 ---
 
 ## Connection errors
 
-If you encounter connection errors in Unraid Connect, [open a terminal](../unraid-os/system-administration/advanced-tools/command-line-interface) from the %%WebGUI|web-gui%% and run:
+If you encounter connection errors in Unraid Connect, [open a terminal](../unraid-os/system-administration/advanced-tools/command-line-interface.md) from the %%WebGUI|web-gui%% and run:
 
 ```
 unraid-api restart

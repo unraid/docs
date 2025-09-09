@@ -323,5 +323,5 @@ This displays recent log output for the specified container.
 </Tabs>
 
 :::tip
-You can find the container name on the Docker tab or by viewing the `docker run` command in the [container's configuration screen](./managing-and-customizing-containers.md).
+You can find the container name on the Docker tab or by viewing the `docker run` command in the container's configuration screen.
 :::

@@ -137,7 +137,7 @@ You can also check our [writing tips and guidelines](../unraid-styleguide/conven
 
 ### Adding glossary terminology
 
-Unraid Docs utilizes a centralized glossary system to ensure consistency and accessibility of technical terms. Glossary entries are kept in the [glossary.yaml](../../glossary.yaml) file located in the root directory.
+Unraid Docs utilizes a centralized glossary system to ensure consistency and accessibility of technical terms. Glossary entries are kept in the `glossary.yaml` file located in the root directory.
 
 To add or update a term:  
 

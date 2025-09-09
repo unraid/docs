@@ -57,7 +57,7 @@ Make sure to specify the **VirtIO Drivers ISO** for [optimal performance](./over
 
 <h4>Step 3: Convert the physical disk to a %%virtual disk|vdisk%% image</h4>
 
-Open a terminal ([%%SSH|ssh%%](../../system-administration/advanced-tools/command-line-interface) or local console) and log in as `root`.
+Open a terminal ([%%SSH|ssh%%](../../system-administration/advanced-tools/command-line-interface.md) or local console) and log in as `root`.
 
 Use the following command to convert the physical disk into a %%virtual disk|vdisk%% image:
 
