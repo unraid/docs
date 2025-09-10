@@ -237,7 +237,7 @@ To safely reconfigure your %%array|array%%:
    - Assign all drives as data drives and start the %%array|array%%.
    - Note the serial numbers of drives that do not mount; these are likely your %%parity|parity%% drives.
    - Do not click **Format** on any drive. If more unmountable drives appear than expected %%parity|parity%% drives, stop and seek help in the forums.
-   - You can also use the [**Unassigned Devices** plugin](https://unraid.net/community/apps?q=unassigned+devices#r:~:text=don%27t%20be%20carefull!!!-,Unassigned%20Devices,-dlandon) to test-mount each drive, identifying %%parity|parity%% by elimination.
+   - You can also use the [Unassigned Devices plugin](https://unraid.net/community/apps?q=Unassigned%20Devices) to test‑mount each drive (%%parity|parity%% will not mount), identifying %%parity|parity%% by elimination.
    - Stop the %%array|array%% before proceeding.
 3. Go to ***Tools → New Config*** and create a new %%array|array%% configuration, retaining all the currently configured drives.
 4. Assign the correct drives as %%parity|parity%% and the rest as data drives in the **Main** tab.
