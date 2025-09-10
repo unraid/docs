@@ -717,12 +717,14 @@ If you're comfortable using the Linux command line, you can manually zero out yo
    umount /mnt/diskX
    ```
 2. With newer releases we need to mount a dummy fs image in place of the disk that we unmounted, or the array won't stop in the end:
+   
     ```bash
    truncate -s 400M /tmp/xmini.img
    mkfs.xfs -f /tmp/xmini.img > /dev/null
    mount /tmp/xmini.img /mnt/diskX  
-   ```   
-3. Zero out the disk with the following command:
+   ```
+    
+4. Zero out the disk with the following command:
    ```bash
    dd bs=1M if=/dev/zero of=/dev/mdXp1 status=progress
    ```
