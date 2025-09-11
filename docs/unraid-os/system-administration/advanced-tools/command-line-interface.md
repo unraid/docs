@@ -35,7 +35,7 @@ If you're using Windows, you might prefer %%PuTTY|putty%% for %%SSH|ssh%% access
 <details>
 <summary><strong>How to install and use PuTTY</strong> - Click to expand/collapse</summary>
 
-1. Download %%PuTTY|putty%% from the [official site](https://www.putty.org/).
+1. Download %%PuTTY|putty%% from the [official site](https://www.putty.software/).
 2. Launch the %%PuTTY|putty%% application.
 3. Enter your Unraid server’s IP address or hostname (e.g., `tower.local`).
 4. Set the connection type to `%%SSH|ssh%%`.
