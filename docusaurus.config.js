@@ -5,11 +5,10 @@ const lightCodeTheme = require("prism-react-renderer").themes.github;
 const darkCodeTheme = require("prism-react-renderer").themes.dracula;
 const { sortSidebarItems } = require("./sitebar-semver-sort");
 
-const locales = ["en"];
-
 /** @type {import('@docusaurus/types').Config} */
 module.exports = async function createConfigAsync() {
   // Import the ES module plugin dynamically
+  // @ts-ignore
   const { default: remarkAutoGlossary } = await import('@renatonagliati/remark-auto-glossary');
 
   return {
@@ -21,7 +20,7 @@ module.exports = async function createConfigAsync() {
     url: "https://docs.unraid.net/",
     // Set the /<baseUrl>/ pathname under which your site is served
     // For GitHub pages deployment, it is often '/<projectName>/'
-    baseUrl: "/",
+    baseUrl: process.env.BASE_URL || "/",
 
     trailingSlash: true,
 
@@ -37,7 +36,7 @@ module.exports = async function createConfigAsync() {
     // to replace "en" with "zh-Hans".
     i18n: {
       defaultLocale: "en",
-      locales,
+      locales: ["en", "es", "fr", "de", "zh"],
     },
     scripts: [
       {
