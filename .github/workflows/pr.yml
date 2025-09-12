@@ -2,15 +2,18 @@ name: PR Preview
 
 on:
   pull_request:
-    types: [opened, synchronize, reopened]
-  workflow_dispatch:
+    types:
+      - opened
+      - reopened
+      - synchronize
+      - closed
 
 concurrency:
-  group: pr-${{ github.event.number }}
+  group: pr-preview-${{ github.event.number }}
   cancel-in-progress: true
 
 jobs:
-  build-and-preview:
+  deploy-preview:
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -19,36 +22,22 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v5
       
-      - name: Install NPM
+      - name: Setup Node.js
         uses: actions/setup-node@v5
         with:
           node-version: 20
           cache: npm
-          cache-dependency-path: package-lock.json
       
       - name: Install dependencies
         run: npm ci
-
-      - name: Build documentation with PR base URL (English only)
+      
+      - name: Build documentation (English only)
         run: npm run build -- --locale en
-        env:
-          BASE_URL: /pr-preview-${{ github.event.number }}/
       
-      - name: Deploy PR preview to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v4
+      - name: Deploy PR Preview
+        uses: rossjrw/pr-preview-action@v1
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./build
-          destination_dir: pr-preview-${{ github.event.number }}
-      
-      - name: Comment PR with preview link
-        uses: thollander/actions-comment-pull-request@v2
-        with:
-          message: |
-            📚 **Documentation Preview Ready!**
-            
-            🔗 Preview URL: https://docs.unraid.net/pr-preview-${{ github.event.number }}/
-            
-            *This preview will be updated automatically with new commits.*
-          comment_tag: preview-url
-          mode: recreate
+          source-dir: ./build/
+          preview-branch: gh-pages
+          umbrella-dir: pr-preview
+          action: auto
