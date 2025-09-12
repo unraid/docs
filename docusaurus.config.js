@@ -61,7 +61,9 @@ module.exports = async function createConfigAsync() {
                 return `https://translate.unraid.net/unraid-docs/${locale}`;
               }
               // Link to GitHub for English docs
-              return `https://github.com/unraid/docs/edit/main/${versionDocsDirPath}/${docPath}`;
+              // Use PR branch if available, otherwise default to main
+              const branch = process.env.GITHUB_BRANCH || 'main';
+              return `https://github.com/unraid/docs/edit/${branch}/${versionDocsDirPath}/${docPath}`;
             },
             editLocalizedFiles: true,
             async sidebarItemsGenerator({
