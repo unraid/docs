@@ -1,0 +1,53 @@
+name: Deploy to Production
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    name: Build and Deploy Docs
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Download translations from Crowdin
+        env:
+          CROWDIN_PERSONAL_TOKEN: ${{ secrets.CROWDIN_PERSONAL_TOKEN }}
+        run: npx crowdin download --config crowdin.yml
+
+      - name: Build documentation
+        run: npm run build
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./build
+          cname: docs.unraid.net
+
+  algolia-reindex:
+    name: Reindex Algolia Search
+    needs: build-and-deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run Algolia Crawler
+        uses: algolia/algoliasearch-crawler-github-actions@v1
+        with:
+          crawler-user-id: ${{ secrets.ALGOLIA_CRAWLER_USER_ID }}
+          crawler-api-key: ${{ secrets.ALGOLIA_CRAWLER_API_KEY }}
+          algolia-app-id: JUYLFQHE7W
+          algolia-api-key: ${{ secrets.ALGOLIA_API_KEY }}
+          site-url: https://docs.unraid.net
