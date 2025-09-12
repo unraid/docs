@@ -55,13 +55,13 @@ module.exports = async function createConfigAsync() {
             // Please change this to your repo.
             // Remove this to remove the "edit this page" links.
             editUrl: ({locale, versionDocsDirPath, docPath}) => {
-              const DefaultLocale = 'en';
+              const DEFAULT_LOCALE = 'en';
               // Link to Crowdin for non-English docs
-              if (locale !== DefaultLocale) {
+              if (locale !== DEFAULT_LOCALE) {
                 return `https://translate.unraid.net/unraid-docs/${locale}`;
               }
               // Link to GitHub for English docs
-              return `https://github.com/unraid/docs/tree/main/${versionDocsDirPath}/${docPath}`;
+              return `https://github.com/unraid/docs/edit/main/${versionDocsDirPath}/${docPath}`;
             },
             editLocalizedFiles: true,
             async sidebarItemsGenerator({
