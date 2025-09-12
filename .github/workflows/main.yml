@@ -6,21 +6,13 @@ on:
       - main
   workflow_dispatch:
 
-# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
-permissions:
-  contents: write
-  pages: write
-  id-token: write
-
-# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
-# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
 concurrency:
-  group: "pages"
+  group: "production"
   cancel-in-progress: false
 
 jobs:
   build-and-deploy:
-    name: Build and Deploy Documentation
+    name: Build and Deploy to Cloudflare
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -29,8 +21,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v5
         with:
-          node-version: '20'
-          cache: 'npm'
+          node-version: "20"
+          cache: "npm"
 
       - name: Install dependencies
         run: npm ci
@@ -43,14 +35,11 @@ jobs:
       - name: Build documentation
         run: npm run build
 
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./build
-          cname: docs.unraid.net
-          keep_files: true
-          exclude_assets: 'pr-preview/**'
+      - name: Deploy to Cloudflare Workers
+        run: npx wrangler@latest deploy
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_DEPLOY_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
 
   algolia-reindex:
     name: Reindex Algolia Search
