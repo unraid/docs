@@ -4,6 +4,7 @@
 const lightCodeTheme = require("prism-react-renderer").themes.github;
 const darkCodeTheme = require("prism-react-renderer").themes.dracula;
 const { sortSidebarItems } = require("./sitebar-semver-sort");
+const DEFAULT_LOCALE = 'en';
 
 /** @type {import('@docusaurus/types').Config} */
 module.exports = async function createConfigAsync() {
@@ -35,7 +36,7 @@ module.exports = async function createConfigAsync() {
     // metadata like html lang. For example, if your site is Chinese, you may want
     // to replace "en" with "zh-Hans".
     i18n: {
-      defaultLocale: "en",
+      defaultLocale: DEFAULT_LOCALE,
       locales: ["en", "es", "fr", "de", "zh"],
     },
     scripts: [
@@ -54,7 +55,16 @@ module.exports = async function createConfigAsync() {
             sidebarPath: require.resolve("./sidebars.js"),
             // Please change this to your repo.
             // Remove this to remove the "edit this page" links.
-            editUrl: "https://github.com/unraid/docs/tree/main/",
+            editUrl: ({locale, versionDocsDirPath, docPath}) => {
+              // Link to Crowdin for non-English docs
+              if (locale !== DEFAULT_LOCALE) {
+                return `https://translate.unraid.net/unraid-docs/${locale}`;
+              }
+              // Link to GitHub for English docs
+              // Use PR branch if available, otherwise default to main
+              const branch = process.env.GITHUB_BRANCH || 'main';
+              return `https://github.com/unraid/docs/edit/${branch}/${versionDocsDirPath}/${docPath}`;
+            },
             editLocalizedFiles: true,
             async sidebarItemsGenerator({
               defaultSidebarItemsGenerator,
