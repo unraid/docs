@@ -20,7 +20,7 @@ module.exports = async function createConfigAsync() {
     url: "https://docs.unraid.net/",
     // Set the /<baseUrl>/ pathname under which your site is served
     // For GitHub pages deployment, it is often '/<projectName>/'
-    baseUrl: "/",
+    baseUrl: process.env.BASE_URL || "/",
 
     trailingSlash: true,
 
