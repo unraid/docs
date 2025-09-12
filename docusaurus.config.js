@@ -4,6 +4,7 @@
 const lightCodeTheme = require("prism-react-renderer").themes.github;
 const darkCodeTheme = require("prism-react-renderer").themes.dracula;
 const { sortSidebarItems } = require("./sitebar-semver-sort");
+const DEFAULT_LOCALE = 'en';
 
 /** @type {import('@docusaurus/types').Config} */
 module.exports = async function createConfigAsync() {
@@ -35,7 +36,7 @@ module.exports = async function createConfigAsync() {
     // metadata like html lang. For example, if your site is Chinese, you may want
     // to replace "en" with "zh-Hans".
     i18n: {
-      defaultLocale: "en",
+      defaultLocale: DEFAULT_LOCALE,
       locales: ["en", "es", "fr", "de", "zh"],
     },
     scripts: [
@@ -55,7 +56,6 @@ module.exports = async function createConfigAsync() {
             // Please change this to your repo.
             // Remove this to remove the "edit this page" links.
             editUrl: ({locale, versionDocsDirPath, docPath}) => {
-              const DEFAULT_LOCALE = 'en';
               // Link to Crowdin for non-English docs
               if (locale !== DEFAULT_LOCALE) {
                 return `https://translate.unraid.net/unraid-docs/${locale}`;
