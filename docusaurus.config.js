@@ -54,7 +54,15 @@ module.exports = async function createConfigAsync() {
             sidebarPath: require.resolve("./sidebars.js"),
             // Please change this to your repo.
             // Remove this to remove the "edit this page" links.
-            editUrl: "https://github.com/unraid/docs/tree/main/",
+            editUrl: ({locale, versionDocsDirPath, docPath}) => {
+              const DefaultLocale = 'en';
+              // Link to Crowdin for non-English docs
+              if (locale !== DefaultLocale) {
+                return `https://translate.unraid.net/unraid-docs/${locale}`;
+              }
+              // Link to GitHub for English docs
+              return `https://github.com/unraid/docs/tree/main/${versionDocsDirPath}/${docPath}`;
+            },
             editLocalizedFiles: true,
             async sidebarItemsGenerator({
               defaultSidebarItemsGenerator,
