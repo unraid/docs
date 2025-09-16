@@ -131,7 +131,13 @@ If you encounter any issues, feel free to visit the [Unraid forums](https://foru
 
 ## Converting to a new file system type
 
-If you want to change the file system type on a drive but keep its data, you must migrate the contents before reformatting. This process is especially common for users moving away from the deprecated ReiserFS (used in older Unraid versions) to %%XFS|xfs%% or %%BTRFS|btrfs%%, but it applies to any file system conversion.
+:::important
+Starting with Unraid 7.2, the ***Main*** page will warn if any array or pool drives are formatted in legacy filesystems:
+* Any drives formatted in ReiserFS need to be migrated to another filesystem ASAP as they will not be usable in a future release of Unraid (likely Unraid 7.3).
+* Any drives formatted in an older version of XFS need to be migrated before 2030.
+:::
+
+To change the file system type on a drive but keep its data, you must migrate the contents before reformatting. This process is especially common for users moving away from the deprecated ReiserFS (used in older Unraid versions) to %%XFS|xfs%% or %%BTRFS|btrfs%%, but it applies to any file system conversion.
 
 :::important
 This process requires temporarily moving your data to another location. Make sure you have enough free space elsewhere in your %%array|array%% or on an external device before you begin.
@@ -140,8 +146,17 @@ This process requires temporarily moving your data to another location. Make sur
 To safely convert to a new file system type:
 
 1. **Copy all data off the drive**: Move your files to another location. This could be another drive in your %%array|array%%, a %%cache pool|cache-pool%%, or an external backup.  
-   - If you're converting multiple drives, do so one at a time to minimize risk and space requirements.
-   - Many users schedule conversions after adding a new drive to the %%array|array%% to create the needed free space.
+   - Prior to Unraid 7.0, you will need to move the files manually
+   - Starting with Unraid 7.0, you can move files [use 'mover' to empty an array disk](../../release-notes/7.0.0.md#using-mover-to-empty-an-array-disk) to other array drives via the command line 
+   - Starting with Unraid 7.2, you can empty an array drive to other array drives via the webGUI:
+     - Navigate to ***Main → Array Operation*** and stop the array
+     - Navigate to ***Settings → Global Share Settings***. In the **Emptying disk(s)** area, select the disk(s) to empty and **Apply**.
+     - Navigate to ***Main → Array Operation*** and start the array
+     - Navigate to ***Settings → Scheduler → Mover Settings*** and click **Move Now**
+     - Mover will empty the disk according to your Share settings. Note that files at the root of the drive are outside of any Shares and will not be moved.
+     - Check ***Tools → System Log*** for messages about any files that could not be moved due to being in use or a lack of free space
+     - Navigate to ***Settings → Global Share Settings***. In the Emptying disk(s) area, remove any selected disk(s) and Apply.
+   - Navigate to ***Main → Array Devices*** and browse the disk to confirm it is empty. Proceed only when you are certain the disk is empty.
    
 2. **Change the file system type**: Follow the procedure for [changing a file system type](#changing-a-file-system-type). This will format the drive and erase all content, leaving you with a blank drive in the new format.
 3. **Copy your data back**: Move the saved files back to the newly formatted drive.
@@ -149,10 +164,6 @@ To safely convert to a new file system type:
 
 :::note Timing
 The process can take several hours, depending on the amount of data and the speed of your drives. Most of the time is spent copying files, which can run unattended.
-:::
-
-:::tip
-If you are migrating from ReiserFS, this is the safest way to preserve your data since support for ReiserFS is being removed from Unraid and the Linux kernel.
 :::
 
 ---
@@ -466,7 +477,7 @@ To check a %%ZFS|zfs%% file system via the command line:
 
 <h4>Recommended method</h4>
 
-%%ZFS|zfs%% uses **scrubbing** instead of traditional filesystem checks like `fsck`. A %%scrub|scrub%% examines all data in the pool to verify checksums and automatically repairs any corruption found on redundant configurations.  
+%%ZFS|zfs%% uses **scrubbing** instead of traditional filesystem checks like `fsck`. A %%scrub|scrub%% examines all data in the pool to verify checksums and automatically repairs any corruption found in redundant configurations.  
 
 - Start the %%array|array%% in **Normal mode** and run: `zpool scrub poolname`
   - Replace `poolname` with your actual %%ZFS|zfs%% pool name.
