@@ -1,82 +1,40 @@
-// Custom remark plugin to check for blank lines around JSX content for Crowdin compatibility
+// Custom remark plugin to check for blank lines when JSX elements directly follow list items
+// This is required for Crowdin compatibility
 const { visit } = require('unist-util-visit');
 
 function jsxContentSpacing() {
   return (tree, file) => {
-    visit(tree, 'mdxJsxFlowElement', (node) => {
-      if (!node.children || node.children.length === 0) return;
+    // We need to check each parent node for list->JSX patterns
+    visit(tree, (parent) => {
+      if (!parent.children || parent.children.length < 2) return;
 
-      // Helper to check if a node has meaningful content
-      const hasMeaningfulContent = (child) => {
-        if (!child) return false;
+      // Look through consecutive children
+      for (let i = 0; i < parent.children.length - 1; i++) {
+        const current = parent.children[i];
+        const next = parent.children[i + 1];
 
-        // These are content nodes
-        if (child.type === 'paragraph' ||
-            child.type === 'list' ||
-            child.type === 'code' ||
-            child.type === 'heading' ||
-            child.type === 'blockquote' ||
-            child.type === 'mdxJsxFlowElement') {
-          return true;
+        // Check if current is a list and next is JSX
+        if (current.type === 'list' && next.type === 'mdxJsxFlowElement') {
+          // Check the actual source positions to determine if there's a blank line
+          // If the list ends at line N and JSX starts at line N+1, there's no blank line
+          // If JSX starts at line N+2 or later, there's at least one blank line
+          if (current.position && next.position) {
+            const listEndLine = current.position.end.line;
+            const jsxStartLine = next.position.start.line;
+
+            // If JSX starts immediately on the next line, warn
+            if (jsxStartLine === listEndLine + 1) {
+              file.message(
+                `Missing blank line between list and <${next.name}> element`,
+                next.position,
+                'remark-lint:jsx-content-spacing'
+              );
+            }
+          }
         }
-
-        // Text nodes need non-whitespace content to be meaningful
-        if (child.type === 'text') {
-          return child.value.trim().length > 0;
-        }
-
-        return false;
-      }
-
-      // Find first and last meaningful content
-      let firstContentIdx = -1;
-      let lastContentIdx = -1;
-
-      for (let i = 0; i < node.children.length; i++) {
-        if (hasMeaningfulContent(node.children[i])) {
-          if (firstContentIdx === -1) firstContentIdx = i;
-          lastContentIdx = i;
-        }
-      }
-
-      // No content to check
-      if (firstContentIdx === -1) return;
-
-      // Check for leading blank line
-      let hasLeadingNewline = false;
-      if (firstContentIdx > 0) {
-        const prevNode = node.children[firstContentIdx - 1];
-        if (prevNode.type === 'text' && prevNode.value.includes('\n')) {
-          hasLeadingNewline = true;
-        }
-      }
-
-      if (!hasLeadingNewline && firstContentIdx === 0) {
-        file.message(
-          `Missing blank line after opening <${node.name}> tag`,
-          node.position,
-          'remark-lint:jsx-content-spacing'
-        );
-      }
-
-      // Check for trailing blank line
-      let hasTrailingNewline = false;
-      if (lastContentIdx < node.children.length - 1) {
-        const nextNode = node.children[lastContentIdx + 1];
-        if (nextNode.type === 'text' && nextNode.value.includes('\n')) {
-          hasTrailingNewline = true;
-        }
-      }
-
-      if (!hasTrailingNewline && lastContentIdx === node.children.length - 1) {
-        file.message(
-          `Missing blank line before closing </${node.name}> tag`,
-          node.position,
-          'remark-lint:jsx-content-spacing'
-        );
       }
     });
-  }
+  };
 }
 
 module.exports = jsxContentSpacing;
