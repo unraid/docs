@@ -43,10 +43,33 @@ function processContent(content) {
   const newLines = [];
 
   let jsxStack = []; // Track nested JSX elements
+  let inCodeBlock = false;
+  let codeBlockDelimiter = '';
 
   for (let i = 0; i < lines.length; i++) {
-    const line = lines[i];
+    let line = lines[i];
     const trimmedLine = line.trim();
+
+    // Track code blocks to avoid modifying code
+    if (line.match(/^```/)) {
+      if (!inCodeBlock) {
+        inCodeBlock = true;
+        codeBlockDelimiter = line.match(/^`+/)[0];
+      } else if (line.startsWith(codeBlockDelimiter)) {
+        inCodeBlock = false;
+        codeBlockDelimiter = '';
+      }
+    }
+
+    // Fix for trailing backslashes in list items (outside code blocks)
+    if (!inCodeBlock) {
+      const listItemMatch = line.match(/^(\s*(?:[-*]|\d+\.)[^\n]*)(\\)$/);
+      if (listItemMatch) {
+        // Remove the trailing backslash from list items
+        line = listItemMatch[1];
+        modified = true;
+      }
+    }
 
     // Track JSX element nesting
     // Opening tags (including cards elements)
