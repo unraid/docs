@@ -15,22 +15,24 @@ import TabItem from '@theme/TabItem';
 For WoL to work properly, make sure you meet the following requirements:
 
 - **NIC support**: Your network interface controller should support WoL; most modern NICs do.
-  
+
 - **BIOS/UEFI settings**: Enable WoL in your motherboard's BIOS/%%UEFI|uefi%% under power management. Here are some common setting names:
-  
-  | Setting name                     | Description                          |
-  |----------------------------------|--------------------------------------|
-  | Wake on LAN                      | Generic WoL setting                 |
-  | PME event wake-up                | For PCIe wake events                |
-  | Power on by PCI/PCIe devices     | Alternate name for WoL              |
-  | ErP ready                        | Must be *disabled* for WoL to work |
+
+  | Setting name                 | Description                        |
+  | ---------------------------- | ---------------------------------- |
+  | Wake on LAN                  | Generic WoL setting                |
+  | PME event wake-up            | For PCIe wake events               |
+  | Power on by PCI/PCIe devices | Alternate name for WoL             |
+  | ErP ready                    | Must be *disabled* for WoL to work |
 
 - **Power connection**: Ensure your server is plugged into a power source.
-  
+
 - **Network connection**: Connect your server to your LAN with an Ethernet cable (WiFi WoL is not supported).
 
 :::caution Hardware compatibility
+
 Not all hardware supports S3 sleep or WoL reliably. Some systems may experience issues entering sleep, fail to wake up correctly, or require additional BIOS/%%UEFI|uefi%% settings. Always test these features thoroughly before relying on them.
+
 :::
 
 ## Putting an Unraid server to sleep
@@ -46,45 +48,46 @@ To install and configure:
 The plugin manages most sleep configuration options.
 
 <details>
-<summary><strong>Alternative manual method</strong> - Click to expand/collapse</summary>
+  <summary><strong>Alternative manual method</strong> - Click to expand/collapse</summary>
 
-If you want more control or need advanced customization, you can configure sleep and WoL settings through the command line. This method is recommended for advanced users.
+  If you want more control or need advanced customization, you can configure sleep and WoL settings through the command line. This method is recommended for advanced users.
 
-To configure sleep manually:
+  To configure sleep manually:
 
-1. Connect to your server using the %%WebGUI|web-gui%% terminal or [%%SSH|ssh%%](../../system-administration/advanced-tools/command-line-interface.mdx#accessing-the-terminal).
+  1. Connect to your server using the %%WebGUI|web-gui%% terminal or [%%SSH|ssh%%](../../system-administration/advanced-tools/command-line-interface.mdx#accessing-the-terminal).
 
-2. Identify your primary network interface (usually `eth0`) by running the following command:
+  2. Identify your primary network interface (usually `eth0`) by running the following command:
 
-   ```
-   ifconfig
-   ```
+     ```
+     ifconfig
+     ```
 
-   Note the MAC address (labelled as `ether`).
+     Note the MAC address (labelled as `ether`).
 
-3. Enable WoL on the interface with this command:
+  3. Enable WoL on the interface with this command:
 
-   ```
-   ethtool -s eth0 wol g
-   ```
+     ```
+     ethtool -s eth0 wol g
+     ```
 
-4. Put the server to sleep by entering this command:
+  4. Put the server to sleep by entering this command:
 
-   ```
-   echo -n mem > /sys/power/state
-   ```
+     ```
+     echo -n mem > /sys/power/state
+     ```
 
-:::caution Persistence
-WoL settings configured manually are **not persistent** across reboots by default. To make them permanent:
+  :::caution Persistence
 
-1. Create a `go` file on your flash drive at `/boot/config/go`.
-2. Add this line:
+  WoL settings configured manually are **not persistent** across reboots by default. To make them permanent:
 
-```
-/sbin/ethtool -s eth0 wol g
-```
+  1. Create a `go` file on your flash drive at `/boot/config/go`.
+  2. Add this line:
 
-:::
+  ```
+  /sbin/ethtool -s eth0 wol g
+  ```
+
+  :::
 
 </details>
 
@@ -93,55 +96,55 @@ WoL settings configured manually are **not persistent** across reboots by defaul
 To wake your Unraid server remotely, you need to send a special "magic packet" over your local network. This packet includes your server's MAC address and instructs the network interface to power on the system from a sleep or shutdown state. Different operating systems provide various tools and methods for sending this packet. Below are specific instructions for Windows, macOS, and Linux.
 
 <Tabs>
-<TabItem value="Windows" label="Windows">
+  <TabItem value="Windows" label="Windows">
+    <h4>Using WakeOnLan CMD</h4>
 
-<h4>Using WakeOnLan CMD</h4>
+    1. Download [wolcmd.exe](https://www.depicus.com/wake-on-lan/wake-on-lan-cmd).
 
-1. Download [wolcmd.exe](https://www.depicus.com/wake-on-lan/wake-on-lan-cmd).
-  
-2. Run it in Command Prompt:
+    2. Run it in Command Prompt:
 
-   ```
-   wolcmd.exe <MAC_ADDRESS> <SERVER_IP> 255.255.255.255
-   ```
+       ```
+       wolcmd.exe <MAC_ADDRESS> <SERVER_IP> 255.255.255.255
+       ```
 
-</TabItem>
-<TabItem value="macOS" label="macOS">
+  </TabItem>
 
-<h4>Terminal method (recommended)</h4>
+  <TabItem value="macOS" label="macOS">
+    <h4>Terminal method (recommended)</h4>
 
-1. Install `wakeonlan` using Homebrew:
-   ```
-   brew install wakeonlan
-   ```
+    1. Install `wakeonlan` using Homebrew:
+       ```
+       brew install wakeonlan
+       ```
 
-2. Send the magic packet:
+    2. Send the magic packet:
 
-   ```
-   wakeonlan MAC_ADDRESS
-   ```
+       ```
+       wakeonlan MAC_ADDRESS
+       ```
 
-<h4>GUI alternative: miniWOL</h4>
+    <h4>GUI alternative: miniWOL</h4>
 
-1. Download [miniWOL v3](https://apps.apple.com/app/miniwol/id6474282023) from the App Store.
-  
-2. Add your server using its MAC address.
-  
-3. Click the sun icon to wake your server.
+    1. Download [miniWOL v3](https://apps.apple.com/app/miniwol/id6474282023) from the App Store.
 
-</TabItem>
-<TabItem value="Linux" label="Linux">
+    2. Add your server using its MAC address.
 
-<h4>Terminal method</h4>
+    3. Click the sun icon to wake your server.
 
-   ```
-   wakeonlan MAC_ADDRESS
-   ```
-   Install it with `sudo apt install wakeonlan` if it's not already installed.
+  </TabItem>
 
-<h4>Alternative: WoL GUI</h4>
+  <TabItem value="Linux" label="Linux">
+    <h4>Terminal method</h4>
 
-You can install a `wol` GUI frontend from your Linux distribution's package manager.
+    ```
+    wakeonlan MAC_ADDRESS
+    ```
 
-</TabItem>
+    Install it with `sudo apt install wakeonlan` if it's not already installed.
+
+    <h4>Alternative: WoL GUI</h4>
+
+    You can install a `wol` GUI frontend from your Linux distribution's package manager.
+
+  </TabItem>
 </Tabs>
