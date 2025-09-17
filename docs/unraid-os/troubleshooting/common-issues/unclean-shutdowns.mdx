@@ -18,7 +18,7 @@ Taking some proactive steps can help you avoid or identify unclean shutdowns:
 - **Attempt a graceful shutdown:** If your server is unresponsive, briefly press the power button to trigger a safe shutdown. Do not hold the button down, as this will force a hard power off and lead to an unclean shutdown.
 - **Enable persistent logging:** Go to ***Settings → Syslog Server*** to activate logging that persists after a reboot. See [Persistent logs (Syslog server)](../diagnostics/capture-diagnostics-and-logs.mdx#persistent-logs-syslog-server) for more details.
 - **Attach diagnostics for support:** If an unclean shutdown occurs, Unraid will attempt to save diagnostics to `/log/diagnostics.zip` on your flash device. Attach this file to forum posts when you seek help.
-:::
+  :::
 
 :::tip UPS configuration best practices
 
@@ -38,29 +38,25 @@ Look into the [NUT plugin](https://unraid.net/community/apps/c/plugins/p4?srslti
 Understanding the main triggers for unclean shutdowns helps you prevent them. Explore the tabs below for details on each scenario.
 
 <Tabs>
-<TabItem value="power" label="Unexpected power loss">
+  <TabItem value="power" label="Unexpected power loss">
+    Power interruptions are one of the main reasons for unclean shutdowns. Protect your system with a properly configured UPS that can automatically shut down Unraid before the battery runs out.
 
-Power interruptions are one of the main reasons for unclean shutdowns. Protect your system with a properly configured UPS that can automatically shut down Unraid before the battery runs out.
+    :::note
+    Unraid supports most UPS units using the %%apcupsd Protocol|apcupsd%% protocol (APC and CyberPower are usually compatible). If your UPS isn't supported, consider using the Network UPS Tools (NUT) plugin from Community Applications.
+    :::
+  </TabItem>
 
-:::note
-Unraid supports most UPS units using the %%apcupsd Protocol|apcupsd%% protocol (APC and CyberPower are usually compatible). If your UPS isn't supported, consider using the Network UPS Tools (NUT) plugin from Community Applications.
-:::
+  <TabItem value="flash" label="Flash drive failure">
+    The %%array|array%% status is stored on your USB flash device. If the flash drive becomes unavailable or enters a read-only state, Unraid cannot update the shutdown status, even if the %%array|array%% stops correctly. This results in an unclean shutdown being detected at the next boot.
+  </TabItem>
 
-</TabItem>
-<TabItem value="flash" label="Flash drive failure">
+  <TabItem value="terminal" label="Open terminal sessions">
+    Unraid waits for all open terminal or SSH sessions to close during shutdown. If these sessions remain active and the shutdown timer expires, a forced shutdown occurs.
 
-The %%array|array%% status is stored on your USB flash device. If the flash drive becomes unavailable or enters a read-only state, Unraid cannot update the shutdown status, even if the %%array|array%% stops correctly. This results in an unclean shutdown being detected at the next boot.
-
-</TabItem>
-<TabItem value="terminal" label="Open terminal sessions">
-
-Unraid waits for all open terminal or SSH sessions to close during shutdown. If these sessions remain active and the shutdown timer expires, a forced shutdown occurs.
-
-:::tip
-The [Dynamix Stop Shell](https://unraid.net/community/apps/c/tools-system/p2?srsltid=AfmBOoqBXyDNfHxRDCL7Fv9Gcfz8-8CdHmiJSX16PRZpZLLzgQtw2mVk#:~:text=the%20given%20interval.-,Dynamix%20Stop%20Shell,-Dynamix%20Repository) plugin can automatically close lingering bash or SSH sessions, helping ensure a graceful shutdown. However, be cautious if there are ongoing write operations to the %%array|array%%.
-:::
-
-</TabItem>
+    :::tip
+    The [Dynamix Stop Shell](https://unraid.net/community/apps/c/tools-system/p2?srsltid=AfmBOoqBXyDNfHxRDCL7Fv9Gcfz8-8CdHmiJSX16PRZpZLLzgQtw2mVk#:~:text=the%20given%20interval.-,Dynamix%20Stop%20Shell,-Dynamix%20Repository) plugin can automatically close lingering bash or SSH sessions, helping ensure a graceful shutdown. However, be cautious if there are ongoing write operations to the %%array|array%%.
+    :::
+  </TabItem>
 </Tabs>
 
 ---
@@ -71,95 +67,92 @@ Properly configuring shutdown timeouts is essential to ensure your Unraid server
 
 ### Recommended timeout settings
 
-| Setting                      | Default | Recommended minimum | Where to configure                                  |
-|------------------------------|---------|---------------------|-----------------------------------------------------|
-| %%VM&#124;vm%% shutdown timeout          | 60s     | 300s (5 min)        | ***Settings → VM Manager → VM Shutdown (Advanced)*** |
-| Docker container stop timeout | 10s     | 30–60s              | ***Settings → Docker (Advanced)***                   |
-| General shutdown timeout      | 90s     | 3 × %%VM&#124;vm%% timeout + Docker timeout + 15–30s | ***Settings → Disk Settings → Shutdown time-out***   |
+| Setting                       | Default | Recommended minimum                              | Where to configure                                   |
+| ----------------------------- | ------- | ------------------------------------------------ | ---------------------------------------------------- |
+| %%VM\|vm%% shutdown timeout   | 60s     | 300s (5 min)                                     | ***Settings → VM Manager → VM Shutdown (Advanced)*** |
+| Docker container stop timeout | 10s     | 30–60s                                           | ***Settings → Docker (Advanced)***                   |
+| General shutdown timeout      | 90s     | 3 × %%VM\|vm%% timeout + Docker timeout + 15–30s | ***Settings → Disk Settings → Shutdown time-out***   |
 
 ### Virtual machines timeout
 
 <details>
-<summary><strong>Click to expand/collapse</strong></summary>
+  <summary><strong>Click to expand/collapse</strong></summary>
 
-Unraid first shuts down all configured virtual machines (%%VMs|vm%%) before stopping Docker containers or the %%array|array%% itself. The VM Shutdown Timeout determines how long Unraid waits for each %%VM|vm%% to shut down gracefully.
+  Unraid first shuts down all configured virtual machines (%%VMs|vm%%) before stopping Docker containers or the %%array|array%% itself. The VM Shutdown Timeout determines how long Unraid waits for each %%VM|vm%% to shut down gracefully.
 
-<h4>Where to set</h4>
+  <h4>Where to set</h4>
 
   - ***Settings → VM Manager → VM Shutdown*** (enable Advanced view)
 
-<h4>Consider</h4>
+  <h4>Consider</h4>
 
   - Windows %%VMs|vm%% may take longer to shut down, especially if updates are pending or the %%VM|vm%% is in sleep/hibernation.
   - If the timeout is too short, %%VMs|vm%% will be force-stopped, risking data loss or corruption.
 
-<h4>Best practice</h4>
+  <h4>Best practice</h4>
 
   Set the timeout to at least 300 seconds (5 minutes) for Windows %%VMs|vm%%. Schedule updates to run at boot, not shutdown, to avoid delays.
-
 </details>
 
 ### Docker containers timeout
 
 <details>
-<summary><strong>Click to expand/collapse</strong></summary>
+  <summary><strong>Click to expand/collapse</strong></summary>
 
-After %%VMs|vm%%, Unraid stops all running Docker containers. The Docker Container Stop Timeout controls how long Unraid waits for each container to exit cleanly.
+  After %%VMs|vm%%, Unraid stops all running Docker containers. The Docker Container Stop Timeout controls how long Unraid waits for each container to exit cleanly.
 
-<h4>Where to set</h4>
+  <h4>Where to set</h4>
 
   - ***Settings → Docker*** (enable Advanced view)
 
-<h4>Consider</h4>
+  <h4>Consider</h4>
 
   - Containers are stopped in parallel.
   - Complex containers, or those with large databases, may need more than the default 10 seconds to shut down safely.
   - If the timer expires, containers are force-stopped.
 
-<h4>Best practice</h4>
+  <h4>Best practice</h4>
   Increase the timeout to 30–60 seconds if you run Docker containers that require additional shutdown time.
-
 </details>
 
 ### General shutdown timer
 
 <details>
-<summary><strong>Click to expand/collapse</strong></summary>
+  <summary><strong>Click to expand/collapse</strong></summary>
 
-The overall Shutdown time-out is the maximum time Unraid allows for all shutdown processes - %%VM|vm%%s, Docker, and disk operations - before forcing a shutdown.
+  The overall Shutdown time-out is the maximum time Unraid allows for all shutdown processes - %%VM|vm%%s, Docker, and disk operations - before forcing a shutdown.
 
-<h4>Where to set</h4>
+  <h4>Where to set</h4>
 
   - ***Settings → Disk Settings → Shutdown time-out***
 
-<h4>How to calculate</h4>
-  
+  <h4>How to calculate</h4>
+
   Add up your %%VM|vm%% and Docker timeouts, then add 15–30 seconds for disk unmounting and other processes.
+
   - Example: `3 × ***VM Shutdown timeout*** + ***Docker stop timeout*** + 15–30 seconds`
 
-<h4>Best practice</h4>
+  <h4>Best practice</h4>
   Set this timer high enough to cover your slowest shutdown scenario, especially if you have many drives or a large %%array|array%%.
-
 </details>
 
 ### UPS battery life
 
 <details>
-<summary><strong>Click to expand/collapse</strong></summary>
+  <summary><strong>Click to expand/collapse</strong></summary>
 
-Your UPS must provide enough runtime to allow all shutdown timers to expire before the server loses power.
+  Your UPS must provide enough runtime to allow all shutdown timers to expire before the server loses power.
 
-<h4>Where to set</h4>
+  <h4>Where to set</h4>
 
-  - ***Settings → UPS Settings*** (see **Runtime left** with all disks spun up)  
+  - ***Settings → UPS Settings*** (see **Runtime left** with all disks spun up)
 
-<h4>Consider</h4>
+  <h4>Consider</h4>
 
   - The UPS should trigger a shutdown early enough to allow the full shutdown sequence to complete.
   - If the battery runs out before shutdown completes, you risk an unclean shutdown and possible data loss.
 
-<h4>Best practice</h4>
+  <h4>Best practice</h4>
 
   Test your UPS by simulating a power outage and confirming that Unraid shuts down cleanly with time to spare.
-
 </details>

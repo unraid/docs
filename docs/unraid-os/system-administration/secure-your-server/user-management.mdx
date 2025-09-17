@@ -9,12 +9,12 @@ Unraid makes managing users on your NAS simple and secure, catering to everyone 
 
 :::note Simplified approach
 
-Unlike traditional Linux systems, Unraid offers a straightforward user model:  
+Unlike traditional Linux systems, Unraid offers a straightforward user model:
 
-- **Single Administrator (%%root|root-user%%)**: There’s only one main user, which simplifies permissions and enhances security.  
-- **Share-Centric Access**: The focus is on sharing data, making it less complicated for users who don’t need the intricacies of multiple user environments.  
+- **Single Administrator (%%root|root-user%%)**: There’s only one main user, which simplifies permissions and enhances security.
+- **Share-Centric Access**: The focus is on sharing data, making it less complicated for users who don’t need the intricacies of multiple user environments.
 
-This way, even if you're not familiar with Linux, you can easily manage your NAS safely.  
+This way, even if you're not familiar with Linux, you can easily manage your NAS safely.\
 :::
 
 ## Overview
@@ -28,19 +28,17 @@ Unraid operates with a single superuser, known as %%root|root-user%%, who has co
 - Have full access to the %%WebGUI|web-gui%%, %%SSH|ssh%%, and Telnet interfaces.
 - Are responsible for managing all user accounts and settings.
 - Cannot directly access file shares through **%%SMB|samba%%**, **%%NFS|nfs%%**, or **%%FTP|ftp%%** for security reasons.
-- Allow for [%%SSH|ssh%% key-based authentication](../../system-administration/advanced-tools/command-line-interface.mdx#accessing-the-terminal) to log in without a password.  
+- Allow for [%%SSH|ssh%% key-based authentication](../../system-administration/advanced-tools/command-line-interface.mdx#accessing-the-terminal) to log in without a password.
 
 <div style={{ margin: 'auto', maxWidth: '359px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-
-![Root User](/img/rootuser.png)
-
+  ![Root User](/img/rootuser.png)
 </div>
 
-:::important  
+:::important\
 The %%root user|root-user%% is vital for maintaining security. Always ensure a [strong password](./security-fundamentals.mdx#set-a-strong-root-password) is set and limit %%SSH|ssh%% access to keep your system safe.
 :::
 
-### Share Users  
+### Share Users
 
 These accounts are designed for accessing specific shares, without any system-level controls.
 
@@ -51,10 +49,8 @@ Share users...
 - Don't have access to the **%%WebGUI|web-gui%%**, **%%SSH|ssh%%**, or **Telnet**.
 
 <div style={{ margin: 'auto', maxWidth: '359px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-
-![Root User](/img/shareusers.png)
-
-</div>  
+  ![Root User](/img/shareusers.png)
+</div>
 
 ---
 
@@ -70,19 +66,17 @@ To add a user:
 
 2. **Set up user credentials**
    - **User Name**: Choose a unique name (like `john_media`).  Use only lowercase letters to avoid conflicts, and keep it under 30 characters due to Windows limits.
-  
+
    - **Password**: Create a strong password using a mix of letters, numbers, and symbols. Follow the password strength meter for guidance.
 
 :::note Optionally
 
-- **Add a description**: Write a note like "Media Library Access."  
+- **Add a description**: Write a note like "Media Library Access."
 - **Custom image**: Upload a PNG image (like a user avatar) for visual identification.
-:::
+  :::
 
 <div style={{ margin: 'auto', maxWidth: '359px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-
-![Root User](/img/adduser.png)
-
+  ![Root User](/img/adduser.png)
 </div>
 
 3. Select **Add** to create the user.
@@ -106,9 +100,9 @@ To remove a user:
 
 ---
 
-## Modify a user  
+## Modify a user
 
-You can change a user account in Unraid if the user forgot their password or needs different access to shared folders. 
+You can change a user account in Unraid if the user forgot their password or needs different access to shared folders.
 
 To modify a user account:
 
@@ -128,42 +122,43 @@ import TabItem from '@theme/TabItem';
 
 <Tabs>
   <TabItem value="basic" label="Basic" default>
+    This method clears **all user passwords**, including\*%%root|root-user%% and share users.
 
-This method clears **all user passwords**, including*%%root|root-user%% and share users.  
+    For the simplest way to reset your password:
 
-For the simplest way to reset your password:
+    1. **Shut down** your Unraid server.
+    2. **Connect the USB flash drive** to a computer (Windows or Mac).
+    3. **Delete these files** from the USB drive:
+       - `/config/shadow`
+       - `/config/smbpasswd`
+    4. **Disconnect the USB flash drive** and reconnect it to your Unraid server, then start it up.
+    5. **Create a new root password** when prompted at startup.
+  </TabItem>
 
-1. **Shut down** your Unraid server.
-2. **Connect the USB flash drive** to a computer (Windows or Mac).
-3. **Delete these files** from the USB drive:
-   - `/config/shadow`  
-   - `/config/smbpasswd`  
-4. **Disconnect the USB flash drive** and reconnect it to your Unraid server, then start it up.
-5. **Create a new root password** when prompted at startup.
-
-</TabItem>
   <TabItem value="advanced" label="Advanced">
+    This method will only remove the **%%root|root-user%% password** and leave other users intact.
 
-This method will only remove the **%%root|root-user%% password** and leave other users intact.
+    To reset via this method:
 
-To reset via this method:
+    1. **Shut down** your Unraid server.
 
-1. **Shut down** your Unraid server.
-2. **Connect the USB flash drive** to a computer (Windows or Mac).
-3. **Open the file** located at `/config/shadow` using a text editor (like Notepad++).
-4. **Edit the line** that looks like:  
-   `root:$&$&%*1112233484847648DHD$%.:15477:0:99999:7:::`
+    2. **Connect the USB flash drive** to a computer (Windows or Mac).
 
-   to this instead:
+    3. **Open the file** located at `/config/shadow` using a text editor (like Notepad++).
 
-   `root::15477:0:99999:7:::`
+    4. **Edit the line** that looks like:\
+       `root:$&$&%*1112233484847648DHD$%.:15477:0:99999:7:::`
 
-5. **Save the changes** to the file and reconnect the USB drive to your server.
-6. **Start your Unraid server** and set a new root password.
+       to this instead:
 
-</TabItem>
+       `root::15477:0:99999:7:::`
+
+    5. **Save the changes** to the file and reconnect the USB drive to your server.
+
+    6. **Start your Unraid server** and set a new root password.
+  </TabItem>
 </Tabs>
 
-:::tip Be aware  
+:::tip Be aware\
 Anyone with physical access to the USB can use these methods to reset your %%root|root-user%% password and gain full administrative access.  Always keep your USB secure!
 :::

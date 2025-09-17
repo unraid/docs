@@ -35,87 +35,80 @@ To configure %%UEFI|uefi%% boot in your system BIOS/%%UEFI|uefi%% settings:
 The Unraid boot sequence has a number of stages:
 
 <details>
-<summary><strong>1. BIOS boot</strong> - Click to expand/collapse</summary>
+  <summary><strong>1. BIOS boot</strong> - Click to expand/collapse</summary>
 
-The BIOS/UEFI firmware initializes hardware and locates the bootable device. This is the foundation of the entire boot process.
+  The BIOS/UEFI firmware initializes hardware and locates the bootable device. This is the foundation of the entire boot process.
 
-- The motherboard BIOS recognizes the Unraid bootable flash device.
-- Setting the flash device as the default boot device varies based on your BIOS; check your motherboard manual for guidance.
-- The flash device supports both **legacy (CSM)** and **%%UEFI|uefi%%** boot modes.
-- For %%UEFI|uefi%% boot, ensure the `EFI` folder on the flash device does not have a trailing hyphen (`-`).
-
+  - The motherboard BIOS recognizes the Unraid bootable flash device.
+  - Setting the flash device as the default boot device varies based on your BIOS; check your motherboard manual for guidance.
+  - The flash device supports both **legacy (CSM)** and **%%UEFI|uefi%%** boot modes.
+  - For %%UEFI|uefi%% boot, ensure the `EFI` folder on the flash device does not have a trailing hyphen (`-`).
 </details>
 
 <details>
-<summary><strong>2. Syslinux loader</strong> - Click to expand/collapse</summary>
+  <summary><strong>2. Syslinux loader</strong> - Click to expand/collapse</summary>
 
-The bootloader presents startup options and loads the Linux kernel into memory. This stage determines which operating system or diagnostic tool will run.
+  The bootloader presents startup options and loads the Linux kernel into memory. This stage determines which operating system or diagnostic tool will run.
 
-- Boot menu entries are defined in the `syslinux/syslinux.cfg` file on the flash device.
-- You can edit this file through the %%WebGUI|web-gui%% under ***Main → Syslinux configuration***.
-- **Memtest86+**, which ships with current builds of Unraid, works in both legacy and %%UEFI|uefi%% modes. For older Unraid versions, obtain a compatible version from [the official Memtest site](https://www.memtest86.com/) for %%UEFI|uefi%%.
-- If no option is selected, the default boots after a timeout, which is useful for headless operation.
-
+  - Boot menu entries are defined in the `syslinux/syslinux.cfg` file on the flash device.
+  - You can edit this file through the %%WebGUI|web-gui%% under ***Main → Syslinux configuration***.
+  - **Memtest86+**, which ships with current builds of Unraid, works in both legacy and %%UEFI|uefi%% modes. For older Unraid versions, obtain a compatible version from [the official Memtest site](https://www.memtest86.com/) for %%UEFI|uefi%%.
+  - If no option is selected, the default boots after a timeout, which is useful for headless operation.
 </details>
 
 <details>
-<summary><strong>3. Linux core</strong> - Click to expand/collapse</summary>
+  <summary><strong>3. Linux core</strong> - Click to expand/collapse</summary>
 
-The Linux kernel initializes and begins hardware detection. This is where the operating system takes control from the bootloader.
+  The Linux kernel initializes and begins hardware detection. This is where the operating system takes control from the bootloader.
 
-- **Syslinux** loads the Linux core from the flash device into RAM.
-- You’ll see console messages showing bz* files loading.
-- Errors at this stage often indicate issues with the flash device.
-- Linux detects hardware during startup.
-
+  - **Syslinux** loads the Linux core from the flash device into RAM.
+  - You’ll see console messages showing bz\* files loading.
+  - Errors at this stage often indicate issues with the flash device.
+  - Linux detects hardware during startup.
 </details>
 
 <details>
-<summary><strong>4. Flash dependent services</strong> - Click to expand/collapse</summary>
+  <summary><strong>4. Flash dependent services</strong> - Click to expand/collapse</summary>
 
-The flash device becomes accessible and essential services begin loading. This stage is critical for configuration and network access.
+  The flash device becomes accessible and essential services begin loading. This stage is critical for configuration and network access.
 
-- The flash device mounts at `/boot`.
-- If it fails to mount, you may still see a login prompt, but this indicates an incomplete boot.
-- Use the `df` command to check if `/boot` is mounted.
-- The flash device must be labeled **UNRAID** (all caps) for proper mounting.
-- Additional drivers and firmware will become available at this stage.
-- Configuration is loaded into RAM.
-- Standard Linux services, including networking and %%WireGuard|wireguard%% VPN (if enabled), start here.
-
+  - The flash device mounts at `/boot`.
+  - If it fails to mount, you may still see a login prompt, but this indicates an incomplete boot.
+  - Use the `df` command to check if `/boot` is mounted.
+  - The flash device must be labeled **UNRAID** (all caps) for proper mounting.
+  - Additional drivers and firmware will become available at this stage.
+  - Configuration is loaded into RAM.
+  - Standard Linux services, including networking and %%WireGuard|wireguard%% VPN (if enabled), start here.
 </details>
 
 <details>
-<summary><strong>5. Plugins</strong> - Click to expand/collapse</summary>
+  <summary><strong>5. Plugins</strong> - Click to expand/collapse</summary>
 
-Third-party extensions and customizations are loaded to enhance system functionality. Plugin issues can prevent successful startup.
+  Third-party extensions and customizations are loaded to enhance system functionality. Plugin issues can prevent successful startup.
 
-- Installed plugins are loaded during this step.
-- **Safe boot** options can suppress plugin loading if needed.
-
+  - Installed plugins are loaded during this step.
+  - **Safe boot** options can suppress plugin loading if needed.
 </details>
 
 <details>
-<summary><strong>6. WebGUI</strong> - Click to expand/collapse</summary>
+  <summary><strong>6. WebGUI</strong> - Click to expand/collapse</summary>
 
-The web-based management interface becomes available, allowing remote administration and configuration of your server.
+  The web-based management interface becomes available, allowing remote administration and configuration of your server.
 
-- The %%WebGUI|web-gui%% starts at this point.
-- The `config/go` file on the flash device can run user commands before or after the %%WebGUI|web-gui%% starts.
-
+  - The %%WebGUI|web-gui%% starts at this point.
+  - The `config/go` file on the flash device can run user commands before or after the %%WebGUI|web-gui%% starts.
 </details>
 
 <details>
-<summary><strong>7. Array</strong> - Click to expand/collapse</summary>
+  <summary><strong>7. Array</strong> - Click to expand/collapse</summary>
 
-Storage devices are mounted and made available, completing the boot process. This is where your data becomes accessible.
+  Storage devices are mounted and made available, completing the boot process. This is where your data becomes accessible.
 
-- If auto-start is enabled, the %%array|array%% starts here; otherwise, a manual start will be required.
-- Drives will be mounted as `/dev/diskX` and `/mnt/cache` (if present).
-- Shares become available on the network as `/mnt/user/sharename`.
-- Docker containers will start in the order specified on the Docker tab, with customizable delays.
-- Auto-start virtual machines (%%VMs|vm%%) will also launch.
-
+  - If auto-start is enabled, the %%array|array%% starts here; otherwise, a manual start will be required.
+  - Drives will be mounted as `/dev/diskX` and `/mnt/cache` (if present).
+  - Shares become available on the network as `/mnt/user/sharename`.
+  - Docker containers will start in the order specified on the Docker tab, with customizable delays.
+  - Auto-start virtual machines (%%VMs|vm%%) will also launch.
 </details>
 
 At this point, the Unraid server is fully operational.
@@ -129,7 +122,7 @@ When your server won't start, systematic troubleshooting helps identify and reso
 1. Use a USB 2.0 port for the flash device if possible. It's generally more reliable and less prone to issues than USB 3.0.
 2. Check your BIOS/%%UEFI|uefi%% settings to ensure that the flash device is set as the primary boot device.
 3. Inspect the flash device for any physical or logical errors on a Windows or macOS computer.
-4. Re-extract the Unraid release bz* files onto the flash device to prevent any potential corruption.
+4. Re-extract the Unraid release bz\* files onto the flash device to prevent any potential corruption.
 5. Rebuild the flash device by starting with a clean Unraid copy, then restore your `config` folder.
 6. Try booting in [Safe Mode](../../using-unraid-to/customize-your-experience/plugins.mdx#troubleshooting-with-safe-mode) to check for any plugin-related problems.
 7. Test with a new flash device and perform a clean Unraid installation. This helps determine if there are issues with the server hardware.
@@ -178,32 +171,30 @@ If you have multiple %%parity drives|parity-drives%% and had to identify them ba
 ### Identifying the parity drives
 
 <details>
-<summary><strong>Using Unraid’s built-in capability (preferred method)</strong> - Click to expand/collapse</summary>
+  <summary><strong>Using Unraid’s built-in capability (preferred method)</strong> - Click to expand/collapse</summary>
 
-This method does not require plugins, but it will invalidate %%parity|parity%%, necessitating a rebuild.
+  This method does not require plugins, but it will invalidate %%parity|parity%%, necessitating a rebuild.
 
-To use this method:
+  To use this method:
 
-1. Assign all drives as data drives and start it.
-2. %%Parity drives|parity-drives%% will show as unmountable since they lack a valid file system.
-3. Confirm that the number of unmountable drives matches your %%parity|parity%% count.
-4. Take note of the serial numbers of these drives.
-5. If relevant, you can check mounted data drives to confirm their order.
-
+  1. Assign all drives as data drives and start it.
+  2. %%Parity drives|parity-drives%% will show as unmountable since they lack a valid file system.
+  3. Confirm that the number of unmountable drives matches your %%parity|parity%% count.
+  4. Take note of the serial numbers of these drives.
+  5. If relevant, you can check mounted data drives to confirm their order.
 </details>
 
 <details>
-<summary><strong>Using the Unassigned Devices plugin</strong> - Click to expand/collapse</summary>
+  <summary><strong>Using the Unassigned Devices plugin</strong> - Click to expand/collapse</summary>
 
-This plugin-based method preserves the validity of %%parity|parity%% by mounting drives in read-only mode.
+  This plugin-based method preserves the validity of %%parity|parity%% by mounting drives in read-only mode.
 
-To use this method:
+  To use this method:
 
-1. Install the [**Unassigned Devices** plugin](https://unraid.net/community/apps?q=unassigned+devices#r:~:text=don%27t%20be%20carefull!!!-,Unassigned%20Devices,-dlandon) from the ***Apps*** tab.
-2. Mount each disk read-only, one at a time.
-3. Drives that fail to mount are likely %%parity drives|parity-drives%% (you cannot differentiate between parity1 and parity2).
-4. Inspect mounted data drives to identify their order, if necessary.
-
+  1. Install the [**Unassigned Devices** plugin](https://unraid.net/community/apps?q=unassigned+devices#r:~:text=don%27t%20be%20carefull!!!-,Unassigned%20Devices,-dlandon) from the ***Apps*** tab.
+  2. Mount each disk read-only, one at a time.
+  3. Drives that fail to mount are likely %%parity drives|parity-drives%% (you cannot differentiate between parity1 and parity2).
+  4. Inspect mounted data drives to identify their order, if necessary.
 </details>
 
 For more information, see the [Unassigned Devices plugin thread](https://forums.unraid.net/topic/55481-unassigned-devices-managing-unassigned-devices-without-rebooting/) in the Unraid forums.
