@@ -35,6 +35,12 @@ function formatCrowdinSpacing() {
     let content = fs.readFileSync(file, 'utf8');
     let modified = false;
 
+    // Fix 0: Remove backslashes from admonition directives
+    content = content.replace(/^([ \t]*:::(tip|note|warning|caution|info|important))\\$/gm, (_, directive) => {
+      modified = true;
+      return directive;
+    });
+
     // Fix 1: Remove indentation from closing ::: directives at root level
     const lines = content.split('\n');
     const newLines = [];
@@ -170,6 +176,30 @@ function formatCrowdinSpacing() {
     content = content.replace(/(^[ \t]*:::)$\n(^[ \t]*:::(tip|note|warning|caution|info|important)\b)/gm, (_, closingDirective, openingDirective) => {
       modified = true;
       return `${closingDirective}\n\n${openingDirective}`;
+    });
+
+    // Pattern: Opening admonition directive (with or without brackets/titles) followed directly by content
+    // Matches: :::tip, :::tip\[Title], or :::tip Title formats
+    const admonitionOpenPattern = /^([ \t]*:::(tip|note|warning|caution|info|important)(?:\\?\[.*?\]|[^\n]*))$\n([^\n]+)$/gm;
+    content = content.replace(admonitionOpenPattern, (match, directive, type, nextLine) => {
+      // Skip if next line is blank or another directive
+      if (nextLine.trim() === '' || nextLine.trim().startsWith(':::')) {
+        return match;
+      }
+      modified = true;
+      return `${directive}\n\n${nextLine}`;
+    });
+
+    // Pattern: Content line followed directly by closing ::: for admonitions
+    const admonitionClosePattern = /^([ \t]*.+)$\n^([ \t]*:::)$/gm;
+    content = content.replace(admonitionClosePattern, (match, contentLine, closingDirective) => {
+      // Skip if content is a JSX tag or another directive
+      const trimmedContent = contentLine.trim();
+      if (trimmedContent.endsWith('>') || trimmedContent.startsWith(':::')) {
+        return match;
+      }
+      modified = true;
+      return `${contentLine}\n\n${closingDirective}`;
     });
 
     if (modified) {
