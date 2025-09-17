@@ -72,6 +72,7 @@ const remarkConfig = {
     fences: true, // Use fenced code blocks
     listItemIndent: 'one',  // One space after list markers
     quote: '"',  // Use double quotes (standard for Docusaurus)
+    rule: '-',  // Use - for horizontal rules (not ***)
     tightDefinitions: true,
   },
 };
