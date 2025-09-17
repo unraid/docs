@@ -32,10 +32,10 @@ function processContent(content) {
   let modified = false;
 
   // Fix 0: Remove backslashes from admonition directives
-  // Matches both plain directives and those with additional text/formatting
-  content = content.replace(/^([ \t]*:::(tip|note|warning|caution|info|important).*?)\\+$/gm, (_, directive) => {
+  // Matches admonition directives with escaped brackets like :::tip\[Title]
+  content = content.replace(/^([ \t]*:::(tip|note|warning|caution|info|important))(\\)(\[.*?\])$/gm, (match, directive, type, backslash, bracket) => {
     modified = true;
-    return directive;
+    return directive + bracket;  // Return directive + bracket, omitting the backslash
   });
 
   // Fix 1: Remove indentation from closing ::: directives at root level

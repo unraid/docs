@@ -48,7 +48,7 @@ const plugins = [
 
     // Link and reference formatting
     [remarkLintLinkTitleStyle, '"'],  // Use double quotes for link titles
-    remarkLintNoUndefinedReferences,
+    [remarkLintNoUndefinedReferences, false],  // Disable to avoid conflicts with MDX admonitions
     remarkLintNoDuplicateDefinitions,
     remarkLintNoUnusedDefinitions,
     [remarkLintDefinitionCase, false],  // Don't enforce case for definitions
