@@ -26,8 +26,8 @@ This command starts a local development server and opens up a browser window. Mo
 $ npm run start -- --locale zh
 $ npm run start -- --locale es
 ```
-These commands start a local development server for a specific locale (run one at a time.)
 
+These commands start a local development server for a specific locale (run one at a time.)
 
 ### Build
 
@@ -40,7 +40,6 @@ This command generates static content into the `build` directory and can be serv
 ```
 $ npm run serve
 ```
-
 
 ### Deployment
 
@@ -57,4 +56,3 @@ $ GIT_USER=<Your GitHub username> yarn deploy
 ```
 
 If you are using GitHub pages for hosting, this command is a convenient way to build the website and push to the `gh-pages` branch.
-
