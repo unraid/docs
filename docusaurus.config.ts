@@ -1,6 +1,8 @@
 import type { Config } from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
 import { themes } from 'prism-react-renderer';
+import path from 'path';
+import { fileURLToPath } from 'url';
 // @ts-ignore - ESM module without proper types
 import remarkAutoGlossary from '@renatonagliati/remark-auto-glossary';
 import remarkPresetLintRecommended from 'remark-preset-lint-recommended';
@@ -21,6 +23,8 @@ import remarkLintNoMultipleToplevelHeadings from 'remark-lint-no-multiple-toplev
 import remarkLintNoShellDollars from 'remark-lint-no-shell-dollars';
 import jsxContentSpacing from './remark-jsx-spacing.js';
 import { sortSidebarItems } from './sitebar-semver-sort.js';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const lightCodeTheme = themes.github;
 const darkCodeTheme = themes.dracula;
@@ -443,7 +447,6 @@ const config: Config = {
       return {
         name: 'custom-webpack-config',
         configureWebpack() {
-          const path = require('path');
           return {
             resolve: {
               alias: {
