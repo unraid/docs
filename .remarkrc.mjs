@@ -33,7 +33,7 @@ const plugins = [
     jsxContentSpacing,
 
     // List formatting
-    [remarkLintListItemIndent, 'space'],  // Consistent list indentation
+    [remarkLintListItemIndent, 'one'],  // Consistent list indentation
     [remarkLintOrderedListMarkerStyle, '.'],  // Use . for ordered lists
 
     // Code formatting
