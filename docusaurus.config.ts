@@ -442,21 +442,6 @@ const config: Config = {
         ],
       },
     ],
-    // Custom webpack configuration for absolute imports
-    function () {
-      return {
-        name: 'custom-webpack-config',
-        configureWebpack() {
-          return {
-            resolve: {
-              alias: {
-                '@components': path.resolve(__dirname, 'src/components'),
-              },
-            },
-          };
-        },
-      };
-    },
   ],
 };
 
