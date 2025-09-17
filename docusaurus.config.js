@@ -397,6 +397,22 @@ module.exports = async function createConfigAsync() {
           ],
         },
       ],
+      // Custom webpack configuration for absolute imports
+      function (context, options) {
+        return {
+          name: 'custom-webpack-config',
+          configureWebpack(config, isServer, utils) {
+            const path = require('path');
+            return {
+              resolve: {
+                alias: {
+                  '@components': path.resolve(__dirname, 'src/components'),
+                },
+              },
+            };
+          },
+        };
+      },
     ],
   };
 };
