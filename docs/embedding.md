@@ -1,6 +1,6 @@
 # Embedding Unraid Docs
 
-Use the following guidance when loading the Unraid documentation inside an iframe-driven experience. The options described here help control UI chrome, theme, and navigation behavior without relying on `postMessage` exchanges.
+Use the following guidance when loading the Unraid documentation inside an iframe-driven experience. Query parameters cover the most common configuration options, and an optional `postMessage` API is available for hosts that need dynamic coordination.
 
 ## Required Query Parameters
 
@@ -54,3 +54,54 @@ function buildDocsUrl(path, { theme, entry, sidebar } = {}) {
 2. Pass the current host theme if you want the Docs theme to match immediately.
 3. Toggle `sidebar=1` only when the host layout can accommodate the wider viewport required for the sidebar.
 4. When tearing down an iframe session, optionally clear the session-storage keys to remove residual state before launching a new session in the same tab.
+
+## Messaging API
+
+The embedded docs surface a lightweight `postMessage` API that reports readiness, navigation, and theme changes using structured message types. All messages share the shape `{ source: "unraid-docs", type: string, ...payload }` so hosts can quickly filter for docs-specific traffic.
+
+### Messages emitted from the iframe
+
+| Type | Payload | Purpose |
+| --- | --- | --- |
+| `unraid-docs:ready` | `{ theme: "light" \| "dark" }` | Fired once the iframe has applied its starting theme. |
+| `unraid-docs:theme-change` | `{ theme: "light" \| "dark" }` | Fired whenever the iframe theme changes (including the initial emission). |
+| `unraid-docs:navigation` | `{ pathname, search, hash, url }` | Fired whenever in-iframe navigation occurs. |
+
+### Commands accepted by the iframe
+
+| Type | Payload | Purpose |
+| --- | --- | --- |
+| `unraid-docs:set-theme` | `{ theme: "light" \| "dark" }` | Requests a theme change without requiring a reload. |
+
+Example host handler:
+
+```js
+window.addEventListener('message', (event) => {
+  const data = event.data;
+  if (!data || data.source !== 'unraid-docs') {
+    return;
+  }
+
+  if (data.type === 'unraid-docs:theme-change') {
+    console.log('Docs theme changed to', data.theme);
+  }
+});
+
+function setIframeTheme(frame, theme) {
+  if (!frame.contentWindow) {
+    return;
+  }
+
+  frame.contentWindow.postMessage({
+    source: 'unraid-docs',
+    type: 'unraid-docs:set-theme',
+    theme,
+  }, '*');
+}
+```
+
+Refer to `iframe-test.html` for a working example that exercises both outgoing and incoming messages.
+
+### Legacy compatibility
+
+For backwards compatibility the iframe still listens for `{ type: "theme-update", theme }` and continues to emit the historical `theme-ready` and `theme-changed` messages alongside the new message types. Hosts should migrate to the structured `unraid-docs:*` contract because the legacy events will be removed in a future release. The example test page also demonstrates how to broadcast both message formats during the transition period.

@@ -176,6 +176,11 @@
             const themeStatus = document.getElementById('theme-status');
             const showSidebarCheckbox = document.getElementById('show-sidebar');
 
+            const EMBED_MESSAGE_SOURCE = 'unraid-docs';
+            const EMBED_READY = 'unraid-docs:ready';
+            const EMBED_THEME_CHANGE = 'unraid-docs:theme-change';
+            const EMBED_SET_THEME = 'unraid-docs:set-theme';
+
             let currentPath = presetUrls.value || '/';
             let initialEntryPath = currentPath;
             let currentTheme = themeMode.value;
@@ -184,6 +189,12 @@
                 themeStatus.textContent = message;
                 themeStatus.classList.remove('status-waiting');
                 themeStatus.classList.add('status-ready');
+            }
+
+            function markThemeWaiting(message) {
+                themeStatus.textContent = message;
+                themeStatus.classList.remove('status-ready');
+                themeStatus.classList.add('status-waiting');
             }
 
             function ensureLeadingSlash(path) {
@@ -237,11 +248,64 @@
 
                 iframe.src = localUrl;
                 cloudflareIframe.src = cloudflareUrl;
-                updateThemeStatus('Theme applied via query params');
+                markThemeWaiting('Awaiting iframe theme readiness...');
             }
+
+            function broadcastThemeUpdate(theme) {
+                [iframe, cloudflareIframe].forEach(frame => {
+                    if (!frame.contentWindow) {
+                        return;
+                    }
+
+                    frame.contentWindow.postMessage(
+                        {
+                            source: EMBED_MESSAGE_SOURCE,
+                            type: EMBED_SET_THEME,
+                            theme,
+                        },
+                        '*'
+                    );
+
+                    frame.contentWindow.postMessage(
+                        {
+                            type: 'theme-update',
+                            theme,
+                        },
+                        '*'
+                    );
+                });
+            }
+
+            window.addEventListener('message', function(event) {
+                const data = event.data;
+                if (!data || typeof data !== 'object') {
+                    return;
+                }
+
+                if (data.source === EMBED_MESSAGE_SOURCE) {
+                    if (data.type === EMBED_READY) {
+                        updateThemeStatus(`Iframe reported ready with ${data.theme} theme`);
+                        return;
+                    }
+
+                    if (data.type === EMBED_THEME_CHANGE) {
+                        updateThemeStatus(`Iframe switched to ${data.theme} theme`);
+                        return;
+                    }
+                }
+
+                if (data.type === 'theme-ready') {
+                    updateThemeStatus(`Legacy theme-ready received (${data.theme})`);
+                }
+
+                if (data.type === 'theme-changed') {
+                    updateThemeStatus(`Legacy theme-changed received (${data.theme})`);
+                }
+            });
 
             applyThemeButton.addEventListener('click', function() {
                 currentTheme = themeMode.value;
+                broadcastThemeUpdate(currentTheme);
                 applyIframeConfiguration();
             });
 

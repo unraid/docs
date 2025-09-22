@@ -10,6 +10,7 @@ import {
   readSessionValue,
   writeSessionValue,
 } from "../../utils/iframeConstants";
+import { createNavigationMessage, postEmbedMessage } from "../../utils/embedMessaging";
 
 /**
  * Component that handles navigation events between iframe and parent window.
@@ -23,17 +24,23 @@ export function IframeNavigation(): ReactElement | null {
 
   // Legacy navigation event propagation for hosts that still listen for it.
   useEffect(() => {
-    if (!isInIframeState) {
+    if (!isInIframeState || typeof window === "undefined") {
       return;
     }
+
+    const payload = {
+      pathname: location.pathname,
+      search: location.search,
+      hash: location.hash,
+      url: window.location.href,
+    };
+
+    postEmbedMessage(createNavigationMessage(payload));
 
     window.parent.postMessage(
       {
         type: "unraid-docs-navigation",
-        pathname: location.pathname,
-        search: location.search,
-        hash: location.hash,
-        url: window.location.href,
+        ...payload,
       },
       "*",
     );
