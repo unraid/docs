@@ -135,6 +135,13 @@
                 <button id="apply-theme">Apply Theme</button>
                 <span id="theme-status" class="theme-status status-waiting">Waiting for theme sync...</span>
             </div>
+
+            <div class="sidebar-controls">
+                <label>
+                    <input type="checkbox" id="show-sidebar">
+                    Show sidebar
+                </label>
+            </div>
         </div>
         
         <div class="iframe-wrapper">
@@ -167,155 +174,182 @@
             const themeMode = document.getElementById('theme-mode');
             const applyThemeButton = document.getElementById('apply-theme');
             const themeStatus = document.getElementById('theme-status');
-            
-            // Theme sync status
-            let isThemeSyncReady = false;
-            
-            // Update theme status display
-            function updateThemeStatus(ready) {
-                isThemeSyncReady = ready;
-                if (ready) {
-                    themeStatus.textContent = 'Theme sync ready';
-                    themeStatus.classList.remove('status-waiting');
-                    themeStatus.classList.add('status-ready');
-                    applyThemeButton.disabled = false;
-                } else {
-                    themeStatus.textContent = 'Waiting for theme sync...';
-                    themeStatus.classList.add('status-waiting');
-                    themeStatus.classList.remove('status-ready');
-                    applyThemeButton.disabled = true;
-                }
+            const showSidebarCheckbox = document.getElementById('show-sidebar');
+
+            const EMBED_MESSAGE_SOURCE = 'unraid-docs';
+            const EMBED_READY = 'unraid-docs:ready';
+            const EMBED_THEME_CHANGE = 'unraid-docs:theme-change';
+            const EMBED_SET_THEME = 'unraid-docs:set-theme';
+
+            let currentPath = presetUrls.value || '/';
+            let initialEntryPath = currentPath;
+            let currentTheme = themeMode.value;
+
+            function updateThemeStatus(message) {
+                themeStatus.textContent = message;
+                themeStatus.classList.remove('status-waiting');
+                themeStatus.classList.add('status-ready');
             }
-            
-            // Initialize theme status
-            updateThemeStatus(false);
-            
-            // Function to send theme to iframes
-            function sendThemeToIframes(theme) {
-                if (isThemeSyncReady) {
-                    // Send to both iframes
-                    [iframe, cloudflareIframe].forEach(frame => {
-                        if (frame && frame.contentWindow) {
-                            frame.contentWindow.postMessage(
-                                { type: 'theme-update', theme: theme },
-                                '*'
-                            );
-                        }
-                    });
-                    console.log('Sent theme to iframes:', theme);
-                } else {
-                    console.log('Theme sync not ready yet, cannot send theme');
-                }
+
+            function markThemeWaiting(message) {
+                themeStatus.textContent = message;
+                themeStatus.classList.remove('status-ready');
+                themeStatus.classList.add('status-waiting');
             }
-            
-            // Apply theme when button is clicked
-            applyThemeButton.addEventListener('click', function() {
-                const selectedTheme = themeMode.value;
-                sendThemeToIframes(selectedTheme);
-            });
-            
-            // Auto-apply theme when iframe loads
-            iframe.addEventListener('load', function() {
-                console.log('Iframe loaded, waiting for theme-ready message...');
-                // Reset the theme sync status when iframe loads
-                updateThemeStatus(false);
-                
-                // Set a timeout for theme sync readiness
-                const syncTimeout = setTimeout(() => {
-                    if (!isThemeSyncReady) {
-                        console.warn('Theme sync ready message not received within timeout period');
-                        // Enable theme controls anyway after timeout
-                        updateThemeStatus(true);
+
+            function ensureLeadingSlash(path) {
+                if (!path) {
+                    return '/';
+                }
+
+                if (path.startsWith('http://') || path.startsWith('https://')) {
+                    const url = new URL(path);
+                    return url.pathname + url.search + url.hash;
+                }
+
+                return path.startsWith('/') ? path : '/' + path;
+            }
+
+            function buildIframeUrl(baseUrl, path, options) {
+                const url = new URL(path, baseUrl);
+                url.searchParams.set('embed', '1');
+
+                if (options.theme) {
+                    url.searchParams.set('theme', options.theme);
+                }
+
+                if (options.entry) {
+                    url.searchParams.set('entry', options.entry);
+                }
+
+                if (options.sidebar) {
+                    url.searchParams.set('sidebar', '1');
+                }
+
+                return url.toString();
+            }
+
+            function applyIframeConfiguration() {
+                const path = ensureLeadingSlash(currentPath);
+                const entry = ensureLeadingSlash(initialEntryPath);
+                const sidebar = showSidebarCheckbox.checked;
+
+                const localUrl = buildIframeUrl('http://localhost:3000', path, {
+                    theme: currentTheme,
+                    entry,
+                    sidebar,
+                });
+
+                const cloudflareUrl = buildIframeUrl('https://docs.unraid.net', path, {
+                    theme: currentTheme,
+                    entry,
+                    sidebar,
+                });
+
+                iframe.src = localUrl;
+                cloudflareIframe.src = cloudflareUrl;
+                markThemeWaiting('Awaiting iframe theme readiness...');
+            }
+
+            function broadcastThemeUpdate(theme) {
+                [iframe, cloudflareIframe].forEach(frame => {
+                    if (!frame.contentWindow) {
+                        return;
                     }
-                }, 5000);
-                
-                // Store the timeout in a property so we can clear it if needed
-                iframe.syncTimeoutId = syncTimeout;
-            });
-            
-            // Listen for messages from the iframes
+
+                    frame.contentWindow.postMessage(
+                        {
+                            source: EMBED_MESSAGE_SOURCE,
+                            type: EMBED_SET_THEME,
+                            theme,
+                        },
+                        '*'
+                    );
+
+                    frame.contentWindow.postMessage(
+                        {
+                            type: 'theme-update',
+                            theme,
+                        },
+                        '*'
+                    );
+                });
+            }
+
             window.addEventListener('message', function(event) {
-                // Check if the message is from our iframes
-                if (event.source === iframe.contentWindow || event.source === cloudflareIframe.contentWindow) {
-                    // Handle theme-ready message
-                    if (event.data && event.data.type === 'theme-ready') {
-                        console.log('Docusaurus is ready for theme sync');
-                        
-                        // Clear any existing timeout
-                        if (iframe.syncTimeoutId) {
-                            clearTimeout(iframe.syncTimeoutId);
-                        }
-                        
-                        // Update theme status
-                        updateThemeStatus(true);
-                        
-                        // Send current theme
-                        sendThemeToIframes(themeMode.value);
+                const data = event.data;
+                if (!data || typeof data !== 'object') {
+                    return;
+                }
+
+                if (data.source === EMBED_MESSAGE_SOURCE) {
+                    if (data.type === EMBED_READY) {
+                        updateThemeStatus(`Iframe reported ready with ${data.theme} theme`);
+                        return;
                     }
-                    
-                    // Handle theme change notifications from Docusaurus
-                    if (event.data && event.data.type === 'theme-changed') {
-                        const newTheme = event.data.theme;
-                        // Update the theme dropdown to match
-                        themeMode.value = newTheme;
-                        console.log('Theme changed in Docusaurus to:', newTheme);
+
+                    if (data.type === EMBED_THEME_CHANGE) {
+                        updateThemeStatus(`Iframe switched to ${data.theme} theme`);
+                        return;
                     }
                 }
+
+                if (data.type === 'theme-ready') {
+                    updateThemeStatus(`Legacy theme-ready received (${data.theme})`);
+                }
+
+                if (data.type === 'theme-changed') {
+                    updateThemeStatus(`Legacy theme-changed received (${data.theme})`);
+                }
             });
-            
-            // Load URL into both iframes with their respective base URLs
+
+            applyThemeButton.addEventListener('click', function() {
+                currentTheme = themeMode.value;
+                broadcastThemeUpdate(currentTheme);
+                applyIframeConfiguration();
+            });
+
             loadButton.addEventListener('click', function() {
                 const selectedUrl = presetUrls.value || customUrl.value;
-                if (selectedUrl) {
-                    let path = selectedUrl;
-                    
-                    // Extract path from full URLs
-                    if (selectedUrl.includes('http://localhost:3000')) {
-                        path = selectedUrl.replace('http://localhost:3000', '');
-                    } else if (selectedUrl.includes('https://docs.unraid.net')) {
-                        path = selectedUrl.replace('https://docs.unraid.net', '');
-                    }
-                    
-                    // Ensure path starts with /
-                    if (!path.startsWith('/')) {
-                        path = '/' + path;
-                    }
-                    
-                    // Load the same path into both iframes
-                    iframe.src = 'http://localhost:3000' + path;
-                    cloudflareIframe.src = 'https://docs.unraid.net' + path;
+                if (!selectedUrl) {
+                    return;
                 }
+
+                currentPath = selectedUrl;
+                initialEntryPath = selectedUrl;
+                applyIframeConfiguration();
             });
-            
-            // Handle preset URL selection
+
             presetUrls.addEventListener('change', function() {
                 if (presetUrls.value) {
                     customUrl.value = '';
                 }
             });
-            
-            // Handle custom URL input
+
             customUrl.addEventListener('input', function() {
                 if (customUrl.value.trim()) {
                     presetUrls.value = '';
                 }
             });
-            
-            // Resize iframes
+
+            showSidebarCheckbox.addEventListener('change', function() {
+                applyIframeConfiguration();
+            });
+
             resizeButton.addEventListener('click', function() {
                 const width = widthInput.value + '%';
                 const height = heightInput.value + 'px';
-                
-                // Update both iframe containers
+
                 iframeContainers.forEach(container => {
                     container.style.width = width;
                 });
-                
-                // Update both iframes
+
                 [iframe, cloudflareIframe].forEach(frame => {
                     frame.style.height = height;
                 });
             });
+
+            applyIframeConfiguration();
         });
     </script>
 </body>
