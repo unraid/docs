@@ -24,11 +24,24 @@ const colors = {
 };
 
 /**
+ * Replace escaped newline characters with real newline characters.
+ * @param {string} value - String that may contain escaped newlines.
+ * @returns {string}
+ */
+function convertEscapedNewlines(value) {
+  if (typeof value !== 'string' || value.indexOf('\\n') === -1) {
+    return value;
+  }
+  return value.replace(/\\n/g, '\n');
+}
+
+/**
  * Apply all formatting rules to content string
  * @param {string} content - The file content to process
  * @returns {string} - The formatted content
  */
 function processContent(content) {
+  content = convertEscapedNewlines(content);
   let modified = false;
 
   // Fix 0: Remove backslashes from admonition directives
@@ -68,6 +81,15 @@ function processContent(content) {
         // Remove the trailing backslash from list items
         line = listItemMatch[1];
         modified = true;
+      }
+
+      // Collapse duplicate trailing backslashes that create duplicate hard breaks
+      if (/\\{2,}$/.test(line)) {
+        const collapsed = line.replace(/\\+$/g, '\\');
+        if (collapsed !== line) {
+          line = collapsed;
+          modified = true;
+        }
       }
     }
 

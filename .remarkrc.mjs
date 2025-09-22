@@ -74,6 +74,7 @@ const remarkConfig = {
     quote: '"',  // Use double quotes (standard for Docusaurus)
     rule: '-',  // Use - for horizontal rules (not ***)
     tightDefinitions: true,
+    hardBreakEscape: false, // Avoid escaping hard breaks with trailing backslashes
   },
 };
 
