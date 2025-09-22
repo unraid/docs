@@ -33,6 +33,24 @@ export function normalizeTheme(theme: string | null): SupportedTheme | null {
   return null;
 }
 
+export function normalizePath(path: string | null): string | null {
+  if (!path) {
+    return null;
+  }
+
+  const trimmed = path.trim();
+  if (!trimmed) {
+    return null;
+  }
+
+  try {
+    const parsed = new URL(trimmed, "https://docs.unraid.net");
+    return `${parsed.pathname}${parsed.search}${parsed.hash}` || "/";
+  } catch (error) {
+    return trimmed.startsWith("/") ? trimmed : `/${trimmed}`;
+  }
+}
+
 export function readSessionValue(key: string): string | null {
   if (typeof window === "undefined" || !window.sessionStorage) {
     return null;

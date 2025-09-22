@@ -6,6 +6,7 @@ import { useIframe } from "../../hooks/useIframe";
 import {
   ENTRY_QUERY_PARAM,
   ENTRY_STORAGE_KEY,
+  normalizePath,
   readSessionValue,
   writeSessionValue,
 } from "../../utils/iframeConstants";
@@ -46,22 +47,29 @@ export function IframeNavigation(): ReactElement | null {
 
     const params = new URLSearchParams(window.location.search);
     const entryFromQuery = params.get(ENTRY_QUERY_PARAM);
+    const normalizedEntryFromQuery = normalizePath(entryFromQuery);
 
-    if (entryFromQuery) {
-      writeSessionValue(ENTRY_STORAGE_KEY, entryFromQuery);
-      setEntryPath(entryFromQuery);
+    if (entryFromQuery && normalizedEntryFromQuery) {
+      writeSessionValue(ENTRY_STORAGE_KEY, normalizedEntryFromQuery);
+      setEntryPath(normalizedEntryFromQuery);
       return;
     }
 
-    const entryFromStorage = readSessionValue(ENTRY_STORAGE_KEY);
+    const entryFromStorage = normalizePath(readSessionValue(ENTRY_STORAGE_KEY));
     if (entryFromStorage) {
+      writeSessionValue(ENTRY_STORAGE_KEY, entryFromStorage);
       setEntryPath(entryFromStorage);
       return;
     }
 
-    const fallbackEntry = `${window.location.pathname}${window.location.search}${window.location.hash}`;
-    writeSessionValue(ENTRY_STORAGE_KEY, fallbackEntry);
-    setEntryPath(fallbackEntry);
+    const fallbackEntry = normalizePath(
+      `${window.location.pathname}${window.location.search}${window.location.hash}`,
+    );
+
+    if (fallbackEntry) {
+      writeSessionValue(ENTRY_STORAGE_KEY, fallbackEntry);
+      setEntryPath(fallbackEntry);
+    }
   }, [isInIframeState]);
 
   const currentPath = useMemo(() => {
