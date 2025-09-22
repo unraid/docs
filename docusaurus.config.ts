@@ -384,7 +384,7 @@ const config: Config = {
     { from: "/go/advanced-bios-config/", to: "/unraid-os/getting-started/set-up-unraid/create-your-bootable-media/" },
     { from: "/go/applications/", to: "/unraid-os/using-unraid-to/run-docker-containers/community-applications/" },
     { from: "/go/changing-the-flash-device/", to: "/unraid-os/system-administration/maintain-and-update/changing-the-flash-device/" },
-    { from: "/go/check-filesystem/", to: "/unraid-os/using-unraid-to/manage-storage/array-configuration/#checking-array-devices" },
+    { from: "/go/check-filesystem/", to: "/unraid-os/using-unraid-to/manage-storage/file-systems/#checking-a-file-system" },
     { from: "/go/convert-reiser-and-xfs/", to: "/unraid-os/using-unraid-to/manage-storage/file-systems/#converting-to-a-new-file-system-type" },
     { from: "/go/configuring-vpn-tunneledaccess-for-system/", to: "/unraid-os/system-administration/secure-your-server/wireguard/#configuring-vpn-tunneled-access-for-system" },
     { from: "/go/connect-about/", to: "/unraid-connect/overview-and-setup/" },
