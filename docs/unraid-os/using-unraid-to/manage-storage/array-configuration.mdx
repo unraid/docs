@@ -755,7 +755,6 @@ You can choose from two methods to remove a data disk:
 
     Before you begin, ensure that you meet the following conditions:
 
-    - The disk you want to remove must be healthy and mounted.
     - This method allows you to remove only one disk at a time.
     - Note that there is no official support from LimeTech for this process; please proceed with caution.
 
@@ -763,13 +762,13 @@ You can choose from two methods to remove a data disk:
 
     :::warning
 
-    This method will erase all data on the selected disk. Please verify that all files, including hidden files, are removed before proceeding.
+    This method will erase all data on the selected disk. Please verify that all important data has been moved before proceeding.
 
     :::
     To remove a disk using the parity-preserve method:
 
-    1. **Remove disk from shares:** Ensure the disk is excluded from all shares, including global share settings.
-    2. **Start the array:** Start the array with the disk assigned and mounted.
+    1. **Start the array in maintnance mode:** Click on the disk you want to remove and then click the **Erase** button.  This will erase the file system from the device while still maintaining parity, then stop the array.
+    2. **Start the array:** Start the array in normal mode, the disk to be erased won't mount but the remaining disks will be online during the process.
     3. **Record array assignments:** Note your array assignments, especially the %%parity drive|parity-drives%%, as a safety measure.
     4. **(Optional) Enable Turbo Write:** For faster zeroing, enable Reconstruct Write ("Turbo Write") in **Settings → Disk Settings**, but only if all drives are healthy.
     5. **Zero out the disk:** Use the alternative command-line method below to manually zero out the disk.
@@ -793,16 +792,7 @@ You can choose from two methods to remove a data disk:
          ```bash
          umount /mnt/diskX
          ```
-
-      2. With newer releases we need to mount a dummy fs image in place of the disk that we unmounted, or the array won't stop in the end:
-
-         ```bash
-         truncate -s 400M /tmp/xmini.img
-         mkfs.xfs -f /tmp/xmini.img > /dev/null
-         mount /tmp/xmini.img /mnt/diskX  
-         ```
-
-      3. Zero out the disk with the following command:
+     2. Zero out the disk with the following command:
          ```bash
          dd bs=1M if=/dev/zero of=/dev/mdXp1 status=progress
          ```
