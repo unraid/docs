@@ -29,7 +29,7 @@ npm run start -- --locale es
 
 These commands start a local development server for a specific locale (run one at a time.)
 
-### Build
+## Build
 
 ```bash
 npm run build
