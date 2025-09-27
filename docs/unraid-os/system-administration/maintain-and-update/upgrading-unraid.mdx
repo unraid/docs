@@ -5,6 +5,10 @@ sidebar_label: Upgrading Unraid
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
+import UpgradeModern from './partials/upgrade-modern.mdx';
+import UpgradeLegacy611612 from './partials/upgrade-legacy-611-612.mdx';
+import ManualDowngradeSimplest from './partials/manual-downgrade-simplest.mdx';
+import ManualDowngradeCommandLine from './partials/manual-downgrade-command-line.mdx';
 
 # Upgrading Unraid
 
@@ -31,32 +35,11 @@ Before you start upgrading, make sure to create a complete backup of your USB fl
 
 <Tabs>
   <TabItem value="Modern (2025)" label="Unraid 7.x and later" default>
-
-    Upgrading Unraid is done using the new **Update OS tool** with a user-friendly interface:
-
-    1. In the %%WebGUI|web-gui%%, click the top-right dropdown menu and select **Check for Update** or navigate to ***Tools → Update OS***.
-    2. Choose the **Stable** channel for stable releases, or the **Next** channel for betas and RCs.
-    3. Click **View Changelog to Start Update**. The Changelog will appear for you to review before hitting **Continue**.
-    4. Click **Confirm and start update** to apply the latest stable release.
-    5. When prompted, reboot your server to complete the upgrade.
-
-    :::note
-
-    You may need to log into your Unraid account to access updates, especially for "Next" branch releases.
-
-    :::
-
+    <UpgradeModern />
   </TabItem>
 
   <TabItem value="Legacy (6.11 to 6.12)" label="Unraid 6.11 to 6.12">
-
-    For Unraid versions 6.11 and 6.12, follow this traditional update method:
-
-    1. In the %%WebGUI|web-gui%%, go to ***Tools → Update OS***.
-    2. Click **Check for Updates**.
-    3. If a new release is available, click **Update**.
-    4. Reboot your server when prompted.
-
+    <UpgradeLegacy611612 />
   </TabItem>
 </Tabs>
 
@@ -172,45 +155,10 @@ Only use these methods if you can't access the %%WebGUI|web-gui%%:
 
 <Tabs>
   <TabItem value="Simplest method" label="Simplest method">
-
-    1. Download the Unraid version ZIP file from the [Version History](../../download_list.mdx).
-    2. Unzip the file on your computer.
-    3. Access the `flash` share or connect the USB flash device to your computer.
-    4. Create a `previous` directory if it doesn't already exist.
-    5. Move all `bz*` and `changes.txt` files into the `previous` directory.
-    6. Copy the new `bz*` and `changes.txt` files to the root of the flash drive.
-    7. Reboot your server.
-
+    <ManualDowngradeSimplest />
   </TabItem>
 
   <TabItem value="Command line method" label="Command line method">
-    :::caution
-
-    This method should only be used if you are comfortable with the Linux command line, as mistakes might make your system unbootable.
-
-    :::
-
-    1. Copy the URL of the desired Unraid version ZIP file from the [Version History](../../download_list.mdx).
-    2. Log in via %%SSH|ssh%% or console.
-    3. Execute the following commands *one at a time* (replace `<URL>` with the copied link):
-
-       ```bash
-       cd /tmp
-       rm -f unraid.zip
-       rm -rf unraid_install
-       wget -O unraid.zip <URL>
-       [[ -s unraid.zip ]] && echo "OK to continue" || echo "STOP: the file was not downloaded"
-       unzip -d unraid_install unraid.zip
-       [[ -s unraid_install/bzroot ]] && echo "OK to continue" || echo "STOP: the file was not extracted properly"
-       [[ ! -d /boot/previous ]] && mkdir /boot/previous
-       mv /boot/bz* /boot/previous
-       mv /boot/changes.txt /boot/previous
-       cp unraid_install/bz* /boot
-       cp unraid_install/changes.txt /boot
-       sync -f /boot
-       sleep 5
-       reboot
-       ```
-
+    <ManualDowngradeCommandLine />
   </TabItem>
 </Tabs>
