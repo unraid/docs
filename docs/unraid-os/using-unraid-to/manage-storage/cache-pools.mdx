@@ -3,6 +3,12 @@ sidebar_position: 3
 sidebar_label: Cache pools
 ---
 
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import {translate} from '@docusaurus/Translate';
+import RemoveDiskGui from './partials/remove-disk-gui.mdx';
+import RemoveDiskCommandLine from './partials/remove-disk-command-line.mdx';
+
 # Cache pools
 
 In Unraid, a %%cache pool|cache-pool%% is a collection of one or more drives, typically SSDs or high-speed HDDs. These drives temporarily store data before it's moved to your main [%%array|array%%](./array-configuration.mdx). Using %%cache pools|cache-pool%% can significantly enhance write speeds, protect your data, and provide dedicated storage for specific tasks like running Docker containers or [%%virtual machines|vm%%](../create-virtual-machines/overview-and-system-prep.mdx).
@@ -34,11 +40,8 @@ In Unraid, a %%cache pool|cache-pool%% is a collection of one or more drives, ty
 
 Unraid %%cache pools|cache-pool%% can operate in two main modes: **single device mode** and **multi-device mode**. Knowing the difference between these modes will help you find the right balance between performance, flexibility, and data protection for your needs.
 
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
-
 <Tabs>
-  <TabItem value="single-device" label="Single device mode" default>
+  <TabItem value="single-device" label={translate({ id: 'cachePools.poolModes.singleDevice', message: 'Single device mode' })} default>
 
     In **single device mode**, your %%cache pool|cache-pool%% consists of only one device. This means:
 
@@ -54,7 +57,7 @@ import TabItem from '@theme/TabItem';
 
   </TabItem>
 
-  <TabItem value="multi-device" label="Multi-device mode">
+  <TabItem value="multi-device" label={translate({ id: 'cachePools.poolModes.multiDevice', message: 'Multi-device mode' })}>
 
     When you set up a %%cache pool|cache-pool%% with more than one device, it enters **multi-device mode**. Here's what you should know:
 
@@ -192,84 +195,12 @@ To add a disk to a pool:
 Removing a disk from a %%BTRFS|btrfs%% or %%ZFS|zfs%% multi-device %%cache pool|cache-pool%% can help you reclaim hardware, replace a failing drive, or reconfigure your storage. This process is only possible if your pool is set up for redundancy (like %%RAID 1|raid1%% for both data and metadata) and the remaining devices have enough space to hold all of your data.
 
 <Tabs>
-  <TabItem value="gui" label="Using the WebGUI" default>
-    :::note[Before you start]
-
-    - You can only remove one drive at a time using the GUI.
-    - Make sure your pool is using a redundant %%RAID|raid%% profile (like %%RAID 1|raid1%% for both data and metadata).
-    - To check your pool's %%RAID|raid%% level, navigate to the Main tab and click on the pool. Scroll down to the Balance Status section (for %%BTRFS|btrfs%%) or ZFS pool status (for %%ZFS|zfs%%).
-
-    :::
-    To remove a disk using the %%WebGUI|web-gui%%:
-
-    1. **Stop the %%array|array%%**: Go to the **Main** tab and look for the option to stop your %%array|array%%.
-    2. **Unassign the pool drive**: Find the drive you want to remove and unassign it in the **Main** tab.
-    3. **Start the %%array|array%%**: Restart the %%array|array%% to apply the changes.
-    4. **Verify removal**: Click on the first pool device in the **Main** tab, then check **Balance Status** (for %%BTRFS|btrfs%%) or **zpool status** (for %%ZFS|zfs%%) to confirm the device was correctly removed.
-
-    :::note[Timing]
-
-    Keep in mind that removing a drive and rebalancing the pool may take several hours, depending on how much data you have and your device speeds.
-
-    :::
-
+  <TabItem value="gui" label={translate({ id: 'cachePools.remove.gui', message: 'Using the WebGUI' })} default>
+    <RemoveDiskGui />
   </TabItem>
 
-  <TabItem value="commandline" label="Using the Command Line (Advanced)">
-
-    If you're comfortable with the command line, this method gives you more control and can be useful if the %%WebGUI|web-gui%% option isn't available. For more information on using the command line interface, see [Command line interface](../../system-administration/advanced-tools/command-line-interface.mdx).
-
-    :::note[Before you start]
-
-    - Ensure that your pool's %%RAID|raid%% profile allows device removal; you can't remove a device from a 2-device %%RAID 1|raid1%% pool without changing it to a single profile first.
-    - Check that remaining devices will have enough space for your data.
-
-    :::
-    To remove a disk using the command line:
-
-    1. **Open a terminal session**: Make sure the %%array|array%% is running and open your command line interface.
-
-    2. **Remove the device**: Type the command below, replacing `X` with the letter corresponding to the drive you want to remove (as shown in the Main tab):
-
-       ```bash
-       btrfs device remove /dev/sdX1 /mnt/cache
-       ```
-
-       - For encrypted devices, use: `/dev/mapper/sdX1`.
-       - For NVMe devices, use: `nvmeXn1p1`.
-
-    3. **Wait for completion**: The device will be removed once you see the cursor return.
-
-    4. **Make Unraid "forget" the deleted member**:
-       - Stop the %%array|array%%.
-       - Unassign all pool devices.
-       - Start the %%array|array%% (Unraid will clear the pool configuration).
-       - If any Docker/%%VM|vm%% services use this pool, disable them before starting the %%array|array%% to prevent Unraid from recreating images elsewhere.
-
-    5. **Reassign devices**: Stop the %%array|array%% again, reassign all remaining pool members except the removed device, and then start the %%array|array%%.
-
-    **To remove multiple devices**:
-
-    You can do so in one command:
-
-    ```bash
-    btrfs device remove /dev/sdX1 /dev/sdY1 /mnt/cache
-    ```
-
-    However, keep in mind that the removal will still occur one at a time.
-
-    :::note[Timing]
-
-    Similar to the %%WebGUI|web-gui%% method, removing devices and rebalancing may take several hours depending on data volume and device speed.
-
-    :::
-
-    :::important
-
-    If you have only one device left in the pool, you will need to convert the %%RAID|raid%% profile to **single** to ensure everything functions correctly. For further instructions, refer to the section on [Switching the Pool RAID Level to Single](#switching-the-pool-raid-level-to-single).
-
-    :::
-
+  <TabItem value="commandline" label={translate({ id: 'cachePools.remove.commandLine', message: 'Using the Command Line (Advanced)' })}>
+    <RemoveDiskCommandLine />
   </TabItem>
 </Tabs>
 
