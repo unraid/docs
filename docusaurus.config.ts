@@ -91,6 +91,7 @@ const config: Config = {
             // @ts-ignore
             return sortSidebarItems(sidebarItems);
           },
+          exclude: ['**/partials/**'],
           // Remark plugins for processing MDX
           remarkPlugins: [
             [remarkAutoGlossary, { yamlFile: "glossary.yaml" }],

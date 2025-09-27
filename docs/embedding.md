@@ -16,12 +16,12 @@ Use the following guidance when loading the Unraid documentation inside an ifram
 
 The iframe experience uses `window.sessionStorage` to remember state while a browser tab stays open. Host applications normally do not need to interact with these keys, but they are listed here for completeness.
 
-| Key | Purpose |
-| --- | --- |
-| `unraidDocsIframe` | Tracks whether the current session originated inside an iframe. |
-| `unraidDocsTheme` | Stores the last used Docs theme so reloads stay consistent. |
-| `unraidDocsIframeEntry` | Holds the iframe entry path for the fallback back button. |
-| `unraidDocsIframeSidebar` | Marks whether the sidebar was explicitly enabled. |
+| Key                       | Purpose                                                         |
+| ------------------------- | --------------------------------------------------------------- |
+| `unraidDocsIframe`        | Tracks whether the current session originated inside an iframe. |
+| `unraidDocsTheme`         | Stores the last used Docs theme so reloads stay consistent.     |
+| `unraidDocsIframeEntry`   | Holds the iframe entry path for the fallback back button.       |
+| `unraidDocsIframeSidebar` | Marks whether the sidebar was explicitly enabled.               |
 
 A host can clear these keys to reset the embedded state before opening a new iframe session.
 
@@ -61,16 +61,16 @@ The embedded docs surface a lightweight `postMessage` API that reports readiness
 
 ### Messages emitted from the iframe
 
-| Type | Payload | Purpose |
-| --- | --- | --- |
-| `unraid-docs:ready` | `{ theme: "light" \| "dark" }` | Fired once the iframe has applied its starting theme. |
-| `unraid-docs:theme-change` | `{ theme: "light" \| "dark" }` | Fired whenever the iframe theme changes (including the initial emission). |
-| `unraid-docs:navigation` | `{ pathname, search, hash, url }` | Fired whenever in-iframe navigation occurs. |
+| Type                       | Payload                           | Purpose                                                                   |
+| -------------------------- | --------------------------------- | ------------------------------------------------------------------------- |
+| `unraid-docs:ready`        | `{ theme: "light" \| "dark" }`    | Fired once the iframe has applied its starting theme.                     |
+| `unraid-docs:theme-change` | `{ theme: "light" \| "dark" }`    | Fired whenever the iframe theme changes (including the initial emission). |
+| `unraid-docs:navigation`   | `{ pathname, search, hash, url }` | Fired whenever in-iframe navigation occurs.                               |
 
 ### Commands accepted by the iframe
 
-| Type | Payload | Purpose |
-| --- | --- | --- |
+| Type                    | Payload                        | Purpose                                             |
+| ----------------------- | ------------------------------ | --------------------------------------------------- |
 | `unraid-docs:set-theme` | `{ theme: "light" \| "dark" }` | Requests a theme change without requiring a reload. |
 
 Example host handler:
