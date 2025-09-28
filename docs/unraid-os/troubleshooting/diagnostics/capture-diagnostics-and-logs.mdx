@@ -5,6 +5,12 @@ sidebar_label: Capture diagnostics and logs
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
+import SyslogMirror from './partials/syslog-server/mirror.mdx';
+import SyslogRemote from './partials/syslog-server/remote.mdx';
+import SyslogLocal from './partials/syslog-server/local.mdx';
+import DockerLogsViaWebGUI from './partials/docker-logs/via-webgui.mdx';
+import DockerLogsCommandLine from './partials/docker-logs/command-line.mdx';
+import DockerLogsPersistent from './partials/docker-logs/persistent.mdx';
 
 # Capturing diagnostic information
 
@@ -154,67 +160,16 @@ For detailed configuration help, check the **Help** icon in the WebGUI toolbar.
 ### Enabling the syslog server
 
 <Tabs>
-  <TabItem value="mirror" label="Mirror to flash">
-
-    1. Select **Yes** under **Mirror to flash**.
-    2. Click **Apply**. Logs will be saved to `/boot/logs/syslog` on your flash drive
-
-    On the next reboot, this file will be renamed to `/boot/logs/syslog-previous`. You can view this file through **Tools → Syslog → syslog-previous**, and it will also be included (anonymized) in diagnostics.
-
-    <h4>How it works</h4>
-
-    - By default, Unraid copies the %%syslog|syslog%% to the flash drive during every graceful shutdown. This is managed through the "copy %%syslog|syslog%% to flash on shutdown" setting, which is enabled by default.
-    - If you're troubleshooting crashes, you can enable "Mirror to flash." This will write the %%syslog|syslog%% to both `/var/log/syslog` and `/boot/logs/syslog` in real time. If a crash happens, any %%syslog|syslog%% entries recorded to flash before the crash will be preserved.
-
-    Both methods result in the creation of a `/boot/logs/syslog-previous` file after the next boot, which you can access via the %%syslog|syslog%% viewer and will be included in diagnostics.
-
-    :::caution
-
-    The **Copy %%syslog|syslog%% to flash on shutdown** setting is safe for your flash drive. However, enabling **Mirror to flash** can lead to excessive writes if left on for an extended period. For long-term logging needs, consider using a local or remote %%syslog server|syslog-server%% instead.
-
-    :::
-
+  <TabItem value="mirror" label="Mirror to flash" default>
+    <SyslogMirror />
   </TabItem>
 
   <TabItem value="remote" label="Remote syslog server">
-
-    1. Set **Local syslog server** to *Enabled*.
-    2. Enter the IP address of your syslog server under **Remote syslog server**.
-    3. Click **Apply**.
-       - Logs will stream to the device you specified.
-
-    <div style={{ margin: 'auto', maxWidth: '600px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-      ![Remote syslog configuration](/img/Syslog-server.jpg)
-    </div>
-
-    :::note
-
-    If you upload files from a remote %%syslog server|syslog-server%% to the forum, they will **not** be anonymized.
-
-    :::
-
+    <SyslogRemote />
   </TabItem>
 
   <TabItem value="local" label="Local syslog server">
-
-    To create a persistent, reliable copy of your Unraid %%syslog|syslog%% on your server:
-
-    1. Set **Local syslog server** to *Enabled*.
-    2. Configure the following options:
-       - **Local %%syslog|syslog%% folder**: Use a cache-only or preferred share (best for SSDs).
-       - **Rotation settings**: Adjust the file size and number limits.
-    3. For best results and to ensure all %%syslog|syslog%% data (including boot events) is captured.  Be sure to set the **Remote %%syslog server|syslog-server%%** field to your server's own IP address (the "Loopback method"), or the %%syslog|syslog%% will not be saved to the set share.
-       - This ensures %%syslog|syslog%% events are both stored locally and persist across reboots, without writing to the flash drive.
-    4. Click **Apply**.
-       - Logs will be saved to the share you specified.
-
-    :::note
-
-    - If you upload files from the local %%syslog server|syslog-server%% to the forum, they will **not** be anonymized.
-    - Logs saved using this method are not included in standard diagnostics. Attach them separately if you need support.
-
-    :::
-
+    <SyslogLocal />
   </TabItem>
 </Tabs>
 
@@ -227,31 +182,16 @@ While standard diagnostics only provide limited data for Docker and %%VM|vm%%, y
 To retrieve Docker logs:
 
 <Tabs>
-  <TabItem value="via-webgui" label="Via WebGui" default>
-
-    - Navigate to ***Docker > Containers***
-    - Click the **Logs** icon for the desired container
-
+  <TabItem value="via-webgui" label="Via WebGUI" default>
+    <DockerLogsViaWebGUI />
   </TabItem>
 
-  <TabItem value="commandline" label="Via Command Line" default>
-
-    Use the command:
-
-    ```bash
-    docker logs [container_name] > /path/to/save/log.txt
-    ```
-
+  <TabItem value="commandline" label="Via Command Line">
+    <DockerLogsCommandLine />
   </TabItem>
 
-  <TabItem value="persistent" label="Persistent logging" default>
-
-    To map container logs to a host path, configure your container template like this:
-
-    ```
-    /path/in/container:/logs
-    ```
-
+  <TabItem value="persistent" label="Persistent logging">
+    <DockerLogsPersistent />
   </TabItem>
 </Tabs>
 

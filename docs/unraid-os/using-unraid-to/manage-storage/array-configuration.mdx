@@ -3,6 +3,22 @@ sidebar_position: 2
 sidebar_label: Array configuration
 ---
 
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import AddDataDiskParityProtected from './partials/add-data-disk-parity-protected.mdx';
+import AddDataDiskNoParity from './partials/add-data-disk-no-parity.mdx';
+import ParitySwapWhat from './partials/parity-swap-what.mdx';
+import ParitySwapWhen from './partials/parity-swap-when.mdx';
+import RemoveDataDiskStandard from './partials/remove-data-disk-standard.mdx';
+import RemoveDataDiskParityPreserve from './partials/remove-data-disk-parity-preserve.mdx';
+import ArrayCheckParity from './partials/array-check-parity.mdx';
+import ArrayCheckRead from './partials/array-check-read.mdx';
+import TroubleshootMissingDisks from './partials/troubleshoot-missing-disks.mdx';
+import TroubleshootDeviceLimit from './partials/troubleshoot-device-limit.mdx';
+import TroubleshootLicenseIssues from './partials/troubleshoot-license-issues.mdx';
+import TroubleshootKeyServer from './partials/troubleshoot-key-server.mdx';
+import TroubleshootWithdrawnRelease from './partials/troubleshoot-withdrawn-release.mdx';
+
 # Array configuration
 
 Unraid's storage system combines flexibility with data protection through its %%array|array%% and %%cache|cache%% architecture. The %%array|array%% manages your primary storage with optional %%parity|parity%% protection, while cache pools accelerate performance.
@@ -164,83 +180,19 @@ When adding a new data disk, it must be the same size or smaller than your curre
 <details>
   <summary><strong>How to add a data disk</strong></summary>
 
+  ```mdx-code-block
+
   <Tabs>
     <TabItem value="standard" label="Standard addition (Parity-protected)" default>
-
-      To add a data disk to a parity-protected array:
-
-      1. **Stop the array:** Use the Unraid %%WebGUI|web-gui%% to stop the array.
-
-      2. **Turn off your server:** Power down your server safely.
-
-      3. **Install the new hard drive(s):** Add the new disk(s) physically.
-
-      4. **Power the server back on:** Start your server again.
-
-      5. **Assign the new disk(s):** Use the %%WebGUI|web-gui%% to assign the new disks to available data slots.
-
-      6. **Start the array:** Start the array again.
-
-         - Unraid will automatically start a **Clear operation** on the new disk. This fills the disk with zeros and ensures it's ready for use while maintaining data integrity.
-         - The clear operation takes place in the background, so you can still access your array. However, the new disk won't be usable until the process is complete and the disk is formatted.
-         - If you've pre-cleared the disk, Unraid will skip this step, recognizing that it's already ready to use.
-
-      7. **After Clearing Completes:** Once the clearing process is finished, the disk will show up as unmountable in the %%WebGUI|web-gui%%. You'll be prompted to format it.
-
-      :::important
-
-      Always double-check the serial number to make sure you're formatting the right disk. Formatting will erase everything on that disk, and this action cannot be undone.
-
-      :::
-      8\. **Confirm the Format:** Check the confirmation box and click the **Format** button. Unraid will give you a warning about the outcomes of this action.
-
-      9. **Formatting Process:** The formatting will take a few minutes. Once it's completed, the disk will show as mounted and ready for use. It's normal to see a small amount of used space due to file system overhead.
-
-      :::note
-
-      You can add multiple disks, but they won't be usable until all of them have been cleared and formatted.
-
-      :::
-
+      <AddDataDiskParityProtected />
     </TabItem>
 
     <TabItem value="no-parity" label="Addition without parity">
-
-      To add a data disk to an array without parity protection:
-
-      1. **Stop the array:** Use the Unraid %%WebGUI|web-gui%% to stop the array.
-
-      2. **Turn off your server:** Power down your server safely.
-
-      3. **Install the new hard drive(s):** Add the new disk(s) physically.
-
-      4. **Power the server back on:** Start your server again.
-
-      5. **Assign the new disk(s):** Use the %%WebGUI|web-gui%% to assign the new disks to available data slots.
-
-      6. **Start the array:** Start the array again.
-
-         - The clearing step is skipped entirely when there is no %%parity disk|parity-drives%% in the array.
-
-      7. **Format the Disk:** The new disk will show up as unmountable in the %%WebGUI|web-gui%%. You'll be prompted to format it.
-
-      :::important
-
-      Always double-check the serial number to make sure you're formatting the right disk. Formatting will erase everything on that disk, and this action cannot be undone.
-
-      :::
-      8\. **Confirm the Format:** Check the confirmation box and click the **Format** button. Unraid will give you a warning about the outcomes of this action.
-
-      9. **Formatting Process:** The formatting will take a few minutes. Once it's completed, the disk will show as mounted and ready for use. It's normal to see a small amount of used space due to file system overhead.
-
-      :::note
-
-      You can add multiple disks, but they won't be usable until all of them have been formatted.
-
-      :::
-
+      <AddDataDiskNoParity />
     </TabItem>
   </Tabs>
+  ```
+
 </details>
 
 #### Adding parity disks
@@ -366,6 +318,7 @@ To remove a parity drive:
 If your server supports hot-swap, you do not need to power down to change disks. You can safely skip steps 2 and 4.
 
 :::
+
 2\. **Power down the server:** Turn off your server to safely make hardware changes.
 3\. **Install the new %%parity disk|parity-drives%%:** Place the new, larger %%parity disk|parity-drives%% into your server.
 4\. **Power up the server:** Turn the server back on.
@@ -599,19 +552,18 @@ If Unraid prompts you to format the new disk during the rebuild, **do not do it*
 
 #### Parity swap
 
+```mdx-code-block
+
 <Tabs>
   <TabItem value="what" label="What is parity swap?">
-
-    A %%parity swap|parity-swap%% is a special procedure in Unraid used when you need to replace a data disk with a disk that is larger than your current parity disk. The process moves your current parity disk to the data slot, then installs a new, larger disk as the new parity disk. This ensures your array remains protected and allows for larger data drives in the future.
-
+    <ParitySwapWhat />
   </TabItem>
 
   <TabItem value="when" label="When to use parity swap?">
-
-    Use a %%parity swap|parity-swap%% when your replacement data drive is larger than your current parity disk. This is not necessary if your new data drive is the same size or smaller than your parity disk.
-
+    <ParitySwapWhen />
   </TabItem>
 </Tabs>
+```
 
 <details>
   <summary><strong>Example scenario</strong></summary>
@@ -659,6 +611,7 @@ If the drive to be replaced is already disabled (failed), you may not need to pe
    If your system supports **hot-swap**, you do not need to power down to remove or install disks. Just make sure the array is stopped before making any hardware changes.
 
 :::
+
 6\. *(Optional)* **Remove the old drive.** You may wish to keep it installed for testing or reassignment.
 7\. **Install the new drive.** Pre-clearing is strongly recommended, but formatting is not needed.
 8\. **Power on the server.**
@@ -718,112 +671,18 @@ You can choose from two methods to remove a data disk:
 1. **Standard method** - Recommended for most users.
 2. **Parity-preserve method** - Suitable for advanced users who want to maintain parity during the removal.
 
+```mdx-code-block
+
 <Tabs>
   <TabItem value="standard" label="Standard method" default>
-
-    This method is ideal for users looking for a simple way to remove a data disk.
-
-    1. **Stop the array:**  Begin by stopping the array to safely remove the disk.
-    2. **(Optional) Document Your disk assignments:** For your reference, you may want to take a screenshot of your current disk assignments from the Main tab.
-    3. **Reset the array configuration:** Use the [Reset the array configuration](#reset-the-array-configuration) procedure. Be sure to choose the option to preserve all current assignments.
-    4. **Unassign the disk:** Identify and unassign the disk you wish to remove.
-    5. **Start the array:** After unassigning the disk, start the array again, but do not check the "Parity is valid" box.
-
-    Once you start the array, a %%parity|parity%% sync will initiate if you have a %%parity disk|parity-drives%% assigned. Keep in mind that the array will be vulnerable to data loss until this sync completes.
-
-    :::tip
-
-    Move any important data off the disk before removal. The %%parity|parity%% sync process may take several hours, depending on disk size and system activity.
-
-    :::
-
+    <RemoveDataDiskStandard />
   </TabItem>
 
   <TabItem value="parity-preserve" label="Parity-preserve method (Advanced)">
-
-    The parity-preserve method allows you to remove a data disk from your Unraid array without losing your parity protection. This process requires careful preparation and some technical knowledge and is only recommended for Advanced users.
-
-    <h4>What this method does</h4>
-
-    This method effectively zeros out the data disk you want to remove, allowing you to keep your parity intact. Since a disk filled with zeroes does not affect parity, your array remains protected throughout the procedure.
-
-    <h4>When to use this method</h4>
-
-    Use the %%parity|parity%%-preserve method to remove a data disk while keeping your %%parity|parity%% valid safely. This is especially useful to avoid a full %%parity|parity%% sync after removal. Please ensure that the disk you're removing is healthy.
-
-    :::important[Prerequisites]
-
-    Before you begin, ensure that you meet the following conditions:
-
-    - This method allows you to remove only one disk at a time.
-    - Note that there is no official support from LimeTech for this process; please proceed with caution.
-
-    :::
-
-    :::warning
-
-    This method will erase all data on the selected disk. Please verify that all important data has been moved before proceeding.
-
-    :::
-    To remove a disk using the parity-preserve method:
-
-    1. **Start the array in maintnance mode:** Click on the disk you want to remove and then click the **Erase** button.  This will erase the file system from the device while still maintaining parity, then stop the array.
-    2. **Start the array:** Start the array in normal mode, the disk to be erased won't mount but the remaining disks will be online during the process.
-    3. **Record array assignments:** Note your array assignments, especially the %%parity drive|parity-drives%%, as a safety measure.
-    4. **(Optional) Enable Turbo Write:** For faster zeroing, enable Reconstruct Write ("Turbo Write") in **Settings → Disk Settings**, but only if all drives are healthy.
-    5. **Zero out the disk:** Use the alternative command-line method below to manually zero out the disk.
-    6. **Stop the array:** Once the clearing is complete, stop the array.
-    7. **Reset array configuration:** Retain all current assignments when resetting the array configuration.
-    8. **Unassign the disk:** Unassign the disk you wish to remove, double-checking all assignments, especially the %%parity drive|parity-drives%%.
-    9. **Confirm parity status:** Check the box indicating "Parity is already valid."
-    10. **Start the array again:** Start the array to finish the removal process.
-    11. **(Optional) Verify parity:** You can run a correcting %%parity check|parity-check%% afterward to ensure parity integrity.
-
-    <details>
-      <summary>**Alternative command-line method for zeroing a disk**</summary>
-
-      If you're comfortable using the Linux command line, you can manually zero out your disk using the following instructions. Be sure to choose the command that corresponds with your version of Unraid.
-
-      Since zeroing a disk can take many hours, it's recommended to use something like the [Tmux Terminal Manager TTM plugin](https://forums.unraid.net/topic/183427-plugin-tmux-terminal-manager-ttm/) to type the commands and make sure the session remains up.
-
-      **For Unraid 6.12 or later:**
-
-      1. First, unmount the disk:
-         ```bash
-         umount /mnt/diskX
-         ```
-     2. Zero out the disk with the following command:
-         ```bash
-         dd bs=1M if=/dev/zero of=/dev/mdXp1 status=progress
-         ```
-
-      **For Unraid 6.11 and earlier:**
-
-      1. Start by unmounting the disk:
-         ```bash
-         umount /mnt/diskX
-         ```
-      2. Next, use this command to zero out the disk:
-         ```bash
-         dd bs=1M if=/dev/zero of=/dev/mdX status=progress
-         ```
-
-      :::note
-
-      Remember to replace `X` with the specific number of the data disk you are removing.
-
-      :::
-
-      :::caution
-
-      Before executing these commands, double-check the drive number to avoid accidentally erasing data on the wrong disk.
-
-      :::
-      Don't hesitate to reach out to the [Unraid forums](https://forums.unraid.net/). There, you can find helpful resources and community support.
-
-    </details>
+    <RemoveDataDiskParityPreserve />
   </TabItem>
 </Tabs>
+```
 
 ---
 
@@ -839,125 +698,18 @@ For convenience, you can schedule these checks to run automatically at intervals
 
 #### Parity & Read checks
 
+```mdx-code-block
+
 <Tabs>
   <TabItem value="parity-check" label="Parity checks" default>
-
-    A %%parity check|parity-check%% is essential when your array includes at least one assigned parity device. During this process, all data disks are read simultaneously. The system recalculates the parity and compares it to the information stored on your %%parity disk(s)|parity-drives%%.
-
-    <details>
-      <summary><strong>In-depth: Parity sync vs. Parity check - What's the difference?</strong> - Click to expand/collapse</summary>
-
-      A %%parity|parity%% sync reads all data disks and creates %%parity|parity%% from scratch, saving the results on the %%parity drives|parity-drives%%. This process typically happens when you add or replace a %%parity drives|parity-drives%% or after significant configuration changes.
-
-      A %%parity check|parity-check%% reads all data disks along with the %%parity drives|parity-drives%%. It recalculates the %%parity|parity%% values and compares them to the stored values. There are two modes for running a %%parity check|parity-check%%:
-
-      - **Correcting (CORRECT):** If it finds a mismatch, it updates the %%parity disk|parity-drives%% and logs the event.
-      - **Non-correcting (NOCORRECT):** Only logs any errors found without updating the parity.
-
-      To avoid excessive logging, only the first 100 addresses with errors are reported during a %%parity check|parity-check%%. These mismatches are referred to as **sync errors** and indicate where the parity does not align with the data, typically due to issues such as sudden power losses or hardware problems. Each sync error is counted in 4KiB blocks - this is the system's I/O unit size (known as the Linux page size).
-
-    </details>
-
-    <details>
-      <summary><strong>In-depth: What does "valid" mean for parity and array disks?</strong> - Click to expand/collapse</summary>
-
-      A **valid %%parity disk|parity-drives%%** indicates that after the last successful %%parity|parity%% sync, Unraid recognized the %%parity|parity%% as "good," meaning it's suitable for data recovery if a disk fails. The "valid" status applies to every disk in the array, not just the %%parity|parity%% one. If all disks except one are valid, Unraid can reconstruct the missing or failed disk's data using %%parity|parity%%.
-
-      Unraid maintains the %%parity disk|parity-drives%%'s "valid" status even when some sync errors occur following a non-correcting check. This ensures that you can still recover a failed disk. If the %%parity|parity%% were marked as invalid, you would risk having two invalid disks after just one additional failure, leading to potential data loss.
-
-    </details>
-
-    While a %%parity check|parity-check%% is in progress, you can still use the array. However, be aware that performance may slow down due to drive contention, as both file operations and the check will compete for resources.
-
-    Normally, if the %%parity check|parity-check%% identifies errors, Unraid will update the %%parity disk|parity-drives%% to align with the computed data and increment the Sync Errors counter.
-
-    :::tip
-
-    If you prefer to run a check without making corrections, simply uncheck **Write corrections to parity** before starting. This way, errors will be reported but not fixed.
-
-    :::
-
-    :::important
-
-    A correcting %%parity check|parity-check%% is automatically initiated after an "Unsafe Shutdown" - this occurs when the array is restarted without being properly stopped. The most frequent cause of such an event is unexpected power loss, which can leave write operations incomplete. Using an uninterruptible power supply (UPS) is highly recommended to avoid this scenario. This measure helps maintain the integrity of your data and prevents potential issues.
-
-    :::
-    <h4>What are parity errors?</h4>
-
-    %%Parity|parity%% errors happen when the %%parity|parity%% information your system calculates doesn't match what's stored on your %%parity drives|parity-drives%%. This mismatch can arise from several issues, including:
-
-    - Sudden power loss or unsafe shutdowns
-    - Failing drives or disk errors
-    - Problems with cables or connections
-    - Unclean shutdowns or unexpected system crashes
-
-    When %%parity|parity%% errors occur, either the %%parity drives|parity-drives%% or the data disks could be out of sync. Ideally, a %%parity check|parity-check%% should report zero errors so everything functions correctly.
-
-    <h4>What to do if you encounter %%parity|parity%% errors</h4>
-
-    If your %%parity check|parity-check%% reveals errors:
-
-    1. **Investigate the problem:** Start by checking %%SMART reports|smart-report%%, which provide detailed information about your drives' health. Look for any signs of disk or connection problems.
-
-    2. **Seek help from our forums:** If you cannot resolve the issue on your own, consider reaching out for advice on the Unraid forums. The community can offer valuable insights and suggestions based on their experiences.
-
-    3. **Run another check:** After you've addressed any hardware issues, running another %%parity check|parity-check%% is a good idea to ensure everything is back in order.
-
-    :::info[Rebuild Time]
-
-    Remember that %%parity checks|parity-check%% can take several hours, depending on the size of your disks and the activity level of your system. For the best results, schedule these checks during times of low system usage.
-
-    :::
-
+    <ArrayCheckParity />
   </TabItem>
 
   <TabItem value="read-check" label="Read checks">
-
-    A %%read check|read-check%% is an important task you should perform under certain conditions to ensure the health of your storage array. This check is necessary **if your array does not have any parity devices assigned** or **if you have more disabled drives than available parity drives**.
-
-    During a %%read check|read-check%%, every sector of every disk in the array is examined. The goal is to verify that all data can be accessed and to identify any unrecoverable read errors.
-
-    <div style={{ margin: 'auto', maxWidth: '650px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-      ![History lets you review stats on your read check operations](/img/History_button.PNG)
-    </div>
-
-    <h4>Why read checks matter</h4>
-
-    Read checks are essential for monitoring the health of your disks, especially in configurations without parity protection. If a disk encounters an unrecoverable read error during the check, the affected data cannot be retrieved, which could lead to data loss. Therefore, keeping an eye on the results of these checks is crucial, and taking action when errors are reported is necessary.
-
-    You can also review the history of %%read check|read-check%% operations in the Unraid interface, which helps you spot trends or recurring issues over time.
-
-    <h4>When to use a read check</h4>
-
-    Consider running a %%read check|read-check%% in the following situations:
-
-    - **No parity devices assigned:** When your array lacks parity protection.
-    - **Verifying disk integrity:** To confirm the integrity of each disk without making any corrections.
-    - **Post-hardware issue resolution:** After fixing hardware issues, to ensure all disks are healthy.
-
-    <h4>What to do if errors are found</h4>
-
-    If your %%read check|read-check%% reports errors, here are some steps to follow:
-
-    1. **Review SMART reports:** Check the %%SMART reports|smart-report%% for the affected disks to understand their health status.
-    2. **Inspect connections:** Ensure that physical connections and cables are secure.
-    3. **Consider replacements:** If a disk shows persistent errors, think about replacing it.
-    4. **Backup critical data:** Move important data off any disks reporting errors as soon as possible to prevent data loss.
-
-    :::warning
-
-    Without parity protection, any unrecoverable read error will lead to permanent data loss for the affected files or sectors.
-
-    :::
-
-    :::tip
-
-    To maintain the health of your disks, it's wise to **schedule regular %%read checks|read-check%%**, especially if your array does not have parity protection. This proactive measure will help you catch potential issues early and safeguard your data.
-
-    :::
-
+    <ArrayCheckRead />
   </TabItem>
 </Tabs>
+```
 
 #### Check history
 
@@ -1244,108 +996,32 @@ For more detailed information about %%cache pools|cache-pool%%, including how to
 
 ### Troubleshooting array start failures
 
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
-
 If your array won't start, follow these steps to identify and fix common problems. Look for error messages under ***Main → Array Operation***.
+
+```mdx-code-block
 
 <Tabs>
   <TabItem value="missing-disks" label="Missing disks" default>
-    **Message:**
-    `Too many wrong and/or missing disks!`
-
-    ![Single parity error](/img/Toomanywrong.png)
-
-    With **one %%parity drive|parity-drives%%**, you can only have **one** missing disk. With two %%parity drives|parity-drives%%, **two** disks can be missing and you can still start the array, and so on. Parity helps until you can replace the missing disk.
-
-    **What to Do:**
-    Replace the missing disk.  For dual-parity configurations, replace the missing disks one at a time.
-    If you can't recover the data (or if more than 2 disks fail in a dual-parity setup), go to ***Tools → New Config*** to perform the New Config procedure.
-
+    <TroubleshootMissingDisks />
   </TabItem>
 
   <TabItem value="device-limit" label="Device limit">
-    **Message:**
-    `Too many attached devices.  Please consider upgrading your registration key.`
-
-    ![Device Limit Error](/img/Toomanydevices.png)
-
-    The rules for connecting storage apply only before starting the array. After the array is started, you can add more storage, including USB drives for virtual machines. However, be aware that Unraid currently only limits the number of attached storage devices on the [**Starter license tier**](https://unraid.net/pricing)
-    (6 device limit).
-
-    :::tip
-
-    The maximum applies to all devices except the boot USB.
-
-    :::
-    To resolve this error:
-
-    1. Stop the array.
-    2. Remove any unneeded storage devices.
-    3. Start the array.
-    4. Reconnect devices afterwards for **Unassigned Devices** use.
-
+    <TroubleshootDeviceLimit />
   </TabItem>
 
   <TabItem value="key-issues" label="License issues">
-    **Message:**
-    `Invalid or missing registration key.`
-
-    ![Missing Key](/img/Invalidormissingkey.png)
-
-    A valid registration key is required in order to start the array. To purchase or get a trial key:
-
-    1. Go to ***Tools → Registration***.
-    2. Click **Get Trial Key** or **Purchase Key**.
-    3. Install the key by returning to **Registration**, pasting in the field, and clicking the **Install Key** button.
-
-    :::note[Trial vs. Paid Licenses]
-
-    - **Trial License:** Full Unraid access for 30 days, just like the higher license tiers. You can use unlimited storage devices, but you'll need an internet connection to start it up.  [Start a new trial here.](https://unraid.net/getting-started)
-
-    - **Paid License:** This is yours to keep forever! However, there are limits on the number of devices based on the plan you choose (**Starter**, **Unleashed**, or **Lifetime**). After you activate it, you don't have to connect to the internet anymore.
-
-    :::
-
-    :::tip
-
-    If you see an "invalid key" error, it might mean your trial has **expired**. To keep using Unraid, you can [purchase a license here](https://unraid.net/pricing).
-
-    :::
-
-    :::caution[Blacklisted USB flash devices]
-
-    If your server is online and your trial hasn't run out, your USB flash drive might have a %%GUID|guid%% that can't register a key. This can happen if the %%GUID|guid%% isn't unique or has already registered by someone else. Using an SD card reader via USB can also cause this issue since it often has a generic %%GUID|guid%%. If your USB flash drive is **blacklisted**, it can't be used anymore, and you'll need to find a different device for your Unraid Server OS installation.
-
-    :::
-
+    <TroubleshootLicenseIssues />
   </TabItem>
 
   <TabItem value="key-server" label="Key server connection">
-    **Message:**
-    `Cannot contact key-server`
-
-    If you have a Trial license, you'll see a message indicating that you need to contact the Unraid license server to start your array. However, if you have a paid license, you can start the array without any extra steps.
-
-    For Trial users, your server tries to connect to the license key server to check your license when it first boots up. If it can't connect within 30 seconds, the array won't start. But don't worry! Each time you refresh or navigate the %%WebGUI|web-gui%%, it will try again to validate your license quickly. Once it successfully validates, your server won't need to check again unless you reboot.
-
+    <TroubleshootKeyServer />
   </TabItem>
 
   <TabItem value="withdrawn" label="Withdrawn release">
-    **Message:** `This Unraid release has been withdrawn.`
-
-    If you see this message, it means you're using a beta or release candidate version of Unraid that isn't enabled for regular use.
-
-    To resolve this:
-
-    1. Open Unraid.
-    2. Go to ***Tools → Update OS***.
-    3. Install the latest stable version.
-
-    Once the update is complete, restart your server to start your array.
-
+    <TroubleshootWithdrawnRelease />
   </TabItem>
 </Tabs>
+```
 
 ### Disk failure during a rebuild
 

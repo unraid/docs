@@ -1,0 +1,53 @@
+If you're comfortable with the command line, this method gives you more control and can be useful if the %%WebGUI|web-gui%% option isn't available. For more information on using the command line interface, see [Command line interface](../../../system-administration/advanced-tools/command-line-interface.mdx).
+
+:::note[Before you start]
+
+- Ensure that your pool's %%RAID|raid%% profile allows device removal; you can't remove a device from a 2-device %%RAID 1|raid1%% pool without changing it to a single profile first.
+- Check that remaining devices will have enough space for your data.
+
+:::
+
+To remove a disk using the command line:
+
+1. **Open a terminal session**: Make sure the %%array|array%% is running and open your command line interface.
+
+2. **Remove the device**: Type the command below, replacing `X` with the letter corresponding to the drive you want to remove (as shown in the Main tab):
+
+   ```bash
+   btrfs device remove /dev/sdX1 /mnt/cache
+   ```
+
+   - For encrypted devices, use: `/dev/mapper/sdX1`.
+   - For NVMe devices, use: `nvmeXn1p1`.
+
+3. **Wait for completion**: The device will be removed once you see the cursor return.
+
+4. **Make Unraid "forget" the deleted member**:
+   - Stop the %%array|array%%.
+   - Unassign all pool devices.
+   - Start the %%array|array%% (Unraid will clear the pool configuration).
+   - If any Docker/%%VM|vm%% services use this pool, disable them before starting the %%array|array%% to prevent Unraid from recreating images elsewhere.
+
+5. **Reassign devices**: Stop the %%array|array%% again, reassign all remaining pool members except the removed device, and then start the %%array|array%%.
+
+**To remove multiple devices**:
+
+You can do so in one command:
+
+```bash
+btrfs device remove /dev/sdX1 /dev/sdY1 /mnt/cache
+```
+
+However, keep in mind that the removal will still occur one at a time.
+
+:::note[Timing]
+
+Similar to the %%WebGUI|web-gui%% method, removing devices and rebalancing may take several hours depending on data volume and device speed.
+
+:::
+
+:::important
+
+If you have only one device left in the pool, you will need to convert the %%RAID|raid%% profile to **single** to ensure everything functions correctly. For further instructions, refer to the section on [Switching the Pool RAID Level to Single](#changing-pool-raid-levels).
+
+:::

@@ -23,6 +23,181 @@ const colors = {
   blue: '\x1b[36m',
 };
 
+const canonicalAdmonitionTypes = new Set(['note', 'tip', 'info', 'warning', 'caution', 'danger', 'important']);
+
+const admonitionSynonyms = new Map([
+  ['nota', 'note'],
+  ['nota:', 'note'],
+  ['notiz', 'note'],
+  ['notiz:', 'note'],
+  ['hinweis', 'note'],
+  ['hinweis:', 'note'],
+  ['consejo', 'tip'],
+  ['sugerencia', 'tip'],
+  ['astuce', 'tip'],
+  ['tipp', 'tip'],
+  ['tipp:', 'tip'],
+  ['小贴士', 'tip'],
+  ['提示', 'tip'],
+  ['attention', 'caution'],
+  ['prudence', 'caution'],
+  ['vorsicht', 'caution'],
+  ['vorsicht:', 'caution'],
+  ['precaucion', 'caution'],
+  ['precaución', 'caution'],
+  ['注意', 'caution'],
+  ['重要', 'important'],
+  ['importante', 'important'],
+  ['importante:', 'important'],
+  ['wichtig', 'important'],
+  ['wichtig:', 'important'],
+  ['advertencia', 'warning'],
+  ['advertencia:', 'warning'],
+  ['avertissement', 'warning'],
+  ['avertissement:', 'warning'],
+  ['warnung', 'warning'],
+  ['warnung:', 'warning'],
+  ['警告', 'warning'],
+  ['informacion', 'info'],
+  ['informacion:', 'info'],
+  ['información', 'info'],
+  ['información:', 'info'],
+  ['信息', 'info'],
+  ['de advertencia', 'warning']
+]);
+
+function stripDiacritics(value) {
+  if (typeof value !== 'string') {
+    return value;
+  }
+  return value.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+}
+
+function getCanonicalAdmonition(type) {
+  if (!type) {
+    return undefined;
+  }
+  const lower = type.toLowerCase().trim();
+  if (!lower) {
+    return undefined;
+  }
+
+  if (canonicalAdmonitionTypes.has(lower)) {
+    return lower;
+  }
+  if (admonitionSynonyms.has(lower)) {
+    return admonitionSynonyms.get(lower);
+  }
+
+  const stripped = stripDiacritics(lower);
+  if (stripped !== lower) {
+    if (canonicalAdmonitionTypes.has(stripped)) {
+      return stripped;
+    }
+    if (admonitionSynonyms.has(stripped)) {
+      return admonitionSynonyms.get(stripped);
+    }
+  }
+
+  return undefined;
+}
+
+function normalizeAdmonitionDirectives(content) {
+  const lines = content.split('\n');
+  let modified = false;
+
+  for (let index = 0; index < lines.length; index++) {
+    const originalLine = lines[index];
+    const match = originalLine.match(/^(\s*)(:{3,})(\s*)(.*)$/);
+    if (!match) {
+      continue;
+    }
+
+    const indent = match[1] || '';
+    let colons = match[2];
+    const rest = match[4] || '';
+    let lineModified = false;
+
+    if (colons !== ':::') {
+      colons = ':::';
+      lineModified = true;
+    }
+
+    if (rest.trim().length === 0) {
+      const normalized = indent + colons;
+      if (normalized !== originalLine || lineModified) {
+        lines[index] = normalized;
+        modified = true;
+      }
+      continue;
+    }
+
+    const leadingSpacesMatch = rest.match(/^\s*/);
+    const leadingSpaces = leadingSpacesMatch ? leadingSpacesMatch[0] : '';
+    let trimmedRest = rest.slice(leadingSpaces.length);
+
+    if (!trimmedRest) {
+      const normalized = indent + colons;
+      if (normalized !== originalLine || lineModified) {
+        lines[index] = normalized;
+        modified = true;
+      }
+      continue;
+    }
+
+    const typeMatch = trimmedRest.match(/^([^\s\[:：]+)(.*)$/);
+    if (!typeMatch) {
+      const normalized = indent + colons + leadingSpaces + trimmedRest;
+      if (normalized !== originalLine || lineModified) {
+        lines[index] = normalized;
+        modified = true;
+      }
+      continue;
+    }
+
+    const rawType = typeMatch[1];
+    let remainder = typeMatch[2] || '';
+
+    let canonical = getCanonicalAdmonition(rawType);
+    if (!canonical) {
+      const nextWordMatch = remainder.match(/^\s+([^\s\[:：]+)/);
+      if (nextWordMatch) {
+        const combinedType = `${rawType} ${nextWordMatch[1]}`;
+        const resolved = getCanonicalAdmonition(combinedType);
+        if (resolved) {
+          canonical = resolved;
+          remainder = remainder.slice(nextWordMatch[0].length);
+        }
+      }
+    }
+
+    if (!canonical && /^[*#]/.test(rawType)) {
+      const normalized = indent + leadingSpaces + rawType + remainder;
+      if (normalized !== originalLine || lineModified) {
+        lines[index] = normalized;
+        modified = true;
+      }
+      continue;
+    }
+
+    const typeForOutput = canonical || rawType;
+
+    if (canonical && remainder.startsWith(':')) {
+      const adjusted = remainder.replace(/^:\s*/, '');
+      remainder = adjusted.length ? ` ${adjusted}` : '';
+    }
+
+    const normalizedLine = indent + colons + leadingSpaces + typeForOutput + remainder;
+
+    if (normalizedLine !== originalLine || lineModified) {
+      lines[index] = normalizedLine;
+      modified = true;
+    }
+  }
+
+  return { content: lines.join('\n'), modified };
+}
+
 /**
  * Replace escaped newline characters with real newline characters.
  * @param {string} value - String that may contain escaped newlines.
@@ -40,13 +215,57 @@ function convertEscapedNewlines(value) {
  * @param {string} content - The file content to process
  * @returns {string} - The formatted content
  */
-function processContent(content) {
+function fixCrowdinEscapeArtifacts(content) {
+  let modified = false;
+
+  // Collapse quadruple escapes that Crowdin sometimes injects in inline code
+  const inlineCodePattern = /`[^`]*`/g;
+  content = content.replace(inlineCodePattern, (segment) => {
+    const cleaned = segment.replace(/\\{2,}\|/g, '\\|');
+    if (cleaned !== segment) {
+      modified = true;
+      return cleaned;
+    }
+    return segment;
+  });
+
+  // Remove unnecessary pipe escaping inside custom token syntax like %%Foo|bar%%
+  content = content.replace(/%%([^%]*?)\\{2}\|([^%]*?)%%/g, (match, left, right) => {
+    modified = true;
+    return `%%${left}\\|${right}%%`;
+  });
+
+  return { content, modified };
+}
+
+function removeAllCodeFencers(content) {
+  let modified = false;
+  const stripped = content.replace(/````[\s\S]*?````/g, () => {
+    modified = true;
+    return "";
+  });
+  return { content: stripped, modified };
+}
+
+function processContent(content, filePath) {
   content = convertEscapedNewlines(content);
   let modified = false;
 
+  const escapeFix = fixCrowdinEscapeArtifacts(content);
+  content = escapeFix.content;
+  modified = modified || escapeFix.modified;
+
+  const admonitionFix = normalizeAdmonitionDirectives(content);
+  content = admonitionFix.content;
+  modified = modified || admonitionFix.modified;
+
+  const fenceFix = removeAllCodeFencers(content);
+  content = fenceFix.content;
+  modified = modified || fenceFix.modified;
+
   // Fix 0: Remove backslashes from admonition directives
   // Matches admonition directives with escaped brackets like :::tip\[Title]
-  content = content.replace(/^([ \t]*:::(tip|note|warning|caution|info|important))(\\)(\[.*?\])$/gm, (match, directive, type, backslash, bracket) => {
+  content = content.replace(/^([ \t]*:::[^\s\[]+)(\\)(\[[^\]]*\])$/gm, (match, directive, backslash, bracket) => {
     modified = true;
     return directive + bracket;  // Return directive + bracket, omitting the backslash
   });
@@ -244,6 +463,17 @@ function processContent(content) {
     return `${contentLine}\n\n${closingDirective}`;
   });
 
+  // Pattern: Closing directive followed directly by markdown content
+  const admonitionPostSpacingPattern = /^([ \t]*:::)$(?:\r?\n)(^[ \t]*\S.*)$/gm;
+  content = content.replace(admonitionPostSpacingPattern, (match, closingDirective, nextLine) => {
+    const trimmedNext = nextLine.trim();
+    if (trimmedNext === '' || trimmedNext.startsWith(':::') || trimmedNext.startsWith('<')) {
+      return match;
+    }
+    modified = true;
+    return `${closingDirective}\n\n${nextLine}`;
+  });
+
   return content;
 }
 
@@ -251,13 +481,28 @@ function formatCrowdinSpacing() {
   console.log(`${colors.blue}${colors.bright}🔧 Formatting MDX files for Crowdin compatibility...${colors.reset}\n`);
 
   // Find all .mdx files
-  const files = glob.sync('docs/**/*.mdx');
+  const patterns = [
+    'docs/**/*.{md,mdx}',
+    'i18n/*/docusaurus-plugin-content-docs/**/*.{md,mdx}',
+  ];
+
+  const fileSet = new Set();
+  patterns.forEach((pattern) => {
+    glob.sync(pattern, { nodir: true }).forEach((file) => {
+      // Skip files inside node_modules just in case patterns broaden over time
+      if (!file.includes('node_modules/')) {
+        fileSet.add(file);
+      }
+    });
+  });
+
+  const files = Array.from(fileSet);
   let totalFixed = 0;
   const fixedFiles = [];
 
   files.forEach(file => {
     const originalContent = fs.readFileSync(file, 'utf8');
-    const formattedContent = processContent(originalContent);
+    const formattedContent = processContent(originalContent, file);
 
     if (formattedContent !== originalContent) {
       fs.writeFileSync(file, formattedContent, 'utf8');
