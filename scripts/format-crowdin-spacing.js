@@ -463,6 +463,17 @@ function processContent(content, filePath) {
     return `${contentLine}\n\n${closingDirective}`;
   });
 
+  // Pattern: Closing directive followed directly by markdown content
+  const admonitionPostSpacingPattern = /^([ \t]*:::)$(?:\r?\n)(^[ \t]*\S.*)$/gm;
+  content = content.replace(admonitionPostSpacingPattern, (match, closingDirective, nextLine) => {
+    const trimmedNext = nextLine.trim();
+    if (trimmedNext === '' || trimmedNext.startsWith(':::') || trimmedNext.startsWith('<')) {
+      return match;
+    }
+    modified = true;
+    return `${closingDirective}\n\n${nextLine}`;
+  });
+
   return content;
 }
 
