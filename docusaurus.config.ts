@@ -432,7 +432,7 @@ const config: Config = {
     { from: "/go/quick-install-guide-set-root-password/", to: "/unraid-os/getting-started/set-up-unraid/deploy-and-configure-unraid-os/#set-a-root-password" },
     { from: "/go/quick-install-guide-settingup/", to: "/unraid-os/getting-started/set-up-unraid/deploy-and-configure-unraid-os/" },
     { from: "/go/quick-install-guide/", to: "/unraid-os/getting-started/set-up-unraid/create-your-bootable-media/" },
-    { from: "/go/recommendations-onbuying-usb-drives/", to: "/unraid-os/system-administration/maintain-and-update/changing-the-flash-device/#selecting-a-replacement-device" },
+    { from: "/go/recommendations-on-buying-usb-drives/", to: "/unraid-os/system-administration/maintain-and-update/changing-the-flash-device/#selecting-a-replacement-device" },
     { from: "/go/release-notes/", to: "/category/release-notes/" },
     { from: "/go/release-notes/6.12.12/", to: "/unraid-os/release-notes/6.12.12/" },
     { from: "/go/release-notes/6.12.13/", to: "/unraid-os/release-notes/6.12.13/" },
