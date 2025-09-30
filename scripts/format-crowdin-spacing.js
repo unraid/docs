@@ -24,6 +24,8 @@ const colors = {
 };
 
 const canonicalAdmonitionTypes = new Set(['note', 'tip', 'info', 'warning', 'caution', 'danger', 'important']);
+// Build a dynamic regex group from canonical types so we don't miss any
+const admonitionTypesGroup = Array.from(canonicalAdmonitionTypes).join('|');
 
 const admonitionSynonyms = new Map([
   ['nota', 'note'],
@@ -275,8 +277,12 @@ function processContent(content, filePath) {
   const newLines = [];
 
   let jsxStack = []; // Track nested JSX elements
+  const admonitionIndentStack = [];
   let inCodeBlock = false;
   let codeBlockDelimiter = '';
+
+  // Precompile regexes that depend on canonical admonition types
+  const admonitionOpeningLineRegex = new RegExp('^\\s*:::(?:' + admonitionTypesGroup + ')\\b');
 
   for (let i = 0; i < lines.length; i++) {
     let line = lines[i];
@@ -330,21 +336,19 @@ function processContent(content, filePath) {
       }
     }
 
+    // Track admonition openings
+    if (admonitionOpeningLineRegex.test(line)) {
+      const indentLength = (line.match(/^(\s*)/)[1] || '').length;
+      admonitionIndentStack.push(indentLength);
+    }
+
     // Handle closing ::: directives
     if (trimmedLine === ':::') {
+      const expectedIndent =
+        admonitionIndentStack.length > 0 ? admonitionIndentStack.pop() : 0;
+      const correctIndent = ' '.repeat(expectedIndent);
+
       if (jsxStack.length > 0) {
-        // Inside JSX: preserve indentation matching the opening directive
-        let openingIndent = 0;
-
-        // Look back to find the opening directive to match its indentation
-        for (let j = i - 1; j >= 0; j--) {
-          if (/^\s*:::(tip|note|warning|caution|info|important)\b/.test(lines[j])) {
-            openingIndent = lines[j].match(/^(\s*)/)[1].length;
-            break;
-          }
-        }
-
-        const correctIndent = ' '.repeat(openingIndent);
         if (line !== correctIndent + ':::') {
           newLines.push(correctIndent + ':::');
           modified = true;
@@ -352,9 +356,8 @@ function processContent(content, filePath) {
           newLines.push(line);
         }
       } else {
-        // Outside JSX: should not be indented
-        if (line !== ':::') {
-          newLines.push(':::');
+        if (line !== correctIndent + ':::') {
+          newLines.push(correctIndent + ':::');
           modified = true;
         } else {
           newLines.push(line);
@@ -434,17 +437,22 @@ function processContent(content, filePath) {
 
   // Pattern: Closing directive followed directly by opening directive
   // E.g., :::important\n...\n:::\n:::note should have blank line between them
-  content = content.replace(/(^[ \t]*:::)$\n(^[ \t]*:::(tip|note|warning|caution|info|important)\b)/gm, (_, closingDirective, openingDirective) => {
+  const closingThenOpeningRegex = new RegExp('(^[ \t]*:::)$\\n(^[ \t]*:::(?:' + admonitionTypesGroup + ')\\b)', 'gm');
+  content = content.replace(closingThenOpeningRegex, (_, closingDirective, openingDirective) => {
     modified = true;
     return `${closingDirective}\n\n${openingDirective}`;
   });
 
   // Pattern: Opening admonition directive (with or without brackets/titles) followed directly by content
   // Matches: :::tip, :::tip\[Title], or :::tip Title formats
-  const admonitionOpenPattern = /^([ \t]*:::(tip|note|warning|caution|info|important)(?:\\?\[.*?\]|[^\n]*))$\n([^\n]+)$/gm;
-  content = content.replace(admonitionOpenPattern, (match, directive, type, nextLine) => {
+  const admonitionOpenPattern = new RegExp('^([ \\t]*:::(?:' + admonitionTypesGroup + ')(?:\\\\?\\[.*?\\]|[^\\n]*))$\\n([^\\n]+)$', 'gm');
+  content = content.replace(admonitionOpenPattern, (match, directive, nextLine) => {
     // Skip if next line is blank or another directive
     if (nextLine.trim() === '' || nextLine.trim().startsWith(':::')) {
+      return match;
+    }
+    const indentLength = (directive.match(/^(\s*)/)[1] || '').length;
+    if (indentLength > 0) {
       return match;
     }
     modified = true;
@@ -459,6 +467,10 @@ function processContent(content, filePath) {
     if (trimmedContent.endsWith('>') || trimmedContent.startsWith(':::')) {
       return match;
     }
+    const indentLength = (closingDirective.match(/^(\s*)/)[1] || '').length;
+    if (indentLength > 0) {
+      return match;
+    }
     modified = true;
     return `${contentLine}\n\n${closingDirective}`;
   });
@@ -468,6 +480,10 @@ function processContent(content, filePath) {
   content = content.replace(admonitionPostSpacingPattern, (match, closingDirective, nextLine) => {
     const trimmedNext = nextLine.trim();
     if (trimmedNext === '' || trimmedNext.startsWith(':::') || trimmedNext.startsWith('<')) {
+      return match;
+    }
+    const indentLength = (closingDirective.match(/^(\s*)/)[1] || '').length;
+    if (indentLength > 0) {
       return match;
     }
     modified = true;
