@@ -24,6 +24,8 @@ const colors = {
 };
 
 const canonicalAdmonitionTypes = new Set(['note', 'tip', 'info', 'warning', 'caution', 'danger', 'important']);
+// Build a dynamic regex group from canonical types so we don't miss any
+const admonitionTypesGroup = Array.from(canonicalAdmonitionTypes).join('|');
 
 const admonitionSynonyms = new Map([
   ['nota', 'note'],
@@ -279,6 +281,9 @@ function processContent(content, filePath) {
   let inCodeBlock = false;
   let codeBlockDelimiter = '';
 
+  // Precompile regexes that depend on canonical admonition types
+  const admonitionOpeningLineRegex = new RegExp('^\\s*:::(?:' + admonitionTypesGroup + ')\\b');
+
   for (let i = 0; i < lines.length; i++) {
     let line = lines[i];
     const trimmedLine = line.trim();
@@ -332,7 +337,7 @@ function processContent(content, filePath) {
     }
 
     // Track admonition openings
-    if (/^\s*:::(tip|note|warning|caution|info|important)\b/.test(line)) {
+    if (admonitionOpeningLineRegex.test(line)) {
       const indentLength = (line.match(/^(\s*)/)[1] || '').length;
       admonitionIndentStack.push(indentLength);
     }
@@ -432,15 +437,16 @@ function processContent(content, filePath) {
 
   // Pattern: Closing directive followed directly by opening directive
   // E.g., :::important\n...\n:::\n:::note should have blank line between them
-  content = content.replace(/(^[ \t]*:::)$\n(^[ \t]*:::(tip|note|warning|caution|info|important)\b)/gm, (_, closingDirective, openingDirective) => {
+  const closingThenOpeningRegex = new RegExp('(^[ \t]*:::)$\\n(^[ \t]*:::(?:' + admonitionTypesGroup + ')\\b)', 'gm');
+  content = content.replace(closingThenOpeningRegex, (_, closingDirective, openingDirective) => {
     modified = true;
     return `${closingDirective}\n\n${openingDirective}`;
   });
 
   // Pattern: Opening admonition directive (with or without brackets/titles) followed directly by content
   // Matches: :::tip, :::tip\[Title], or :::tip Title formats
-  const admonitionOpenPattern = /^([ \t]*:::(tip|note|warning|caution|info|important)(?:\\?\[.*?\]|[^\n]*))$\n([^\n]+)$/gm;
-  content = content.replace(admonitionOpenPattern, (match, directive, type, nextLine) => {
+  const admonitionOpenPattern = new RegExp('^([ \\t]*:::(?:' + admonitionTypesGroup + ')(?:\\\\?\\[.*?\\]|[^\\n]*))$\\n([^\\n]+)$', 'gm');
+  content = content.replace(admonitionOpenPattern, (match, directive, nextLine) => {
     // Skip if next line is blank or another directive
     if (nextLine.trim() === '' || nextLine.trim().startsWith(':::')) {
       return match;
