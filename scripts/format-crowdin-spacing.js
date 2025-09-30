@@ -275,6 +275,7 @@ function processContent(content, filePath) {
   const newLines = [];
 
   let jsxStack = []; // Track nested JSX elements
+  const admonitionIndentStack = [];
   let inCodeBlock = false;
   let codeBlockDelimiter = '';
 
@@ -330,21 +331,19 @@ function processContent(content, filePath) {
       }
     }
 
+    // Track admonition openings
+    if (/^\s*:::(tip|note|warning|caution|info|important)\b/.test(line)) {
+      const indentLength = (line.match(/^(\s*)/)[1] || '').length;
+      admonitionIndentStack.push(indentLength);
+    }
+
     // Handle closing ::: directives
     if (trimmedLine === ':::') {
+      const expectedIndent =
+        admonitionIndentStack.length > 0 ? admonitionIndentStack.pop() : 0;
+      const correctIndent = ' '.repeat(expectedIndent);
+
       if (jsxStack.length > 0) {
-        // Inside JSX: preserve indentation matching the opening directive
-        let openingIndent = 0;
-
-        // Look back to find the opening directive to match its indentation
-        for (let j = i - 1; j >= 0; j--) {
-          if (/^\s*:::(tip|note|warning|caution|info|important)\b/.test(lines[j])) {
-            openingIndent = lines[j].match(/^(\s*)/)[1].length;
-            break;
-          }
-        }
-
-        const correctIndent = ' '.repeat(openingIndent);
         if (line !== correctIndent + ':::') {
           newLines.push(correctIndent + ':::');
           modified = true;
@@ -352,9 +351,8 @@ function processContent(content, filePath) {
           newLines.push(line);
         }
       } else {
-        // Outside JSX: should not be indented
-        if (line !== ':::') {
-          newLines.push(':::');
+        if (line !== correctIndent + ':::') {
+          newLines.push(correctIndent + ':::');
           modified = true;
         } else {
           newLines.push(line);
@@ -447,6 +445,10 @@ function processContent(content, filePath) {
     if (nextLine.trim() === '' || nextLine.trim().startsWith(':::')) {
       return match;
     }
+    const indentLength = (directive.match(/^(\s*)/)[1] || '').length;
+    if (indentLength > 0) {
+      return match;
+    }
     modified = true;
     return `${directive}\n\n${nextLine}`;
   });
@@ -459,6 +461,10 @@ function processContent(content, filePath) {
     if (trimmedContent.endsWith('>') || trimmedContent.startsWith(':::')) {
       return match;
     }
+    const indentLength = (closingDirective.match(/^(\s*)/)[1] || '').length;
+    if (indentLength > 0) {
+      return match;
+    }
     modified = true;
     return `${contentLine}\n\n${closingDirective}`;
   });
@@ -468,6 +474,10 @@ function processContent(content, filePath) {
   content = content.replace(admonitionPostSpacingPattern, (match, closingDirective, nextLine) => {
     const trimmedNext = nextLine.trim();
     if (trimmedNext === '' || trimmedNext.startsWith(':::') || trimmedNext.startsWith('<')) {
+      return match;
+    }
+    const indentLength = (closingDirective.match(/^(\s*)/)[1] || '').length;
+    if (indentLength > 0) {
       return match;
     }
     modified = true;
