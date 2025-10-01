@@ -1,0 +1,75 @@
+---
+sidebar_position: 2
+sidebar_label: 确保您的闪存驱动器安全
+---
+
+# 确保您的闪存驱动器安全
+
+The flash drive is essential to your Unraid server, as it stores all configuration data, licensing, and system settings. Due to its importance, it’s crucial to keep its contents secure and accessible at all times.
+
+## 备份
+
+拥有闪存驱动器的最新备份可以保证您在硬件故障、意外更改或数据损坏时能够快速恢复。请务必在以下情况备份：
+
+- 在升级 Unraid 或安装插件之前
+- 添加或移除驱动器后
+- 更改网络、共享或安全设置后
+- 进行重大配置更改之前
+- 定期作为日常维护的一部分
+
+要使用 Unraid %%WebGUI|web-gui%% 备份您的闪存驱动器，请按照以下步骤操作：
+
+1. 在**主**选项卡中选择您的闪存驱动器。
+2. 在**闪存设备设置**中，点击**闪存备份**。
+
+<div style={{ margin: 'auto', maxWidth: '600px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+  ![选择闪存备份按钮](/img/flashbackup.png)
+</div>
+
+3. Unraid 将创建一个包含闪存驱动器内容的 ZIP 文件。
+4. Save this ZIP file to a secure location outside your Unraid server (like a separate PC, NAS, or cloud storage).
+
+如果需要重新创建您的闪存驱动器，请使用此备份和[USB Creator工具](https://unraid.net/download)。
+
+:::tip
+
+在进行任何硬件更改后，考虑保存您的[磁盘分配](../../getting-started/set-up-unraid/configure-your-array.mdx#assign-parity-and-data-disks)的屏幕截图。这样可以确保在需要从备份恢复时磁盘能正确放置。
+
+:::
+
+---
+
+## 网络访问
+
+You can control whether your flash drive is accessible over the network, similar to other shares in Unraid. However, network access should be restricted since the flash drive contains sensitive configuration and licensing data. Consider the following:
+
+- **网络可见性：** 决定是否需要在网络上显示或隐藏您的闪存驱动器。
+- **访问权限：** 如果启用了网络访问，请设置权限以限制谁可以查看或修改其内容。
+
+:::important[Reducing 安全风险]
+
+- **禁用共享：** 将闪存驱动器的%%SMB|samba%%导出设置为**否**以完全阻止网络访问。
+- **限制访问：** 如果必须共享闪存驱动器，请将安全性设置为**私有**，仅允许受信任的用户使用强密码访问。
+- **避免公共访问：** 切勿将闪存驱动器共享设置为**公开**或**安全**且具有访客写入访问权限。
+
+这些步骤有助于防止未经授权的更改或关键文件的暴露。
+
+:::
+
+---
+
+## 权限
+
+为了增强系统安全性，闪存驱动器上的文件不能再被授予执行权限。此更改可防止恶意或意外代码直接从闪存驱动器运行，降低被利用或系统意外修改的风险。
+
+如果您在闪存驱动器上存储了自定义脚本或程序，请按以下步骤操作：
+
+1. **复制脚本到可执行位置：**
+   - 如果您希望脚本位于默认系统路径，请使用`/usr/local/bin`。
+   - 通过向`config/go`文件添加复制命令来自动化这一过程。
+   - 复制后，为文件设置执行权限。
+
+2. **用解释器运行脚本：**
+   - 为脚本添加解释器前缀（例如，`bash /boot/config/scripts/myscript.sh`）。
+
+这种方法可以让系统保持安全，同时允许高级用户运行他们的脚本。
