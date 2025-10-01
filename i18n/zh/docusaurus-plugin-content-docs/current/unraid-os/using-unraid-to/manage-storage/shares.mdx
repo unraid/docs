@@ -1,0 +1,654 @@
+---
+sidebar_position: 1
+sidebar_label: 共享
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import SharesPrimaryStorage612 from './partials/shares-primary-storage-612.mdx';
+import SharesPrimaryStorage611 from './partials/shares-primary-storage-611.mdx';
+import SharesCacheToArray612 from './partials/shares-cache-to-array-612.mdx';
+import SharesCacheToArray611 from './partials/shares-cache-to-array-611.mdx';
+import SharesArrayToCache612 from './partials/shares-array-to-cache-612.mdx';
+import SharesArrayToCache611 from './partials/shares-array-to-cache-611.mdx';
+
+# 共享
+
+Unraid 的一个关键功能是共享的管理。共享是在您的 Unraid 服务器上可以通过网络访问的文件夹或驱动器。您可以在 Unraid 服务器上创建任意多的共享。这些共享可以被保护，并且其配置决定了数据如何在您的 %%array|array%% 或命名的 %%pool|cache-pool%% 驱动器中写入和分布。
+
+Unraid 提供两种类型的共享，以优化您的数据管理：
+
+- [**用户共享**](#user-shares): 这些利用 **Linux FUSE** 并表示更大文件系统内的文件夹。
+- [**磁盘共享**](#disk-shares): 这些使用驱动器的[文件系统](./file-systems.mdx)共享整个磁盘。
+
+<div style={{ margin: 'auto', maxWidth: '500px'}}>
+  ![用户共享与磁盘共享](/img/usersharesvsdiskshares.png)
+</div>
+
+需记住，两种共享类型展示的是同一底层文件系统的不同视图；在 %%user share|user-share%% 可见的任何文件或文件夹将在其相应的物理驱动器的磁盘共享下也会可见。
+
+当您启动 Docker 或 VM 管理器等服务时，Unraid 会自动创建一个[默认用户共享集](#default-shares)，旨在支持常见插件、Docker 容器和**虚拟机 (VMs)**。根据需要，您可以方便地为个人数据创建额外的共享。
+
+:::note
+
+要管理共享，只需导航到 WebGUI 中的 **Shares** 选项卡。在此处，您可以通过 ***Settings → Global Share Settings*** 轻松启用或禁用共享。默认情况下，%%user shares|user-share%% 是启用的，为您的文件组织提供了简单的起点。
+
+:::
+
+---
+
+## 用户共享
+
+%%User shares|user-share%% 提供了在 **%%cache|cache%%** 和 **array 驱动器** 跨同名顶级文件夹的聚合视图。共享名称对应于文件夹名称，创建了一个跨多个驱动器的统一网络访问视图。需要注意的是，虽然目录看起来是合并的，但单个文件仍然存储在单个驱动器上。
+
+### 管理用户共享
+
+您可以从 **WebGUI** 中的 **Shares** 选项卡中访问和管理 %%User shares|user-share%%。此界面允许您：
+
+- 查看所有现有共享
+- 创建新共享
+- 修改或删除现有共享
+
+在驱动器上手动创建的任何顶层文件夹会自动识别为用户共享并分配默认属性。
+
+### 文件系统结构
+
+在 Linux 上，%%User shares|user-share%% 可通过 `/mnt/user` 访问，结合了来自 %%array|array%% 和 %%pools|cache-pool%% 的文件。此逻辑视图覆盖了物理文件系统，这意味着文件也可以通过 **Disk Shares** 在驱动器级别查看。
+
+:::warning
+
+已弃用的 `/mnt/user0` 挂载点（不包括 %%pool|cache-pool%% 文件）可能在未来的 Unraid 版本中删除。
+
+:::
+
+### 存储分配
+
+存储文件的物理驱动器由共享设置决定，例如\*\*%%Allocation Method|allocation-method%%**、**%%Included/Excluded Disks|included-or-excluded-disks%%\*\* 和 **%%Split Level|split-level%%**。对这些设置的更改只会影响新文件；现有文件将保持不变，除非手动移动。
+
+:::caution\[Critical]
+
+**请勿混用用户共享和磁盘共享**
+
+切勿直接在 **user share** 和 **disk share** 之间复制或移动文件（例如，在 `/mnt/user/share` 和 `/mnt/disk1/share` 之间），特别是当文件夹名称相同时。这可能导致文件损坏或永久数据丢失。
+
+有关安全文件管理实践和更多细节，请参见下方的[磁盘共享指南](#disk-share-guidelines)。
+
+:::
+
+### 添加共享
+
+在创建共享之前，请考虑如何使用它、您的性能需求、安全性以及文件应存储在哪里。
+
+要添加共享：
+
+1. **开始过程：** 转到 **Shares** 标签并点击 **添加共享**。
+
+2. **选择共享名称：** 为您的共享选择一个独特的名称，例如 `媒体` 或 `文档`。
+
+:::important[Share 名称]
+
+尽管网络共享 (%%SMB|samba%%) 不区分大小写（例如，`MEDIA` 与 `media` 同样），但 Linux 文件系统会。避免使用仅大小写不同的名称来防止问题。
+
+:::
+
+3. **可选设置：**
+   - **备注：** 写下简短描述以标识您的共享（例如，“家庭照片”）。
+   - **Minimum Free Space:** 决定最小免费空间量（例如，`50GB` 用于大文件）。  （有关更多详细信息，请参见[Minimum free space](#minimum-free-space)）
+
+4. **选择存储位置：**
+
+   - **主存储：** 选择共享的初始存储位置（例如，**%%cache|cache%%**、**%%array|array%%** 或特定 %%pool|cache-pool%%）。
+   - **次级存储：** 设置一个溢出位置，可以在主存储已满时使用，也可以作为 %%Mover|mover%% 运行后的共享最终目的地。
+
+   （有关更多详细信息，请参见[主存储和次级存储](#primary-and-secondary-storage)）
+
+5. **设置数据规则：**
+   - **%%Allocation Method|allocation-method%%:** 选择数据存储方式 - 选项包括 high-water、fill-up 或 most-free。  （有关更多详细信息，请参见[Allocation method](#allocation-method).）
+   - **%%Split Level|split-level%%:** 确定文件夹应如何组织。（有关更多详细信息，请参见[Split level](#split-level).）
+
+6. **管理驱动器：**
+
+   - **包含的磁盘：** 选择要包含的特定驱动器（例如，`disk1,disk2`）。
+   - **排除的磁盘：** 指定任何您要排除的驱动器（比如老旧驱动器）。
+
+   （有关更多详细信息，请参见[包括或排除的磁盘](#included-or-excluded-disks)）
+
+:::tip
+
+您可以配置**包含的**磁盘或**排除的**磁盘，但不能同时配置两者。
+
+:::
+
+7. **Mover 设置（如果需要）**
+
+   - **Mover 动作：** 决定数据移动的方向（要么 *主 → 次*，要么 *次 → 主*）。
+
+   （有关更多详细信息，请参见[在缓存和阵列之间移动文件](#moving-files-between-cache-and-array)）
+
+8. **完成过程：** 点击 **添加共享** 完成您的新共享的设置。
+
+:::important
+
+默认情况下，新共享将不会通过网络共享。您必须在创建共享后配置[网络访问](../../system-administration/secure-your-server/security-fundamentals.mdx#managing-network-visibility-of-shares)。
+
+:::
+
+### 删除共享
+
+:::important
+
+为了防止任何潜在的数据丢失，包含数据的共享无法删除。因此，您应该先删除或重新定位共享内的所有内容。始终仔细检查以确认共享为空，然后再继续删除以确保安全。
+
+:::
+
+**包含数据的共享**
+
+对于包含数据的共享：
+
+1. **首先清空共享：**
+   - 使用内置的 **文件管理器** 可通过系统快捷方式（***工具 → 文件管理器***）访问，或点击右上角的 ![文件管理器](/img/filemanager.png) 图标。
+   - 在 **Shares** 中找到您的共享并点击 **浏览** 图标。
+   - 使用文件管理器删除或移动所有文件。
+
+<details>
+  <summary>使用命令行（高级）</summary>
+
+  1. **打开终端：** 使用 **Web Terminal** （***工具 → 终端***) 或通过 %%SSH|ssh%% 连接。
+
+  2. **Delete files:**
+     Run this command, replacing `[share_name]` with your share's name:
+
+  ```
+  rm -rf /mnt/user/[share_name]/*
+  ```
+
+  3. **删除共享：** 按上述步骤删除空共享。
+
+  :::注意
+
+  - `rm -rf` 命令将永久删除文件。使用前请仔细检查。
+  - 确保没有 Docker 或 VM 服务正在使用共享后再删除它。
+    :::
+</details>
+
+:::note[Alternative 方法]
+
+如果您可以通过网络访问共享：
+
+- 使用 **Windows 资源管理器** (%%SMB|samba%%) 或 **macOS Finder** (%%AFP|AFP%%/%%SMB|samba%%) 连接到共享。
+- 手动删除文件，然后通过 **WebGUI** 删除共享。
+
+:::
+
+2. **删除共享：**
+   - 返回到 **Shares** 并点击现在空的共享。
+   - 选中 **删除** 框并点击 **删除**。
+   - 确认并点击 **完成**。
+
+#### 删除一个空共享
+
+1. 转到**Shares** 选项卡。
+2. 点击要删除的共享。
+3. 勾选 **Delete** 旁边的框。按钮将变为 **Delete**。
+4. 点击 **删除**。
+5. 确认删除并点击 **完成**。
+
+---
+
+## 共享设置
+
+### 最小空闲空间
+
+**Minimum Free Space** 设置与 **%%allocation method|allocation-method%%** 和 **%%split level|split-level%%** 结合使用，以确定新文件存储位置。此设置指定驱动器上必须保留的免费空间量，以使其有资格进行新文件写入。如果驱动器的免费空间低于此阈值，Unraid 将停止在该驱动器上放置新数据，前提是 **%%split level|split-level%%** 允许分裂到另一个磁盘。
+
+<details>
+  <summary><strong>工作原理</strong> - 点击展开/收起</summary>
+
+  When transferring a file (e.g., `file.eg`), Unraid selects a disk based on available settings but cannot predict the final size of the file. If the chosen disk runs out of space during the transfer, the operation will fail with a "disk full" error. To prevent this, set the **Minimum Free Space** to a value that is larger than your largest file. This ensures that Unraid avoids disks that cannot accommodate the entire file.
+</details>
+
+<h4>建议</h4>
+
+将此值设置为**最大文件的两倍**。例如：
+
+- 如果您最大的文件是 8GB，设置最小空闲空间为 16GB。
+
+此缓冲区可解释文件大小差异并有助于防止传输失败。
+
+<h4>配置</h4>
+
+- 以 KB、MB、GB 或 TB 为单位输入值（例如，`50GB`）。
+- 新的 %%user shares|user-share%% 默认值为磁盘总容量的 10%。
+
+:::warning
+
+在使用*填满* %%allocation method|allocation-method%%时，总是配置**最小可用空间**。如果您不设置它，您可能会在写入操作期间遇到“磁盘满”错误。
+
+:::
+
+:::caution
+
+There is a separate **Minimum Free Space** setting for **%%cache pools|cache-pool%%**. You can access this by going to the **Main** tab and clicking on a %%pool|cache-pool%%. Make sure to set this value higher than your largest file to avoid overfilling, especially for shares configured with *Yes* or *Prefer* cache modes.
+
+:::
+
+<h4>限制</h4>
+
+- Unraid 优先考虑 **%%split level|split-level%%** 规则而非免费空间设置。如果不允许分裂，文件可能仍会填满磁盘，而不考虑免费空间阈值。
+- 更新现有文件（例如，扩展备份文件）不会触发重新分配，随着时间的推移可能导致“磁盘已满”错误。
+
+有关更详细的指导，请使用 **WebGUI** 中配置共享时的 **帮助** 图标。
+
+---
+
+## 主存储和次级存储
+
+Unraid 的存储管理让您可以控制新文件的写入位置以及数据如何在 %%pools|cache-pool%%、%%cache|cache%% 和 %%array|array%% 之间移动。Unraid 6.12+ 和早期版本的选项和术语不同。
+
+<Tabs>
+  <TabItem value="6.12" label="Unraid 6.12及更高版本" default>
+    <SharesPrimaryStorage612 />
+  </TabItem>
+
+  <TabItem value="6.11" label="Unraid 6.11及更早版本">
+    <SharesPrimaryStorage611 />
+  </TabItem>
+</Tabs>
+
+---
+
+### 在缓存和数组之间移动文件
+
+Unraid 提供了一种简单的方法来管理 **%%cache pools|cache-pool%%** 和 **%%array|array%%** 之间的文件放置，使您能够优化性能并有效管理数据。关键是根据您的首选数据流设置共享设置，并让 **%%Mover|mover%%** 根据其日程表自动处理文件传输。
+
+:::tip[Scheduling the Mover]
+
+您可以通过进入 **Settings → Scheduler → Mover Settings** 配置 [**%%Mover|mover%%** 日程表](../../getting-started/set-up-unraid/customize-unraid-settings.mdx#scheduler)。在非高峰时段自动运行，有助于在 %%cache|cache%% 和 %%array|array%% 之间移动文件，而无需手动操作。
+
+:::
+
+#### 缓存到数组
+
+*使用场景:* 将文件从高速 %%cache|cache%% 移到 %%array|array%% 以长期存储。
+
+<Tabs>
+  <TabItem value="6.12+" label="Unraid 6.12+" default>
+    <SharesCacheToArray612 />
+  </TabItem>
+
+  <TabItem value="6.11" label="Unraid 6.11或更低版本">
+    <SharesCacheToArray611 />
+  </TabItem>
+</Tabs>
+
+#### 数组到缓存
+
+*使用场景：* 通过将文件移动到 %%cache|缓存%% 提升 Docker 容器和虚拟机的性能。
+
+<Tabs>
+  <TabItem value="6.12+" label="Unraid 6.12+" default>
+    <SharesArrayToCache612 />
+  </TabItem>
+
+  <TabItem value="6.11+" label="Unraid 6.11或更低版本">
+    <SharesArrayToCache611 />
+  </TabItem>
+</Tabs>
+
+:::tip[Enabling 启用 Mover 日志记录以进行故障排查]
+
+如果您遇到文件移动问题，可以通过 ***Settings → Scheduler → Mover Settings*** 页面启用 **Mover 日志记录**。这会记录每个移动的文件，并可在 ***Tools → System Log*** 中查看。
+
+:::
+
+:::caution[Critical 双向关键步骤]
+
+- 确保您的 %%parity|parity%% 是有效的，然后将文件从 %%array|array%% 移动到 %%cache|cache%%。
+- 如果处理大型数据集，请通过日志监控 %%Mover|mover%% 活动。
+- 如果出现文件"卡住"的情况，请考虑暂时禁用 Docker 和虚拟机管理器，然后通过 ***主菜单 → 数组操作 → 移动*** 手动运行 %%Mover|mover%%。
+
+:::
+
+---
+
+### 分配方法
+
+当您创建新用户共享或在其中添加任何文件或文件夹时，系统需要决定将数据存储在哪里。通常，它会选择可用空间最多的数据磁盘。不过，您可以调整某些设置来改变这种决策。
+
+您可以选择三种简单的选项来选择系统为您的用户共享分配存储的方式：
+
+<Tabs>
+  <TabItem value="high-water" label="高水位（推荐）" default>
+    <h4>原理</h4>
+
+    The **High-water** method progressively fills disks using "switch points" based on half the largest drive's capacity. This balances disk usage while keeping related files together and minimizing drive spin-ups.
+
+    <h4>示例：8TB，3TB 和 2TB 驱动器</h4>
+
+    1. **第一步:** 将 8TB 驱动器填满，直到剩余 4TB 空间（8TB 的一半）。
+    2. **第二步:** 填满 8TB/3TB 驱动器，直到剩余 2TB 空间。
+    3. **第三步:** 填满所有驱动器，直到剩余 1TB 空间。
+
+    <h4>最佳用途：</h4>
+
+    - 媒体服务器（例如 Plex）
+    - 情境，需要在更少的磁盘上保持文件以提高停转效率
+    - 大小混合的数组
+
+    :::note
+    High-water is the default method and works well for most users. It reduces drive thrashing compared to "Most-free."
+    :::
+  </TabItem>
+
+  <TabItem value="most-free" label="Most-Free">
+    <h4>原理</h4>
+
+    The **Most-free** method selects the disk with the most free space for each new file. This maximizes storage efficiency but increases drive thrashing.
+
+    <h4>性能影响</h4>
+
+    - 频繁的磁盘切换使多个驱动器保持转动
+    - 由于交叠的操作可能降低 %%parity|parity%% 写入速度
+
+    <h4>最佳用途：</h4>
+
+    - 高通量工作流（例如视频编辑）
+    - Temporary or %%cache|cache%%-like data
+    - 阵列中性能比节能更重要
+
+    :::tip
+    Combine with **%%split level|split-level%%** settings to group related files despite frequent disk switching.
+    :::
+  </TabItem>
+
+  <TabItem value="fill-up" label="Fill-Up">
+    <h4>原理</h4>
+
+    **Fill-up** 方法按数字顺序将文件写入磁盘，直到达到 **最小剩余空间** 阈值，然后转移到下一个磁盘。
+
+    <h4>要求</h4>
+
+    - 始终设置 **最小剩余空间**（例如 2x 最大文件大小）
+    - 配置 **分层级别** 控制文件分组
+
+    <h4>最佳用途：</h4>
+
+    - 静态数据归档
+    - 喜欢手动管理磁盘的用户
+    - 具有相同驱动器大小的阵列
+
+    :::caution
+    Without **Minimum Free Space** configured, "disk full" errors will occur when a drive nears capacity.
+    :::
+  </TabItem>
+</Tabs>
+
+---
+
+### 分级水平
+
+Unraid 中的 **Split Level** 设置有助于管理文件和文件夹在多个磁盘中的组织方式。它决定了文件夹结构在不同磁盘上可以深入的程度，同时保持某些文件在一起。%%split level|split-level%% 从 1 开始编号，其中顶层（主共享）视为第 1 级。
+
+<Tabs>
+  <TabItem value="auto-any" label="自动分割任何目录（默认）" default>
+    <h4>行为</h4>
+
+    Unraid creates any required folders on the selected disk, regardless of folder depth. New files and folders are placed based on %%allocation method|allocation-method%% and available space, even if their parent directories do not already exist on that disk.
+
+    <h4>用例</h4>
+
+    Best for general data shares where folder structure is not critical, such as downloads or mixed media libraries. Allows maximum flexibility for file placement and disk utilization.
+  </TabItem>
+
+  <TabItem value="auto-top" label="仅自动拆分顶层">
+    <h4>行为</h4>
+
+    Unraid will only create first-level subfolders on a disk if they don’t already exist. For deeper folders, new files and folders are placed on the disk where the parent directory exists.
+
+    <h4>用例</h4>
+
+    非常适合媒体库（例如，电影/标题），在这种情况下，您希望特定子文件夹的所有文件（如电影或电视节目）保留在同一个磁盘上。
+  </TabItem>
+
+  <TabItem value="auto-n" label="自动拆分顶层“N”级">
+    <h4>行为</h4>
+
+    You specify how many directory levels (N) Unraid will manage automatically. For folders at or above level N, Unraid can create them as needed. For deeper levels, new files are placed on the disk where the parent directory exists.
+
+    <h4>用例</h4>
+
+    适用于复杂的文件夹结构，如嵌套项目目录，您希望将相关内容超越顶层分组在一起。
+  </TabItem>
+
+  <TabItem value="手册" label="手动（无自动拆分）">
+    <h4>行为</h4>
+
+    Unraid only places new files or folders on disks where the parent directory already exists. No new directories are created automatically.
+
+    <h4>用例</h4>
+
+    最适合希望完全手动控制文件放置的高级用户，或文件夹结构必须保持固定的归档数据。
+  </TabItem>
+</Tabs>
+
+:::important
+
+若 **Minimum Free Space**、**Split Level** 和 **%%Allocation Method|allocation-method%%** 之间存在冲突，则 **Split Level** 设置优先。这可能导致“空间不足”错误，即使其他驱动器有可用空间。
+
+:::
+
+---
+
+### 包含或排除的磁盘
+
+这些设置帮助您管理哪些驱动器可以保存您的共享文件。可以包含特定磁盘或排除某些磁盘 - 只是不要同时进行！如果您没有选择特定磁盘，***Settings → Global Share Settings*** 中允许的所有驱动器都将被使用。
+
+Unraid 首先检查任何包含的磁盘，然后查看排除的磁盘以确定存储文件的位置。之后，它利用 %%split level|split-level%% 和 %%allocation method|allocation-method%% 选择合适的磁盘。
+
+<div style={{ margin: 'auto', maxWidth: '272px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+  ![磁盘选择逻辑](/img/diskselectionlogic.png)
+</div>
+
+:::important
+
+%%included 和 excluded disks|included-or-excluded-disks%% 的设置仅影响可以保存新文件的位置。即使匹配您的共享名的文件夹上的任何现有文件仍然可以从不同磁盘读取。
+
+:::
+
+<Tabs>
+  <TabItem value="include" label="包含的磁盘" default>
+    <h4>行为</h4>
+
+    Unraid will only consider the listed disks when deciding where to place new files for the share. All other disks are ignored for new writes, but files already present on other disks remain accessible for reading.
+
+    <h4>用例</h4>
+
+    如果您希望将共享限制在某些磁盘，例如将重要文件放在较新或更高容量的驱动器上，或将媒体库隔离到特定磁盘以获得性能或组织原因，请使用此设置。
+  </TabItem>
+
+  <TabItem value="exclude" label="排除的磁盘">
+    <h4>行为</h4>
+
+    Unraid will use all eligible disks except those listed here when placing new files for the share. As with included disks, files already present on excluded disks remain accessible for reading.
+
+    <h4>用例</h4>
+
+    使用此设置可防止共享使用某些磁盘，例如排除旧驱动器、较慢的磁盘或保留给其他数据类型的驱动器。
+  </TabItem>
+</Tabs>
+
+---
+
+### 默认共享
+
+当您使用 **Docker** 或 **虚拟机（VMs）** 的时候，Unraid 会自动创建一些默认共享。
+
+:::important
+
+这些共享仅在启动其相应的服务（Docker 或 VM 管理器）后创建。如果未见这些共享，请确保 Docker 和/或 VM 管理器已启用并运行。
+
+:::
+
+如果不想使用这些共享，可以删除它们，但我们通常建议保留它们以方便。这些共享有助于保持组织性，并在遇到问题时更易于获取支持。
+
+以下是每个默认共享的快速概述：
+
+- `appdata`：这是您的 Docker 容器的所有工作文件的存储位置。每个 Docker 容器通常在此处都有自己的文件夹。
+- `system`：此共享包含您 Docker 应用程序的基本文件和您的虚拟机的 XML 模板。
+- `domains`：此共享专门用于存储您的虚拟机使用的虚拟磁盘映像 (vdisks)。
+- `isos`：这是用于存储您希望与虚拟机一起使用的 ISO 映像。
+
+:::important
+
+最好不要更改大多数这些默认共享的权限，因为这样可能导致 Docker 容器和 VM 的工作问题。建议更改权限的唯一共享是 `isos` 共享，因为该共享可以通过网络访问以添加用于虚拟机的新 ISO 文件。
+
+:::
+
+---
+
+## 磁盘共享
+
+磁盘共享只是您的 Unraid 系统中可以通过网络访问的单个驱动器或 %%pools|cache-pool%% 驱动器。默认情况下，这些共享是关闭的，但您可以通过 ***Settings → Global Share Settings*** 部分轻松启用它们。
+
+为了确保安全，请务必适当地设置这些共享的[用户访问权限](../../system-administration/secure-your-server/user-management.mdx)。如果您的网络有多个用户访问，这一点尤为重要。
+
+要启用磁盘共享：
+
+1. 导航到 **设置**。
+2. 点击 **全局共享设置**。
+3. 打开磁盘共享，使它们在您的网络中可见。
+
+一旦启用，您将在 Unraid GUI 中 **Shares** 标签下的 **Disk Shares** 部分注意到磁盘共享。您的 %%array|array%% 中的每个驱动器都可以这样访问：
+
+- **个别驱动器：** 这些以 `/mnt/diskX` 形式出现，其中 X 是磁盘编号（例如，`disk1`，`disk2` 等）。
+- **成组驱动器：** 如果您有多个驱动器结合在一起，它们将显示为 `/mnt/pool-name`。最常见的 %%pools|cache-pool%% 叫做 `cache`，但您可以根据自己的喜好命名您的 %%pools|cache-pool%%。
+
+:::important
+
+存储 Unraid 设置的 Unraid 闪存设备不被视为磁盘共享。如果您希望它在网络上可访问，可以将其设置为名为 'flash' 的共享。此设备在 Linux 中挂载于 `/boot`。
+
+出于安全原因，最好将您的共享保持在*私有*模式下，仅授予可信用户访问权限。
+
+:::
+
+### 磁盘共享指南
+
+:::danger[Important 提醒]
+
+**切勿直接在用户共享和磁盘共享之间复制文件**，如果它们的文件夹名称相同，这可能导致文件被损坏或删除，进而永久丢失数据。
+
+:::
+
+**User shares** 和 **disk shares** 在界面中可能看起来不同，但可以指向磁盘上的相同文件。Linux 命令如 `cp` 或 `rsync` 无法总是区分，这可能意外导致文件覆盖或删除。
+
+**安全复制提示**
+
+1. **坚持一种类型的共享：**
+   - 仅在 %%user shares|用户共享%% 或磁盘共享之间复制文件，而不要同时在两者之间。
+   - *示例：* 将文件从一个用户共享复制到另一个用户共享: `cp /mnt/user/share1/file /mnt/user/share2/file`
+
+2. **安全使用外接驱动器：**
+   - 使用 **[Unassigned Devices plugin](https://unraid.net/community/apps?q=unassigned+devices#r:~:text=don%27t%20be%20carefull!!!-,Unassigned%20Devices,-dlandon)** 连接外接驱动器以防止问题。
+   - 从 `/mnt/disks/` 复制文件，而不是从主要的 %%array|阵列%% 或 %%cache|缓存%% 路径。
+
+3. \*\*核对副本：\*\*在本地移动文件时，您可以使用 `rsync -c` 检查文件是否正确复制。
+
+4. **不混用共享类型：** 避免使用同时混合 %%user shares|用户共享%% 和磁盘共享的路径，例如在同一命令中用 `/mnt/user/share/` 和 `/mnt/disk1/share/`。
+
+---
+
+## 从网络共享传输文件
+
+有几种工具可用于将文件从 Windows 或 Linux 共享复制到您的 Unraid 服务器。为了保持简单和可靠，应首先使用内置的 Unraid 文件管理工具，然后探索第三方选项。
+
+### 使用 Midnight Commander (内置)
+
+Unraid 包含 **Midnight Commander** (`mc`)，一个基于文本的双窗格文件管理器。您可以通过 [web terminal](../../system-administration/advanced-tools/command-line-interface.mdx) 访问它。
+
+1. **打开网页终端：** 您可以在 Unraid WebGUI 的右上角菜单中找到此选项。
+2. **启动 Midnight Commander：**
+
+   ```bash
+   mc
+   ```
+
+   此界面提供在本地共享和挂载的网络路径之间拖放导航。
+3. **挂载网络共享** （如果还未挂载）：
+
+   ```bash
+   mkdir /work
+   mount -t cifs //workstation/share /work -o username=youruser,password=yourpassword,iocharset=utf8
+   ```
+
+   - 用适当的值替换 `workstation`、`share` 和 `youruser`。
+   - `iocharset=utf8` 选项有助于保持国际文件名。
+4. **使用 MC 窗格** 在 `/work`（网络共享）和任何 `/mnt/user/` 或 `/mnt/diskX` 共享之间传输文件。
+5. **事后清理：**
+
+   ```bash
+   umount /work
+   rmdir /work
+   ```
+
+Midnight Commander 完全在内置系统中运行，无需额外安装。适合大多数传输需求，包括涉及 Unicode 文件名的情况，并在源和目标支持时保留文件属性。
+
+### 使用 Krusader
+
+如果您更喜欢图形用户界面，您可以使用 Docker 容器如 [Krusader](https://unraid.net/community/apps?q=krusader#r:~:text=batch%20renaming%2C%20etc.-,Krusader,-Productivity%2C%20Tools) 作为第三方解决方案。
+
+1. **安装 Krusader：**
+   - 导航到 **应用** 选项卡（社区应用程序）。
+   - 搜索并安装 **Krusader** Docker 容器。
+2. **启动 Krusader：** 启动容器，并从 **Docker** 选项卡访问其 WebUI。
+3. **在 Krusader 中连接到远程共享**，并使用拖放或复制粘贴在网络共享和您的 Unraid %%array|阵列%% 之间传输文件。
+
+:::info
+
+其他流行的文件管理器容器包括 [**Double Commander**](https://unraid.net/community/apps?q=double+commander#r:~:text=of%201%20App-,doublecommander,-Tools%20/%20Utilities%2C) 和 [**CloudCommander**](https://unraid.net/community/apps?q=cloudcommander#r:~:text=of%201%20App-,CloudCommander,-Tools%20/%20Utilities%2C)，通过社区应用程序提供。
+
+:::
+
+### 命令行方法
+
+对于高级用户或使用自动化的用户，您还可以使用命令行传输方法。
+
+<details>
+  <summary>点击展开命令行说明</summary>
+
+  1. **打开终端**（Web Terminal 或 %%SSH|ssh%% 以 `root` 身份）。
+
+  2. **创建并挂载网络共享：**
+
+     ```bash
+     mkdir /work
+     mount -t cifs //workstation/share /work -o username=youruser,password=yourpassword,iocharset=utf8
+     ```
+
+  3. **复制文件：**
+     - 您可以使用 `cp`：
+
+       ```bash
+       cp -r /work/* /mnt/disk1
+       ```
+
+     - 或者，使用 `rsync` 以获取详细进度：
+
+       ```bash
+       rsync -av --progress /work/ /mnt/disk1/
+       ```
+
+  4. **卸载并删除临时目录：**
+
+     ```bash
+     umount /work
+     rmdir /work
+     ```
+</details>
+
+:::caution
+
+传输带有特殊或国际字符的文件时，始终使用 `iocharset=utf8` 选项挂载共享。若未这样做，可能导致其他平台上的文件名错误或无法读取。
+
+此外，如果您通过终端作为 `root` 复制文件，文件可能会有严格的权限。若发生此情况，请使用 WebGUI 中的 **New Permissions** 工具，或如果处理涉及 Docker 的共享，请使用 **Docker Safe New Perms** 来重置权限，确保所有用户都有网络访问权限。
+
+:::
