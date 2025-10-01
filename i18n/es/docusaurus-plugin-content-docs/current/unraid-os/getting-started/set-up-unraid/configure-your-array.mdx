@@ -1,0 +1,97 @@
+---
+sidebar_position: 3
+sidebar_label: Configura tu matriz
+---
+
+# Configura tu matriz
+
+Después de instalar su clave de registro, el siguiente paso es configurar su almacenamiento asignando dispositivos al %%array|array%% y **dispositivos de agrupación**. Esta configuración determina cómo el sistema operativo Unraid gestiona sus datos, los protege con %%parity|parity%% y optimiza el rendimiento con %%cache pools|cache-pool%%.
+
+:::important
+
+Si tienes dificultades con alguna parte de la instalación de Unraid, asegúrate de consultar nuestro [FAQ de Instalación](../../troubleshooting/faq.mdx#installation)!
+
+:::
+
+## Asignar Discos de Paridad y Datos
+
+Usarás la pestaña **Principal** en el Unraid %%WebGUI|web-gui%% para asignar y revisar dispositivos, incluidos %%array|array%% y las asignaciones de pool junto con cualquier dispositivo no asignado y tu dispositivo de arranque (el **dispositivo USB flash**).
+
+![Configurando la matriz](/img/configuringarray1.png)
+
+### Roles de Dispositivos
+
+Unraid OS utiliza discos para varios propósitos:
+
+- **Dispositivos de Matriz**, que se dividen en dos categorías:
+  - **Dispositivos de paridad:** Proporcionan tolerancia a fallos, permitiendo la recuperación de datos si un disco de datos falla. Puede asignar hasta dos discos de paridad.
+  - **Dispositivos de Datos:** Almacenan tus comparticiones y carpetas personalizadas, así como cualquier archivo que agregues, como archivos multimedia.
+
+- **Dispositivos de Pool:** Unidades de alto rendimiento usadas principalmente como una **caché**, almacenando archivos temporalmente para mejorar el rendimiento antes de transferirlos al %%array|array%%.
+
+- **Dispositivo de Arranque:** El dispositivo USB flash que contiene Unraid OS, que inicia tu servidor.
+
+<details>
+  <summary>Recomendaciones de asignación de discos</summary>
+
+  Estas recomendaciones de asignación de discos están elaboradas para optimizar tu %%array|array%% de Unraid, mejorando el rendimiento, la protección de datos y la expansión futura. Al seguir estas indicaciones, puedes maximizar eficazmente tus dispositivos de almacenamiento y evitar problemas comunes de configuración.
+
+  1. **Select the largest %%parity device|parity-drives%%:**
+     Always choose the largest available storage device as your %%parity device|parity-drives%%(s). When expanding your %%array|array%%, data disks must be equal to or smaller than your %%parity device|parity-drives%%(s). You should purchase the largest **HDD** for your initial %%parity device|parity-drives%% to avoid future limitations. For dual %%parity disks|parity-drives%%, each parity disk must be greater than or equal to the largest data disk.
+
+  2. **Utiliza HDDs para el %%array|array%% y unidades SSD/NVMe para los pools:**
+     Para un rendimiento óptimo, usa **HDDs** como los principales dispositivos de almacenamiento en el %%array|array%% para almacenamiento general y protección de %%paridad|parity%%. Asigna unidades **SSD** o **NVMe** a un %%cache pool|cache-pool%% o un pool dedicado para mejorar las operaciones de lectura y escritura de alta velocidad. Esta configuración mejora el rendimiento general aprovechando las fortalezas de cada tipo de unidad.
+
+  3. **Protect cached data with a %%multi-device pool|multi-device-pool%%:**
+     To safeguard cached data, assign more than one device to the %%cache pool|cache-pool%%. A single device does not offer protection from data loss. %%Cache pools|cache-pool%% can be expanded on demand.
+
+  :::warning
+  El soporte para SSD es experimental en el %%array|array%%. Algunos SSDs pueden no funcionar bien debido a variaciones en la implementación de %%TRIM/Discard|trim-discard%%, lo que podría llevar a resultados indeseables. Esto no aplica a los %%cache pools|cache-pool%%. [Aprende más sobre las opciones de sistemas de archivos aquí](../../using-unraid-to/manage-storage/file-systems.mdx).
+  :::
+
+  :::note
+  Los pools basados en SSD son óptimos para aplicaciones y máquinas virtuales, aprovechando el rendimiento de SSD para interacciones más rápidas. [Aprende más sobre la ejecución de aplicaciones aquí](../../using-unraid-to/run-docker-containers/overview.mdx).
+  :::
+</details>
+
+:::important
+
+Su %%array|array%% no se iniciará si excede el número de dispositivos de almacenamiento permitidos por su clave de licencia.
+
+:::
+
+## Iniciar y formatear la matriz
+
+Después de asignar todos sus dispositivos, haga clic en el botón **Iniciar** debajo de la **Operación de Array** para montarlos e iniciar el %%array|array%%.
+
+<div style={{ margin: 'auto', maxWidth: '500px'}}>
+  ![Inicio de Operación de Matriz](/img/arrayoperation_start.png)
+</div>
+
+Los nuevos dispositivos aparecerán como *No formateados* y no se podrán usar hasta que se formateen. Unraid usa por defecto el sistema de archivos %%XFS|xfs%% para los dispositivos del array. Para %%cache pools|cache-pool%%, se utiliza %%BTRFS|btrfs%% por defecto al usar el modo automático, pero puede elegir su sistema de archivos deseado al agregar dispositivos a una agrupación. Puede cambiar el sistema de archivos predeterminado para el array en ***Configuración → Configuración del sistema → Configuración de discos***.
+
+Para formatear tus dispositivos, marca la casilla **Formatear** bajo **Operación de Matriz**, lee el aviso cuidadosamente y haz clic en el botón **Formatear**.
+
+Una sincronización de paridad se ejecutará en segundo plano para proteger el %%array|array%% incluso antes de que se complete el formateo. El %%array|array%% funcionará en un estado no protegido hasta que finalice la sincronización, por lo que es mejor esperar antes de agregar datos.
+
+### Cambiar sistemas de archivos en discos existentes
+
+Para cambiar el sistema de archivos de un disco existente:
+
+1. **Respalda tus datos**: Reformatear borrará todos los datos del disco.
+2. **Detén el array**.
+3. **Haz clic en el disco** y cambia el tipo de sistema de archivos (e.g., %%XFS|xfs%%, %%BTRFS|btrfs%%).
+4. **Inicia la matriz** y marca la casilla **Formatear** bajo **Operación de Matriz**.
+5. **Haz clic en Formatear** para aplicar el nuevo sistema de archivos.
+
+:::caution
+
+Reformatear un disco borrará todos sus datos. Para configuraciones %%RAID|raid%%, verifique el %%parity|parity%% para evitar la pérdida de datos durante las reconstrucciones. Use el [plugin de Dispositivos No Asignados](https://unraid.net/community/apps?q=unassigned+devices#r:~:text=don%27t%20be%20carefull!!!-,Unassigned%20Devices,-dlandon) para hacer una copia de seguridad de sus archivos antes de reformatear.
+
+:::
+
+:::info
+
+Puedes detener la matriz, apagar o reiniciar usando los botones respectivos en la misma sección **Operación de Matriz** en la pestaña **Principal**.
+
+:::
