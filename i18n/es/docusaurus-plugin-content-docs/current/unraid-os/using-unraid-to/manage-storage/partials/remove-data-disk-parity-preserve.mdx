@@ -1,0 +1,78 @@
+El método de preservación de paridad te permite quitar un disco de datos de tu matriz Unraid sin perder la protección de paridad. Este proceso requiere preparación cuidadosa y algunos conocimientos técnicos y solo se recomienda para usuarios avanzados.
+
+<h4>Lo que hace este método</h4>
+
+Este método efectivamente limpia el disco de datos que deseas eliminar, permitiéndote mantener la paridad intacta. Dado que un disco lleno de ceros no afecta la paridad, tu matriz permanece protegida durante todo el procedimiento.
+
+<h4>Cuándo usar este método</h4>
+
+Use the %%parity|parity%%-preserve method to remove a data disk while keeping your %%parity|parity%% valid safely. This is especially useful to avoid a full %%parity|parity%% sync after removal. Please ensure that the disk you're removing is healthy.
+
+:::important\[Prerequisites]
+
+Antes de comenzar, asegúrate de cumplir con las siguientes condiciones:
+
+- Este método te permite eliminar solo un disco a la vez.
+- Nota que no hay soporte oficial de LimeTech para este proceso; procede con precaución.
+
+:::
+
+:::warning
+
+Este método borrará todos los datos del disco seleccionado. Verifique que todos los datos importantes se hayan movido antes de continuar.
+
+:::
+
+Para eliminar un disco utilizando el método de preservación de paridad:
+
+1. **Inicie el array en modo de mantenimiento:** Haga clic en el disco que desea eliminar y luego en el botón **Borrar**. Esto borrará el sistema de archivos del dispositivo mientras mantiene la paridad, luego detenga el array.
+2. **Iniciar la matriz:** Inicia la matriz en modo normal; el disco a borrar no se montará, pero los discos restantes estarán en línea durante el proceso.
+3. **Registrar asignaciones del array:** Anota tus asignaciones del array, especialmente el %%parity drive|parity-drives%%, como medida de seguridad.
+4. **(Opcional) Habilitar Turbo Write:** Para un borrado más rápido, habilita Reconstruct Write ("Turbo Write") en **Configuración → Configuraciones de Disco**, pero solo si todos los discos están sanos.
+5. **Borrar el disco:** Usa el método alternativo de línea de comandos a continuación para borrar manualmente el disco.
+6. **Detener el array:** Una vez que se complete el borrado, detén el array.
+7. **Restablecer la configuración del array:** Mantén todas las asignaciones actuales al restablecer la configuración del array.
+8. **Quitar la asignación del disco:** Quita la asignación del disco que deseas eliminar, revisando todas las asignaciones, especialmente el %%parity drive|parity-drives%%.
+9. **Confirma el estado de paridad:** Marca la casilla que indica "La paridad ya es válida."
+10. **Iniciar el array de nuevo:** Inicia el array para finalizar el proceso de eliminación.
+11. **(Opcional) Verificar paridad:** Puedes ejecutar una %%parity check|parity-check%% correctiva después para asegurar la integridad de la paridad.
+
+<details>
+  <summary>**Método alternativo por línea de comandos para borrar un disco**</summary>
+
+  Si te sientes cómodo usando la línea de comandos de Linux, puedes borrar manualmente tu disco usando las siguientes instrucciones. Asegúrate de elegir el comando que corresponde con tu versión de Unraid.
+
+  Como borrar un disco puede tardar muchas horas, se recomienda usar algo como el [Tmux Terminal Manager TTM plugin](https://forums.unraid.net/topic/183427/plugin-tmux-terminal-manager-ttm/) para escribir los comandos y asegurarte de que la sesión se mantenga activa.
+
+  **Para Unraid 6.12 o posterior:**
+
+  1. Primero, desmonta el disco:
+     ```bash
+     umount /mnt/diskX
+     ```
+  2. Borra el disco con el siguiente comando:
+     ```bash
+     dd bs=1M if=/dev/zero of=/dev/mdXp1 status=progress
+     ```
+
+  **Para Unraid 6.11 y anteriores:**
+
+  1. Comienza desmontando el disco:
+     ```bash
+     umount /mnt/diskX
+     ```
+  2. Luego, usa este comando para borrar el disco:
+     ```bash
+     dd bs=1M if=/dev/zero of=/dev/mdX status=progress
+     ```
+
+  :::note
+  Recuerde reemplazar `X` con el número específico del disco de datos que está eliminando.
+  :::
+
+  :::caution
+  Antes de ejecutar estos comandos, verifique dos veces el número de la unidad para evitar borrar accidentalmente datos en el disco incorrecto.
+  :::
+
+  No dudes en comunicarte con los [foros de Unraid](https://forums.unraid.net/). Allí, puedes encontrar recursos útiles y soporte de la comunidad.
+</details>
