@@ -1,0 +1,112 @@
+---
+sidebar_position: 2
+sidebar_label: 远程唤醒（WoL）
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import WakeOnLanWindows from './partials/wake-on-lan/windows.mdx';
+import WakeOnLanMacos from './partials/wake-on-lan/macos.mdx';
+import WakeOnLanLinux from './partials/wake-on-lan/linux.mdx';
+
+# 远程唤醒（WoL）
+
+%%Wake-on-LAN (WOL)|远程唤醒 (WOL)%% 允许您通过网络发送一个“魔术包”来远程唤醒已关机或睡眠状态的 Unraid 服务器。此页面将帮助您为本地网络设置 WoL。
+
+## 要求
+
+为了让 WoL 正常工作，请确保满足以下要求：
+
+- **网卡支持**：您的网络接口控制器应支持 WoL；大多数现代网卡支持。
+
+- **BIOS/UEFI 设置**：在主板的 BIOS/%%UEFI|UEFI%% 下的电源管理中启用 WoL。以下是一些常见的设置名称：
+
+  | 设置名称             | 描述                  |
+  | ---------------- | ------------------- |
+  | 远程唤醒             | 通用 WoL 设置           |
+  | PME 事件唤醒         | 用于 PCIe 唤醒事件        |
+  | 通过 PCI/PCIe 设备开机 | WoL 的替代名称           |
+  | ErP 准备           | 为了让 WoL 正常工作，必须*禁用* |
+
+- **电源连接**: 确保您的服务器连接到电源。
+
+- **网络连接**：使用以太网线将服务器连接到局域网（不支持 WiFi WoL）。
+
+:::caution[Hardware 兼容性]
+
+并非所有硬件都能可靠地支持 S3 睡眠或 WoL。有些系统可能会遇到进入睡眠的问题，无法正确唤醒，或者需要额外的 BIOS/%%UEFI|UEFI%% 设置。请务必在依赖这些功能之前彻底测试。
+
+:::
+
+## 使 Unraid 服务器进入休眠状态
+
+管理 Unraid 的睡眠的首选且用户友好方式是使用 [**Dynamix S3 睡眠插件**](https://unraid.net/community/apps/c/plugins/p3?srsltid=AfmBOorpfP2Psw_bCorklf-QVCUHvADYGsdbsAH-4CldU4V2hWgoO-09#r:~:text=%3E%3E-,Dynamix%20S3%20Sleep,-Dynamix%20Repository)。此插件提供了一个图形界面来帮助安排睡眠、唤醒和空闲行为，同时解决可能与各种硬件配置相关的常见问题。
+
+安装和配置：
+
+1. 在 Unraid %%WebGUI|web-gui%% 中打开 ***应用程序标签*** 。
+2. 搜索 "Dynamix S3 Sleep" 并安装插件。
+3. 导航到 ***设置 → 睡眠设置*** 以设置睡眠和唤醒选项。
+
+插件管理大多数睡眠配置选项。
+
+<details>
+  <summary><strong>替代的手动方法</strong> - 点击展开/折叠</summary>
+
+  If you want more control or need advanced customization, you can configure sleep and WoL settings through the command line. This method is recommended for advanced users.
+
+  手动配置睡眠：
+
+  1. 使用 %%WebGUI|web-gui%% 终端或 [%%SSH|ssh%%](../../system-administration/advanced-tools/command-line-interface.mdx#accessing-the-terminal) 连接到您的服务器。
+
+  2. 通过运行以下命令识别主网络接口（通常为 'eth0'）：
+
+     ```
+     ifconfig
+     ```
+
+     记下 MAC 地址（标记为 `ether`）。
+
+  3. 使用此命令在接口上启用 WoL：
+
+     ```
+     ethtool -s eth0 wol g
+     ```
+
+  4. 输入此命令使服务器进入休眠状态：
+
+     ```
+     echo -n mem > /sys/power/state
+     ```
+
+  :::caution[Persistence]
+  WoL settings configured manually are **not persistent** across reboots by default. To make them permanent:
+
+  1. 在您的闪存驱动器上的 `/boot/config/go` 创建一个 `go` 文件。
+
+  2. 添加此行：
+
+  ```
+  /sbin/ethtool -s eth0 wol g
+  ```
+
+  :::
+</details>
+
+## 唤醒您的 Unraid 服务器
+
+为了远程唤醒您的 Unraid 服务器，您需要通过本地网络发送一个特殊的“魔术包”。该包包括服务器的 MAC 地址，并指示网络接口从睡眠或关机状态启动系统。不同的操作系统提供了多种发送此包的方法和工具。以下是 Windows、macOS 和 Linux 的详细说明。
+
+<Tabs>
+  <TabItem value="Windows" label="Windows">
+    <WakeOnLanWindows />
+  </TabItem>
+
+  <TabItem value="macOS" label="macOS">
+    <WakeOnLanMacos />
+  </TabItem>
+
+  <TabItem value="Linux" label="Linux">
+    <WakeOnLanLinux />
+  </TabItem>
+</Tabs>
