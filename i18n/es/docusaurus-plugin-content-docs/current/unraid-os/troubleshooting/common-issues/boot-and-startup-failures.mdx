@@ -1,0 +1,210 @@
+---
+sidebar_position: 1
+sidebar_label: Fallas de arranque e inicio
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+# Fallas de arranque e inicio
+
+Cuando su servidor Unraid no arranca correctamente, puede ser un desafío identificar la causa sin una comprensión clara del proceso de arranque. Siguiendo esta guía, podrá diagnosticar y resolver rápidamente la mayoría de los problemas de inicio, asegurando que su %%array|array%%, %%WebGUI|web-gui%% y servicios estén operativos con un tiempo de inactividad mínimo.
+
+## Preparando el dispositivo flash
+
+Este tema está detallado en la sección [Preparar tu dispositivo USB](../../getting-started/set-up-unraid/create-your-bootable-media.mdx#prepare-your-usb-device).
+
+:::caution
+
+Siempre [haga una copia de seguridad de su unidad flash](../../system-administration/maintain-and-update/changing-the-flash-device.mdx#backing-up-your-flash-device) antes de realizar cambios. Todos los ajustes específicos de usuario, incluida su clave de licencia, se almacenan en la carpeta `config`. Restaurar esta carpeta después de reconfigurar su dispositivo flash ayudará a preservar su configuración actual.
+
+:::
+
+## Habilitando el arranque UEFI
+
+Los sistemas modernos típicamente requieren **modo de arranque UEFI** para una seguridad mejorada y tiempos de inicio más rápidos.
+
+Para configurar el arranque UEFI en el BIOS de tu sistema/configuración UEFI:
+
+1. Entra en la configuración del BIOS/UEFI de tu placa base durante el inicio (generalmente presionando F2, DEL o ESC)
+2. Localiza las opciones de arranque o configuraciones del modo de arranque
+3. Configura el modo de arranque en **UEFI** o **UEFI con CSM desactivado**
+4. Asegúrate de que el dispositivo flash de Unraid esté seleccionado como el dispositivo de arranque UEFI
+5. Guarda tus cambios y sal de la configuración
+
+## Comprender la secuencia de inicio
+
+La secuencia de inicio de Unraid tiene varias etapas:
+
+<details>
+  <summary><strong>1. BIOS boot</strong> - Click to expand/collapse</summary>
+
+  The BIOS/UEFI firmware initializes hardware and locates the bootable device. This is the foundation of the entire boot process.
+
+  - El BIOS de la placa base reconoce el dispositivo flash de arranque de Unraid.
+  - Configurar el dispositivo flash como el dispositivo de arranque predeterminado varía según tu BIOS; revisa el manual de tu placa base para obtener orientación.
+  - El dispositivo flash admite modos de arranque **legado (CSM)** y **UEFI**.
+  - Para el arranque UEFI, asegúrate de que la carpeta `EFI` en el dispositivo flash no tenga un guion al final (`-`).
+</details>
+
+<details>
+  <summary><strong>2. Syslinux loader</strong> - Click to expand/collapse</summary>
+
+  The bootloader presents startup options and loads the Linux kernel into memory. This stage determines which operating system or diagnostic tool will run.
+
+  - Las entradas del menú de arranque están definidas en el archivo `syslinux/syslinux.cfg` en el dispositivo flash.
+  - Puedes editar este archivo a través del WebGUI bajo ***Principal → Configuración Syslinux***.
+  - **Memtest86+**, que se incluye con las versiones actuales de Unraid, funciona tanto en modos heredados como en %%UEFI|uefi%%. Para versiones más antiguas de Unraid, obtenga una versión compatible del [sitio oficial de Memtest](https://www.memtest86.com/) para %%UEFI|uefi%%.
+  - Si no se selecciona ninguna opción, el arranque predeterminado se ejecuta tras un tiempo de espera, lo cual es útil para operaciones sin cabeza.
+</details>
+
+<details>
+  <summary><strong>3. Linux core</strong> - Click to expand/collapse</summary>
+
+  The Linux kernel initializes and begins hardware detection. This is where the operating system takes control from the bootloader.
+
+  - **Syslinux** carga el núcleo de Linux desde el dispositivo flash en la RAM.
+  - Verás mensajes de consola mostrando los archivos bz\* cargándose.
+  - Los errores en esta etapa a menudo indican problemas con el dispositivo flash.
+  - Linux detecta el hardware durante el inicio.
+</details>
+
+<details>
+  <summary><strong>4. Flash dependent services</strong> - Click to expand/collapse</summary>
+
+  The flash device becomes accessible and essential services begin loading. This stage is critical for configuration and network access.
+
+  - El dispositivo flash se monta en `/boot`.
+  - Si falla al montar, aún puedes ver un indicador de inicio de sesión, pero esto indica un inicio incompleto.
+  - Usa el comando `df` para comprobar si `/boot` está montado.
+  - El dispositivo flash debe estar etiquetado como **UNRAID** (todo en mayúsculas) para un montaje adecuado.
+  - Controladores y firmware adicionales estarán disponibles en esta etapa.
+  - La configuración se carga en la RAM.
+  - Los servicios estándar de Linux, incluyendo la red y el VPN de %%WireGuard|wireguard%% (si está habilitado), comienzan aquí.
+</details>
+
+<details>
+  <summary><strong>5. Plugins</strong> - Click to expand/collapse</summary>
+
+  Third-party extensions and customizations are loaded to enhance system functionality. Plugin issues can prevent successful startup.
+
+  - Los plugins instalados se cargan durante este paso.
+  - Opciones de **Arranque seguro** pueden suprimir la carga de plugins si es necesario.
+</details>
+
+<details>
+  <summary><strong>6. WebGUI</strong> - Click to expand/collapse</summary>
+
+  La interfaz de administración basada en la web se vuelve disponible, permitiendo la administración remota y configuración de tu servidor.
+
+  - El WebGUI comienza en este punto.
+  - El archivo `config/go` en el dispositivo flash puede ejecutar comandos de usuario antes o después de que el WebGUI comience.
+</details>
+
+<details>
+  <summary><strong>7. Array</strong> - Click to expand/collapse</summary>
+
+  Storage devices are mounted and made available, completing the boot process. This is where your data becomes accessible.
+
+  - Si el auto-arranque está habilitado, el %%array|array%% comienza aquí; de lo contrario, se requerirá un inicio manual.
+  - Las unidades se montarán como `/dev/diskX` y `/mnt/cache` (si está presente).
+  - Las particiones compartidas se vuelven disponibles en la red como `/mnt/user/sharename`.
+  - Los contenedores de Docker se iniciarán en el orden especificado en la pestaña Docker, con retrasos personalizables.
+  - Las máquinas virtuales de autoinicio (%%VMs|vm%%) también se lanzarán.
+</details>
+
+En este punto, el servidor Unraid está completamente operativo.
+
+---
+
+## Falla de arranque
+
+Cuando su servidor no arranca, la solución sistemática de problemas ayuda a identificar y resolver rápidamente la causa raíz. Siga estos pasos en orden para evitar omitir problemas críticos o realizar cambios innecesarios. Cada paso se basa en el anterior, por lo que no se adelante aunque un paso parezca no estar relacionado con su problema específico.
+
+1. Use un puerto USB 2.0 para el dispositivo flash si es posible. Por lo general, es más confiable y menos propenso a problemas que el USB 3.0.
+2. Revisa la configuración de tu BIOS/UEFI para asegurarte de que el dispositivo flash esté configurado como el dispositivo de arranque principal.
+3. Inspecciona el dispositivo flash en busca de errores físicos o lógicos en una computadora con Windows o macOS.
+4. Reextraiga los archivos bz\* de la versión de Unraid en el dispositivo flash para prevenir cualquier corrupción potencial.
+5. Reconstruye el dispositivo flash comenzando con una copia limpia de Unraid, luego restaura tu carpeta `config`.
+6. Intenta arrancar en [Modo Seguro](../../using-unraid-to/customize-your-experience/plugins.mdx#troubleshooting-with-safe-mode) para verificar si hay problemas relacionados con plugins.
+7. Pruebe con un nuevo dispositivo flash y realice una instalación limpia de Unraid. Esto ayuda a determinar si hay problemas con el hardware del servidor.
+8. Si es necesario, transfiere tu licencia a un nuevo dispositivo flash.
+
+---
+
+## Recuperando de una pérdida del disco de arranque y unidades de paridad desconocidas
+
+:::important
+
+Este proceso de recuperación implica el riesgo de pérdida de datos si las unidades se asignan incorrectamente. Antes de proceder:
+
+1. **No inicie el %%array|array%%** hasta que estés seguro sobre la asignación de las unidades
+2. **Documentar** cuáles discos eran anteriormente de paridad vs. discos de datos
+3. **Considera buscar ayuda** en los [foros de Unraid](https://forums.unraid.net/) si no estás seguro
+
+Si tienes copias de seguridad recientes o documentación de la configuración de tu array, revísalos primero.
+
+:::
+
+Si su unidad de arranque de Unraid falla y no tiene una copia de seguridad reciente o no sabe qué unidades son de paridad, puede recuperar su sistema utilizando la capacidad de Unraid para reconocer unidades de datos por sus sistemas de archivos. Las %%parity drives|parity-drives%% no tienen un sistema de archivos válido, lo que ayuda a diferenciarlas.
+
+Unraid identifies data drives by detecting existing valid file systems. %%Parity drives|parity-drives%%, which lack a file system, appear unmountable. This characteristic allows you to distinguish %%parity drives|parity-drives%% from data drives after booting with a new flash device.
+
+### Procedimiento de recuperación
+
+Este procedimiento le ayuda a restaurar la configuración de su array cuando ha perdido su unidad de arranque y no recuerda qué unidades eran de paridad frente a datos. Siga cada paso con cuidado para evitar la pérdida de datos.
+
+1. Crea una nueva unidad de arranque de Unraid.
+2. Arranca el servidor desde esta nueva unidad (no asignes ninguna unidad todavía).
+3. Activa una licencia, usando ya sea una de prueba o transfiriendo una existente.
+4. Identifica los %%parity drives|parity-drives%% usando uno de los métodos descritos a continuación.
+5. Usa ***Herramientas → Nueva Configuración*** para restablecer el %%array|array%% mientras retienes, si es posible, asignaciones anteriores.
+6. Asigna correctamente las unidades en la pestaña ***Principal***, asegurándote de distinguir entre %%paridad|parity%% y unidades de datos.
+7. Comienza el %%array|array%% para confirmar las asignaciones de disco.
+8. Si la %%parity|parity%% es válida, marque la casilla de ***Parity is Already Valid***. Si no, permita que la %%parity|parity%% se reconstruya.
+
+:::warning[Multiple unidades de paridad]
+
+Si tiene múltiples %%parity drives|parity-drives%% y tuvo que identificarlas basándose en qué unidades eran no montables, **no** use la opción **Parity is Already Valid**. Hay un 50:50 de probabilidad de asignarlas incorrectamente, y si lo hace, su %%array|array%% puede parecer protegido pero en realidad no lo está. Siempre permita que la paridad se reconstruya en este escenario para asegurar una protección adecuada.
+
+:::
+
+9. Revisa y ajusta cualquier inclusión/exclusión de usuario para compartir con base en las nuevas indicaciones.
+10. Ejecuta una %%parity check|parity-check%% para verificar la integridad, especialmente si %%parity|parity%% no fue reconstruido.
+
+---
+
+### Identificación de los discos de paridad
+
+<details>
+  <summary><strong>Usando la capacidad incorporada de Unraid (método preferido)</strong> - Haz clic para expandir/contraer</summary>
+
+  Este método no requiere complementos, pero invalidará la %%paridad|parity%%, lo que requerirá una reconstrucción.
+
+  Para usar este método:
+
+  1. Asigna todas las unidades como unidades de datos e inicia el sistema.
+  2. %%Las unidades de paridad|parity-drives%% aparecerán como no montables ya que carecen de un sistema de archivos válido.
+  3. Confirma que el número de unidades no montables coincide con tu conteo de %%paridad|parity%%.
+  4. Toma nota de los números de serie de estas unidades.
+  5. Si es relevante, puedes verificar las unidades de datos montadas para confirmar su orden.
+</details>
+
+<details>
+  <summary><strong>Usando el plugin de Dispositivos no asignados</strong> - Haz clic para expandir/contraer</summary>
+
+  Este método basado en complementos preserva la validez de la %%paridad|parity%% montando las unidades en modo de solo lectura.
+
+  Para usar este método:
+
+  1. Instala el [plugin **Dispositivos no asignados**](https://unraid.net/community/apps?q=unassigned+devices#r:~:text=don%27t%20be%20carefull!!!-,Unassigned%20Devices,-dlandon) desde la pestaña ***Aplicaciones***.
+  2. Monta cada disco en modo de solo lectura, uno a la vez.
+  3. Las unidades que no se montan probablemente sean %%parity drives|parity-drives%% (no puedes diferenciar entre paridad1 y paridad2).
+  4. Inspecciona las unidades de datos montadas para identificar su orden, si es necesario.
+</details>
+
+Para más información, ve el [hilo del plugin Dispositivos no asignados](https://forums.unraid.net/topic/55481-unassigned-devices-managing-unassigned-devices-without-rebooting/) en los foros de Unraid.
+
+---
+
+\* *"%%WireGuard|wireguard%%" y el logotipo de "%%WireGuard|wireguard%%" son marcas registradas de Jason A. Donenfeld.*
