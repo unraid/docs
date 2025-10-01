@@ -1,0 +1,414 @@
+---
+sidebar_position: 3
+sidebar_label: 缓存池
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import RemoveDiskGui from './partials/remove-disk-gui.mdx';
+import RemoveDiskCommandLine from './partials/remove-disk-command-line.mdx';
+import PoolSingleDeviceMode from './partials/pool-single-device-mode.mdx';
+import PoolMultiDeviceMode from './partials/pool-multi-device-mode.mdx';
+import MovePoolToArray from './partials/move-pool-to-array.mdx';
+import MoveArrayToPool from './partials/move-array-to-pool.mdx';
+import MoveBetweenPoolsUsingMover from './partials/move-between-pools-using-mover.mdx';
+import MoveBetweenPoolsManual from './partials/move-between-pools-manual.mdx';
+
+# 缓存池
+
+In Unraid, a %%cache pool|cache-pool%% is a collection of one or more drives, typically SSDs or high-speed HDDs. These drives temporarily store data before it's moved to your main [%%array|array%%](./array-configuration.mdx). Using %%cache pools|cache-pool%% can significantly enhance write speeds, protect your data, and provide dedicated storage for specific tasks like running Docker containers or [%%virtual machines|vm%%](../create-virtual-machines/overview-and-system-prep.mdx).
+
+%%Cache pools|cache-pool%% offer several advantages, making them a valuable addition to your Unraid setup, such as:
+
+1. **Faster write speeds:** %%Cache pools|cache-pool%% allow you to quickly write data to faster drives before it gets transferred to the main %%array|array%%. This greatly enhances perceived performance when saving files.
+
+2. **Data protection for cached files:** By using multiple drives in a %%cache pool|cache-pool%% (like setting them up in %%RAID 1|raid1%%), you add redundancy. This means your cached data is protected from drive failure before it even reaches the main %%array|array%%.
+
+3. **为应用程序优化存储：** 将 Docker 容器或 %%虚拟机|vm%% 存储在 %%cache pool|cache-pool%% 上可以提高其性能，减少对主 %%array|array%% 的磨损，并最大限度地缩短访问频繁使用文件的时间。
+
+4. **Flexible and dedicated storage:** With multiple %%cache pools|cache-pool%%, you can assign specific pools for different tasks. For instance, you could have one pool dedicated to downloads and another for %%virtual machines|vm%%, reducing competition for resources and boosting efficiency.
+
+:::info[Keep 铭记在心]
+
+- **多个池：** 您可以创建并命名不同的 %%cache pool|cache-pool%%，以便根据您的具体需要进行调整。
+- **SSD 与 HDD：** SSD 适合于速度，而 HDD 可用于大型顺序数据处理。此外，HDD 可以延长 SSD 的使用寿命。
+- **Redundancy matters:** To protect your data, use more than one drive in a %%cache pool|cache-pool%%. A single drive pool won't protect you from potential drive failure.
+- **File system choice:** The default file system for %%cache pools|cache-pool%% is %%BTRFS|btrfs%%, which supports various %%RAID|raid%% options for added redundancy and flexibility. For more details on file system selection, see [File systems](./file-systems.mdx).
+- **%%Mover|mover%% integration:** Data written to a %%cache pool|cache-pool%% is automatically transferred to your main %%array|array%% based on a schedule you set. This keeps your [%%user shares|user-share%%](./shares.mdx) organized and easy to manage.
+- **应用程序性能：** 通过将 Docker 容器、应用程序数据和 %%VM|vm%% 磁盘放在 %%cache pool|cache-pool%% 上，您可以提升访问速度，并最大限度地减少对主存储的压力。
+
+:::
+
+---
+
+## 池模式
+
+Unraid %%cache pools|cache-pool%% can operate in two main modes: **single device mode** and **multi-device mode**. Knowing the difference between these modes will help you find the right balance between performance, flexibility, and data protection for your needs.
+
+<Tabs>
+  <TabItem value="单设备" label="单设备模式" default>
+    <PoolSingleDeviceMode />
+  </TabItem>
+
+  <TabItem value="多设备" label="多设备模式">
+    <PoolMultiDeviceMode />
+  </TabItem>
+</Tabs>
+
+%%cache pool|cache-pool%% 的常见任务包括：
+
+- 将您的池备份到 %%array|array%%
+- 在单设备和多设备模式间切换
+- 向池中添加磁盘
+- 更换池中的磁盘
+
+## 将缓存池备份到阵列
+
+Backing up your %%cache pool|cache-pool%% to the main %%array|array%% is a crucial step before making any upgrades, reformatting, or replacing your cache devices. This process ensures that important data - like Docker containers, app data, and %%virtual machine|vm%% files - are securely stored on the main %%array|array%%, minimizing the risk during maintenance.
+
+<h3>为什么要备份您的 %%cache pool|cache-pool%%？</h3>
+
+- **数据保护**:在进行硬件更改或升级之前保护您的重要文件。
+- **防止意外丢失**:减少重新格式化或替换设备时丢失数据的风险。
+- **轻松恢复**:确保在维护后您能快速恢复应用程序和`虚拟机`数据。
+
+:::important
+
+此过程将停止所有 Docker 容器和虚拟机，因此请确保计划一些停机时间，并在必要时通知用户。有关管理 Docker 容器的更多信息，请参见[管理和定制容器](../run-docker-containers/managing-and-customizing-containers.mdx)。
+
+:::
+
+备份您的 %%cache pool|cache-pool%%：
+
+1. **停止所有运行的Docker容器和`虚拟机`**:这是顺利备份过程的关键。
+2. **禁用`虚拟机`**:
+   - 进入 ***设置 → 虚拟机管理器***。
+   - 关闭`虚拟机`,点击 **应用**。
+3. **禁用Docker**:
+   - 进入 ***设置 → Docker***。
+   - 关闭Docker并点击 **应用**。
+4. **设定共享存储与Mover操作 (缓存 → 阵列)**:
+   - 转到**Shares** 选项卡。
+   - For each %%user share|user-share%% you want to move, set **Primary storage** to the source %%cache pool|cache-pool%% and **Secondary storage** to the %%array|array%%.
+   - 将 **Mover操作** 设置为 **缓存 → 阵列**。
+5. **检查 %%array|array%% 上的空间：** 确保有足够的可用空间来存储您的文件。
+6. **Move files to the %%array|array%%**: From the **Main** page, click **Move Now**. This transfers files from the %%cache pool|cache-pool%% to the %%array|array%% based on the Mover action.
+7. **验证您的池是空的：** 在 %%Mover|mover%% 完成后，检查 %%cache pool|cache-pool%% 中是否没有剩余的文件。
+
+:::note
+
+请记住,直接位于池设备上的文件(不属于任何共享)必须手动移动。
+
+:::
+
+### 将文件恢复到缓存池
+
+完成维护或更换设备后，可以按以下步骤将文件从 %%array|array%% 恢复到 %%cache pool|cache-pool%%：
+
+1. **设定共享存储和Mover操作 (阵列 → 缓存)**:
+   - 转到**Shares** 选项卡。
+   - For each %%user share|user-share%% you want to restore, set **Primary storage** to the destination %%cache pool|cache-pool%% and **Secondary storage** to the %%array|array%%.
+   - 将 **Mover 动作** 设置为 **array → cache**。
+2. **检查池上的空间：** 确保 %%cache pool|cache-pool%% 上有足够的可用空间。
+3. **将文件移回池：** 转到**主**页面，然后单击**立即移动**，将文件传输回 %%cache pool|cache-pool%%。
+4. **验证池中的内容：** 移动完成后，请检查您的 %%cache pool|cache-pool%% 是否包含预期的文件以及 %%array|array%% 上的共享是否为空。
+5. **重新启用Docker**:进入 ***设置 → Docker*** 并重新启用Docker,然后点击 **应用**。
+6. **重新启用`虚拟机`**:进入 ***设置 → 虚拟机管理器*** 并重新启用`虚拟机`,然后点击 **应用**。
+7. **重启Docker容器和`虚拟机`**:最后,启动您希望再次运行的Docker容器或者`虚拟机`。
+
+---
+
+## 切换到多设备模式
+
+%%Cache pools|cache-pool%% in Unraid can be expanded from a single device to multiple devices, allowing for increased capacity and redundancy. To take advantage of multi-device mode, your pool must be formatted as %%BTRFS|btrfs%% or %%ZFS|zfs%%.
+
+### 将池转换为 BTRFS 或 ZFS
+
+如果您的 %%cache pool|cache-pool%% 未格式化为 %%BTRFS|btrfs%% 或 %%ZFS|zfs%%，请按照以下简单步骤操作：
+
+1. **备份您的数据：** 首先，确保您备份所有重要内容。（请参见[备份缓存池到阵列](#backing-up-your-cache-pool-to-the-array)）
+2. **停止 %%array|array%%：** 确保停止 %%array|array%% 以开始转换过程。
+3. **更改文件系统**:在 **主页面** 点击池,选择`BTRFS`或`ZFS`作为文件系统格式。
+4. **启动 %%array|array%%：** 更改格式后，启动 %%array|array%%。
+5. **格式化池：** 池将显示为不可挂载，并提供格式化选项。确认并单击**格式化**按钮。
+6. **完成格式化：** 格式化完成后，您将获得一个 %%BTRFS|btrfs%% 或 %%ZFS|zfs%% 池，但此时它只有一个设备。
+7. **如果需要添加其他磁盘**:您可以为池添加更多磁盘。
+8. **恢复您的数据**:最后,按照备份步骤将您的数据移回到池中。
+
+### 向多设备池中添加磁盘
+
+一旦您的池格式化为 %%BTRFS|btrfs%% 或 %%ZFS|zfs%%，您可以添加更多驱动器以增加冗余和扩展存储。
+
+为冗余添加更多磁盘:
+
+1. **停止 %%array|array%%：** 同样，首先停止当前 %%array|array%%。
+2. **分配额外的磁盘**:在 **主页面**,您可以分配一个或多个新设备到池中。
+3. **启动 %%array|array%%：** 一旦分配了驱动器，请重新启动 %%array|array%%。
+4. **自动平衡/重银化：** Unraid 将自动将新设备并入池，并启动一个 **平衡**（%%BTRFS|btrfs%%）或 **重银化**（%%ZFS|zfs%%）以在设备间分配和保护数据。
+5. **监控进度：** 在 **主** 标签中，单击第一个池设备，然后检查 **平衡状态**（对于 %%BTRFS|btrfs%%）或 **zpool 状态**（对于 %%ZFS|zfs%%）以跟踪进度并确认新设备已成功添加。
+6. **池已进入多设备模式**:一旦平衡完成,您的池将以**多设备模式**运行,拥有增强的容量和冗余。
+
+:::tip
+
+您可以使用 [BTRFS磁盘使用计算器](http://carfax.org.uk/btrfs-usage/) 估算根据您选择的`RAID`级别和设备尺寸的可用空间与冗余。
+
+:::
+
+---
+
+## 向池中添加磁盘
+
+随着您的存储需求增长，您可能希望通过添加额外的磁盘来扩展缓存池。此过程使您能够在保持数据保护的同时，增加容量和性能。
+
+:::note
+
+If you want to add disks to your pool, just make sure your pool is already formatted as %%BTRFS|btrfs%% or %%ZFS|zfs%%. If it's not, you'll need to format it first, as explained in [the previous section](#converting-a-pool-to-btrfs-or-zfs).
+
+:::
+
+向池中添加磁盘的方法:
+
+1. **停止 %%array|array%%：** 开始时，停止当前 %%array|array%% 以确保流程顺利进行。
+2. **打开主选项卡：** 在 WebGUI 中转到**主**选项卡。您将在此管理您的磁盘。
+3. **找到池设备部分：** 向下滚动直到您看到 *池设备* 部分。您可以在这里更改磁盘设置。
+4. **调整插槽数量：** 将**插槽**设置为您添加的额外设备的确切数量。不能留有多余的空插槽；阵列不会在未使用的池插槽下启动。
+5. **分配设备**:选择要添加到池的设备(磁盘)并将其分配到可用插槽中。
+6. **启动 %%array|array%%：** 设备分配后，请返回启动 %%array|array%% 以启用这些更改。
+
+---
+
+## 从池中移除磁盘
+
+Removing a disk from a %%BTRFS|btrfs%% or %%ZFS|zfs%% multi-device %%cache pool|cache-pool%% can help you reclaim hardware, replace a failing drive, or reconfigure your storage. This process is only possible if your pool is set up for redundancy (like %%RAID 1|raid1%% for both data and metadata) and the remaining devices have enough space to hold all of your data.
+
+<Tabs>
+  <TabItem value="gui" label="通过 WebGUI" default>
+    <RemoveDiskGui />
+  </TabItem>
+
+  <TabItem value="命令行" label="使用命令行（高级）">
+    <RemoveDiskCommandLine />
+  </TabItem>
+</Tabs>
+
+### 改变池的 RAID 级别
+
+%%BTRFS|btrfs%% provides the ability to change %%RAID|raid%% levels for %%cache pools|cache-pool%% dynamically, allowing you to adjust settings without stopping the %%array|array%% or losing any data. This flexibility lets you optimize for performance, redundancy, or storage efficiency as your requirements change.
+
+<h4>支持的 %%RAID|raid%% 级别</h4>
+
+| %%RAID\|raid%% 级别   | 数据保护        | 空间效率   | 使用场景                                                                             |
+| ------------------- | ----------- | ------ | -------------------------------------------------------------------------------- |
+| 单个                  | 无           | 100%   | 用于临时存储或不需要冗余的非关键数据。                                                              |
+| %%RAID 0\|raid0%%   | 无           | 100%   | 最大化性能和容量，但不建议用于关键数据。                                                             |
+| %%RAID 1\|raid1%%   | 可承受 1 个磁盘故障 | 50%    | Default for Unraid pools. Ideal for Docker/%%VM\|vm%% storage and critical data. |
+| %%RAID 10\|raid10%% | 可承受 1 个磁盘故障 | 50%    | 结合了%%RAID 0\|raid0%%的速度和%%RAID 1\|raid1%%的冗余以满足高性能需求。                            |
+| %%RAID 5\|raid5%%\* | 可承受 1 个磁盘故障 | 67-94% | **实验性。** 适用于大规模媒体存储的容量和冗余的平衡。                                                    |
+| %%RAID 6\|raid6%%\* | 可承受 2 个磁盘故障 | 50-88% | **实验性。** 为大容量硬盘提供额外的归档存储保护。                                                      |
+
+:::important
+
+%%RAID 5|raid5%% and %%RAID 6|raid6%% are considered experimental in %%BTRFS|btrfs%%. %%ZFS|zfs%% provides more mature support for these %%RAID|raid%% levels. Use with caution and ensure you have backups. Avoid using experimental %%RAID|raid%% levels for critical data.
+
+:::
+
+更改池的 %%RAID|raid%% 级别：
+
+1. **在普通模式下启动 %%array|array%%** 如果它尚未运行。
+2. **点击池名称** 在 **主** 选项卡上。
+3. **滚动到均衡状态**：查看当前的 %%RAID|raid%% 等级，适用于数据和元数据。
+4. **选择新的 %%RAID|raid%% 配置**：从预定义配置的下拉菜单中选择。
+5. **启动平衡操作**：点击 **均衡** 开始转换。
+
+<div style={{ margin: 'auto', maxWidth: '600px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+  ![从%%RAID 1|raid1%%转换到单一配置文件](/img/Btrfs-raid1.jpg)
+  <p class="caption-center">*示例：从%%RAID 1|raid1%%转换到单一配置文件*</p>
+</div>
+
+6. **监控进度**：平衡操作可能需要几小时到几天，取决于池中的数据量、驱动器速度和所选 %%RAID|raid%% 等级的复杂性。
+
+<details>
+  <summary>如果平衡操作卡住，进行故障排除 - 点击以展开/折叠</summary>
+
+  如果平衡操作似乎卡住或没有响应，请按照这些步骤进行：
+
+  1. **检查日志**：转到 ***工具 → 日志*** 并过滤 `btrfs` 条目。
+  2. **停止并重新启动操作**：
+     - 点击 **取消均衡**。
+     - 重启 %%array|array%%。
+     - 再次启动均衡操作。
+  3. **Verify disk health**: Run %%SMART|smart%% tests on all devices in the pool. For more information on disk health monitoring, see [SMART reports and disk health](../../system-administration/monitor-performance/smart-reports-and-disk-health.mdx).
+  4. **检查可用空间**：确保池上至少有 10-15% 的可用空间。
+  5. **发布诊断：** 如果问题仍然存在，请在[Unraid 论坛](https://forums.unraid.net/)上分享日志。有关捕获诊断的指导，请参见[捕获诊断和日志](../../troubleshooting/diagnostics/capture-diagnostics-and-logs.mdx)。
+</details>
+
+有关高级 %%BTRFS|btrfs%% 配置的详细信息，请参阅 [BTRFS wiki](https://btrfs.wiki.kernel.org/index.php/Using_Btrfs_with_Multiple_Devices)。
+
+---
+
+## 在池中更换磁盘
+
+在 %%cache pool|cache-pool%% 中更换磁盘是一项重要任务，有助于保持存储系统的性能和可靠性。
+
+:::note\[Prerequisites]
+
+- **Check your pool configuration:** Make sure your pool is set up with a redundant %%RAID|raid%% profile, like %%RAID 1|raid1%%. You can do this by going to ***Main → Pool → Balance Status*** (for %%BTRFS|btrfs%%) or ZFS pool status (for %%ZFS|zfs%%) in your management interface.
+- \*\*选择合适的替换磁盘：\*\*新磁盘的大小必须与您要替换的磁盘相同或更大。
+- \*\*热插拔能力：\*\*如果您的硬件支持热插拔，您不需要关闭系统电源来更换磁盘。
+
+:::
+
+在池中更换磁盘：
+
+1. **Stop the %%array|array%%**: Go to the **Main** tab, find the **Array Operation** section, and click the **Stop** button. This will safely halt the %%array|array%% to prepare for disk replacement.
+2. **（可选）移除旧磁盘：** 如果您没有热插拔功能的设置，您需要物理断开旧磁盘。请小心操作，以免造成损坏。
+3. **安装替换磁盘：** 将新磁盘插入您的系统。确保它正确连接和固定。
+4. **刷新 %%WebGUI|web-gui%%**：返回到 **主** 选项卡并刷新页面，以便系统检测您的新磁盘。
+5. **分配新磁盘**：一旦检测到，在旧磁盘所在的池插槽中找到并将新磁盘分配到该插槽。
+6. **启动 %%array|array%%**：点击 **启动** 按钮，开始将新磁盘集成到 %%array|array%% 中的过程。
+7. **监控重建：** 系统将自动开始将数据重构到新磁盘。您可以在 WebGUI 中查看进度。
+
+:::important\[Timing]
+
+重建可能需要一些时间，具体取决于磁盘的大小和系统的当前负载。例如，在 RAID 1 设置中重建 4TB 的 SSD 可能需要大约 3-6 小时。建议您计划在系统可以不受干扰地工作的情况下进行。
+
+:::
+
+---
+
+## 缓存池的最低空闲空间
+
+Setting a minimum free space for your %%cache pool|cache-pool%% can provide better control over file placement, especially when dealing with large files like high-resolution videos. This setting helps Unraid know when to stop writing to the pool and start writing directly to the larger storage %%array|array%%, avoiding interruptions or data corruption.
+
+:::tip\[Example]
+
+如果您常常下载大约 10GB 的文件，则将最低空闲空间设置为至少 10GB，最好是 20GB 以便调整。
+
+:::
+
+您可以通过点击 **主** 选项卡中的池名称并转到 **个人池设置** 来访问最低空闲空间。
+
+<h4>原理</h4>
+
+- 当您将文件传输到包含池的共享时，Unraid 将遵循遇到的第一个最低空闲空间设置 (无论是共享的最低空闲空间还是池的最低空闲空间，哪个先达到) 。
+- 最低可用空间设置告诉 Unraid，当可用空间降到此数量以下时，将停止使用 %%cache pool|cache-pool%%。
+- 如果您的共享使用 %%cache pool|cache-pool%% 作为**主存储**，文件会进入池，直到达到最低可用空间，然后直接发送到 %%array|array%%。
+- 如果设置为仅使用 %%cache pool|cache-pool%%（没有**次存储**），则不应用此设置。
+- 如果设置为仅使用 %%array|array%% 作为 **主存储**，则文件将直接写入 %%array|array%%。
+
+:::tip[Use 案例示例]
+
+媒体共享的楼层设置为 20GB，这对于该共享中的文件来说是合适的。然而，如果您还使用池来运行虚拟机并希望为 vdisk 生长时留出缓冲区，您可以将池楼层设置为 50GB。这样，任何媒体共享的传输在池中空闲少于 50GB 时，将直接进入阵列。
+
+:::
+
+:::tip[Best 实践]
+
+将最小空闲空间设置为您预期的最大文件大小，最好是该大小的两倍。例如，如果您的最大文件为 30 GB，则将最小空闲空间设置为 60 GB。
+
+:::
+
+:::caution
+
+**不要将最小空闲空间设置为 0。** 这可能会导致磁盘填满错误。始终使用合理的数值。
+
+:::
+
+---
+
+## 在池和数组之间移动文件
+
+There are times when you may need to move files between your %%cache pool|cache-pool%% and the main %%array|array%%, such as when preparing for maintenance, upgrading hardware, or optimizing performance. Unraid provides a built-in tool called %%Mover|mover%% to automate this process for [%%user shares|user-share%%](./shares.mdx).
+
+:::tip
+
+在使用 Mover 移动文件之前始终禁用 Docker 和虚拟机服务。这可以防止在传输过程中跳过打开的文件。
+
+:::
+
+<Tabs>
+  <TabItem value="池到阵列" label="池到阵列" default>
+    <MovePoolToArray />
+  </TabItem>
+
+  <TabItem value="阵列到池" label="数组到缓存">
+    <MoveArrayToPool />
+  </TabItem>
+</Tabs>
+
+<details>
+  <summary><strong>Why do files sometimes end up in the wrong pool or cache?</strong> - Click to expand/collapse</summary>
+
+  When you move files between [%%user shares|user-share%%](./shares.mdx) at the Linux level (for example, using `mv` or within a Docker container), Linux tries to optimize the operation. If both the source and destination appear on the same mount point (`/mnt/user`), Linux might rename the file instead of moving it. This can result in files remaining on the original disk or pool, even if the share's "Use cache" setting is set to "No."
+
+  为确保文件按预期移动，请考虑以下选项：
+
+  - 使用 %%Mover|mover%% 工具。
+  - 复制文件然后删除原件。
+  - 通过网络移动文件。
+
+  这些方法有助于防止文件出现在错误的位置。
+</details>
+
+---
+
+## 多个存储池
+
+Unraid 允许您创建和管理最多 35 个独立的存储池，每个池最多可容纳 60 个设备。多个池为您提供了分配不同任务的灵活性，提高性能，并根据您的需求定制冗余。每个池可以使用不同的文件系统、RAID 级别和设备类型（SSD、HDD、NVMe 等）。
+
+<h4>为何使用多个存储池？</h4>
+
+- **优化性能：** 为 %%VMs|vm%%、Docker 容器、下载或媒体设置单独的存储池可以提高速度并减少冲突。
+- **保护数据：** 为每个存储池分配不同的 %%RAID|raid%% 级别或文件系统，以实现定制化的冗余和备份选项。
+- **隔离工作负载：** 将关键应用程序放在更快的冗余存储池中，将大容量数据存储在更具成本效益的设备上。
+- **灵活管理：** 你可以独立地扩展、减少或格式化存储池而不影响其他池。
+
+<h4>常见使用案例</h4>
+
+| 使用场景              | 配置示例                                                                       | 好处         |
+| ----------------- | -------------------------------------------------------------------------- | ---------- |
+| 高性能 %%VMs\|vm%%   | NVMe SSD池，%%RAID 1\|raid1%%，%%BTRFS\|btrfs%% 或 %%ZFS\|zfs%%                | 快速 I/O 与冗余 |
+| Docker/Appdata 存储 | SSD池，%%RAID 1\|raid1%%，%%BTRFS\|btrfs%% 或 %%ZFS\|zfs%%                     | 快速访问和数据保护  |
+| 批量媒体下载            | Large HDD pool, %%RAID 0\|raid0%% or single, %%XFS\|xfs%%/%%BTRFS\|btrfs%% | 高容量但冗余较少   |
+| 项目/团队隔离           | 为每个团队/项目设置单独的存储池                                                           | 减少资源冲突     |
+| 快照和备份目标           | %%ZFS\|zfs%%池，%%RAIDZ1\|raidz1%%/%%RAIDZ2\|raidz2%%（多设备）                   | 支持原生快照和备份  |
+
+:::info[Supported 文件系统]
+
+- %%BTRFS|btrfs%%: 适合多设备存储池（支持 %%RAID 0|raid0%%, %%RAID 1|raid1%%, %%RAID 10|raid10%%, %%RAID 5|raid5%%, %%RAID 6|raid6%%）。
+- ZFS： 对于单个和多设备池都很出色（Unraid 6.12+），对 RAIDZ1 和 RAIDZ2 支持成熟。有关高级 ZFS 特性和配置，请参见[ZFS 存储](../../advanced-configurations/optimize-storage/zfs-storage.mdx)。
+- %%XFS|xfs%%: 适合单设备存储池。
+
+:::
+
+When accessing a [%%user share|user-share%%](./shares.mdx) from multiple pools and %%array|array%% disks, Unraid merges the directory listings in this order:
+
+1. 分配给共享的存储池
+2. %%Array|array%% 磁盘（disk1、disk2、...、disk28）
+3. 其他存储池（按顺序）
+
+### 在存储池之间移动文件
+
+Unraid 不允许通过 %%WebGUI|web-gui%% 直接在存储池间移动文件，但可以使用 %%Mover|mover%% 工具或通过命令行实现。
+
+:::note\[Remember]
+
+如果文件属于 Docker 容器和/或％VM|vm%%，则必须禁用这些服务才能让文件成功移动。
+
+:::
+
+<Tabs>
+  <TabItem value="使用 Mover" label="使用 Mover" default>
+    <MoveBetweenPoolsUsingMover />
+  </TabItem>
+
+  <TabItem value="手动文件传输 (高级)" label="手动文件传输(高级)">
+    <MoveBetweenPoolsManual />
+  </TabItem>
+</Tabs>
+
+:::warning
+
+If you remove a device from a %%BTRFS|btrfs%% or %%ZFS|zfs%% pool and move it to a new pool, Unraid will erase all data on it when the %%array|array%% restarts. Always back up important data before changing pool configurations.
+
+:::
