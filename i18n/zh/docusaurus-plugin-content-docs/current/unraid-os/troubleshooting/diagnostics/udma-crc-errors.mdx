@@ -1,0 +1,142 @@
+---
+sidebar_position: 2
+sidebar_label: UDMA CRC 错误
+---
+
+# UDMA CRC 错误
+
+**%%UDMA|UDMA%% %%CRC错误|CRC-错误%%** ([%%SMART|SMART%% 属性 199](../../system-administration/monitor-performance/smart-reports-and-disk-health.mdx)) 在 Unraid 用户中很常见，并且经常出现在硬盘健康报告中。对于大多数用户，这些错误表示驱动器与服务器之间的通信问题，而不是驱动器自身的故障。
+
+当发生 %%CRC错误|CRC-错误%% 时，驱动器检测到从主机接收的数据不正确。Unraid 会自动尝试通过重新发送数据来恢复正常。如果重发成功，操作将继续如常，尽管由于重试，您可能会注意到写入速度变慢。这些事件会记录在 %%syslog|syslog%% 中。
+
+If recovery attempts fail after several retries, Unraid treats it as a read error. In %%parity|parity%%-protected %%arrays|array%%, Unraid will attempt to rewrite the affected sector using %%parity|parity%% and data from other drives. If this rewrite is successful, operation resumes; if not, the drive is disabled and marked with a red 'x' in the %%WebGUI|web-gui%%.
+
+<details>
+  <summary><strong>What is a CRC error? (technical explanation)</strong> - Click to expand/collapse</summary>
+
+  A **%%cyclic redundancy check (CRC)|crc%%** is a mathematical checksum that detects accidental changes to raw data during transmission. In the context of %%UDMA|udma%% (ultra direct memory access), %%CRC errors|crc-errors%% mean the data sent between your drive and controller failed this integrity check. This usually indicates a physical communication issue - such as a loose or faulty cable - rather than a problem with the drive's platters or flash memory.
+</details>
+
+---
+
+## UDMA CRC 错误的可能原因
+
+UDMA CRC 错误表示驱动器与系统之间的数据传输问题。如果不加以检查，这些错误可能导致数据损坏、性能下降和驱动器故障。了解根本原因可以帮助您更有针对性地修复问题，而不是盲目猜测解决方案。
+
+<h4>常见原因调查</h4>
+
+- **松动或安装不良的 SATA 电缆：** SATA 接口不够稳固，由于振动或电缆张力问题，可能会松动。避免将电缆捆绑得太紧，因为这可能导致串扰和干扰。
+- \*\*故障的 SATA 电缆：\*\*损坏或低质量的电缆是 %%CRC 错误|CRC-错误%% 的常见来源。
+- \*\*电源传输问题：\*\*由于分路电缆或电源超载，不足或不稳定的电源可能造成间歇性错误。
+- \*\*未插入的磁盘控制器：\*\*如果控制器卡未完全插入其插槽可能会发生通信错误。
+- \*\*驱动器硬件故障：\*\*虽然罕见，但故障的驱动器也可能产生 CRC 错误。
+- **电缆管理问题：**
+  - \*\*扎带：\*\*如果使用扎带进行电缆管理，请不要扎得太紧或过紧。理想情况下使用魔术贴带。
+  - **电源和数据电缆的布线：** 避免将电源线与 SATA 数据线一起布线。如果它们必须接触或非常接近，应该以90度交叉，以最大限度地减少干扰。
+  - **SATA 电缆弯曲：** 切勿强行弯曲 SATA 电缆以实现 90 度转弯。这可能会损坏电缆并导致通信问题。
+
+---
+
+## 恢复过程
+
+当注意到 %%CRC错误|CRC-错误%% 时，首先要仔细检查并重新安装连接到驱动器的 SATA 和电源电缆。更换任何看起来损坏或不紧密的电缆。如果错误持续，检查电源和控制器连接，并考虑交换电缆或端口以隔离问题。
+
+如果在解决电缆和电源问题后，%%CRC错误|CRC-错误%% 仍然继续，则可能需要进一步调查以排除故障控制器或驱动器。
+
+---
+
+## 了解 CRC 错误指示器
+
+### 偶发与频繁错误
+
+<details>
+  <summary><strong>点击展开/折叠</strong></summary>
+
+  Understanding the frequency and pattern of %%CRC errors|crc-errors%% helps you determine the urgency of your response. Not all errors require immediate action, but patterns can reveal underlying problems that need attention.
+
+  <h4>Occasional errors (low concern)</h4>
+  A few %%CRC errors|crc-errors%% over weeks or months are typically not a concern. These isolated incidents may be caused by temporary power fluctuations, cable movement during maintenance, or other transient issues that resolve themselves.
+
+  <h4>Frequent errors (high concern)</h4>
+  %%CRC errors|crc-errors%% occurring daily or weekly, or rapidly increasing error counts, indicate a persistent problem that needs immediate investigation. This pattern often points to hardware issues like loose connections, failing cables, or power supply problems that will only worsen over time.
+
+  <h4>When to take action</h4>
+  Investigate immediately if errors are frequent or increasing. Check your cabling and power setup for intermittent issues, and monitor error rates to identify worsening conditions. Consider preventive maintenance if errors persist, as these problems rarely resolve on their own and can lead to more serious failures.
+</details>
+
+### 待处理扇区计数
+
+<details>
+  <summary><strong>点击展开/折叠</strong></summary>
+
+  The **Current Pending Sector Count** ([%%SMART|smart%% attribute 197](../../system-administration/monitor-performance/smart-reports-and-disk-health.mdx)) is a critical indicator that often appears alongside %%CRC errors|crc-errors%%. This combination signals a serious problem that requires immediate attention and careful monitoring.
+
+  Pending sectors indicate unreliable disk areas that may not be readable when accessed. These are sectors that have experienced read errors and are now marked as potentially problematic by the drive's firmware. When pending sectors appear alongside %%CRC errors|crc-errors%%, it suggests that communication problems are causing physical damage to the drive's ability to store and retrieve data reliably.
+
+  <h4>Why this combination is dangerous</h4>
+  %%CRC errors|crc-errors%% indicate communication issues between the drive and controller, while pending sectors show that some areas of the disk are becoming unreliable. Together, they create a high-risk situation where your data protection may be compromised. If another drive fails while this one has pending sectors, your ability to recover data could be severely limited, potentially jeopardizing [data recovery](../../troubleshooting/common-issues/data-recovery.mdx) efforts.
+
+  当看到这种组合时，您应该：
+
+  - **立即**备份任何尚未保护的关键数据。
+  - 使用扩展 %%SMART|SMART%% 测试检查驱动器的状态，如果待处理扇区继续增加，考虑更换驱动器。
+  - 密切监视情况是否有其他警告信号，并做好在驱动器变得不可靠时重建阵列的准备。
+</details>
+
+### CRC 计数持久性
+
+<details>
+  <summary><strong>点击展开/折叠</strong></summary>
+
+  您的驱动器中的 [%%SMART|SMART%% 数据](../../system-administration/monitor-performance/smart-reports-and-disk-health.mdx) 中的 %%CRC错误|CRC-错误%% 计数从不重置 - 只会增加。
+
+  这种累积性意味着：
+
+  - 该计数代表该驱动器的总寿命错误
+  - 监控增加速度以识别恶化条件
+  - 一旦发生错误，它将被永久记录
+  - 使用计数安排预防性维护，以防止问题升级
+
+  Don't panic if you see a few CRC errors, but do track the rate of increase. A sudden spike in errors often indicates a new problem that needs immediate attention.
+</details>
+
+### 仪表板警告图标
+
+<details>
+  <summary><strong>点击展开/折叠</strong></summary>
+
+  When Unraid detects a %%CRC error|crc-errors%%, the **Dashboard** displays a warning icon next to the affected drive. This is a %%SMART|smart%% warning that should prompt you to review and address the issue.
+
+  <h4>重要性</h4>
+
+  - 潜在硬件问题的预警系统
+  - 通过早期发现问题来防止数据丢失
+  - 指示需要预防性维护的时机
+  - Unraid 的主动监控系统的一部分
+
+  点击警告图标查看详细的 %%SMART|SMART%% 信息并确认警告。
+</details>
+
+### 确认 SMART 警告
+
+<details>
+  <summary><strong>点击展开/折叠</strong></summary>
+
+  确认并清除 SMART 警告：
+
+  1. 点击受影响驱动器旁边的 **橙色警告图标**
+  2. 从选项菜单中选择 **确认**
+  3. 如果提示，请确认操作
+  4. 图标将变为 **绿色** 表示已确认
+
+  <h4>确认的作用</h4>
+
+  - 清除您当前视图中的警告
+  - 记录您已看到问题
+  - 仅当错误计数进一步增加时重新提醒
+  - 保持对潜在问题的监控
+
+  :::important
+  Acknowledging a warning doesn't fix the underlying issue - it just tells Unraid you're aware of it. You should still investigate and resolve the root cause of the %%CRC errors|crc-errors%%.
+  :::
+</details>
