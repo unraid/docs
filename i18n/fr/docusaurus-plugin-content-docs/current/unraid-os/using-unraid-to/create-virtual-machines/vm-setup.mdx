@@ -1,0 +1,437 @@
+---
+sidebar_position: 2
+sidebar_label: Configuration de VM
+---
+
+# Configuration de VM
+
+La configuration d'une machine virtuelle (VM) sur Unraid est un moyen flexible d'exécuter des systèmes d'exploitation complets - comme Windows, Linux, ou d'autres plateformes - aux côtés de vos conteneurs et applications natives. Que vous souhaitiez tester de nouveaux logiciels, exécuter des applications anciennes, héberger un environnement de bureau, ou utiliser le passage matériel pour le jeu ou le travail créatif, le **Gestionnaire de VM** d'Unraid rend le processus accessible à tous les niveaux de compétence.
+
+:::tip[New dans Unraid 7.0]
+
+Unraid 7.x apporte des améliorations significatives aux %%machines virtuelles (VM)|vm%%, notamment :
+
+- Clones et instantanés des %%VM|vm%%
+- Modèles de %%VM|vm%% créés par l'utilisateur
+- Edition/visualisation XML en ligne
+- Fonctionnalités avancées de partage et de passage GPU
+
+Consultez la section [fonctionnalités du gestionnaire de %%VM|vm%%](#new-in-unraid-7x-vm-manager) pour plus de détails.
+
+:::
+
+Si vous ne l'avez pas déjà fait, veuillez consulter les instructions [Aperçu & préparation système](./overview-and-system-prep.mdx) pour vous assurer que votre matériel et vos partages sont prêts pour la virtualisation.
+
+## Créer vos propres machines virtuelles
+
+Une fois votre système préparé et vos préférences définies, vous pouvez créer une nouvelle %%machine virtuelle (VM)|vm%% en utilisant le %%WebGUI|web-gui%%.
+
+:::note[Before vous commencez]
+
+- Confirmez que vos partages `isos` et `domains` sont configurés et accessibles. Découvrez-en plus sur [la gestion des partages](../manage-storage/shares.mdx) ici.
+- Téléchargez votre ISO d'installation du système d'exploitation et, pour les %%VMs|vm%% Windows, l'ISO des derniers pilotes %%VirtIO|virtio%% sur le partage `isos`.
+- Décidez si vous utiliserez le %%GPU passthrough|gpu-passthrough%% ou le %%VNC|vnc-session%% pour les graphiques.
+
+:::
+
+Pour créer une %%VM|vm%% basique :
+
+1. Cliquez sur **Ajouter une VM** dans la page **Machines Virtuelles**.
+2. Définissez le **Modèle** sur **Personnalisé**, ou sélectionnez un modèle de système d'exploitation prédéfini pour les distributions courantes.
+3. Entrez un **Nom** et, si vous le souhaitez, une **Description** pour votre %%VM|vm%%.
+4. Basculez **Démarrage automatique** si vous souhaitez que le %%VM|vm%% démarre automatiquement avec le %%array|array%%.
+5. Sélectionnez le type de **Système d'Exploitation**. Cela ajustera également l'icône %%VM|vm%%.
+6. Affectez des **cœurs CPU** à la %%VM|vm%%. Vous pouvez affecter jusqu'au nombre de cœurs physiques disponibles sur votre hôte.
+7. Spécifiez la **Mémoire Initiale** (RAM) pour la %%VM|vm%%. Consultez la documentation de votre OS invité pour obtenir les valeurs recommandées.
+8. Choisissez l'**ISO d'installation de l'OS** dans votre partage **isos**.
+9. Configurez le **disque vDisk principal** (emplacement, taille, et type).
+   - Le %%vDisk|vdisk%% principal stocke le système d'exploitation de la VM.
+   - Ajoutez des %%vDisques|vdisk%% supplémentaires au besoin à l'aide du signe plus.
+10. Sélectionnez une **Carte Graphique** :
+    - Choisissez %%VNC|vnc-session%% pour un accès à distance ou sélectionnez un GPU physique pour le passage.
+    - Attribuez un clavier/souris USB si vous utilisez un GPU physique.
+    - Définissez un mot de passe pour %%VNC|vnc-session%% si désiré.
+11. Attribuez une **Carte Son** (optionnel, mais nécessaire pour l'audio HDMI via GPU).
+12. Assignez des **Périphériques USB** selon les besoins.
+    - Les dispositifs doivent être attachés avant de démarrer la %%VM|vm%% (le branchement à chaud USB n'est pas supporté).
+    - Le périphérique USB Unraid n'est pas disponible pour l'affectation.
+13. Cliquez sur **Créer la VM**. La %%VM|vm%% démarrera automatiquement à moins que vous ne décochiez **Démarrer la VM après la création**.
+
+---
+
+## Modèles VM utilisateur
+
+Unraid 7.1+ introduit des modèles d'utilisateur %%VM|vm%%, simplifiant la sauvegarde et la réutilisation de vos configurations personnalisées %%VM|vm%%. Les modèles d'utilisateur rationalisent le déploiement %%VM|vm%% et assurent la cohérence des configurations.
+
+Pour créer un modèle utilisateur :
+
+1. Modifiez la %%VM|vm%% que vous souhaitez modéliser.
+2. Sélectionnez **Créer/Modifier un modèle** et entrez un nom.
+3. Votre modèle sera maintenant disponible dans l'espace des modèles utilisateur sur l'écran **Ajouter une VM**.
+
+Pour utiliser un modèle utilisateur :
+
+- Sur la page **VMs**, cliquez sur **ajouter une VM** et sélectionnez votre modèle dans la section **modèles utilisateur**.
+
+Importation/exportation :
+
+- Survolez un modèle utilisateur et cliquez sur la flèche pour l'exporter vers votre serveur ou le télécharger.
+- Sur un autre système Unraid, utilisez **Importer à partir d'un fichier** ou **Télécharger** pour ajouter le modèle.
+
+---
+
+## Nouveautés dans Unraid 7.x : Gestionnaire de VM
+
+Unraid 7.x introduit une gamme d’améliorations puissantes au **Gestionnaire de %%VM|vm%%**, simplifiant le processus d'exécution et de gestion des %%machines virtuelles|vm%%. Ces fonctionnalités s'adressent tant aux débutants qu'aux utilisateurs avancés, rendant le déploiement, la personnalisation et l'optimisation de vos %%VM|vm%% plus simples.
+
+:::tip\[Highlights]
+
+- Gagnez du temps avec des %%clones de VM|vm%%, instantanés, et des modèles réutilisables
+- Ajustez finement la performance et la compatibilité avec des options avancées de passage et de stockage
+- Profitez de la visibilité et du contrôle améliorés avec des statistiques d'utilisation et une édition `XML` en ligne
+
+:::
+
+<details>
+  <summary><strong>Améliorations du flux de travail</strong></summary>
+
+  - **Clones & instantanés de VM :** Dupliquez des %%VMs|vm%% ou sauvegardez/restaurez rapidement leur état pour des tests ou des sauvegardes.
+  - **Modèles de VM utilisateur :** Sauvegardez vos configurations %%VM|vm%% personnalisées et déployez de nouvelles %%VMs|vm%% en quelques clics.
+  - **Edition/visualisation XML en ligne :** Visualisez ou copiez instantanément le `XML` généré par le %%WebGUI|web-gui%% ; passez en mode `XML` pour des éditions avancées.
+  - **Désactivation du démarrage automatique :** Choisissez quels %%VMs|vm%% démarrent automatiquement avec votre %%array|array%%.
+  - **Statistiques d'utilisation de VM :** Suivez l'utilisation des ressources par %%VM|vm%% directement depuis le tableau de bord.
+</details>
+
+<details>
+  <summary><strong>Options matérielles et de stockage avancées</strong></summary>
+
+  - **PCI multifonction/autre :** Assignez des dispositifs PCI complexes ou des groupes pour des scénarios avancés de passage.
+  - **Passage en ligne de commande QEMU :** Ajoutez des arguments QEMU personnalisés pour un réglage expert des %%VM|vm%%.
+  - **Remplacement de stockage :** Spécifiez l'emplacement de stockage pour chaque %%disque virtuel|vdisk%% de VM.
+  - **Indicateur SSD & deslocage :** Optimisez la performance des %%vDisques|vdisk%% pour les SSD et activez le support discard/unmap.
+  - **`SR-IOV` pour iGPU Intel :** Partagez les graphiques intégrés Intel entre plusieurs %%VMs|vm%%.
+  - **Validation du nom de VM pour ZFS :** Empêchez l'utilisation de caractères non pris en charge dans les noms de %%VM|vm%% pour les [%%pools ZFS|zfs%%](../../advanced-configurations/optimize-storage/zfs-storage.mdx).
+</details>
+
+<details>
+  <summary><strong>Améliorations des graphismes et du partage GPU</strong></summary>
+
+  - **GPUs virtuels `VirGL` & `QXL` :** Partagez les GPUs Intel/AMD entre plusieurs %%VMs|vm%% Linux ou utilisez `QXL` pour des options multi-écrans/mémoire.
+  - **Mise en épingle %%CPU|cpu-pinning%% optionnelle :** Autorisez Unraid à gérer automatiquement l'allocation CPU ou fixez manuellement des cœurs selon les besoins.
+</details>
+
+<details>
+  <summary><strong>Plus de fonctionnalités avancées</strong></summary>
+
+  - View all graphics cards and %%VM|vm%%-assigned IP addresses in the %%VM|vm%% tab
+  - Support pour la cible %%QEMU|qemu%% ppc64 et `qemu:override`
+  - Support hypervclock pour les %%VMs|vm%% Windows
+  - "Migratable" activé/désactivé pour le CPU émulé
+  - Options de configuration du Timer/décalage
+  - Pas d'options de keymap/nogpu disponibles pour des cas d'utilisation spécifiques
+  - Amélioration de la sélection et de l'édition des icônes de %%VM|vm%%
+  - Avertissements lors de l'affectation du GPU principal comme passage (peut nécessiter `vBIOS`)
+  - Démarrez les %%VMs|vm%% Unraid en mode GUI avec le pilote vidéo `QXL`
+  - Divers correctifs pour les problèmes de chemin et d'icône dans la vue `XML`
+</details>
+
+---
+
+## Utilisation des GPUs virtuels et partage GPU
+
+Unraid supporte désormais le partage avancé de GPU via `VirGL` et `QXL` pour les %%VMs|vm%% Linux (et certains GPUs Nvidia avec le driver `Nouveau`).
+
+- Pour utiliser `VirGL` : définissez **la Carte Graphique** sur **Virtuel** et **le pilote vidéo de la console VM** sur **VirtIO(3D)**.
+- Pour utiliser `QXL` : définissez **la Carte Graphique** sur **Virtuel** et **le pilote vidéo de la console VM** sur **`QXL` (meilleur)**.
+- `VirGL` n'output pas vers un moniteur physique et n'est pas compatible avec les %%VMs|vm%% Windows ou les plugins Nvidia standard.
+- `QXL` supporte le multi-écran et une mémoire vidéo configurable.
+
+---
+
+## Options avancées
+
+<details>
+  <summary>Développez cette section pour voir des conseils sur les options plus avancées</summary>
+
+  Passez à la **Vue Avancée** sur la page **Ajouter une VM** pour accéder à des paramètres supplémentaires.
+
+  Voici les options avancées les plus importantes, réparties en sections ciblées :
+
+  **Mode CPU :**
+
+  - **Passage de l'hôte** : Expose toutes les caractéristiques du CPU hôte à la %%VM|vm%% pour des performances maximales.
+  - **Émulation** : Utilise un modèle CPU générique, réduisant les problèmes de compatibilité mais limitant les performances.
+
+  **Ballonnement de mémoire :**
+
+  - Définissez une valeur de **Mémoire Max** pour activer l'allocation dynamique de mémoire (%%ballonnement de mémoire|memory-ballooning%%).
+  - Non disponible pour les %%VMs|vm%% avec des appareils PCI assignés (par exemple, %%GPU passthrough|gpu-passthrough%%).
+
+  **Type de machine :**
+
+  - **`i440fx`**: Default for Windows %%VMs|vm%%. Change only if you have %%GPU passthrough|gpu-passthrough%% issues.
+  - **`Q35`** : Par défaut pour les %%VMs|vm%% Linux et recommandé pour la plupart des systèmes d'exploitation modernes, surtout avec %%GPU passthrough|gpu-passthrough%%.
+
+  **Type de BIOS :**
+
+  - **SeaBIOS** : BIOS traditionnel pour les OSes hérités.
+  - **OVMF** : BIOS %%UEFI|uefi%% requis pour Windows 8+, la plupart des distributions Linux modernes, et %%GPU passthrough|gpu-passthrough%%.
+
+  :::note
+  Le type de BIOS peut uniquement être défini lors de la création d'une nouvelle %%VM|vm%%.
+  :::
+
+  **Extensions Hyper-V :**
+
+  - Pour les %%VMs|vm%% Windows, activez les extensions Hyper-V pour améliorer la compatibilité et les performances.
+
+  **ISO des pilotes VirtIO :**
+
+  - Remplacez l'ISO %%VirtIO|virtio%% par défaut si nécessaire, surtout pour tester ou utiliser des pilotes plus récents.
+
+  **Type de vDisk :**
+
+  - **`RAW`** : Meilleures performances, moins flexible pour les instantanés.
+  - **`QCOW2`** : Supporte les instantanés mais offre une performance légèrement inférieure.
+
+  **Mappages VirtFS (VMs Linux) :**
+
+  - Ajoutez plusieurs partages %%VirtFS|virtfs%% (`9p`) pour l'intégration du système de fichiers entre l'hôte et l'invité.
+  - Voir [la documentation %%QEMU|qemu%% 9p](http://wiki.qemu.org/Documentation/9psetup) pour plus de détails.
+
+  **Paramètres réseau :**
+
+  - Modifiez l'adresse **MAC du réseau** ou sélectionnez un **pont réseau** alternatif.
+  - Cliquez sur le symbole de rafraîchissement pour générer automatiquement une nouvelle adresse MAC.
+  - Ajoutez des interfaces réseau virtuelles supplémentaires selon besoin.
+</details>
+
+:::info[Troubleshooting conseils]
+
+- Si votre %%VM|vm%% ne démarre pas, vérifiez vos chemins ISO et %%vDisk|vdisk%%.
+- Pour %%GPU passthrough|gpu-passthrough%%, assurez-vous que votre matériel et vos paramètres BIOS prennent en charge %%IOMMU|iommu%%/VT-d/AMD-Vi.
+- Certains périphériques USB peuvent ne pas fonctionner de manière fiable avec le passage - testez et consultez les [forums Unraid](https://forums.unraid.net/) pour des conseils spécifiques aux périphériques.
+
+:::
+
+---
+
+## Attachement des appareils PCI pour le passage
+
+Avant de pouvoir attribuer un GPU ou n'importe quel dispositif PCI à une %%machine virtuelle|vm%%, il est important de "lier" le périphérique au pilote **vfio-pci**. Ce processus cache le périphérique à Unraid et le consacre uniquement à votre %%VM|vm%%.
+
+Pour lier un dispositif PCI (GPU, contrôleur USB, NVMe, etc.) pour le passage :
+
+1. Naviguez vers ***Outils → Périphériques système*** dans le %%WebGUI|web-gui%%.
+2. Passez en revue la liste de tous les appareils PCI détectés et leurs groupes %%IOMMU|iommu%%.
+3. Cochez la case à côté de chaque appareil que vous souhaitez lier à **vfio-pci** (pour le masquer d'Unraid).
+   - Notez que les appareils déjà utilisés par Unraid (tels que les contrôleurs de disque et les cartes réseau) ne peuvent pas être sélectionnés.
+   - Si vous sélectionnez un GPU, choisissez le périphérique sonore associé.
+4. Cliquez sur **Lier les sélectionnés à VFIO au démarrage** pour sauvegarder vos modifications.
+5. Redémarrez votre serveur pour que le lien prenne effet.
+
+:::caution
+
+Si vous effectuez des modifications matérielles (comme ajouter ou retirer des dispositifs PCI), retournez dans **Périphériques Système** pour vous assurer que les dispositifs corrects sont toujours liés. Si les dispositifs ne sont pas liés ou sont mal liés, ils peuvent ne pas apparaître pour le passage.
+
+:::
+
+Après liaison, les appareils liés apparaîtront dans le menu déroulant **Autres Périphériques PCI** lors de l'édition ou de la création d'une %%VM|vm%%.
+
+<details>
+  <summary>Chercher des problèmes</summary>
+
+  - Si vous avez précédemment utilisé le plugin `VFIO-PCI` Config, désinstallez-le - cette fonctionnalité est maintenant intégrée.
+  - Pour réinitialiser toutes les liaisons, supprimez `/boot/config/vfio-pci.cfg` et redémarrez votre système.
+  - Après redémarrage, utilisez le bouton **Voir le journal `VFIO-PCI`** sur la page des **Périphériques système** pour un dépannage avancé.
+  - N'oubliez pas que si vous liez votre seul GPU, Unraid pourrait ne pas démarrer en mode GUI. Assurez-vous de prévoir cela.
+  - Pour plus d'informations, consultez le [guide officiel sur les forums Unraid](https://forums.unraid.net/topic/93781-guide-bind-devices-to-vfio-pci-for-easy-passthrough-to-vms/).
+</details>
+
+---
+
+## Passerelle GPU pour machines virtuelles
+
+Le %%GPU passthrough|gpu-passthrough%% vous permet d'assigner une carte graphique physique directement à une %%machine virtuelle (VM)|vm%%, offrant des performances quasi-native pour les jeux, le travail créatif ou l'apprentissage automatisé.
+
+:::info[Why utiliser la transmission directe du GPU?]
+
+- **Performance :** Accès direct au matériel pour des applications exigeantes.
+- **Compatibilité :** Exécutez des charges de travail intensives en graphique nécessitant une carte graphique dédiée.
+- **Flexibilité :** Transformez votre serveur Unraid en un poste de travail polyvalent.
+
+:::
+
+<h4>Prérequis</h4>
+
+**Matériel :**
+
+- CPU supportant Intel VT-d ou AMD-Vi (%%IOMMU|iommu%% activé dans le BIOS).
+- GPU compatible avec le passage (voir [matériel testé par la communauté](https://docs.google.com/spreadsheets/d/1LnGpTrXalwGVNy0PWJDURhyxa3sgqkGXmvNCIvIMenk/edit#ggid=0)).
+- Une carte mère qui isole correctement les périphériques PCIe.
+
+**Logiciel :**
+
+- Unraid 6.9+ avec la virtualisation activée.
+- Le BIOS OVMF (UEFI) est recommandé pour les %%VM|vm%% sur %%SeaBIOS|seabios%%).
+
+Pour configurer la transmission directe du GPU :
+
+1. Assurez-vous que votre matériel prend en charge %%IOMMU|iommu%% et est activé dans votre BIOS.
+2. Activez les fonctionnalités de virtualisation dans le BIOS (Intel VT-x/VT-d ou AMD-v/AMD-vi).
+3. Mettez à jour Unraid à la dernière version stable.
+4. Attribuez la carte graphique à la %%VM|vm%% lors de la création ou de l'édition depuis l'écran sous la section carte graphique.
+5. Assignez un clavier et une souris USB au %%VM|vm%% si vous utilisez le %%GPU passthrough|gpu-passthrough%%.
+6. Utilisez le BIOS %%OVMF|ovmf%% pour le %%VM|vm%% pour une meilleure compatibilité avec le %%GPU passthrough|gpu-passthrough%%.
+7. Démarrez la %%VM|vm%% et vérifiez que le GPU est bien passé.
+
+:::note
+
+Certaines cartes graphiques peuvent nécessiter une configuration supplémentaire ou une injection ROM pour un passage correct.
+
+:::
+
+### Injection ROM manuelle
+
+Certaines GPU, en particulier certains modèles NVIDIA, nécessitent qu'un fichier ROM soit manuellement fourni à la VM pour s'initialiser correctement. Cela est souvent nécessaire lorsque le firmware embarqué du GPU n'est pas correctement transmis par défaut, causant des problèmes comme des écrans noirs ou des échecs de démarrage. L'injection manuelle de ROM est un dernier recours après avoir essayé des ajustements de BIOS et de configuration VM.
+
+Pour injecter un ROM :
+
+1. **Télécharger le ROM de la carte graphique :**
+   - Visitez la [base de données VGA BIOS de TechPowerUp](https://www.techpowerup.com/vgabios/).
+   - Recherchez le modèle de votre carte graphique et téléchargez le fichier ROM correct.
+   - Stockez la rom dans votre partage `isos` ou `domains` sur Unraid.
+
+2. **Éditez le %%VM|vm%% XML :**
+   - Arrêtez la %%VM|vm%% et ouvrez sa configuration XML (**Éditer l'XML** depuis le menu contextuel de la %%VM|vm%%).
+   - Localisez le bloc `<hostdev>` du GPU et ajoutez le tag `<rom>` :
+
+     ```xml
+
+     <hostdev mode='subsystem' type='pci' managed='yes'>
+       <driver name='vfio'/>
+       <source>
+         <address domain='0x0000' bus='0x02' slot='0x00' function='0x0'/>
+       </source>
+       <rom file='/mnt/user/isos/gpu_roms/your_gpu.rom'/> <!-- Update path -->
+       <address type='pci' domain='0x0000' bus='0x00' slot='0x05' function='0x0'/>
+     </hostdev>
+     ```
+
+3. **Enregistrez et testez :** Cliquez sur **Mettre à jour** et démarrez la %%VM|vm%%.
+
+---
+
+## Problèmes courants
+
+Cette section aborde les sujets avancés et les solutions pour les problèmes courants lors de la gestion des %%machines virtuelles (VMs)|vm%% sur Unraid. Déroulez les sections ci-dessous pour des instructions étape par étape et des conseils de dépannage.
+
+### Agrandir un vDisk
+
+<details>
+  <summary><strong>Cliquer pour développer/réduire</strong></summary>
+
+  Si votre %%VM|vm%% manque d'espace disque, vous pouvez augmenter la taille de son %%disque virtuel (**vDisk**)|vdisk%% directement depuis le %%WebGUI|web-gui%%.
+
+  Pour agrandir un %%vDisk|vdisk%% :
+
+  1. Allez à l'onglet **VMs** dans le %%WebGUI|web-gui%%.
+  2. Assurez-vous que la %%VM|vm%% est arrêtée.
+  3. Cliquez sur le nom de la VM pour développer ses détails.
+  4. Localisez le %%vDisk|vdisk%% que vous souhaitez agrandir. Cliquez sur la valeur dans le champ **Capacité** pour la rendre modifiable.
+  5. Entrez la nouvelle taille souhaitée (par exemple, `100G` pour 100 gigaoctets) et appuyez sur **Entrer**.
+  6. La nouvelle capacité est maintenant définie.
+
+  :::note
+  Vous ne pouvez pas réduire un %%vDisk|vdisk%% depuis l'interface graphique d'Unraid ; seule l'expansion est prise en charge.
+  :::
+
+  <h4>Extension de la partition dans votre système d'exploitation invité</h4>
+
+  Après avoir redimensionné le %%vDisk|vdisk%%, démarrez votre %%VM|vm%%. Vous devez étendre la partition dans le système d'exploitation invité pour utiliser le nouvel espace:
+
+  - **Windows :** Utilisez l'outil intégré de gestion des disques pour étendre votre partition.
+
+  - **Linux (LVM) :** Utilisez des outils comme `fdisk`, `pvresize`, `lvextend`, et `resize2fs` pour étendre les partitions et volumes logiques.
+
+    **Exemple :**
+
+    ```bash
+    sudo fdisk /dev/vda
+    sudo pvresize /dev/vda3
+    sudo lvextend -l +100%FREE /dev/mapper/ubuntu--vg-ubuntu--lv
+    sudo resize2fs /dev/mapper/ubuntu--vg-ubuntu--lv
+    ```
+
+    Ajustez les noms de périphériques selon vos besoins.
+
+  :::tip
+  Toujours sauvegarder votre %%VM|vm%% avant de modifier les disques.
+  :::
+</details>
+
+### Bloqué à l'UEFI shell
+
+<details>
+  <summary><strong>Cliquer pour développer/réduire</strong></summary>
+
+  Si votre %%VM|vm%% démarre sur un %%UEFI|uefi%% shell au lieu de votre système d'exploitation, vous pouvez démarrer le processus de démarrage manuellement :
+
+  À l'invite de commande du %%UEFI|uefi%% shell, entrez :
+
+  ```bash
+  fs0:
+  cd efi/boot
+  bootx64.efi
+  ```
+
+  La %%VM|vm%% devrait maintenant continuer à démarrer dans votre système d'exploitation.
+
+  :::tip
+  Si cela se produit fréquemment, vérifiez l'ordre de démarrage de votre VM et assurez-vous que le bon %%vDisk|vdisk%% ou ISO est défini comme périphérique de démarrage principal dans les paramètres de la VM.
+  :::
+</details>
+
+### Écran noir après le démarrage de la VM
+
+<details>
+  <summary><strong>Cliquer pour développer/réduire</strong></summary>
+
+  Si votre %%VM|vm%% démarre mais que l'écran reste vide :
+
+  1. **Vérifiez les paramètres BIOS :**
+     - Réglez la carte graphique principale sur le GPU intégré (iGPU), pas sur le GPU de passage.
+     - Mettez à jour le BIOS de la carte mère et de la carte graphique aux dernières versions.
+
+  2. **Ajustez les paramètres de la %%VM|vm%% :**
+     - Passez de %%SeaBIOS|seabios%% à %%OVMF|ovmf%% (%%UEFI|uefi%%) dans les paramètres de la %%VM|vm%%.
+     - Changez **Type de Machine** de i440fx à Q35.
+
+  3. **Injection ROM manuelle (dernier recours) :** [Injectez un ROM GPU manuellement](#injection-rom-manuelle).
+</details>
+
+### Erreur : "Impossible de définir IOMMU pour container : opération non autorisée"
+
+<details>
+  <summary><strong>Cliquer pour développer/réduire</strong></summary>
+
+  Cette erreur indique généralement des conflits de groupe %%IOMMU|iommu%% ou un manque de remappage d'interruptions :
+
+  1. **Activer le remplacement PCIe ACS :**
+     - Allez à ***Paramètres → Gestionnaire de VMs***.
+     - Réglez **remplacement PCIe ACS** sur *Downstream* ou *Both*.
+     - Redémarrez Unraid.
+
+  2. **Autoriser les interruptions non sécurisées (avancé) :**
+     - Éditez `syslinux.cfg` sur votre clé USB Unraid :
+
+       ```bash
+       append vfio_iommu_type1.allow_unsafe_interrupts=1 initrd=/bzroot
+       ```
+
+     - Utilisez ceci uniquement si vous faites entièrement confiance à vos invités %%VM|vm%%.
+
+  :::note
+  Pour des explications détaillées sur les groupes %%IOMMU|iommu%%, nous vous recommandons de consulter [le blog d'Alex Williamson](http://vfio.blogspot.com/2014/08/iommu-groups-inside-and-out.html).
+  :::
+</details>
