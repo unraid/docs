@@ -1,0 +1,120 @@
+---
+sidebar_position: 2
+sidebar_label: 自动闪存备份
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+# 自动闪存备份
+
+Backing up your Unraid flash drive is crucial for a quick recovery from issues like hardware failure, accidental deletions, or data corruption. While local backups (such as copying your flash drive to another USB device or network share) allow for easy access and control, they can be vulnerable to theft, fire, or hardware failures that may affect your entire setup. On the other hand, cloud backups provide secure off-site storage for your configuration, safeguarding against local disasters and allowing recovery from anywhere.
+
+与专注于用户数据、VMs或Docker容器的传统备份不同，闪存备份特别保留您的Unraid OS配置、许可和系统设置。这一重点使您能够迅速恢复服务器的操作，而无需从头开始。Unraid Connect允许自动、基于云的OS配置备份。如果闪存设备出现故障，您可以使用[Unraid USB闪存创建工具](https://unraid.net/download)快速恢复您的最新备份。
+
+使用 Unraid Connect 时，闪存备份是完全可选的。
+
+:::tip
+
+使用本地和云备份方法以获得最大保护。云备份提供了一种仅本地解决方案无法提供的额外的复原能力。
+
+:::
+
+## 数据收集和隐私
+
+<details>
+  <summary><strong>点击查看收集了哪些数据以及我们如何处理</strong></summary>
+
+  Unraid Connect在使用闪存备份时严肃对待您的隐私和数据：
+
+  <h4>目的</h4>
+
+  Flash backup keeps only the configuration files needed to restore your Unraid OS environment. This helps you recover quickly and maintain service continuity in the event that your flash device encounters a failure.
+
+  <h4>数据收集</h4>
+
+  备份仅包括配置文件，确保排除敏感信息，例如密码和%%WireGuard|wireguard%% 密钥。Docker模板XML文件可能是备份的一部分，并可能包含特定应用程序的凭据。
+
+  <h4>数据保留</h4>
+
+  仅保留最新的备份。如果备份超过某些限制——特别是如果单个文件超过10 MB或总存储库大小超过100 MB——它将被删除并重新创建。当您停用闪存备份功能或在一定时间不活动后，备份也会被移除。
+
+  <h4>数据共享</h4>
+
+  闪存备份数据绝不会与第三方共享。它仅用于为您提供备份和恢复服务。
+</details>
+
+## 启用闪存备份
+
+Unraid Connect排除敏感数据-如帐户密码和WireGuard密钥-直到完全加密可用。不过，Docker模板XML文件（可能包含应用程序凭据）会被包括在内。加密解决方案正在开发中。
+
+启用闪存备份：
+
+1. 前往 ***设置 → 管理访问 → Unraid API***。
+
+<div style={{ margin: 'auto', maxWidth: '600px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+  ![闪存备份激活](/img/flashbackupbutton.png)
+</div>
+
+2. 在**闪存备份**下，点击**激活**。
+3. 等待激活和初始备份完成。完成后状态将显示**已激活：最新**。
+
+激活后，任何配置更改将在1-2分钟内自动备份至云端。
+
+:::important
+
+备份不包括`config/shadow`或`config/smbpasswd`文件。用户帐户会被保留，但密码不会。恢复后，您需要重置所有用户密码，包括根密码。WireGuard密钥也不包括在内。
+
+:::
+
+闪存备份旨在存储必要的配置文件，而不是您的闪存驱动器的完整副本。它不备份临时文件（如日志）或应用程序二进制文件。插件配置会被包括，但应用程序文件需要在启动时重新下载。单个文件最大到10 MB可以备份，如果总备份超过100 MB，它将被删除并重新创建。
+
+## 恢复闪存备份
+
+要恢复您的配置：
+
+1. 登录 Unraid Connect。
+2. 在Dashboard上选择**详细信息**。
+3. 在闪存备份框中，点击**生成闪存备份**。
+4. 系统会创建一个包含您的OS配置和发布版本的zip文件。
+5. 点击**下载闪存备份**以获取zip文件。
+6. 使用[Unraid USB闪存创建工具](https://unraid.net/download)将备份恢复到新的闪存驱动器。
+
+### 恢复后步骤
+
+使用恢复的闪存驱动器启动后：
+
+- 在 ***设置 → 管理访问 → Unraid API*** 中重新激活闪存备份。
+- 在用户页面为所有用户（包括root）重置密码。
+- 为**设置→VPN 管理器**中的每个%%VPN Tunnel|vpn-tunnel%%和对等方生成新密钥并下载更新的客户端配置。
+- 如果启动后不能立即连接到互联网，请在恢复连接后通过***应用→以前的应用***重新安装插件。配置文件将准备好使用。
+
+## 禁用闪存备份
+
+要关闭闪存备份：
+
+1. 在 ***设置 → 管理访问 → Unraid API*** 中，点击 **停用** 闪存备份。
+2. 在确认对话框中，如果您想立即删除备份，请勾选**同时删除云备份**。否则，备份将在不活动一段时间后自动删除。
+
+## 隐私与安全
+
+### 备份加密
+
+目前，闪存备份存储在云中未经加密。作为预防措施，敏感数据，包括所有用户和根密码，以及所有WireGuard密钥，从未包括在备份中。
+
+### 敏感数据政策
+
+为保护您的隐私，以下内容**绝不会**存储在云备份中：
+
+- Unraid root或用户账户密码
+- 公共、私有或共享%%WireGuard|wireguard%%密钥
+
+:::note\[Reminder]
+
+闪存备份仅用于配置恢复。始终为您的数据和关键秘密采用额外的备份策略。
+
+:::
+
+---
+
+\* “%%WireGuard|wireguard%%”和“%%WireGuard|wireguard%%”徽标是Jason A. Donenfeld的注册商标。
