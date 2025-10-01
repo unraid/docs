@@ -1,0 +1,157 @@
+---
+sidebar_position: 2
+sidebar_label: Unraid aktualisieren
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import UpgradeModern from './partials/upgrade-modern.mdx';
+import UpgradeLegacy611612 from './partials/upgrade-legacy-611-612.mdx';
+import ManualDowngradeSimplest from './partials/manual-downgrade-simplest.mdx';
+import ManualDowngradeCommandLine from './partials/manual-downgrade-command-line.mdx';
+
+# Unraid aktualisieren
+
+Das Aktualisieren von Unraid OS stellt sicher, dass Sie die neuesten Funktionen, Sicherheitsupdates und Hardwareunterstützung erhalten. Diese Seite beschreibt den standardmäßigen Aktualisierungsprozess sowie Problemlösungs-Tipps und manuelle Upgrade-Optionen.
+
+:::note\[Prerequisites]
+
+Bevor Sie mit dem Upgrade beginnen, erstellen Sie unbedingt ein vollständiges Backup Ihres USB-Flash-Geräts. Weitere Einzelheiten finden Sie in [Sicherung Ihres Flash-Geräts](../maintain-and-update/changing-the-flash-device.mdx#backing-up-your-flash-device).
+
+:::
+
+:::tip[Best Praktiken vor dem Upgrade]
+
+1. **Erstellen Sie ein Backup** Ihres Flash-Laufwerks und aller wichtigen Daten.
+2. **Lesen Sie die Versionshinweise** für die Version, die Sie installieren möchten.
+3. **Aktualisieren Sie alle Plugins** auf die neuesten Versionen.
+4. **Stoppen Sie optional das Array**, bevor Sie fortfahren.
+5. **Aktualisieren Sie Unraid OS** über die Seite ***Tools → Update OS***.
+6. **Starten Sie** Ihren Server neu, um das Upgrade abzuschließen.
+
+:::
+
+## Standard-Aktualisierungsprozess
+
+<Tabs>
+  <TabItem value="Modern (2025)" label="Unraid 7.x und später" default>
+    <UpgradeModern />
+  </TabItem>
+
+  <TabItem value="Legacy (6.11 bis 6.12)" label="Unraid 6.11 bis 6.12">
+    <UpgradeLegacy611612 />
+  </TabItem>
+</Tabs>
+
+:::caution[ZFS Pool-Upgrade-Warnungen]
+
+Beim Upgrade auf Unraid 7.x können während des Startvorgangs oder im %%WebGUI|web-gui%% Warnungen zu [%%ZFS|zfs%%](../../advanced-configurations/optimize-storage/zfs-storage.mdx)-Pool-Feature-Upgrades angezeigt werden. Diese Warnungen sind kein Anzeichen für ein Problem, sondern zeigen lediglich an, dass Ihr %%ZFS|zfs%%-Pool Funktionen einer älteren ZFS-Version verwendet.
+
+Das Upgrade Ihres Pools ist nicht dringend erforderlich, aber wenn Sie sich entscheiden, es durchzuführen, sollten Sie beachten, dass es möglicherweise nicht mit früheren Versionen von Unraid funktioniert. Dies bedeutet, dass Sie nach dem Upgrade möglicherweise nicht zu einer vorherigen Unraid-Version zurückkehren können.
+
+Wie immer gilt: Denken Sie daran, Ihre Daten vor dem Upgrade Ihrer %%ZFS|zfs%%-Pools zu sichern.
+
+:::
+
+---
+
+## Troubleshooting upgrade issues
+
+Wenn Sie nach dem Upgrade auf Probleme stoßen, sehen Sie sich den entsprechenden Abschnitt unten zur Unterstützung an.
+
+<details>
+  <summary><strong>Das Array oder Docker-Container starten nach dem Upgrade langsam</strong> - Klicken zum Expandieren/Reduzieren</summary>
+
+  A one-time migration may be necessary for Docker containers after certain upgrades. This process can take time, especially if you have many images. Be patient during this process; performance should normalize after the initial start.
+</details>
+
+<details>
+  <summary><strong>Docker-Container funktionieren nach einem Upgrade nicht richtig</strong> - Klicken zum Expandieren/Reduzieren</summary>
+
+  If you encounter errors like *"layers from manifest don't match image configuration,"* you may need to rebuild your Docker image file. Here’s how:
+
+  1. Gehen Sie zu ***Einstellungen → Docker*** und stoppen Sie den Docker-Dienst.
+  2. Kreuzen Sie das Kästchen an, um das Docker-Image zu löschen, und klicken Sie auf die Löschtaste.
+  3. Starten Sie Docker neu, um das Image neu zu erstellen.
+  4. Navigieren Sie zur **Apps**-Registerkarte, **Vorherige Apps** und markieren Sie, was Sie erneut installieren möchten, und klicken Sie auf **„xx Anwendungen installieren“**.
+</details>
+
+<details>
+  <summary><strong>VMs zeigen "Kann Schnittstellen-MTU nicht abrufen" oder Netzwerkfehler</strong> - Klicken zum Expandieren/Reduzieren</summary>
+
+  Wenn Sie für %%VM|vm%%-Netzwerke einen benutzerdefinierten Bridges haben, aktualisieren Sie alle %%VMs|vm%%, um die Standard-Bridge `br0` zu verwenden, indem Sie diese Schritte befolgen:
+
+  1. Gehen Sie zum **VMs**-Tab und bearbeiten Sie jede %%VM|vm%% (stellen Sie sicher, dass die **Erweiterte Ansicht** aktiviert ist).
+  2. Setzen Sie die Netzwerkbrücke auf `br0` und klicken Sie auf **Anwenden**.
+  3. Navigieren Sie zu ***Einstellungen → VM-Manager*** (in **Erweiterter Ansicht**) und setzen Sie die Standard-Bridge auf `br0`.
+</details>
+
+<details>
+  <summary><strong>VNC-Zugriff auf VMs funktioniert nicht oder ist langsam</strong> - Klicken zum Expandieren/Reduzieren</summary>
+
+  Für ältere %%VMs|vm%% müssen Sie möglicherweise den %%VNC|vnc-session%%-Videotreiber aktualisieren:
+
+  1. Bearbeiten Sie die %%VM|vm%% über das **VMs**-Tab (wählen Sie **Erweiterte Ansicht** aus).
+  2. Stellen Sie den **%%VNC|vnc-session%%-Video-Treiber** auf **QXL** (empfohlen) ein. Versuchen Sie **Cirrus** oder **vmvga**, wenn Sie mit QXL wenig Erfolg haben.
+  3. Klicken Sie auf **Anwenden**, um die Änderungen zu speichern.
+</details>
+
+<details>
+  <summary><strong>VM wird nicht booten (EFI-Shell erscheint)</strong> - Klicken zum Expandieren/Reduzieren</summary>
+
+  If you have %%OVMF|ovmf%%-based %%VMs|vm%% created in older Unraid versions, you might encounter an EFI shell. You can boot the %%VM|vm%% by entering the following commands:
+
+  1. Geben Sie `fs0:` ein.
+  2. Geben Sie dann `cd efi/boot` ein.
+  3. Schließlich geben Sie `bootx64.efi` ein.
+
+  If `fs0:` doesn't work, you can try `fs1:` instead. If you continue to have issues, please visit the [Unraid forums](https://forums.unraid.net/) for assistance.
+</details>
+
+<details>
+  <summary><strong>Versuch, meine VM zu starten, gibt einen "Ungültiger Maschinentyp"-Fehler</strong> - Klicken zum Expandieren/Reduzieren</summary>
+
+  To resolve this, edit the %%VM|vm%% in the %%WebGUI|web-gui%% and click **Apply** without making any changes. This action will update the machine type to the latest supported version.
+</details>
+
+<details>
+  <summary><strong>Schlechte VM-Leistung nach einem Upgrade</strong> - Klicken zum Expandieren/Reduzieren</summary>
+
+  If your %%VM|vm%% is slow after an upgrade, go to the %%VM|vm%% settings (in **Advanced View**) and update the **Machine** type version to the latest revision (e.g., change from `i440fx-2.5` to `i440fx-2.7`). Make sure not to change the prefix (for example, don't switch from `i440fx` to `Q35`).
+</details>
+
+---
+
+## Manuelles Upgrade oder Downgrade
+
+Manuelle Aktualisierungen sind selten erforderlich, können jedoch notwendig sein, wenn Sie keinen Zugriff auf die WebGUI haben oder auf eine frühere Version zurückkehren müssen. Bevor Sie fortfahren, ist es wichtig, Ihr USB-Flash-Gerät zu sichern. Einzelheiten finden Sie unter [Sicherung Ihres Flash-Geräts](../maintain-and-update/changing-the-flash-device.mdx#backing-up-your-flash-device).
+
+### Downgrade mit dem Downgrade-OS-Tool (falls WebGUI zugänglich ist)
+
+Wenn Sie auf das WebGUI zugreifen können:
+
+1. Loggen Sie sich in die %%WebGUI|web-gui%% ein.
+2. Navigieren Sie zu ***Tools → Downgrade OS***.
+3. Ihre vorherige Version wird als verfügbare Downgrade-Option aufgeführt.
+4. Klicken Sie auf **Downgrade** und folgen Sie den Anweisungen.
+5. Starten Sie Ihren Server neu, wenn Sie dazu aufgefordert werden.
+
+:::caution
+
+Bedenken Sie, dass ein Downgrade zu Kompatibilitätsproblemen mit Plugins oder Docker-Containern führen kann. Sichern Sie immer Ihr USB-Flash-Gerät und alle wichtigen Daten zuvor.
+
+:::
+
+### Manuelle Methoden (wenn WebGUI unzugänglich ist)
+
+Verwenden Sie diese Methoden nur, wenn Sie keinen Zugriff auf die %%WebGUI|web-gui%% haben:
+
+<Tabs>
+  <TabItem value="Einfachste Methode" label="Einfachste Methode">
+    <ManualDowngradeSimplest />
+  </TabItem>
+
+  <TabItem value="Kommandozeilen-Methode" label="Kommandozeilen-Methode">
+    <ManualDowngradeCommandLine />
+  </TabItem>
+</Tabs>
