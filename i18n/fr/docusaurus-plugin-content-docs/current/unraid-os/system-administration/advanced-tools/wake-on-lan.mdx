@@ -1,0 +1,112 @@
+---
+sidebar_position: 2
+sidebar_label: Wake-on-LAN (WoL)
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import WakeOnLanWindows from './partials/wake-on-lan/windows.mdx';
+import WakeOnLanMacos from './partials/wake-on-lan/macos.mdx';
+import WakeOnLanLinux from './partials/wake-on-lan/linux.mdx';
+
+# Wake-on-LAN (WoL)
+
+%%Wake-on-LAN (WOL)|Wake-on-LAN%% vous permet de réveiller à distance votre serveur Unraid d'un état d'arrêt ou de veille en envoyant un « paquet magique » sur le réseau. Cette page vous aidera à configurer WoL pour votre réseau local.
+
+## Exigences
+
+Pour que WoL fonctionne correctement, assurez-vous de remplir les conditions suivantes :
+
+- **Support de la carte réseau** : Votre contrôleur d'interface réseau doit prendre en charge WoL ; la plupart des cartes modernes le font.
+
+- **Paramètres BIOS/UEFI** : Activez WoL dans le BIOS/%%UEFI|uefi%% de votre carte mère sous la gestion de l'alimentation. Voici quelques noms de paramètres courants :
+
+  | Nom du paramètre                             | Description                                   |
+  | -------------------------------------------- | --------------------------------------------- |
+  | Réveil sur LAN                               | Paramètre général de WoL                      |
+  | Réveil événement PME                         | Pour les événements de réveil PCIe            |
+  | Mise sous tension par PCI/périphériques PCIe | Nom alternatif pour WoL                       |
+  | Prêt pour ErP                                | Doit être *désactivé* pour que WoL fonctionne |
+
+- **Connexion d'alimentation** : Assurez-vous que votre serveur est branché sur une source d'alimentation.
+
+- **Connexion réseau** : Connectez votre serveur à votre réseau local avec un câble Ethernet (WoL WiFi non supporté).
+
+:::caution[Hardware compatibilité]
+
+Tous les matériels ne prennent pas en charge de manière fiable le mode veille S3 ou WoL. Certains systèmes peuvent rencontrer des problèmes pour entrer en veille, échouer à se réveiller correctement ou nécessiter des paramètres supplémentaires dans le BIOS/%%UEFI|uefi%%. Testez toujours ces fonctionnalités de manière approfondie avant de compter sur elles.
+
+:::
+
+## Mise en veille d'un serveur Unraid
+
+La façon préférée et conviviale de gérer le sommeil sur Unraid est d'utiliser le [**plugin Dynamix S3 Sleep**](https://unraid.net/community/apps/c/plugins/p3?srsltid=AfmBOorpfP2Psw_bCorklf-QVCUHvADYGsdbsAH-4CldU4V2hWgoO-09#r:~:text=%3E%3E-,Dynamix%20S3%20Sleep,-Dynamix%20Repository). Ce plugin offre une interface graphique pour aider à planifier le sommeil, le réveil et le comportement en veille, tout en traitant des problèmes courants qui peuvent survenir avec différentes configurations matérielles.
+
+Pour installer et configurer :
+
+1. Ouvrez l'***onglet Applications*** dans l'%%WebGUI|interface web%% d'Unraid.
+2. Recherchez "Dynamix S3 Sleep" et installez le plugin.
+3. Naviguez vers ***Paramètres → Paramètres de veille*** pour configurer vos options de veille et de réveil.
+
+Le plugin gère la plupart des options de configuration de veille.
+
+<details>
+  <summary><strong>Méthode manuelle alternative</strong> - Cliquez pour développer/réduire</summary>
+
+  Si vous souhaitez plus de contrôle ou avez besoin de personnalisation avancée, vous pouvez configurer les paramètres de veille et WoL via la ligne de commande. Cette méthode est recommandée pour les utilisateurs avancés.
+
+  Pour configurer le mode veille manuellement :
+
+  1. Connectez-vous à votre serveur en utilisant le terminal %%WebGUI|web-gui%% ou [%%SSH|ssh%%](../../system-administration/advanced-tools/command-line-interface.mdx#accessing-the-terminal).
+
+  2. Identifiez votre interface réseau principale (généralement `eth0`) en exécutant la commande suivante :
+
+     ```
+     ifconfig
+     ```
+
+     Notez l'adresse MAC (étiquetée comme `ether`).
+
+  3. Activez WoL sur l'interface avec cette commande :
+
+     ```
+     ethtool -s eth0 wol g
+     ```
+
+  4. Mettez le serveur en veille en entrant cette commande :
+
+     ```
+     echo -n mem > /sys/power/state
+     ```
+
+  :::attention[Persistance]
+  Les paramètres WoL configurés manuellement ne sont **pas persistants** lors des redémarrages par défaut. Pour les rendre permanents :
+
+  1. Créez un fichier `go` sur votre clé USB à l'emplacement `/boot/config/go`.
+
+  2. Ajoutez cette ligne :
+
+  ```
+  /sbin/ethtool -s eth0 wol g
+  ```
+
+  :::
+</details>
+
+## Réveillez votre serveur Unraid
+
+Pour réveiller votre serveur Unraid à distance, vous devez envoyer un "paquet magique" spécial via votre réseau local. Ce paquet comprend l'adresse MAC de votre serveur et demande à l'interface réseau d'allumer le système à partir d'un état de veille ou d'arrêt. Différents systèmes d'exploitation proposent divers outils et méthodes pour envoyer ce paquet. Voici des instructions spécifiques pour Windows, macOS et Linux.
+
+<Tabs>
+  <TabItem value="Windows" label="Windows">
+    <WakeOnLanWindows />
+  </TabItem>
+
+  <TabItem value="macOS" label="macOS">
+    <WakeOnLanMacos />
+  </TabItem>
+
+  <TabItem value="Linux" label="Linux">
+    <WakeOnLanLinux />
+  </TabItem>
+</Tabs>
