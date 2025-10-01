@@ -1,0 +1,78 @@
+La méthode de préservation de la parité vous permet de supprimer un disque de données de votre tableau Unraid sans perdre votre protection de parité. Ce processus nécessite une préparation minutieuse et certaines connaissances techniques et n'est recommandé que pour les utilisateurs avancés.
+
+<h4>Ce que fait cette méthode</h4>
+
+Cette méthode efface efficacement le disque de données que vous souhaitez supprimer, vous permettant de conserver votre parité intacte. Puisqu'un disque rempli de zéros n'affecte pas la parité, votre tableau reste protégé tout au long de la procédure.
+
+<h4>Quand utiliser cette méthode</h4>
+
+Use the %%parity|parity%%-preserve method to remove a data disk while keeping your %%parity|parity%% valid safely. This is especially useful to avoid a full %%parity|parity%% sync after removal. Please ensure that the disk you're removing is healthy.
+
+:::important\[Prerequisites]
+
+Avant de commencer, assurez-vous de répondre aux conditions suivantes :
+
+- Cette méthode vous permet de retirer un seul disque à la fois.
+- Notez qu'il n'y a aucun support officiel de LimeTech pour ce processus ; veuillez procéder avec prudence.
+
+:::
+
+:::warning
+
+Cette méthode effacera toutes les données sur le disque sélectionné. Veuillez vérifier que toutes les données importantes ont été déplacées avant de continuer.
+
+:::
+
+Pour retirer un disque en utilisant la méthode de préservation de parité :
+
+1. **Démarrez l'ensemble en mode maintenance :** Cliquez sur le disque que vous souhaitez retirer, puis cliquez sur le bouton **Effacer**. Cela supprimera le système de fichiers de l'appareil tout en maintenant la parité, puis arrêtera l'ensemble.
+2. **Démarrez le tableau :** Démarrez le tableau en mode normal ; le disque à effacer ne se montera pas, mais les disques restants seront en ligne pendant le processus.
+3. **Enregistrez les affectations de l'array :** Notez vos affectations du tableau, notamment le %%parity drive|parity-drives%%, en tant que mesure de sécurité.
+4. **(Facultatif) Activez l'écriture Turbo :** Pour un vidage plus rapide, activez l'écriture reconstructive (« Écriture Turbo ») dans **Paramètres → Paramètres du disque**, mais uniquement si tous les disques sont en bonne santé.
+5. **Videz le disque :** Utilisez la méthode d'interface de ligne de commande alternative ci-dessous pour vider manuellement le disque.
+6. **Arrêtez le tableau :** Une fois le vidage terminé, arrêtez le tableau.
+7. **Réinitialisez la configuration du tableau :** Conservez toutes les affectations actuelles lors de la réinitialisation de la configuration du tableau.
+8. **Désaffectez le disque :** Désaffectez le disque que vous souhaitez retirer, en vérifiant doublement toutes les affectations, en particulier le %%parity drive|parity-drives%%.
+9. **Confirmez l'état de la parité :** Cochez la case indiquant « La parité est déjà valide ».
+10. **Démarrez à nouveau le tableau :** Démarrez le tableau pour terminer le processus de retrait.
+11. **(Facultatif) Vérifiez la parité :** Vous pouvez effectuer un %%parity check|parity-check%% correctif par la suite pour assurer l'intégrité de la parité.
+
+<details>
+  <summary>**Méthode alternative de ligne de commande pour vider un disque**</summary>
+
+  Si vous êtes à l'aise avec l'utilisation de la ligne de commande Linux, vous pouvez vider manuellement votre disque en suivant les instructions suivantes. Assurez-vous de choisir la commande qui correspond à votre version d'Unraid.
+
+  Comme le vidage d'un disque peut prendre de nombreuses heures, il est recommandé d'utiliser quelque chose comme le [Tmux Terminal Manager TTM plugin](https://forums.unraid.net/topic/183427/plugin-tmux-terminal-manager-ttm/) pour taper les commandes et vous assurer que la session reste active.
+
+  **Pour Unraid 6.12 ou ultérieur :**
+
+  1. D'abord, démontez le disque :
+     ```bash
+     umount /mnt/diskX
+     ```
+  2. Videz le disque avec la commande suivante :
+     ```bash
+     dd bs=1M if=/dev/zero of=/dev/mdXp1 status=progress
+     ```
+
+  **Pour Unraid 6.11 et antérieur :**
+
+  1. Commencez par démonter le disque :
+     ```bash
+     umount /mnt/diskX
+     ```
+  2. Ensuite, utilisez cette commande pour vider le disque :
+     ```bash
+     dd bs=1M if=/dev/zero of=/dev/mdX status=progress
+     ```
+
+  :::note
+  N'oubliez pas de remplacer `X` par le numéro spécifique du disque de données que vous retirez.
+  :::
+
+  :::caution
+  Avant d'exécuter ces commandes, vérifiez bien le numéro du disque pour éviter d'effacer par erreur des données sur le mauvais disque.
+  :::
+
+  N'hésitez pas à visiter les [forums Unraid](https://forums.unraid.net/). Là-bas, vous pouvez trouver des ressources utiles et le soutien de la communauté.
+</details>
