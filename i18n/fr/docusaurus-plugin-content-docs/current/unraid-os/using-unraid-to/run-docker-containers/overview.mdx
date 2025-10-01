@@ -1,0 +1,50 @@
+---
+sidebar_position: 1
+sidebar_label: Aperçu
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+# Aperçu
+
+Docker vous permet d'exécuter des applications Linux dans des environnements isolés connus sous le nom de « conteneurs ». Sur Unraid, Docker est la méthode idéale pour déployer et gérer une grande variété d'applications sans se soucier de la compatibilité ou des conflits système. Cette approche transforme votre serveur Unraid en un serveur d'%%application|application-server%% flexible, vous permettant d'exécuter directement sur votre système des applications populaires comme **Plex**, **Home Assistant**, et de nombreuses autres.
+
+Si vous souhaitez en savoir plus sur la technologie de base de Docker ou explorer des utilisations avancées, consultez la [documentation officielle de Docker](https://docs.docker.com/).
+
+## Comment Unraid utilise Docker
+
+L'intégration Docker d'Unraid est conçue pour être conviviale pour tout le monde. Chaque application fonctionne dans son propre conteneur, garantissant que les mises à jour ou les modifications n'affectent pas votre système d'exploitation Unraid ni d'autres applications. Unraid utilise un partage `appdata` dédié pour stocker les paramètres et fichiers de travail de chaque conteneur. Cela garde vos données d'application organisées et rend les sauvegardes et les migrations simples.
+
+<details>
+  <summary>**Sous le capot :** Développer pour en savoir plus sur l'implémentation des containers Docker dans Unraid</summary>
+
+  Unraid utilise Docker pour créer des environnements distincts permettant d'exécuter des applications basées sur Linux. Chaque conteneur Docker fonctionne indépendamment du système d'exploitation Unraid et des autres conteneurs, ce qui améliore à la fois la stabilité et la compatibilité.
+
+  <h4>Détails de l'implémentation</h4>
+
+  - **Storage:** All the data and programs for each container are stored in a single %%virtual disk image|virtual-disk-images%% file called `docker.img`. By default, this file is found in the `system` %%user share|user-share%%, which usually utilizes the %%cache pool|cache-pool%% for better speed.
+  - **Système de fichiers :** Le fichier `docker.img` utilise le système de fichiers %%BTRFS|btrfs%% et est monté en interne par Unraid. Pour plus d'informations sur les systèmes de fichiers, voir [Systèmes de fichiers](../manage-storage/file-systems.mdx).
+  - **Configuration :** Lorsque vous configurez un conteneur, Unraid sauvegarde votre configuration comme un modèle %%VM XML|vm-xml-templates%% sur le lecteur flash. Cela facilite la réinstallation ou la restauration des conteneurs avec vos paramètres préférés.
+  - **Modèles :** De nombreux containers populaires sont fournis avec des modèles prêts à l'emploi, simplifiant ainsi la configuration initiale.
+  - **Performance :** Il est conseillé de stocker `docker.img` sur le %%cache pool|cache-pool%% (si vous en disposez d'un) pour obtenir les meilleures performances.
+  - **Limitations :** Unraid ne prend pas nativement en charge Docker Compose. Pour les configurations plus complexes, consultez la [documentation officielle de Docker Compose](https://docs.docker.com/compose/).
+
+  :::tip
+  La plupart des utilisateurs n'auront pas besoin d'interagir directement avec le fichier `docker.img`. Cependant, connaître son rôle peut être utile pour le dépannage ou la compréhension des messages de journal.
+  :::
+</details>
+
+## Applications Communautaires (Plugin)
+
+Le plugin Applications Communautaires est le moyen le plus simple et le plus populaire pour découvrir, installer et gérer à la fois les conteneurs Docker et les plugins sur votre serveur Unraid. Il offre une expérience de type magasin d'applications directement dans le WebGUI d'Unraid, rendant la navigation et le déploiement d'une large gamme d'applications maintenues par la communauté simples.
+
+Pour un guide complet sur l'installation et l'utilisation du plugin Applications Communautaires, y compris les fonctionnalités avancées et le dépannage, consultez [Applications Communautaires](./community-applications.mdx).
+
+:::note[Notes et Support]
+
+- La plupart des containers dans Applications Communautaires sont maintenus par les communautés plus larges d'Unraid et de Docker.
+- Pour obtenir de l'aide sur un container spécifique, consultez sa documentation ou son fil de support lié dans l'onglet **Apps**.
+- Lime Technology fournit un support pour le sous-système Docker lui-même mais ne prend pas en charge les containers communautaires individuels.
+
+:::
