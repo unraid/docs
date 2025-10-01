@@ -1,0 +1,53 @@
+Wenn Sie mit der Befehlszeile vertraut sind, bietet Ihnen diese Methode mehr Kontrolle und kann nützlich sein, wenn die %%WebGUI|web-gui%%-Option nicht verfügbar ist. Weitere Informationen zur Verwendung der Befehlszeilenschnittstelle finden Sie im Abschnitt [Befehlszeilenschnittstelle](../../../system-administration/advanced-tools/command-line-interface.mdx).
+
+:::note[Before Sie beginnen]
+
+- Stellen Sie sicher, dass das %%RAID|raid%%-Profil Ihres Pools das Entfernen von Geräten erlaubt; Sie können kein Gerät aus einem 2-Geräte-%%RAID 1|raid1%%-Pool entfernen, ohne es vorher in ein Einzelprofil zu ändern.
+- Überprüfen Sie, ob die verbleibenden Geräte genügend Platz für Ihre Daten haben.
+
+:::
+
+Um eine Festplatte über die Kommandozeile zu entfernen:
+
+1. **Öffnen Sie eine Terminal-Sitzung**: Stellen Sie sicher, dass das %%array|array%% läuft, und öffnen Sie Ihre Befehlszeilenschnittstelle.
+
+2. **Gerät entfernen**: Geben Sie den untenstehenden Befehl ein, wobei Sie `X` durch den Buchstaben ersetzen, der dem zu entfernenden Laufwerk entspricht (wie auf der Main-Registerkarte angezeigt):
+
+   ```bash
+   btrfs device remove /dev/sdX1 /mnt/cache
+   ```
+
+   - Für verschlüsselte Geräte verwenden: `/dev/mapper/sdX1`.
+   - Für NVMe-Geräte verwenden Sie: `nvmeXn1p1`.
+
+3. **Warten Sie auf den Abschluss**: Das Gerät wird entfernt, sobald der Cursor zurückkehrt.
+
+4. **Unraid "vergessen" das gelöschte Mitglied**:
+   - Stoppen Sie das %%array|array%%.
+   - Weisen Sie alle Poolgeräte aus.
+   - Starten Sie das %%array|array%% (Unraid wird die Poolkonfiguration löschen).
+   - Wenn Dienste von Docker/%%VM|vm%% diesen Pool nutzen, deaktivieren Sie sie, bevor Sie das %%array|array%% starten, um zu verhindern, dass Unraid Bilder anderweitig neu erstellt.
+
+5. **Geräte erneut zuweisen**: Stoppen Sie das %%array|array%% erneut, weisen Sie alle verbleibenden Pool-Mitglieder außer dem entfernten Gerät zu, und starten Sie dann das %%array|array%%.
+
+**So entfernen Sie mehrere Geräte**:
+
+Sie können dies mit einem Befehl tun:
+
+```bash
+btrfs device remove /dev/sdX1 /dev/sdY1 /mnt/cache
+```
+
+Beachten Sie jedoch, dass die Entfernung trotzdem nacheinander erfolgt.
+
+:::note\[Timing]
+
+Ähnlich wie bei der %%WebGUI|web-gui%% Methode kann das Entfernen von Geräten und das Neuausbalancieren je nach Datenmenge und Geräteschnelligkeit mehrere Stunden dauern.
+
+:::
+
+:::important
+
+Wenn nur ein Gerät im Pool übrig ist, müssen Sie das %%RAID|raid%%-Profil in **einzeln** umwandeln, um sicherzustellen, dass alles korrekt funktioniert. Weitere Anweisungen finden Sie im Abschnitt [Wechsel des Pool-RAID-Levels zu Single](#changing-pool-raid-levels).
+
+:::
