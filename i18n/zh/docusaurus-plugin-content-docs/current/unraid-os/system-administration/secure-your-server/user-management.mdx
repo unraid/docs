@@ -1,0 +1,145 @@
+---
+sidebar_position: 3
+sidebar_label: 用户管理
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import ResetPasswordBasic from './partials/reset-password-basic.mdx';
+import ResetPasswordAdvanced from './partials/reset-password-advanced.mdx';
+
+# 用户管理
+
+Unraid 使管理您的 NAS 上的用户变得简单安全，适合从初学者到经验丰富的用户。精简的方法有助于减少混淆，同时确保安全性和访问控制保持强大。
+
+:::note[Simplified 方法]
+
+与传统的 Linux 系统不同，Unraid 提供了一个简单的用户模型：
+
+- **单一管理员（%%root|root-user%%）**：只有一个主要用户，这简化了权限并增强了安全性。
+- **以共享为中心的访问**：重点是数据共享，对于不需要多用户环境复杂性的用户来说，这样更简单。
+
+这样，即使您不熟悉 Linux，也可以轻松安全地管理您的 NAS。
+
+:::
+
+## 概述
+
+### 根用户
+
+Unraid 以一个超级用户（%%root|root-user%%）运作，拥有对所有内容的完全控制。
+
+%%根用户|root-user%%...
+
+- 全面访问 %%WebGUI|web-gui%%、%%SSH|ssh%% 和 Telnet 接口。
+- 负责管理所有用户账户和设置。
+- 因安全原因，无法通过 **%%SMB|samba%%**、**%%NFS|nfs%%** 或 **%%FTP|ftp%%** 直接访问文件共享。
+- 允许通过 [%%SSH|ssh%% 密钥认证](../../system-administration/advanced-tools/command-line-interface.mdx#accessing-the-terminal) 无密码登录。
+
+<div style={{ margin: 'auto', maxWidth: '359px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+  ![根用户](/img/rootuser.png)
+</div>
+
+:::important
+
+%%root user|root-user%% 对于维持安全性至关重要。始终确保设置 [强密码](./security-fundamentals.mdx#set-a-strong-root-password)，并限制 %%SSH|ssh%% 访问以保证系统安全。
+
+:::
+
+### 共享用户
+
+这些账户设计为访问特定共享文件，没有系统级控制权限。
+
+共享用户...
+
+- 只能由%%root 用户|root-user%%创建和管理。
+- 可以通过 **%%SMB|samba%%**、**%%NFS|nfs%%** 或 **%%FTP|ftp%%**（如果启用）访问共享。
+- 无法访问 **%%WebGUI|web-gui%%**、**%%SSH|ssh%%** 或 **Telnet**。
+
+<div style={{ margin: 'auto', maxWidth: '359px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+  ![根用户](/img/shareusers.png)
+</div>
+
+---
+
+## 添加用户
+
+要从另一设备连接到 Unraid 上的共享文件，您需要用户名和密码。这些凭据与您可能用于容器中运行的特定应用程序的凭据是分开的，并且它们的登录信息不同。
+
+要添加用户：
+
+1. **访问用户管理**
+   - 进入***用户 → 共享访问***（或***设置 → 用户 → 共享访问***）。
+   - 点击 **添加用户**。
+
+2. **设置用户凭证**
+   - **用户名**：选择一个唯一名称（如 `john_media`）。仅使用小写字母以避免冲突，并将其保持在 30 个字符以内，由于 Windows 的限制。
+
+   - **密码**：使用字母、数字和符号的混合来创建一个强密码。按照密码强度计来指导。
+
+:::note\[Optionally]
+
+- **添加描述**：写一个如"媒体库访问"的注释。
+- **自定义图片**：上传一个 PNG 图像（如用户头像）以便于识别。
+
+:::
+
+<div style={{ margin: 'auto', maxWidth: '359px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+  ![根用户](/img/adduser.png)
+</div>
+
+3. 选择 **添加** 以创建用户。
+
+---
+
+## 删除用户
+
+当不再需要时，您可以轻松移除 Unraid 中的用户账户。
+
+:::caution
+
+删除用户账户是永久性操作且会立即移除对共享和共享资源的访问。
+
+:::
+
+要删除用户：
+
+1. 进入 **用户** 菜单并点击您想删除的用户账户名。
+2. 选中标记为 **删除** 的框。**应用**按钮将更改为**删除**按钮。
+3. 点击 **删除** 以移除用户。将出现确认消息以确认删除。
+4. 选择 **完成**。
+
+---
+
+## 修改用户
+
+如果用户忘记了密码或需要更改共享文件夹访问权限，您可以在 Unraid 中更改用户账户。
+
+要修改用户账户：
+
+1. 进入***用户 → 共享访问***（或 ***设置 → 用户 → 共享访问***），然后点击您要更改的用户账户。
+2. *(可选)* 在 **编辑用户** 屏幕上，您可以更新除 **用户名** 以外的任何信息。要设置新**密码**，只需输入并通过重新输入确认即可。
+3. *(可选)* 在底部，您将看到用户可以访问的文件夹（共享）列表。您可以调整这些共享中的任何一个的访问设置，但不能添加新的。
+4. 点击 **应用** 保存您的更改。
+
+---
+
+## 重置您的密码
+
+如果您忘记了 %%root|root-user%% 密码，别担心！这里有两种简单的方法来重新获得对 Unraid 服务器的访问。您需要物理访问您的\*\*[USB 闪存设备](../../system-administration/maintain-and-update/changing-the-flash-device.mdx)\*\*和另一台计算机。
+
+<Tabs>
+  <TabItem value="基础" label="基础" default>
+    <ResetPasswordBasic />
+  </TabItem>
+
+  <TabItem value="高级" label="高级">
+    <ResetPasswordAdvanced />
+  </TabItem>
+</Tabs>
+
+:::tip[Be 注意]
+
+任何具有 USB 设备物理访问权限的人都可以使用这些方法重置您的 %%root|root-user%% 密码并获得完全管理员访问权限。始终确保您的 USB 安全！
+
+:::
