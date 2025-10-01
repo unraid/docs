@@ -1,0 +1,206 @@
+---
+sidebar_position: 1
+sidebar_label: Erfassen von Diagnosedaten und Protokollen
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import SyslogMirror from './partials/syslog-server/mirror.mdx';
+import SyslogRemote from './partials/syslog-server/remote.mdx';
+import SyslogLocal from './partials/syslog-server/local.mdx';
+import DockerLogsViaWebGUI from './partials/docker-logs/via-webgui.mdx';
+import DockerLogsCommandLine from './partials/docker-logs/command-line.mdx';
+import DockerLogsPersistent from './partials/docker-logs/persistent.mdx';
+
+# Erfassung von Diagnoseinformationen
+
+Wenn es Probleme mit Ihrem Unraid-Server gibt, ist das Sammeln detaillierter Informationen entscheidend für eine effektive Problemlösung. Diese Informationen helfen anderen, genaue und zeitnahe Unterstützung bereitzustellen, insbesondere wenn Sie in Foren posten.
+
+:::info[Diagnostics Einschließen...]
+
+Die Diagnosedatei im ZIP-Format enthält mehrere anonymisierte Textdateien, die eine detaillierte Momentaufnahme Ihres Unraid-Systems erstellen, einschließlich:
+
+- **Systemkonfiguration**: Informationen über Ihre %%array|array%%, Freigaben, Netzwerkeinstellungen und installierte Plugins.
+- **Systemprotokolle**: Protokolle vom Kernel, WebGUI und von Systemdiensten, die Ereignisse dokumentieren, die zur Problematik geführt haben könnten.
+- **Hardwareinformationen**: Details zu angeschlossenen Laufwerken, Controllern und anderen Hardwarekomponenten.
+- **Docker- und %%VM|VM%%-Infos**: Gesamtkonfiguration für Docker und virtuelle Maschinen (keine Informationen zu Ihren individuellen Containern oder %%VMs|VMs%% enthalten).
+
+:::
+
+---
+
+## Systemdiagnostik
+
+Unraid provides a **Diagnostics** tool located under ***Tools → Diagnostics*** in the %%WebGUI|web-gui%% to capture comprehensive system information for troubleshooting. This tool will generate a zip file you can download and attach to forum posts for support. All diagnostics files are text-based, and users can review them to understand what information is included.
+
+| Szenario                            | Wie erfassen                                                                                                                                                                | Anmerkungen                                                                                                                                     |
+| ----------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| %%WebGUI\|Web-GUI%% verfügbar       | Verwenden Sie ***Tools → Diagnosen*** im **%%WebGUI\|Web-GUI%%**, um die Diagnosedatei im ZIP-Format zu erstellen und herunterzuladen.                                      | Diagnosedaten werden standardmäßig anonymisiert, um sensible Daten zu schützen.                                                                 |
+| %%WebGUI\|Web-GUI%% nicht verfügbar | Access via **%%SSH\|ssh%%**, telnet, or direct console to run the `diagnostics` command. The zip file saves to `/boot/logs`.                                                | Erfassen Sie die Diagnosedaten immer vor dem Neustart, um die Protokolle intakt zu halten.                                                      |
+| %%Array%% im Normalmodus gestartet  | Dies ist die bevorzugte Methode zur Erfassung von Diagnosedaten, da sie die vollständigsten Informationen bereitstellt, insbesondere in Bezug auf den Status der Laufwerke. | Wenn dies nicht möglich ist, sehen Sie im Abschnitt [Persistente Logs](#persistent-logs-syslog-server) für alternative Erfassungsmethoden nach. |
+
+<div style={{ margin: 'auto', maxWidth: '600px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+  ![Logik der Laufwerksauswahl](/img/Diagnostics.jpg)
+</div>
+
+:::important
+
+Hängen Sie die einzelne Diagnosedatei im ZIP-Format an, wenn Sie Beiträge in Foren posten. Vermeiden Sie das Hochladen der extrahierten Dateien einzeln.
+
+:::
+
+### Anonymisierung von Diagnosedaten
+
+By default, diagnostics are automatically anonymized. If you enable %%Mover|mover%% logging under ***Settings → Scheduler → Mover Settings***, the %%syslog|syslog%% will include details about files the %%Mover|mover%% processes. It's best to allow %%Mover|mover%% logging only when troubleshooting specific %%Mover|mover%%-related issues, as it may reveal file paths and names.
+
+When your system shuts down gracefully, the session log is saved automatically to the flash drive. You can access it after rebooting by going to ***Tools → Syslog → syslog-previous***. This log is also included in diagnostics on the next boot. However, if the system crashes, the system log will be lost. In these cases, enabling %%syslog|syslog%% mirroring to the flash or using a remote %%syslog server|syslog-server%% is recommended to preserve logs for troubleshooting.
+
+---
+
+## Ermittlung der Lesegeschwindigkeit von Festplatten
+
+You can use built-in Linux tools to evaluate the read performance of your hard drives. This is helpful when diagnosing slow %%parity|parity%% syncs, sluggish disk responses, or mismatched speeds among drives in an %%array|array%% or %%cache|cache%%.
+
+:::important[When und warum Testgeschwindigkeit wichtig ist]
+
+Überlegen Sie sich, Disk-Read-Benchmarks auszuführen, wenn Sie feststellen:
+
+- Extremely slow %%parity|parity%% builds or %%parity check|parity-check%%s
+- Verdächtig langsame Dateiübertragungen von einer bestimmten Festplatte
+- Unstimmigkeiten nach dem Hinzufügen oder Ersetzen von Festplatten, insbesondere bei der Mischung von SSDs und HDDs
+- Reallozierte Sektoren oder %%UDMA|udma%% %%CRC-Fehler|crc-errors%%, die möglicherweise auf fehlerhafte Laufwerke hinweisen
+
+Obwohl diese Tests Ihnen keine exakten Übertragungsgeschwindigkeiten in realen Bedingungen liefern, können sie auf unterperformende Festplatten und Controller-Engpässe hinweisen.
+
+:::
+
+### Schnelltest (hdparm)
+
+Das `hdparm`-Tool misst sowohl die zwischengespeicherte als auch die gepufferte Lesegeschwindigkeit einer Festplatte.
+
+Um den Test durchzuführen, ersetzen Sie `X` durch Ihr Festplattengerät (z. B. `sdb` oder `sdg`) und geben Sie den folgenden Befehl ein:
+
+```
+hdparm -tT /dev/sdX
+```
+
+- Das `-T`-Ergebnis zeigt die Cache-Lesegeschwindigkeit.
+- Das `-t`-Ergebnis zeigt die gepufferte (sequenzielle) Festplattenleseleistung.
+
+:::tip
+
+Führen Sie diesen Test mehrmals durch, um eine zuverlässigere Benchmark zu erhalten. Zum Beispiel können Sie den folgenden Einzeiler verwenden, um den Test 12 Mal durchzuführen:
+
+```
+for ((i=0;i<12;i++)); do hdparm -tT /dev/sdX; done
+```
+
+:::
+
+:::note
+
+Make sure to replace `/dev/sdX` with a valid physical device. Avoid logical Unraid devices, such as `/dev/md1`, which include %%parity|parity%% processes that may distort the raw performance readings.
+
+:::
+
+### Umfassender Test (diskspeed.sh)
+
+Für eine detailliertere Bewertung aller angeschlossenen Laufwerke, einschließlich %%parity|parity%%- und Datenträger, sollten Sie das Community-Skript `diskspeed.sh` verwenden.
+
+Dieses Skript:
+
+- Testet Lesegeschwindigkeiten an mehreren linearen Offsets auf der Festplattenoberfläche
+- Generiert CSV-Daten und Leistungs-Heatmaps (Bilder)
+- Kann Bereiche schlechter Leistung identifizieren, was ein Zeichen für fehlerhafte Hardware oder problematische SMR-Festplatten sein könnte
+
+So beginnen Sie mit `diskspeed.sh`:
+
+1. Laden Sie das Skript von den [Unraid-Foren](https://forums.unraid.net/topic/31073-disk-speed-test-graphs-disk-bottlenecks-identified-see-how-fast-your-disks-can-really-go/) herunter.
+2. Platzieren Sie es in einem persistenten Pfad wie `/boot/scripts/`.
+3. Machen Sie es ausführbar:
+
+```
+chmod +x /boot/scripts/diskspeed.sh
+```
+
+4. Führen Sie das Skript aus:
+
+```
+bash /boot/scripts/diskspeed.sh
+```
+
+:::note
+
+This script only performs read-only operations and won't modify any data on your drives. However, it's best to schedule the test during idle periods, as it may affect disk I/O and interfere with %%array|array%% performance.
+
+:::
+
+---
+
+## Persistente Protokolle (Syslog-Server)
+
+Persistent logs are essential for keeping a record of system events between reboots. Unlike standard logs that reset when the system restarts, persistent logs use Unraid's built-in %%syslog server|syslog-server%% to ensure you can diagnose crashes or intermittent issues that arise over time.
+
+### Auswahl der richtigen Protokollierungsmethode
+
+Gehen Sie zu ***Einstellungen → Syslog-Server***, um persistente Protokollierung einzurichten. Jede Methode hat Vor- und Nachteile:
+
+| Methode                       | Vorteile                                                                       | Nachteile                                              | Am besten geeignet für                              |
+| ----------------------------- | ------------------------------------------------------------------------------ | ------------------------------------------------------ | --------------------------------------------------- |
+| **Spiegeln auf Flash**        | Erfassen der Ereignisse beim Bootvorgang                                       | Kann das Flash-Laufwerk schnell abnutzen               | Kurzzeitdiagnostik (einige Tage)                    |
+| **Remote %%syslog\|Syslog%%** | Protokolle werden auf einem anderen Gerät gespeichert                          | Benötigt einen separaten, immer eingeschalteten Server | Langzeitüberwachung (Wochen bis Monate)             |
+| **Local %%syslog\|syslog%%**  | Keeps logs on the %%array\|array%% or %%cache\|cache%%, reducing wear on flash | Weniger zugänglich bei einem Systemabsturz             | Kontinuierliche Protokollierung ohne externe Geräte |
+
+:::tip
+
+Für detaillierte Konfigurationshilfe, schauen Sie sich das **Hilfesymbol** in der WebGUI-Werkzeugleiste an.
+
+:::
+
+### Aktivieren des Syslog-Servers
+
+<Tabs>
+  <TabItem value="Spiegeln" label="Spiegeln auf Flash" default>
+    <SyslogMirror />
+  </TabItem>
+
+  <TabItem value="remote" label="Remote-Syslog-Server">
+    <SyslogRemote />
+  </TabItem>
+
+  <TabItem value="lokal" label="Lokaler Syslog-Server">
+    <SyslogLocal />
+  </TabItem>
+</Tabs>
+
+---
+
+## Zugriff auf Docker-Container-Protokolle
+
+Während Standarddiagnosen nur begrenzte Daten für Docker und %%VM|vm%% bereitstellen, können Sie Container-Protokolle direkt abrufen, um detailliertere Fehlerbehebungen durchzuführen.
+
+So rufen Sie Docker-Protokolle ab:
+
+<Tabs>
+  <TabItem value="via-webgui" label="Via WebGUI" default>
+    <DockerLogsViaWebGUI />
+  </TabItem>
+
+  <TabItem value="Befehlszeile" label="Über die Befehlszeile">
+    <DockerLogsCommandLine />
+  </TabItem>
+
+  <TabItem value="peristent" label="Persistentes Logging">
+    <DockerLogsPersistent />
+  </TabItem>
+</Tabs>
+
+### Protokolle für virtuelle Maschinen
+
+%%VM%%-Protokolle können über ihre jeweiligen Hypervisors abgerufen werden (zum Beispiel befinden sich %%QEMU%%-Protokolle unter `/var/log/libvirt/`). Lesen Sie in der Dokumentation Ihrer %%VM%%-Plattform nach weiteren Details.
+
+:::important
+
+Denken Sie daran, die relevanten Container- oder %%VM|vm%%-Protokolle separat beizufügen, wenn Sie Unterstützung für anwendungsspezifische Probleme suchen.
+
+:::
