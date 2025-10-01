@@ -1,0 +1,161 @@
+---
+sidebar_position: 3
+sidebar_label: 远程访问
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import RemoteAccessDynamic from './partials/remote-access/dynamic.mdx';
+import RemoteAccessStatic from './partials/remote-access/static.mdx';
+
+# 远程访问
+
+Unlock secure, browser-based access to your Unraid %%WebGUI|web-gui%% from anywhere with remote access. This feature is ideal for managing your server when you're away from home - no complicated networking or %%VPN Tunnel|vpn-tunnel%% setup is required. For more advanced needs, such as connecting to Docker containers or accessing network drives, a %%VPN Tunnel|vpn-tunnel%% remains the recommended solution.
+
+:::important[Security 提醒]
+
+在启用远程访问之前，请确保您的root密码强大且独特。如果需要，请在**用户**页面上更新。此外，保持Unraid OS更新到最新版本，以防止安全漏洞。[在此了解更多关于更新Unraid的信息](../unraid-os/system-administration/maintain-and-update/upgrading-unraid.mdx)。
+
+:::
+
+通过 Unraid Connect 提供的远程访问：
+
+- **便利性** - 通过安全的云托管连接快速从任何地方访问您的服务器管理界面。
+- **安全性** - 动态访问模式仅在必要时允许对互联网的访问，帮助减少自动化攻击的风险。
+- **简易性** - 对于基本管理任务，无需手动端口转发或 VPN 客户端设置。
+
+:::tip
+
+对于全面的网络访问或高级使用案例，请考虑设置[Tailscale](../unraid-os/system-administration/secure-your-server/tailscale.mdx)或 VPN 解决方案。
+
+:::
+
+---
+
+## 初步设置
+
+要启用远程访问：
+
+1. 在 Unraid WebGUI 导航到***设置 → 管理访问***。
+2. 检查**HTTPS端口**（默认：443）。如果此端口正在使用中（例如，由Docker），请选择一个1000以上的未使用端口（如3443, 4443或5443）。
+3. 如果更改了任何设置，请点击**应用**。
+4. 在**CA 签名证书文件**下，点击**提供**以生成受信任的证书。
+
+您的 Unraid 服务器将准备好通过 WebGUI 接受使用配置端口和受信任证书的安全远程连接。
+
+---
+
+## 选择远程访问类型
+
+Unraid Connect 提供两种模式：
+
+<Tabs>
+  <TabItem value="动态" label="动态远程访问" default>
+    <RemoteAccessDynamic />
+  </TabItem>
+
+  <TabItem value="静态" label="静态远程访问">
+    <RemoteAccessStatic />
+  </TabItem>
+</Tabs>
+
+| 功能                         | 动态远程访问          | 静态远程访问    |
+| -------------------------- | --------------- | --------- |
+| %%WebGUI\|web-gui%% 向互联网开放 | 仅在启用时           | 始终        |
+| 攻击面                        | 最小化             | 最大化       |
+| 自动化                        | 通过 Connect 自动开关 | 手动设置，总是开启 |
+| %%UPnP\|upnp%% 支持          | 可以              | 可以        |
+|                            | **推荐给大多数人**     |           |
+
+## 动态远程访问设置
+
+要设置动态远程访问：
+
+1. 在***设置 → 管理访问 → Unraid API***中，选择远程访问下拉菜单中的动态选项：
+   - **动态 - UPnP：** 使用%%UPnP|upnp%%自动打开和关闭随机端口（需要在路由器上启用%%UPnP|upnp%%）。
+   - \*\*动态 - 手动端口转发：\*\*需要您手动在路由器上转发选定的端口。
+
+2. 导航到 [Unraid Connect](https://connect.myunraid.net/)，并进入管理或服务器详细页面。
+
+3. 如果您的服务器当前无法从您的位置访问，则**动态远程访问**卡片将显示一个按钮。
+
+4. 点击按钮以启用WAN访问。如果使用%%UPnP|upnp%%，会创建一个新的端口转发租约（通常为30分钟）并在活动时自动续约。
+
+5. 该卡将显示当前状态和 UPnP 状态。
+
+6. 在10分钟的非活动期间后，或者如果点击**禁用远程访问**，互联网访问会自动被撤销。%%UPnP|upnp%%租约也会被移除。
+
+---
+
+## 使用 UPnP（通用即插即用）
+
+UPnP 自动化了端口转发，简化了远程访问而无需手动路由器配置。
+
+配置 UPnP：
+
+1. **在您的路由器上启用 %%UPnP|upnp%%。**
+   确保您的路由器支持 %%UPnP|upnp%% 并确认在路由器设置中已启用。
+
+2. **在 Unraid 中启用 %%UPnP|upnp%%。**
+   前往 ***设置 → 管理访问*** 并更改 **使用 %%UPnP|upnp%%** 为 **是**。
+
+3. **在 Unraid Connect 中选择 %%UPnP|upnp%%。**
+   在 Unraid Connect 设置页面，选择远程访问选项为 %%UPnP|upnp%%（选择动态或始终开启）然后点击 **应用**。
+
+4. **Verify port forwarding (Always On only).**
+   Click the **Check** button. If successful, you'll see the message, "Your Unraid Server is reachable from the Internet."
+
+   对于动态转发，需要点击[Unraid Connect](https://connect.myunraid.net/)中的 **启用动态远程访问** 以允许访问。
+
+:::caution\[Troubleshooting]
+
+If the setting changes from %%UPnP|upnp%% to Manual Port Forward upon reloading, Unraid might not be able to communicate with your router. Double-check that %%UPnP|upnp%% is enabled and consider updating your router's firmware.
+
+:::
+
+---
+
+## 使用手动端口转发
+
+手动端口转发提供更大的控制，并且适用于大多数路由器。
+
+配置手动端口转发：
+
+1. \*\*选择一个WAN端口：\*\*选择一个1000以上的随机端口号（例如13856或48653），而不是使用默认的443。
+
+2. **在 Unraid 中应用设置：**点击**应用**以保存您选择的端口。
+
+3. **Configure your router:** Set up a port forwarding rule on your router, directing your chosen WAN port to your server’s HTTPS port. The Unraid interface provides the correct ports and IP address.
+
+   某些路由器可能要求WAN端口和HTTPS端口匹配。如果是这样，请使用相同的高随机数来匹配。
+
+4. **Verify port forwarding (Always On only):** Press the **Check** button. If everything is correct, you’ll see “Your Unraid Server is reachable from the Internet.”
+
+   对于动态转发，请确保点击 [Unraid Connect](https://connect.myunraid.net/) 中的 **启用动态远程访问** 以开启访问。
+
+5. **访问您的服务器：**登录 [Unraid Connect](https://connect.myunraid.net/)，然后点击**管理**链接以远程连接到您的服务器。
+
+---
+
+## 启用安全本地访问
+
+安全本地访问确保所有连接到您的 Unraid WebGUI 的连接，即使在您的家庭或办公室网络内，也通过 HTTPS 加密，从而保护所有敏感信息，例如登录凭据和配置数据。
+
+安全本地访问的好处包括：
+
+- **加密** - 浏览器与服务器之间交换的所有数据都受到保护。
+- **一致性** - 本地和远程访问使用相同的安全 URL。
+- **合规性** - 遵循保护管理界面的安全最佳实践。
+
+启用安全本地访问：
+
+1. 转到***设置 → 管理访问***。
+2. 在**CA 签名证书**部分，检查 DNS 重绑定警告。
+   - 如果没有显示警告，将**使用 SSL/TLS** 设置为 **严格**。
+   - 如果出现警告，请查看 [DNS 重绑定保护](../unraid-os/system-administration/secure-your-server/securing-your-connection.mdx#dns-rebinding-protection)。
+
+:::important
+
+当%%SSL|ssl%%/%%TLS|tls%%设置为严格时，客户端设备必须解析您的服务器的DNS名称。如果您的互联网连接失败，可能会失去对 %%WebGUI|web-gui%% 的访问。 参见[在DNS不可用时访问您的服务器](../unraid-os/system-administration/secure-your-server/securing-your-connection.mdx#accessing-your-server-when-dns-is-down)以获取恢复步骤。
+
+:::
