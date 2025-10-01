@@ -1,0 +1,75 @@
+---
+sidebar_position: 2
+sidebar_label: Sécurisation de votre clé USB
+---
+
+# Sécurisation de votre clé USB
+
+La clé USB est essentielle pour votre serveur Unraid, car elle stocke toutes les données de configuration, les licences, et les paramètres système. En raison de son importance, il est crucial de garder son contenu sécurisé et accessible en tout temps.
+
+## Sauvegardes
+
+Avoir une sauvegarde récente de votre clé USB vous assure de pouvoir rapidement récupérer d’une défaillance matérielle, de changements accidentels ou d’une corruption de données. Assurez-vous de créer des sauvegardes dans les situations suivantes :
+
+- Avant de mettre à niveau Unraid ou d'installer des plugins
+- Après avoir ajouté ou supprimé des disques
+- Après avoir modifié les paramètres réseau, de partage ou de sécurité
+- Avant d'effectuer des changements de configuration majeurs
+- Périodiquement, dans le cadre de votre routine de maintenance régulière
+
+Pour sauvegarder votre clé USB à l'aide du Unraid %%WebGUI|web-gui%%, suivez ces étapes :
+
+1. Sélectionnez votre clé USB depuis l’onglet **Principal**.
+2. Dans les **Paramètres du périphérique USB**, cliquez sur **Sauvegarde USB**.
+
+<div style={{ margin: 'auto', maxWidth: '600px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+  ![Sélectionnez le bouton de sauvegarde USB](/img/flashbackup.png)
+</div>
+
+3. Unraid créera un fichier ZIP contenant le contenu de la clé USB.
+4. Enregistrez ce fichier ZIP dans un endroit sécurisé en dehors de votre serveur Unraid (comme un PC séparé, NAS ou stockage cloud).
+
+Si vous devez recréer votre clé USB, utilisez cette sauvegarde avec l'[outil de création USB](https://unraid.net/download).
+
+:::tip
+
+Envisagez de garder une capture d'écran de vos [assignations de disques](../../getting-started/set-up-unraid/configure-your-array.mdx#assign-parity-and-data-disks) après tout changement matériel. Cela garantit un placement correct des disques si vous devez restaurer depuis votre sauvegarde.
+
+:::
+
+---
+
+## Accès réseau
+
+Vous pouvez contrôler si votre clé USB est accessible sur le réseau, à l'instar des autres partages dans Unraid. Cependant, l'accès réseau doit être restreint puisque la clé USB contient des données sensibles de configuration et de licences. Considérez les points suivants :
+
+- **Visibilité réseau :** Décidez si votre clé USB doit être visible ou cachée sur votre réseau.
+- **Droits d'accès :** Si l'accès réseau est activé, définissez les permissions pour limiter qui peut voir ou modifier son contenu.
+
+:::important[Reducing risques de sécurité]
+
+- **Désactiver le partage :** Définissez l'exportation %%SMB|samba%% de la clé USB sur **Non** pour empêcher tout accès réseau.
+- **Restreindre l'accès :** Si vous devez partager la clé USB, réglez la sécurité sur **Privé** et accordez l'accès uniquement aux utilisateurs de confiance avec des mots de passe forts.
+- **Éviter l'accès public :** Ne laissez jamais le partage de la clé USB défini sur **Public** ou **Sécurisé** avec un accès invité en écriture.
+
+Ces étapes aident à prévenir les modifications non autorisées ou l'exposition de fichiers critiques.
+
+:::
+
+---
+
+## Permissions
+
+Pour améliorer la sécurité du système, les fichiers sur la clé USB ne peuvent plus recevoir de permission d’exécution. Ce changement empêche l'exécution de code malveillant ou involontaire directement depuis la clé USB, réduisant le risque d'exploitation ou de modification accidentelle du système.
+
+Si vous avez des scripts ou programmes personnalisés stockés sur la clé USB, suivez ces étapes :
+
+1. **Copier les scripts à un emplacement exécutable :**
+   - Utilisez `/usr/local/bin` si vous souhaitez que les scripts soient dans le chemin système par défaut.
+   - Automatisez cela en ajoutant des commandes de copie dans votre fichier `config/go`.
+   - Après la copie, définissez l'autorisation d'exécution sur les fichiers.
+
+2. **Exécuter les scripts avec un interpréteur :**
+   - Préfixez le script avec l'interpréteur (par exemple, `bash /boot/config/scripts/myscript.sh`).
+
+Cette approche maintient votre système sécurisé tout en permettant aux utilisateurs avancés d'exécuter leurs scripts.
