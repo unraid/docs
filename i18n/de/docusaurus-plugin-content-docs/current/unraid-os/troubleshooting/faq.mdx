@@ -1,0 +1,421 @@
+---
+sidebar_position: 3
+sidebar_label: FAQ
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+# Häufig gestellte Fragen
+
+Wenn Sie Unterstützung für Unraid OS benötigen, stehen Ihnen mehrere Supportoptionen zur Verfügung:
+
+- **Unraid Foren:** [Allgemeine Unterstützung](https://forums.unraid.net/forum/55-general-support/), [Zwanghaftes Design](https://forums.unraid.net/forum/35-unraid-compulsive-design/)
+- **Offizielle Dokumentation:** [Unraid Docs](../../docs-home.mdx)
+- **Discord:** [Unraid Discord Community](https://discord.unraid.net)
+- **Supportportal:** [Unraid Support](https://unraid.net/support)
+
+---
+
+## Index
+
+- [**Bauen & Hardware**](#build--hardware)
+  - [Ich benötige Hilfe bei einem Aufbau oder einer Systemkonfiguration. Wohin soll ich gehen?](#build-help)
+  - [Welche Controller werden für Unraid empfohlen?](#hardware-raid-support)
+  - [Wie füge ich am besten mehr Speicher hinzu, wenn mein integrierter Controller voll ist?](#add-more-storage)
+  - [Hat Unraid eine Zuordnungsfunktion, die sich fehlerhafte Sektoren auf Laufwerken merkt, um Schreibvorgänge darauf zu verhindern?](#bad-sector-allocation)
+- [**OS und Konfiguration**](#os--configuration)
+  - [Kann ich einen HASP-Schlüssel innerhalb einer VM auf Unraid verwenden? Wie funktioniert das mit mehreren VMs?](#hasp-key-vm)
+  - [Mein USB-Stick ist ausgefallen, und ich habe kein Backup. Wie stelle ich meine Konfiguration wieder her?](#usb-failed-restore)
+  - [Was soll ich tun, wenn ich mein Root-Passwort vergessen habe?](#forgot-root-password)
+  - [Wie kann ich Unraid OS vollständig neu starten? (Zurücksetzen auf Werkseinstellungen)](#factory-reset)
+  - [Wie ändere ich den Hostnamen meines Servers?](#change-hostname)
+  - [Mein Flash-Laufwerk meldet eine ungültige GUID. Was kann ich tun?](#invalid-guid)
+- [**Virtualisierung & Geräte**](#virtualization--devices)
+  - [Wenn ich meine Windows-VM mit einer zugewiesenen AMD-GPU herunterfahre, startet sie nicht neu. Was kann ich tun?](#amd-gpu-vm-restart)
+  - [Wie gebe ich meine primäre GPU an eine VM weiter, wenn meine CPU keine integrierte Grafikeinheit hat?](#primary-gpu-passthrough)
+- [**Speicher & RAID**](#storage--raid)
+  - [Unterstützt Unraid verschiedene RAID-Typen wie RAID1/5/6/10?](#raid-types-support)
+  - [Ich habe derzeit eine Reihe von Geräten mit einem MBR-Partitionstabelle formatiert und möchte auf GPT umstellen. Wie mache ich das?](#mbr-to-gpt-conversion)
+- [**Netzwerk**](#networking)
+  - [Gibt es eine Möglichkeit, die br0-Brücke zu deaktivieren?](#disable-br0-bridge)
+  - [Ich kann nicht mit dem WebGUI über „http://tower“ oder „http://tower.local“ verbinden. Was kann ich tun?](#webgui-connection)
+- [**Installation**](#installation)
+  - [Ich kann den USB-Flash Creator nicht dazu bringen, Unraid auf meinem Flash-Gerät zu installieren. Was kann ich tun?](#usb-creator-issue)
+  - [Ich muss mein System so konfigurieren, dass es mit UEFI bootet. Wie mache ich das?](#uefi-boot-config)
+  - [Ich habe Probleme mit dem Webbrowser und der WebGUI. Was kann ich tun?](#webgui-browser-issues)
+  - [Wie verlängere ich meine Unraid-Testversion?](#extend-trial)
+- [**Lizenzierung**](#licensing)
+  - Für lizenzbezogene Fragen siehe die [Lizenzierungs-FAQ](licensing-faq.mdx).
+
+---
+
+## Bauen & Hardware
+
+<a id="build-help" class="anchor-fix" style={{ fontWeight: "bold" }}><h3>Ich benötige Hilfe bei einem Aufbau oder einer Systemkonfiguration. Wohin soll ich gehen?</h3></a>
+
+<details>
+  <summary><strong>Klicken zum Erweitern/Reduzieren</strong></summary>
+
+  For guidance on building or upgrading your Unraid server, visit the [Compulsive Design forum](https://forums.unraid.net/forum/35-unraid-compulsive-design/) or join the [Unraid Discord](https://discord.unraid.net). The community is active and ready to assist you, no matter your level of experience.
+</details>
+
+<br />
+
+<a id="hardware-raid-support" class="anchor-fix" style={{ fontWeight: "bold" }}><h3>Welche Controller werden für Unraid empfohlen?</h3></a>
+
+<details>
+  <summary><strong>Klicken zum Erweitern/Reduzieren</strong></summary>
+
+  Unraid performs best with non-%%RAID|raid%% Host Bus Adapters (HBAs). It's best to avoid hardware %%RAID|raid%% controllers, which can obscure drive health information and complicate maintenance.
+
+  Always check for firmware updates and ensure the controller is set to HBA/IT mode, not %%RAID|raid%% mode. You can refer to the [Recommended Controllers thread](https://forums.unraid.net/topic/102010-recommended-controllers-for-unraid/) for models that the community has tested successfully.
+</details>
+
+<br />
+
+<a id="add-more-storage" class="anchor-fix" style={{ fontWeight: "bold" }}><h3>Wie füge ich am besten mehr Speicher hinzu, wenn mein integrierter Controller voll ist?</h3></a>
+
+<details>
+  <summary><strong>Klicken zum Erweitern/Reduzieren</strong></summary>
+
+  Unraid allows for the expansion of storage across multiple controllers. You can add a compatible HBA (as mentioned above). Ensure the controller operates in standard HBA (non-%%RAID|raid%%) mode and supports %%AHCI|ahci%%/SATA. Avoid using %%RAID|raid%%-only cards, as Unraid requires direct disk access for %%parity|parity%% and monitoring.
+</details>
+
+<br />
+
+<a id="bad-sector-allocation" class="anchor-fix" style={{ fontWeight: "bold" }}><h3>Hat Unraid eine Zuordnungsfunktion, die sich fehlerhafte Sektoren auf Laufwerken merkt, um Schreibvorgänge darauf zu verhindern?</h3></a>
+
+<details>
+  <summary><strong>Klicken zum Erweitern/Reduzieren</strong></summary>
+
+  Unraid utilizes %%SMART|smart%% data from your drives to monitor their health and detect issues such as bad sectors. %%SMART|smart%% is built into modern hard drives and SSDs, tracking attributes such as reallocated and pending sectors.
+
+  While Unraid doesn't have a specific allocation feature to avoid bad sectors, it does use %%SMART|smart%% data to notify you if a drive displays signs of failure or has an increasing number of bad sectors. This information can be found in the %%WebGUI|web-gui%% under the drive's health status and %%SMART|smart%% attributes.
+
+  Wenn ein Laufwerk eine hohe Anzahl umverteilte oder ausstehende Sektoren aufweist, erwägen Sie, es bald zu ersetzen, um Datenverlust zu verhindern.
+
+  If you're uncertain about a drive's health, you can share your %%SMART|smart%% data in the [General Support forum](https://forums.unraid.net/forum/55-general-support/) for assistance from the community.
+</details>
+
+<br />
+
+---
+
+## OS und Konfiguration
+
+<a id="hasp-key-vm" class="anchor-fix" style={{ fontWeight: "bold" }}><h3>Kann ich einen HASP-Schlüssel innerhalb einer VM auf Unraid verwenden? Wie funktioniert das mit mehreren VMs?</h3></a>
+
+<details>
+  <summary><strong>Klicken zum Erweitern/Reduzieren</strong></summary>
+
+  If your HASP key is a USB dongle, you can assign it to only one %%VM|vm%% at a time. Note that two %%VM|vm%%s cannot use the same key simultaneously. You might need to pass through an entire USB controller for better compatibility. Always run tests with a Trial license to confirm that your hardware performs as expected.
+</details>
+
+<br />
+
+<a id="usb-failed-restore" class="anchor-fix" style={{ fontWeight: "bold" }}><h3>Mein USB-Stick ist ausgefallen, und ich habe kein Backup. Wie stelle ich meine Konfiguration wieder her?</h3></a>
+
+<details>
+  <summary><strong>Klicken zum Erweitern/Reduzieren</strong></summary>
+
+  If you had [Unraid Connect](../../unraid-connect/overview-and-setup.mdx) enabled for Flash Backups, you can use it to restore. If not, get a new, high-quality flash drive, install Unraid on it, and use the registration key you received via email. Reassign your drives as they were. If you can't recall the assignments, post for assistance in the [General Support forum](https://forums.unraid.net/forum/55-general-support/).
+</details>
+
+<br />
+
+<a id="forgot-root-password" class="anchor-fix" style={{ fontWeight: "bold" }}><h3>Was soll ich tun, wenn ich mein Root-Passwort vergessen habe?</h3></a>
+
+<details>
+  <summary><strong>Klicken zum Erweitern/Reduzieren</strong></summary>
+
+  Sehen Sie sich die Anleitung [Passwort zurücksetzen](../system-administration/secure-your-server/user-management.mdx#reset-your-password) an.
+
+  :::note
+  If you’re using encrypted drives and forget the encryption password, data recovery isn't possible - there is no backdoor.
+  :::
+</details>
+
+<br />
+
+<a id="factory-reset" class="anchor-fix" style={{ fontWeight: "bold" }}><h3>Wie starte ich Unraid OS komplett neu? (Zurücksetzen auf Werkseinstellungen)</h3></a>
+
+<details>
+  <summary><strong>Klicken zum Erweitern/Reduzieren</strong></summary>
+
+  1. Sichern Sie alle Daten, die Sie behalten möchten.
+  2. Stoppen Sie das %%array|Array%% und fahren Sie Ihren Server herunter.
+  3. Entfernen Sie das USB-Flash-Gerät.
+  4. Verwenden Sie das Unraid USB Flash Creator-Tool zum Formatieren und Neuinstallieren von Unraid auf dem Flash-Speicher.
+  5. Stecken Sie das Flash-Gerät wieder ein und starten Sie den Server.
+  6. Öffnen Sie im WebGUI ein Terminal und führen Sie `lsblk` aus, um alle Laufwerke (außer dem Flash) aufzulisten.
+  7. Bestehende Dateisysteme von jedem Datenlaufwerk entfernen:
+
+  :::danger[Critical: Destructive Operation]
+  **This step will permanently erase ALL data on the specified drive(s) and is IRREVERSIBLE!**
+
+  - **Stellen Sie sicher, dass Sie Backups haben** von allen Daten, die Sie benötigen, bevor Sie fortfahren
+
+  - **Überprüfen Sie die Gerätekennung** in der WebGUI oder mit lsblk, bevor Sie diesen Befehl ausführen.
+
+  - **Stellen Sie sicher, dass Sie das richtige Laufwerk auswählen** - Datenverlust vom falschen Laufwerk kann nicht wiederhergestellt werden
+
+  Für jedes Datenlaufwerk ausführen:
+
+  ```
+  wipefs /dev/sdX
+  ```
+
+  Replace `X` with the correct drive letter (e.g., sda, sdb, sdc)
+  :::
+
+  8. Fahren Sie mit der normalen Unraid-Einrichtung und -Konfiguration fort.
+</details>
+
+<br />
+
+<a id="change-hostname" class="anchor-fix" style={{ fontWeight: "bold" }}><h3>Wie ändere ich den Hostnamen meines Servers?</h3></a>
+
+<details>
+  <summary><strong>Klicken zum Erweitern/Reduzieren</strong></summary>
+
+  Um den Hostnamen Ihres Unraid-Servers zu ändern, navigieren Sie im WebGUI zu ***Einstellungen → Systemeinstellungen → Identifikation***.
+
+  **Auswirkungen der Änderung Ihres Hostnamens:**
+
+  - Der neue Hostname wird für die Netzwerkidentifikation verwendet (z.B. Zugriff über `http://neuername`).
+  - Möglicherweise müssen Sie alle zugeordneten Netzlaufwerke oder Verknüpfungen mit dem neuen Hostnamen erneut verbinden.
+  - Einige Geräte oder Dienste könnten den alten Namen im Cache speichern; ein vollständiger Neustart des Geräts kann erforderlich sein, um den neuen Namen zu erkennen.
+</details>
+
+<br />
+
+<a id="invalid-guid" class="anchor-fix" style={{ fontWeight: "bold" }}><h3>Mein Flash-Laufwerk meldet eine ungültige GUID. Was kann ich tun?</h3></a>
+
+<details>
+  <summary><strong>Klicken zum Erweitern/Reduzieren</strong></summary>
+
+  Unraid requires a USB flash device with a unique hardware %%GUID|guid%% (serial number). Some manufacturers may reuse %%GUID|guid%%s or use generic values, making these drives incompatible with each other.
+
+  **Erprobte Marken:**
+
+  - Samsung FIT Plus / Bar Plus
+  - Kingston DataTraveler Exodia
+  - Lexar JumpDrive M45
+  - PNY Elite-X
+    (Avoid newer SanDisk Ultra Fit/Cruzer models unless you can confirm a unique %%GUID|guid%%.)
+
+  It's best to avoid generic or unbranded drives, SSDs, USB card readers, and SD card adapters, as these often lack unique %%GUID|guid%%s and may not be supported for booting Unraid.
+</details>
+
+<br />
+
+---
+
+## Virtualisierung & Geräte
+
+<a id="amd-gpu-vm-restart" class="anchor-fix" style={{ fontWeight: "bold" }}><h3>Wenn ich meine Windows-VM mit einer zugewiesenen AMD-GPU herunterfahre, startet sie nicht neu. Was kann ich tun?</h3></a>
+
+<details>
+  <summary><strong>Klicken zum Erweitern/Reduzieren</strong></summary>
+
+  Many AMD GPUs experience issues with function-level resets, which contribute to this problem. Workarounds include ejecting the GPU from within Windows before shutting down or using an NVIDIA GPU, which generally avoids this issue.
+</details>
+
+<br />
+
+<a id="primary-gpu-passthrough" class="anchor-fix" style={{ fontWeight: "bold" }}><h3>Wie gebe ich meine primäre GPU an eine VM weiter, wenn meine CPU keine integrierte Grafikeinheit hat?</h3></a>
+
+<details>
+  <summary>Klicken zum Erweitern/Reduzieren</summary>
+
+  This is feasible but requires additional steps. Check out [SpaceInvaderOne’s video guide](https://forums.unraid.net/topic/51230-video-guidehow-to-pass-through-an-nvidia-gpu-as-primary-or-only-gpu-in-unraid/) for detailed instructions on how to do this properly.
+</details>
+
+<br />
+
+---
+
+## Speicher & RAID
+
+<a id="raid-types-support" class="anchor-fix" style={{ fontWeight: "bold" }}><h3>Unterstützt Unraid verschiedene RAID-Typen wie RAID1/5/6/10?</h3></a>
+
+<details>
+  <summary><strong>Klicken zum Erweitern/Reduzieren</strong></summary>
+
+  Unraid features a unique storage architecture that distinguishes it from traditional %%RAID|raid%% systems. Here's a comparison of different storage options:
+
+  | Merkmal / Fähigkeit                          | Unraid %%parity\|parity%% %%array\|array%% (md)                 | %%BTRFS\|btrfs%% Pool (%%cache\|cache%%)                                                                 | **%%ZFS\|zfs%% Pool (7.x+)**            | Traditionelles %%RAID 1\|raid1%%/%%RAID 5\|raid5%%/%%RAID 6\|raid6%%/%%RAID 10\|raid10%%               |
+  | -------------------------------------------- | --------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- | --------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+  | %%Parity\|parity%% / Redundanzmodell         | Dedizierte %%parity\|parity%% Platte(n)                         | Software %%RAID 1\|raid1%%/%%RAID 10\|raid10%%/%%RAID 5\|raid5%%/%%RAID 6\|raid6%% über %%BTRFS\|btrfs%% | %%RAID 1\|raid1%%-Z1/Z2/Z3 oder Spiegel | Gestreifte %%parity\|parity%% (%%RAID 5\|raid5%%/%%RAID 6\|raid6%%) oder Spiegel (%%RAID 10\|raid10%%) |
+  | Datenstreifen-Support                        | Nein                                                            | Yes (except %%RAID 1\|raid1%%)                                                                           | Ja                                      | Ja                                                                                                     |
+  | Flexibilität der Laufwerksgrößen             | Beliebige Größen mischen                                        | Am besten bei ähnlichen Größen                                                                           | Am besten bei ähnlichen pro vdev        | Benötigt passende Größen                                                                               |
+  | Eine Platte nach der anderen erweitern       | Ja                                                              | Ja (Geräte hinzufügen oder ersetzen)                                                                     | Ja (pro vdev\*)                         | Typischerweise nein                                                                                    |
+  | Dateisystem pro Platte                       | Ja                                                              | Nein                                                                                                     | Nein                                    | Nein                                                                                                   |
+  | Lesegeschwindigkeit einer einzelnen Platte   | Natürliche Plattengeschwindigkeit                               | Aggregiert (mehrere Platten)                                                                             | Aggregiert (mehrere Platten)            | Aggregiert                                                                                             |
+  | Schreibverzögerung während des Wiederaufbaus | Minimal (nur ausgefallene Platte)                               | Kommt auf das Niveau an                                                                                  | Abhängig vom vdev-Layout                | Signifikant                                                                                            |
+  | %%Bit rot\|bit-rot%% Erkennung               | Optional (%%BTRFS\|btrfs%%/%%ZFS\|zfs%% %%checksum\|checksum%%) | ✅ Integriert                                                                                             | ✅ Durchgehende %%checksum\|checksum%%s  | ❌ Nicht inhärent                                                                                       |
+  | %%Snapshot\|snapshot%% / Senden-Empfangen    | ❌                                                               | ✅ (%%BTRFS\|btrfs%%)                                                                                     | ✅ Nativ                                 | ❌                                                                                                      |
+  | Empfohlene Produktionseinsätze               | Allgemeine Medienlagerung                                       | %%RAID 1\|raid1%%/%%RAID 10\|raid10%% (vermeide %%RAID 5\|raid5%%/%%RAID 6\|raid6%%)\*\*                 | ✅ Alle Ebenen stabil                    | Enterprise-%%array\|array%%s                                                                           |
+
+  \* %%ZFS|zfs%% vdevs must be expanded by replacing **all** drives in the vdev or adding a new vdev.\
+  \* %%BTRFS|btrfs%% %%RAID 5|raid5%%/%%RAID 6|raid6%% remains flagged as "experimental" upstream; use with caution.
+
+  - **Unraid %%parity|parity%% %%array|array%%** ist ideal für inkrementelle Erweiterungen, ermöglicht nicht passende Laufwerksgrößen mit minimalem Wiederaufbaustress.
+  - **%%ZFS|zfs%% Pools** (verfügbar in 7.x) bieten Enterprise-Klassen-Redundanz, %%snapshot|snapshot%%s und %%checksum|checksum%%s, wodurch sie ideal für %%VM|vm%%s und Datenbanken sind.
+  - **%%BTRFS|btrfs%% Pools** sind ideal für schnelle SSD-%%cache|cache%%s, insbesondere im gespiegelt mitteln \*\*RAID 1|raid1%%/%%RAID 10|raid10%% Modus.
+  - Traditionelle Hardware-%%RAID|raid%%-Karten sind *nicht* erforderlich; einfache HBAs reichen aus, damit Unraid Laufwerke direkt verwalten kann.
+</details>
+
+<br />
+
+<a id="mbr-to-gpt-conversion" class="anchor-fix" style={{ fontWeight: "bold" }}><h3>Derzeit habe ich eine Reihe von Geräten, die mit einem MBR-Partitionstabelle formatiert sind und möchte zu GPT konvertieren. Wie mache ich das?</h3></a>
+
+<details>
+  <summary><strong>Klicken zum Erweitern/Reduzieren</strong></summary>
+
+  <h3>Why convert from MBR to GPT?</h3>
+  MBR (Master Boot Record) partitioning supports disks up to 2TB and only allows a maximum of four primary partitions. On the other hand, GPT (%%GUID|guid%% Partition Table) can handle much larger disks and nearly unlimited partitions. Converting to GPT is advisable if you work with larger drives or want better partition management.
+
+  :::important[Use **Maintenance Mode**]
+  Before starting the conversion process, put your %%array|array%% into **Maintenance Mode**. This step ensures no writes occur during the conversion, protecting your data.
+  :::
+
+  <h3>Konvertierungsvorgang</h3>
+
+  1. Sicherstellen, dass eine gültige %%parity|parity%% und ein aktuelles Backup Ihres Flash-Laufwerks vorhanden ist.
+  2. Den **Wartungsmodus** über den ***Main***-Tab betreten.
+  3. Ersetzen und erneuern Sie zuerst Ihre %%parity|parity%% Platte.
+  4. Jedes Datenlaufwerk nacheinander austauschen und das %%array|array%% nach jedem Austausch wiederherstellen.
+  5. Das neue Laufwerk wird mit dem passenden Partitionierungsstil basierend auf seiner Größe formatiert:
+     - **2TB oder kleiner**: Verwendet MBR-Partitionierung
+     - **Größer als 2TB**: Verwendet GPT-Partitionierung
+  6. Sobald alle Laufwerke ersetzt und wiederhergestellt wurden, den **Wartungsmodus** beenden.
+
+  Dieser Prozess hält Ihre Daten sicher, während der Partitionierungsstil geändert wird.
+
+  :::note[Additional notes]
+
+  - **Partitionierung erfolgt automatisch**: Unraid wählt automatisch den Partitionierungsstil basierend auf der Größe des Laufwerks:
+    - **2TB oder kleiner**: Verwendet immer MBR-Partitionierung
+    - **Größer als 2TB**: Verwendet immer GPT-Partitionierung
+  - Ab Unraid OS 6.9 beginnt Partition 1 bei 32KiB für rotierende Geräte und 1MiB für nicht rotierende Geräte, unabhängig vom Partitionierungsstil.
+  - Always [back up your flash drive](../system-administration/secure-your-server/secure-your-flash-drive.mdx#backups) before starting this conversion process.
+    :::
+</details>
+
+<br />
+
+---
+
+## Netzwerk-Änderungen
+
+<a id="disable-br0-bridge" class="anchor-fix" style={{ fontWeight: "bold" }}><h3>Gibt es eine Möglichkeit, die br0-Brücke zu deaktivieren?</h3></a>
+
+<details>
+  <summary><strong>Klicken zum Erweitern/Reduzieren</strong></summary>
+
+  Yes. The **br0** bridge is a Linux network bridge allowing Docker containers and %%VM|vm%%s to connect directly to your local area network (LAN) with their IP addresses. It acts as a virtual network switch that connects your physical network interface to the virtual interfaces used by containers and %%VM|vm%%s.
+
+  :::note
+  Disabling br0 means that %%VMs|vm%% and Docker containers will not have direct access to the LAN and may lose some advanced networking features.
+  :::
+</details>
+
+<br />
+
+<a id="webgui-connection" class="anchor-fix" style={{ fontWeight: "bold" }}><h3>Es scheint, dass ich keine Verbindung zur WebGUI über `http://tower` oder `http://tower.local` herstellen kann. Was kann ich tun?</h3></a>
+
+<details>
+  <summary><strong>Klicken zum Erweitern/Reduzieren</strong></summary>
+
+  If you're having trouble connecting to the %%WebGUI|web-gui%% by hostname, the issue might be with your local DNS not resolving the server name. Instead, try connecting directly using the IP address.
+
+  **So finden Sie die IP-Adresse Ihres Servers:**
+
+  - Überprüfen Sie die DHCP-Client-Liste Ihres Routers oder Switches auf ein Gerät, das als "Tower" oder ähnlich aufgeführt ist.
+  - Wenn Sie bei der Flash-Erstellung eine statische IP-Adresse zugewiesen haben, verwenden Sie diese Adresse.
+  - Schließen Sie einen Monitor und eine Tastatur an Ihren Server an; die IP-Adresse wird nach dem Booten auf der lokalen Konsole angezeigt.
+
+  **Häufige Ursachen für dieses Problem:**
+
+  - Ihr Computer und der Server könnten sich in unterschiedlichen Subnetzen oder VLANs befinden.
+  - Ihr Router unterstützt möglicherweise keine lokale Hostnamensauflösung.
+  - Der Unraid-Server ist möglicherweise nicht mit dem Netzwerk verbunden oder hat eine fehlerhafte Netzwerkeinstellung.
+  - Firewall- oder Sicherheitssoftware kann den Zugriff blockieren.
+
+  Wenn Sie keine Verbindung herstellen können, versuchen Sie, Ihren Server und Ihre Netzwerkausrüstung neu zu starten und stellen Sie sicher, dass alle Kabel sicher verbunden sind.
+</details>
+
+<br />
+
+---
+
+## Installation
+
+<a id="usb-creator-issue" class="anchor-fix" style={{ fontWeight: "bold" }}><h3>Ich kann den USB-Flash-Creator nicht dazu bringen, Unraid auf meinem Flash-Gerät zu installieren. Was kann ich tun?</h3></a>
+
+<details>
+  <summary><strong>Klicken zum Erweitern/Reduzieren</strong></summary>
+
+  If the USB flash creator tool isn't working for your system or flash drive, you can utilize the [manual installation method](../getting-started/set-up-unraid/create-your-bootable-media.mdx#manual-install-method) to prepare your Unraid boot device. This method is compatible with Windows, macOS, and Debian/Ubuntu Linux.
+</details>
+
+<br />
+
+<a id="uefi-boot-config" class="anchor-fix" style={{ fontWeight: "bold" }}><h3>Ich muss mein System so konfigurieren, dass es mit UEFI bootet. Wie mache ich das?</h3></a>
+
+<details>
+  <summary><strong>Klicken zum Erweitern/Reduzieren</strong></summary>
+
+  Sie können den %%UEFI|uefi%%-Bootmodus auf verschiedene Weise einrichten:
+
+  **Option 1: Während des Flash-Erstellung**
+
+  - Wenn Sie den USB-Flash-Creator verwenden, wählen Sie die Option, um den %%UEFI|uefi%%-Bootmodus zu aktivieren, bevor Sie Unraid auf das Flash-Laufwerk schreiben.
+
+  **Option 2: Nach dem Booten im Legacy-Modus**
+
+  - Gehen Sie im %%WebGUI|web-gui%% zur ***Flash-Laufwerk Einstellungen → Flash-Laufwerk*** Seite.
+  - Aktivieren Sie den %%UEFI|uefi%%-Bootmodus und starten Sie Ihren Server neu.
+
+  **Option 3: Manuelles Umbenennen des Ordners**
+
+  - Benennen Sie auf dem Flash-Laufwerk den `EFI-`-Ordner in `EFI` um (entfernen Sie das Minuszeichen `-`).
+  - Stecken Sie das Flash-Laufwerk in Ihren Server und rufen Sie die BIOS/%%UEFI|uefi%%-Einstellungen Ihres Motherboards auf.
+  - Setzen Sie das USB-Flash-Laufwerk als primäres Boot-Gerät und aktivieren Sie den %%UEFI|uefi%%-Bootmodus (deaktivieren Sie CSM/Legacy/Kompatibilitätsmodus, sofern verfügbar).
+</details>
+
+<br />
+
+<a id="webgui-browser-issues" class="anchor-fix" style={{ fontWeight: "bold" }}><h3>Ich habe Probleme mit dem Webbrowser und der WebGUI. Was kann ich tun?</h3></a>
+
+<details>
+  <summary><strong>Klicken zum Erweitern/Reduzieren</strong></summary>
+
+  Wenn Sie Anzeige- oder Funktionsprobleme mit der %%WebGUI|web-gui%% haben, ziehen Sie Folgendes in Betracht:
+
+  - **Ad-Blocker und Inhaltsblocker:** Diese Browser-Erweiterungen können die WebGUI stören. Versuchen Sie, Ihren Unraid-Server zur Whitelist des Ad-Blockers hinzuzufügen oder den Blocker für die Serveradresse zu deaktivieren.
+  - **Browser-Erweiterungen:** Einige Erweiterungen könnten Scripts blockieren oder Seiteninhalte verändern. Deaktivieren Sie Erweiterungen oder versuchen Sie es mit einem privaten/Inkognito-Fenster.
+  - **Veraltete Browser:** Stellen Sie sicher, dass Sie einen modernen, aktuellen Browser verwenden (wie Chrome, Firefox oder Edge). Ältere Browser unterstützen die WebGUI möglicherweise nicht vollständig.
+  - **Cache-Probleme:** Löschen Sie Ihren Browser-Cache oder versuchen Sie einen sog. Hard-Refresh (Ctrl+F5 oder Cmd+Shift+R).
+  - **Netzwerkprobleme:** Stellen Sie sicher, dass Ihr Computer und Server mit demselben Netzwerk und Subnetz verbunden sind.
+
+  Wenn Probleme bestehen bleiben, versuchen Sie, auf die %%WebGUI|web-gui%% von einem anderen Browser oder Gerät zuzugreifen.
+</details>
+
+<br />
+
+<a id="extend-trial" class="anchor-fix" style={{ fontWeight: "bold" }}><h3>Wie verlängere ich meinen Unraid-Test?</h3></a>
+
+<details>
+  <summary><strong>Klicken zum Erweitern/Reduzieren</strong></summary>
+
+  If you need more time with your [30-day free trial](https://unraid.net/download) of Unraid, you can extend it. Once your original trial expires, stop the %%array|array%% and go to the **Registration** page. You should see a button that allows you to request a 15-day extension. You can do this twice for a total of 60 days before you need to purchase a license.
+
+  :::important
+  You must use the same USB flash device to continue your trial. Changing the flash device will require starting a new trial from scratch.
+  :::
+</details>
+
+<br />
