@@ -1,0 +1,142 @@
+---
+sidebar_position: 4
+sidebar_label: Unraid als VM
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+# Unraid als VM
+
+Das Ausführen von Unraid als virtuelle Maschine auf Ihrem primären Unraid-Server kann für Entwicklung, Testzwecke und Bewertungen sehr hilfreich sein. Diese Konfiguration ermöglicht Ihnen:
+
+- Entwickeln und testen von Plugins oder Docker-Containern, ohne Ihre Produktionsserver zu gefährden.
+- Neue Unraid-Versionen evaluieren, bevor Sie Ihr Hauptsystem aktualisieren.
+- Isolierte Umgebungen für Fehlersuche oder Schulungen erstellen.
+
+:::caution[Important Überlegungen]
+
+- Lime Technology unterstützt diese Konfiguration offiziell nicht für Produktionsdaten.
+- Virtualisierung bringt einen gewissen Overhead mit sich; erwarten Sie verringerte Leistung im Vergleich zum direkten Betrieb auf der Hardware.
+- Sie benötigen einen separaten, gültigen Lizenzschlüssel für die %%VM|vm%%.
+
+:::
+
+:::note\[Prerequisites]
+
+- Ein gültiger Unraid-Lizenzschlüssel für die %%VM|vm%%
+- Ein dedizierter USB-Stick (verwenden Sie einen anderen Hersteller als das Boot-Laufwerk Ihres Hosts)
+- Unraid Version 6.4.0 oder höher für die %%VM|vm%% (ältere Versionen erfordern manuelle Einrichtung)
+
+:::
+
+Um Unraid als %%VM|vm%% zum Laufen zu bringen:
+
+<details>
+  <summary><strong>1. Prepare the flash drive for the VM</strong> - Click to expand/collapse</summary>
+
+  Getting your flash drive ready is crucial for a seamless and dependable %%VM|vm%% boot process. Here's how to set up your %%VM|vm%% environment with a unique and properly configured boot device.
+
+  1. Verwenden Sie das [Unraid USB Creator](https://unraid.net/download) Tool auf Ihrem Desktop, um das Flash-Laufwerk vorzubereiten:
+     - Wählen Sie **EFI-Boot zulassen**.
+     - Setzen Sie einen eindeutigen Servernamen (z.B. `TowerVM`, wenn Ihr Host `Tower` ist).
+     - Schreiben Sie das Image auf das Flash-Laufwerk.
+
+  2. Konfigurationsdateien ändern:
+     - Benennen Sie die Flash-Laufwerk-Label von `UNRAID` in einen eindeutigen Namen um (z.B., `UNRAID-VM`).
+
+     - Bearbeiten Sie die `syslinux/syslinux.cfg` Datei auf dem Flash-Laufwerk:
+
+       ```
+       label Unraid OS
+         menu default
+         kernel /bzimage
+         append unraidlabel=UNRAID-VM initrd=/bzroot
+       ```
+
+     - Nehmen Sie diese Änderung in allen Boot-Modi (GUI/Safe Mode) innerhalb der Datei vor.
+
+     - Kopieren Sie die aktualisierte `syslinux.cfg` Datei nach `EFI/boot/syslinux.cfg`
+
+  3. Erstellen Sie eine Datei namens `startup.nsh` im Root des Flash-Laufwerks mit folgendem Inhalt:
+
+     ```
+     \EFI\boot\bootx64.efi
+     ```
+
+  4. Notieren Sie den Hersteller des Flash-Laufwerks (dies benötigen Sie später für die %%VM|vm%%-Einrichtung).
+</details>
+
+<details>
+  <summary><strong>2. Set up the VM on the host</strong> - Click to expand/collapse</summary>
+
+  Die Konfiguration der Unraid %%VM|vm%% erfordert einige spezifische Einstellungen, um einen ordnungsgemäßen Betrieb sicherzustellen.
+
+  Um die %%VM|vm%%-Vorlage zu erstellen:
+
+  1. Gehen Sie auf dem Host-Unraid-Server zu ***Einstellungen → VM-Manager*** und stellen Sie sicher, dass %%VM|vm%% aktiviert sind.
+  2. Navigieren Sie zum Tab **VMs** und klicken Sie auf **VM hinzufügen**.
+  3. Wählen Sie die **Slackware** Vorlage, da sie am nahesten zu Unraid passt.
+  4. (Optional) Wenn verfügbar, ersetzen Sie das Slackware-Symbol durch das Unraid-Symbol.
+  5. Benennen Sie die %%VM|vm%% (z.B., `UNRAID-VM`).
+  6. (Optional) Fügen Sie eine Beschreibung hinzu, wie *"Unraid-Testumgebung - vX.XX.X."*
+  7. Ressourcen zuweisen:
+     - CPUs: 2-4 Kerne
+     - RAM: 4-8 GB (setzen Sie Initial und Max auf denselben Wert)
+  8. Setzen Sie **Maschinentyp** auf **Q35 (neueste)**.
+  9. Setzen Sie **BIOS** auf **OVMF** und **USB-Controller** auf **3.0 (QEMU XHCI)**.
+  10. Konfigurieren Sie virtuelle Festplatten:
+      - Fügen Sie %%vDisks|vdisk%% für Cache/Daten mit **RAW** Format und **SATA**-Bus hinzu.
+      - Größen unterscheiden, um eine einfache Identifikation zu ermöglichen (z.B., %%parity|parity%% > Daten > %%cache|cache%%).
+  11. Grafik, Sound und Netzwerk auf deren Standardeinstellungen belassen.
+  12. Unter **USB-Geräte** wählen Sie den Flash-Laufwerk nach **Hersteller**, nicht nach Label.
+
+  :::important
+  The %%VM|vm%%'s flash drive must be from a different manufacturer than the host's boot drive. If they match, the %%VM|vm%% drive won't be visible.
+  :::
+</details>
+
+<details>
+  <summary><strong>3. Create and start the VM</strong> - Click to expand/collapse</summary>
+
+  Um die %%VM|vm%% nach der Konfiguration zu starten:
+
+  1. Deaktivieren **VM nach Erstellung starten** wenn Sie manuelle Steuerung wünschen.
+  2. Klicken Sie auf **Erstellen**.
+  3. Klicken Sie auf der **VMs**-Registerkarte auf das Unraid %%VM|vm%%-Symbol und wählen **Start mit Konsole (%%VNC|vnc-session%%)**.
+  4. Verfolgen Sie den Startvorgang in der %%VNC|vnc-session%% Konsole und notieren Sie die %%VM|vm%%-IP-Adresse, die vor der Anmeldung angezeigt wird.
+</details>
+
+<details>
+  <summary><strong>4. Configure the VM</strong> - Click to expand/collapse</summary>
+
+  Sobald die %%VM|vm%% läuft, richten Sie es wie einen physischen Unraid-Server ein:
+
+  1. Greifen Sie auf das %%WebGUI|web-gui%% der %%VM|vm%% zu unter `http://[VM-IP]`.
+  2. Gehen Sie zu ***Einstellungen → Identifikation***:
+     - Legen Sie einen eindeutigen **Servernamen** fest (z.B. `Unraid-VM`).
+     - Fügen Sie eine Beschreibung hinzu wie "Entwicklungsinstanz."
+  3. (Optional) Gehen Sie zu ***Einstellungen → Anzeigeeinstellungen*** und wählen Sie ein anderes Farbthema, um es vom Host zu unterscheiden.
+  4. Gehen Sie zu ***Einstellungen → %%SMB|samba%% Einstellungen → Arbeitsgruppeneinstellungen*** und stellen **Lokaler Master** auf *Nein*, um Konflikte zu vermeiden.
+  5. Für UPS-Durchschleifung (falls der Host UPS hat):
+     - Gehen Sie auf ***Einstellungen → UPS*** auf der %%VM|vm%%.
+     - Setzen Sie **UPS-Kabel** auf *Ether*.
+     - Setzen Sie **UPS-Typ** auf *net*.
+     - Geben Sie die IP des Hosts bei **Gerät** ein.
+     - Konfigurieren Sie die **Laufzeit**, um die %%VM|vm%% vor dem Host herunterzufahren.
+  6. Starten Sie das %%array|array%% mit Ihren konfigurierten Geräten.
+  7. Installieren Sie [**Community Applications**](https://unraid.net/community/apps) für Plugin/Docker-Tests.
+  8. Aktualisieren Sie die %%VM|vm%% über ***Werkzeuge → Betriebssystem aktualisieren***, genau wie einen physischen Server.
+</details>
+
+### Fehlerbehebung
+
+Wenn Sie einen *Ausführungsfehler* im Zusammenhang mit der USB-Flash-Vorrichtung nach der Bearbeitung der %%VM|vm%%-Einstellungen auftreten:
+
+1. Bearbeiten Sie die %%VM|vm%% und wechseln zur **XML-Ansicht**.
+2. Suchen Sie den `<hostdev>`-Knoten, der das Flash-Gerät definiert (normalerweise gegen Ende).
+3. Löschen Sie den gesamten `<hostdev>...</hostdev>` Block.
+4. Klicken Sie auf **Aktualisieren**.
+5. Bearbeiten Sie die %%VM|vm%% erneut in **Formularansicht**.
+6. Wählen Sie das Flash-Laufwerk erneut unter **USB-Geräte** aus.
+7. Klicken Sie erneut auf **Aktualisieren**. Die %%VM|vm%% sollte jetzt normal starten.
