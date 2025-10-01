@@ -1,0 +1,98 @@
+---
+sidebar_position: 5
+sidebar_label: Dépannage de Docker
+---
+
+# Dépannage de Docker
+
+:::info
+
+Cette page offre des conseils de dépannage spécifiquement pour les conteneurs Docker sur Unraid, gérés par l'équipe Unraid. Pour un dépannage avancé, des détails techniques approfondis ou des sujets au-delà de l'implémentation spécifique à Unraid, veuillez vous référer à la [documentation officielle de Docker](https://docs.docker.com/).
+
+:::
+
+Docker facilite l'exécution d'une variété d'applications sur votre serveur Unraid, mais des problèmes peuvent survenir, tels que des conteneurs qui ne démarrent pas, des fichiers d'image Docker corrompus, ou des problèmes de réseau. Cette page aborde certains problèmes courants liés à Docker sur Unraid et propose des bonnes pratiques pour les résoudre efficacement.
+
+---
+
+## Recréer le fichier image Docker
+
+Un fichier d'image Docker corrompu (`docker.img`) est un problème courant, souvent causé par le %%cache pool|cache-pool%% à court d'espace ou un arrêt brutal. Heureusement, un conteneur bien configuré stocke toutes les données variables en dehors du fichier image (généralement dans le partage `appdata`), vous pouvez donc recréer l'image en toute sécurité sans perdre vos paramètres d'application ou vos données.
+
+Pour recréer le fichier image Docker :
+
+1. Allez dans ***Settings → Docker*** dans le %%WebGUI|web-gui%%.
+2. Réglez **Activer Docker** sur **Non** et cliquez sur **Appliquer** pour arrêter le service Docker.
+3. Sélectionnez l'option pour supprimer le fichier vdisk Docker, puis cliquez sur **Appliquer**. Vous pouvez également supprimer manuellement le fichier si nécessaire.
+4. Confirmez l'emplacement et le nom de fichier pour le nouveau fichier vdisk Docker. Ce paramètre inclut à la fois le chemin du dossier et le nom de fichier.
+5. Définissez la taille souhaitée pour le nouveau fichier image. La taille par défaut est généralement suffisante pour la plupart des utilisateurs.
+6. Réglez **Activer Docker** sur **Oui** et cliquez sur **Appliquer**. Unraid créera et formattera un nouveau fichier `docker.img` en utilisant %%BTRFS|btrfs%%.
+
+Vous êtes maintenant prêt à réinstaller vos conteneurs en utilisant leurs paramètres sauvegardés.
+
+---
+
+## Réinstaller des applications Docker
+
+Unraid sauvegarde automatiquement un modèle pour chaque conteneur installé sur votre clé USB. Ces modèles sauvegardent votre configuration, facilitant la restauration des conteneurs après avoir recréé le fichier image Docker.
+
+Pour réinstaller vos conteneurs :
+
+1. Allez à l'onglet **Apps** dans le %%WebGUI|web-gui%%.
+2. Ouvrez la section **Applications Précédentes**.
+3. Sélectionnez les conteneurs que vous souhaitez réinstaller.
+4. Procédez à l'installation. Unraid téléchargera à nouveau chaque conteneur et appliquera automatiquement vos paramètres précédents.
+
+:::important
+
+Ce processus restaure vos conteneurs à leur état précédent, à condition que toutes les données variables soient mappées en dehors du fichier image Docker (par exemple, dans le partage `appdata`).
+
+:::
+
+:::tip
+
+Si un conteneur ne démarre pas après la réinstallation, vérifiez ses journaux dans le menu contextuel de l'onglet **Docker** pour des messages d'erreur et des indices de dépannage.
+
+:::
+
+:::note
+
+Vérifiez que tous les chemins hôte mappés existent et ont les permissions correctes après avoir restauré vos conteneurs. Des mappages incorrects ou des permissions incorrectes sont une cause fréquente de problèmes de démarrage.
+
+:::
+
+---
+
+## Restaurer les réseaux personnalisés de Docker
+
+Les réseaux Docker personnalisés ne persistent pas si le fichier image Docker est supprimé. Avant de supprimer l'image, documentez vos noms de réseau personnalisés en ouvrant un terminal et en exécutant :
+
+```
+docker network ls
+```
+
+Notez les noms de tous les réseaux que vous avez créés (à l'exclusion des réseaux par défaut `bridge`, `host`, et `none`).
+
+Pour restaurer les réseaux personnalisés :
+
+1. Après avoir recréé le fichier image Docker, recréez chaque réseau personnalisé en utilisant :
+
+   ```
+   docker network create <network-name>
+   ```
+
+   Remplacez `<network-name>` par le nom exact que vous avez noté plus tôt.
+
+2. Mettez à jour vos conteneurs pour utiliser les réseaux restaurés si nécessaire.
+
+:::note
+
+Vous pouvez activer l'accès hôte aux réseaux personnalisés sous ***Settings → Docker*** en réglant **Accès hôte aux réseaux personnalisés** sur **Activé** si votre configuration l'exige.
+
+:::
+
+:::tip
+
+Si les conteneurs ne peuvent pas communiquer comme prévu après la restauration, inspectez vos paramètres de réseau Docker pour des conflits ou des problèmes de connectivité.
+
+:::
