@@ -1,0 +1,210 @@
+---
+sidebar_position: 1
+sidebar_label: 引导和启动故障
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+# 引导和启动故障
+
+When your Unraid server fails to start correctly, it can be challenging to identify the cause without a clear understanding of the boot process. Following this guide lets you quickly diagnose and resolve most startup problems, ensuring that your %%array|array%%, %%WebGUI|web-gui%%, and services are operational with minimal downtime.
+
+## 准备闪存设备
+
+本主题在[准备你的USB设备](../../getting-started/set-up-unraid/create-your-bootable-media.mdx#prepare-your-usb-device)部分有详细介绍。
+
+:::caution
+
+在做任何更改之前，请务必[备份您的闪存驱动器](../../system-administration/maintain-and-update/changing-the-flash-device.mdx#backing-up-your-flash-device)。所有用户特定设置，包括您的许可证密钥，都存储在 `config` 文件夹中。重新准备闪存设备后还原此文件夹有助于保留当前配置。
+
+:::
+
+## 启用UEFI引导
+
+现代系统通常需要**UEFI引导模式**以增强安全性和加快启动速度。
+
+要在系统BIOS/%%UEFI|uefi%%设置中配置%%UEFI|uefi%%引导：
+
+1. 在启动时进入主板的BIOS/%%UEFI|uefi%%设置（通常按F2、DEL或ESC键）
+2. 找到引导选项或引导模式设置
+3. 将引导模式设置为**UEFI**或**禁用CSM的UEFI**
+4. Ensure the Unraid flash device is selected as the UEFI boot device
+5. 保存更改并退出
+
+## 理解启动顺序
+
+The Unraid boot sequence has a number of stages:
+
+<details>
+  <summary><strong>1. BIOS boot</strong> - Click to expand/collapse</summary>
+
+  The BIOS/UEFI firmware initializes hardware and locates the bootable device. This is the foundation of the entire boot process.
+
+  - The motherboard BIOS recognizes the Unraid bootable flash device.
+  - 将闪存设备设置为默认引导设备因BIOS而异；请查阅主板手册以获得指导。
+  - 闪存设备支持\*\*传统(CSM)**和**%%UEFI|uefi%%\*\*引导模式。
+  - 对于%%UEFI|uefi%%引导，请确保闪存设备上的`EFI`文件夹末尾没有连字符（`-`）。
+</details>
+
+<details>
+  <summary><strong>2. Syslinux loader</strong> - Click to expand/collapse</summary>
+
+  The bootloader presents startup options and loads the Linux kernel into memory. This stage determines which operating system or diagnostic tool will run.
+
+  - 启动菜单条目定义在闪存设备上的`syslinux/syslinux.cfg`文件中。
+  - 你可以通过%%WebGUI|web-gui%%下的***主 → Syslinux配置***编辑此文件。
+  - **Memtest86+**, which ships with current builds of Unraid, works in both legacy and %%UEFI|uefi%% modes. For older Unraid versions, obtain a compatible version from [the official Memtest site](https://www.memtest86.com/) for %%UEFI|uefi%%.
+  - 如果没有选择选项，默认将在超时后引导，这对于无头操作很有用。
+</details>
+
+<details>
+  <summary><strong>3. Linux core</strong> - Click to expand/collapse</summary>
+
+  The Linux kernel initializes and begins hardware detection. This is where the operating system takes control from the bootloader.
+
+  - **Syslinux**从闪存设备将Linux核心加载到RAM中。
+  - 您会看到控制台消息显示bz\*文件正在加载。
+  - 这一阶段的错误通常表示闪存设备问题。
+  - Linux在启动期间检测硬件。
+</details>
+
+<details>
+  <summary><strong>4. Flash dependent services</strong> - Click to expand/collapse</summary>
+
+  The flash device becomes accessible and essential services begin loading. This stage is critical for configuration and network access.
+
+  - 闪存设备在`/boot`上挂载。
+  - 如果挂载失败，你可能还会看到登录提示，但这表示引导不完全。
+  - 使用`df`命令检查`/boot`是否已挂载。
+  - 闪存设备必须标记为**UNRAID**（全部大写）以进行正确挂载。
+  - 此阶段将提供额外的驱动程序和固件。
+  - 配置被加载到RAM中。
+  - 标准Linux服务，包括网络和%%WireGuard|wireguard%% VPN（如果启用），在此阶段启动。
+</details>
+
+<details>
+  <summary><strong>5. Plugins</strong> - Click to expand/collapse</summary>
+
+  Third-party extensions and customizations are loaded to enhance system functionality. Plugin issues can prevent successful startup.
+
+  - 安装的插件在此步骤加载。
+  - 如果需要，**安全引导**选项可以抑制插件加载。
+</details>
+
+<details>
+  <summary><strong>6. WebGUI</strong> - Click to expand/collapse</summary>
+
+  基于web的管理接口变得可用，允许远程管理和配置你的服务器。
+
+  - %%WebGUI|web-gui%%在此点启动。
+  - 闪存设备上的`config/go`文件可以在%%WebGUI|web-gui%%启动之前或之后运行用户命令。
+</details>
+
+<details>
+  <summary><strong>7. Array</strong> - Click to expand/collapse</summary>
+
+  Storage devices are mounted and made available, completing the boot process. This is where your data becomes accessible.
+
+  - 如果启用了自动启动，则在此处启动%%array|array%%；否则，手动启动将是必需的。
+  - 驱动器将被挂载为`/dev/diskX`和`/mnt/cache`（如果存在）。
+  - 共享在网络中可用作为`/mnt/user/sharename`。
+  - Docker容器将按Docker选项卡中指定的顺序启动，具有可自定义的延迟。
+  - 自动启动虚拟机(%%VMs|vm%%)也将启动。
+</details>
+
+At this point, the Unraid server is fully operational.
+
+---
+
+## 引导故障
+
+当您的服务器无法启动时，系统的故障排除有助于快速识别和解决根本原因。按照以下步骤操作，以避免忽略关键问题或进行不必要的更改。每一步都建立在前一步之上，因此即便某步骤似乎与特定问题无关，也不要跳过。
+
+1. 如果可能，为闪存设备使用USB 2.0端口。它通常比USB 3.0更可靠且更不容易出问题。
+2. 检查你的BIOS/%%UEFI|uefi%%设置以确保闪存设备被设置为主引导设备。
+3. 在Windows或macOS计算机上检查闪存设备是否有物理或逻辑错误。
+4. Re-extract the Unraid release bz\* files onto the flash device to prevent any potential corruption.
+5. Rebuild the flash device by starting with a clean Unraid copy, then restore your `config` folder.
+6. 尝试在[安全模式](../../using-unraid-to/customize-your-experience/plugins.mdx#troubleshooting-with-safe-mode)下引导以检查是否有插件相关的问题。
+7. Test with a new flash device and perform a clean Unraid installation. This helps determine if there are issues with the server hardware.
+8. 如有必要，将许可证转移到新的闪存设备上。
+
+---
+
+## 从丢失的引导驱动器和未知的奇偶校验驱动器恢复
+
+:::important
+
+此恢复过程涉及数据丢失风险，如果驱动器分配不正确。在继续之前：
+
+1. **不要启动阵列** 除非你对驱动分配很有信心
+2. **记录** 曾是什么驱动器是奇偶校验与数据驱动器
+3. **考虑寻求帮助** 如果你不确定，请访问[Unraid论坛](https://forums.unraid.net/)
+
+如果你最近有阵列配置的备份或文档，先查看这些。
+
+:::
+
+If your Unraid boot drive fails and you don’t have a recent backup or knowledge of which drives are parity, you can recover your system by using Unraid’s ability to recognize data drives by their file systems. %%Parity drives|parity-drives%% do not have a valid file system, which helps differentiate them.
+
+Unraid identifies data drives by detecting existing valid file systems. %%Parity drives|parity-drives%%, which lack a file system, appear unmountable. This characteristic allows you to distinguish %%parity drives|parity-drives%% from data drives after booting with a new flash device.
+
+### 恢复程序
+
+该程序帮助您在丢失引导驱动器并记不清哪些是奇偶校验与数据驱动器时，恢复阵列配置。请小心谨慎地遵循每一步，以避免数据丢失。
+
+1. Create a new Unraid boot drive.
+2. 从此新驱动器引导服务器(暂不分配任何驱动器)。
+3. 激活许可证，使用试用或转移现有许可证。
+4. 使用其中一个方法识别%%parity drives|parity-drives%%。
+5. 使用***工具 → 新配置***重置%%array|array%%，如果可能，保留以前的分配。
+6. 在***主***选项卡上纠正驱动器分配，确保区分%%parity|parity%%和数据驱动器。
+7. 启动%%array|array%%以确认驱动器分配。
+8. 如果%%parity|parity%%有效，勾选***奇偶校验已有效***框。如果无效，允许%%parity|parity%%重建。
+
+:::warning[Multiple 校验驱动器]
+
+If you have multiple %%parity drives|parity-drives%% and had to identify them based on which drives were unmountable, **do not** use the **Parity is Already Valid** option. There's a 50:50 chance of getting the assignments wrong, and if you do, your %%array|array%% may appear protected but actually isn't. Always allow parity to rebuild in this scenario to ensure proper protection.
+
+:::
+
+9. 根据新分配审阅和调整任何用户共享的包含/排除。
+10. 运行一次%%parity check|parity-check%%以验证完整性，特别是如果%%parity|parity%%没有重建。
+
+---
+
+### 识别奇偶校验驱动器
+
+<details>
+  <summary><strong>Using Unraid’s built-in capability (preferred method)</strong> - Click to expand/collapse</summary>
+
+  此方法不需要插件，但会使%%parity|parity%%无效，需要重建。
+
+  要使用该方法：
+
+  1. 将所有驱动器分配为数据驱动器并启动。
+  2. 由于缺乏有效的文件系统，%%parity drives|parity-drives%%将显示为不可挂载。
+  3. 确认无法挂载的驱动器数与你的%%parity|parity%%数量相匹配。
+  4. 记录这些驱动器的序列号。
+  5. 如有需要，可以检查已挂载的数据驱动器以确认其顺序。
+</details>
+
+<details>
+  <summary><strong>使用未分配设备插件</strong> - 点击展开/折叠</summary>
+
+  这种基于插件的方法通过以只读模式挂载驱动器来保持%%parity|parity%%的有效性。
+
+  要使用该方法：
+
+  1. 从***应用***选项卡安装[**未分配设备**插件](https://unraid.net/community/apps?q=unassigned+devices#r:~:text=don%27t%20be%20carefull!!!-,Unassigned%20Devices,-dlandon)。
+  2. 将每个磁盘只读地挂载，依次进行。
+  3. 那些无法挂载的驱动器很可能是%%parity drives|parity-drives%%（无法区分奇偶校验1和奇偶校验2）。
+  4. 如有需要，检查已挂载的数据驱动器以识别其顺序。
+</details>
+
+有关更多信息，请参阅Unraid论坛中的[未分配设备插件主题](https://forums.unraid.net/topic/55481-unassigned-devices-managing-unassigned-devices-without-rebooting/)。
+
+---
+
+\* “%%WireGuard|wireguard%%”和“%%WireGuard|wireguard%%”徽标是Jason A. Donenfeld的注册商标。
