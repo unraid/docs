@@ -1,0 +1,120 @@
+---
+sidebar_position: 2
+sidebar_label: Copia de seguridad flash automatizada
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+# Copia de seguridad flash automatizada
+
+Hacer una copia de seguridad de su unidad flash de Unraid es crucial para una rápida recuperación de problemas como fallos de hardware, eliminaciones accidentales o corrupción de datos. Mientras que las copias de seguridad locales (como copiar su unidad flash a otro dispositivo USB o recurso compartido de red) permiten un fácil acceso y control, pueden ser vulnerables al robo, incendio o fallos de hardware que pueden afectar a toda su configuración. Por otro lado, las copias de seguridad en la nube proporcionan un almacenamiento seguro fuera del sitio para su configuración, protegiendo contra desastres locales y permitiendo la recuperación desde cualquier lugar.
+
+A diferencia de las copias de seguridad tradicionales que se centran en los datos de usuario, %%VMs|vm%% o contenedores de Docker, las copias de seguridad flash preservan específicamente la configuración de su sistema operativo Unraid, la licencia y los ajustes del sistema. Este enfoque le permite restaurar las operaciones de su servidor rápidamente sin tener que empezar de cero. Unraid Connect permite copias de seguridad automáticas en la nube de la configuración de su sistema operativo. Si su dispositivo flash falla, puede restaurar rápidamente su última copia de seguridad con la herramienta [Unraid USB Flash Creator](https://unraid.net/download).
+
+La copia de seguridad flash es completamente opcional al usar Unraid Connect.
+
+:::tip
+
+Utilice ambos métodos de copia de seguridad, local y en la nube, para obtener la máxima protección. Las copias de seguridad en la nube proporcionan una capa adicional de resiliencia que las soluciones solo locales no pueden ofrecer.
+
+:::
+
+## Recopilación de datos y privacidad
+
+<details>
+  <summary><strong>Haz clic para ver qué datos se recopilan y cómo los manejamos</strong></summary>
+
+  Unraid Connect toma en serio tu privacidad y datos al usar la copia de seguridad flash:
+
+  <h4>Propósito</h4>
+
+  La copia de seguridad rápida solo conserva los archivos de configuración necesarios para restaurar tu entorno del SO Unraid. Esto te ayuda a recuperarte rápidamente y mantener la continuidad del servicio en caso de que tu dispositivo flash presente una falla.
+
+  <h4>Datos recolectados</h4>
+
+  La copia de seguridad incluye solo archivos de configuración, asegurando que la información sensible, como contraseñas y claves de %%WireGuard|wireguard%%, esté excluida. Los archivos XML de plantillas de Docker pueden ser parte de la copia de seguridad y podrían contener credenciales específicas de la aplicación.
+
+  <h4>Retención de datos</h4>
+
+  Solo se conserva la última copia de seguridad. Si una copia de seguridad excede ciertos límites—específicamente, si los archivos individuales superan los 10 MB o el tamaño total del repositorio excede los 100 MB—será eliminada y recreada. Las copias de seguridad también se eliminan cuando desactivas la función de copia de seguridad rápida o después de un periodo específico de inactividad.
+
+  <h4>Compartición de datos</h4>
+
+  Los datos de la copia de seguridad rápida nunca se comparten con terceros. Se almacenan exclusivamente para proporcionarte servicios de respaldo y restauración.
+</details>
+
+## Habilitación de la copia de seguridad flash
+
+Unraid Connect excluye datos sensibles, como contraseñas de cuenta y claves %%WireGuard|wireguard%%, de las copias de seguridad hasta que esté disponible el cifrado completo. Sin embargo, los archivos XML de plantillas de Docker (que pueden contener credenciales de aplicaciones) están incluidos. Se están desarrollando soluciones de cifrado.
+
+Para activar la copia de seguridad flash:
+
+1. Ve a ***Configuración → Acceso de Gestión → API de Unraid***.
+
+<div style={{ margen: 'auto', maxAnchura: '600px', display: 'flex', flexDirection: 'columna', alignItems: 'centro' }}>
+  ![Activar copia de seguridad flash](/img/flashbackupbutton.png)
+</div>
+
+2. Bajo **Copia de seguridad flash**, haz clic en **Activar**.
+3. Espere a que se complete la activación y la copia de seguridad inicial. El estado mostrará **Activado: Actualizado** cuando finalice.
+
+Después de la activación, cualquier cambio de configuración se respaldará automáticamente en la nube en 1-2 minutos.
+
+:::important
+
+Las copias de seguridad no incluyen los archivos `config/shadow` o `config/smbpasswd`. Las cuentas de usuario se conservan, pero las contraseñas no. Necesitará restablecer todas las contraseñas de usuario, incluida la de root, después de la restauración. Las claves %%WireGuard|wireguard%% también están excluidas.
+
+:::
+
+La copia de seguridad flash está diseñada para almacenar archivos de configuración esenciales, no una copia completa de su unidad flash. No realiza copias de seguridad de archivos transitorios (como registros) o binarios de aplicaciones. Las configuraciones de los complementos están incluidas, pero los archivos de la aplicación deberán volverse a descargar al iniciar. Se realiza copia de seguridad de archivos individuales de hasta 10 MB; si la copia de seguridad total supera los 100 MB, se eliminará y recreará.
+
+## Restauración de copia de seguridad flash
+
+Para restaurar tu configuración:
+
+1. Inicia sesión en Unraid Connect.
+2. Selecciona **Detalles** en el Tablero.
+3. Haz clic en **Generar copia de seguridad flash** desde el mosaico de copia de seguridad flash.
+4. El sistema crea un archivo zip que contiene tu configuración del sistema operativo y versión de lanzamiento.
+5. Haz clic en **Descargar copia de seguridad flash** para obtener el archivo zip.
+6. Usa el [Creador de Flash USB de Unraid](https://unraid.net/download) para restaurar la copia de seguridad en una nueva unidad flash.
+
+### Pasos después de la restauración
+
+Después de iniciar con la unidad flash restaurada:
+
+- Re-activa la copia de seguridad flash en ***Configuración → Acceso de Gestión → API de Unraid***.
+- Restablece las contraseñas para todos los usuarios (incluyendo la raíz) en la página de Usuarios.
+- Para cada %%VPN Tunnel|vpn-tunnel%% y par en ***Configuración → Gestor de VPN***, genera nuevas claves y descarga las configuraciones de cliente actualizadas.
+- Si el acceso a Internet no está disponible inmediatamente después de iniciar, reinstale los complementos a través de ***Aplicaciones → Aplicaciones Anteriores*** una vez que se restaure la conectividad. Los archivos de configuración estarán listos para su uso.
+
+## Desactivación de la copia de seguridad flash
+
+Para desactivar la copia de seguridad flash:
+
+1. En ***Configuración → Acceso de Gestión → API de Unraid***, haz clic en **Desactivar** para la copia de seguridad flash.
+2. En el cuadro de diálogo de confirmación, marque **También eliminar copia de seguridad en la nube** si desea eliminar su copia de seguridad de inmediato. De lo contrario, las copias de seguridad se eliminarán automáticamente después de un periodo de inactividad.
+
+## Privacidad y seguridad
+
+### Cifrado de copia de seguridad
+
+Actualmente, las copias de seguridad flash se almacenan en la nube sin cifrado. Como precaución, los datos sensibles, incluidas todas las contraseñas de usuario y root, así como todas las claves %%WireGuard|wireguard%%, nunca se incluyen en la copia de seguridad.
+
+### Política de datos sensibles
+
+Para proteger tu privacidad, nunca se almacenan en copias de seguridad en la nube los siguientes elementos:
+
+- Contraseñas de cuentas de usuario o raíz de Unraid
+- Claves %%WireGuard|wireguard%% públicas, privadas o compartidas
+
+:::note\[Reminder]
+
+La copia de seguridad flash es solo para la recuperación de la configuración. Siempre incorpore estrategias de copia de seguridad adicionales para sus datos y secretos críticos.
+
+:::
+
+---
+
+\* *"%%WireGuard|wireguard%%" y el logotipo de "%%WireGuard|wireguard%%" son marcas registradas de Jason A. Donenfeld.*
