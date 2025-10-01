@@ -1,0 +1,218 @@
+---
+title: CLI参考
+description: Complete reference for all Unraid API CLI commands
+sidebar_position: 4
+---
+
+# CLI命令
+
+:::info[Command 结构]
+
+所有命令遵循模式：`unraid-api <command> [options]`
+
+:::
+
+## 🚀 服务管理
+
+### 开始
+
+```bash
+unraid-api start [--log-level <level>]
+```
+
+Starts the Unraid API service.
+
+选项：
+
+- `--log-level`：设置日志记录级别(trace|debug|info|warn|error|fatal)
+
+替代：您也可以使用 `LOG_LEVEL` 环境变量设置日志级别：
+
+```bash
+LOG_LEVEL=trace unraid-api start
+```
+
+### 停止
+
+```bash
+unraid-api stop [--delete]
+```
+
+Stops the Unraid API service.
+
+- `--delete`: 可选。删除PM2主目录
+
+### 重启
+
+```bash
+unraid-api restart [--log-level <level>]
+```
+
+Restarts the Unraid API service.
+
+选项：
+
+- `--log-level`：设置日志记录级别(trace|debug|info|warn|error|fatal)
+
+替代：您也可以使用 `LOG_LEVEL` 环境变量设置日志级别：
+
+```bash
+LOG_LEVEL=trace unraid-api restart
+```
+
+### 日志
+
+```bash
+unraid-api logs [-l <lines>]
+```
+
+查看API日志。
+
+- `-l, --lines`: 可选。要尾部的行数（默认: 100）
+
+## ⚙️ 配置命令
+
+### 配置
+
+```bash
+unraid-api config
+```
+
+显示当前配置值。
+
+### 切换环境
+
+```bash
+unraid-api switch-env [-e <environment>]
+```
+
+在生产和测试环境间切换。
+
+- `-e, --environment`: 可选。目标环境（production｜staging）
+
+### 开发者模式
+
+:::tip[Web GUI 管理]
+
+您也可以通过Web GUI管理开发者选项，路径为 **设置** → **管理访问** → **开发者选项**
+
+:::
+
+```bash
+unraid-api developer                       # Interactive prompt for tools
+unraid-api developer --sandbox true        # Enable GraphQL sandbox
+unraid-api developer --sandbox false       # Disable GraphQL sandbox
+unraid-api developer --enable-modal        # Enable modal testing tool
+unraid-api developer --disable-modal       # Disable modal testing tool
+```
+
+配置API的开发人员功能：
+
+- **GraphQL沙箱**：启用/禁用Apollo GraphQL沙箱位于 `/graphql`
+- **Modal Testing Tool**: Enable/disable UI modal testing in the Unraid menu
+
+## API密钥管理
+
+:::tip[Web GUI 管理]
+
+您也可以通过Web GUI管理API密钥，路径为 **设置** → **管理访问** → **API密钥**
+
+:::
+
+### API密钥命令
+
+```bash
+unraid-api apikey [options]
+```
+
+通过CLI创建和管理API密钥。
+
+选项：
+
+- `--name <name>`：密钥名称
+- `--create`：创建新密钥
+- `-r, --roles <roles>`：角色列表，逗号分隔
+- `-p, --permissions <permissions>`：权限列表，逗号分隔
+- `-d, --description <description>`：密钥描述
+
+## SSO (单点登录)管理
+
+:::info[OIDC 配置
+
+有关OIDC/SSO提供商配置，请参阅Web界面在 **设置** → **管理访问** → **API** → **OIDC** 或参考 [OIDC提供商设置](./oidc-provider-setup.mdx) 指南。
+
+:::
+
+### SSO基础命令
+
+```bash
+unraid-api sso
+```
+
+#### 添加SSO用户
+
+```bash
+unraid-api sso add-user
+# or
+unraid-api sso add
+# or
+unraid-api sso a
+```
+
+为SSO认证添加新用户。
+
+#### 移除SSO用户
+
+```bash
+unraid-api sso remove-user
+# or
+unraid-api sso remove
+# or
+unraid-api sso r
+```
+
+从SSO中移除用户（或所有用户）。
+
+#### 列出SSO用户
+
+```bash
+unraid-api sso list-users
+# or
+unraid-api sso list
+# or
+unraid-api sso l
+```
+
+列出所有配置的SSO用户。
+
+#### 验证SSO令牌
+
+```bash
+unraid-api sso validate-token <token>
+# or
+unraid-api sso validate
+# or
+unraid-api sso v
+```
+
+验证SSO令牌并返回其状态。
+
+## 报告生成
+
+### 生成报告
+
+```bash
+unraid-api report [-r] [-j]
+```
+
+生成系统报告。
+
+- `-r, --raw`：显示原始命令输出
+- `-j, --json`：以JSON格式显示输出
+
+## 笔记
+
+1. 大多数命令需要适当的权限来修改系统状态
+2. 某些命令需要API正在运行或停止
+3. 安全存储API密钥，因为它们提供系统访问
+4. SSO配置更改可能需要服务重启
