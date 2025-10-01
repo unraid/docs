@@ -28,14 +28,36 @@ jobs:
         run: npm ci
 
       - name: Sync with Crowdin
+        id: crowdin-sync
+        continue-on-error: true
         env:
           CROWDIN_PERSONAL_TOKEN: ${{ secrets.CROWDIN_PERSONAL_TOKEN }}
         run: npm run crowdin:sync
 
+      - name: Report Crowdin sync failure
+        if: ${{ always() && steps.crowdin-sync.outcome != 'success' }}
+        run: echo "::warning::Crowdin sync failed; continuing deploy with available locales."
+
       - name: Build documentation
+        id: build-docs
+        continue-on-error: true
         run: npm run build
 
+      - name: Report build failure
+        if: ${{ always() && steps.build-docs.outcome != 'success' }}
+        run: echo "::warning::Documentation build failed; attempting deploy with existing artifacts."
+
+      - name: Ensure build artifacts
+        id: ensure-build
+        if: ${{ always() }}
+        run: |
+          if [ ! -d build ]; then
+            echo "::error::No build artifacts found; deploy skipped."
+            exit 1
+          fi
+
       - name: Deploy to Cloudflare Workers
+        if: ${{ always() && steps.ensure-build.outcome == 'success' }}
         run: npx wrangler@latest deploy
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_DEPLOY_TOKEN }}
