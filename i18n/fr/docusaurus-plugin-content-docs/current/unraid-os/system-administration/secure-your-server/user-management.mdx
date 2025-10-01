@@ -1,0 +1,145 @@
+---
+sidebar_position: 3
+sidebar_label: Gestion des utilisateurs
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import ResetPasswordBasic from './partials/reset-password-basic.mdx';
+import ResetPasswordAdvanced from './partials/reset-password-advanced.mdx';
+
+# Gestion des utilisateurs
+
+Unraid simplifie et sécurise la gestion des utilisateurs sur votre NAS, s'adressant à tout le monde, des débutants aux utilisateurs expérimentés. L'approche simplifiée aide à réduire la confusion tout en garantissant que la sécurité et le contrôle d'accès restent solides.
+
+:::note[Simplified approche]
+
+Contrairement aux systèmes Linux traditionnels, Unraid offre un modèle utilisateur simplifié :
+
+- **Administrateur unique (%%root|root-user%%)** : Il n'y a qu'un utilisateur principal, ce qui simplifie les autorisations et renforce la sécurité.
+- **Accès centré sur le partage** : L'accent est mis sur le partage des données, rendant cela moins compliqué pour les utilisateurs qui n'ont pas besoin des complexités d'environnements multi-utilisateurs.
+
+Ainsi, même si vous ne maîtrisez pas Linux, vous pouvez gérer facilement et en toute sécurité votre NAS.
+
+:::
+
+## Aperçu
+
+### Utilisateur root
+
+Unraid fonctionne avec un super-utilisateur unique, connu sous le nom de %%root|root-user%%, qui a un contrôle total sur tout.
+
+%%Utilisateurs root|root-user%%...
+
+- Ont un accès complet aux interfaces %%WebGUI|web-gui%%, %%SSH|ssh%% et Telnet.
+- Sont responsables de la gestion de tous les comptes utilisateurs et des paramètres.
+- Ne peuvent pas accéder directement aux partages de fichiers via **%%SMB|samba%%**, **%%NFS|nfs%%** ou **%%FTP|ftp%%** pour des raisons de sécurité.
+- Autoriser [l'authentification par clé %%SSH|ssh%%](../../system-administration/advanced-tools/command-line-interface.mdx#accessing-the-terminal) pour se connecter sans mot de passe.
+
+<div style={{ margin: 'auto', maxWidth: '359px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+  ![Utilisateur root](/img/rootuser.png)
+</div>
+
+:::important
+
+L'utilisateur %%root|root-user%% est essentiel pour maintenir la sécurité. Assurez-vous toujours qu'un [mot de passe fort](./security-fundamentals.mdx#set-a-strong-root-password) est défini et limitez l'accès %%SSH|ssh%% pour garder votre système sûr.
+
+:::
+
+### Utilisateurs de partage
+
+Ces comptes sont conçus pour accéder à des partages spécifiques, sans aucun contrôle au niveau du système.
+
+Utilisateurs de partage...
+
+- Peuvent seulement être créés et gérés par l'%%utilisateur root|root-user%%.
+- Peuvent accéder aux partages via **%%SMB|samba%%**, **%%NFS|nfs%%** ou **%%FTP|ftp%%** (si activé).
+- N'ont pas accès au **%%WebGUI|web-gui%%**, **%%SSH|ssh%%** ou à **Telnet**.
+
+<div style={{ margin: 'auto', maxWidth: '359px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+  ![Utilisateur root](/img/shareusers.png)
+</div>
+
+---
+
+## Ajouter des utilisateurs
+
+Pour se connecter aux fichiers partagés sur Unraid à partir d'un autre appareil, vous aurez besoin d'un nom d'utilisateur et d'un mot de passe. Ces identifiants sont distincts de ceux que vous pourriez utiliser pour des applications spécifiques exécutées dans des conteneurs, qui ont leurs propres informations de connexion.
+
+Pour ajouter un utilisateur :
+
+1. **Accéder à la gestion des utilisateurs**
+   - Allez à ***Utilisateurs → Accès aux partages*** (ou ***Paramètres → Utilisateurs → Accès aux partages***).
+   - Cliquez sur **Ajouter un utilisateur**.
+
+2. **Configurer les identifiants utilisateur**
+   - **Nom d'utilisateur** : Choisissez un nom unique (comme `john_media`). Utilisez uniquement des lettres minuscules pour éviter les conflits, et gardez-le sous 30 caractères en raison des limites de Windows.
+
+   - **Mot de passe** : Créez un mot de passe fort en utilisant un mélange de lettres, de chiffres et de symboles. Suivez le baromètre de robustesse du mot de passe pour vous guider.
+
+:::note\[Optionally]
+
+- **Ajouter une description** : Écrivez une note comme "Accès à la bibliothèque multimédia."
+- **Image personnalisée** : Téléchargez une image PNG (comme un avatar d'utilisateur) pour l'identification visuelle.
+
+:::
+
+<div style={{ margin: 'auto', maxWidth: '359px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+  ![Utilisateur root](/img/adduser.png)
+</div>
+
+3. Sélectionnez **Ajouter** pour créer l'utilisateur.
+
+---
+
+## Supprimer des utilisateurs
+
+Vous pouvez facilement supprimer un compte utilisateur dans Unraid lorsqu'il n'est plus nécessaire.
+
+:::caution
+
+La suppression d'un compte utilisateur est permanente et retire immédiatement l'accès aux partages et ressources partagées.
+
+:::
+
+Pour supprimer un utilisateur :
+
+1. Allez dans le menu **Utilisateurs** et cliquez sur le nom du compte utilisateur que vous souhaitez supprimer.
+2. Cochez la case intitulée **Supprimer**. Le bouton **Appliquer** deviendra un bouton **Supprimer**.
+3. Cliquez sur **Supprimer** pour supprimer l'utilisateur. Un message de confirmation apparaîtra pour valider la suppression.
+4. Sélectionnez **Terminé**.
+
+---
+
+## Modifier un utilisateur
+
+Vous pouvez modifier un compte utilisateur dans Unraid si l'utilisateur a oublié son mot de passe ou a besoin d'un accès différent aux dossiers partagés.
+
+Pour modifier un compte utilisateur :
+
+1. Allez à ***Utilisateurs → Accès aux partages*** (ou ***Paramètres → Utilisateurs → Accès aux partages***), et cliquez sur le compte utilisateur que vous souhaitez changer.
+2. *(Optionnel)* Dans l'écran **Modifier l'utilisateur**, vous pouvez mettre à jour toute information, sauf le **Nom d'utilisateur**. Pour définir un nouveau **Mot de passe**, tapez-le simplement et confirmez en le retapant.
+3. *(Optionnel)* En bas, vous verrez une liste de dossiers (partages) auxquels l'utilisateur peut accéder. Vous pouvez ajuster les paramètres d'accès pour chacun de ces partages, mais vous ne pouvez pas en ajouter de nouveaux.
+4. Cliquez sur **Appliquer** pour sauvegarder vos modifications.
+
+---
+
+## Réinitialiser votre mot de passe
+
+Si vous avez oublié votre mot de passe %%root|root-user%%, ne vous inquiétez pas ! Voici deux méthodes simples pour retrouver l'accès à votre serveur Unraid. Vous aurez besoin d'un accès physique à votre **[périphérique USB](../../system-administration/maintain-and-update/changing-the-flash-device.mdx)** et d'un autre ordinateur.
+
+<Tabs>
+  <TabItem value="basique" label="Basique" default>
+    <ResetPasswordBasic />
+  </TabItem>
+
+  <TabItem value="avancé" label="Avancé">
+    <ResetPasswordAdvanced />
+  </TabItem>
+</Tabs>
+
+:::tip[Be attentif]
+
+Toute personne ayant un accès physique au USB peut utiliser ces méthodes pour réinitialiser votre mot de passe %%root|root-user%% et obtenir un accès administratif complet. Gardez toujours votre USB en sécurité !
+
+:::
