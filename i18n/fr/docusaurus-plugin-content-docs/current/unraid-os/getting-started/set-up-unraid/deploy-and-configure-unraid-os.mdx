@@ -1,0 +1,112 @@
+---
+sidebar_position: 2
+sidebar_label: Déployer et configurer Unraid OS
+---
+
+# Déployer et configurer Unraid OS
+
+After booting Unraid OS for the first time, you'll use the %%WebGUI|web-gui%% to complete your system configuration. This interface lets you manage your server, set up storage, configure user shares, and control features like %%hardware virtualization|hvm%% and Docker containers.
+
+:::info\[Localize]
+
+Il peut être plus facile pour les utilisateurs de suivre ce guide après avoir configuré leurs paramètres de langue. Consultez [Support multilingue](../../using-unraid-to/customize-your-experience/multi-language-support.mdx) pour rendre le %%WebGUI|web-gui%% plus accessible dans votre langue préférée.
+
+:::
+
+## Connectez-vous au Unraid WebGUI
+
+Vous pouvez vous connecter au %%WebGUI|web-gui%% de deux manières :
+
+- **Mode GUI :** Démarrez Unraid en mode GUI et connectez-vous en utilisant un clavier et un écran connecté au serveur. Utilisez `root` comme nom d'utilisateur sans mot de passe initial.
+- **Navigateur Web :** Sur un autre appareil de votre réseau local, visitez `http://tower.local`. Si vous avez défini un autre nom d'hôte, utilisez-le à la place de `tower` (par exemple, pour le nom d'hôte `unraidserver`, vous visiterez `http://unraidserver.local`). %%mDNS|mdns%% gère la résolution de ces adresses `.local`.
+
+:::important
+
+Le serveur Unraid est accessible sur votre LAN dès qu'il est complètement démarré. Vous pouvez trouver l'adresse IP sur la liste des clients DHCP de votre routeur ou en utilisant un outil de balayage réseau.
+
+:::
+
+## Définir un mot de passe root
+
+Lorsque vous accédez au %%WebGUI|web-gui%% pour la première fois, vous serez invité à créer un mot de passe fort pour le %%utilisateur root|root-user%%.
+
+Assurez-vous que votre mot de passe :
+
+- Est unique
+- Au moins 8 caractères de long. (Cependant, il est recommandé d'utiliser 12 caractères ou plus pour des mots de passe les plus sécurisés !)
+- Est un mélange de lettres, de chiffres et caractères spéciaux.
+
+Nous recommandons d’utiliser un gestionnaire de mots de passe pour un stockage sécurisé.
+
+<div style={{ margin: 'auto', maxWidth: '300px'}}>
+  ![Définir le mot de passe root](/img/Set_root_password.png)
+</div>
+
+:::tip
+
+Si vous oubliez votre mot de passe root, vous pouvez le réinitialiser en suivant le guide [Réinitialiser votre mot de passe](../../system-administration/secure-your-server/user-management.mdx#reset-your-password). Vous pouvez également mettre à jour votre mot de passe dans la page Utilisateurs du %%WebGUI|web-gui%%.
+
+:::
+
+## Enregistrez votre clé de licence
+
+Après avoir défini votre mot de passe root, connectez-vous à votre compte Unraid.net pour obtenir une clé de licence :
+
+1. Dans le %%WebGUI|web-gui%%, allez à la section **Commencer**.
+
+   <div style={{ margin: 'auto', maxWidth: '500px'}}>
+     ![Commencer](/img/Upc_get_started.png)
+   </div>
+
+2. Connectez-vous ou créez un compte, après quoi une clé d’essai sera installée automatiquement.
+
+   <div style={{ margin: 'auto', maxWidth: '500px'}}>
+     ![Installer clé d'essai](/img/Upc_install_trial_key.png)
+   </div>
+
+   Ce processus vous permet de gérer vos clés de licence Unraid OS, d'obtenir de nouvelles clés, de récupérer celles perdues ou de mettre à niveau votre licence.
+
+:::important
+
+Pour des détails sur votre licence, visitez ***Outils → Enregistrement*** dans le %%WebGUI|web-gui%%.
+
+:::
+
+## Recommandations pour le BIOS
+
+Avant de déployer Unraid OS, il est important de vérifier les paramètres du BIOS et du contrôleur de stockage de votre système. Ci-dessous, vous trouverez une liste de contrôle pour aider à assurer la compatibilité, la stabilité et l'accès aux fonctions clés.
+
+<details>
+  <summary>Cliquez pour développer notre liste de vérification du BIOS et du contrôleur de stockage</summary>
+
+  Une configuration correcte du BIOS et du contrôleur de stockage est essentielle pour un déploiement stable de Unraid OS. Utilisez cette liste de contrôle avant votre premier démarrage.
+
+  ### Paramètres de base
+
+  ✅ Définir la clé USB comme le périphérique de démarrage principal.\
+  ✅ Configurer le contrôleur de stockage en mode **%%AHCI|ahci%%** avec des connexions SATA.\
+  ✅ Régler le contrôleur en mode **%%HBA mode|hba-mode%%** (pas en **%%RAID|raid%%**).\
+  ✅ Désactiver le **Secure Boot** car il n'est pas pris en charge par Unraid OS.
+
+  ### Paramètres avancés
+
+  ✅ Activer les fonctionnalités de **%%hardware virtualization|hvm%%** (par exemple, **%%Intel VT-x|intel-vt-x%%** ou **%%AMD-V|amd-v%%**) pour les **%%machines virtuelles (VMs)|vm%%**.\
+  ✅ Activer le support de **%%IOMMU|iommu%%** (Intel VT-d ou AMD-Vi) pour l'affectation des périphériques PCI aux VMs.
+
+  ### Conseils de dépannage
+
+  Si Unraid OS ne démarre pas, essayez :
+
+  ✅ Ajuster l'ordre de démarrage à : **Forced-FDD**, **USB-HDD**, **USB-ZIP**.\
+  ✅ Désactiver la prise en charge de l'USB 2.0/3.0.\
+  ✅ Basculer les fonctionnalités de démarrage rapide (Fast Boot).\
+  ✅ Basculer la prise en charge du clavier USB.
+
+  Pour obtenir une assistance supplémentaire, visitez le [forum d'assistance général d'Unraid](https://forums.unraid.net/).
+
+  :::important
+  De nombreuses cartes mères limitent la sélection des périphériques de démarrage à 12 disques durs. Si votre clé USB est reconnue comme un disque dur, vous pourriez ne pas pouvoir démarrer à partir d'elle après avoir installé 12 disques durs physiques. Configurez le BIOS pour traiter la clé comme un périphérique amovible dans la mesure du possible.
+
+  Si vous utilisez une carte HBA supplémentaire, vous pourrez peut-être désactiver la prise en charge INT 13h pour empêcher que ses lecteurs connectés n'apparaissent dans la liste des périphériques de démarrage, aidant ainsi à rester dans la limite des 12 lecteurs.
+  :::
+</details>
