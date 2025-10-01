@@ -1,0 +1,100 @@
+# API密钥授权流程
+
+本文档描述了第三方应用程序的自助API密钥创建流程。
+
+## 概述
+
+应用程序可以通过将用户重定向到一个特殊授权页面，来请求访问 Unraid 服务器的 API。在该页面上，用户可以查看请求的权限，并通过一次点击创建一个 API 密钥。
+
+## 流程
+
+1. **应用程序启动请求**：应用程序将用户重定向至：
+
+   ```
+   https://[unraid-server]/ApiKeyAuthorize?name=MyApp&scopes=docker:read,vm:*&redirect_uri=https://myapp.com/callback&state=abc123
+   ```
+
+2. **用户身份验证**：如果尚未登录，用户将被重定向到登录页面（标准 Unraid 身份验证）。
+
+3. **同意屏幕**：用户看到：
+   - 应用程序名称和描述
+   - 请求的权限（带复选框以批准/拒绝特定范围）
+   - API密钥名称字段（预填充）
+   - 授权和取消按钮
+
+4. **API密钥创建**：授权后：
+   - API密钥与已批准的范围一起创建
+   - 密钥显示给用户
+   - 如果提供了`redirect_uri`，用户会被重定向回密钥
+
+5. **回调**：应用程序接收到API密钥：
+   ```
+   https://myapp.com/callback?api_key=xxx&state=abc123
+   ```
+
+## 查询参数
+
+- `name`（必填）：请求应用程序的名称
+- `description`（可选）：应用程序的描述
+- `scopes`（必填）：请求范围的逗号分隔列表
+- `redirect_uri`（可选）：授权后的重定向URL
+- `state`（可选）：用于维护状态的不透明值
+
+## 范围格式
+
+范围遵循模式：`resource:action`
+
+### 示例：
+
+- `docker:read` - Docker的读取访问
+- `vm:*` - 完全访问VM
+- `system:update` - 系统更新访问
+- `role:viewer` - 观看者角色访问
+- `role:admin` - 管理员角色访问
+
+### 可用资源：
+
+- `docker`、`vm`、`system`、`share`、`user`、`network`、`disk`等等。
+
+### 可用操作：
+
+- `create`、`read`、`update`、`delete`或`*`代表所有
+
+## 安全注意事项
+
+1. **需要HTTPS**：重定向URI必须使用HTTPS（开发中的本地主机除外）
+2. **用户同意**：用户需明确批准每项权限
+3. **基于会话**：使用现有的 Unraid 身份验证会话。
+4. **一次性显示**：API密钥仅显示一次，必须安全保存
+
+## 示例集成
+
+```javascript
+// JavaScript example
+const unraidServer = 'tower.local';
+const appName = 'My Docker Manager';
+const scopes = 'docker:*,system:read';
+const redirectUri = 'https://myapp.com/unraid/callback';
+const state = generateRandomState();
+
+// Store state for verification
+sessionStorage.setItem('oauth_state', state);
+
+// Redirect user to authorization page
+window.location.href =
+    `https://${unraidServer}/ApiKeyAuthorize?` +
+    `name=${encodeURIComponent(appName)}&` +
+    `scopes=${encodeURIComponent(scopes)}&` +
+    `redirect_uri=${encodeURIComponent(redirectUri)}&` +
+    `state=${encodeURIComponent(state)}`;
+
+// Handle callback
+const urlParams = new URLSearchParams(window.location.search);
+const apiKey = urlParams.get('api_key');
+const returnedState = urlParams.get('state');
+
+if (returnedState === sessionStorage.getItem('oauth_state')) {
+    // Save API key securely
+    saveApiKey(apiKey);
+}
+```
