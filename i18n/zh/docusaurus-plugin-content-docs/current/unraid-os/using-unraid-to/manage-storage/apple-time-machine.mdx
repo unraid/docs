@@ -1,0 +1,122 @@
+---
+sidebar_position: 5
+sidebar_label: Apple 时间机器
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+# Apple 时间机器
+
+Apple 的时间机器是每台 Mac 自带的备份工具。它通过自动备份来轻松保护您的文件、应用程序和系统设置。通过将时间机器连接到您的 Unraid 服务器，您可以在自己的硬件上安全地存储这些备份。此设置不仅赋予您更多控制权，还提供了更便捷的可扩展性和额外的安心感。
+
+:::note[macOS 兼容性]
+
+本指南适用于 macOS Ventura (13.x)、Sonoma (14.x) 和 Sequoia (15.x) 版本。某些功能，例如 %%SMB|samba%% 增强和时间机器支持通过 %%SMB|samba%%，需要 macOS 支持这些协议的版本。
+
+要获得最佳效果，请确保您的 Mac 升级到与硬件兼容的最新版本 macOS。
+:::注意[macOS Sequoia (15.x) 事项]
+
+一些用户报告在 macOS Sequoia 上使用时间机器和网络共享时出现间歇性问题。如果您遇到备份失败，建议考虑使用 [时间机器 Docker 容器](https://unraid.net/community/apps?q=time+machine#r) 作为替代方案。
+
+:::
+:::
+
+:::
+
+## 创建一个时间机器共享
+
+:::caution[Before 开始]
+
+确保在 %%WebGUI|web-gui%% 中启用了 **%%SMB|samba%%**:
+
+1. 在 "网络服务" 下进入 ***设置→SMB***。
+2. 将 **启用 %%SMB|samba%%** 设置为 **是** (必须停止 %%array|array%% 才能更改此设置)。
+3. 将 **增强的 macOS 互操作性** 设置为 **是**。
+
+<div style={{ margin: 'auto', maxWidth: '600px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+  ![增强的 macOS 互操作性](/img/enhancedmacos.png)
+</div>
+
+:::
+
+创建一个时间机器共享:
+
+1. 在 %%WebGUI|web-gui%% 中，进入 **共享** 并点击 **添加 %%user share|user-share%%**。
+
+2. 配置以下设置:
+
+   | 设置                          | 描述                                                                                                          |
+   | --------------------------- | ----------------------------------------------------------------------------------------------------------- |
+   | **%%用户共享\|user-share%% 名称** | Name your %%user share\|user-share%% (e.g., Time Machine).                                                  |
+   | **最小可用空间**                  | Set to **1** (1 KB) for best results. This prevents Time Machine from failing when disks approach capacity. |
+   | **包含的磁盘**                   | Select the disk(s) in the %%array\|array%% to use for the Time Machine %%user share\|user-share%%.          |
+   | **启用写入时复制**                 | 保持 **自动** 以获得最佳性能。                                                                                          |
+   | **%%SMB\|samba%% 导出**       | 设为 **是（时间机器）** 以启用时间机器支持。                                                                                   |
+   | **时间机器卷大小**                 | 设为您所需的最大大小，或不设置。如果不将最小空闲空间设置为 1，请先应用共享，然后重新编辑并设置卷大小小于显示的计算最小空闲空间。                                           |
+   | **安全设置**                    | Configure %%SMB\|samba%% security parameters as desired.                                                    |
+
+3. 点击 **应用** 以创建 %%user share|user-share%%。
+
+有关创建和管理共享的更多细节，请参见 [用户共享](./shares.mdx)。
+
+## 从 macOS 连接
+
+要从 Mac 连接到 %%user share|user-share%%:
+
+1. 在 **Finder** 中，按 **Command + K** 打开 "连接到服务器" 窗口。
+2. 输入您的 Unraid 服务器的 %%SMB|samba%% 地址。例如，使用格式 `smb://[server-ip]/[时间机器共享名称]` 并点击 **连接**。
+3. 当提示输入时，输入有共享访问权限的 Unraid 用户名和密码，然后点击 **连接**。
+4. 如果您使用的是 macOS Ventura 13.0 或更高版本，请打开 **系统设置**，如果您使用的是 macOS Monterey 12.x 或更早版本，请打开 **系统偏好设置**。然后导航到 **时间机器**。
+5. 点击 **选择磁盘** 或 **添加备份磁盘**，选择你的 Unraid 时间机器 %%user share|user-share%%，然后点击 **使用磁盘**。
+6. （可选）如果你希望用密码保护备份，请启用 **加密备份**。
+7. 如果提示，确认连接并重新输入你的 Unraid %%root user|root-user%% 凭据（如果需要）。
+8. 时间机器将自动开始初始备份。请注意，首次备份可能需要一些时间，但未来的备份将更快，因为它们是增量式的。
+
+:::tip
+
+为了更好地控制备份计划和选项，考虑使用第三方工具，如 [时间机器编辑器](https://tclementdev.com/timemachineeditor/)。
+
+<div style={{ margin: 'auto', maxWidth: '600px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+  ![时间机器编辑器](/img/TimeMachineEditor.png)
+</div>
+
+:::
+
+## 多重时间机器设置
+
+:::tip
+
+对于家庭环境或拥有多台 Mac 的场合，这种方法提供了明确的备份分离、增强了安全性，并简化了管理。
+
+:::
+
+要在你的 Unraid 服务器上为不同用户或 Mac 创建单独的备份：
+
+1. 为每个将备份数据的人或 Mac **创建独特的 Unraid %%root 用户|root-user%% 账户**。例如，用户命名为“larry”、“curly”和“moe”。这可以确保每个用户都有自己的身份和权限。
+
+2. **Create individual Time Machine %%user shares|user-share%%** for each user, naming them clearly to match the user, such as `tm-larry`, `tm-curly`, and `tm-moe`. Keeping shares separate helps with managing storage and access for each user.
+
+3. 为每个 %%user share|user-share%% **分配合适的用户权限**：
+   - 设定 %%user share|user-share%% 的 %%SMB|samba%% 安全设置，以确保只有相应的用户可以访问。
+   - 确认只有预定用户可以读取和写入他们的时间机器 %%user share|user-share%%。
+
+4. 为每台 Mac **配置时间机器** 连接到其指定的 %%user share|user-share%%：
+   - 在每台 Mac 上，使用其特定 %%user share|user-share%% 的 %%SMB|samba%% 路径（例如：`smb://unraid-server/tm-larry`）连接到 Unraid 服务器。
+   - 按照通常的时间机器设置步骤选择 %%user share|user-share%% 作为备份磁盘。
+
+5. **监控和管理存储使用情况**：
+   - 你可以在每个时间机器 %%user share|user-share%% 上选择设置卷大小限制，以防止一个用户占用过多空间。
+   - 定期检查使用情况并根据需要调整额度。
+
+有关用户管理和安全的更多信息，请参见 [用户管理](../../system-administration/secure-your-server/user-management.mdx)。
+
+## 故障排除
+
+如果时间机器备份失败或不可靠：
+
+1. **尝试时间机器 Docker 容器**：[社区应用可用](https://unraid.net/community/apps?q=time+machine#r)，此选项能够提供比直接 %%SMB|samba%% %%user shares|user-share%% 更稳定的备份。
+2. **检查 macOS 防火墙**：暂时禁用防火墙以查看是否阻止连接。
+3. **创建一个新的备份目标**：如果问题持续，删除并重新创建时间机器 %%user share|user-share%%。
+
+有关更多故障排除帮助，请参见 [故障排除](../../troubleshooting/troubleshooting.mdx) 或访问 [Unraid 论坛](https://forums.unraid.net/)。
