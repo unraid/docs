@@ -1,0 +1,508 @@
+---
+sidebar_position: 4
+sidebar_label: Dateisysteme
+---
+
+# Dateisysteme
+
+### Auswahl eines Dateisystemtyps
+
+Die Wahl des richtigen Dateisystems für Ihr Unraid-%%array|array%% oder %%cache pool|cache-pool%% ist entscheidend. Es hilft Ihnen, ein Gleichgewicht zwischen Leistung, Datenschutz und erweiterten Funktionen zu erreichen. Unraid unterstützt mehrere moderne Linux-Dateisysteme, von denen jedes seine eigenen Stärken und spezifischen Anwendungsfälle hat:
+
+| Dateisystem      | Datenschutz                                                                                | Speichereffizienz                     | Erweiterte Funktionen                                            | Bester Anwendungsfall                                             |
+| ---------------- | ------------------------------------------------------------------------------------------ | ------------------------------------- | ---------------------------------------------------------------- | ----------------------------------------------------------------- |
+| %%XFS\|xfs%%     | Keine eingebaute Redundanz                                                                 | 100%                                  | Robust gegen Korruption                                          | Standard für Array-Laufwerke; hohe Zuverlässigkeit                |
+| %%ZFS\|zfs%%     | %%RAIDZ1\|raidz1%%/%%RAIDZ2\|raidz2%%/%%RAIDZ3\|raidz3%%, Spiegel, usw.                    | Variiert je nach %%RAID\|raid%%-Level | %%Checksums\|checksum%%, %%Snapshots\|snapshot%%, %%RAID\|raid%% | Multigeräte-Pools, %%VMs\|vm%%, Docker, fortgeschrittene Benutzer |
+| %%BTRFS\|btrfs%% | %%RAID 0\|raid0%%/%%RAID 1\|raid1%%/%%10\|raid10%%/%%5\|raid5%%/%%6\|raid6%%, Spiegelungen | Variiert je nach %%RAID\|raid%%-Level | %%Checksums\|checksum%%, %%Snapshots\|snapshot%%, %%RAID\|raid%% | Multigeräte-Pools, gemischte SSD/HDD, flexible Pools              |
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import FileSystemXfs from './partials/file-system-xfs.mdx';
+import FileSystemZfs from './partials/file-system-zfs.mdx';
+import FileSystemBtrfs from './partials/file-system-btrfs.mdx';
+import BtrfsBalance from './partials/btrfs-balance.mdx';
+import BtrfsScrub from './partials/btrfs-scrub.mdx';
+import FsCheckCliXfs from './partials/fs-check-cli-xfs.mdx';
+import FsCheckCliBtrfs from './partials/fs-check-cli-btrfs.mdx';
+import FsCheckCliZfs from './partials/fs-check-cli-zfs.mdx';
+import FsRepairCliXfs from './partials/fs-repair-cli-xfs.mdx';
+import FsRepairCliBtrfs from './partials/fs-repair-cli-btrfs.mdx';
+import FsRepairCliZfs from './partials/fs-repair-cli-zfs.mdx';
+
+<Tabs>
+  <TabItem value="xfs" label="XFS" default>
+    <FileSystemXfs />
+  </TabItem>
+
+  <TabItem value="zfs" label="ZFS">
+    <FileSystemZfs />
+  </TabItem>
+
+  <TabItem value="btrfs" label="BTRFS">
+    <FileSystemBtrfs />
+  </TabItem>
+</Tabs>
+
+:::note[Additional Anmerkungen]
+
+- Mixing different file system types in your Unraid system is perfectly acceptable; the Unraid %%parity|parity%% system works independently of the file system used.
+- Immer innerhalb von Unraid formatieren und partitionieren, um Kompatibilität zu gewährleisten.
+- Linux-Systeme können diese Dateisysteme nativ lesen; Windows und macOS benötigen jedoch zusätzliche Software für den Zugriff.
+- Sie können <u>verschlüsseln</u> Laufwerke für erhöhte Sicherheit, aber beachten Sie, dass verschlüsselte Laufwerke bei einer Beschädigung Herausforderungen für die Wiederherstellung darstellen können.
+- Für Übertragungslaufwerke oder externe Geräte wird empfohlen, das **[Nicht zugewiesene Geräte](#using-the-unassigned-devices-plugins)** Plugin zu verwenden, welches zusätzliche Dateisysteme unterstützt.
+
+:::
+
+:::tip[Still Brauchen Sie Hilfe bei der Auswahl?]
+
+- **Für Array-Laufwerke:** %%XFS|xfs%% ist in der Regel die beste Wahl für die meisten Benutzer.
+- **Für Hochleistung oder erweiterte Funktionen:** Wählen Sie %%ZFS|zfs%% oder %%BTRFS|btrfs%% für %%cache pools|cache-pool%% oder Mehrgerätelayouts.
+- **Für gemischte oder erweiternde Pools:** %%BTRFS|btrfs%% ist ideal, wenn Sie unterschiedliche Laufwerksgrößen verwenden oder Geräte einfach hinzufügen oder entfernen möchten.
+
+If you're uncertain, starting with the defaults is a good approach: use %%XFS|xfs%% for %%array|array%% drives and %%BTRFS|btrfs%% for %%cache pools|cache-pool%%.
+
+:::
+
+---
+
+## Festlegen eines Dateisystemtyps
+
+Wenn Sie ein neues Laufwerk zu Unraid hinzufügen, können Sie den Dateisystemtyp auswählen, der am besten zu Ihren Anforderungen passt. Das Dateisystem bestimmt, wie Daten auf der Festplatte organisiert und geschützt werden.
+
+So setzen Sie den Dateisystemtyp:
+
+1. **Standard global festlegen:**
+   - Navigate to ***Settings → Disk Settings*** to set the default file system for new %%array|array%% drives only.
+   - Unraid defaults to %%XFS|xfs%% for %%array|array%% drives.
+   - **Note:** There is currently no global default setting for %%cache pools|cache-pool%%. They will always default to %%BTRFS|btrfs%% if left to "auto".
+
+2. **Dateisystem für ein einzelnes Laufwerk festlegen:**
+   - Stoppen Sie das %%array|array%%.
+   - Klicken Sie auf das Laufwerk im **Haupt** Tab.
+   - Wählen Sie den gewünschten Dateisystemtyp aus dem Dropdown-Menü.
+   - Wenn Sie **Auto** wählen, verwendet Unraid den globalen Standard.
+   - Für Mehrgerätige %%cache pools|cache-pool%% werden nur %%BTRFS|btrfs%% oder %%ZFS|zfs%% unterstützt.
+
+---
+
+## Erstellen eines Dateisystems (Formatierung)
+
+Bevor Sie ein neues Laufwerk in Unraid verwenden können, müssen Sie es mit dem ausgewählten Dateisystem formatieren. **Denken Sie daran: Formatieren löscht alle vorhandenen Inhalte auf dem Laufwerk.**
+
+Um mit der Formatierung zu beginnen:
+
+1. **Starten Sie das %%array|array%%**.
+2. **Nicht einbindbare Laufwerke identifizieren:** Laufwerke, die nicht erkannt werden, erscheinen als **nicht einbindbar**.
+3. **Laufwerkauswahl überprüfen:** Überprüfen Sie, ob alle nicht gebundenen Laufwerke die sind, die Sie formatieren möchten.
+4. **Bestätigen und formatieren:** Kreuzen Sie das Kästchen zur Bestätigung an, lesen Sie den Warnhinweis sorgfältig durch und klicken Sie auf **Formatieren**.
+5. **Beobachten Sie den Prozess**: Der Formatierungsprozess beginnt. Bei neuen Laufwerken wird Unraid zunächst die Partitionstabelle neu schreiben.
+6. **Auf Abschluss warten**: Das Formatieren dauert normalerweise ein paar Minuten. Wenn Sie keinen Fortschritt sehen, aktualisieren Sie die **Haupt** Registerkarte.
+
+Sobald die Formatierung abgeschlossen ist, ist das Laufwerk bereit zur Dateispeicherung.
+
+---
+
+## Ändern eines Dateisystemtyps
+
+Möglicherweise möchten Sie den Dateisystemtyp auf einem bestimmten Laufwerk ändern, um neue Funktionen zu nutzen oder um die Kompatibilität mit Ihren anderen Laufwerken zu gewährleisten.
+
+:::warning
+
+Das Ändern des Dateisystemtyps wird **alle vorhandenen Daten** auf dem Laufwerk löschen. Sichern Sie immer alle wichtigen Dateien, bevor Sie fortfahren.
+
+:::
+
+Um den Dateisystemtyp eines bestimmten Laufwerks zu ändern:
+
+1. **Stoppen Sie das Array**: Beginnen Sie damit, Ihr %%array|array%% zu stoppen, um sicherzustellen, dass während der Änderung keine Operationen stattfinden.
+2. **Wählen Sie das Laufwerk aus:** Klicken Sie im **Haupt** Tab auf das Laufwerk, dessen Format Sie ändern möchten.
+3. **Neues Dateisystem wählen**: Wählen Sie aus dem Dropdown-Menü das gewünschte Dateisystemformat. Wenn Sie mehrere Laufwerke ändern müssen, wiederholen Sie diesen Schritt für jedes.
+4. **Starten Sie das Array**: Sobald Sie die neuen Dateisysteme ausgewählt haben, starten Sie Ihr %%array|array%% erneut.
+5. **Nicht montierbare Laufwerke formatieren**: Die **Haupt** Registerkarte zeigt eine Option zum Formatieren nicht montierbarer Laufwerke. Überprüfen Sie die Liste und stellen Sie sicher, dass nur die von Ihnen beabsichtigten Laufwerke enthalten sind.
+6. **Bestätigen und formatieren:** Kreuzen Sie das Bestätigungsfeld an, um die Änderung zu bestätigen, und klicken Sie dann auf die Schaltfläche **Formatieren**, um fortzufahren.
+7. **Warten Sie, bis der Prozess abgeschlossen ist**: Das Formatieren dauert in der Regel nur ein paar Minuten. Wenn Sie bemerken, dass der Status nicht aktualisiert wird, können Sie die **Haupt** Registerkarte aktualisieren, um den Fortschritt zu überprüfen.
+
+Wenn Sie auf Probleme stoßen, besuchen Sie die [Unraid-Foren](https://forums.unraid.net/). Fügen Sie Ihre Systemdiagnose-Zip-Datei (zu finden unter ***Tools → Diagnostics***) zur Unterstützung bei.
+
+---
+
+## Konvertierung in einen neuen Dateisystemtyp
+
+:::important
+
+Beginnend mit Unraid 7.2 warnt die ***Hauptseite***, wenn irgendwelche Array- oder Pool-Laufwerke im veralteten Dateisystem formatiert sind:
+
+- Alle in ReiserFS formatierten Laufwerke müssen so schnell wie möglich auf ein anderes Dateisystem migriert werden, da sie in einer zukünftigen Version von Unraid (voraussichtlich Unraid 7.3) nicht mehr nutzbar sein werden.
+- Alle Laufwerke, die in einer älteren Version von XFS formatiert sind, müssen vor 2030 migriert werden.
+
+:::
+
+Dieser Prozess ist besonders häufig bei Nutzern, die vom veralteten ReiserFS (in älteren Unraid-Versionen verwendet) zu %%XFS|xfs%% oder %%BTRFS|btrfs%% wechseln, gilt aber für jede Dateisystemkonvertierung.
+
+:::important
+
+This process requires temporarily moving your data to another location. Make sure you have enough free space elsewhere in your %%array|array%% or on an external device before you begin.
+
+:::
+
+Um sicher in einen neuen Dateisystemtyp zu konvertieren:
+
+1. **Copy all data off the drive**: Move your files to another location. This could be another drive in your %%array|array%%, a %%cache pool|cache-pool%%, or an external backup.
+   - Vor Unraid 7.0 müssen Sie die Dateien manuell verschieben
+   - Ab Unraid 7.0 können Sie Dateien [verwenden Sie 'Mover', um eine Array-Festplatte zu leeren](../../release-notes/7.0.0.md#using-mover-to-empty-an-array-disk) über die Befehlszeile auf andere Array-Laufwerke verschieben
+   - Ab Unraid 7.2 können Sie eine Array-Festplatte über das WebGUI auf andere Array-Laufwerke leeren:
+     - Navigieren Sie zu ***Haupt → Array-Betrieb*** und stoppen Sie das Array
+     - Navigieren Sie zu ***Einstellungen → Globale Freigabeeinstellungen***. Wählen Sie im Bereich **Leeren von Festplatte(n)** die zu leerende(n) Festplatte(n) aus und **Anwenden**. Hinweis: Dieser Status wird automatisch entfernt, wenn das Array gestoppt wird.
+     - Navigieren Sie zu ***Haupt → Array-Betrieb*** und starten Sie das Array
+     - Klicken Sie auf ***Haupt → Array-Betrieb*** auf **Verschieben** (oder warten Sie, bis der Mover über seinen normalen Zeitplan läuft)
+     - Mover leert die Festplatte gemäß Ihren Freigabeeinstellungen. Beachten Sie, dass Dateien im Stammverzeichnis des Laufwerks außerhalb jeglicher Freigaben liegen und nicht verschoben werden.
+     - Überprüfen Sie ***Werkzeuge → Systemprotokoll*** auf Nachrichten über Dateien, die aufgrund von Verwendung oder mangelndem Speicherplatz nicht verschoben werden konnten.
+   - Navigieren Sie zu ***Haupt → Array-Geräte*** und durchsuchen Sie das Laufwerk, um zu bestätigen, dass es leer ist. Fahren Sie nur fort, wenn Sie sicher sind, dass das Laufwerk leer ist.
+2. **Dateisystemtyp ändern**: Folgen Sie dem Verfahren zum [Ändern eines Dateisystemtyps](#changing-a-file-system-type). Dadurch wird das Laufwerk formatiert und alle Inhalte gelöscht, sodass Sie ein neues leeres Laufwerk im neuen Format erhalten.
+3. **Daten zurückkopieren**: (Optional) Je nachdem, wohin Sie die Dateien verschoben haben, möchten Sie sie möglicherweise zurück auf das neu formatierte Laufwerk verschieben.
+4. **Wiederholen Sie bei Bedarf:** Wenn Sie mehr als ein Laufwerk umwandeln möchten, wiederholen Sie diese Schritte für jedes Laufwerk und übertragen Sie die Daten nach Bedarf.
+
+:::note\[Timing]
+
+Der Prozess kann je nach Datenmenge und Geschwindigkeit Ihrer Laufwerke mehrere Stunden dauern. Die meiste Zeit wird mit dem Kopieren von Dateien verbracht, was unbeaufsichtigt ablaufen kann.
+
+:::
+
+---
+
+## Neusformatiert eines Laufwerks
+
+Ein Laufwerk in Unraid neu zu formatieren, löscht alle Ihre Daten und erstellt ein neues leeres Dateisystem. Dieser Prozess ist nützlich, um anhaltende Dateisystemfehler zu beheben oder mit einem neuen Format von vorne zu beginnen.
+
+:::warning
+
+Neuverformungen löscht permanent alle Daten auf dem Laufwerk. Sichern Sie immer wichtige Dateien, bevor Sie beginnen.
+
+:::
+
+Um Ihre Festplatte **sicher** neu zu formatieren:
+
+1. **Stoppen Sie die Array**.
+2. **Ändern Sie den Dateisystemtyp:**
+   - Gehen Sie zum **Haupt** Tab und klicken Sie auf das Laufwerk, das Sie neu formatieren möchten.
+   - Wählen Sie einen anderen Dateisystemtyp (zum Beispiel Wechsel von %%XFS|xfs%% zu %%BTRFS|btrfs%%).
+   - Starten Sie das %%array|array%%, und das Laufwerk wird als **nicht einbindbar** angezeigt.
+   - Wenn Sie dazu aufgefordert werden, formatieren Sie das Laufwerk.
+3. **(Optional) Wechseln Sie zurück zum ursprünglichen Dateisystemtyp:**
+   - Stoppen Sie das %%array|array%% erneut.
+   - Ändern Sie den Dateisystemtyp zurück zu Ihrem bevorzugten Typ.
+   - Starten Sie das %%array|array%% und formatieren Sie das Laufwerk erneut.
+
+Dieser einfache Prozess stellt sicher, dass das Laufwerk vollständig gelöscht und nach Ihren Wünschen formatiert wird. Der Formatierungsprozess dauert normalerweise nur ein paar Minuten.
+
+### Neues Format eines Cache-Laufwerks
+
+Sometimes, you'll need to reformat a %%cache|cache%% drive for the following reasons:
+
+- Um den Dateisystemtyp zu ändern (zum Beispiel Wechsel von %%BTRFS|btrfs%% zu %%XFS|xfs%% oder umgekehrt)
+- Um anhaltende Dateisystemfehler zu beheben
+- Um frisch für neue Workloads zu starten
+
+<h4>Empfohlene Vorgehensweise für das Neuformatieren eines Cache-Laufwerks</h4>
+
+1. **Stoppen Sie die Array**.
+2. **Deaktivieren Sie Docker- und %%VM|vm%%-Dienste** unter **Einstellungen**.
+3. **Starten Sie das Array** (dies verhindert, dass die Docker- und VM-Tabs erscheinen).
+
+Um Daten vom Cache zu verschieben:
+
+4. **Set share storage and Mover action (cache → array)**: For each share that has files in the %%cache|cache%%, set **Primary storage** to the source %%cache|cache%% pool and **Secondary storage** to the %%array|array%%. Set **Mover action** to **cache → array**.
+   - Notieren Sie alle Änderungen von Freigaben und deren ursprünglichen Einstellungen.
+5. **Run %%Mover|mover%%**: Run %%Mover|mover%% from the **Main** tab. Wait for it to finish and ensure that the %%cache|cache%% is empty.
+   - Sollten Dateien verbleiben, stoppen Sie und prüfen Sie die Foren für Hilfe.
+
+Um das Cache-Laufwerk neu zu formatieren:
+
+6. **Stoppen Sie die Array**.
+7. **Stellen Sie das Cache-Laufwerksformat ein** (wählen Sie zwischen %%XFS|xfs%% oder %%BTRFS|btrfs%%).
+   - Für ein Einzellaufwerks-%%cache|cache%% wird %%XFS|xfs%% empfohlen.
+   - Note that %%XFS|xfs%% is only available if you have one %%cache|cache%% slot.
+8. **Starten Sie die Array**.
+9. **Formatieren Sie das Cache-Laufwerk**:
+   - Confirm that only the %%cache|cache%% drive is listed as unmountable.
+   - Fahren Sie mit der Formatierung des Laufwerks fort.
+
+Um Daten und Einstellungen wiederherzustellen:
+
+10. **Freigabeeinstellungen wiederherstellen:** Stellen Sie für jede von Ihnen geänderte Freigabe die **Primärspeicherung** und **Sekundärspeicherung** auf ihre ursprünglichen Werte zurück.
+11. **Move data back (array → cache)**: Set **Primary storage** to the destination %%cache|cache%% pool and **Secondary storage** to the %%array|array%% for each share you changed. Set **Mover action** to **array → cache**, then run the %%Mover|mover%% again to move your data back to the %%cache|cache%%.
+12. **Stoppen Sie die Array**.
+13. **Erneutes Aktivieren von Docker- und %%VM|vm%%-Diensten**.
+14. **Starten Sie die Array**.
+
+:::note\[Timing]
+
+Die Zeit, die das Verschieben von Daten mit dem %%Mover|mover%% und das Formatieren des Laufwerks in Anspruch nimmt, kann je nach Datenmenge und Laufwerksgeschwindigkeit von mehreren Minuten bis zu mehreren Stunden variieren.
+
+:::
+
+---
+
+## BTRFS-Aktionen
+
+Maintaining your %%BTRFS|btrfs%% pools in Unraid is essential for keeping them running well and ensuring your data stays safe. Two key tools you’ll want to use regularly are **Balance** and **Scrub**. These operations help solve space allocation problems, optimize your storage use, and protect your data from hidden corruption.
+
+Schauen wir uns an, was jede Operation macht und wann sie verwendet wird:
+
+<Tabs>
+  <TabItem value="gleichgewicht" label="Gleichgewicht" default>
+    <BtrfsBalance />
+  </TabItem>
+
+  <TabItem value="scrub" label="Scrub">
+    <BtrfsScrub />
+  </TabItem>
+</Tabs>
+
+:::tip
+
+Sowohl **Balance** als auch **Scrub** können bei laufendem System durchgeführt werden, jedoch beachten Sie, dass die Leistung während dieser Operationen beeinträchtigt werden kann. Sie können den Fortschritt im %%WebGUI|web-gui%% überwachen.
+
+:::
+
+For more details on advanced %%BTRFS|btrfs%% features, check out the [official BTRFS documentation](https://btrfs.readthedocs.io/en/latest/Introduction.html).
+
+---
+
+## Nicht zugewiesene Laufwerke
+
+Unassigned drives are storage devices connected to your Unraid server that aren't part of the main %%array|array%% or any %%cache pool|cache-pool%%. You can use these drives to transfer files, create backups, or provide fast storage for %%virtual machines|vm%%.
+
+:::note
+
+Alle Laufwerke, die mit Ihrem Server verbunden sind, wenn das %%array|array%% gestartet wird, zählen zu Ihrem Unraid Attached Devices-Lizenzlimit, auch wenn sie nicht dem %%array|array%% oder einem Pool zugewiesen sind.
+
+:::
+
+<h4>Häufige Anwendungen für nicht zugewiesene Laufwerke</h4>
+
+- Verbindungen für einfache Dateitransfers oder Backups herstellen.
+- Einsatz von dedizierten Laufwerken für leistungsintensive Aufgaben wie das Ausführen von %%virtuellen Maschinen|vm%% oder temporärer Datenspeicherung.
+
+### Verwendung der Plugins für nicht zugewiesene Geräte
+
+Um das Beste aus Ihren nicht zugewiesenen Laufwerken herauszuholen, sollten Sie die folgenden Plugins vom **Apps**-Tab installieren:
+
+- **[Unassigned Devices](https://unraid.net/community/apps?q=dlandon\&r=0#:~:text=and%20iso%20files.-,Unassigned%20Devices,-dlandon):** Dieses Plugin ermöglicht es Ihnen, Laufwerke mit Dateisystemen, die von Unraid unterstützt werden, wie %%XFS|xfs%%, %%BTRFS|btrfs%% oder NTFS, zu mounten, freizugeben und zu verwalten.
+
+- **[Unassigned Devices Plus](https://unraid.net/community/apps?q=dlandon\&r=0#:~:text=and%20iso%20files.-,Unassigned%20Devices%20Plus,-\(Addon\)):** Diese Erweiterung bietet Unterstützung für zusätzliche Dateisysteme, einschließlich ExFAT und HFS+.
+
+Diese Plugins ermöglichen:
+
+- Einfaches Mounten und Unmounten von Laufwerken über die Unraid-Weboberfläche.
+- Teilen von nicht zugewiesenen Laufwerken über das Netzwerk.
+- Automatisierung des Mount-Vorgangs beim Serverstart.
+- Formatieren oder Löschen von Laufwerken für die zukünftige Nutzung.
+- Sicheres Entfernen von USB- oder externen Laufwerken ohne Probleme.
+
+Für weitere Details zur Installation und Verwaltung von Plugins, schauen Sie sich [Plugins](../customize-your-experience/plugins.mdx) an.
+
+---
+
+## Fehlerbehebung
+
+### Laufwerk wird als nicht mountbar angezeigt
+
+Wenn Sie sehen, dass ein Laufwerk in Unraid als **nicht mountbar** angezeigt wird, könnte dies an einem der beiden Hauptgründe liegen:
+
+1. **Neues Laufwerk hinzugefügt**: Wenn Sie gerade ein neues Laufwerk zu Ihrer Konfiguration hinzugefügt haben, wird es als nicht montierbar angezeigt, bis Sie es formatieren. Das Formatieren erzeugt ein Dateisystem, das es dem Laufwerk ermöglicht, Dateien zu speichern. Die Schritte zum Formatieren eines Laufwerks finden Sie [hier](#creating-a-file-system-formatting).
+
+2. **Dateisystemprobleme**: Wenn ein zuvor funktionierendes Laufwerk plötzlich als nicht montierbar erscheint, hat es vermutlich ein Dateisystemproblem. Dies kann durch unerwartete Abschaltungen, Probleme beim Schreiben von Daten oder eine als deaktiviert markierte Festplatte (die im %%WebGUI|web-gui%% als rotes 'x' angezeigt wird) verursacht werden.
+
+:::important
+
+Do not format an unmountable drive unless you are okay with losing all the data on it. Formatting will erase everything and update the %%parity|parity%% information, making recovery impossible. Always try to fix the file system first.
+
+:::
+
+Wenn Ihr Laufwerk nicht montierbar ist:
+
+1. **Identifizieren Sie die Situation**: Bestimmen Sie, ob es sich um ein neues oder ein zuvor funktionierendes Laufwerk handelt.
+2. **Für neue Laufwerke**: Formatieren Sie das Laufwerk, um ein neues Dateisystem zu erstellen (siehe die [Formatierungsschritte](#creating-a-file-system-formatting)).
+3. **Für zuvor funktionierende Laufwerke**: Führen Sie eine Dateisystemprüfung oder -reparatur durch (siehe [Dateisystemüberprüfung](#checking-a-file-system)). Vermeiden Sie das Formatieren, wenn Sie die Daten behalten möchten.
+
+:::note
+
+Wenn ein Laufwerk sowohl nicht montierbar als auch deaktiviert ist (rotes 'x'), führen Sie zuerst die Dateisystemprüfung/-reparatur auf dem **emulierten** Laufwerk durch. Wenn das emulierte Laufwerk ebenfalls nicht montierbar ist und Sie versuchen, es wiederherzustellen, wird das neue Laufwerk ebenfalls nicht montierbar sein.
+
+:::
+
+Die Behebung des Dateisystems dauert in der Regel weniger Zeit als der Neuaufbau des Laufwerks, sodass Sie auf Ihre Daten zugreifen können, ohne etwas zu verlieren. Denken Sie daran, dass der Neuaufbau eines Laufwerks **nicht** Dateisystemprobleme behebt; er stellt lediglich sicher, dass das physische Laufwerk dem emulierten entspricht und alle bestehenden Probleme mitübernimmt.
+
+:::important[Why Ist Parität nicht genug?]
+
+While %%parity|parity%% helps recover a failed drive, it cannot fix file system problems. If the file system is corrupted, %%parity|parity%% will simply replicate that corruption to the new drive.
+
+Wenn Sie unsicher sind:
+
+- Laden Sie Ihre Systemprotokolle herunter, indem Sie zu ***Tools → Diagnosen*** navigieren.
+- Für fachkundige Hilfe posten Sie Ihr Problem zusammen mit den Diagnosen im [Unraid-Forum](https://forums.unraid.net/).
+
+:::
+
+:::note[Just Um es noch einmal zu sagen]
+
+- Formatieren Sie nur nicht montierbare Laufwerke, wenn sie neu sind oder wenn Sie alle Daten löschen möchten.
+- Verwenden Sie die Dateisystemprüfung/-reparatur, um beschädigte Dateien zu beheben; verlassen Sie sich nicht auf %%parity|parity%%, um diese Probleme zu lösen.
+- Für %%cache pools|cache-pool%% mit mehreren Laufwerken sollten Sie entweder %%BTRFS|btrfs%% oder %%ZFS|zfs%% verwenden.
+- Überprüfen Sie immer doppelt, bevor Sie Laufwerke formatieren oder reparieren, um versehentlichen Datenverlust zu vermeiden.
+
+:::
+
+---
+
+### Überprüfen eines Dateisystems
+
+Wenn ein zuvor ohne Probleme gemountetes Laufwerk jetzt als **nicht mountierbar** angezeigt wird, deutet dies typischerweise auf eine Dateisystemkorruption hin. Dies kann durch einen unsaubere Abschaltung, einen fehlgeschlagenen Schreibvorgang oder die Deaktivierung der Festplatte im %%WebGUI|web-gui%% verursacht werden. Das Überprüfen und Reparieren des Dateisystems ist in der Regel schneller und sicherer als ein vollständiger Wiederaufbau, daher wird empfohlen, dies vor dem Formatieren oder Wiederaufbau des Laufwerks zu versuchen.
+
+:::important
+
+If the %%WebGUI|web-gui%% suggests formatting an unmountable drive, <strong>do not format</strong> unless you intend to erase all data. Formatting will destroy the contents of the drive and update %%parity|parity%%, making recovery impossible.
+
+:::
+
+<h4>Vorbereitung für die Prüfung oder Reparatur</h4>
+
+1. **Festplattensystemtyp identifizieren:**
+   - Navigieren Sie zum **Haupt**-Tab und wählen Sie Ihre Festplatte (z.B. Disk 3, Cache) aus.
+   - Finden Sie den **Dateisystemtyp** (sollte %%XFS|xfs%%, %%BTRFS|btrfs%% oder %%ZFS|zfs%% sein).
+
+2. **Starten Sie das Array im richtigen Modus**:
+   - Für **%%XFS|xfs%%** starten Sie das %%array|array%% im **%%Wartungsmodus|maintenance-mode%%**.
+   - Für **%%BTRFS|btrfs%%** starten Sie das %%array|array%% im **Normalmodus** für einen %%scrub|scrub%% oder im **%%Wartungsmodus|maintenance-mode%%** für eine Reparatur.
+   - Für **%%ZFS|zfs%%**, siehe den %%ZFS|zfs%%-Abschnitt unten.
+
+3. **Emulierte Laufwerke handhaben**: Wenn das Laufwerk deaktiviert und emuliert ist, führen Sie die Überprüfung/Reparatur auf dem %%emulierten Laufwerk|emulated-disk%% durch, bevor Sie einen Wiederaufbau versuchen. Ist das %%emulierte Laufwerk|emulated-disk%% nicht montierbar, wird auch das wiederhergestellte Laufwerk nicht montierbar sein.
+
+<h4>Häufige Fehlermeldungen</h4>
+
+| Nachricht                                                       | Bedeutung / Aktion                                                                                  |
+| --------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| **Superblock hat eine schlechte magische Zahl**                 | Schwere Beschädigung; versuchen Sie, das Dateisystem zu reparieren.                                 |
+| **Dateisystem ist schmutzig**                                   | Unsauberer Shutdown; führen Sie eine Dateisystemprüfung durch.                                      |
+| **Metadatabeschädigung erkannt**                                | Dateisystemstrukturen sind beschädigt; initialisieren Sie eine Reparatur.                           |
+| **Kein gültiges %%BTRFS\|btrfs%% gefunden**                     | Festplatte gehört möglicherweise nicht zu einem gültigen Pool; überprüfen Sie die Pool-Zuweisungen. |
+| **Mount: falscher FS-Typ, schlechte Option, etc.**              | Falsche Auswahl des Dateisystems oder die Festplatte ist nicht formatiert.                          |
+| **Kann /dev/mdX nicht mounten: Struktur muss gereinigt werden** | Dateisystem ist beschädigt; führen Sie eine Reparatur durch.                                        |
+
+#### Über das WebGUI
+
+1. **Start the array**: Start the %%array|array%% in the correct mode (refer to the steps above).
+2. **Wählen Sie die Festplatte aus:** Gehen Sie zum **Haupt**-Tab und wählen Sie die Festplatte, die Sie überprüfen möchten.
+3. **Zugriff auf Prüfen-Optionen:** Scrollen Sie zu **Prüfen Sie den Status des Dateisystems**.
+4. **Für XFS (Unraid 7.0+)**: Sie sehen eine **PRÜFEN**-Schaltfläche ohne Optionen zum Eingeben. Das System bestimmt automatisch die notwendigen Aktionen anhand der Prüfergebnisse.
+5. **Für andere Dateisysteme:** Geben Sie alle notwendigen Optionen ein (für Details siehe **Hilfe** oben rechts).
+6. **Starten Sie die Überprüfung:** Klicken Sie auf **Prüfen**, um den Prozess zu starten.
+7. **Fortschritt überwachen**: Überwachen Sie den Fortschritt im Ausgabefeld. Verwenden Sie **Aktualisieren** bei Bedarf.
+8. **Ergebnisse überprüfen**: Überprüfen Sie die Ergebnisse. Wenn Sie unsicher sind, kopieren Sie die Ausgabe und veröffentlichen Sie sie in den [Foren](https://forums.unraid.net/) um Rat zu erhalten.
+
+#### XFS Automatischer Reparatur-Workflow (Unraid 7.0+)
+
+Ab Unraid 7.0 ist die Reparatur des XFS-Dateisystems nun vollständig im WebGUI automatisiert:
+
+1. **Erste Überprüfung**: Klicken Sie auf **PRÜFEN** (keine Optionen erforderlich)
+2. **Prüfergebnisse**:
+   - **Keine Beschädigung erkannt**: Zeigt "keine Dateisystembeschädigung erkannt" an und der **PRÜFEN**-Button bleibt
+   - **Beschädigung erkannt**: Zeigt "Dateisystembeschädigung erkannt" an und ein **FIX**-Button erscheint
+3. **Reparaturvorgang**: Klicken Sie auf **FIX**, um das Dateisystem automatisch zu reparieren
+4. **Zusätzliche Aktionen**: Falls erforderlich, kann ein **ZERO LOG**-Button erscheinen
+5. **Abschluss**: Zeigt "Dateisystem repariert" an, wenn der Prozess abgeschlossen ist
+
+Dieses automatisierte System eliminiert die Notwendigkeit für Benutzer, manuell Reparaturoptionen einzugeben, und stellt sicher, dass die korrekte Reparatursequenz eingehalten wird.
+
+#### Über die Befehlszeile
+
+<Tabs>
+  <TabItem value="xfs" label="XFS">
+    <FsCheckCliXfs />
+  </TabItem>
+
+  <TabItem value="btrfs" label="BTRFS">
+    <FsCheckCliBtrfs />
+  </TabItem>
+
+  <TabItem value="zfs" label="ZFS">
+    <FsCheckCliZfs />
+  </TabItem>
+</Tabs>
+
+:::tip
+
+- Dateisystemreparaturen sind im Allgemeinen schneller als ein vollständiger Wiederaufbau und können den Zugriff ohne Datenverlust wiederherstellen.
+- Wiederaufbau einer Festplatte löst **nicht** die Dateisystembeschädigung; führen Sie immer zuerst eine Überprüfung oder Reparatur durch.
+- Wenn Sie Zweifel haben, posten Sie Ihre Diagnosen und Fehlermeldungen im Unraid [Forums](https://forums.unraid.net/) für fachkundigen Rat.
+
+:::
+
+---
+
+### Reparatur eines Dateisystems
+
+Wenn eine Überprüfung Ihres Dateisystems Fehler findet, müssen Sie möglicherweise eine Reparatur durchführen, um wieder Zugriff auf Ihre Daten zu erhalten. Reparaturen dauern normalerweise weniger Zeit als ein vollständiger Wiederaufbau, aber es ist wichtig, den Ausgabe sorgfältig zu lesen und bei Unsicherheiten Hilfe in den [Foren](https://forums.unraid.net/) zu suchen.
+
+:::note\[Timing]
+
+Reparaturen können je nach Größe oder starkem Schaden des Dateisystems von mehreren Minuten bis zu mehreren Stunden dauern. Der Fortschritt mag langsam erscheinen, aber Sie können die Aktivität überprüfen, indem Sie die Lese-/Schreibstatistiken auf der Hauptseite betrachten.
+
+:::
+
+<h4>Vorbereitung zur Reparatur</h4>
+
+1. **Identifizieren Sie den Dateisystemtyp**: Gehen Sie zum **Main** Tab, klicken Sie auf die Festplatte und finden Sie heraus, welchen Typ von Dateisystem es ist (%%XFS|xfs%%, %%BTRFS|btrfs%% oder %%ZFS|zfs%%).
+
+2. **Starten Sie das Array im richtigen Modus**:
+
+   - **Für %%XFS|xfs%%:** Verwenden Sie den **%%Wartungsmodus|maintenance-mode%%**.
+   - **Für %%BTRFS|btrfs%%:** Verwenden Sie den **Normalmodus** für ein %%scrub|scrub%%; verwenden Sie den **%%Wartungsmodus|maintenance-mode%%** für eine Reparatur.
+   - **For %%ZFS|zfs%%:** Use **Normal mode** and run a %%scrub|scrub%% to check for errors.  See the [ZFS storage page](../../advanced-configurations/optimize-storage/zfs-storage.mdx) for guidance on %%ZFS|zfs%% pool maintenance and repair procedures.
+
+3. **Behandeln Sie emulierte Festplatten**: Wenn die Festplatte deaktiviert und emuliert ist, führen Sie die Reparatur auf dem %%emulierte Festplatte|emulated-disk%% durch, bevor Sie versuchen, einen Wiederaufbau durchzuführen.
+
+#### Über das WebGUI
+
+1. **Start the array**: Start the %%array|array%% in the correct mode (refer to the section above).
+2. **Wählen Sie die Festplatte aus**: Gehen Sie zum **Main** Tab und klicken Sie auf die Festplatte, die Sie reparieren möchten.
+3. **Zugriff auf Reparaturoptionen**: Blättern Sie zu **Dateisystemstatus überprüfen**.
+4. **Für XFS (Unraid 7.0+)**: Der Reparaturprozess ist vollständig automatisiert. Klicken Sie auf **PRÜFEN**, dann auf **FIXIEREN**, wenn Korruption erkannt wird, und **LOG ZERREN**, wenn Sie dazu aufgefordert werden.
+5. **Für andere Dateisysteme**: Entfernen Sie alle Optionen, die den Prozess nur im Prüfungsmodus ausführen würden (wie `--readonly` für %%BTRFS|btrfs%%).
+6. **Fügen Sie vorgeschlagene Optionen hinzu**: Falls aufgefordert, fügen Sie die vorgeschlagenen Optionen entsprechend der Prüfausgabe hinzu.
+7. **Starten Sie die Reparatur**: Klicken Sie auf **Check**, um die Reparatur zu beginnen.
+8. **Fortschritt überwachen**: Behalten Sie den Fortschritt im Ausgabefeld im Auge. Verwenden Sie **Aktualisieren**, falls nötig.
+9. **Nach verlorenen Dateien suchen**: Wenn Sie nach der Reparatur einen `lost+found`-Ordner bemerken, enthält dieser möglicherweise Dateien oder Ordner, die nicht vollständig wiederhergestellt werden konnten. Verwenden Sie Backups oder den Linux-`file`-Befehl, um bei Bedarf den Inhalt zu identifizieren.
+
+:::info
+
+Wenn Sie unsicher bezüglich der Ausgabe sind, kopieren und teilen Sie sie in den [Unraid-Foren](https://forums.unraid.net/) für professionelle Hilfe. Verwenden Sie die Codeformatierungsoption, um sie lesbar zu halten.
+
+:::
+
+#### Über die Befehlszeile
+
+<Tabs>
+  <TabItem value="xfs" label="XFS">
+    <FsRepairCliXfs />
+  </TabItem>
+
+  <TabItem value="btrfs" label="BTRFS">
+    <FsRepairCliBtrfs />
+  </TabItem>
+
+  <TabItem value="zfs" label="ZFS">
+    <FsRepairCliZfs />
+  </TabItem>
+</Tabs>
+
+:::info[After die Reparatur]
+
+- Stop and restart the %%array|array%% in **Normal mode**.
+- Das Laufwerk sollte jetzt gemountet und zugänglich sein.
+- Wenn Sie einen `lost+found`-Ordner sehen, überprüfen Sie dessen Inhalt auf wichtige Dateien.
+
+:::
+
+Wenn Sie die Reparaturausgabe nicht verstehen oder der Prozess fehlschlägt, teilen Sie Ihre Diagnosen und das Reparaturlog im [Unraid Forum](https://forums.unraid.net/) für weitere Unterstützung.
