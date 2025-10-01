@@ -1,0 +1,206 @@
+---
+sidebar_position: 1
+sidebar_label: Capturar diagnósticos y registros
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import SyslogMirror from './partials/syslog-server/mirror.mdx';
+import SyslogRemote from './partials/syslog-server/remote.mdx';
+import SyslogLocal from './partials/syslog-server/local.mdx';
+import DockerLogsViaWebGUI from './partials/docker-logs/via-webgui.mdx';
+import DockerLogsCommandLine from './partials/docker-logs/command-line.mdx';
+import DockerLogsPersistent from './partials/docker-logs/persistent.mdx';
+
+# Capturando información de diagnóstico
+
+Cuando tienes problemas con tu servidor Unraid, recopilar información detallada es crucial para solucionar problemas de manera efectiva. Esta información ayuda a otros a proporcionar asistencia precisa y oportuna, especialmente cuando publicas en foros.
+
+:::info[Diagnostics incluido...]
+
+El archivo zip de diagnósticos contiene varios archivos de texto anonimizados que crean una instantánea detallada de tu sistema Unraid, incluyendo:
+
+- **Configuración del sistema**: Información sobre tu %%array|array%%, compartidos, configuraciones de red y plugins instalados.
+- **Registros del sistema**: Registros del kernel, %%WebGUI|web-gui%% y servicios del sistema, documentando eventos que pueden haber llevado al problema.
+- **Información de hardware**: Detalles sobre discos conectados, controladores y otros componentes de hardware.
+- **Información de Docker y %%VM|vm%%**: Configuración general para Docker y máquinas virtuales (no se incluye información sobre tus contenedores individuales o %%VMs|vm%%).
+
+:::
+
+---
+
+## Diagnósticos del sistema
+
+Unraid ofrece una herramienta de **Diagnósticos** ubicada en ***Tools → Diagnostics*** en el %%WebGUI|web-gui%% para capturar información completa del sistema para la resolución de problemas. Esta herramienta generará un archivo zip que puedes descargar y adjuntar a publicaciones en foros para obtener soporte. Todos los archivos de diagnóstico son basados en texto, y los usuarios pueden revisarlos para entender qué información está incluida.
+
+| Escenario                                | Cómo capturar                                                                                                                                    | Notas                                                                                                                                        |
+| ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| %%WebGUI\|web-gui%% disponible           | Usa ***Herramientas → Diagnósticos*** en el **%%WebGUI\|web-gui%%** para generar y descargar el archivo zip de diagnósticos.                     | Los diagnósticos están anonimizados por defecto para proteger los datos sensibles.                                                           |
+| %%WebGUI\|web-gui%% no disponible        | Access via **%%SSH\|ssh%%**, telnet, or direct console to run the `diagnostics` command. The zip file saves to `/boot/logs`.                     | Siempre captura diagnósticos antes de reiniciar para mantener los registros intactos.                                                        |
+| %%Array\|array%% iniciado en modo normal | Este es el método preferido para capturar diagnósticos, ya que proporciona la información más completa, especialmente sobre el estado del disco. | Si esto no es posible, consulta la [sección de registros persistentes](#persistent-logs-syslog-server) para métodos alternativos de captura. |
+
+<div style={{ margen: 'auto', maxAnchura: '600px', display: 'flex', flexDirection: 'columna', alignItems: 'centro' }}>
+  ![Lógica de selección de disco](/img/Diagnostics.jpg)
+</div>
+
+:::important
+
+Adjunta el archivo zip de diagnósticos único cuando publiques en foros - evita subir los archivos extraídos individualmente.
+
+:::
+
+### Anonimización de datos de diagnóstico
+
+By default, diagnostics are automatically anonymized. If you enable %%Mover|mover%% logging under ***Settings → Scheduler → Mover Settings***, the %%syslog|syslog%% will include details about files the %%Mover|mover%% processes. It's best to allow %%Mover|mover%% logging only when troubleshooting specific %%Mover|mover%%-related issues, as it may reveal file paths and names.
+
+Cuando tu sistema se apaga correctamente, el registro de la sesión se guarda automáticamente en la unidad flash. Puedes acceder a él después de reiniciar yendo a ***Tools → Syslog → syslog-previous***. Este registro también se incluye en los diagnósticos en el siguiente inicio. Sin embargo, si el sistema falla, el registro del sistema se perderá. En estos casos, se recomienda habilitar la duplicación del %%syslog|syslog%% al flash o usar un %%servidor syslog|syslog-server%% remoto para conservar registros y solucionar problemas.
+
+---
+
+## Pruebas de rendimiento de lectura del disco
+
+Puedes utilizar herramientas integradas de Linux para evaluar el rendimiento de lectura de tus discos duros. Esto es útil al diagnosticar sincronizaciones de %%paridad|parity%% lentas, respuestas lentas del disco o velocidades desiguales entre discos en un %%array|array%% o %%cache|cache%%.
+
+:::important[When y por qué probar la velocidad]
+
+Considera ejecutar pruebas de lectura de discos si experimentas:
+
+- Construcciones de %%parity|parity%% extremadamente lentas o comprobaciones de %%parity|parity-check%%s
+- Transferencias de archivos sospechosamente lentas desde un disco específico
+- Desajustes de disco después de agregar o reemplazar discos, particularmente cuando se mezclan SSDs y HDDs
+- Sectores reasignados o errores %%UDMA|udma%% %%CRC|crc-errors%%, que pueden indicar discos fallando
+
+Aunque estas pruebas no te darán velocidades de transferencia de archivos exactas del mundo real, pueden señalar discos con bajo rendimiento y cualquier cuello de botella en el controlador.
+
+:::
+
+### Prueba rápida (hdparm)
+
+La herramienta `hdparm` mide las velocidades de lectura en caché y en buffer de un disco.
+
+Para ejecutar la prueba, reemplaza `X` con tu dispositivo de disco (como `sdb` o `sdg`) e introduce el siguiente comando:
+
+```
+hdparm -tT /dev/sdX
+```
+
+- El resultado de `-T` muestra la velocidad de lectura de caché.
+- El resultado de `-t` muestra el rendimiento de lectura secuencial del disco.
+
+:::tip
+
+Ejecuta esta prueba varias veces para obtener un punto de referencia más confiable. Por ejemplo, puedes usar la siguiente línea única para ejecutar la prueba 12 veces:
+
+```
+for ((i=0;i<12;i++)); do hdparm -tT /dev/sdX; done
+```
+
+:::
+
+:::note
+
+Asegúrate de reemplazar `/dev/sdX` con un dispositivo físico válido. Evita dispositivos lógicos de Unraid, como `/dev/md1`, que incluyen procesos de %%paridad|parity%% que pueden distorsionar las lecturas de rendimiento en bruto.
+
+:::
+
+### Prueba completa (diskspeed.sh)
+
+Para una evaluación más detallada de todos los discos conectados, incluidas unidades de %%parity|parity%% y datos, considera usar el script de la comunidad `diskspeed.sh`.
+
+Este script:
+
+- Prueba las velocidades de lectura en múltiples offset lineales a través de la superficie del disco
+- Genera datos CSV y mapas de calor de rendimiento (imágenes)
+- Puede identificar zonas de bajo rendimiento, que pueden ser una señal de hardware defectuoso o discos SMR problemáticos
+
+Para comenzar con `diskspeed.sh`:
+
+1. Descarga el script desde los [foros de Unraid](https://forums.unraid.net/topic/31073-disk-speed-test-graphs-disk-bottlenecks-identified-see-how-fast-your-disks-can-really-go/).
+2. Colócalo en una ruta persistente como `/boot/scripts/`.
+3. Hazlo ejecutable:
+
+```
+chmod +x /boot/scripts/diskspeed.sh
+```
+
+4. Ejecuta el script:
+
+```
+bash /boot/scripts/diskspeed.sh
+```
+
+:::note
+
+Este script solo realiza operaciones de solo lectura y no modificará ningún dato en tus discos. Sin embargo, es mejor programar la prueba durante períodos de inactividad, ya que puede afectar el I/O del disco e interferir con el rendimiento del %%array|array%%.
+
+:::
+
+---
+
+## Registros persistentes (servidor syslog)
+
+Los registros persistentes son esenciales para mantener un registro de los eventos del sistema entre reinicios. A diferencia de los registros estándar que se reinician al reiniciar el sistema, los registros persistentes utilizan el %%servidor syslog integrado|syslog-server%% de Unraid para garantizar que puedas diagnosticar fallos o problemas intermitentes que surjan con el tiempo.
+
+### Elegir el método de registro correcto
+
+Ve a ***Settings → Syslog Server*** para configurar el registro persistente. Cada método tiene ventajas y desventajas:
+
+| Método                        | Pros                                                                                             | Contras                                         | Mejor para                                  |
+| ----------------------------- | ------------------------------------------------------------------------------------------------ | ----------------------------------------------- | ------------------------------------------- |
+| **Reflejar en flash**         | Captura eventos del proceso de arranque                                                          | Puede desgastar la unidad flash rápidamente     | Diagnósticos a corto plazo (unos días)      |
+| **Remote %%syslog\|syslog%%** | Los registros se almacenan en otro dispositivo                                                   | Necesita un servidor separado siempre encendido | Monitoreo a largo plazo (semanas a meses)   |
+| **Local %%syslog\|syslog%%**  | Mantiene registros en el %%array\|array%% o %%cache\|cache%%, reduciendo el desgaste en el flash | Menos accesible si hay un fallo del sistema     | Registro continuo sin dispositivos externos |
+
+:::tip
+
+Para obtener ayuda detallada sobre configuración, revisa el ícono **Help** en la barra de herramientas de WebGUI.
+
+:::
+
+### Habilitación del servidor syslog
+
+<Tabs>
+  <TabItem value="espejo" label="Reflejar en flash" default>
+    <SyslogMirror />
+  </TabItem>
+
+  <TabItem value="remoto" label="Servidor de registro remoto">
+    <SyslogRemote />
+  </TabItem>
+
+  <TabItem value="local" label="Servidor de registro local">
+    <SyslogLocal />
+  </TabItem>
+</Tabs>
+
+---
+
+## Accediendo a registros de contenedores de Docker
+
+Mientras que los diagnósticos estándar solo proporcionan datos limitados para Docker y %%VM|vm%%, puedes acceder directamente a los registros de contenedores para obtener más detalles en la resolución de problemas.
+
+Para recuperar registros de Docker:
+
+<Tabs>
+  <TabItem value="via-webgui" label="Via WebGUI" default>
+    <DockerLogsViaWebGUI />
+  </TabItem>
+
+  <TabItem value="línea de comandos" label="Via Línea de Comandos">
+    <DockerLogsCommandLine />
+  </TabItem>
+
+  <TabItem value="persistente" label="Registro persistente">
+    <DockerLogsPersistent />
+  </TabItem>
+</Tabs>
+
+### Registros de máquinas virtuales
+
+Los registros de %%VM|vm%% se pueden acceder a través de sus respectivos hipervisores (por ejemplo, los registros de %%QEMU|qemu%% se encuentran en `/var/log/libvirt/`). Consulta la documentación de tu plataforma %%VM|vm%% para más detalles.
+
+:::important
+
+Recuerda adjuntar los registros pertinentes de contenedores o %%VM|vm%% por separado cuando busques soporte para problemas específicos de aplicaciones.
+
+:::
