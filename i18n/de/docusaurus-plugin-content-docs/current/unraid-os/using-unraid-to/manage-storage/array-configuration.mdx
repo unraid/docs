@@ -1,0 +1,1024 @@
+---
+sidebar_position: 2
+sidebar_label: Arraykonfiguration
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import AddDataDiskParityProtected from './partials/add-data-disk-parity-protected.mdx';
+import AddDataDiskNoParity from './partials/add-data-disk-no-parity.mdx';
+import ParitySwapWhat from './partials/parity-swap-what.mdx';
+import ParitySwapWhen from './partials/parity-swap-when.mdx';
+import RemoveDataDiskStandard from './partials/remove-data-disk-standard.mdx';
+import RemoveDataDiskParityPreserve from './partials/remove-data-disk-parity-preserve.mdx';
+import ArrayCheckParity from './partials/array-check-parity.mdx';
+import ArrayCheckRead from './partials/array-check-read.mdx';
+import TroubleshootMissingDisks from './partials/troubleshoot-missing-disks.mdx';
+import TroubleshootDeviceLimit from './partials/troubleshoot-device-limit.mdx';
+import TroubleshootLicenseIssues from './partials/troubleshoot-license-issues.mdx';
+import TroubleshootKeyServer from './partials/troubleshoot-key-server.mdx';
+import TroubleshootWithdrawnRelease from './partials/troubleshoot-withdrawn-release.mdx';
+
+# Arraykonfiguration
+
+Unraid's storage system combines flexibility with data protection through its %%array|array%% and %%cache|cache%% architecture. The %%array|array%% manages your primary storage with optional %%parity|parity%% protection, while cache pools accelerate performance.
+
+Im Folgenden sind einige wichtige Prinzipien der Array-Konfiguration aufgeführt:
+
+<details>
+  <summary><strong>Always use your largest drive(s) for parity.</strong></summary>
+
+  When you add more disks to your %%array|array%% later, remember that you can't use a data disk that's larger than your %%parity disks|parity-drives%%. It's a good idea to buy the biggest hard drive for your %%parity disks|parity-drives%% at the start. This way, you won't be limited by smaller sizes when expanding later.
+
+  If you use two %%parity disks|parity-drives%%, they can be different sizes. However, keep in mind that no disk in your %%array|array%% can be larger than the smallest %%parity disks|parity-drives%% you have.
+</details>
+
+<details>
+  <summary><strong>Do not use SSDs in the array - save them for pools or unassigned devices.</strong></summary>
+
+  Unraid does not support TRIM or Discard operations for SSDs in the main array. Over time, this will cause SSD performance to degrade if they are used as array members. For best results, use SSDs in %%cache pools|cache-pool%% or as unassigned devices, where these features are supported and long-term performance is maintained. Most modern SSDs, including NVMe, work well in these roles.
+</details>
+
+<details>
+  <summary><strong>Using a cache will improve array write performance.</strong></summary>
+
+  Instead of writing directly to the main storage, data is first sent to a dedicated disk or a group of disks. This data is then moved to the main storage at scheduled times, usually once a day at 3:40 AM. The great thing is that data saved to the %%cache|cache%% still appears through your %%user shares|user-share%%, so you don't have to change how you access your files.
+</details>
+
+<details>
+  <summary><strong>Creating a cache pool helps keep your cached data safe.</strong></summary>
+
+  Using only one cache device puts your cached data at risk until it is moved to the main array. To protect your data at all times, use multiple devices configured as a %%cache pool|cache-pool%%. This setup provides redundancy for cached data, reducing the chance of data loss due to a cache device failure.
+</details>
+
+<details>
+  <summary><strong>SSD cache devices are great for apps and virtual machines.</strong></summary>
+
+  Using SSDs helps applications and virtual machines (VMs) run faster because they can access data more quickly. SSDs work well in a %%cache pool|cache-pool%%, giving you an excellent mix of speed, efficiency, and data security.
+</details>
+
+<details>
+  <summary><strong>Encryption is turned off by default.</strong></summary>
+
+  If you want to use encryption on your system, you must reformat the disk with an encrypted file system type—this process erases all existing data on the drive. Before enabling encryption, move your data off the disk, change the file system to an encrypted option, format the disk, and then move your data back. For details, see [How to encrypt a drive in Unraid](../../system-administration/secure-your-server/securing-your-data.mdx#how-to-encrypt-a-drive-in-unraid).
+
+  Bedenken Sie, dass die Verwendung von Verschlüsselung die Wiederherstellung von Daten erschweren kann, wenn etwas schief läuft. Verwenden Sie sie daher nur, wenn Sie sie wirklich benötigen.
+</details>
+
+:::info[Disk Erkennung und Anschlusserkennung]
+
+Unraid identifiziert Festplatten anhand ihrer Seriennummern und Größen, nicht der spezifischen SATA-Ports, an die sie angeschlossen sind. Das bedeutet, dass Sie Laufwerke zwischen verschiedenen SATA-Ports wechseln können, ohne ihre Zuordnungen in Unraid zu beeinflussen. Diese Funktion ist besonders nützlich zur Fehlerbehebung bei Hardware-Problemen, wie das Finden eines fehlerhaften Ports oder den Austausch unzuverlässiger Strom- oder SATA-Kabel.
+
+:::
+
+:::caution
+
+Ihr Array wird nicht gestartet, wenn Sie mehr Geräte zuweisen oder anschließen, als Ihr Lizenzschlüssel erlaubt.
+
+:::
+
+## Array starten/stoppen
+
+Wenn Ihr System hochfährt, schaltet es normalerweise das Array automatisch ein. Wenn Sie jedoch kürzlich die Festplattenkonfiguration geändert haben, etwa durch das Hinzufügen einer neuen Festplatte, bleibt das Array ausgeschaltet, damit Sie Ihre Konfiguration überprüfen können.
+
+:::caution
+
+Denken Sie daran, dass Sie das Array zuerst stoppen müssen, um Anpassungen vorzunehmen. Wenn Sie es stoppen, werden alle Docker-Container und Netzfreigaben vollständig gestoppt, VMs heruntergefahren oder in den Ruhezustand versetzt, und Ihre Speichergeräte werden ausgehängt, sodass Ihre Daten und Anwendungen erst wieder zugänglich sind, wenn Sie das Array neu starten.
+
+:::
+
+So starten oder stoppen Sie das Array:
+
+1. Klicken Sie auf die Registerkarte **Haupt**.
+2. Navigieren Sie zum Abschnitt **Array-Betrieb**.
+3. Klicken Sie auf **Starten** oder **Anhalten**. Möglicherweise müssen Sie das Kontrollkästchen "Ja, ich möchte das tun" aktivieren, bevor Sie fortfahren.
+
+---
+
+## Array-Betrieb
+
+Unraid bietet verschiedene Wartungs- und Konfigurationsoptionen für Ihre Speicherarray. Wichtige Operationen umfassen:
+
+import DocCardList from '@theme/DocCardList';
+
+<DocCardList
+  items={[
+  { type: 'link', href: '#adding-disks', label: 'Festplatten hinzufügen', description: 'Speicherkapazität erweitern' },
+  { type: 'link', href: '#replacing-disks', label: 'Festplatten ersetzen', description: 'Fehlerhafte Laufwerke aufrüsten oder austauschen' },
+  { type: 'link', href: '#removing-disks', label: 'Festplatten entfernen', description: 'Stilllegen oder Array-Größe reduzieren' },
+  { type: 'link', href: '#checking-array-devices', label: 'Array-Geräte überprüfen', description: 'SMART-Daten und Diagnosen überwachen' },
+  { type: 'link', href: '#spinning-disks-down-or-up', label: 'Festplatten herunter- oder hochfahren', description: 'Festplatten-Spin-up/-down verwalten' },
+  { type: 'link', href: '#reset-the-array-configuration', label: 'Array-Konfiguration zurücksetzen', description: 'Array-Struktur neu aufbauen' }
+  ]}
+/>
+
+---
+
+### Festplatten hinzufügen
+
+#### Neue Festplatten einrichten
+
+1. Gehen Sie zu ***Main → Array Devices*** in der Benutzeroberfläche.
+2. Wählen Sie den Steckplatz, an dem Sie die Festplatte hinzufügen möchten, und wählen Sie die Festplatte aus der Dropdown-Liste.
+3. Standardmäßig werden neue Array-Laufwerke mit %%XFS|xfs%% formatiert. Wenn Sie statt %%ZFS|zfs%% oder %%BTRFS|btrfs%% verwenden möchten, wählen Sie Ihr bevorzugtes Dateisystem aus dem Dropdown-Menü aus.
+
+:::tip[Hot-Swap Funktion]
+
+Wenn Sie moderne Unraid-kompatible Hardware verwenden, können Sie Laufwerke ohne Abschaltung des Servers austauschen. Diese Funktion, als Hot-Swap bekannt, ist seit Beginn in LimeTech-Servern verfügbar.
+
+:::
+
+#### Clear vs. Pre-Clear
+
+Unraid verlangt, dass Festplatten in einem gelöschten Zustand sind - vollständig mit Nullen gefüllt und mit einer speziellen Signatur versehen - bevor sie einem paargeschützten Array hinzugefügt werden. Dieser Prozess sichert die Integrität der Parität und hält das Array während der Festplattenvorbereitung online.
+
+Clearance is mandatory when adding a data disk to a %%parity|parity%%-protected array. If you are adding a %%parity disk|parity-drives%% or working with an array that does not use %%parity|parity%%, clearance is not required.
+
+Der integrierte Löschvorgang schreibt Nullen auf die Festplatte im Hintergrund, sodass das Array verfügbar bleibt. Sobald der Vorgang abgeschlossen ist, muss die Festplatte formatiert werden, bevor sie verwendet werden kann. Diese Methode ist effizient, erfordert keine Drittanbieter-Tools und ist ideal für schnelle Erweiterungen.
+
+Für einen gründlicheren Ansatz führt der Pre-Clear-Vorgang – erhältlich über Plugins wie [Unassigned Devices Preclear](https://unraid.net/community/apps?q=unassigned+devices#r:~:text=enable%20destructive%20mode.-,Unassigned%20Devices%20Preclear,-dlandon) – einen Vorleseprozess durch, um nach fehlerhaften Sektoren zu suchen, die Festplatte mit Nullen zu füllen und dann die Integrität mit einem Nachlesevorgang zu überprüfen. Dieser zusätzliche Schritt hilft, frühe Laufwerksfehler zu erkennen, dauert jedoch erheblich länger und erfordert die manuelle Installation von Plugins.
+
+**Faustregel:** Verwenden Sie den integrierten Löschvorgang für schnelle Ergänzungen zu Ihrem Array oder wählen Sie Pre-Clear, wenn Sie umfangreiche Tests der Festplattengesundheit durchführen möchten, bevor Sie eine Festplatte in Betrieb nehmen.
+
+<h4>Clear vs. Pre-Clear Vergleich</h4>
+
+<div style={{ margin: 'auto', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+  |                              | Löschen                                   | Pre-Clear                                                |
+  | ---------------------------- | ----------------------------------------- | -------------------------------------------------------- |
+  | **Zweck**                    | Gewährleistet grundlegende Kompatibilität | Testet das Laufwerk und bereitet es zur Nutzung vor      |
+  | **Geschwindigkeit**          | Funktioniert schnell                      | Viel langsamerer Vorgang                                 |
+  | **Auswirkung auf das Array** | Läuft im Hintergrund                      | Erfordert die Entfernung der Festplatte aus dem Gebrauch |
+  | **Am besten geeignet für**   | Ideal für schnelle Erweiterungen          | Vorteilhaft für die Überprüfung neuer Festplatten        |
+</div>
+
+**Clear** bereitet eine Festplatte schnell zur Nutzung vor, macht sie mit Ihrem System kompatibel und ermöglicht es Ihnen, Speicher in wenigen Stunden hinzuzufügen.
+
+**Pre-Clear** dauert länger, bietet aber einen gründlichen Test und stellt sicher, dass eine neue Festplatte zuverlässig ist, bevor sie Teil Ihres Arrays wird.
+
+:::caution[Critical Hinweis]
+
+Vermeiden Sie es, eine vorgeklärte Festplatte zu formatieren, bevor Sie sie dem Array hinzufügen, da dies die Clearance-Signatur entfernt.
+
+:::
+
+#### Daten-Festplatten hinzufügen
+
+Das Hinzufügen von Datenlaufwerken ist eine großartige Möglichkeit, den Speicherplatz Ihres Unraid-Arrays zu erhöhen. Durch das Hinzufügen weiterer Festplatten können Sie mehr Dateien, Anwendungen und Backups speichern und dennoch Ihre Daten schützen.
+
+:::important[Important Hinweis:]
+
+Beim Hinzufügen einer neuen Datenfestplatte muss diese die gleiche Größe oder kleiner sein als Ihre aktuellen %%parity disks|parity-drives%%. Wenn Sie eine größere Festplatte verwenden möchten, müssen Sie zuerst die %%parity disks|parity-drives%% mit der größeren ersetzen und dann die alten %%parity disks|parity-drives%% als Datenfestplatte verwenden.
+
+:::
+
+<details>
+  <summary><strong>So fügen Sie eine Datenfestplatte hinzu</strong></summary>
+
+  ```mdx-code-block
+
+  <Tabs>
+    <TabItem value="standard" label="Standard addition (Parity-protected)" default>
+      <AddDataDiskParityProtected />
+    </TabItem>
+
+    <TabItem value="no-parity" label="Addition without parity">
+      <AddDataDiskNoParity />
+    </TabItem>
+  </Tabs>
+  ```
+</details>
+
+#### Paritätsfestplatten hinzufügen
+
+%%Parity disks|parity-drives%% sind eine nützliche Funktion, die eine zusätzliche Schutzschicht für Ihre Daten bietet. Sie ermöglichen Ihrem Speichersystem, Informationen wiederherzustellen, wenn eine Festplatte ausfällt. Die Verwendung von %%parity disks|parity-drives%% ist optional, wird jedoch dringend empfohlen, um Ihre Daten sicher zu halten.
+
+:::important\[Requirements]
+
+- **Einzelparität:** Die Festplatte muss mindestens so groß sein wie Ihre größte Datenfestplatte.
+- **Dual Parity:** Beide %%parity disks|parity-drives%% müssen auch mindestens die Größe Ihrer größten Datenfestplatte haben, können jedoch unterschiedliche Größen haben.
+
+:::
+
+Das Hinzufügen einer %%parity disk|parity-drives%% ist ähnlich wie das Hinzufügen einer Datenfestplatte, aber es gibt einen wichtigen Schritt zu beachten:
+
+1. Nach der Auswahl der %%parity disk|parity-drives%% und dem Start Ihres Speicher-Arrays beginnt ein Prozess namens **Paritätsberechnung**.
+2. Während dieser Prozess läuft, können Sie weiterhin auf Ihre Dateien zugreifen. Das System könnte jedoch etwas langsamer laufen, da es daran arbeitet, die Parität zu berechnen.
+
+<details>
+  <summary><strong>In-depth: What is parity and why does it matter?</strong> - Click to expand/collapse</summary>
+
+  %%Parity|parity%% in Unraid protects your data by ensuring that you can recover from a drive failure. With the use of a %%parity disk|parity-drives%%, any single missing disk can be reconstructed by combining the information from all other data drives along with the %%parity|parity%% data.
+
+  Unraid verwendet diese Echtzeit-Parität für zwei primäre Zwecke:
+
+  - Daten wiederherstellen, wenn ein Laufwerk ausfällt
+  - Fehler korrigieren, wenn ein defekter Sektor gefunden wird
+
+  Diese Funktion ermöglicht es Ihnen, Ihre Daten sicher zu schützen, auch wenn Festplatten im Laufe der Zeit ausfallen werden.
+</details>
+
+<details>
+  <summary><strong>In-depth: How does Unraid parity work?</strong> - Click to expand/collapse</summary>
+
+  Unraid works with a special bit called the *parity bit*, which is stored for each bit position across all data disks and is managed by a dedicated %%parity disk|parity-drives%%. The %%parity|parity%% is calculated such that the total number of bits in each position across all disks (including the %%parity disk|parity-drives%%) is always an even number, a process known as even parity.
+
+  Hier ist die Aufschlüsselung:
+
+  - Unraid verwendet die XOR (exklusive ODER) Operation für diese Berechnung.
+  - Zum Beispiel, wenn Sie vier Laufwerke haben und deren 57. Bits sind 1, 1, 1, 1, dann ist das Paritätsbit für diese Position 0 (weil 1 + 1 + 1 + 1 + 0 = gerade).
+  - Wenn die 57. Bits jedoch 1, 0, 0, 0 sind, wird die %%parity|parity%% für diese Position 1 sein (um sicherzustellen, dass die Summe gerade bleibt).
+
+  When adding a new drive, Unraid first clears it by writing zeros to all bits. This allows for quick inclusion into the protected array since writing zeros does not interfere with the current parity calculations.
+</details>
+
+<details>
+  <summary><strong>In-depth: How is data reconstructed using parity?</strong> - Click to expand/collapse</summary>
+
+  Unraid kann ein fehlendes Laufwerk rekonstruieren oder einen defekten Sektor mit folgenden Schritten reparieren:
+
+  - Es liest alle verbleibenden Laufwerke, einschließlich der %%parity disk|parity-drives%%.
+  - Er wendet die gerade %%parity|parity%% an, um die fehlenden Daten zu rekonstruieren.
+
+  Zum Beispiel, wenn Laufwerk 2 ausfällt:
+
+  - Wenn die zugehörigen Bits 1, 1, 1 (zusätzlich zur %%parity|parity%%) sind, berechnet Unraid: 1 + x + 1 + 1 + 0 = gerade. Hier muss x 1 sein, um eine gerade Summe zu halten.
+  - Wenn die Bits 1, x, 0, 0, 1 = gerade anzeigen, wird x 0 sein.
+
+  This %%parity|parity%% feature allows Unraid to "simulate" the missing disk. You can continue using the array as if the drive were still functional. Once you install a new drive in the failed slot, Unraid will recreate all the missing data based on the current state of %%parity|parity%% and the other disks.
+
+  To ensure ongoing protection and effective recovery, it's important to run regular %%parity checks|parity-check%%.
+</details>
+
+<details>
+  <summary><strong>How big does my parity disk need to be?</strong> - Click to expand/collapse</summary>
+
+  Your %%parity disk|parity-drives%% must be **equal to or larger than your largest data disk**. For instance:
+
+  - Wenn Ihre größte Datenfestplatte 10TB groß ist, sollte Ihre %%parity disk|parity-drives%% mindestens 10TB groß sein.
+  - Sie können verschiedene andere Datenfestplattengrößen frei verwenden, solange keine die Größe der %%parity disk|parity-drives%% übersteigt.
+</details>
+
+<details>
+  <summary><strong>In-depth: How does parity affect write performance?</strong> - Click to expand/collapse</summary>
+
+  Writing to a %%parity|parity%%-protected array involves four disk operations for each write: reading data, reading %%parity|parity%%, writing data, and writing %%parity|parity%%. This process requires a full rotation from each affected drive, so the overall write speed is limited by the slowest drive involved in the operation.
+
+  Adding a faster %%parity disk|parity-drives%% won't necessarily improve write speeds unless you're writing to multiple slow data disks simultaneously, allowing the %%parity disk|parity-drives%% to handle the load. Typically, the write speed is constrained by the slowest data drive being written to.
+</details>
+
+<details>
+  <summary><strong>In-depth: How does Dual Parity work?</strong> - Click to expand/collapse</summary>
+
+  Dual %%parity|parity%% enables recovery from **two simultaneous disk failures**. In Unraid, the second %%parity disk|parity-drives%% doesn't simply mirror the first. Instead:
+
+  - **Parity 1:** Employs standard XOR (even) %%parity|parity%% calculations.
+  - **Parität 2:** Nutzt einen komplexeren Algorithmus (Galois-Feld, anstatt Reed-Solomon wie in traditionellen %%RAID 6|raid6%%), was es Unraid ermöglicht, von jedem zwei fehlenden Laufwerken gleichzeitig wiederherzustellen. Diese Funktion ist bedeutend für größere Arrays, bei denen das Risiko mehrerer Ausfälle steigt. Dual %%parity|parity%% erhöht die Belastbarkeit erheblich ohne den zusätzlichen Aufwand der gespiegelten Redundanz.
+</details>
+
+:::caution\[Remember]
+
+Wenn Sie ein neues Datenspeichersystem einrichten, fügen Sie zuerst Ihre Datenlaufwerke hinzu und stellen Sie sicher, dass sie alle ein kompatibles Dateisystem verwenden. **Nach** dem Einsetzen Ihrer Datenlaufwerke können Sie ein %%parity disk|parity-drives%% hinzufügen, um gegen Laufwerksausfälle zu schützen.
+
+Sobald Ihre %%parity disk|parity-drives%% hinzugefügt ist, denken Sie daran, dass jede neue Festplatte, die Sie in das Array integrieren möchten, gelöscht (genullt) werden muss, bevor sie integriert wird. Dies stellt sicher, dass die %%parity|parity%% gültig bleibt und Ihre Daten weiterhin schützt.
+
+:::
+
+#### Paritätslaufwerke aktualisieren
+
+You can upgrade your %%parity disk|parity-drives%% device(s) to a larger one(s) to use larger-sized disks in the array or add an additional %%parity disk|parity-drives%%.
+
+:::caution
+
+Wenn Sie vorhaben, die folgenden Schritte auszuführen und nur eine %%parity disk|parity-drives%% haben, denken Sie daran:
+
+- Your data will be unprotected until the %%parity|parity%% rebuild is complete. If a data drive fails during this time, you could lose the information on that drive.
+- Wenn bereits eine Festplatte ausgefallen ist, verhindert das fortfahren mit diesen Schritten, dass Sie diese Festplatte wiederherstellen können. In diesem Fall sollten Sie das **Parity Swap**-Verfahren verwenden.
+
+:::
+
+So entfernen Sie ein Paritätslaufwerk:
+
+1. **Stoppen Sie das Array:** Verwenden Sie das %%WebGUI|web-gui%%, um das Array zu stoppen.
+
+:::tip
+
+Wenn Ihr Server Hot-Swap unterstützt, müssen Sie nicht herunterfahren, um Festplatten zu wechseln. Sie können die Schritte 2 und 4 sicher überspringen.
+
+:::
+
+2. **Power down the server:** Turn off your server to safely make hardware changes.
+3. **Install the new %%parity disk|parity-drives%%:** Place the new, larger %%parity disk|parity-drives%% into your server.
+4. **Power up the server:** Turn the server back on.
+5. **Assign the new disk:** Go to the parity slot in your settings and assign the new disk, replacing the old one.
+6. **Start the array:** Use the %%WebGUI|web-gui%% to start the array again.
+
+Once the array is back up, Unraid will start building %%parity|parity%% on the new disk. You can still access your data during this time, but keep in mind that it might be a bit slower until the process is done. Once the %%parity|parity%% build is complete, your data is protected again!
+
+:::important[Important Tipps]
+
+- **Keep the old disk:** Don't remove the old %%parity disk|parity-drives%% until the new %%parity|parity%% build finishes. If a data disk fails during the upgrade, having the old disk might help you recover your data.
+
+- **Dual parity users:** If you have two %%parity disks|parity-drives%%, upgrade one at a time for added safety.
+
+- **Repurpose the old disk:** After the upgrade, you can use the old %%parity disk|parity-drives%% as a data disk if it still meets your storage needs.
+
+:::
+
+---
+
+### Laufwerke ersetzen
+
+Möglicherweise müssen Sie aus zwei Hauptgründen Laufwerke in Ihrem Array ersetzen:
+
+1. [**Kapazitätsupgrade**](#upgrading-capacity): Ihr Speicherplatz ist fast voll, und Sie möchten größere Festplatten verwenden.
+2. [**Ausfall oder Stilllegung**](#replacing-faileddisabled-disks): Eine Festplatte ist ausgefallen oder wird nicht mehr unterstützt.
+
+Obwohl der Prozess zum Austausch von Disks in beiden Fällen ähnlich ist, sei vorsichtig, da es ein Risiko von Datenverlusten während des Austauschs gibt. Paritätsgeräte helfen, Ihre Daten zu schützen; ein Paritätsgerät kann gegen den Ausfall eines einzelnen Laufwerks sichern, während zwei Geräte gegen Datenverlust schützen können, wenn zwei Laufwerke ausfallen. Seien Sie sich des Schutzniveaus während der Disk-Ersetzungen immer bewusst.
+
+#### Kapazität erweitern
+
+Wenn Sie Ihr Datenlaufwerk gegen ein größeres austauschen, beachten Sie Folgendes:
+
+- **Nicht-montierbare Disks:** Beheben Sie alle nicht montierbaren Disks vor dem Upgrade. Ein nicht montierbarer Status wird während des Wiederaufbaus nicht behoben.
+
+- **Risiken bei Einzelparität:** Wenn Sie eine Einzelparität haben, besteht das Risiko eines Datenverlusts, wenn ein anderes Laufwerk während des Upgrades ausfällt. Suchen Sie Rat in Foren, falls dies geschieht.
+
+- **Schutz durch Dualparität:** Mit Dualparität sind Sie sicher vor Datenverlust, wenn ein Laufwerk ausfällt, während ein einzelnes Laufwerk aufgerüstet wird. Sie können auch zwei Laufwerke gleichzeitig aufrüsten, beachten Sie jedoch, dass dies das Risiko erhöht, da Sie keinen Schutz vor einem weiteren Laufwerksausfall haben.
+
+- **Sichern Sie die alte Disk:** Behalten Sie die Originaldisk solange intakt, bis das Upgrade erfolgreich bestätigt wurde. Dies bietet Ihnen eine Rückfalloption, falls etwas schiefgeht.
+
+:::warning
+
+Der Austausch von Festplatten birgt immer ein gewisses Risiko. Fällt während des Upgrades eine weitere Festplatte aus, insbesondere bei nur einer Parität, kann es zu Datenverlust kommen. Überprüfen Sie immer den Zustand Ihrer Festplatten, bevor Sie den Prozess starten, und stellen Sie sicher, dass Sie die alte Festplatte intakt lassen, bis das Upgrade abgeschlossen und Ihre Daten als sicher bestätigt sind.
+
+:::
+
+Um eine vorhandene Datenfestplatte aufzurüsten:
+
+1. **Run a parity check:** First, ensure the integrity of your data by running a %%parity check|parity-check%%. Go to [***Tools → Parity Check***](#checking-array-devices) and make sure there are **zero errors**. If parity isn't valid, rebuilding the disk will corrupt its file system.
+
+2. **Stoppen Sie das Array:** Als Nächstes sollten Sie das Array stoppen. Navigieren Sie zu ***Main → Array Operation*** und wählen Sie **Stop**.
+
+3. **Weisen Sie die Zielplatte zu:** Sobald das Array gestoppt ist, suchen Sie die Festplatte, die Sie ersetzen möchten. Entfernen Sie sie aus ihrem Steckplatz in ***Main → Array Devices***.
+
+4. **Starten Sie das Array:** Starten Sie nun das Array erneut. Unraid wird die fehlende Festplatte mithilfe der vorhandenen Paritäts- und Datenträger emulieren. Sie haben zwei Modi zur Auswahl:
+   - **%%Wartungsmodus|maintenance-mode%%:** Dieser Modus verhindert jegliche Schreibvorgänge auf die %%emulierte Festplatte|emulated-disk%%.
+   - **Normaler Modus:** Wenn Sie Lese-/Schreibzugriff auf die %%emulierte Festplatte|emulated-disk%% benötigen, wählen Sie diese Option.
+
+:::note
+
+Das Starten des Arrays im Normalmodus ist an diesem Punkt optional. Sie können es verwenden, um zu überprüfen, ob die emulierte Festplatte gemountet wird und die Daten korrekt aussehen, bevor Sie fortfahren, aber es ist nicht erforderlich für den Upgrade-Prozess.
+
+:::
+
+5. **Stoppen Sie das Array erneut:** Das Array sollte nun anzeigen, dass die nicht zugeordnete Festplatte fehlgeschlagen ist. Stoppen Sie das Array noch einmal.
+
+6. **Weisen Sie die Ersatzplatte zu:** Setzen Sie Ihre neue, größere Festplatte in den freien Steckplatz im Array ein.
+
+7. **Starten Sie das Array zum Wiederaufbau:** Starten Sie abschließend das Array erneut. Unraid wird nun den Inhalt des %%emulierten Laufwerks|emulated-disk%% auf die neue Festplatte wiederherstellen. Das Dateisystem passt sich automatisch an, um die volle Kapazität der größeren Festplatte zu nutzen.
+
+#### Fehlerhafte/deaktivierte Festplatten ersetzen
+
+<details>
+  <summary><strong>What is a failed/disabled disk?</strong></summary>
+
+  A failed or disabled disk is one that Unraid has stopped using for writing data, usually because it encountered a write error. Keep in mind these don't always mean the drive itself is broken; sometimes, it might be due to bad connections, power issues, or just a temporary glitch.
+
+  Einige Anzeichen hierfür sind:
+
+  <div class="text--center">
+    ![Red "X" indicates write error](/img/Diskfailureindicator.png)
+    <p class="caption-center">*This red "X" shows which disk needs replacement.*</p>
+  </div>
+
+  <br />
+
+  <div class="text--center">
+    ![Failure notification alert](/img/Diskfailurenotification.png)
+    <p class="caption-center">*Keep an eye out for these alerts.*</p>
+  </div>
+
+  <br />
+
+  <details>
+    <summary><strong>Klicken Sie, um zu sehen, wie verschiedene Paritätskonfigurationen mit Ausfällen umgehen</strong></summary>
+
+    | Ausfallszenario | Keine Parität | Einzelparität | Doppelte Parität |
+    | --------------- | ------------- | ------------- | ---------------- |
+
+    \| **1 Disk Failure**  | Data Lost | Rebuildable   | Rebuildable |
+    \| **2 Disk Failures** | Data Lost | Data Lost     | Rebuildable |
+
+    :::tip[Tips for Safe Rebuilds]
+
+    - **For Single Parity:** You can only replace one disk at a time. If another disk fails during the rebuild, you could lose data.
+    - **For Dual Parity:** You can replace one or two disks at the same time, but be cautious if more than two disks fail.
+      :::
+
+    :::important
+    If you experience a situation where **more disks fail than your parity can protect:**
+
+    1. **Stoppen Sie sofort alle Schreibvorgänge**, um weiteren Datenverlust zu verhindern.
+    2. Suchen Sie Hilfe, indem Sie Ihr Problem im [Unraid-Forum](https://forums.unraid.net/) zusammen mit Diagnosedaten posten.
+    3. **Do not attempt a rebuild** until you've received advice - focus on salvaging your data first.
+       :::
+  </details>
+</details>
+
+<details>
+  <summary><strong>Wie man das Problem diagnostiziert</strong></summary>
+
+  Um das Problem zu diagnostizieren, beginnen Sie mit der Überprüfung des %%syslog|syslog%% und der %%SMART-Berichte|smart-report%%:
+
+  - Wenn das %%syslog|syslog%% zeigt, dass das Laufwerk zurückgesetzt wurde, könnte es ein Problem mit der Verbindung oder den Kabeln geben.
+  - %%SMART reports|smart-report%% can help assess the drive's health, but the best way to check is by running a %%SMART|smart%% extended test. If it completes without errors, the drive is likely fine.
+  - Wenn Sie %%CRC-Fehler|crc-errors%% sehen, deutet dies normalerweise auf Probleme mit der Verkabelung hin. Beobachten Sie diese Fehler, da sie sich im Laufe der Zeit ansammeln und nicht zurückgesetzt werden.
+
+  :::tip
+  To stay informed about drive issues, [enable notifications](../../getting-started/set-up-unraid/customize-unraid-settings.mdx#notification-settings) in Unraid. This way, you are alerted right away if something goes wrong, reducing the risk to your data.
+  :::
+</details>
+
+<details>
+  <summary><strong>What is emulation?</strong></summary>
+
+  When a drive is disabled, Unraid will use its parity and other working drives to emulate the failed drive. This means your system continues to operate, and you can still access the data stored on the %%emulated drive|emulated-disk%%:
+
+  - Unraid wird nicht mehr auf das physische Laufwerk schreiben und alle Updates werden stattdessen in der Parität und der Emulation gespeichert.
+  - Bevor Sie das ausgefallene Laufwerk ersetzen, können Sie Daten vom %%emulierten Laufwerk|emulated-disk%% überprüfen und wiederherstellen, was das physische Laufwerk intakt für eine potenzielle Wiederherstellung hält.
+  - Falls Sie nicht auf das %%emulierte Laufwerk|emulated-disk%% zugreifen können, muss das Dateisystem vor jedem Neuaufbau repariert werden, da das Reparieren des Dateisystems schneller und effektiver als ein Neuaufbau ist.
+</details>
+
+<details>
+  <summary><strong>Vorbereitung auf den Festplattenersatz</strong></summary>
+
+  When you need to replace a drive, make sure the new drive is at least as large as the failed drive but not larger than your smallest parity drive. If you have to use a larger drive, follow the **Parity Swap** procedure.
+
+  While it's not mandatory, many users choose to pre-clear new drives to test them and help prevent early failure. You can do this with the Preclear plugin, a %%SMART|smart%% extended test, or manufacturer tools.
+
+  :::caution
+  If you try to rebuild using an unmountable %%emulated drive|emulated-disk%%, the new drive will also become unmountable. Always repair the file system before attempting a rebuild.
+  :::
+</details>
+
+If a disk in your Unraid system has failed or is disabled, don't worry! You can replace it and recover your data. Just follow these simple steps. Remember, you need a new disk that is the same size or larger than the one you're replacing, but it can't be larger than your smallest %%parity disk|parity-drives%%.
+
+:::important
+
+Bevor Sie beginnen, stellen Sie sicher, dass keine Festplattenfehler oder Warnungen vorliegen. Unraid muss in der Lage sein, alle verbleibenden Festplatten ohne Probleme zu lesen, damit der Wiederaufbau korrekt funktioniert. Wenn eine andere Festplatte ausfällt, könnte dies zu Datenverlust führen.
+
+:::
+
+Um eine Festplatte zu ersetzen und neu zu bauen:
+
+1. **Stoppen Sie die Array:**
+
+   - Melden Sie sich beim Unraid %%WebGUI|web-gui%% (der Webschnittstelle) an.
+   - Finden Sie die Option, das Array zu stoppen. Dies ist notwendig, bevor Sie irgendwelche Festplatten wechseln können.
+
+:::tip
+
+Wenn Ihr Server einen Hot-Swap unterstützt, können Sie den nächsten Schritt überspringen und nur das Array stoppen.
+
+:::
+
+2. **Schalten Sie Ihren Server aus** (nur wenn **kein** Hot-Swap genutzt wird):
+   - Falls Ihr Server Hot-Swap nicht unterstützt, müssen Sie ihn komplett herunterfahren.
+
+3. **Ersetzen Sie die ausgefallene Festplatte:**
+   - Entfernen Sie die alte, ausgefallene Festplatte aus Ihrem Server.
+   - Insert the new disk. Just remember, it has to be at least the same size as the old disk but no bigger than your smallest %%parity disk|parity-drives%%.
+
+4. **Schalten Sie den Server ein** (falls Sie ihn heruntergefahren haben):
+   - Schalten Sie Ihren Server wieder ein, wenn Sie ihn heruntergefahren haben.
+
+5. **Weisen Sie die neue Festplatte zu:**
+   - Gehen Sie zurück zur Unraid %%WebGUI|web-gui%%.
+   - Finden Sie den Slot für die ausgefallene Festplatte und weisen Sie Ihre neue Festplatte diesem Slot zu.
+
+6. **Bestätigen Sie Ihre Aktion:**
+   - Sie sehen ein Bestätigungsfenster. Markieren Sie das Kästchen mit der Aufschrift **Ja, ich möchte das tun** und bestätigen Sie.
+
+7. **(Optional) Wählen Sie %%Wartungsmodus|maintenance-mode%%:**
+   - Sie können den %%Wartungsmodus|maintenance-mode%% wählen, was den Wiederherstellungsprozess beschleunigen kann. Während dieser Zeit haben Sie jedoch keinen Zugriff auf das Array.
+   - Wenn Sie den %%Wartungsmodus|maintenance-mode%% wählen, klicken Sie sicher auf **Sync**, um den Neuaufbau zu starten.
+
+8. **Starten Sie den Neuaufbau:**
+   - Klicken Sie auf **Start**, um den Vorgang zu beginnen. Unraid wird Ihre Daten vom %%emulierten Laufwerk|emulated-disk%% auf die neue Festplatte kopieren.
+   - Falls Ihre neue Festplatte größer ist, wird Unraid den zusätzlichen Speicherplatz für Sie verwalten.
+
+:::warning
+
+Wenn Unraid Sie während des Wiederaufbaus auffordert, die neue Festplatte zu formatieren, **tun Sie es nicht**. Das Formatieren löscht alle Daten und macht eine Wiederherstellung unmöglich.
+
+:::
+
+<h4>Was Sie während des Neuaufbaus erwarten können</h4>
+
+- Das Array wird während der Wiederherstellung weiterhin verfügbar sein (es sei denn, Sie sind im %%Wartungsmodus|maintenance-mode%%), aber es könnte langsamer laufen.
+- Der Neuaufbau kann mehrere Stunden dauern, abhängig von Ihrer Festplattengröße und Systemnutzung.
+- Die neue Festplatte wird das gleiche Dateisystem wie das Original haben.
+- Wenn die alte Festplatte aufgrund von Dateisystemproblemen nicht einbindbar war, wird auch die neue Festplatte nicht einbindbar sein. Bitte lösen Sie alle Dateisystemprobleme, bevor Sie mit dem Wiederaufbau beginnen.
+
+:::note[Additional anmerkungen]
+
+- Der Neuaufbauprozess ändert nicht das Dateiformat der Festplatte; er stellt lediglich ihre vorherige Form wieder her.
+- Überprüfen Sie immer die Gesundheit jeder Festplatte, bevor Sie einen Neuaufbau starten, um potenzielle Probleme zu vermeiden.
+
+:::
+
+#### Paritätstausch
+
+```mdx-code-block
+
+<Tabs>
+  <TabItem value="what" label="What is parity swap?">
+    <ParitySwapWhat />
+  </TabItem>
+
+  <TabItem value="when" label="When to use parity swap?">
+    <ParitySwapWhen />
+  </TabItem>
+</Tabs>
+```
+
+<details>
+  <summary><strong>Beispielszenario</strong></summary>
+
+  Sie haben eine Unraid-Konfiguration mit einer **2 TB Paritätsfestplatte** und einer **1 TB Datenfestplatte** und möchten die 1 TB Festplatte durch eine **4 TB Festplatte** ersetzen.
+
+  First, assign the new 4TB drive as the parity drive, which will replace the 2TB drive. Then move the original 2TB drive to the data slot, and remove the 1TB drive entirely.
+
+  After these changes, you'll have a 4TB drive as your new parity, ensuring you can add future data drives up to 4TB. The 2TB drive will now hold your existing data, while the 1TB drive can be repurposed.
+
+  Dieser Tausch hält Ihre Daten sicher und Ihr Array geschützt, wodurch zukünftige Upgrades möglich werden.
+</details>
+
+:::important\[Prerequisites]
+
+- Bevor Sie beginnen, stellen Sie sicher, dass das zu ersetzende Datenlaufwerk deaktiviert ist. Wenn die Festplatte ausgefallen ist (zeigt einen roten Indikator), ist sie bereits deaktiviert. Wenn die Festplatte in Ordnung ist, Sie sie jedoch ersetzen möchten, weisen Sie das Laufwerk ab und starten Sie das Array einmal ohne es, um Unraid zu zwingen, es als deaktiviert zu markieren.
+- Wenn Ihre Ersatzdatenfestplatte nicht größer als Ihre Paritätsfestplatte ist, verwenden Sie das Standardverfahren [Ersetzen einer Datenfestplatte](#replacing-faileddisabled-disks).
+- Für den Austausch von Datenlaufwerken in einem Unraid-Array mit einer Festplatte, die größer ist als die aktuelle Paritätsfestplatte, ist dieses Verfahren erforderlich. Wenn Sie nur Ihre Paritätsfestplatte aufrüsten müssen, entfernen Sie einfach die alte Paritätsfestplatte, fügen Sie die neue hinzu und starten Sie das Array. Die Parität wird automatisch wiederhergestellt.
+
+:::
+
+:::warning\[Warnings]
+
+- Always verify the health of all drives using %%SMART reports|smart-report%% before starting a %%parity swap|parity-swap%%. Attempting this procedure with another failing or unhealthy disk increases the risk of data loss.
+- Beräumen Sie die neue Festplatte, falls möglich. Obwohl nicht erforderlich, reduziert das Bereinigen die Belastung der Festplatte und das Risiko eines Frühausfalls.
+- Verifizieren Sie vor Beginn die Gesundheit aller Laufwerke mithilfe der %%SMART-Berichte|smart-report%%, bevor Sie einen %%Paritätstausch|parity-swap%% durchführen. Wenn das Laufwerk ungesund oder fehlgeschlagen ist, steigen die Chancen eines Datenverlusts erheblich.
+
+:::
+
+Um einen Paritätstausch durchzuführen:
+
+:::note
+
+Wenn die zu ersetzende Festplatte bereits deaktiviert (ausgefallen) ist, müssen Sie möglicherweise die Schritte 1–4 nicht ausführen. Wenn Sie das neue Ersatzlaufwerk bereits installiert haben (z. B. nach dem Preclear), können Sie die Schritte 5–8 überspringen.
+
+:::
+
+1. :::
+2. **Weisen Sie das alte Datenlaufwerk nicht zu,** falls es noch zugewiesen ist. Wenn das Laufwerk zuvor gesund war, sehen Sie möglicherweise Fehlerbenachrichtigungen für eine fehlende Festplatte - dies wird erwartet.
+3. **Starten Sie das Array.** Wenn Sie aufgefordert werden, überprüfen Sie das Kästchen zur Bestätigung Ihrer Aktion. Das Datenlaufwerk sollte nun als "Nicht installiert" angezeigt werden.
+4. Das Datenlaufwerk sollte nun als "Nicht installiert" angezeigt werden.
+5. **Server herunterfahren.**
+
+   :::tip
+   If your system supports **hot-swap**, you do not need to power down to remove or install disks. Just make sure the array is stopped before making any hardware changes.
+   :::
+
+:::
+
+6. *(Optional)* **Remove the old drive.** You may wish to keep it installed for testing or reassignment.
+7. **Install the new drive.** Pre-clearing is strongly recommended, but formatting is not needed.
+8. **Power on the server.**
+9. **Stop the array** if it started automatically. If you see a message about retrying to unmount disk shares, disable Docker and/or VM services in Settings, reboot, and try again.
+10. **Unassign the parity drive.**
+11. **Assign the new drive to the parity slot.** You may receive error notifications - this is normal.
+12. **Assign the old %%parity drive|parity-drives%% to the data slot** of the drive being replaced. Both the parity and replacement data drives should now display blue status indicators.
+13. **Go to *Main → Array Operation.*** You should see a **Copy** button and a message stating "Copy will copy the parity information to the new %%parity disk|parity-drives%%."
+14. **Confirm and start the copy process.** Check the confirmation box and click **Copy**. The array will not be available during this operation.
+
+- Der Kopiervorgang kann viele Stunden dauern, je nach Festplattengröße. Wenn er abgeschlossen ist, wird das Array gestoppt und ist bereit für einen Datenwiederaufbau.
+
+15. Wenn die Fertigstellung der Array wird gestoppt und bereit für einen Daten-Neuaufbau sein.
+    - Bestätigen Sie Ihre Aktion, falls Sie dazu aufgefordert werden. Das Array ist nun gestartet, und die Daten werden auf der neuen Datenfestplatte rekonstruiert.
+    - Sie können das Array während des Neuaufbaus verwenden, sollten aber für beste Leistung die Nutzung einschränken.
+    - Der Neuaufbauprozess wird auch mehrere Stunden dauern.
+
+:::warning
+
+Formatieren Sie niemals ein Laufwerk während dieses Prozesses. Das Formatieren löscht alle Daten und aktualisiert die Parität, wodurch eine Wiederherstellung unmöglich wird.
+
+:::
+
+After completion, you will have a larger parity disk and a replaced data disk. Many users run a %%parity check|parity-check%% afterward for extra confidence, though this is optional.
+
+---
+
+### So entfernen Sie eine %%Paritätenfestplatte|parity-drives%%:
+
+Es kann eine Zeit kommen, in der Sie eine Festplatte aus Ihrem Unraid-Array entfernen möchten. Ob Sie Energie sparen, ein altes oder unzuverlässiges Laufwerk außer Betrieb nehmen oder Hardware für eine andere Nutzung umfunktionieren möchten, der Prozess ist relativ einfach.
+
+#### Entfernen von Paritätsplatten
+
+If you find that you no longer need the level of %%parity|parity%% protection in your setup, you can remove a %%parity disk|parity-drives%% whenever you want.
+
+To remove a %%parity drives|parity-drives%%:
+
+1. **Den Array stoppen:** Beginnen Sie mit dem Zugriff auf die WebGUI und stoppen Sie den Array.
+2. **Unassign the %%parity drives|parity-drives%%:** Locate the %%parity drives|parity-drives%% slot and set it to "Unassigned."
+3. **Start the array:** Finally, restart the array to commit the changes and successfully remove the %%parity drives|parity-drives%% from the configuration.
+
+:::warning
+
+Before you make any changes, please keep this in mind: If you already have any failed data drives in your array, removing a %%parity disk|parity-drives%% can decrease the number of failures Unraid can handle without risking data loss.
+
+- Mit doppelter Parität können Sie von einem einzelnen ausgefallenen Laufwerk wiederherstellen, aber beachten Sie, dass Sie einen weiteren Ausfall während des Wiederherstellungsprozesses nicht überleben werden.
+- Mit einfacher Parität verlieren Sie jegliche Redundanz, was bedeutet, dass zusätzliche Laufwerkausfälle zum Datenverlust führen können.
+
+:::
+
+#### Entfernen von Datenträgern
+
+Removing a data disk is a straightforward process, but it's important to remember that you'll need to perform a %%parity|parity%% sync afterwards. Until this sync is complete, there's a risk of data loss if another disk fails.
+
+Sie können zwischen zwei Methoden wählen, um einen Datenträger zu entfernen:
+
+1. **Standardmethode** - Empfohlen für die meisten Benutzer.
+2. **Paritätserhaltende Methode** - Geeignet für fortgeschrittene Benutzer, die die Parität während des Entfernens beibehalten möchten.
+
+```mdx-code-block
+
+<Tabs>
+  <TabItem value="standard" label="Standard method" default>
+    <RemoveDataDiskStandard />
+  </TabItem>
+
+  <TabItem value="parity-preserve" label="Parity-preserve method (Advanced)">
+    <RemoveDataDiskParityPreserve />
+  </TabItem>
+</Tabs>
+```
+
+---
+
+### Array-Geräte überprüfen
+
+Regularly checking your Unraid array is crucial for maintaining data integrity and identifying potential issues before they result in data loss. You can initiate a check using the **Check** button under ***Array Operations***. Depending on your array's configuration, this button allows you to conduct either a %%parity check|parity-check%% or a %%read check|read-check%%.
+
+<div style={{ margin: 'auto', maxWidth: '400px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+  ![Die Schaltfläche "Prüfen" ermöglicht Paritäts- und Leseprüfungen](/img/Check_button.PNG)
+</div>
+
+Der Einfachheit halber können Sie diese Überprüfungen so planen, dass sie in Intervallen, die Ihnen passen, automatisch ausgeführt werden, indem Sie zu ***Einstellungen → Zeitplanung*** navigieren. Es ist ratsam, automatisierte, nicht korrigierende Überprüfungen monatlich oder vierteljährlich durchzuführen, um die laufende Gesundheit Ihrer Daten sicherzustellen.
+
+#### Paritäts- & Leseprüfungen
+
+```mdx-code-block
+
+<Tabs>
+  <TabItem value="parity-check" label="Parity checks" default>
+    <ArrayCheckParity />
+  </TabItem>
+
+  <TabItem value="read-check" label="Read checks">
+    <ArrayCheckRead />
+  </TabItem>
+</Tabs>
+```
+
+#### Verlauf prüfen
+
+Whenever the system performs a %%parity check|parity-check%% or a %%read check|read-check%%, it keeps a record of what happened. You can view these details easily by clicking the **History** button found under ***Array Operations*** in the interface.
+
+Für diejenigen, die tiefer eintauchen wollen, werden alle diese Protokolle in einer Textdatei im `config` Verzeichnis Ihres Unraid-USB-Laufwerks gespeichert.
+
+---
+
+### Laufwerke herunter oder hoch drehen
+
+Unraid allows you to control the power states of your hard drives. You can easily %%spin them up or down|spin-state%%, and manage SSDs to be active or in standby. This helps save energy, extend the life of your drives, and reduce noise when the disks are not being used.
+
+<h4>Warum runter- oder hochdrehen?</h4>
+
+- **Hinunterdrehen:** Wenn Sie Laufwerke haben, die nicht oft benutzt werden, kann das Hinunterdrehen Energie sparen und ihre Lebensdauer verlängern.
+- **Hochdrehen:** Wenn Sie wissen, dass Sie bald Dateien benötigen, kann das Hochdrehen der Festplatten im Voraus die Wartezeiten verkürzen.
+
+<h4>Wie man Drehzustände kontrolliert</h4>
+
+Sie können die Drehzustände der Festplatten über den **Main**-Tab im WebGUI steuern:
+
+1. **Gehen Sie zum Main-Tab** und suchen Sie Ihre Array-Geräte
+2. **Finden Sie die Drehkontrolltasten** – jede Festplatte zeigt entweder an:
+   - Klicken Sie auf die 🔘-Schaltfläche, um **hochzudrehen**, wenn die Festplatte derzeit heruntergedreht ist.
+   - Klicken Sie auf die 🟢-Schaltfläche, um **runterzudrehen**, wenn die Festplatte derzeit dreht.
+3. **Klicken Sie auf die entsprechende Schaltfläche** für die gewünschte Aktion:
+   - Klicken Sie auf **Runterdrehen** 🟢, um eine inaktive Festplatte abzuschalten und Energie zu sparen.
+   - Klicken Sie auf **Hochdrehen** 🔘, um eine derzeit heruntergedrehte Festplatte hochzufahren.
+
+Denken Sie daran, dass eine Festplatte, die gerade zugegriffen wird (z. B. wenn Sie eine Datei öffnen), aktiv bleibt und eine Runterdreh-Anfrage ignoriert.
+
+Wenn eine Festplatte heruntergefahren ist, wird ihre Temperatur in der %%WebGUI|web-gui%% nicht angezeigt. Sobald jedoch eine Anwendung oder ein Benutzer darauf zugreift, wird sie automatisch hochgefahren.
+
+:::tip
+
+Verwenden Sie die Drehkontrollen, um Energie zu sparen und den Verschleiß Ihrer Laufwerke zu reduzieren. Denken Sie daran, dass Festplatten, die aktiv genutzt werden, eingeschaltet bleiben, bis alle Aufgaben abgeschlossen sind.
+
+:::
+
+---
+
+### Array-Konfiguration zurücksetzen
+
+Das Zurücksetzen Ihrer Array-Konfiguration ist ein wichtiger Schritt, der sorgfältig durchgeführt werden sollte. Dieser Prozess ist normalerweise erforderlich, wenn eine Festplatte entfernt, ein neues Array-Layout erstellt oder Festplattenzuweisungsprobleme behoben werden. Beachten Sie bitte, dass diese Aktion den Datenschutz und die Parität beeinflussen kann. Gehen Sie daher nur dann vor, wenn es wirklich nötig ist.
+
+Häufige Gründe, um Ihr Array zurückzusetzen, sind:
+
+- **Entfernen oder Ersetzen von Festplatten:** Wenn Sie Festplatten aus Ihrem Array entfernen oder austauschen müssen.
+- **Neubeginn:** Wenn Sie ein völlig neues Layout für Ihr Array erstellen wollen.
+- **Behebung von Zuordnungsfehlern:** Um Probleme bei der aktuellen Zuordnung von Festplatten zu korrigieren.
+- **Wiederherstellung von Konfigurationsproblemen:** Bei Herausforderungen mit Ihrer bestehenden Konfiguration.
+
+<div style={{ margin: 'auto', maxWidth: '650px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+  ![Das Zurücksetzen Ihrer Festplattenkonfiguration kann über die neue Konfigurationsseite erfolgen](/img/Newconfig.png)
+</div>
+
+Um Ihre Array-Konfiguration zurückzusetzen:
+
+1. Gehen Sie auf die **Werkzeuge**-Seite und klicken Sie auf **Neue Konfig**.
+2. Sie können einige der bestehenden Festplattenzuordnungen beibehalten, wenn Sie nur geringfügige Anpassungen vornehmen möchten. Dies kann Zeit sparen und die Wahrscheinlichkeit von Fehlern minimieren.
+3. Bestätigen Sie Ihre Wahl, indem Sie das Kästchen markieren und dann auf **Anwenden** klicken.
+4. Kehren Sie zum **Main** Tab zurück. Nach dem Anwenden der Änderungen wird Ihre Konfiguration zurückgesetzt.
+5. Nehmen Sie alle erforderlichen Änderungen an Ihrer Konfiguration vor, indem Sie Festplatten zuweisen oder freigeben, wie es angemessen ist.
+6. Starten Sie das Array im Normal- oder Wartungsmodus, um Ihre Updates abzuschließen.
+
+:::important
+
+- **Datenspeicherung:** Unraid wird versuchen, zuvor benutzte Laufwerke zu erkennen und Daten so weit wie möglich zu erhalten.
+- **Auswirkung auf die Parität:** Das Entfernen eines Datenträgers macht die Parität immer ungültig, es sei denn, dieser Datenträger wurde vor der Entfernung genullt.
+- **Neusortierung von Festplatten:** Das Ändern der Reihenfolge von Festplatten beeinflusst die Parität1 nicht, kann jedoch die Parität2 ungültig machen.
+
+:::
+
+:::caution
+
+Wenn Sie die **Start**-Taste sehen, gibt es ein Kontrollkästchen, das mit **Parität ist gültig** beschriftet ist. Markieren Sie diese Box nur, wenn Sie sicher sind, dass sie korrekt ist oder wenn Ihnen dies von einem erfahrenen Unraid-Benutzer während der Wiederherstellung geraten wurde. Ein falsches Markieren dieser Option kann zu Datenverlust führen.
+
+Verwenden Sie **Keine neue Konfiguration**, wenn Ihr Ziel das Wiederaufbauen einer Festplatte ist. Das Erstellen einer neuen Konfiguration löscht die Array-Historie, die für einen Wiederaufbau erforderlich ist, und Unraid wird nicht anbieten, die Festplatte danach wiederherzustellen. Befolgen Sie stattdessen das Verfahren zum Wiederherstellen von Festplatten.
+
+:::
+
+#### Rückgängigmachen eines Resets
+
+Falls Sie feststellen, dass Sie ein Zurücksetzen rückgängig machen müssen:
+
+1. Zugriff auf Ihr Flash-Gerät über das Netzwerk (SMB).
+2. Suchen und öffnen Sie den `config`-Ordner.
+3. Benennen Sie die Datei `super.old` in `super.dat` um.
+4. Starten Sie Ihren Server neu und Ihre vorherige Array-Konfiguration sollte wiederhergestellt sein.
+
+---
+
+### Statusberichte
+
+Unraid bietet Statusberichte, die Ihnen helfen, den Zustand Ihres Speichera arrays im Blick zu behalten. Diese Berichte sind eine schnelle Möglichkeit, zu überprüfen, ob einer Ihrer Datenträger deaktiviert ist oder Probleme mit dem Lesen oder Schreiben von Daten hat.
+
+- **Aktueller Status:** Statusberichte zeigen den aktuellen Zustand Ihres Arrays an. Es ist wichtig zu beachten, dass diese Informationen nach einem Neustart Ihres Systems zurückgesetzt werden. Sie speichern also keine Historie vergangener Probleme.
+
+- **Keine historischen Daten:** Wenn Sie sehen möchten, was vor einem Neustart passiert ist, müssen Sie an anderer Stelle nachsehen, da diese Berichte keine vergangenen Zustände speichern.
+
+:::important
+
+Remember that the status reports don't include %%SMART|smart%% data. %%SMART reports|smart-report%% give you a more detailed view of individual disk health. So, even if your status report shows everything is fine, checking the %%SMART reports|smart-report%% regularly is still a good idea to catch any potential problems early.
+
+:::
+
+---
+
+## Array-Schreibmodi
+
+Unraid bietet verschiedene Schreibmodi zum Verwalten von Array-Operationen, die jeweils ihre eigenen Vor- und Nachteile in Bezug auf Geschwindigkeit, Stromverbrauch und Laufwerksverschleiß haben. Zu wissen, wie diese Modi funktionieren, zusammen mit der Rolle eines Cache-Laufwerks oder Pools, kann Ihnen helfen, Ihren Server optimal an Ihre Anforderungen anzupassen.
+
+**Schreibmodi auf einen Blick**
+
+| Schreibmodus                     | Geschwindigkeit (typisch)                | Energieverbrauch | Wenn Laufwerke hochfahren    | Datenschutz       | Beste Einsatzmöglichkeit                                               |
+| -------------------------------- | ---------------------------------------- | ---------------- | ---------------------------- | ----------------- | ---------------------------------------------------------------------- |
+| Lesen/Modifizieren/Schreiben     | 20–40 MB/s                               | Niedrig          | Nur Parität und Ziellaufwerk | Ja                | Die meisten Arbeitslasten, Energieeinsparungen, kleine Schreibvorgänge |
+| Turbo-Schreiben (Rekonstruktion) | 40–120 MB/s                              | Hoch             | Alle Laufwerke               | Ja                | Large file transfers, array rebuilds, %%parity checks\|parity-check%%  |
+| Cache-Schreiben (SSD/NVMe)       | 50–110 MB/s (SSD), 250–900 MB/s (NVMe)\* | Variiert         | Nur Cache-Laufwerke          | Nein (bis bewegt) | Apps, VMs, häufiges Schreiben, Maximieren der Geschwindigkeit          |
+
+<h3>Lesen/Modifizieren/Schreiben</h3>
+
+<details>
+  <summary>Klicken zum Erweitern/Reduzieren</summary>
+
+  <h4>How it works</h4>
+  This mode reads the existing data and the parity, calculates the new parity, and then writes the updated data. Only the %%parity drive|parity-drives%% and the target data drive spin up, which results in lower power usage and less wear on the drives. However, it can be slower due to the additional read/write cycles.
+
+  <h4>Wann zu verwenden</h4>
+
+  - Jederzeit, besonders wenn Sie Energieeinsparungen wünschen und Leerlaufzeit der Laufwerke nutzen möchten.
+  - Ideal für kleine oder seltene Schreibvorgänge.
+</details>
+
+<h3>Turbo Write (Rekonstruktionsschreiben)</h3>
+
+<details>
+  <summary>Klicken zum Erweitern/Reduzieren</summary>
+
+  Turbo write, also known as reconstruct write, is a feature designed to boost the writing speed of your Unraid array. It works by reading all data drives and updating the parity simultaneously. This process eliminates the delays caused by waiting for the platters to rotate, as seen in the default write mode. However, it's important to note that all array drives need to be spinning and functioning properly for this to work effectively.
+
+  <h4>Wie es funktioniert</h4>
+
+  - Wenn Sie neue Daten schreiben, liest Unraid von allen anderen Datenlaufwerken und berechnet gleichzeitig die Parität neu. Sowohl die neuen Daten als auch die aktualisierte Parität werden zusammen geschrieben.
+  - Alle Laufwerke im Array müssen betriebsbereit und aktiv drehend sein.
+  - Diese Methode verbessert die Schreibgeschwindigkeit erheblich im Vergleich zum Standard-Schreibmodus.
+
+  <h4>Wann sollte Turbo-Schreiben verwendet werden?</h4>
+
+  - Nutzen Sie Turbo-Schreiben, wenn Sie große, sequentielle Dateien auf das Array übertragen.
+  - It's effective during array rebuilds or %%parity checks|parity-check%%, as all drives will already be spinning.
+  - Dieser Modus ist sehr nützlich, wenn es wichtig ist, die Schreibzeit zu minimieren, und Sie können bestätigen, dass alle Laufwerke funktionsfähig sind.
+
+  <h4>Wann sollte man Turbo-Schreiben vermeiden?</h4>
+
+  - Vermeiden Sie diesen Modus, wenn Sie möchten, dass Ihre Laufwerke während der Leerlaufzeiten energieeinsparend herunterfahren.
+  - Turbo-Schreiben ist nicht ideal für kleine oder seltene Schreiboperationen, da es dazu führt, dass alle Laufwerke für jede Schreibvorgang hochfahren, was den Energieverbrauch und den Verschleiß der Laufwerke erhöht.
+  - Wenn Sie vermuten, dass eine Festplatte fehlerhaft ist oder unzuverlässig, ist es am besten, Turbo-Schreiben zu meiden, da es darauf angewiesen ist, dass jedes Laufwerk betriebsbereit ist.
+
+  :::info
+  Turbo write is best suited for bulk operations and scenarios requiring high throughput. However, it might not be the best choice for everyday tasks if you're focused on energy savings and minimizing drive wear.
+  :::
+</details>
+
+<h3>Cache-Schreiben</h3>
+
+<details>
+  <summary>Klicken zum Erweitern/Reduzieren</summary>
+
+  <h4>Wie es funktioniert</h4>
+
+  Data is written first to a fast SSD or NVMe %%cache|cache%% and can then be moved to the main array later by a process called the %%Mover|mover%%. The speeds vary:
+
+  - SSD: 50–110 MB/s
+  - NVMe: 250–900 MB/s (kann 10GbE-Netzwerke nutzen)
+
+  Sobald die Daten in das Array verschoben werden, werden sie durch die Parität geschützt.
+
+  <h4>Wann sollte man Cache-Schreiben verwenden?</h4>
+
+  - Für Freigaben mit häufigen Schreiboperationen, wie Anwendungen, virtuelle Maschinen oder Downloads.
+  - Um die Leistung zu verbessern und gespürte Schreibverzögerungen zu reduzieren.
+
+  <h4>Leistungserwartungen</h4>
+
+  - Ohne Cache-Laufwerk: Durchschnittlich 20–30 MB/s, mit Spitzen bis zu 40 MB/s.
+  - Mit SSD-Cache: 50–110 MB/s.
+  - Mit NVMe-Cache: 250–900 MB/s, abhängig von Netzwerk- oder Laufwerkseinschränkungen.
+
+  :::tip
+  Consider using a cache pool (multiple devices) for added redundancy and data protection before the %%Mover|mover%% runs.
+  :::
+</details>
+
+:::info[Automated Lösungen
+
+- Der **Auto**-Modus (eine zukünftige Funktion) wird Turbo-Schreiben nur dann aktivieren, wenn alle Laufwerke bereits drehen.
+- Community-Plugins ("Turbo Write" im Apps-Tab suchen) bieten möglicherweise erweiterte Automatisierungs- oder Planungsoptionen.
+
+:::
+
+Um den Schreibmodus zu ändern:
+
+1. Navigieren Sie zu ***Einstellungen → Laufwerkseinstellungen***.
+2. Suchen Sie **Tunable (md_write_method)**.
+3. Wählen Sie Ihren bevorzugten Modus:
+   - **Lesen/Modifizieren/Schreiben** (Standard)
+   - **Rekonstruieren Schreiben** (Turbo Write)
+   - **Auto** (zukünftige Funktion)
+4. Klicken Sie auf **Anwenden**, um Ihre Wahl zu bestätigen.
+
+:::important[Quick Zusammenfassung
+
+- Verwenden Sie **Turbo Write**, wenn Sie Geschwindigkeit benötigen, beachten Sie jedoch, dass der Stromverbrauch und das Hochfahren der Laufwerke zunehmen.
+- Nutzen Sie **Cache-Schreiben** für optimale Leistung, insbesondere mit SSD oder NVMe-Laufwerken.
+- Für die meisten Benutzer bietet der Standard-Schreibmodus das beste Gleichgewicht, es sei denn, Sie benötigen speziell höhere Geschwindigkeiten.
+
+:::
+
+---
+
+## Lese-Modi
+
+Bei der Verwendung von Unraid wird die Geschwindigkeit, mit der Sie Dateien lesen können, hauptsächlich durch das individuelle Laufwerk bestimmt, das jede Datei hält. Im Gegensatz zu herkömmlichen %%RAID|raid%%-Systemen, die mehrere Laufwerke kombinieren, um die Leistung zu verbessern, speichert Unraid jede Datei auf einer einzigen Festplatte. Dies bedeutet, dass die Lesegeschwindigkeit nicht durch die kombinierten Geschwindigkeiten mehrerer Laufwerke erhöht wird.
+
+<h3>Leistungserwartungen</h3>
+
+- **Typische einzelne Festplatte:** 70–250 MB/s (abhängig vom Laufwerksmodell, Alter und Datensatzstandort)
+- **Typische SATA SSD:** 400–550 MB/s
+- **NVMe SSD (in einem Pool):** 250–7.000 MB/s (PCIe-Generation und Netz-/PCIe-Beschränkungen gelten; z. B. 10 GbE-Netzwerk begrenzt auf ~1.100 MB/s)
+
+:::note[Special Fälle
+
+- Wenn ein Datenträger deaktiviert ist und seine Daten rekonstruiert werden, verwendet Unraid die verbleibenden Laufwerke zusammen mit den Paritätsinformationen, um die Daten wiederherzustellen. Während dieses Prozesses kann die Lesegeschwindigkeit auf 30–60 MB/s oder sogar weniger sinken, abhängig von der langsamsten Festplatte in Ihrem System.
+- Any ongoing operations in the array, such as a %%parity check|parity-check%% or rebuilding a drive, can also affect read performance. This is due to increased movement of the drive heads and overall contention for resources.
+
+:::
+
+---
+
+## Cache-Pools
+
+%%Cache pools|cache-pool%% in Unraid provide significant advantages, particularly for write-heavy tasks, virtual machines (VMs), and Docker containers. These pools operate separately from the main array and can be set up with multiple drives using either the %%BTRFS|btrfs%% or %%ZFS|zfs%% file system, supporting various %%RAID|raid%% configurations for speed and data protection.
+
+<h3>Cache-Pools vs. Hauptarray</h3>
+
+| Funktion                          | Cache-Pool (BTRFS)                                                                                                    | Cache-Pool (ZFS)                                                                                                                                                                    | Hauptarray (Unraid)                                               |
+| --------------------------------- | --------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------- |
+| **Lesegeschwindigkeit**           | SSD: 400–550 MB/s, NVMe: 250–7.000 MB/s\*                                                                             | SSD: 400–550 MB/s, NVMe: 250–7.000 MB/s\*                                                                                                                                           | HDD: 70–250 MB/s (pro Festplatte)                                 |
+| **Schreibgeschwindigkeit**        | SSD: 400–550 MB/s, NVMe: 250–7.000 MB/s\*                                                                             | SSD: 400–550 MB/s, NVMe: 250–7.000 MB/s\*                                                                                                                                           | 20–120 MB/s (abhängig vom Paritätsmodus)                          |
+| **Datenschutz**                   | %%RAID 1\|raid1%%/%%RAID 10\|raid10%%; %%RAID 5\|raid5%%/%%RAID 6\|raid6%% (experimentell, nicht für kritische Daten) | %%RAID 1\|raid1%%/%%RAID 10\|raid10%%; %%RAIDZ1\|raidz1%%/%%RAIDZ2\|raidz2%%/%%RAIDZ3\|raidz3%% (stabil, produktionsbereit)                                                         | Paritätsbasiert, Dateisystemunabhängig                            |
+| **Erweiterung**                   | Mischen von Laufwerksgrößen; Geräte dynamisch hinzufügen/entfernen                                                    | Unterstützung für das Hinzufügen/Entfernen von Geräten beschränkt; kein Entfernen aus RAIDZ; Hinzufügen eines Einzellaufwerks zur Erweiterung eines einzel-VDEV RAIDZ in Unraid 7.2 | Laufwerke hinzufügen, aber kein Striping oder Leistungsskalierung |
+| **Wiederherstellungskomplexität** | Higher risk of data loss; %%BTRFS\|btrfs%% tools required                                                             | Höheres Risiko von Datenverlusten; %%ZFS\|zfs%%-Werkzeuge erforderlich                                                                                                              | Einfachere paritätsbasierte Wiederherstellungen                   |
+| **Am besten geeignet für**        | Apps, VMs, häufige Schreibvorgänge                                                                                    | Apps, VMs, häufige Schreibvorgänge, Unternehmens-Workloads                                                                                                                          | Massenspeicher, Mediatheken                                       |
+
+\*Die tatsächlichen NVMe-Geschwindigkeiten hängen von der PCIe-Generation, Kühlung und Netzwerkbandbreite ab (z. B. 10 GbE begrenzt auf ~1.100 MB/s).\*
+
+<h4>Vorteile von Cache-Pools</h4>
+
+- **Höhere Leistung:** NVME-Pools können 10GbE/40GbE Netzwerke sättigen (1.100–3.500 MB/s).
+- **Flexibles RAID:** Sowohl %%BTRFS|btrfs%% als auch %%ZFS|zfs%% unterstützen %%RAID 1|raid1%%/%%RAID 10|raid10%% für Redundanz ohne übereinstimmende Laufwerksgrößen.
+- **Niedrige Latenz:** Ideal für Datenbanken, VMs und Docker-Container.
+- **Vorteile von ZFS:** %%ZFS|zfs%% bietet Unternehmens-Features wie Datenintegritätsprüfung, Komprimierung und Snapshots.
+
+<h4>Nachteile von Cache-Pools</h4>
+
+- **Kein Paritätsschutz:** Daten sind ungeschützt, bis sie ins Array verschoben werden.
+- **Wiederherstellungsrisiken:** %%BTRFS|btrfs%% %%RAID 5|raid5%%/%%RAID 6|raid6%% ist instabil; Einzellaufwerk-Pools fehlen Redundanz.
+- **ZFS-Anforderungen:** %%ZFS|zfs%% benötigt mehr RAM und hat strengere Hardwarevoraussetzungen als %%BTRFS|btrfs%%.
+
+For more detailed information about %%cache pools|cache-pool%%, including how to set them up, manage them, and advanced features, check the [Cache pools](./cache-pools.mdx) page.
+
+---
+
+## Fehlerbehebung
+
+### Fehlerbehebung bei Array-Startproblemen
+
+Wenn Ihr Array nicht startet, folgen Sie diesen Schritten, um häufige Probleme zu identifizieren und zu beheben. Suchen Sie nach Fehlermeldungen unter ***Hauptmenü → Array-Betrieb***.
+
+```mdx-code-block
+
+<Tabs>
+  <TabItem value="missing-disks" label="Missing disks" default>
+    <TroubleshootMissingDisks />
+  </TabItem>
+
+  <TabItem value="device-limit" label="Device limit">
+    <TroubleshootDeviceLimit />
+  </TabItem>
+
+  <TabItem value="key-issues" label="License issues">
+    <TroubleshootLicenseIssues />
+  </TabItem>
+
+  <TabItem value="key-server" label="Key server connection">
+    <TroubleshootKeyServer />
+  </TabItem>
+
+  <TabItem value="withdrawn" label="Withdrawn release">
+    <TroubleshootWithdrawnRelease />
+  </TabItem>
+</Tabs>
+```
+
+### Festplattenausfall während eines Wiederaufbaus
+
+Wenn während des Wiederaufbaus einer Festplatte eine zweite Festplatte ausfällt, hängt das weitere Vorgehen von Ihrer Paritätskonfiguration ab.
+
+<h4>Single %%parity disk|parity-drives%%</h4>
+
+Wenn während des Wiederaufbaus einer anderen Festplatte eine Festplatte ausfällt, wird der Wiederaufbau gestoppt, da die Daten nicht genau wiederhergestellt werden können. Leider können Sie Ihre Daten in dieser Situation nicht wiederherstellen.
+
+<h4>Dual %%parity disk|parity-drives%%</h4>
+
+If you have two %%parity drives|parity-drives%%, you have more options:
+
+- Sie können warten, bis der erste Neuaufbau abgeschlossen ist, und sich dann mit der zweiten fehlgeschlagenen Festplatte befassen.
+- Oder Sie können den aktuellen Wiederaufbau stoppen, die zweite ausgefallene Festplatte ersetzen und dann das Array starten, um beide Festplatten gleichzeitig wieder aufzubauen.
+
+Wenn der erste Wiederaufbau fast abgeschlossen ist, ist es normalerweise besser, ihn fertigstellen zu lassen. Wenn er gerade erst begonnen hat, könnte es schneller sein, beide zusammen wiederherzustellen.
+
+:::warning
+
+Der Wiederaufbau von Festplatten belastet alle Laufwerke stark, was die Chance auf neue Ausfälle erhöht. Überprüfen Sie immer die Laufwerkgesundheit mithilfe der %%SMART-Berichte|smart-report%%, bevor Sie mit einem Wiederaufbau beginnen.
+
+:::
+
+:::info[Rebuild Zeit
+
+Seien Sie darauf vorbereitet, dass der Wiederherstellungsprozess mehrere Stunden dauern kann. Die Dauer kann je nach Festplattengröße und Systemauslastung variieren. Größere Festplatten und ausgelastete Systeme benötigen möglicherweise länger.
+
+:::
