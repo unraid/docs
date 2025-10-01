@@ -1,0 +1,235 @@
+---
+sidebar_position: 3
+sidebar_label: Systemabstürze & Stabilität
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+# Systemabstürze & Stabilität
+
+Systemabstürze und Stabilitätsprobleme können schwer zu diagnostizieren und zu lösen sein. Sie entstehen oft durch Hardwareausfälle, Konfigurationsfehler oder Konflikte innerhalb der Software. Dieser Abschnitt führt Sie durch häufige Ursachen, Diagnoseschritte und bewährte Praktiken, um Ihren Unraid-Server stabil zu halten.
+
+---
+
+## RAM-Probleme
+
+Speicherprobleme gehören zu den häufigsten Ursachen für Systeminstabilität und Datenkorruption. RAM kann im Laufe der Zeit abgenutzt werden, was zu unvorhersehbaren Fehlern führt, die oft schwer zu diagnostizieren sind. Dieser Abschnitt befasst sich damit, wie man speicherbezogene Stabilitätsprobleme identifiziert und löst.
+
+Häufige Symptome von RAM-Problemen sind:
+
+- Unerklärliche Systemabstürze oder -einfrierungen
+- Datenkorruption in Dateien oder %%array|array%%
+- Zufällige Anwendungsfehler
+- Systeminstabilität unter Last
+- Fehlgeschlagene %%parity checks|parity-check%%
+
+### RAM-Test
+
+Speichertests sind unerlässlich zur Diagnose von Stabilitätsproblemen. Das Unraid-Boot-Menü enthält Memtest86+ für umfassende RAM-Tests, die sowohl auf Legacy- als auch auf %%UEFI|uefi%%-Systemen funktionieren.
+
+Um Ihr RAM zu testen:
+
+1. Starten Sie Ihren Server neu und wählen Sie **Memtest86+** aus dem Startmenü.
+2. Lassen Sie den Test mindestens 2-4 Stunden laufen, um eine gründliche Abdeckung zu gewährleisten.
+3. Beobachten Sie, ob Fehlermeldungen oder fehlgeschlagene Tests auftreten.
+
+:::note[Other RAM-Testwerkzeuge]
+
+- [**MemTest86+**](https://www.memtest.org/): Open-Source-Tool in Unraid enthalten
+- [**MemTest86**](https://www.memtest86.com/): Kommerzielles Tool mit Unterstützung für moderne Hardware
+- [**Karhu RAM Test**](https://www.karhusoftware.com/): Ein kostenpflichtiges, aber äußerst effektives Windows-basiertes Tool, das Fehler schneller als traditionelle Methoden erkennt, mit Erkennungsraten von 95,67% innerhalb von 30 Minuten (ideal für DDR5-Systeme).
+- [**HCI MemTest**](https://hcidesign.com/memtest/): Beliebtes, kostenloses Windows-basiertes Testprogramm
+- [**Prime95**](https://prime95.net/): Validiert RAM- und CPU-Stabilität gleichzeitig
+
+:::
+
+:::important[If beim Auffinden von RAM-Fehlern]
+
+Wenn Memtest86+ Fehler anzeigt, versuchen Sie, die RAM-Module neu einzusetzen und den Test erneut auszuführen. Testen Sie jede RAM-Stange einzeln, um fehlerhafte Module zu lokalisieren. Konsultieren Sie die Dokumentation Ihres Motherboards, um unterstützte RAM-Geschwindigkeiten und -anordnungen zu überprüfen, und vermeiden Sie es, verschiedene RAM-Marken oder -Geschwindigkeiten zu mischen, um Kompatibilitätsprobleme zu minimieren.
+
+:::
+
+### RAM-Übertaktung
+
+RAM-Übertaktung kann die Systemstabilität erheblich beeinflussen. Viele Nutzer möchten ihr RAM mit der vom Hersteller angegebenen Höchstgeschwindigkeit betreiben, aber Motherboard- und CPU-Kombinationen haben oft maximale zuverlässige RAM-Geschwindigkeiten, die niedriger sind als die vom RAM selbst bewerteten.
+
+:::caution[RAM Risiken des Übertaktens und Empfehlungen]
+
+**Kauf:** Wenn möglich, immer RAM kaufen, das auf der QVL (Qualified Vendor List) Ihres Motherboards aufgeführt ist, nicht von der QVL des RAM-Herstellers. Dies gewährleistet eine bessere Kompatibilität und Stabilität.
+
+**Intel XMP und AMD AMP Profile sind Übertaktungen.** Für die beste Stabilität sollten Sie RAM immer mit SPD-Geschwindigkeiten betreiben, nicht mit XMP/AMP-Geschwindigkeiten.
+
+**Risiken der Übertaktung:**
+
+- Systeminstabilität und zufällige Abstürze
+- Datenkorruption und Dateisystemfehler
+- Verkürzte Hardware-Lebensdauer
+- Inkompatibilität mit anderen Komponenten
+
+**Fehlerbehebung:** Wenn Memtest86+ erfolgreich verläuft, Sie jedoch weiterhin Probleme haben, deaktivieren Sie XMP/AMP und versuchen Sie es erneut. Der Leistungsunterschied ist normalerweise minimal, aber die Stabilitätsverbesserung kann erheblich sein.
+
+:::
+
+<h4>Best Practices</h4>
+
+1. Überprüfen Sie immer die Spezifikationen Ihrer Hauptplatine und CPU, bevor Sie einen Übertaktungsversuch unternehmen.
+2. **Für maximale Stabilität:** Deaktivieren Sie XMP/AMP-Profile und betreiben Sie RAM mit den Standard-SPD-Geschwindigkeiten.
+3. Beginnen Sie mit konservativen Einstellungen und erhöhen Sie diese schrittweise.
+4. Testen Sie die Stabilität mit Memtest86+ nach Änderungen.
+5. Wenn Sie Instabilität bemerken, setzten Sie sofort auf Standard- oder niedrigere Geschwindigkeiten zurück.
+6. Berücksichtigen Sie den Kompromiss zwischen Leistung und Stabilität in Serverumgebungen.
+
+## Kritische Stabilitätsfaktoren
+
+Die Systemstabilität hängt von mehr ab als nur der RAM- oder CPU-Leistung. Mehrere Hardware- und Softwarekomponenten arbeiten zusammen, um einen zuverlässigen Betrieb zu gewährleisten. Dieser Abschnitt deckt die Schlüsselbereiche ab, die die Stabilität Ihres Unraid-Servers beeinflussen, und bietet praktische Schritte, um Probleme zu verhindern und zu lösen.
+
+Systemstabilität hängt typischerweise von folgenden Faktoren ab:
+
+- Netzteilqualität und -zuverlässigkeit
+- Angemessenes Thermomanagement
+- Festplattengesundheit und I/O-Leistung
+- Plugin- und Anwendungs-Kompatibilität
+- Aktuelle Firmware- und BIOS-Versionen
+- Proaktives Monitoring und Wartung
+
+### Netzteilzuverlässigkeit
+
+<details>
+  <summary><strong>Klicken zum Erweitern/Reduzieren</strong></summary>
+
+  A stable and sufficient power supply is crucial for uninterrupted server operation. Power issues are often overlooked but can cause the most frustrating stability problems.
+
+  Häufige strombezogene Probleme sind:
+
+  - Zufällige Systemabstürze oder Einfrierungen
+  - Datenkorruption während des Schreibens
+  - Plötzliche Abschaltungen ohne Vorwarnung
+  - Ausfälle von Hardwarekomponenten
+  - Inkonsistente Leistung
+
+  <h4>Prävention und Wartung</h4>
+
+  Proactive power supply maintenance prevents the most common stability issues. Regular checks and proper component selection can avoid costly downtime and data loss.
+
+  1. Verwenden Sie immer ein hochwertiges, angemessen bewertetes Netzteil für Ihre Hardware.
+  2. **Wichtig:** Stellen Sie sicher, dass Ihr Netzteil das gleichzeitige Hochfahren ALLER angeschlossenen Speichergeräte bewältigen kann. Die Stromstärke der 12V-Schiene muss den Hochlaufstrom aller Laufwerke gleichzeitig berücksichtigen, nicht nacheinander.
+  3. Vermeiden Sie nach Möglichkeit Stromverteiler. Sie können Spannungsabfälle und Instabilität verursachen, besonders während Hochlastereignissen, wie das Hochfahren von Laufwerken.
+  4. Erwägen Sie redundante Netzteile für Enterprise- und Multi-Bay-Systeme.
+  5. Stellen Sie sicher, dass jede PSU-Einheit korrekt angebracht und verbunden ist.
+  6. Überwachen Sie PSU-Gesundheitsindikatoren (wie AC OK LEDs), wenn verfügbar.
+  7. Ersetzten Sie ausgefallene Einheiten sofort, um Ausfallzeiten zu vermeiden.
+  8. Überprüfen Sie regelmäßig, dass alle Stromkabel sicher sind.
+  9. Vergewissern Sie sich, dass Schaltkreise nicht überlastet sind.
+</details>
+
+### Thermomanagement und Überhitzung
+
+<details>
+  <summary><strong>Klicken zum Erweitern/Reduzieren</strong></summary>
+
+  Overheating is one of the leading causes of hardware failure and erratic server behavior. Thermal issues can cause components to throttle performance or fail completely.
+
+  Anzeichen für thermische Probleme sind:
+
+  - Systemdrosselung oder reduzierte Leistung
+  - Zufällige Abstürze bei hoher Belastung
+  - Lüftergeräusche oder ungewöhnliches Kühlverhalten
+  - Ausfälle von Hardwarekomponenten
+  - Inkonsistentes Systemverhalten
+
+  <h4>Kühllösungen und bewährte Praktiken</h4>
+
+  Proper cooling is essential for maintaining system stability and preventing thermal throttling. These practices help ensure your server operates within safe temperature ranges.
+
+  1. Stellen Sie sicher, dass Ihr Server an einem gut belüfteten Ort steht.
+  2. Halten Sie kontrollierte Umgebungstemperaturen aufrecht (idealerweise 18-24°C/64-75°F).
+  3. Nutzen Sie angemessene Kühllösungen (hochwertige Lüfter, Rack-Montage Klimaanlagen).
+  4. Überwachen Sie die Systemtemperaturen mit Hardwaresensoren.
+  5. Reinigen Sie regelmäßig Staub und Schmutz von Kühlelementen.
+  6. Vermeiden Sie es, Server in engen oder schlecht belüfteten Räumen zu platzieren.
+  7. Erwägen Sie zusätzliche Kühlung für Hochleistungssysteme.
+
+  Monitoring temperatures proactively helps identify cooling issues before they cause system instability. Use Unraid's built-in temperature sensors or hardware monitoring tools compatible with your system.
+</details>
+
+### Festplattengesundheit und I/O-Fehler
+
+<details>
+  <summary><strong>Klicken zum Erweitern/Reduzieren</strong></summary>
+
+  Disk errors, whether due to aging drives or sudden failures, can disrupt system stability and compromise data. I/O issues often manifest as performance problems before causing complete failures.
+
+  Symptome von Festplattenproblemen sind:
+
+  - Hohe Serverauslastung oder langsame Leistung
+  - Fehlgeschlagene %%parity checks|parity-check%%
+  - Datenkorruption oder Lese-/Schreibfehler
+  - Ungewöhnliche Festplattenaktivität oder -geräusche
+  - Systemabstürze während Festplattenoperationen
+
+  <h4>Präventive Wartung</h4>
+
+  Regular maintenance helps catch disk issues before they cause data loss or system instability. These proactive steps can significantly extend drive lifespan and maintain performance.
+
+  1. Regularly monitor drive %%SMART|smart%% data using Unraid's built-in [disk health tools](../../system-administration/monitor-performance/smart-reports-and-disk-health.mdx).
+  2. Führen Sie regelmäßige [%%parity checks|parity-check%%s](../../using-unraid-to/manage-storage/array-configuration.mdx#parity--read-checks) durch, um die Datenintegrität sicherzustellen.
+  3. Überwachen Sie Festplattentemperaturen und Leistungskennzahlen.
+  4. Halten Sie die Laufwerke richtig belüftet und gekühlt.
+
+  <h4>Wenn Probleme auftreten</h4>
+
+  Quick response to disk issues can prevent data loss and minimize downtime. Follow these steps systematically to identify and resolve problems.
+
+  1. Ersetzen Sie fehlerhafte Laufwerke umgehend, um Datenverlust zu vermeiden.
+  2. Untersuchen Sie die Verkabelung, die Stromversorgung und die Gesundheit der Laufwerkssteuerung.
+  3. Überprüfen Sie auf lose Verbindungen oder beschädigte Kabel.
+  4. Consider running extended %%SMART|smart%% tests for suspect drives.
+  5. Überwachen Sie Systemprotokolle auf I/O-Fehlermuster.
+</details>
+
+### Anwendungs- und Plugin-Stabilität
+
+<details>
+  <summary><strong>Klicken zum Erweitern/Reduzieren</strong></summary>
+
+  Unraid’s flexibility comes from its support for plugins and Docker containers. However, third-party plugins can introduce instability, especially if they are outdated or incompatible with your current Unraid version.
+
+  Beim Troubleshooting...
+
+  - Verwenden Sie den [Sicherheitsmodus](../../using-unraid-to/customize-your-experience/plugins.mdx#troubleshooting-with-safe-mode), um Plugins vorübergehend zu deaktivieren und die Ursache von Problemen zu identifizieren.
+  - Bevorzugen Sie Docker-Container gegenüber Plugins für zusätzliche Funktionen, da Container eine bessere Isolation vom Kernbetriebssystem bieten und weniger wahrscheinlich systemweite Probleme verursachen.
+  - Aktualisieren oder entfernen Sie regelmäßig ungenutzte oder nicht unterstützte Plugins, um die Stabilität zu erhalten.
+</details>
+
+### Firmware- und BIOS-Updates
+
+<details>
+  <summary><strong>Klicken zum Erweitern/Reduzieren</strong></summary>
+
+  Outdated firmware or BIOS can lead to instability, security vulnerabilities, and hardware compatibility issues. Regular updates are essential for maintaining system stability and security.
+
+  - Planen Sie regelmäßige Überprüfungen von Firmware- und BIOS-Updates für Ihr Motherboard und kritische Komponenten ein.
+  - Sichern Sie immer Ihre Konfiguration vor Updates und testen Sie, wenn möglich, Updates in einer kontrollierten Umgebung.
+  - Dokumentieren Sie Ihren Aktualisierungsprozess und überprüfen Sie ihn regelmäßig, um sicherzustellen, dass Sie den besten Verfahren folgen.
+
+  Das Aktualisieren der Systemfirmware hilft, unerwartete Abstürze zu vermeiden und neue Hardwarefunktionen freizuschalten.
+
+  :::tip[Recommendations]
+
+  - Verwenden Sie Herstellerwerkzeuge für risikofreie Updates, wie z. B. [ASUS Armoury Crate](https://www.asus.com/supportonly/armoury%20crate/helpdesk_download/), [Gigabyte @BIOS](https://www.gigabyte.com/Support/Consumer/Download) oder [MSI Center](https://www.msi.com/Landing/MSI-Center).
+  - Check your motherboard's BIOS settings for automatic update options if available.
+    :::
+</details>
+
+### Proaktives Systemmonitoring
+
+<details>
+  <summary><strong>Klicken zum Erweitern/Reduzieren</strong></summary>
+
+  Konsequentes Monitoring ist entscheidend für die frühzeitige Erkennung von Problemen.
+
+  - Aktivieren Sie [persistente Protokollierung](../../troubleshooting/diagnostics/capture-diagnostics-and-logs.mdx) in Unraid, um Protokolle über Neustarts hinweg zu behalten.
+  - Nutzen Sie Systemüberwachungs-Tools, um Temperaturen, Spannungen und Laufwerkszustände zu verfolgen. Richten Sie Alarme für kritische Schwellenwerte ein, um Maßnahmen zu ergreifen, bevor kleinere Probleme eskalieren.
+  - Durch regelmäßige Überprüfung der Systemprotokolle können Sie Muster erkennen und zugrunde liegende Ursachen ansprechen, bevor sie zu Ausfallzeiten führen.
+</details>
