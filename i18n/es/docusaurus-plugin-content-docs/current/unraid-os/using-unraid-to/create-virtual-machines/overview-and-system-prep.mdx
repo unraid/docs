@@ -1,0 +1,230 @@
+---
+sidebar_position: 1
+sidebar_label: Visión general y preparación del sistema
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import HvmSupport from './partials/hvm-support.mdx';
+import IommuSupport from './partials/iommu-support.mdx';
+import GpuNvidia from './partials/gpu-nvidia.mdx';
+import GpuAmd from './partials/gpu-amd.mdx';
+
+# Visión general y preparación del sistema
+
+Las máquinas virtuales (VM) te permiten ejecutar sistemas operativos completos, como Windows, macOS o Linux, en tu servidor Unraid, junto con contenedores Docker.
+
+Las %%VMs|vm%% son ideales para:
+
+- Ejecutar aplicaciones que requieren un sistema operativo completo o que no están disponibles como contenedores.
+- Asignar hardware dedicado a sistemas invitados, como GPUs o dispositivos USB.
+- Pruebas, desarrollo, juegos o ejecución de software heredado.
+- Alojar múltiples entornos aislados para diferentes cargas de trabajo.
+
+Para una lista de sistemas operativos probados con Unraid, ve a la página de [Configuración de %%VM|vm%%](./vm-setup.mdx).
+
+<details>
+  <summary>**Bajo el capó:** Expande para saber más sobre el stack tecnológico detrás de la virtualización de Unraid</summary>
+
+  Unraid’s virtualization stack is designed to be flexible and high-performing, utilizing several open-source technologies to support effective %%virtual machine (VM)|vm%% management. This overview explains the key components and their interaction in a user-friendly manner.
+
+  <h4>Tecnologías principales</h4>
+
+  | Tecnología                        | Lo que hace                                                                                        | Por qué es importante                                                                                                        |
+  | --------------------------------- | -------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+  | %%KVM\|kvm%%                      | Acts as the %%hypervisor\|hypervisor%% built into the Linux kernel.                                | Permite a Unraid ejecutar %%VMs\|vm%% sin problemas con aceleración de hardware y sobrecarga mínima.                         |
+  | %%QEMU\|qemu%%                    | Emula el hardware esencial (como placa madre, CPU y controladores) para %%VMs\|vm%%.               | Trabaja junto con %%KVM\|kvm%% para crear un entorno virtual completo para los sistemas operativos invitados.                |
+  | %%Libvirt\|libvirt%%              | Gestiona las definiciones de %%VM\|vm%%, así como las interfaces de almacenamiento y red.          | Almacena configuraciones de %%VM\|vm%% en `libvirt.img` y ofrece una API de gestión consistente.                             |
+  | %%VNC\|vnc-session%%              | Ofrece acceso gráfico remoto a %%VMs\|vm%%.                                                        | Permite la interacción con %%VMs\|vm%% desde cualquier dispositivo usando un navegador o un cliente %%VNC\|vnc-session%%.    |
+  | %%VirtIO\|virtio%%                | Proporciona controladores paravirtualizados de alto rendimiento para dispositivos de red y discos. | Mejora la velocidad y la eficiencia de %%VM\|vm%%, requiriendo controladores %%VirtIO\|virtio%% instalados en el SO huésped. |
+  | %%VirtFS\|virtfs%% (`9p`)         | Facilita la compartición de sistemas de archivos entre el host e invitados basados en Linux.       | Útil para el desarrollo y necesidades avanzadas de compartición de archivos.                                                 |
+  | %%HVM\|hvm%%                      | Soporta la virtualización asistida por hardware (%%Intel VT-x\|intel-vt-x%%, %%AMD-V\|amd-v%%).    | Necesario para ejecutar %%VMs\|vm%% con aceleración completa de hardware.                                                    |
+  | %%VFIO\|vfio%% & %%IOMMU\|iommu%% | Permiten el paso directo de dispositivos PCI a %%VMs\|vm%% (como GPU y dispositivos USB).          | Esencial para lograr un rendimiento casi nativo y mantener aislamiento de seguridad.                                         |
+
+  <h4>Cómo Unraid implementa el soporte de %%VM|vm%%</h4>
+
+  - %%KVM|kvm%%/%%QEMU|qemu%%: la virtualización de Unraid está fundamentada en %%KVM|kvm%% y %%QEMU|qemu%%, proporcionando capacidades sólidas de alojamiento de %%VM|vm%%.
+  - %%Libvirt|libvirt%%: Las definiciones de %%VM|vm%% se almacenan como archivos XML en `libvirt.img` (normalmente encontrado en el recurso compartido `system`).
+  - **Recursos compartidos predeterminados**:
+    - `domains`: Almacena imágenes de disco virtual de %%VM|vm%%.
+    - `isos`: Contiene ISOs de instalación e imágenes de controladores.
+    - `system`: Almacena `libvirt.img` y otros archivos del sistema críticos.
+    - Todo por defecto a **Usar %%Cache|cache%%: Preferir** para un rendimiento óptimo.
+  - %%VNC|vnc-session%%: Unraid cuenta con un cliente NoVNC incorporado para acceso fácil basado en navegador a %%VMs|vm%%, con la opción de usar clientes %%VNC|vnc-session%% externos según sea necesario.
+
+  :::tip
+  Most users don’t need to interact directly with these technologies, but understanding what goes on “under the hood” can be incredibly useful for advanced troubleshooting and customization. For more detailed information, check out the official documentation for [KVM](https://www.linux-kvm.org/page/Main_Page), [QEMU](https://www.qemu.org/), [Libvirt](https://libvirt.org/), and [VirtIO](https://www.linux-kvm.org/page/Virtio).
+  :::
+</details>
+
+## Requisitos
+
+Para ejecutar %%VMs|vm%% en Unraid, tu sistema debe cumplir con los siguientes requisitos:
+
+| Componente     | Requisito mínimo                                             | Recommended for %%VMs\|vm%% & %%GPU passthrough\|gpu-passthrough%%                |
+| -------------- | ------------------------------------------------------------ | --------------------------------------------------------------------------------- |
+| CPU            | 64 bits, 4 núcleos, 2.4 GHz+ (Intel/AMD)                     | 8+ núcleos, 3.0 GHz+ (Intel Core i7/i9, AMD Ryzen 7/9, o más nuevo)               |
+| Virtualización | %%HVM\|hvm%% (%%Intel VT-x\|intel-vt-x%% o %%AMD-V\|amd-v%%) | %%HVM\|hvm%% + %%IOMMU\|iommu%% (Intel VT-d o AMD-Vi)                             |
+| RAM            | 8 GB                                                         | 16 GB o más (añadir RAM por cada %%VM\|vm%% activa)                               |
+| Almacenamiento | SSD/NVMe para discos de %%VM\|vm%%                           | NVMe de gama alta para el mejor rendimiento                                       |
+| Red            | Ethernet gigabit (PCIe recomendado)                          | Ethernet 2.5G/10G para cargas de trabajo exigentes                                |
+| GPU (opcional) | NVIDIA RTX moderna (recomendada) o AMD Radeon RX             | Serie RTX 3000/4000 (NVIDIA recomendada para mejor compatibilidad de passthrough) |
+
+:::tip[GPU compatibilidad de paso a través]
+
+Las GPUs NVIDIA están **generalmente recomendadas** para %%VM|vm%% pasando por su mejor compatibilidad y fiabilidad. Las GPUs AMD pueden ser más difíciles de pasar, y algunos modelos más nuevos (incluyendo las series RX 7000/9000) pueden no funcionar de manera confiable o no funcionar en absoluto con %%VMs|vm%%. Si planea utilizar %%GPU passthrough|gpu-passthrough%%, considere opciones de NVIDIA para la mejor experiencia.
+
+:::
+
+:::note
+
+El BIOS de tu placa base debe habilitar la virtualización asistida por hardware y el soporte %%IOMMU|iommu%%. Busca configuraciones etiquetadas como “%%Intel VT-x|intel-vt-x%%,” “Intel VT-d,” “%%AMD-V|amd-v%%,” o “AMD-Vi.”
+
+:::
+
+### Recursos de VM
+
+| tipo de %%VM\|vm%%        | RAM por %%VM\|vm%% | vCPUs por %%VM\|vm%% | Ejemplos de casos de uso                         |
+| ------------------------- | ------------------ | -------------------- | ------------------------------------------------ |
+| Servidor virtual          | 1-2 GB             | 1-2                  | Linux ligero, %%VMs\|vm%% de utilidad            |
+| Escritorio virtual        | 4-8 GB             | 2-4                  | Windows 11, escritorio Ubuntu, RDP               |
+| %%VM\|vm%% híbrido/juegos | 8-16 GB+           | 4-8+                 | %%GPU passthrough\|gpu-passthrough%%, gaming, ML |
+
+- La memoria y la CPU solo se consumen mientras las %%VMs|vm%% están en ejecución.
+- Planifica para el uso máximo si se ejecutan múltiples %%VMs|vm%% simultáneamente.
+- Siempre asigna recursos basados en los requisitos del sistema operativo invitado y la carga de trabajo.
+
+### HVM e IOMMU: Lo que habilitan
+
+<Tabs>
+  <TabItem value="hvm" label="Soporte HVM">
+    <HvmSupport />
+  </TabItem>
+
+  <TabItem value="iommu" label="Soporte IOMMU">
+    <IommuSupport />
+  </TabItem>
+</Tabs>
+
+:::important[How para verificar compatibilidad]
+
+En el %%WebGUI|web-gui%%, haz clic en **Info** en el menú superior.
+
+- **Soporte HVM:** Muestra si la virtualización de hardware está presente y habilitada.
+- **Soporte IOMMU:** Muestra si la transmisión de dispositivo está disponible y habilitada.
+
+:::
+
+---
+
+### Transmisión de dispositivos gráficos
+
+Pasar una GPU a una %%VM|vm%% permite un rendimiento gráfico casi nativo, lo que la hace ideal para juegos, trabajos creativos o aprendizaje automático.
+
+<Tabs>
+  <TabItem value="nvidia" label="NVIDIA">
+    <GpuNvidia />
+  </TabItem>
+
+  <TabItem value="amd" label="AMD">
+    <GpuAmd />
+  </TabItem>
+</Tabs>
+
+:::tip[General consejos]
+
+- Usa %%OVMF|ovmf%% (%%UEFI|uefi%%) para %%VMs|vm%% con GPUs modernas.
+- Usa siempre la última versión de Unraid para mejorar el soporte de hardware.
+- Tecnologías como NVIDIA Optimus pueden permitir %%GPU passthrough|gpu-passthrough%% para portátiles o configuraciones avanzadas, pero los resultados varían.
+
+:::
+
+:::info[Always cambiando]
+
+La compatibilidad de hardware y controladores cambia rápidamente. Antes de comprar una GPU para el passthrough, consulte los [foros de Unraid](https://forums.unraid.net/) y la documentación del proveedor para reportes actualizados y experiencias de usuarios.
+
+:::
+
+---
+
+## Preparación del sistema
+
+Antes de crear máquinas virtuales, completa estas tareas esenciales de configuración para asegurar que tu sistema esté listo.
+
+### Ajusta configuraciones de BIOS
+
+Para utilizar plenamente las capacidades de virtualización de Unraid, tu BIOS debe habilitar la virtualización asistida por hardware y la gestión de memoria de E/S. Busca configuraciones etiquetadas como **Virtualización**, %%Intel VT-x|intel-vt-x%%, **Intel VT-d**, %%AMD-V|amd-v%%, o **AMD-Vi** y ajústelas a **Enabled**.
+
+:::note
+
+Las interfaces de BIOS varían según el fabricante. Consulte el manual de su placa base para la ubicación exacta de estas configuraciones.
+
+:::
+
+### Configurar un puente de red
+
+Las %%máquinas virtuales|vm%% pueden conectarse a tu red utilizando uno de dos tipos de puente. Elige el que mejor se adapte a tus necesidades:
+
+| Tipo de puente           | Descripción                                                                                                                                                                                                                         | Caso de uso                                                                                                               |
+| ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| **NAT privado (virbr0)** | Administrado por %%libvirt\|libvirt%%. Esta opción proporciona un servidor DHCP interno y una subred aislada. %%VMs\|vm%% puede acceder a internet y compartir archivos del host, pero están aisladas de otros dispositivos de red. | Ideal para %%VMs\|vm%% aisladas que necesitan acceso a internet y al host pero sin visibilidad en la LAN.                 |
+| **Puente público (br0)** | Managed by Unraid. This option connects %%VMs\|vm%% directly to your LAN, with IPs assigned by your router. MAC addresses are preserved for consistent IP assignment.                                                               | Lo mejor para %%VMs\|vm%% que deben funcionar como dispositivos regulares en tu red, accesibles desde otros dispositivos. |
+
+:::important
+
+Si tu servidor Unraid está conectado a Wi-Fi, se recomienda utilizar el puente de red **NAT privado (virbr0)** para tus %%máquinas virtuales|vm%%. Esto se debe a que las interfaces Wi-Fi solo admiten una única dirección MAC, lo que restringe el uso de puentes públicos y tipos de red personalizados. Al utilizar el puente **virbr0**, tus %%VMs|vm%% tendrán acceso completo a la red a través de %%NAT|nat%%, aunque no serán directamente accesibles desde otros dispositivos en tu red de área local (LAN). Sin embargo, todavía puedes acceder a las %%VMs|vm%% a través de %%VNC|vnc-session%% a través del host.
+
+:::
+
+- Activa el puente público en **Configuraciones de red → Habilitar puente**.
+- Establece tu puente preferido como el **Puente de red predeterminado** en la configuración de %%VM|vm%%. Puede que necesites habilitar la vista avanzada para ver esta opción.
+
+---
+
+### Comparticiones de usuarios para virtualización
+
+Unraid creates two default %%user shares|user-share%% for %%virtualization|virt%%:
+
+- `isos`: Esta compartición almacena archivos de medios de instalación para tus %%VMs|vm%%.
+- `domains`: Esta compartición guarda %%imágenes de disco virtual|virtual-disk-images%% y archivos de configuración %%de máquina virtual|vm%%.
+
+Considera crear una compartición separada para las copias de seguridad de %%VM|vm%% para proteger tus datos.
+
+<h4>Recomendaciones de configuración para compartir</h4>
+
+- Store active %%VM|vm%% %%virtual disk images|virtual-disk-images%% on a %%cache|cache%%-only share for the best performance.
+- Usar SSDs en tu %%conjunto de cache|cache-pool%% mejora significativamente la capacidad de respuesta de las %%VM|vm%%.
+- El uso de %%Caché|cache%% para la compartición `isos` es opcional.
+
+:::important
+
+Do not store active %%virtual machines|vm%% on a share with **Use %%cache|cache%%** set to **Yes**. This can cause %%VMs|vm%% to be moved to the %%array|array%% during the %%Mover|mover%% process, leading to degraded performance.
+
+:::
+
+## Configura las preferencias de virtualización
+
+Antes de comenzar, asegúrate de que tu sistema esté listo para la virtualización (ver [Preparación del sistema](#system-preparation)). Configurar tus preferencias de %%virtualización|virt%% en Unraid asegura que tus %%máquinas virtuales (VMs)|vm%% estén configuradas para un rendimiento y compatibilidad óptimos.
+
+Para establecer tus preferencias de virtualización:
+
+1. En el %%WebGUI|web-gui%%, ve a ***Configuración → Administrador de VM***.
+2. **Para VMs de Windows:**
+   - Descarga el último controlador estable de %%VirtIO|virtio%% para Windows desde el [repositorio oficial](https://github.com/virtio-win/virtio-win-pkg-scripts/blob/master/README.md).
+   - Copia el archivo ISO de %%VirtIO|virtio%% a tu compartición **isos**.
+   - En **Administrador de VM**, usa el selector de archivos para **ISO de controladores de Windows VirtIO** para seleccionar el ISO que acabas de copiar.
+   - (Opcional) Sobrescribe el ISO del controlador predeterminado para %%VMs|vm%% individuales en **Vista avanzada**.
+3. **Selecciona un puente de red predeterminado:**
+   - Elige `virbr0` para un puente de red privado, o selecciona un puente público (por ejemplo, `br0`) creado en **Configuración de red**.
+   - (Opcional) Sobrescribe el puente de red predeterminado para cada %%VM|vm%% en **Vista avanzada**.
+4. **Anulación de ACS PCIe (Avanzado):**
+   - Activa **Anulación de ACS PCIe** para **Encendido** si necesitas asignar múltiples dispositivos PCI (como %%GPUs|gpu-passthrough%% o controladores USB) a diferentes %%VMs|vm%%.
+   - Esta opción divide los grupos %%IOMMU|iommu%%, permitiendo un paso de dispositivos más flexible.
+
+:::warning
+
+Esta configuración es experimental y puede afectar la estabilidad del sistema. Usar con precaución.
+
+:::
+
+5. Haz clic en **Aplicar** para guardar tus configuraciones.
