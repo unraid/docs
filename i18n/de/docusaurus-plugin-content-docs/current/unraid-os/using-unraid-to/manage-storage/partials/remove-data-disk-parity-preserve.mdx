@@ -1,0 +1,78 @@
+Die Paritätsbewahrungsmethode ermöglicht es Ihnen, eine Datenplatte aus Ihrem Unraid-Array zu entfernen, ohne den Paritätsschutz zu verlieren. Dieser Vorgang erfordert sorgfältige Vorbereitung und technisches Wissen und wird nur fortgeschrittenen Anwendern empfohlen.
+
+<h4>Was diese Methode macht</h4>
+
+Diese Methode setzt die Datenplatte, die Sie entfernen möchten, effektiv auf Null zurück, sodass Ihre Parität intakt bleibt. Da eine mit Nullen gefüllte Platte die Parität nicht beeinflusst, bleibt Ihr Array während des gesamten Verfahrens geschützt.
+
+<h4>Wann man diese Methode verwendet</h4>
+
+Use the %%parity|parity%%-preserve method to remove a data disk while keeping your %%parity|parity%% valid safely. This is especially useful to avoid a full %%parity|parity%% sync after removal. Please ensure that the disk you're removing is healthy.
+
+:::important\[Prerequisites]
+
+Bevor Sie beginnen, stellen Sie sicher, dass Sie die folgenden Bedingungen erfüllen:
+
+- Diese Methode erlaubt es Ihnen, jeweils nur einen Datenträger zu entfernen.
+- Bitte beachten Sie, dass es keine offizielle Unterstützung von LimeTech für diesen Prozess gibt; gehen Sie mit Vorsicht vor.
+
+:::
+
+:::warning
+
+Diese Methode löscht alle Daten auf der ausgewählten Platte. Bitte überprüfen Sie, ob alle wichtigen Daten verschoben wurden, bevor Sie fortfahren.
+
+:::
+
+Um einen Datenträger mit der paritätserhaltenden Methode zu entfernen:
+
+1. **Starten Sie den Array im Wartungsmodus:** Klicken Sie auf die Festplatte, die Sie entfernen möchten, und klicken Sie dann auf die Schaltfläche **Löschen**. Dadurch wird das Dateisystem vom Gerät gelöscht, während die Parität erhalten bleibt, und dann den Array stoppen.
+2. **Starten Sie das Array:** Starten Sie das Array im Normalmodus; die zu löschende Platte wird nicht eingehängt, aber die verbleibenden Platten bleiben während des Vorgangs online.
+3. **Array-Zuweisungen aufzeichnen:** Notieren Sie Ihre Array-Zuweisungen, insbesondere das %%parity drive|parity-drives%%, als Sicherheitsmaßnahme.
+4. **(Optional) Turbo Write aktivieren:** Für schnelleres Zurücksetzen auf Null aktivieren Sie Reconstruct Write ("Turbo Write") in **Einstellungen → Festplattenspeicher** , aber nur, wenn alle Laufwerke gesund sind.
+5. **Setzen Sie den Datenträger auf Null:** Verwenden Sie die alternative Kommandozeilen-Methode unten, um den Datenträger manuell auf Null zu setzen.
+6. **Stoppen Sie das Array:** Sobald das Zurücksetzen abgeschlossen ist, stoppen Sie das Array.
+7. **Array-Konfiguration zurücksetzen:** Behalten Sie alle aktuellen Zuweisungen bei, wenn Sie die Array-Konfiguration zurücksetzen.
+8. **Weisen Sie den Datenträger ab:** Weisen Sie den Datenträger, den Sie entfernen möchten, ab und überprüfen Sie alle Zuweisungen, insbesondere das %%parity drive|parity-drives%%.
+9. **Bestätigen Sie den Paritätsstatus:** Markieren Sie das Kästchen, das anzeigt, dass die "Parität bereits gültig" ist.
+10. **Starten Sie das Array erneut:** Starten Sie das Array, um den Entfernen-Prozess abzuschließen.
+11. **(Optional) Parität überprüfen:** Sie können anschließend einen korrigierenden %%parity check|parity-check%% durchführen, um die Paritätsintegrität sicherzustellen.
+
+<details>
+  <summary>**Alternative Kommandozeilen-Methode für das Zurücksetzen eines Datenträgers auf Null**</summary>
+
+  Wenn Sie sich mit der Linux-Kommandozeile wohlfühlen, können Sie Ihren Datenträger mit den folgenden Anweisungen manuell auf Null setzen. Achten Sie darauf, den Befehl zu wählen, der Ihrer Version von Unraid entspricht.
+
+  Da das Zurücksetzen eines Datenträgers auf Null mehrere Stunden dauern kann, wird empfohlen, etwas wie das [Tmux Terminal Manager TTM Plugin](https://forums.unraid.net/topic/183427/plugin-tmux-terminal-manager-ttm/) zu verwenden, um die Befehle einzugeben und sicherzustellen, dass die Sitzung fortgesetzt wird.
+
+  **Für Unraid 6.12 oder später:**
+
+  1. Trennen Sie zunächst den Datenträger:
+     ```bash
+     umount /mnt/diskX
+     ```
+  2. Setzen Sie den Datenträger mit dem folgenden Befehl auf Null zurück:
+     ```bash
+     dd bs=1M if=/dev/zero of=/dev/mdXp1 status=progress
+     ```
+
+  **Für Unraid 6.11 und früher:**
+
+  1. Beginnen Sie, indem Sie den Datenträger ausbinden:
+     ```bash
+     umount /mnt/diskX
+     ```
+  2. Verwenden Sie anschließend diesen Befehl, um den Datenträger auf Null zu setzen:
+     ```bash
+     dd bs=1M if=/dev/zero of=/dev/mdX status=progress
+     ```
+
+  :::note
+  Denken Sie daran, `X` durch die spezifische Nummer der Datenfestplatte zu ersetzen, die Sie entfernen möchten.
+  :::
+
+  :::caution
+  Überprüfen Sie vor der Ausführung dieser Befehle die Laufwerksnummer, um zu vermeiden, versehentlich Daten auf der falschen Festplatte zu löschen.
+  :::
+
+  Zögern Sie nicht, sich an die [Unraid-Foren](https://forums.unraid.net/) zu wenden. Dort können Sie hilfreiche Ressourcen und Unterstützung aus der Community finden.
+</details>
