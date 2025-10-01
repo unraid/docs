@@ -1,0 +1,75 @@
+---
+sidebar_position: 2
+sidebar_label: Asegurando tu unidad flash
+---
+
+# Asegurando tu unidad flash
+
+La unidad flash es esencial para tu servidor Unraid, ya que almacena todos los datos de configuración, licencias y ajustes del sistema. Debido a su importancia, es crucial mantener su contenido seguro y accesible en todo momento.
+
+## Respaldos
+
+Tener una copia de seguridad reciente de tu unidad flash garantiza que puedes recuperarte rápidamente de fallos de hardware, cambios accidentales o corrupción de datos. Asegúrate de crear copias de seguridad en las siguientes situaciones:
+
+- Antes de actualizar Unraid o instalar complementos
+- Después de añadir o quitar unidades
+- Después de cambiar configuraciones de red, compartición o seguridad
+- Antes de realizar cambios importantes en la configuración
+- Periódicamente, como parte de tu rutina de mantenimiento regular
+
+Para respaldar tu unidad flash utilizando el Unraid WebGUI, sigue estos pasos:
+
+1. Selecciona tu unidad flash desde la pestaña **Principal**.
+2. En las **Configuraciones del dispositivo Flash**, haz clic en **Respaldar Flash**.
+
+<div style={{ margen: 'auto', maxAnchura: '600px', display: 'flex', flexDirection: 'columna', alignItems: 'centro' }}>
+  ![Seleccionar el botón de respaldo de Flash](/img/flashbackup.png)
+</div>
+
+3. Unraid creará un archivo ZIP que contiene los contenidos de la unidad flash.
+4. Guarda este archivo ZIP en un lugar seguro fuera de tu servidor Unraid (como una PC separada, NAS o almacenamiento en la nube).
+
+Si necesitas recrear tu unidad flash, utiliza esta copia de seguridad con la [herramienta USB Creator](https://unraid.net/download).
+
+:::tip
+
+Considera guardar una captura de pantalla de tus [asignaciones de disco](../../getting-started/set-up-unraid/configure-your-array.mdx#assign-parity-and-data-disks) después de cualquier cambio de hardware. Esto asegura la colocación correcta de los discos si necesitas restaurar desde tu copia de seguridad.
+
+:::
+
+---
+
+## Acceso a la Red
+
+Puedes controlar si tu unidad flash es accesible a través de la red, similar a otros compartidos en Unraid. Sin embargo, el acceso a la red debe restringirse ya que la unidad flash contiene datos de configuración y licencias sensibles. Considera lo siguiente:
+
+- **Visibilidad de la Red:** Decide si tu unidad flash debería ser visible u oculta en tu red.
+- **Derechos de acceso:** Si el acceso a la red está habilitado, configura los permisos para limitar quién puede ver o modificar sus contenidos.
+
+:::important[Reducing riesgos de seguridad]
+
+- **Desactivar compartición:** Establece la exportación %%SMB|samba%% de la unidad flash en **No** para evitar totalmente el acceso a la red.
+- **Restringir acceso:** Si debes compartir la unidad flash, configura la seguridad como **Privado** y concede acceso solo a usuarios de confianza con contraseñas fuertes.
+- **Evitar acceso público:** Nunca dejes la compartición de la unidad flash establecida como **Público** o **Seguro** con acceso de escritura para invitados.
+
+Estos pasos ayudan a prevenir cambios no autorizados o la exposición de archivos críticos.
+
+:::
+
+---
+
+## Permisos
+
+Para mejorar la seguridad del sistema, los archivos en la unidad flash ya no pueden recibir permiso de ejecución. Este cambio evita que el código malintencionado o no intencionado se ejecute directamente desde la unidad flash, reduciendo el riesgo de explotación o modificación accidental del sistema.
+
+Si tienes scripts o programas personalizados almacenados en la unidad flash, sigue estos pasos:
+
+1. **Copia los scripts a una ubicación ejecutable:**
+   - Usa `/usr/local/bin` si deseas que los scripts estén en la ruta del sistema por defecto.
+   - Automatiza esto añadiendo comandos de copia a tu archivo `config/go`.
+   - Después de copiar, establece el permiso de ejecución en los archivos.
+
+2. **Ejecuta scripts con un intérprete:**
+   - Antepon el script con el intérprete (por ejemplo, `bash /boot/config/scripts/myscript.sh`).
+
+Este enfoque mantiene tu sistema seguro al mismo tiempo que permite a los usuarios avanzados ejecutar sus scripts.
