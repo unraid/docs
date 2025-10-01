@@ -1,0 +1,463 @@
+---
+sidebar_position: 1
+sidebar_label: 命令行界面
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import CliCpuInfo from './partials/command-line-interface/cpu-info.mdx';
+import CliMemoryInfo from './partials/command-line-interface/memory-info.mdx';
+import CliStorageInfo from './partials/command-line-interface/storage-info.mdx';
+
+# 命令行界面
+
+While most tasks in Unraid can be performed through the %%WebGUI|web-gui%%, certain operations - especially those related to diagnostics, drive management, or scripting - require using the system console or %%SSH|ssh%% terminal. This page offers Unraid-specific command-line tools and examples that can be used without needing extensive Linux knowledge.
+
+:::tip[Device 路径]
+
+Many disk-level Unraid operations depend on Linux device names, like `/dev/sdX`. You can find the device identifier for any drive in the **Main** tab of the %%WebGUI|web-gui%%. Look for the three-letter label `sdX` or `nvmeX` next to each disk. Use the appropriate identifier in all commands, replacing `sdX` with your specific disk.
+
+:::
+
+## 访问终端
+
+Unraid includes a built-in web terminal that you can access directly from the %%WebGUI|web-gui%%. Simply use the top-right dropdown menu and select ">_". This opens a command-line session as the %%root user|root-user%%, giving you full administrative access to your system.
+
+您也可以使用 %SSH|ssh%（安全壳）与 %%PuTTY|putty%% 等客户端外部连接到 Unraid 服务器。
+
+:::tip[When 我应该使用终端吗？]
+
+终端访问对于以下情况很有用：
+
+- 运行例如 `smartctl`、`xfs_repair`、`tail` 或 `top` 等诊断和命令行工具
+- 执行不需要用户界面的插件脚本或工具
+- Troubleshooting issues related to connectivity, system services, or %%user shares|user-share%%
+
+:::
+
+### 使用 PuTTY（仅限 Windows）
+
+如果您使用的是Windows，可能更喜欢使用%%PuTTY|putty%%进行%%SSH|ssh%%访问，而不是内置终端。这个软件轻量级、免费，并允许您保存会话以便日后轻松访问。
+
+<details>
+  <summary><strong>如何安装和使用 PuTTY</strong> - 单击以展开/折叠</summary>
+
+  1. 从[官方网站](https://www.putty.software/)下载 %%PuTTY|putty%% 。
+  2. 启动 %%PuTTY|putty%% 应用程序。
+  3. 输入您的 Unraid 服务器的 IP 地址或主机名（如 `tower.local`）。
+  4. 将连接类型设置为 `%%SSH|ssh%%`。
+  5. （可选）保存会话名称以供将来使用。
+  6. 点击 **打开** 开始会话。
+  7. 遇到提示时，以 `root` 登录，然后输入您的密码。
+
+  Once you've logged in, you're in the Unraid shell environment. Type `exit` when you're finished to close the session.
+</details>
+
+:::note
+
+Unraid automatically configures the SSH server on the first boot. Ensure your networking is working properly and that your root password is set before attempting a remote connection.
+
+:::
+
+## 驱动器测试和监控
+
+These tools assist with evaluating performance, checking drive health, and troubleshooting %%array|array%% slowness. All commands should be executed from the terminal or via %%SSH|ssh%%.
+
+### `hdparm`
+
+使用此命令测试读取速度并显示驱动器特性。
+
+<details>
+  <summary><strong>查看 hdparm 选项</strong> - 单击以展开/折叠</summary>
+
+  **测试驱动器读取速度：**
+
+  ```bash
+  hdparm -tT /dev/sdX
+  ```
+
+  The `-t` flag tests buffered disk reads, while `-T` tests cache reads. This primarily measures sequential read performance and helps identify unusually slow drives.
+
+  **运行多个测试以提高准确性：**
+
+  ```bash
+  for ((i=0;i<5;i++)); do hdparm -tT /dev/sdX; done
+  ```
+
+  **查看驱动器信息：**
+
+  ```bash
+  hdparm -I /dev/sdX
+  ```
+
+  这将显示型号、固件、缓存大小和支持的功能，帮助验证磁盘类型和控制器行为。
+</details>
+
+### `smartctl`
+
+此命令运行 %%SMART|smart%% 诊断并监控驱动器健康。
+
+<details>
+  <summary><strong>查看 smartctl 选项</strong> - 单击以展开/折叠</summary>
+
+  **基本 %%SMART|smart%% 报告：**
+
+  ```bash
+  smartctl -a /dev/sdX
+  ```
+
+  如果此命令返回错误，请尝试指定设备类型：`smartctl -a -d ata /dev/sdX`（对于 NVMe 驱动器使用 `-d nvme`）。
+
+  **启动 %%SMART|smart%% 自检：**
+
+  短测试（需数分钟）
+
+  ```bash
+  smartctl -t short /dev/sdX
+  ```
+
+  扩展测试（可能需数小时）
+
+  ```bash
+  smartctl -t long /dev/sdX
+  ```
+
+  **将 %%SMART 报告|smart-report%% 保存到文件：**
+
+  ```bash
+  smartctl -a /dev/sdX > /boot/smart_report.txt
+  ```
+
+  这会将报告保存到您的 Unraid 闪存驱动器，以便稍后查看或在 [论坛](https://forums.unraid.net/) 上共享。
+</details>
+
+### `diskspeed.sh`
+
+此脚本允许进行全面的表面性能测试，并生成可视化报告。
+
+<details>
+  <summary><strong>查看 diskspeed.sh 用法</strong> - 单击以展开/折叠</summary>
+
+  This used to be a script you would download from the Unraid forums. DiskSpeed is available now in a more refined package:
+
+  在 [社区应用程序](../../using-unraid-to/run-docker-containers/community-applications.mdx) （***应用程序选项卡***）中搜索 "DiskSpeed" 来安装 DiskSpeed，或者访问 [GitHub 仓库](https://github.com/jbartlett777/DiskSpeed) 以获取手动安装说明。
+</details>
+
+---
+
+## 系统监控
+
+在 %%WebGUI|web-gui%% 不可用或需要更详细诊断时，使用这些命令监控内存、进程和系统性能。
+
+### `top`
+
+此命令提供实时的进程和资源监控。
+
+<details>
+  <summary><strong>查看 top 用法</strong> - 单击以展开/折叠</summary>
+
+  ```bash
+  top
+  ```
+
+  - 实时显示每个进程的 CPU 和内存使用情况。
+  - 按 `q` 退出。
+  - 使用方向键滚动，按 `k` 终止进程。
+
+  :::tip
+  Consider using `htop` for a more user-friendly interface with enhanced controls.
+  :::
+</details>
+
+### `free`
+
+此命令显示内存使用统计信息。
+
+<details>
+  <summary><strong>查看 free 用法</strong> - 单击以展开/折叠</summary>
+
+  ```bash
+  free -h
+  ```
+
+  This displays RAM usage in a human-readable format. The `-h` flag means sizes will show in KB, MB, or GB instead of bytes.
+
+  :::tip[Understand the output]
+  A low "available" memory reading doesn’t necessarily indicate a problem—Linux aggressively caches data for performance.
+  :::
+</details>
+
+### `ps`
+
+使用此命令显示正在运行的进程及其详细信息。
+
+<details>
+  <summary><strong>查看 ps 选项</strong> - 单击以展开/折叠</summary>
+
+  **列出所有进程的详细信息：**
+
+  ```bash
+  ps aux
+  ```
+
+  **按内存使用排序：**
+
+  ```bash
+  ps aux --sort=-%mem | head -20
+  ```
+
+  **按 CPU 使用排序：**
+
+  ```bash
+  ps aux --sort=-%cpu | head -20
+  ```
+</details>
+
+---
+
+## 存储工具
+
+这些命令有助于检查磁盘使用情况、分区信息和识别存储设备。
+
+### `df`
+
+此命令显示文件系统磁盘空间使用情况。
+
+<details>
+  <summary><strong>查看 df 用法</strong> - 单击以展开/折叠</summary>
+
+  ```bash
+  df -h
+  ```
+
+  This command displays the used and available space on all mounted file systems. It’s convenient for checking `/var/log` (which utilizes RAM-based logging) in Unraid. For more information on [system logging](../../troubleshooting/diagnostics/capture-diagnostics-and-logs.mdx).
+</details>
+
+### `fdisk`
+
+查看磁盘分区表和几何布局。
+
+<details>
+  <summary><strong>查看 fdisk 用法</strong> - 单击以展开/折叠</summary>
+
+  ```bash
+  fdisk -l /dev/sdX
+  ```
+
+  This command displays the partition layout, sizes, and disk geometry. It helps troubleshoot mismatched disk sizes, especially when [replacing disks](../../using-unraid-to/manage-storage/array-configuration.mdx#replacing-disks).
+</details>
+
+### `lsblk`
+
+以树形格式列出所有块设备。
+
+<details>
+  <summary><strong>查看 lsblk 用法</strong> - 单击以展开/折叠</summary>
+
+  ```bash
+  lsblk
+  ```
+
+  This command displays all storage devices, along with their mount points, in a straightforward tree structure. It’s great for getting an overview of your storage layout.
+</details>
+
+### `blockdev -getsz`
+
+帮助确定替换驱动器在重建前是否有足够的空间。
+
+<details>
+  <summary><strong>查看 blockdev 用法</strong> - 单击以展开/折叠</summary>
+
+  **语法：**
+
+  ```
+  blockdev --getsz /dev/sdX
+  ```
+
+  返回设备上 512 byte 扇区的原始数量 - 方便在重建前确认替换驱动器的大小。
+</details>
+
+### `blkid`
+
+识别文件系统标签。
+
+<details>
+  <summary><strong>查看 blkid 用法</strong> - 单击以展开/折叠</summary>
+
+  **语法：**
+
+  ```
+  blkid /dev/sdX1
+  ```
+
+  Outputs the filesystem type and label. Use this instead of the deprecated `vol_id` command when verifying that the Unraid flash is labeled `UNRAID`.
+</details>
+
+---
+
+## 网络诊断
+
+用于排除网络连接和接口配置问题的工具。
+
+### `ss`
+
+显示套接字统计和网络连接。这是`netstat`的现代替代品。
+
+<details>
+  <summary><strong>查看 ss 选项</strong> - 单击以展开/折叠</summary>
+
+  **显示所有监听端口：**
+
+  ```bash
+  ss -tuln
+  ```
+
+  - `-t`：TCP 套接字
+  - `-u`：UDP 套接字
+  - `-l`：仅显示监听套接字
+  - `-n`：显示端口号而不是服务名称
+
+  **显示已建立的连接：**
+
+  ```bash
+  ss -tup
+  ```
+
+  此命令显示活动连接及其过程信息。
+</details>
+
+### `ip`
+
+配置和显示网络接口信息。这是`ifconfig`的现代替代品。
+
+<details>
+  <summary><strong>查看 ip 选项</strong> - 单击以展开/折叠</summary>
+
+  **显示所有网络接口：**
+
+  ```bash
+  ip addr show
+  ```
+
+  **以颜色显示网络接口：**
+
+  ```bash
+  ip -c addr show
+  ```
+
+  **显示路由表：**
+
+  ```bash
+  ip route show
+  ```
+</details>
+
+### `ping`
+
+测试网络连接。
+
+<details>
+  <summary><strong>查看 ping 用法</strong> - 单击以展开/折叠</summary>
+
+  **通过发送有限数量的包来测试连接：**
+
+  ```bash
+  ping -c 4 google.com
+  ```
+
+  此命令向目标发送四个数据包后停止，适合进行基础的连接测试而不会产生连续输出。
+</details>
+
+### `ethtool`
+
+用于查询和调整网络接口卡 (NIC) 参数的实用工具，例如链接速度、卸载功能和统计数据。
+
+<details>
+  <summary><strong>查看 ethtool 用法</strong> - 单击以展开/折叠</summary>
+
+  **基本驱动程序和固件信息：**
+
+  使用此命令获取网络接口驱动程序和固件信息：
+
+  ```
+  ethtool -i eth0
+  ```
+
+  **显示当前链接速度和设置：**
+
+  要检查接口的当前链接速度和设置，请运行：
+
+  ```
+  ethtool eth0
+  ```
+
+  **显示扩展接口统计：**
+
+  对于界面的扩展统计，请使用以下命令：
+
+  ```
+  ethtool -S eth0
+  ```
+
+  这些命令可以帮助您确认千兆、2.5 GbE 或 10 GbE 连接的协商速度，诊断与电缆相关的问题，或识别可能由于卸载不匹配而产生的丢包。
+</details>
+
+---
+
+## 系统信息
+
+获取关于硬件、内核和整体系统配置的详细信息。
+
+<Tabs>
+  <TabItem value="cpu" label="CPU 信息">
+    <CliCpuInfo />
+  </TabItem>
+
+  <TabItem value="内存" label="内存信息">
+    <CliMemoryInfo />
+  </TabItem>
+
+  <TabItem value="您现在可以将unRAID阵列槽位数设置为“无”。" label="存储信息">
+    <CliStorageInfo />
+  </TabItem>
+</Tabs>
+
+---
+
+## 系统维护
+
+系统关闭、日志监控和服务管理的命令。
+
+### `尾`
+
+实时监控日志文件。
+
+<details>
+  <summary><strong>查看尾命令用法</strong> - 点击展开/折叠</summary>
+
+  ```bash
+  tail -f /var/log/syslog
+  ```
+
+  This command shows live updates from the system log. To exit, use `Ctrl+C`.
+
+  **显示特定行数：**
+
+  ```bash
+  tail -n 50 /var/log/syslog
+  ```
+</details>
+
+### `关机`
+
+安全关闭系统。
+
+<details>
+  <summary><strong>查看关机用法</strong> - 点击展开/折叠</summary>
+
+  ```bash
+  powerdown
+  ```
+
+  This command utilizes Unraid's built-in shutdown process to stop the %%array|array%% and power down the system safely. It's preferred over manual shutdown methods.
+</details>
