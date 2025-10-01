@@ -1,0 +1,1024 @@
+---
+sidebar_position: 2
+sidebar_label: Configuration de l'Array
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import AddDataDiskParityProtected from './partials/add-data-disk-parity-protected.mdx';
+import AddDataDiskNoParity from './partials/add-data-disk-no-parity.mdx';
+import ParitySwapWhat from './partials/parity-swap-what.mdx';
+import ParitySwapWhen from './partials/parity-swap-when.mdx';
+import RemoveDataDiskStandard from './partials/remove-data-disk-standard.mdx';
+import RemoveDataDiskParityPreserve from './partials/remove-data-disk-parity-preserve.mdx';
+import ArrayCheckParity from './partials/array-check-parity.mdx';
+import ArrayCheckRead from './partials/array-check-read.mdx';
+import TroubleshootMissingDisks from './partials/troubleshoot-missing-disks.mdx';
+import TroubleshootDeviceLimit from './partials/troubleshoot-device-limit.mdx';
+import TroubleshootLicenseIssues from './partials/troubleshoot-license-issues.mdx';
+import TroubleshootKeyServer from './partials/troubleshoot-key-server.mdx';
+import TroubleshootWithdrawnRelease from './partials/troubleshoot-withdrawn-release.mdx';
+
+# Configuration de l'Array
+
+Le système de stockage d'Unraid combine flexibilité et protection des données grâce à son architecture %%array|array%% et %%cache|cache%%. L'%%array|array%% gère votre stockage principal avec une protection %%parity|parity%% optionnelle, tandis que les caches pools accélèrent les performances.
+
+Voici quelques principes importants de configuration de l'array :
+
+<details>
+  <summary><strong>Utilisez toujours vos plus grands disques pour la parité.</strong></summary>
+
+  Lorsque vous ajoutez plus de disques à votre %%array|tableau%% plus tard, rappelez-vous que vous ne pouvez pas utiliser un disque de données plus grand que vos %%parity disks|disques de parité%%. Il est préférable d’acheter le plus gros disque dur pour vos %%parity disks|disques de parité%% dès le début. Ainsi, vous ne serez pas limité par de plus petites tailles lors de l'expansion par la suite.
+
+  Si vous utilisez deux %%parity disks|disques de parité%%, ils peuvent être de tailles différentes. Cependant, gardez à l'esprit qu'aucun disque de votre %%array|tableau%% ne peut être plus grand que le plus petit %%parity disks|disques de parité%% que vous avez.
+</details>
+
+<details>
+  <summary><strong>Ne pas utiliser de SSD dans le tableau – gardez-les pour les pools ou les appareils non assignés.</strong></summary>
+
+  Unraid ne supporte pas les opérations TRIM ou Discard pour les SSD dans le tableau principal. Avec le temps, cela entraînera une dégradation des performances des SSD s'ils sont utilisés comme membres du tableau. Pour de meilleurs résultats, utilisez les SSD dans les %%cache pools|cache-pool%% ou comme appareils non assignés, où ces fonctionnalités sont prises en charge et la performance à long terme est maintenue. La plupart des SSD modernes, y compris NVMe, fonctionnent bien dans ces rôles.
+</details>
+
+<details>
+  <summary><strong>Utiliser un cache améliorera les performances d'écriture du tableau.</strong></summary>
+
+  Au lieu d'écrire directement sur le stockage principal, les données sont d'abord envoyées à un disque dédié ou à un groupe de disques. Ces données sont ensuite transférées vers le stockage principal à des heures programmées, généralement une fois par jour à 3h40. L'avantage est que les données enregistrées sur le %%cache|cache%% apparaissent toujours via vos %%user shares|partages utilisateurs%%, vous n'avez donc pas besoin de modifier votre façon d'accéder à vos fichiers.
+</details>
+
+<details>
+  <summary><strong>Créer un pool de cache aide à préserver la sécurité de vos données mises en cache.</strong></summary>
+
+  N'utiliser qu'un seul appareil de cache compromet la sécurité de vos données mises en cache jusqu'à ce qu'elles soient déplacées vers le tableau principal. Pour protéger vos données à tout moment, utilisez plusieurs appareils configurés comme un %%cache pool|cache-pool%%. Cette configuration assure une redondance des données mises en cache, réduisant le risque de perte de données en cas de défaillance d'un appareil de cache.
+</details>
+
+<details>
+  <summary><strong>Les appareils de cache SSD sont parfaits pour les applications et les machines virtuelles.</strong></summary>
+
+  L'utilisation des SSD aide les applications et les machines virtuelles (VM) à fonctionner plus rapidement car elles peuvent accéder aux données plus rapidement. Les SSD fonctionnent bien dans un %%cache pool|cache-pool%%, offrant un excellent mélange de vitesse, d'efficacité et de sécurité des données.
+</details>
+
+<details>
+  <summary><strong>Le chiffrement est désactivé par défaut.</strong></summary>
+
+  Si vous souhaitez utiliser le chiffrement sur votre système, vous devez reformater le disque avec un type de système de fichiers crypté — ce processus efface toutes les données existantes sur le disque. Avant d'activer le chiffrement, déplacez vos données hors du disque, changez le système de fichiers pour une option cryptée, formatez le disque, puis déplacez à nouveau vos données. Pour plus de détails, consultez [Comment chiffrer un disque dans Unraid](../../system-administration/secure-your-server/securing-your-data.mdx#how-to-encrypt-a-drive-in-unraid).
+
+  Gardez à l'esprit que l'utilisation du cryptage peut rendre difficile la récupération des données si quelque chose tourne mal, utilisez-le donc uniquement si vous en avez vraiment besoin.
+</details>
+
+:::info[Disk Reconnaissance et flexibilité des ports]
+
+Unraid identifie les disques selon leurs numéros de série et leurs tailles, et non par les ports SATA spécifiques auxquels ils sont connectés. Cela signifie que vous pouvez échanger des disques entre différents ports SATA sans affecter leurs assignations dans Unraid. Cette fonctionnalité est particulièrement utile pour dépanner des problèmes matériels comme trouver un port défectueux ou remplacer des câbles d'alimentation ou SATA peu fiables.
+
+:::
+
+:::caution
+
+Votre array ne démarrera pas si vous attribuez ou attachez plus de périphériques que votre clé de licence ne le permet.
+
+:::
+
+## Lancer/Arrêter l'array
+
+Lorsque votre système démarre, il alimente généralement automatiquement l'array de disques. Cependant, si vous avez récemment modifié la configuration du disque, comme l'ajout d'un nouveau disque, l'array restera désactivé pour vous permettre de vérifier votre configuration.
+
+:::caution
+
+Gardez à l'esprit que vous devrez d'abord arrêter l'array pour effectuer des ajustements. L'arrêt de l'array arrêtera complètement tous les conteneurs Docker et les partages réseau, mettra en veille ou fermera les VMs, et vos périphériques de stockage seront démontés, rendant vos données et applications inaccessibles jusqu'à ce que vous redémarriez l'array.
+
+:::
+
+Pour démarrer ou arrêter l'array :
+
+1. Cliquez sur l'onglet **Principal**.
+2. Accédez à la section **Array Operation**.
+3. Cliquez sur **Start** ou **Stop**. Vous devrez peut-être cocher la case disant "Oui, je veux faire cela" avant de continuer.
+
+---
+
+## Opérations de l'array
+
+Unraid propose plusieurs options de maintenance et de configuration pour votre array de stockage. Les opérations clés incluent :
+
+import DocCardList from '@theme/DocCardList';
+
+<DocCardList
+  items={[
+  { type: 'link', href: '#adding-disks', label: 'Ajouter des disques', description: 'Augmenter la capacité de stockage' },
+  { type: 'link', href: '#replacing-disks', label: 'Remplacer des disques', description: 'Améliorer ou échanger des disques défectueux' },
+  { type: 'link', href: '#removing-disks', label: 'Retirer des disques', description: 'Retirer ou réduire la taille de l'array' },
+  { type: 'link', href: '#checking-array-devices', label: 'Vérification des appareils de l'array', description: 'Surveiller les données SMART et diagnostics' },
+  { type: 'link', href: '#spinning-disks-down-or-up', label: 'Faire tourner les disques vers le bas ou vers le haut', description: 'Gérer la mise en veille/réveil des disques' },
+  { type: 'link', href: '#reset-the-array-configuration', label: 'Réinitialiser la configuration de l'array', description: 'Reconstruire la structure de l'array' }
+  ]}
+/>
+
+---
+
+### Ajout de disques
+
+#### Configuration de nouveaux disques
+
+1. Allez à ***Main → Dispositifs de l'array*** dans l'interface.
+2. Choisissez l'emplacement où vous souhaitez ajouter le disque et sélectionnez le disque dans la liste déroulante.
+3. Par défaut, les nouveaux disques d'array seront formatés avec %%XFS|xfs%%. Si vous souhaitez utiliser %%ZFS|zfs%% ou %%BTRFS|btrfs%% à la place, sélectionnez votre système de fichiers préféré dans le menu déroulant.
+
+:::tip[Hot-Swap Caractéristique]
+
+Si vous utilisez du matériel moderne compatible avec Unraid, vous pouvez changer de disques sans éteindre votre serveur. Cette fonctionnalité, connue sous le nom de "hot-swap", est disponible dans les serveurs LimeTech depuis le début.
+
+:::
+
+#### Effacer vs Pré-Effacer
+
+Unraid exige que les disques soient dans un état nettoyé - entièrement remplis de zéros et marqués d'une signature spéciale - avant de les ajouter à un array protégé par parité. Ce processus garantit l'intégrité de la parité et maintient l'array en ligne pendant la préparation du disque.
+
+Clearance is mandatory when adding a data disk to a %%parity|parity%%-protected array. If you are adding a %%parity disk|parity-drives%% or working with an array that does not use %%parity|parity%%, clearance is not required.
+
+L'opération intégrée de nettoyage écrit des zéros sur le disque en arrière-plan, permettant à l'array de rester disponible. Une fois le processus terminé, le disque doit être formaté avant utilisation. Cette méthode est efficace, ne nécessite pas d'outils tiers, et est idéale pour des expansions rapides.
+
+Pour une approche plus approfondie, l'opération de pré-nettoyage, disponible via des plugins comme [Unassigned Devices Preclear](https://unraid.net/community/apps?q=unassigned+devices#r:~:text=enable%20destructive%20mode.-,Unassigned%20Devices%20Preclear,-dlandon), effectue une pré-lecture pour vérifier les secteurs défectueux, écrit des zéros sur le disque, et vérifie ensuite l'intégrité avec une post-lecture. Cette étape supplémentaire aide à détecter les défaillances prématurées du disque mais prend beaucoup plus de temps et nécessite l'installation manuelle du plugin.
+
+**Règle générale :** Utilisez l'opération d'effacement intégrée pour des ajouts rapides à votre array, ou choisissez le pré-effacement si vous souhaitez des tests étendus de la santé des disques avant de mettre un disque en service.
+
+<h4>Comparaison Effacer vs Pré-Effacer</h4>
+
+<div style={{ margin: 'auto', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+  |                        | Effacer                           | Pré-Effacer                                          |
+  | ---------------------- | --------------------------------- | ---------------------------------------------------- |
+  | **Objectif**           | Assure la compatibilité de base   | Teste le disque et le prépare à l'emploi             |
+  | **Vitesse**            | Fonctionne rapidement             | Processus beaucoup plus lent                         |
+  | **Impact sur l'array** | Fonctionne en arrière-plan        | Nécessite que le disque soit retiré de l'utilisation |
+  | **Meilleur Pour**      | Idéal pour des expansions rapides | Parfait pour vérifier de nouveaux disques            |
+</div>
+
+**Effacer** prépare rapidement un disque pour utilisation, le rendant compatible avec votre système et vous permettant d'ajouter du stockage en seulement quelques heures.
+
+**Pré-Effacer** prend plus de temps mais fournit un test approfondi, garantissant qu'un nouveau disque est fiable avant de devenir une partie de votre array.
+
+:::caution[Critical Note]
+
+Évitez de formater un disque pré-effacé avant de l'inclure dans l'array, car cela supprime la signature de dédouanement.
+
+:::
+
+#### Ajout de disques de données
+
+Ajouter des disques de données est une excellente manière d'augmenter l'espace de stockage de votre array Unraid. En ajoutant plus de disques, vous pouvez stocker plus de fichiers, d'applications, et de sauvegardes, tout en protégeant vos données.
+
+:::important[Important Note:]
+
+Lors de l'ajout d'un nouveau disque de données, il doit être de la même taille ou plus petit que vos %%parity disks|parity-drives%% actuels. Si vous souhaitez utiliser un disque plus grand, vous devrez d'abord remplacer les %%parity disks|parity-drives%% par un plus grand, puis utiliser les anciens %%parity disks|parity-drives%% comme disque de données.
+
+:::
+
+<details>
+  <summary><strong>Comment ajouter un disque de données</strong></summary>
+
+  ```mdx-code-block
+
+  <Tabs>
+    <TabItem value="standard" label="Standard addition (Parity-protected)" default>
+      <AddDataDiskParityProtected />
+    </TabItem>
+
+    <TabItem value="no-parity" label="Addition without parity">
+      <AddDataDiskNoParity />
+    </TabItem>
+  </Tabs>
+  ```
+</details>
+
+#### Ajout de disques de parité
+
+%%Parity disks|parity-drives%% are a helpful feature that provide an extra layer of protection for your data. They allow your storage system to recover information if a hard drive fails. While using %%parity disks|parity-drives%% is optional, it's highly recommended to keep your data safe.
+
+:::important\[Requirements]
+
+- **Parité Unique :** Le disque doit être au moins de la même taille que votre plus grand disque de données.
+- **Double Parité :** Les deux %%parity disks|parity-drives%% doivent également être au moins de la taille de votre plus grand disque de données, mais ils peuvent être de tailles différentes.
+
+:::
+
+L'ajout d'un %%parity disk|parity-drives%% est similaire à l'ajout d'un disque de données, mais il y a une étape importante à garder à l'esprit :
+
+1. Après avoir sélectionné le disque de %%parité|parity-drives%% et démarré votre matrice de stockage, un processus appelé **calcul de parité** commence.
+2. Pendant que ce processus se déroule, vous pouvez toujours accéder à vos fichiers. Cependant, le système pourrait fonctionner un peu plus lentement car il travaille à calculer la parité.
+
+<details>
+  <summary><strong>En profondeur : Qu'est-ce que la parité et pourquoi est-ce important ?</strong> - Cliquez pour développer/réduire</summary>
+
+  %%Parity|parity%% in Unraid protects your data by ensuring that you can recover from a drive failure. With the use of a %%parity disk|parity-drives%%, any single missing disk can be reconstructed by combining the information from all other data drives along with the %%parity|parity%% data.
+
+  Unraid repose sur cette parité en temps réel pour deux objectifs principaux :
+
+  - Reconstruire les données lorsqu'un disque échoue
+  - Corriger les erreurs lorsqu'un secteur défectueux est trouvé
+
+  Cette fonctionnalité vous permet de garder vos données en sécurité, même si les disques finiront par échouer au fil du temps.
+</details>
+
+<details>
+  <summary><strong>En profondeur : Comment fonctionne la parité dans Unraid ?</strong> - Cliquez pour développer/réduire</summary>
+
+  Unraid fonctionne avec un bit spécial appelé *bit de parité*, qui est stocké pour chaque position de bit sur tous les disques de données et est géré par un %%parity disk|disque de parité%% dédié. La %%parity|parité%% est calculée de sorte que le nombre total de bits à chaque position sur tous les disques (y compris le %%parity disk|disque de parité%%) soit toujours un nombre pair, un processus connu sous le nom de parité paire.
+
+  Voici comment cela fonctionne :
+
+  - Unraid utilise l'opération XOR (ou exclusif) pour ce calcul.
+  - Par exemple, si vous avez quatre disques et que leurs 57e bits sont 1, 1, 1, 1, le bit de parité pour cette position sera 0 (car 1 + 1 + 1 + 1 + 0 = pair).
+  - Cependant, si les 57e bits sont 1, 0, 0, 0, la %%parité|parity%% pour cette position sera 1 (pour s'assurer que le total reste pair).
+
+  Lorsque vous ajoutez un nouveau disque, Unraid commence par l'effacer en écrivant des zéros sur tous les bits. Cela permet une inclusion rapide dans le tableau protégé puisque l'écriture de zéros ne perturbe pas les calculs de parité actuels.
+</details>
+
+<details>
+  <summary><strong>En profondeur : Comment les données sont-elles reconstruites à l'aide de la parité ?</strong> - Cliquez pour développer/réduire</summary>
+
+  Unraid peut reconstruire un disque manquant ou réparer un secteur défectueux en utilisant les étapes suivantes :
+
+  - Il lit tous les disques restants, y compris le disque de %%parité|parity-drives%%.
+  - Il applique la %%parité|parity%% paire pour résoudre les données manquantes.
+
+  Par exemple, si le disque 2 échoue :
+
+  - Si les bits concernés sont 1, 1, 1 (en plus de la %%parity|parity%%), Unraid calcule : 1 + x + 1 + 1 + 0 = pair. Ici, x doit être 1 pour maintenir un total pair.
+  - Si les bits sont 1, x, 0, 0, 1 = pair, alors x sera égal à 0.
+
+  Cette fonction de %%parity|parité%% permet à Unraid de "simuler" le disque manquant. Vous pouvez continuer à utiliser le tableau comme si le disque était encore fonctionnel. Une fois que vous installez un nouveau disque dans l'emplacement défaillant, Unraid recréera toutes les données manquantes en fonction de l'état actuel de la %%parity|parité%% et des autres disques.
+
+  Pour assurer une protection continue et une récupération efficace, il est important d'effectuer des %%parity checks|vérifications de parité%% réguliers.
+</details>
+
+<details>
+  <summary><strong>Quelle taille doit avoir mon disque de parité ?</strong> - Cliquez pour développer/réduire</summary>
+
+  Votre %%parity disk|disque de parité%% doit être **égal ou supérieur à votre plus grand disque de données**. Par exemple :
+
+  - Si votre plus grand disque de données est de 10 To, votre disque de %%parité|parity-drives%% doit être d'au moins 10 To.
+  - Vous pouvez utiliser divers autres tailles de disques de données librement, tant qu'aucune ne dépasse la taille du disque de %%parité|parity-drives%%.
+</details>
+
+<details>
+  <summary><strong>En profondeur : Comment la parité affecte-t-elle les performances d'écriture ?</strong> - Cliquez pour développer/réduire</summary>
+
+  Writing to a %%parity|parity%%-protected array involves four disk operations for each write: reading data, reading %%parity|parity%%, writing data, and writing %%parity|parity%%. This process requires a full rotation from each affected drive, so the overall write speed is limited by the slowest drive involved in the operation.
+
+  Ajouter un disque de %%parity|parité%% plus rapide n'améliorera pas nécessairement les vitesses d'écriture, sauf si vous écrivez sur plusieurs disques de données lents simultanément, permettant ainsi au %%parity disk|disque de parité%% de gérer la charge. Typiquement, la vitesse d'écriture est contrainte par le disque de données le plus lent vers lequel on écrit.
+</details>
+
+<details>
+  <summary><strong>En profondeur : Comment fonctionne la double parité ?</strong> - Cliquez pour développer/réduire</summary>
+
+  La double %%parity|parité%% permet une récupération de **deux pannes de disque simultanées**. Dans Unraid, le deuxième %%parity disk|disque de parité%% ne reflète pas simplement le premier. Au lieu de cela :
+
+  - **Parité 1 :** Utilise des calculs de %%parité|parity%% XOR (pair) standard.
+  - **Parité 2 :** Utilise un algorithme plus complexe (champ de Galois, plutôt que Reed-Solomon comme dans le traditionnel %%RAID 6|raid6%%), permettant à Unraid de reconstruire à partir de n'importe quels deux disques manquants en même temps. Cette fonctionnalité est significative pour les arrays plus grands, où le risque de multiples défaillances augmente. La double %%parity|parity%% augmente considérablement la résilience sans la surcharge supplémentaire de la redondance miroir.
+</details>
+
+:::caution\[Remember]
+
+Lors de la configuration d'un nouveau système de stockage de données, ajoutez d'abord vos disques de données, en vous assurant qu'ils utilisent tous un système de fichiers compatible. **Après** avoir placé vos disques de données, vous pouvez ajouter un %%parity disk|parity-drives%% pour vous protéger contre les défaillances de disque.
+
+Une fois votre %%parity disk|parity-drives%% ajouté, rappelez-vous que tout nouveau disque que vous souhaitez inclure dans l'array doit être nettoyé (mis à zéro) avant d'être intégré. Cela afin de garantir que la %%parity|parity%% reste valide et continue de protéger vos données.
+
+:::
+
+#### Mise à niveau des disques de parité
+
+Vous pouvez mettre à niveau votre(vos) dispositif(s) de disque de %%parité|parity-drives%% vers un plus grand afin d'utiliser des disques de plus grande taille dans la matrice ou ajouter un disque de %%parité|parity-drives%% supplémentaire.
+
+:::caution
+
+Si vous envisagez de suivre les étapes suivantes et que vous n'avez qu'un seul disque de %%parity disk|parité%%, gardez à l'esprit ces points :
+
+- Vos données ne seront pas protégées tant que la reconstruction de la %%parity|parity%% ne sera pas terminée. Si un disque de données tombe en panne pendant ce temps, vous pourriez perdre les informations sur ce disque.
+- Si vous avez déjà un disque de données qui a échoué, procéder avec ces étapes vous empêchera de pouvoir reconstruire ce disque. Dans ce cas, vous devriez suivre plutôt la procédure **Parity Swap**.
+
+:::
+
+Pour retirer un disque de parité :
+
+1. **Arrêtez la matrice :** Utilisez le WebGUI pour arrêter la matrice.
+
+:::tip
+
+Si votre serveur prend en charge le hot-swap, vous n'avez pas besoin de l'éteindre pour changer les disques. Vous pouvez passer en toute sécurité les étapes 2 et 4.
+
+:::
+
+2. **Éteignez le serveur :** Éteignez votre serveur pour effectuer en toute sécurité des modifications matérielles.
+3. **Installez le nouveau %%parity disk|parity-drives%% :** Placez le nouveau, plus grand %%parity disk|parity-drives%% dans votre serveur.
+4. **Allumez le serveur :** Rallumez le serveur.
+5. **Assignez le nouveau disque :** Allez dans l'emplacement de parité dans vos paramètres et assignez le nouveau disque, remplaçant l'ancien.
+6. **Démarrez l'array :** Utilisez le %%WebGUI|web-gui%% pour redémarrer l'array.
+
+Une fois l'array de nouveau en marche, Unraid commencera à reconstruire la %%parity|parity%% sur le nouveau disque. Vous pouvez toujours accéder à vos données pendant ce temps, mais gardez à l'esprit que cela pourrait être un peu plus lent jusqu'à ce que le processus soit terminé. Une fois que la reconstruction de la %%parity|parity%% est terminée, vos données sont de nouveau protégées !
+
+:::important[Important Conseils]
+
+- **Conservez l'ancien disque :** Ne retirez pas le vieux %%parity disk|parity-drives%% tant que la nouvelle reconstruction de la %%parity|parity%% n'est pas terminée. Si un disque de données échoue pendant la mise à niveau, avoir l'ancien disque pourrait vous aider à récupérer vos données.
+
+- **Utilisateurs de parité double :** Si vous avez deux disques de %%parité|parity-drives%%, mettez à niveau un à la fois pour plus de sécurité.
+
+- **Réutilisez l'ancien disque :** Après la mise à niveau, vous pouvez utiliser l'ancien disque de %%parité|parity-drives%% comme disque de données s'il répond toujours à vos besoins de stockage.
+
+:::
+
+---
+
+### Remplacement des disques
+
+Vous pouvez avoir besoin de remplacer des disques dans votre matrice pour deux raisons principales :
+
+1. [**Mise à niveau de la capacité**](#upgrading-capacity) : Votre stockage est presque plein, et vous souhaitez utiliser des disques plus grands.
+2. [**Défaillance ou retraite**](#replacing-faileddisabled-disks) : Un disque a échoué ou n'est plus pris en charge.
+
+Bien que le processus de remplacement des disques soit similaire dans les deux cas, soyez prudent, car il y a un risque de perte de données pendant le remplacement. Les dispositifs de parité aident à protéger vos données ; un dispositif de parité peut protéger contre une défaillance de disque unique, tandis que deux peuvent protéger contre la perte de données si deux disques échouent. Soyez toujours conscient de votre niveau de protection lors de remplacement de disques.
+
+#### Mise à niveau de la capacité
+
+Lors de la mise à niveau de votre disque de données vers un plus grand, voici quelques points à garder à l'esprit :
+
+- **Disques non montables :** Corrigez tous les disques non montables avant de mettre à jour. Un statut non montable ne sera pas résolu pendant la reconstruction.
+
+- **Risques de parité unique :** Si vous avez une parité unique, vous risquez une perte de données si un autre lecteur échoue pendant la mise à jour. Cherchez des conseils dans les forums si cela se produit.
+
+- **Protection par double parité :** Avec une double parité, vous êtes à l'abri de la perte de données si un lecteur échoue lors de la mise à jour d'un seul disque. Vous pouvez également mettre à niveau deux disques à la fois, mais notez que cela augmente le risque puisque vous n'aurez pas de protection contre l'échec d'un autre lecteur.
+
+- **Sauvegardez l'ancien disque :** Conservez le disque original intact jusqu'à ce que la mise à niveau soit confirmée réussie. Cela offre une option de secours si quelque chose tourne mal.
+
+:::warning
+
+Le remplacement des disques comporte toujours un risque. Si un autre disque tombe en panne lors de la mise à niveau, surtout avec une seule parité, vous risquez de perdre des données. Vérifiez toujours la santé de vos disques avant de commencer le processus et assurez-vous de conserver l'ancien disque intact jusqu'à ce que la mise à niveau soit terminée et que vos données soient confirmées comme sécurisées.
+
+:::
+
+Pour mettre à niveau un disque de données existant :
+
+1. **Run a parity check:** First, ensure the integrity of your data by running a %%parity check|parity-check%%. Go to [***Tools → Parity Check***](#checking-array-devices) and make sure there are **zero errors**. If parity isn't valid, rebuilding the disk will corrupt its file system.
+
+2. **Arrêter la matrice :** Ensuite, vous voudrez arrêter la matrice. Naviguez vers ***Principale → Opération de la Matrice*** et sélectionnez **Arrêter**.
+
+3. **Désattribuez le disque cible :** Une fois la matrice arrêtée, trouvez le disque que vous souhaitez remplacer. Retirez-le de son emplacement dans ***Principale → Dispositifs de la Matrice***.
+
+4. **Démarrez la matrice :** Maintenant, redémarrez la matrice. Unraid va émuler le disque manquant en utilisant les disques de parité et de données existants. Vous avez deux modes à choisir :
+   - **%%Maintenance Mode|maintenance-mode%%:** This mode prevents any writes to the %%emulated disk|emulated-disk%%.
+   - **Normal Mode:** If you need read/write access to the %%emulated disk|emulated-disk%%, select this option.
+
+:::note
+
+Le démarrage de la matrice en Mode Normal à ce point est optionnel. Vous pouvez l'utiliser pour vérifier que le disque émulé est monté et que les données semblent correctes avant de procéder, mais elle n'est pas requise pour le processus de mise à niveau.
+
+:::
+
+5. **Arrêtez à nouveau la matrice :** La matrice devrait maintenant indiquer que le disque non attribué a échoué. Arrêtez une fois de plus la matrice.
+
+6. **Attribuez le disque de remplacement :** Insérez votre nouveau disque plus grand dans l'emplacement vide de la matrice.
+
+7. **Start the array to rebuild:** Finally, start the array again. Unraid will now rebuild the contents of the %%emulated disk|emulated-disk%% onto the new disk. The file system will automatically adjust to take full advantage of the larger disk's capacity.
+
+#### Remplacement des disques échoués/désactivés
+
+<details>
+  <summary><strong>Qu'est-ce qu'un disque échoué/désactivé ?</strong></summary>
+
+  Un disque échoué ou désactivé est un disque qu'Unraid a cessé d'utiliser pour l'écriture de données, généralement parce qu'il a rencontré une erreur d'écriture. Gardez à l'esprit que cela ne signifie pas toujours que le disque lui-même est cassé ; parfois, cela peut être dû à de mauvaises connexions, des problèmes d'alimentation, ou simplement un problème temporaire.
+
+  Certains signes incluent :
+
+  <div class="texte--centre">
+    ![Un "X" rouge indique une erreur d'écriture](/img/Diskfailureindicator.png)
+    <p class="caption-center">*Ce "X" rouge indique quel disque doit être remplacé.*</p>
+  </div>
+
+  <br />
+
+  <div class="texte--centre">
+    ![Alerte de notification d'échec](/img/Diskfailurenotification.png)
+    <p class="caption-center">*Soyez attentif à ces alertes.*</p>
+  </div>
+
+  <br />
+
+  <details>
+    <summary><strong>Cliquez pour voir comment différentes configurations de parité gèrent les pannes de disque</strong></summary>
+
+    | Scénario d'échec | Pas de parité | Parité simple | Double parité |
+    | ---------------- | ------------- | ------------- | ------------- |
+
+    \| **1 Panne de disque**  | Données perdues | Reconstructible   | Reconstructible |
+    \| **2 Pannes de disque** | Données perdues | Données perdues     | Reconstructible |
+
+    :::tip[Conseils pour des reconstructions sûres]
+
+    - **Pour une seule parité :** Vous ne pouvez remplacer qu'un disque à la fois. Si un autre disque échoue pendant la reconstruction, vous pourriez perdre des données.
+    - **Pour une double parité :** Vous pouvez remplacer un ou deux disques en même temps, mais soyez prudent si plus de deux disques échouent.
+      :::
+
+    :::important
+    Si vous faites face à une situation où **plus de disques échouent que votre parité ne peut protéger :**
+
+    1. **Arrêtez immédiatement toutes les opérations d'écriture** pour éviter une perte de données supplémentaire.
+    2. Cherchez de l'aide en postant votre problème sur les [forums Unraid](https://forums.unraid.net/) avec des diagnostics.
+    3. **N'essayez pas une reconstruction** avant d'avoir reçu des conseils - concentrez-vous d'abord sur le sauvetage de vos données.
+       :::
+  </details>
+</details>
+
+<details>
+  <summary><strong>Comment diagnostiquer le problème</strong></summary>
+
+  Pour diagnostiquer le problème, commencez par vérifier le %%syslog|journal système%% et les %%SMART reports|rapports SMART%% :
+
+  - Si le %%syslog|syslog%% montre que le lecteur a été réinitialisé, il pourrait y avoir un problème de connexion ou de câbles.
+  - %%SMART reports|smart-report%% can help assess the drive's health, but the best way to check is by running a %%SMART|smart%% extended test. If it completes without errors, the drive is likely fine.
+  - Si vous voyez des erreurs de %%CRC|crc-errors%%, cela indique généralement des problèmes avec le câblage. Surveillez ces erreurs, car elles s'accumulent avec le temps et ne se réinitialisent pas.
+
+  :::tip
+  Pour rester informé des problèmes de disque, [activez les notifications](../../getting-started/set-up-unraid/customize-unraid-settings.mdx#notification-settings) dans Unraid. Ainsi, vous êtes immédiatement alerté si quelque chose ne va pas, réduisant ainsi le risque pour vos données.
+  :::
+</details>
+
+<details>
+  <summary><strong>Qu'est-ce que l'émulation ?</strong></summary>
+
+  When a drive is disabled, Unraid will use its parity and other working drives to emulate the failed drive. This means your system continues to operate, and you can still access the data stored on the %%emulated drive|emulated-disk%%:
+
+  - Unraid cessera d'écrire sur le disque physique, et toutes les mises à jour seront sauvegardées en parité et dans l'émulation à la place.
+  - Before replacing the failed drive, you can check and recover data from the %%emulated drive|emulated-disk%%, which keeps the physical drive intact for potential recovery.
+  - If you can't access the %%emulated drive|emulated-disk%%, repairing the file system is essential before any rebuild since fixing the file system is quicker and more effective than a rebuild.
+</details>
+
+<details>
+  <summary><strong>Préparer le remplacement du disque</strong></summary>
+
+  Lorsque vous devez remplacer un disque, assurez-vous que le nouveau disque est au moins aussi grand que le disque défaillant, mais pas plus grand que votre plus petit disque de parité. Si vous devez utiliser un disque plus grand, suivez la procédure de **Permutation de parité**.
+
+  Bien que cela ne soit pas obligatoire, de nombreux utilisateurs choisissent de pré-effacer les nouveaux disques pour les tester et aider à prévenir les défaillances précoces. Vous pouvez le faire avec le plugin Preclear, un test étendu %%SMART|smart%%, ou les outils du fabricant.
+
+  :::caution
+  If you try to rebuild using an unmountable %%emulated drive|emulated-disk%%, the new drive will also become unmountable. Always repair the file system before attempting a rebuild.
+  :::
+</details>
+
+If a disk in your Unraid system has failed or is disabled, don't worry! You can replace it and recover your data. Just follow these simple steps. Remember, you need a new disk that is the same size or larger than the one you're replacing, but it can't be larger than your smallest %%parity disk|parity-drives%%.
+
+:::important
+
+Avant de commencer, assurez-vous de vérifier les erreurs de disque ou les avertissements. Unraid doit être capable de lire tous les disques restants sans aucun problème pour que la reconstruction fonctionne correctement. Si un autre disque échoue, cela pourrait mener à une perte de données.
+
+:::
+
+Pour remplacer et reconstruire un disque :
+
+1. **Arrêtez l'array :**
+
+   - Connectez-vous au %%WebGUI|web-gui%% d'Unraid (l'interface web).
+   - Trouvez l'option pour arrêter la matrice. Ceci est nécessaire avant de pouvoir changer des disques.
+
+:::tip
+
+Si votre serveur prend en charge le remplacement à chaud, vous pouvez passer à l'étape suivante et simplement arrêter l'array.
+
+:::
+
+2. **Éteignez votre serveur** (seulement si vous **n'utilisez pas** le hot-swap):
+   - Si votre serveur ne supporte pas le hot-swap, vous devrez l'éteindre complètement.
+
+3. **Remplacez le disque défaillant :**
+   - Retirez l'ancien disque défaillant de votre serveur.
+   - Insert the new disk. Just remember, it has to be at least the same size as the old disk but no bigger than your smallest %%parity disk|parity-drives%%.
+
+4. **Allumez le serveur** (si vous l'avez éteint):
+   - Redémarrez votre serveur si vous l'avez éteint.
+
+5. **Attribuer le nouveau disque :**
+   - Retournez au %%WebGUI|web-gui%% d'Unraid.
+   - Trouvez l'emplacement pour le disque défaillant et attribuez votre nouveau disque à cet emplacement.
+
+6. **Confirmez votre action :**
+   - Vous verrez une boîte de confirmation. Cochez la case qui dit **Oui, je veux faire ça** et confirmez.
+
+7. **(Optionnel) Choisissez le %%mode maintenance|maintenance-mode%% :**
+   - Vous pouvez sélectionner le **Mode de Maintenance**, ce qui peut rendre le processus de reconstruction plus rapide. Cependant, pendant ce temps, vous n'aurez pas accès à la matrice.
+   - Si vous choisissez le %%mode maintenance|maintenance-mode%%, assurez-vous de cliquer sur **Sync** pour commencer la reconstruction.
+
+8. **Commencez la reconstruction :**
+   - Click **Start** to begin the process. Unraid will copy your data from the %%emulated disk|emulated-disk%% to the new disk.
+   - Si votre nouveau disque est plus grand, Unraid gérera l'espace supplémentaire pour vous.
+
+:::warning
+
+Si Unraid vous demande de formater le nouveau disque pendant la reconstruction, **ne le faites pas**. Le formatage effacera toutes les données et rendra la récupération impossible.
+
+:::
+
+<h4>À quoi s'attendre pendant la reconstruction</h4>
+
+- L'array sera toujours disponible pendant le processus de reconstruction (sauf si vous êtes en %%mode maintenance|maintenance-mode%%), mais elle pourrait fonctionner plus lentement.
+- La reconstruction peut prendre plusieurs heures, selon la taille de vos disques et l'utilisation du système.
+- Le nouveau disque aura le même système de fichiers que l'original.
+- Si l'ancien disque était non montable en raison de problèmes de système de fichiers, le nouveau disque ne sera également pas montable. Veuillez corriger tous les problèmes de système de fichiers avant de commencer la reconstruction.
+
+:::note[Additional notes]
+
+- Le processus de reconstruction ne changera pas le format de fichier du disque; il restaurera simplement sa forme précédente.
+- Vérifiez toujours la santé de chaque disque avant de commencer une reconstruction pour éviter tout problème potentiel.
+
+:::
+
+#### Échange de parité
+
+```mdx-code-block
+
+<Tabs>
+  <TabItem value="what" label="What is parity swap?">
+    <ParitySwapWhat />
+  </TabItem>
+
+  <TabItem value="when" label="When to use parity swap?">
+    <ParitySwapWhen />
+  </TabItem>
+</Tabs>
+```
+
+<details>
+  <summary><strong>Scénario d'exemple</strong></summary>
+
+  Vous avez une configuration Unraid avec un **disque de parité de 2 To** et un **disque de données de 1 To** et vous voulez remplacer le disque de 1 To par un **disque de 4 To**.
+
+  Tout d'abord, affectez le nouveau disque de 4 To comme disque de parité, qui remplacera le disque de 2 To. Ensuite, déplacez le disque de 2 To original vers l'emplacement de données, et retirez complètement le disque de 1 To.
+
+  Après ces changements, vous aurez un disque de 4 To comme nouvelle parité, assurant que vous pouvez ajouter des disques de données futurs jusqu'à 4 To. Le disque de 2 To contiendra désormais vos données existantes, tandis que le disque de 1 To peut être réutilisé.
+
+  Cet échange garde vos données sécurisées et votre array protégé, permettant des mises à niveau futures.
+</details>
+
+:::important\[Prerequisites]
+
+- Avant de commencer, assurez-vous que le disque de données que vous souhaitez remplacer est désactivé. Si le disque a échoué (affiche un indicateur rouge), il est déjà désactivé. Si le disque est en bon état mais que vous voulez le remplacer, désattribuez le disque et démarrez l'array une fois sans lui pour forcer Unraid à le marquer comme désactivé.
+- Si votre disque de données de remplacement n'est pas plus grand que votre disque de parité, utilisez plutôt la procédure standard [Remplacement d'un disque de données](#replacing-faileddisabled-disks).
+- Cette procédure n'est nécessaire que pour remplacer les disques de données dans une matrice Unraid par un disque plus grand que le disque de parité actuel. Si vous n'avez besoin que de mettre à niveau votre disque de parité, il suffit de retirer l'ancien disque de parité, d'ajouter le nouveau et de demarrer l'array. La parité se reconstruira automatiquement.
+
+:::
+
+:::warning\[Warnings]
+
+- Always verify the health of all drives using %%SMART reports|smart-report%% before starting a %%parity swap|parity-swap%%. Attempting this procedure with another failing or unhealthy disk increases the risk of data loss.
+- Précleurez le nouveau disque si possible. Bien que cela ne soit pas requis, le prédéclairage teste la résistance du disque et réduit le risque de défaillance précoce.
+- Identifiez correctement tous les disques avant de commencer. Notez les numéros de modèle et les quatre derniers caractères de chaque numéro de série pour éviter les erreurs lors de l'attribution.
+
+:::
+
+Pour effectuer un échange de parité :
+
+:::note
+
+Si le disque à remplacer est déjà désactivé (défaillant), vous n'avez pas besoin de réaliser les étapes 1 à 4. Si vous avez déjà installé le nouveau disque de remplacement (par exemple, après l'avoir précleuré), vous pouvez passer les étapes 5 à 8.
+
+:::
+
+1. **Arrêtez l'array** s'il est en cours d'exécution.
+2. **Désattribuez l'ancien disque de données** s'il est encore attribué. Si le disque était auparavant en bon état, vous pouvez voir des notifications d'erreur pour un disque manquant - cela est prévu.
+3. **Démarrez l'array.** Si une invite apparaît, cochez la case pour confirmer votre action. Le disque de données devrait maintenant s'afficher comme "Non installé."
+4. **Arrêtez à nouveau l'array.** À ce stade, l'array traite le disque comme défaillant.
+5. **Éteindre le serveur.**
+
+   :::tip
+   Si votre système prend en charge le **hot-swap**, vous n'avez pas besoin d'éteindre pour retirer ou installer des disques. Assurez-vous simplement que le tableau est arrêté avant de procéder à tout changement matériel.
+   :::
+
+:::
+
+6. *(Optional)* **Remove the old drive.** You may wish to keep it installed for testing or reassignment.
+7. **Install the new drive.** Pre-clearing is strongly recommended, but formatting is not needed.
+8. **Power on the server.**
+9. **Stop the array** if it started automatically. If you see a message about retrying to unmount disk shares, disable Docker and/or VM services in Settings, reboot, and try again.
+10. **Unassign the parity drive.**
+11. **Assign the new drive to the parity slot.** You may receive error notifications - this is normal.
+12. **Assign the old %%parity drive|parity-drives%% to the data slot** of the drive being replaced. Both the parity and replacement data drives should now display blue status indicators.
+13. **Go to *Main → Array Operation.*** You should see a **Copy** button and a message stating "Copy will copy the parity information to the new %%parity disk|parity-drives%%."
+14. **Confirm and start the copy process.** Check the confirmation box and click **Copy**. The array will not be available during this operation.
+
+- Le processus de copie peut prendre plusieurs heures, en fonction de la taille du disque. Une fois terminé, l'array sera arrêté et prêt pour une reconstruction de données.
+
+15. **Démarrez l'array pour commencer la reconstruction des données.**
+    - Confirmez votre action si vous y êtes invité. L'array est maintenant démarré et les données sont reconstruites sur le nouveau disque de données.
+    - Vous pouvez utiliser l'array pendant la reconstruction, mais pour de meilleures performances, limitez l'utilisation.
+    - Le processus de reconstruction prendra également plusieurs heures.
+
+:::warning
+
+Ne formatez jamais un disque pendant ce processus. Le formatage effacera toutes les données et mettra à jour la parité, rendant la récupération impossible.
+
+:::
+
+After completion, you will have a larger parity disk and a replaced data disk. Many users run a %%parity check|parity-check%% afterward for extra confidence, though this is optional.
+
+---
+
+### Retirer des disques
+
+Il peut arriver que vous souhaitiez retirer un disque de votre matrice Unraid. Que vous cherchiez à économiser de l'énergie, à retirer un disque ancien ou peu fiable, ou à réaffecter le matériel à un autre usage, le processus est assez simple.
+
+#### Retirer des disques de parité
+
+If you find that you no longer need the level of %%parity|parity%% protection in your setup, you can remove a %%parity disk|parity-drives%% whenever you want.
+
+Pour retirer un disque de parité %%parity drives|parity-drives%% :
+
+1. **Arrêtez l'array :** Commencez par accéder au %%WebGUI|web-gui%% et en arrêtant l'array.
+2. **Unassign the %%parity drives|parity-drives%%:** Locate the %%parity drives|parity-drives%% slot and set it to "Unassigned."
+3. **Démarrez l'array :** Enfin, redémarrez l'array pour valider les changements et retirer avec succès les disques de parité %%parity drives|parity-drives%% de la configuration.
+
+:::warning
+
+Avant d'apporter des modifications, gardez ceci à l'esprit : si vous avez déjà des disques de données défaillants dans votre tableau, retirer un disque de %%parité|parity-drives%% peut réduire le nombre de défaillances qu'Unraid peut gérer sans risque de perte de données.
+
+- Avec une double parité, vous pouvez récupérer d'un seul lecteur défaillant, mais soyez conscient que vous ne pourrez pas survivre à une autre défaillance pendant le processus de reconstruction.
+- Avec une seule parité, vous perdez toute redondance, ce qui signifie que toute défaillance supplémentaire pourrait entraîner une perte de données.
+
+:::
+
+#### Retrait de disques de données
+
+Retirer un disque de données est un processus simple, mais il est important de se rappeler que vous devrez effectuer une synchronisation de %%parité|parity%% par la suite. Jusqu'à ce que cette synchronisation soit terminée, il y a un risque de perte de données si un autre disque échoue.
+
+Vous pouvez choisir parmi deux méthodes pour retirer un disque de données :
+
+1. **Méthode standard** - Recommandée pour la plupart des utilisateurs.
+2. **Méthode de préservation de la parité** - Convient aux utilisateurs avancés qui souhaitent maintenir la parité pendant le retrait.
+
+```mdx-code-block
+
+<Tabs>
+  <TabItem value="standard" label="Standard method" default>
+    <RemoveDataDiskStandard />
+  </TabItem>
+
+  <TabItem value="parity-preserve" label="Parity-preserve method (Advanced)">
+    <RemoveDataDiskParityPreserve />
+  </TabItem>
+</Tabs>
+```
+
+---
+
+### Vérification des appareils du tableau
+
+Regularly checking your Unraid array is crucial for maintaining data integrity and identifying potential issues before they result in data loss. You can initiate a check using the **Check** button under ***Array Operations***. Depending on your array's configuration, this button allows you to conduct either a %%parity check|parity-check%% or a %%read check|read-check%%.
+
+<div style={{ margin: 'auto', maxWidth: '400px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+  ![Le bouton de vérification vous permet d'effectuer des vérifications de parité et de lecture](/img/Check_button.PNG)
+</div>
+
+Pour plus de commodité, vous pouvez planifier ces vérifications pour qu'elles se déroulent automatiquement à des intervalles qui vous conviennent en naviguant vers ***Paramètres → Planificateur***. Il est conseillé d'effectuer des vérifications automatiques, non correctives, sur une base mensuelle ou trimestrielle pour assurer la santé continue de vos données.
+
+#### Vérifications de Parité & Lecture
+
+```mdx-code-block
+
+<Tabs>
+  <TabItem value="parity-check" label="Parity checks" default>
+    <ArrayCheckParity />
+  </TabItem>
+
+  <TabItem value="read-check" label="Read checks">
+    <ArrayCheckRead />
+  </TabItem>
+</Tabs>
+```
+
+#### Vérifiez l'historique
+
+Whenever the system performs a %%parity check|parity-check%% or a %%read check|read-check%%, it keeps a record of what happened. You can view these details easily by clicking the **History** button found under ***Array Operations*** in the interface.
+
+Pour ceux qui veulent approfondir, tous ces enregistrements sont sauvegardés dans un fichier texte situé dans le répertoire `config` sur votre périphérique flash USB Unraid.
+
+---
+
+### Arrêter ou démarrer les disques tournants
+
+Unraid allows you to control the power states of your hard drives. You can easily %%spin them up or down|spin-state%%, and manage SSDs to be active or in standby. This helps save energy, extend the life of your drives, and reduce noise when the disks are not being used.
+
+<h4>Pourquoi activer ou désactiver ?</h4>
+
+- **Désactiver :** Si vous avez des disques qui ne sont pas fréquemment utilisés, les désactiver peut économiser de l'énergie et les faire durer plus longtemps.
+- **Activer :** Si vous savez que vous aurez bientôt besoin des fichiers, activer les disques à l'avance peut réduire les temps d'attente.
+
+<h4>Comment contrôler les états d'activation</h4>
+
+Vous pouvez contrôler les états d'activation des disques via l'onglet **Principal** dans le %%WebGUI|web-gui%% :
+
+1. **Allez à l'onglet Principal** et recherchez vos appareils de matrice
+2. **Trouvez les boutons de contrôle d'activation** - chaque disque affichera soit :
+   - Cliquez sur le bouton 🔘 pour **Activer** si le disque est actuellement désactivé
+   - Cliquez sur le bouton 🟢 pour **Désactiver** si le disque est actuellement actif
+3. **Cliquez sur le bouton approprié** pour l'action souhaitée :
+   - Cliquez sur **Désactiver** 🟢 pour mettre hors tension un disque inactif et économiser de l'énergie
+   - Cliquez sur **Activer** 🔘 pour mettre sous tension un disque actuellement désactivé
+
+N'oubliez pas que si un disque est en cours d'accès (par exemple si vous ouvrez un fichier), il restera actif et ignorera toute demande de désactivation.
+
+Lorsque un disque est désactivé, sa température ne s'affiche pas dans le %%WebGUI|web-gui%%. Cependant, dès qu'une application ou un utilisateur y accède, il se réactivera automatiquement.
+
+:::tip
+
+Utilisez les commandes de rotation pour économiser de l'énergie et réduire l'usure de vos disques. Rappelez-vous que les disques en cours d'utilisation resteront actifs jusqu'à ce que toutes les tâches soient terminées.
+
+:::
+
+---
+
+### Réinitialiser la configuration de la matrice
+
+Réinitialiser la configuration de votre array est une étape importante qui doit être entreprise avec soin. Ce processus est généralement nécessaire lors du retrait d'un disque, de la mise en place d'une nouvelle configuration de l'array, ou de la résolution de problèmes d'attribution de disque. Veuillez noter que cette action peut avoir un impact sur la protection des données et la parité, alors assurez-vous de n'y procéder que lorsque c'est réellement nécessaire.
+
+Les raisons courantes pour réinitialiser votre matrice incluent :
+
+- **Retrait ou remplacement de disques :** Si vous devez retirer ou changer des disques dans votre matrice.
+- **Recommencer à neuf :** Lorsque vous cherchez à créer une toute nouvelle configuration pour votre matrice.
+- **Correction d'erreurs d'attribution de disque :** Pour corriger tout problème concernant l'attribution actuelle des disques.
+- **Récupération de problèmes de configuration :** En cas de difficultés avec votre configuration existante.
+
+<div style={{ margin: 'auto', maxWidth: '650px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+  ![La réinitialisation de votre configuration de disques peut être effectuée via la nouvelle page de configuration](/img/Newconfig.png)
+</div>
+
+Pour réinitialiser votre configuration de matrice :
+
+1. Allez sur la page **Outils** et cliquez sur **Nouvelle Configuration**.
+2. Vous pouvez conserver certaines erreurs les erreurs existantes si vous ne souhaitez effectuer que des ajustements mineurs.
+3. Confirmez votre choix en cochant la case, puis cliquez sur **Appliquer**.
+4. Revenez à l'onglet **Main**. Après avoir appliqué les modifications, votre configuration aura été réinitialisée.
+5. Apportez toutes les modifications nécessaires à votre configuration en attribuant ou retirant des disques selon les besoins.
+6. Lancez la matrice en Mode Normal ou %%Mode de Maintenance|maintenance-mode%% pour finaliser vos mises à jour.
+
+:::important
+
+- **Préservation des données :** Unraid tentera de reconnaître les disques déjà utilisés et de préserver les données lorsque c'est possible.
+- **Impact sur la parité :** Retirer un disque de données invalidera toujours la parité à moins que ce disque ait été préparé (« zeroed ») avant son retrait.
+- **Changement d'ordre des disques :** Modifier l'ordre des disques n'affectera pas la parité1, mais cela *peut* invalider la parité2.
+
+:::
+
+:::caution
+
+Lorsque vous voyez le bouton **Démarrer**, il y a une case à cocher intitulée **Parité est valide**. Cochez cette case uniquement si vous êtes certain qu'elle est correcte ou si un utilisateur expérimenté d'Unraid vous a conseillé de le faire lors de la récupération. Cocher incorrectement cette option peut entraîner une perte de données.
+
+N'utilisez pas **Nouvelle Config** si votre objectif est de reconstruire un disque. Effectuer une Nouvelle Config efface l'historique de l'array nécessaire pour une reconstruction, et Unraid ne proposera pas de reconstruire le disque ensuite. Suivez plutôt la procédure de reconstruction de disque.
+
+:::
+
+#### Annuler une réinitialisation
+
+Si vous devez annuler une réinitialisation :
+
+1. Accédez à votre appareil flash sur le réseau (SMB).
+2. Localisez et ouvrez le dossier `config`.
+3. Renommez le fichier `super.old` en `super.dat`.
+4. Redémarrez votre serveur, et votre configuration de matrice précédente devrait être restaurée.
+
+---
+
+### Rapports d'état
+
+Unraid fournit des rapports de statut qui vous aident à suivre la santé de votre matrice de stockage. Ces rapports sont un moyen rapide de vérifier si l'un de vos disques est désactivé ou rencontre des problèmes de lecture ou d'écriture de données.
+
+- **Statut actuel :** Les rapports de statut affichent l'état actuel de votre array. Il est important de noter que ces informations sont réinitialisées après le redémarrage du système, elles ne conserveront donc pas un historique des problèmes passés.
+
+- **Aucune donnée historique :** Si vous souhaitez voir ce qui s'est passé avant un redémarrage, vous devrez chercher ailleurs, car ces rapports ne sauvegardent pas les états passés.
+
+:::important
+
+Remember that the status reports don't include %%SMART|smart%% data. %%SMART reports|smart-report%% give you a more detailed view of individual disk health. So, even if your status report shows everything is fine, checking the %%SMART reports|smart-report%% regularly is still a good idea to catch any potential problems early.
+
+:::
+
+---
+
+## Modes d'écriture de matrice
+
+Unraid propose divers modes d'écriture pour gérer les opérations sur l'array, chacun ayant ses propres avantages et inconvénients en termes de vitesse, de consommation d'énergie et d'usure des disques. Savoir comment ces modes fonctionnent, ainsi que le rôle d'un disque ou d'un pool de cache, peut vous aider à affiner votre serveur pour répondre au mieux à vos besoins.
+
+**Modes d'écriture en un clin d'œil**
+
+| Mode d'écriture               | Vitesse (Typique)                        | Consommation d'énergie | Quand les disques s'activent     | Protection des données    | Meilleur cas d'utilisation                                               |
+| ----------------------------- | ---------------------------------------- | ---------------------- | -------------------------------- | ------------------------- | ------------------------------------------------------------------------ |
+| Lire/Modifier/Écrire          | 20–40 Mo/s                               | Faible                 | Seulement parité et disque cible | Oui                       | La plupart des charges de travail, économie d'énergie, petites écritures |
+| Écriture Turbo (Reconstruire) | 40–120 Mo/s                              | Élevée                 | Tous les disques                 | Oui                       | Large file transfers, array rebuilds, %%parity checks\|parity-check%%    |
+| Écriture sur Cache (SSD/NVMe) | 50–110 Mo/s (SSD), 250–900 Mo/s (NVMe)\* | Varie                  | Seulement disques de cache       | Non (jusqu'à déplacement) | Applications, VM, écritures fréquentes, maximisation de la vitesse       |
+
+<h3>Lire/Modifier/Écrire</h3>
+
+<details>
+  <summary>Cliquez pour développer/réduire</summary>
+
+  <h4>Comment ça marche</h4>
+  Ce mode lit les données existantes et la parité, calcule la nouvelle parité, puis écrit les données mises à jour. Seuls le %%parity drive|disque de parité%% et le disque de données cible s'activent, ce qui entraîne une consommation d'énergie et une usure des disques réduites. Cependant, cela peut être plus lent en raison des cycles supplémentaires de lecture/écriture.
+
+  <h4>Quand l'utiliser</h4>
+
+  - À tout moment, surtout si vous souhaitez économiser l'énergie et que les disques inactifs s'arrêtent.
+  - Idéal pour les petites ou rares écritures.
+</details>
+
+<h3>Écriture Turbo (Reconstruction d'écriture)</h3>
+
+<details>
+  <summary>Cliquez pour développer/réduire</summary>
+
+  Le turbo write, également connu sous le nom d'écriture reconstructrice, est une fonction conçue pour accélérer la vitesse d'écriture de votre tableau Unraid. Il fonctionne en lisant tous les disques de données et en mettant à jour simultanément la parité. Ce processus élimine les délais causés par l'attente de la rotation des plateaux, comme on le voit dans le mode d'écriture par défaut. Cependant, il est important de noter que tous les disques du tableau doivent être en marche et fonctionner correctement pour que cela fonctionne efficacement.
+
+  <h4>Comment ça fonctionne</h4>
+
+  - Lorsque vous écrivez de nouvelles données, Unraid lit de tous les autres disques de données et recalcule la parité en même temps. Les nouvelles données et la parité mise à jour sont écrites ensemble.
+  - Tous les disques de la matrice doivent être opérationnels et activement en rotation.
+  - Cette méthode améliore significativement les vitesses d'écriture par rapport au mode d'écriture par défaut.
+
+  <h4>Quand utiliser l'écriture turbo</h4>
+
+  - Utilisez l'écriture turbo lors du transfert de grands fichiers séquentiels dans la matrice.
+  - It's effective during array rebuilds or %%parity checks|parity-check%%, as all drives will already be spinning.
+  - Ce mode est très utile lorsque minimiser le temps d'écriture est une priorité et que vous pouvez confirmer que tous les disques sont en bon état.
+
+  <h4>Quand éviter l'écriture turbo</h4>
+
+  - Évitez d'utiliser ce mode si vous souhaitez que vos disques s'arrêtent durant les périodes d'inactivité pour économiser de l'énergie.
+  - L'écriture turbo n'est pas idéale pour les petites écritures rares puisque cela déclenche la rotation de tous les disques à chaque écriture, augmentant ainsi la consommation d'énergie et l'usure des disques.
+  - Si vous pensez qu'un disque échoue ou est peu fiable, il est préférable d'éviter l'écriture turbo car elle repose sur le bon fonctionnement de chaque disque.
+
+  :::info
+  Le turbo write est le mieux adapté pour les opérations en masse et les scénarios nécessitant un débit élevé. Cependant, cela pourrait ne pas être le meilleur choix pour les tâches quotidiennes si vous vous concentrez sur les économies d'énergie et la minimisation de l'usure du disque.
+  :::
+</details>
+
+<h3>Écriture sur Cache</h3>
+
+<details>
+  <summary>Cliquez pour développer/réduire</summary>
+
+  <h4>Comment ça fonctionne</h4>
+
+  Les données sont d'abord écrites sur un SSD ou NVMe %%cache|cache%% rapide, puis peuvent être déplacées vers le tableau principal plus tard par un processus appelé %%Mover|mover%%. Les vitesses varient :
+
+  - SSD : 50–110 Mo/s
+  - NVMe : 250–900 Mo/s (ce qui peut utiliser des réseaux 10GbE)
+
+  Une fois que les données sont déplacées vers la matrice, elles sont protégées par la parité.
+
+  <h4>Quand utiliser l'écriture sur cache</h4>
+
+  - Pour les partages avec des opérations d'écriture fréquentes comme les applications, les machines virtuelles, ou les téléchargements.
+  - Pour améliorer la performance et réduire toute latence de l'écriture perçue.
+
+  <h4>Attentes de performance</h4>
+
+  - Sans un disque de cache : Moyenne de 20–30 Mo/s, avec des pics jusqu'à 40 Mo/s.
+  - Avec cache SSD : 50–110 Mo/s.
+  - Avec cache NVMe : 250–900 Mo/s selon les contraintes du réseau ou du disque.
+
+  :::tip
+  Pensez à utiliser un pool de cache (plusieurs dispositifs) pour plus de redondance et la protection des données avant que le %%Mover|mover%% ne fonctionne.
+  :::
+</details>
+
+:::info[Automated solutions]
+
+- Le mode **Auto** (une future fonctionnalité) activera l'écriture turbo uniquement lorsque tous les disques seront déjà en rotation.
+- Des plugins communautaires (cherchez "Turbo Write" dans l'onglet Applications) peuvent offrir des options d'automatisation ou de planification améliorées.
+
+:::
+
+Pour changer le Mode d'Écriture :
+
+1. Naviguez vers ***Paramètres → Paramètres des Disques***.
+2. Localisez **Reglable (méthode_md_écriture)**.
+3. Choisissez votre mode préféré :
+   - **Lire/Modifier/Écrire** (par défaut)
+   - **Reconstruire Écriture** (Écriture Turbo)
+   - **Auto** (fonctionnalité future)
+4. Cliquez sur **Appliquer** pour confirmer votre choix.
+
+:::important[Quick récapitulatif]
+
+- Utilisez **Écriture Turbo** lorsque vous avez besoin de vitesse, mais soyez conscient de l'augmentation de la consommation d'énergie et de l'activation des disques.
+- Utilisez **Écriture sur Cache** pour une performance optimale, particulièrement avec les disques SSD ou NVMe.
+- Pour la plupart des utilisateurs, le mode d'écriture par défaut offre le meilleur équilibre, sauf si vous avez spécifiquement besoin de vitesses plus élevées.
+
+:::
+
+---
+
+## Modes de lecture
+
+Lors de l'utilisation d'Unraid, la vitesse à laquelle vous pouvez lire les fichiers est principalement déterminée par le disque individuel qui contient chaque fichier. Contrairement aux systèmes %%RAID|raid%% traditionnels, qui combinent plusieurs disques pour améliorer les performances, Unraid stocke chaque fichier sur un seul disque. Cela signifie que les vitesses de lecture ne seront pas boostées par les vitesses combinées de plusieurs disques.
+
+<h3>Attentes de performance</h3>
+
+- **HDD unique typique :** 70–250 Mo/s (dépend du modèle de disque, de son âge, et de l'emplacement des données)
+- **SSD SATA typique :** 400–550 Mo/s
+- **NVMe SSD (dans un pool) :** 250–7,000 Mo/s (limites de la génération PCIe et du réseau/PCIe; par exemple, le réseau 10GbE plafonne à ~1,100 Mo/s)
+
+:::note[Special cas]
+
+- Si un disque est désactivé et que ses données sont en cours de reconstruction, Unraid utilisera les disques restants avec les informations de parité pour recréer les données. Pendant ce processus, la vitesse de lecture peut ralentir à 30–60 Mo/s ou même moins, en fonction du disque le plus lent de votre système.
+- Any ongoing operations in the array, such as a %%parity check|parity-check%% or rebuilding a drive, can also affect read performance. This is due to increased movement of the drive heads and overall contention for resources.
+
+:::
+
+---
+
+## Caches temporaires
+
+Les %%Cache pools|cache-pool%% dans Unraid offrent des avantages significatifs, notamment pour les tâches intensives en écriture, les machines virtuelles (VM) et les conteneurs Docker. Ces pools fonctionnent séparément de l'ensemble principal et peuvent être configurés avec plusieurs disques en utilisant soit le système de fichiers %%BTRFS|btrfs%% soit le %%ZFS|zfs%%, prenant en charge diverses configurations %%RAID|raid%% pour la vitesse et la protection des données.
+
+<h3>Pools de cache vs ensemble principal</h3>
+
+| Fonctionnalité                 | Pool de cache (BTRFS)                                                                                              | Pool de cache (ZFS)                                                                                                                              | Ensemble principal (Unraid)                                           |
+| ------------------------------ | ------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------- |
+| **Vitesse de lecture**         | SSD : 400–550 Mo/s, NVMe : 250–7,000 Mo/s\*                                                                        | SSD : 400–550 Mo/s, NVMe : 250–7,000 Mo/s\*                                                                                                      | HDD : 70–250 Mo/s (par disque)                                        |
+| **Vitesse d'écriture**         | SSD : 400–550 Mo/s, NVMe : 250–7,000 Mo/s\*                                                                        | SSD : 400–550 Mo/s, NVMe : 250–7,000 Mo/s\*                                                                                                      | 20–120 Mo/s (dépend du mode parité)                                   |
+| **Protection des données**     | RAID 1\|raid1%%/RAID 10\|raid10%% ; RAID 5\|raid5%%/RAID 6\|raid6%% (expérimental, non pour des données critiques) | RAID 1\raid1%%/RAID 10\raid10%% ; RAIDZ1\raidz1%%/RAIDZ2\raidz2%%/RAIDZ3\raidz3%% (stable, prêt pour la production)                              | Basé sur la parité, agnostique du système de fichiers                 |
+| **Expansion**                  | Taille de disque variée; ajout/suppression de dispositifs de manière dynamique                                     | Support d'ajout/suppression limité; impossible de supprimer de RAIDZ; ajout d'un seul dispositif pour étendre un seul-vdev RAIDZ dans Unraid 7.2 | Ajout de disques, mais pas de striping ni d'extension de performances |
+| **Complexité de récupération** | Risque accru de perte de données ; outils %%BTRFS\|btrfs%% requis                                                  | Risque élevé de perte de données ; outils ZFS\|zfs%% requis                                                                                      | Reconstruction plus facile basée sur la parité                        |
+| **Meilleur pour**              | Applications, VM, écritures fréquentes                                                                             | Applications, VM, écritures fréquentes, charges de travail d'entreprise                                                                          | Stockage en vrac, bibliothèques multimédia                            |
+
+\*Les vitesses réelles NVMe dépendent de la génération PCIe, du refroidissement et de la bande passante réseau (par exemple, le 10GbE plafonne à ~1,100 Mo/s).\*
+
+<h4>Avantages des pools de cache</h4>
+
+- **Performance élevée :** Les pools NVMe peuvent saturer les réseaux 10GbE/40GbE (1 100–3 500 Mo/s).
+- **RAID flexible :** Les %%BTRFS|btrfs%% et %%ZFS|zfs%% prennent en charge %%RAID 1|raid1%%/%%RAID 10|raid10%% pour la redondance sans tailles de disque identiques.
+- **Faible latence :** Idéal pour les bases de données, les VM et les conteneurs Docker.
+- **Avantages de ZFS :** %%ZFS|zfs%% offre des fonctionnalités de niveau entreprise telles que la vérification de l'intégrité des données, la compression et les instantanés.
+
+<h4>Inconvénients des pools de cache</h4>
+
+- **Pas de protection par parité :** Les données ne sont pas protégées tant qu'elles ne sont pas déplacées vers l’ensemble.
+- **Risques de récupération :** Le %%BTRFS|btrfs%% %%RAID 5|raid5%%/%%RAID 6|raid6%% est instable ; les pools à un seul disque manquent de redondance.
+- **Considérations pour ZFS :** %%ZFS|zfs%% nécessite plus de RAM et a des exigences matérielles plus strictes que %%BTRFS|btrfs%%.
+
+For more detailed information about %%cache pools|cache-pool%%, including how to set them up, manage them, and advanced features, check the [Cache pools](./cache-pools.mdx) page.
+
+---
+
+## Dépannage
+
+### Dépannage des échecs de démarrage de l'ensemble
+
+Si votre array ne démarre pas, suivez ces étapes pour identifier et résoudre les problèmes courants. Recherchez les messages d'erreur sous ***Main → Opérations de l'array***.
+
+```mdx-code-block
+
+<Tabs>
+  <TabItem value="missing-disks" label="Missing disks" default>
+    <TroubleshootMissingDisks />
+  </TabItem>
+
+  <TabItem value="device-limit" label="Device limit">
+    <TroubleshootDeviceLimit />
+  </TabItem>
+
+  <TabItem value="key-issues" label="License issues">
+    <TroubleshootLicenseIssues />
+  </TabItem>
+
+  <TabItem value="key-server" label="Key server connection">
+    <TroubleshootKeyServer />
+  </TabItem>
+
+  <TabItem value="withdrawn" label="Withdrawn release">
+    <TroubleshootWithdrawnRelease />
+  </TabItem>
+</Tabs>
+```
+
+### Échec de disque pendant une reconstruction
+
+Si un second disque échoue pendant que vous en reconstruisez un autre, ce que vous pouvez faire dépendra de votre configuration de parité.
+
+<h4>Disque de %%parité unique|parity-drives%%</h4>
+
+Si un disque échoue pendant la reconstruction d’un autre, la reconstruction s’arrêtera car les données ne peuvent pas être restaurées avec précision. Malheureusement, vous ne pourrez pas récupérer vos données dans cette situation.
+
+<h4>Double disque de %%parité|parity-drives%%</h4>
+
+If you have two %%parity drives|parity-drives%%, you have more options:
+
+- Vous pouvez attendre la fin de la première reconstruction puis gérer le deuxième disque défaillant.
+- Ou, vous pouvez arrêter la reconstruction actuelle, remplacer le second disque défaillant, puis démarrer l'ensemble pour reconstruire les deux disques en même temps.
+
+Si la première reconstruction est presque terminée, il est généralement préférable de la laisser se terminer. Si elle vient de commencer, il peut être plus rapide de reconstruire les deux en même temps.
+
+:::warning
+
+Rebuilding disks puts a lot of stress on all drives, which increases the chance of new failures. Always check drive health using %%SMART reports|smart-report%% before starting a rebuild.
+
+:::
+
+:::info[Rebuild Temps
+
+Préparez-vous à ce que le processus de reconstruction prenne plusieurs heures. Le temps peut varier en fonction de la taille du disque et de l'activité de votre système. Les disques plus grands et les systèmes occupés peuvent prendre plus de temps.
+
+:::
