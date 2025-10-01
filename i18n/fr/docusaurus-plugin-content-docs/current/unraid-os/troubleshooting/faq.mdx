@@ -1,0 +1,422 @@
+---
+sidebar_position: 3
+sidebar_label: FAQ
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+# Questions Fréquemment Posées
+
+Si vous avez besoin d'aide avec le système d'exploitation Unraid, vous avez plusieurs options de support :
+
+- **Forums Unraid :** [Support général](https://forums.unraid.net/forum/55-general-support/), [Conception compulsive](https://forums.unraid.net/forum/35-unraid-compulsive-design/)
+- **Documentation Officielle:** [Documentation Unraid](../../docs-home.mdx)
+- **Discord:** [Communauté Discord Unraid](https://discord.unraid.net)
+- **Portail de Support:** [Support Unraid](https://unraid.net/support)
+
+---
+
+## Index
+
+- [**Construction & Matériel**](#build--hardware)
+  - [J'ai besoin d'aide pour une construction ou la configuration d'un système. Où dois-je aller ?](#build-help)
+  - [Quels contrôleurs sont recommandés pour Unraid ?](#hardware-raid-support)
+  - [Quelle est la meilleure façon d'ajouter plus de stockage si mon contrôleur intégré est plein ?](#add-more-storage)
+  - [Unraid a-t-il une fonction d'allocation qui se souvient des secteurs défectueux sur les disques pour éviter d'écrire dessus ?](#bad-sector-allocation)
+- [**OS & Configuration**](#os--configuration)
+  - [Puis-je utiliser une clé HASP dans une VM sur Unraid ? Comment cela fonctionne-t-il avec plusieurs VMs ?](#hasp-key-vm)
+  - [Ma clé USB a échoué et je n'ai pas de sauvegarde. Comment rétablir ma configuration ?](#usb-failed-restore)
+  - [Que dois-je faire si j'ai oublié mon mot de passe root ?](#forgot-root-password)
+  - [Comment puis-je redémarrer complètement Unraid OS à partir de zéro ? (Procédure de réinitialisation d'usine)](#factory-reset)
+  - [Comment puis-je changer le nom d'hôte de mon serveur ?](#change-hostname)
+  - [Ma clé USB signale un GUID invalide. Que dois-je faire ?](#invalid-guid)
+- [**Virtualisation & Appareils**](#virtualization--devices)
+  - [Chaque fois que j'arrête ma machine virtuelle Windows avec un GPU AMD assigné, elle ne redémarre pas. Que puis-je faire ?](#amd-gpu-vm-restart)
+  - [Comment puis-je passer par le GPU principal à une machine virtuelle si mon CPU n'a pas de graphiques intégrés ?](#primary-gpu-passthrough)
+- [**Stockage & RAID**](#storage--raid)
+  - [Unraid prend-il en charge différents types de RAID comme RAID1/5/6/10 ?](#raid-types-support)
+  - [J'ai actuellement un ensemble de périphériques formatés avec une table de partition de type MBR et je souhaite passer au GPT. Comment faire ?](#mbr-to-gpt-conversion)
+- [**Réseau**](#networking)
+  - [Existe-t-il un moyen de désactiver le pont br0 ?](#disable-br0-bridge)
+  - [Je n'arrive pas à accéder au WebGUI en utilisant `http://tower` ou `http://tower.local`. Que faire ?](#webgui-connection)
+- [**Installation**](#installation)
+  - [Je ne parviens pas à installer Unraid sur mon périphérique flash USB avec le créateur de flash. Que faire ?](#usb-creator-issue)
+  - [Je dois configurer mon système pour démarrer en utilisant UEFI. Comment faire ?](#uefi-boot-config)
+  - [J'ai des problèmes d'utilisation de mon navigateur Web avec le WebGUI. Que puis-je faire ?](#webgui-browser-issues)
+  - [Comment puis-je prolonger mon essai d'Unraid ?](#extend-trial)
+- [**Licences**](#licensing)
+  - Pour les questions liées aux licences, consultez la [FAQ des Licences](licensing-faq.mdx).
+
+---
+
+## Construction & Matériel
+
+<a id="build-help" class="anchor-fix" style={{ fontWeight: "bold" }}><h3>J'ai besoin d'aide pour une construction ou la configuration d'un système. Où dois-je aller ?</h3></a>
+
+<details>
+  <summary><strong>Cliquer pour développer/réduire</strong></summary>
+
+  Pour obtenir des conseils sur la construction ou la mise à niveau de votre serveur Unraid, visitez le [forum Compulsive Design](https://forums.unraid.net/forum/35-unraid-compulsive-design/) ou rejoignez le [Discord Unraid](https://discord.unraid.net). La communauté est active et prête à vous aider, quel que soit votre niveau d'expérience.
+</details>
+
+<br />
+
+<a id="hardware-raid-support" class="anchor-fix" style={{ fontWeight: "bold" }}><h3>Quels contrôleurs sont recommandés pour Unraid ?</h3></a>
+
+<details>
+  <summary><strong>Cliquer pour développer/réduire</strong></summary>
+
+  Unraid fonctionne mieux avec des adaptateurs de bus hôte (HBA) non-%%RAID|raid%%. Il est préférable d'éviter les contrôleurs %%RAID|raid%% matériels, qui peuvent masquer les informations de santé des disques et compliquer la maintenance.
+
+  Vérifiez toujours les mises à jour du firmware et assurez-vous que le contrôleur est réglé en mode HBA/IT, et non en mode %%RAID|raid%%. Vous pouvez vous référer au [fil de contrôleurs recommandés](https://forums.unraid.net/topic/102010-recommended-controllers-for-unraid/) pour des modèles que la communauté a testés avec succès.
+</details>
+
+<br />
+
+<a id="add-more-storage" class="anchor-fix" style={{ fontWeight: "bold" }}><h3>Quelle est la meilleure façon d'ajouter plus de stockage si mon contrôleur intégré est plein ?</h3></a>
+
+<details>
+  <summary><strong>Cliquer pour développer/réduire</strong></summary>
+
+  Unraid allows for the expansion of storage across multiple controllers. You can add a compatible HBA (as mentioned above). Ensure the controller operates in standard HBA (non-%%RAID|raid%%) mode and supports %%AHCI|ahci%%/SATA. Avoid using %%RAID|raid%%-only cards, as Unraid requires direct disk access for %%parity|parity%% and monitoring.
+</details>
+
+<br />
+
+<a id="bad-sector-allocation" class="anchor-fix" style={{ fontWeight: "bold" }}><h3>Unraid a-t-il une fonction d'allocation qui se souvient des secteurs défectueux sur les disques pour éviter d'écrire dessus ?</h3></a>
+
+<details>
+  <summary><strong>Cliquer pour développer/réduire</strong></summary>
+
+  Unraid utilise les données %%SMART|smart%% de vos disques pour surveiller leur santé et détecter des problèmes tels que les secteurs défectueux. %%SMART|smart%% est intégré dans les disques durs et SSD modernes, suivant des attributs tels que les secteurs réalloués et en attente.
+
+  Bien que Unraid n'ait pas de fonctionnalité d'allocation spécifique pour éviter les secteurs défectueux, il utilise les données %%SMART|smart%% pour vous notifier si un disque montre des signes de défaillance ou un nombre croissant de secteurs défectueux. Ces informations se trouvent dans l'%%WebGUI|interface-web%% sous l'état de santé du disque et les attributs %%SMART|smart%%.
+
+  Si un disque montre un nombre élevé de secteurs réattribués ou en attente, envisagez de le remplacer bientôt pour éviter toute perte de données.
+
+  Si vous n'êtes pas certain de l'état de santé d'un disque, vous pouvez partager vos données %%SMART|smart%% dans le [forum de support général](https://forums.unraid.net/forum/55-general-support/) pour obtenir de l'aide de la communauté.
+</details>
+
+<br />
+
+---
+
+## OS & Configuration
+
+<a id="hasp-key-vm" class="anchor-fix" style={{ fontWeight: "bold" }}><h3>Puis-je utiliser une clé HASP dans une VM sur Unraid ? Comment cela fonctionne-t-il avec plusieurs VMs ?</h3></a>
+
+<details>
+  <summary><strong>Cliquer pour développer/réduire</strong></summary>
+
+  Si votre clé HASP est une clé USB, vous pouvez l'assigner à seulement un %%VM|vm%% à la fois. Notez que deux %%VM|vm%%s ne peuvent pas utiliser la même clé simultanément. Vous pourriez devoir passer par un contrôleur USB entier pour une meilleure compatibilité. Effectuez toujours des tests avec une licence d'essai pour confirmer que votre matériel fonctionne comme prévu.
+</details>
+
+<br />
+
+<a id="usb-failed-restore" class="anchor-fix" style={{ fontWeight: "bold" }}><h3>Ma clé USB a échoué et je n'ai pas de sauvegarde. Comment rétablir ma configuration ?</h3></a>
+
+<details>
+  <summary><strong>Cliquer pour développer/réduire</strong></summary>
+
+  Si vous aviez activé [Unraid Connect](../../unraid-connect/overview-and-setup.mdx) pour les sauvegardes Flash, vous pouvez l'utiliser pour restaurer. Sinon, procurez-vous une nouvelle clé USB de haute qualité, installez Unraid dessus et utilisez la clé d'enregistrement que vous avez reçue par email. Réassignez vos disques comme ils l'étaient. Si vous ne pouvez pas vous souvenir des affectations, postez pour obtenir de l'aide dans le [forum de support général](https://forums.unraid.net/forum/55-general-support/).
+</details>
+
+<br />
+
+<a id="forgot-root-password" class="anchor-fix" style={{ fontWeight: "bold" }}><h3>Que dois-je faire si j'ai oublié mon mot de passe root ?</h3></a>
+
+<details>
+  <summary><strong>Cliquer pour développer/réduire</strong></summary>
+
+  Référez-vous à [Réinitialiser votre mot de passe](../system-administration/secure-your-server/user-management.mdx#reset-your-password).
+
+  :::note
+  Si vous utilisez des disques chiffrés et oubliez le mot de passe de chiffrement, la récupération des données n'est pas possible - il n'y a pas de porte dérobée.
+  :::
+</details>
+
+<br />
+
+<a id="factory-reset" class="anchor-fix" style={{ fontWeight: "bold" }}><h3>Comment puis-je redémarrer complètement Unraid OS à partir de zéro ? (Procédure de réinitialisation d'usine)</h3></a>
+
+<details>
+  <summary><strong>Cliquer pour développer/réduire</strong></summary>
+
+  1. Sauvegardez toutes les données que vous souhaitez conserver.
+  2. Stop the %%array|array%% and shut down your server.
+  3. Retirez le périphérique flash USB.
+  4. Utilisez l'outil Unraid USB Flash Creator pour reformater et réinstaller Unraid sur le périphérique flash.
+  5. Réinsérez le périphérique flash et démarrez votre serveur.
+  6. Dans le WebGUI, ouvrez un terminal et exécutez `lsblk` pour répertorier tous les disques (à l'exception du flash).
+  7. Effacer les systèmes de fichiers existants de chaque disque de données :
+
+  :::danger[Critique : Opération Destructive]
+  **Cette étape effacera définitivement TOUTES les données sur le ou les disques spécifiés et est IRRÉVERSIBLE !**
+
+  - **Vérifiez que vous avez des sauvegardes** de toutes les données dont vous avez besoin avant de continuer
+
+  - **Vérifiez deux fois l'identifiant du périphérique** dans le WebGUI ou avec `lsblk` avant d'exécuter cette commande
+
+  - **Assurez-vous de cibler le bon disque** - la perte de données due à un mauvais disque ne peut pas être récupérée
+
+  Pour chaque disque de données, exécutez :
+
+  ```
+  wipefs /dev/sdX
+  ```
+
+  Remplacez `X` par la lettre correcte du disque (ex. : sda, sdb, sdc)
+  :::
+
+  8. Continuez avec la configuration et l'installation normales d'Unraid.
+</details>
+
+<br />
+
+<a id="change-hostname" class="anchor-fix" style={{ fontWeight: "bold" }}><h3>Comment puis-je changer le nom d'hôte de mon serveur ?</h3></a>
+
+<details>
+  <summary><strong>Cliquer pour développer/réduire</strong></summary>
+
+  Pour changer le nom d'hôte de votre serveur Unraid, accédez au WebGUI dans **Paramètres → Paramètres Système → Identification**.
+
+  **Effets du changement de nom d'hôte :**
+
+  - Le nouveau nom d'hôte sera utilisé pour l'identification réseau (par ex., accès via `http://newname`).
+  - Vous devrez peut-être reconnecter tous les lecteurs réseau mappés ou raccourcis en utilisant le nouveau nom d'hôte.
+  - Certains appareils ou services peuvent mettre en cache l'ancien nom ; un redémarrage complet de l'appareil peut être nécessaire pour reconnaître le nouveau nom.
+</details>
+
+<br />
+
+<a id="invalid-guid" class="anchor-fix" style={{ fontWeight: "bold" }}><h3>Ma clé USB signale un GUID invalide. Que dois-je faire ?</h3></a>
+
+<details>
+  <summary><strong>Cliquer pour développer/réduire</strong></summary>
+
+  Unraid nécessite un périphérique flash USB avec un %%GUID|guid%% matériel unique (numéro de série). Certains fabricants peuvent réutiliser des %%GUID|guid%%s ou utiliser des valeurs génériques, rendant ces disques incompatibles entre eux.
+
+  **Marques testées sur le terrain :**
+
+  - Samsung FIT Plus / Bar Plus
+  - Kingston DataTraveler Exodia
+  - Lexar JumpDrive M45
+  - PNY Elite-X
+    (Évitez les modèles SanDisk Ultra Fit/Cruzer plus récents à moins que vous puissiez confirmer un %%GUID|guid%% unique.)
+
+  Il est préférable d'éviter les disques génériques ou sans marque, les SSD, les lecteurs de cartes USB et les adaptateurs de cartes SD, car ils manquent souvent de %%GUID|guid%%s uniques et peuvent ne pas être pris en charge pour démarrer Unraid.
+</details>
+
+<br />
+
+---
+
+## Virtualisation & Appareils
+
+<a id="amd-gpu-vm-restart" class="anchor-fix" style={{ fontWeight: "bold" }}><h3>Chaque fois que j'arrête ma machine virtuelle Windows avec un GPU AMD assigné, elle ne redémarre pas. Que puis-je faire ?</h3></a>
+
+<details>
+  <summary><strong>Cliquer pour développer/réduire</strong></summary>
+
+  De nombreuses cartes graphiques AMD rencontrent des problèmes avec les réinitialisations au niveau des fonctions, ce qui contribue à ce problème. Les solutions de contournement incluent l'éjection de la carte graphique depuis Windows avant de l'éteindre ou l'utilisation d'une carte graphique NVIDIA, qui évite généralement ce problème.
+</details>
+
+<br />
+
+<a id="primary-gpu-passthrough" class="anchor-fix" style={{ fontWeight: "bold" }}><h3>Comment puis-je passer par le GPU principal à une machine virtuelle si mon CPU n'a pas de graphiques intégrés ?</h3></a>
+
+<details>
+  <summary>Cliquez pour développer/réduire</summary>
+
+  C'est faisable mais nécessite des étapes supplémentaires. Consultez le guide vidéo de [SpaceInvaderOne](https://forums.unraid.net/topic/51230-video-guidehow-to-pass-through-an-nvidia-gpu-as-primary-or-only-gpu-in-unraid/) pour des instructions détaillées sur la façon de bien le faire.
+</details>
+
+<br />
+
+---
+
+## Stockage & RAID
+
+<a id="raid-types-support" class="anchor-fix" style={{ fontWeight: "bold" }}><h3>Unraid prend-il en charge divers types de RAID tels que RAID1/5/6/10 ?</h3></a>
+
+<details>
+  <summary><strong>Cliquer pour développer/réduire</strong></summary>
+
+  Unraid dispose d'une architecture de stockage unique qui le distingue des systèmes %%RAID|raid%% traditionnels. Voici une comparaison des différentes options de stockage :
+
+  | Fonctionnalité / Capacité                           | Unraid %%parity\|parity%% %%array\|array%% (md)                  | %%BTRFS\|btrfs%% pool (%%cache\|cache%%)                                                                | **%%ZFS\|zfs%% pool (7.x+)**               | %%RAID 1\|raid1%%/%%RAID 5\|raid5%%/%%RAID 6\|raid6%%/%%RAID 10\|raid10%%                         |
+  | --------------------------------------------------- | ---------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- | ------------------------------------------ | ------------------------------------------------------------------------------------------------- |
+  | Modèle / de redondance %%parité\|parity%%           | Disque(s) %%parité\|parity%% dédié(s)                            | Logiciel %%RAID 1\|raid1%%/%%RAID 10\|raid10%%/%%RAID 5\|raid5%%/%%RAID 6\|raid6%% via %%BTRFS\|btrfs%% | %%RAID 1\|raid1%%-Z1/Z2/Z3 ou miroirs      | Striped %%parity\|parity%% (%%RAID 5\|raid5%%/%%RAID 6\|raid6%%) or mirrors (%%RAID 10\|raid10%%) |
+  | Division des données                                | Non                                                              | Oui (sauf %%RAID 1\|raid1%%)                                                                            | Oui                                        | Oui                                                                                               |
+  | Flexibilité de la taille du disque                  | Mélange de toutes tailles                                        | Idéal avec des tailles similaires                                                                       | Idéal avec des tailles similaires par vdev | Requiert des tailles assorties                                                                    |
+  | Étendre un disque à la fois                         | Oui                                                              | Oui (ajouter ou remplacer des appareils)                                                                | Oui (par vdev\*)                           | Généralement non                                                                                  |
+  | Système de fichiers par disque                      | Oui                                                              | Non                                                                                                     | Non                                        | Non                                                                                               |
+  | Vitesse de lecture d'un seul disque                 | Vitesse native du disque                                         | Agrégé (multi-disques)                                                                                  | Agrégé (multi-disques)                     | Agrégé                                                                                            |
+  | Dégradation de l'écriture lors de la reconstruction | Minimal (seul le lecteur en panne)                               | Dépend du niveau                                                                                        | Dépend de l'agencement vdev                | Significatif                                                                                      |
+  | %%Bit rot\|bit-rot%% detection                      | Optionnel (%%BTRFS\|btrfs%%/%%ZFS\|zfs%% %%checksum\|checksum%%) | ✅ Intégré                                                                                               | ✅ End-to-end %%checksum\|checksum%%s       | ❌ Non inhérent                                                                                    |
+  | %%Snapshot\|Instantané%% / envoi-réception          | ❌                                                                | ✅ (%%BTRFS\|btrfs%%)                                                                                    | ✅ Native                                   | ❌                                                                                                 |
+  | Utilisation recommandée en production               | Stockage média général                                           | %%RAID 1\|raid1%%/%%RAID 10\|raid10%% (évitez %%RAID 5\|raid5%%/%%RAID 6\|raid6%%)\*\*                  | ✅ Tous les niveaux stables                 | Baies d'entreprise %%array\|array%%s                                                              |
+
+  \* %%ZFS|zfs%% vdevs must be expanded by replacing **all** drives in the vdev or adding a new vdev.\
+  \* %%BTRFS|btrfs%% %%RAID 5|raid5%%/%%RAID 6|raid6%% remains flagged as "experimental" upstream; use with caution.
+
+  - **Unraid %%parity|parité%% %%array|grappe%%** est excellent pour une expansion incrémentielle, permettant des tailles de disque disparates avec un stress minimal lors de la reconstruction.
+  - **%%ZFS|zfs%% pools** (available in 7.x) provide enterprise-class redundancy, %%snapshot|snapshot%%s, and %%checksum|checksum%%s, making them ideal for %%VM|vm%%s and databases.
+  - **Pools %%BTRFS|btrfs%%** excellent pour les %%cache|cache%%s SSD rapides, en mode %%RAID 1|raid1%%/%%RAID 10|raid10%% en miroir, en particulier.
+  - Les cartes matérielles %%RAID|raid%% traditionnelles ne sont *pas* nécessaires ; vous pouvez utiliser de simples cartes HBA pour permettre à Unraid de gérer directement les disques.
+</details>
+
+<br />
+
+<a id="mbr-to-gpt-conversion" class="anchor-fix" style={{ fontWeight: "bold" }}><h3>Je dispose actuellement d'une grappe d'appareils formatée avec une table de partition de type MBR et je souhaite convertir en GPT. Comment faire ?</h3></a>
+
+<details>
+  <summary><strong>Cliquer pour développer/réduire</strong></summary>
+
+  <h3>Pourquoi passer de MBR à GPT ?</h3>
+  MBR (Master Boot Record) prend en charge les disques jusqu'à 2 To et ne permet qu'un maximum de quatre partitions principales. En revanche, GPT (%%GUID|guid%% Partition Table) peut gérer des disques beaucoup plus volumineux et un nombre de partitions quasi illimité. Il est conseillé de passer à GPT si vous travaillez avec des disques plus importants ou si vous souhaitez une meilleure gestion des partitions.
+
+  :::important[Utilisez le **Mode Maintenance**]
+  Avant de commencer le processus de conversion, placez votre %%array|tableau%% en **Mode Maintenance**. Cette étape garantit qu'aucune écriture n'intervient durant la conversion, protégeant vos données.
+  :::
+
+  <h3>Processus de conversion</h3>
+
+  1. Assurez-vous d'avoir une %%parity|parité%% valide et une sauvegarde actuelle de votre lecteur flash.
+  2. Entrez en **Mode de Maintenance** depuis l'onglet ***Principal***.
+  3. Remplacez et reconstruisez d'abord votre lecteur de %%parity|parité%%.
+  4. Remplacez chaque lecteur de données un à la fois, en reconstruisant le %%array|array%% après chaque remplacement.
+  5. Le nouveau disque sera formaté avec le style de partitionnement approprié selon sa taille :
+     - **2 To ou moins** : Utilise un partitionnement MBR
+     - **Plus grand que 2 To** : Utilise un partitionnement GPT
+  6. - **2 To ou moins** : Utilise un partitionnement MBR
+       - **Plus grand que 2 To** : Utilise un partitionnement GPT6.
+
+  Ce processus garde vos données en sécurité tout en changeant le style de partitionnement.
+
+  :::note[Notes additionnelles]
+
+  - **Le partitionnement est automatique** : Unraid choisit automatiquement le style de partitionnement basé sur la taille du disque :
+    - **2 To ou moins** : Utilise toujours un partitionnement MBR
+    - **Plus grand que 2 To** : Utilise toujours un partitionnement GPT
+  - À partir d'Unraid OS 6.9, la partition 1 commence à 32KiB pour les dispositifs rotatifs et à 1MiB pour les dispositifs non rotatifs, quel que soit le style de partition.
+  - Sauvegardez toujours votre [clé USB](../system-administration/secure-your-server/secure-your-flash-drive.mdx#backups) avant de commencer ce processus de conversion.
+    :::
+</details>
+
+<br />
+
+---
+
+## Réseau
+
+<a id="disable-br0-bridge" class="anchor-fix" style={{ fontWeight: "bold" }}><h3>Y a-t-il un moyen de désactiver le pont br0 ?</h3></a>
+
+<details>
+  <summary><strong>Cliquer pour développer/réduire</strong></summary>
+
+  Oui. Le pont **br0** est un pont réseau Linux permettant aux conteneurs Docker et aux %%VM|vm%%s de se connecter directement à votre réseau local (LAN) avec leurs adresses IP. Il agit comme un commutateur réseau virtuel connectant votre interface réseau physique aux interfaces virtuelles utilisées par les conteneurs et les %%VM|vm%%s.
+
+  :::note
+  Désactiver br0 signifie que les %%VMs|vm%% et les conteneurs Docker n'auront pas accès direct au LAN et pourraient perdre certaines fonctionnalités réseau avancées.
+  :::
+</details>
+
+<br />
+
+<a id="webgui-connection" class="anchor-fix" style={{ fontWeight: "bold" }}><h3>Je n'arrive pas à me connecter au WebGUI en utilisant `http://tower` ou `http://tower.local`. Que faire ?</h3></a>
+
+<details>
+  <summary><strong>Cliquer pour développer/réduire</strong></summary>
+
+  Si vous avez du mal à vous connecter à l'%%interface-web|WebGUI%% par nom d'hôte, le problème pourrait venir de votre DNS local qui ne résout pas le nom du serveur. Essayez plutôt de vous connecter directement en utilisant l'adresse IP.
+
+  **Comment trouver l'adresse IP de votre serveur :**
+
+  - Vérifiez la liste des clients DHCP de votre routeur ou commutateur pour un appareil répertorié comme "Tower" ou similaire.
+  - Si vous avez attribué une IP statique lors de la création du flash, utilisez cette adresse.
+  - Branchez un moniteur et un clavier à votre serveur ; l'adresse IP apparaîtra sur la console locale après le démarrage.
+
+  **Causes communes de ce problème :**
+
+  - Votre ordinateur et votre serveur pourraient être sur différents sous-réseaux ou VLANs.
+  - Votre routeur peut ne pas prendre en charge la résolution locale des noms d'hôtes.
+  - Le serveur Unraid pourrait ne pas être connecté au réseau ou avoir une configuration réseau incorrecte.
+  - Les logiciels de sécurité ou pare-feu peuvent bloquer l'accès.
+
+  Si vous ne parvenez pas à vous connecter, essayez de redémarrer votre serveur et les équipements réseau, et assurez-vous que tous les câbles sont correctement connectés.
+</details>
+
+<br />
+
+---
+
+## Installation
+
+<a id="usb-creator-issue" class="anchor-fix" style={{ fontWeight: "bold" }}><h3>Je n'arrive pas à installer Unraid sur mon périphérique flash USB avec le créateur de flash. Que faire ?</h3></a>
+
+<details>
+  <summary><strong>Cliquer pour développer/réduire</strong></summary>
+
+  Si l'outil de création de clé USB ne fonctionne pas pour votre système ou votre clé USB, vous pouvez utiliser la [méthode d'installation manuelle](../getting-started/set-up-unraid/create-your-bootable-media.mdx#manual-install-method) pour préparer votre périphérique de démarrage Unraid. Cette méthode est compatible avec Windows, macOS, et Debian/Ubuntu Linux.
+</details>
+
+<br />
+
+<a id="uefi-boot-config" class="anchor-fix" style={{ fontWeight: "bold" }}><h3>J'ai besoin de configurer mon système pour démarrer en utilisant UEFI. Comment faire ?</h3></a>
+
+<details>
+  <summary><strong>Cliquer pour développer/réduire</strong></summary>
+
+  Vous pouvez configurer le mode de démarrage %%UEFI|uefi%% de plusieurs façons :
+
+  **Option 1 : Lors de la création du flash**
+
+  - Lors de l'utilisation du créateur de clé USB, sélectionnez l'option pour activer le mode de démarrage %%UEFI|uefi%% avant d'écrire Unraid sur le lecteur USB.
+
+  **Option 2 : Après le démarrage en mode Legacy**
+
+  - Dans le %%WebGUI|web-gui%%, rendez-vous sur la page ***Paramètres → périphérique Flash***.
+  - Activez le mode de démarrage %%UEFI|uefi%% et redémarrez votre serveur.
+
+  **Option 3 : Renommer le dossier manuellement**
+
+  - Sur le lecteur USB, renommez le dossier `EFI-` en `EFI` (retirez le tiret `-`).
+  - Insérez le lecteur USB dans votre serveur, puis accédez aux paramètres de votre BIOS/case%%UEFI|uefi%% de la carte mère.
+  - Définissez le flash USB comme périphérique de démarrage principal et activez le mode de démarrage %%UEFI|uefi%% (assurez-vous de désactiver le mode CSM/Legacy/Compatibilité, si disponible).
+</details>
+
+<br />
+
+<a id="webgui-browser-issues" class="anchor-fix" style={{ fontWeight: "bold" }}><h3>J'ai des problèmes d'utilisation de mon navigateur Web avec le WebGUI. Que puis-je faire ?</h3></a>
+
+<details>
+  <summary><strong>Cliquer pour développer/réduire</strong></summary>
+
+  Si vous rencontrez des problèmes d'affichage ou de fonctionnalité avec le %%WebGUI|web-gui%%, prenez en compte les éléments suivants :
+
+  - **Bloqueurs de publicités et de contenu :** Ces extensions de navigateur peuvent interférer avec le WebGUI. Essayez d'ajouter votre serveur Unraid à la liste blanche de votre bloqueur de publicités ou désactivez le bloqueur pour l'adresse de votre serveur.
+  - **Extensions de navigateur :** Certaines extensions peuvent bloquer des scripts ou altérer le contenu des pages. Désactivez les extensions ou essayez d'utiliser une fenêtre privée/incognito.
+  - **Navigateurs obsolètes :** Assurez-vous d'utiliser un navigateur moderne et à jour (comme Chrome, Firefox, ou Edge). Les navigateurs plus anciens peuvent ne pas complètement supporter le WebGUI.
+  - **Problèmes de cache :** Effacez votre cache du navigateur ou essayez un rafraîchissement forcé (Ctrl+F5 ou Cmd+Shift+R).
+  - **Problèmes de réseau :** Assurez-vous que votre ordinateur et le serveur sont connectés au même réseau et sous-réseau.
+
+  Si les problèmes persistent, essayez d'accéder au %%WebGUI|web-gui%% depuis un autre navigateur ou appareil.
+</details>
+
+<br />
+
+<a id="extend-trial" class="anchor-fix" style={{ fontWeight: "bold" }}><h3>Comment prolonger mon essai d'Unraid&nbsp;?</h3></a>
+
+<details>
+  <summary><strong>Cliquer pour développer/réduire</strong></summary>
+
+  Si vous avez besoin de plus de temps avec votre [essai gratuit de 30 jours](https://unraid.net/download) de Unraid, vous pouvez le prolonger. Une fois votre essai initial expiré, arrêtez votre %%array|array%% et allez à la page **Enregistrement**. Vous devriez voir un bouton vous permettant de demander une extension de 15 jours. Vous pouvez le faire deux fois pour un total de 60 jours avant de devoir acheter une licence.
+
+  :::important
+  Vous devez utiliser le même périphérique USB pour continuer votre essai. Changer de périphérique USB nécessitera de recommencer un essai à partir de zéro.
+  :::
+</details>
+
+<br />
