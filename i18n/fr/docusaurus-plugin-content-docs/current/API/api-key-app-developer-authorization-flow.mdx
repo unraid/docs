@@ -1,0 +1,100 @@
+# Flux d'autorisation de clé API
+
+Ce document décrit le processus de création de clé API en libre-service pour les applications tierces.
+
+## Aperçu
+
+Les applications peuvent demander un accès API à un serveur Unraid en redirigeant les utilisateurs vers une page d'autorisation spéciale où les utilisateurs peuvent examiner les autorisations demandées et créer une clé API en un clic.
+
+## Flux
+
+1. **L'application initie la demande** : L'application redirige l'utilisateur vers :
+
+   ```
+   https://[unraid-server]/ApiKeyAuthorize?name=MyApp&scopes=docker:read,vm:*&redirect_uri=https://myapp.com/callback&state=abc123
+   ```
+
+2. **Authentification de l'utilisateur** : Si non déjà connecté, l'utilisateur est d'abord redirigé pour se connecter (auth standard Unraid)
+
+3. **Écran de consentement** : L'utilisateur voit :
+   - Nom et description de l'application
+   - Autorisations demandées (avec cases à cocher pour approuver/refuser des portées spécifiques)
+   - Champ de nom de la clé API (pré-rempli)
+   - Boutons Autoriser & Annuler
+
+4. **Création de clé API** : Après autorisation :
+   - La clé API est créée avec les portées approuvées
+   - La clé est affichée à l'utilisateur
+   - Si `redirect_uri` est fourni, l'utilisateur est redirigé avec la clé
+
+5. **Rappel** : L'application reçoit la clé API :
+   ```
+   https://myapp.com/callback?api_key=xxx&state=abc123
+   ```
+
+## Paramètres de requête
+
+- `name` (obligatoire) : Nom de l'application requérante
+- `description` (facultatif) : Description de l'application
+- `scopes` (obligatoire) : Liste des portées demandées, séparée par des virgules
+- `redirect_uri` (facultatif) : URL de redirection après autorisation
+- `state` (facultatif) : Valeur opaque pour maintenir l'état
+
+## Format de portée
+
+Les portées suivent le modèle : `ressource:action`
+
+### Exemples :
+
+- `docker:read` - Accès en lecture à Docker
+- `vm:*` - Accès complet aux machines virtuelles
+- `system:update` - Accès de mise à jour au système
+- `role:viewer` - Accès en tant que visualiseur
+- `role:admin` - Accès en tant qu'administrateur
+
+### Ressources disponibles :
+
+- `docker`, `vm`, `system`, `share`, `user`, `network`, `disk`, etc.
+
+### Actions disponibles :
+
+- `create`, `read`, `update`, `delete` ou `*` pour toutes
+
+## Considérations de sécurité
+
+1. **HTTPS requis** : Les URIs de redirection doivent utiliser HTTPS (sauf localhost pour le développement)
+2. **Consentement de l'utilisateur** : Les utilisateurs approuvent explicitement chaque autorisation
+3. **Basé sur la session** : Utilise la session d'authentification Unraid existante
+4. **Affichage unique** : Les clés API sont affichées une fois et doivent être sauvegardées en toute sécurité
+
+## Intégration Exemple
+
+```javascript
+// JavaScript example
+const unraidServer = 'tower.local';
+const appName = 'My Docker Manager';
+const scopes = 'docker:*,system:read';
+const redirectUri = 'https://myapp.com/unraid/callback';
+const state = generateRandomState();
+
+// Store state for verification
+sessionStorage.setItem('oauth_state', state);
+
+// Redirect user to authorization page
+window.location.href =
+    `https://${unraidServer}/ApiKeyAuthorize?` +
+    `name=${encodeURIComponent(appName)}&` +
+    `scopes=${encodeURIComponent(scopes)}&` +
+    `redirect_uri=${encodeURIComponent(redirectUri)}&` +
+    `state=${encodeURIComponent(state)}`;
+
+// Handle callback
+const urlParams = new URLSearchParams(window.location.search);
+const apiKey = urlParams.get('api_key');
+const returnedState = urlParams.get('state');
+
+if (returnedState === sessionStorage.getItem('oauth_state')) {
+    // Save API key securely
+    saveApiKey(apiKey);
+}
+```
