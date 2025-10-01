@@ -1,0 +1,210 @@
+---
+sidebar_position: 1
+sidebar_label: Start- & Anlaufprobleme
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+# Start- & Anlaufprobleme
+
+Wenn Ihr Unraid-Server nicht korrekt startet, kann es schwierig sein, die Ursache zu identifizieren, ohne ein klares Verständnis des Boot-Prozesses. Mit Hilfe dieses Leitfadens können Sie die meisten Startprobleme schnell diagnostizieren und beheben, sodass Ihr %%array|array%%, %%WebGUI|web-gui%% und die Dienste mit minimaler Ausfallzeit betriebsbereit sind.
+
+## Vorbereiten des Flash-Geräts
+
+Dieses Thema wird ausführlich im Abschnitt [USB-Gerät vorbereiten](../../getting-started/set-up-unraid/create-your-bootable-media.mdx#prepare-your-usb-device) behandelt.
+
+:::caution
+
+Sichern Sie immer [Ihren USB-Stick](../../system-administration/maintain-and-update/changing-the-flash-device.mdx#backing-up-your-flash-device), bevor Sie Änderungen vornehmen. Alle benutzerspezifischen Einstellungen, einschließlich Ihres Lizenzschlüssels, werden im `config`-Ordner gespeichert. Durch Wiederherstellung dieses Ordners nach dem Vorbereiten des USB-Sticks bleibt Ihre aktuelle Konfiguration erhalten.
+
+:::
+
+## UEFI-Boot aktivieren
+
+Moderne Systeme erfordern in der Regel den **UEFI-Bootmodus** für erhöhte Sicherheit und schnellere Startzeiten.
+
+So konfigurieren Sie den %%UEFI|uefi%% Boot in Ihrem System-BIOS/%%UEFI|uefi%%-Einstellungen:
+
+1. Rufen Sie das BIOS-Setup Ihrer Hauptplatine während des Starts auf (normalerweise durch Drücken von F2, DEL oder ESC)
+2. Suchen Sie die Boot-Optionen oder Bootmodus-Einstellungen auf
+3. Setzen Sie den Bootmodus auf **UEFI** oder **UEFI mit deaktiviertem CSM**
+4. Stellen Sie sicher, dass das Unraid Flash-Gerät als UEFI-Bootgerät ausgewählt ist
+5. Speichern Sie Ihre Änderungen und beenden Sie
+
+## Verstehen der Startreihenfolge
+
+Die Unraid-Boot-Sequenz umfasst mehrere Phasen:
+
+<details>
+  <summary><strong>1. BIOS boot</strong> - Click to expand/collapse</summary>
+
+  The BIOS/UEFI firmware initializes hardware and locates the bootable device. This is the foundation of the entire boot process.
+
+  - Das Motherboard-BIOS erkennt das Unraid-Boot-Flash-Gerät.
+  - Das Festlegen des Flash-Geräts als Standard-Boot-Gerät variiert je nach BIOS - überprüfen Sie das Handbuch Ihrer Hauptplatine für Anleitung.
+  - Das Flash-Gerät unterstützt sowohl **Legacy (CSM)** als auch **%%UEFI|uefi%%** Boot-Modi.
+  - Um den %%UEFI|uefi%%-Boot zu aktivieren, stellen Sie sicher, dass der `EFI`-Ordner auf dem Flash-Gerät kein nachfolgendes Minuszeichen (`-`) hat.
+</details>
+
+<details>
+  <summary><strong>2. Syslinux loader</strong> - Click to expand/collapse</summary>
+
+  The bootloader presents startup options and loads the Linux kernel into memory. This stage determines which operating system or diagnostic tool will run.
+
+  - Die Bootmenüeinträge sind in der Datei `syslinux/syslinux.cfg` auf dem Flash-Gerät definiert.
+  - Sie können diese Datei über die %%WebGUI|web-gui%% unter ***Main → Syslinux-Konfiguration*** bearbeiten.
+  - **Memtest86+**, das mit aktuellen Versionen von Unraid geliefert wird, funktioniert in sowohl Legacy- als auch %%UEFI|uefi%%-Modi. Für ältere Unraid-Versionen holen Sie sich eine kompatible Version von der [offiziellen Memtest-Website](https://www.memtest86.com/) für %%UEFI|uefi%%.
+  - Wenn keine Option ausgewählt wird, startet das Standardprogramm nach einer Verzögerung, was für den kopflosen Betrieb nützlich ist.
+</details>
+
+<details>
+  <summary><strong>3. Linux core</strong> - Click to expand/collapse</summary>
+
+  The Linux kernel initializes and begins hardware detection. This is where the operating system takes control from the bootloader.
+
+  - **Syslinux** lädt den Linux-Kern vom Flash-Gerät in den RAM.
+  - Sie sehen Konsolennachrichten, die die bz\* Dateien laden.
+  - Fehler in dieser Phase deuten oft auf Probleme mit dem Flash-Gerät hin.
+  - Linux erkennt Hardware während des Startvorgangs.
+</details>
+
+<details>
+  <summary><strong>4. Flash dependent services</strong> - Click to expand/collapse</summary>
+
+  The flash device becomes accessible and essential services begin loading. This stage is critical for configuration and network access.
+
+  - Das Flash-Gerät wird unter `/boot` eingehängt.
+  - Wenn es nicht eingehängt wird, können Sie möglicherweise immer noch eine Anmeldeaufforderung sehen, aber das deutet auf einen unvollständigen Start hin.
+  - Verwenden Sie den `df`-Befehl, um zu überprüfen, ob `/boot` eingehängt ist.
+  - Das Flash-Gerät muss mit **UNRAID** (alles in Großbuchstaben) gekennzeichnet sein, um korrekt eingehängt zu werden.
+  - Zusätzliche Treiber und Firmware werden in dieser Phase verfügbar.
+  - Die Konfiguration wird in den RAM geladen.
+  - Standard-Linux-Dienste, einschließlich Netzwerken und %%WireGuard|wireguard%%-VPN (wenn aktiviert), starten hier.
+</details>
+
+<details>
+  <summary><strong>5. Plugins</strong> - Click to expand/collapse</summary>
+
+  Third-party extensions and customizations are loaded to enhance system functionality. Plugin issues can prevent successful startup.
+
+  - Installierte Plugins werden in diesem Schritt geladen.
+  - **Sicherer Start**-Optionen können die Plugin-Ladung nach Bedarf unterdrücken.
+</details>
+
+<details>
+  <summary><strong>6. WebGUI</strong> - Click to expand/collapse</summary>
+
+  Die webbasiertem Verwaltungsoberfläche wird verfügbar und ermöglicht die Fernadministration und -konfiguration Ihres Servers.
+
+  - Die %%WebGUI|web-gui%% startet an diesem Punkt.
+  - Die Datei `config/go` auf dem Flash-Gerät kann Benutzerbefehle vor oder nach dem Start der %%WebGUI|web-gui%% ausführen.
+</details>
+
+<details>
+  <summary><strong>7. Array</strong> - Click to expand/collapse</summary>
+
+  Storage devices are mounted and made available, completing the boot process. This is where your data becomes accessible.
+
+  - Wenn Autostart aktiviert ist, beginnt das %%array|array%% hier; andernfalls ist ein manueller Start erforderlich.
+  - Laufwerke werden als `/dev/diskX` und `/mnt/cache` (falls vorhanden) eingehängt.
+  - Freigaben werden im Netzwerk als `/mnt/user/sharename` verfügbar.
+  - Docker-Container starten in der auf der Docker-Seite angegebenen Reihenfolge mit anpassbaren Verzögerungen.
+  - Automatisch startende virtuelle Maschinen (%%VMs|vm%%) werden ebenfalls gestartet.
+</details>
+
+An diesem Punkt ist der Unraid-Server voll funktionsfähig.
+
+---
+
+## Startfehler
+
+Wenn Ihr Server nicht startet, hilft das systematische Fehlersuchen, die Grundursache schnell zu identifizieren und zu beheben. Befolgen Sie diese Schritte in der Reihenfolge, um kritische Probleme nicht zu übersehen oder unnötige Änderungen vorzunehmen. Jeder Schritt baut auf dem vorherigen auf, also springen Sie nicht vor, auch wenn ein Schritt für Ihr spezifisches Problem irrelevant erscheint.
+
+1. Verwenden Sie nach Möglichkeit einen USB 2.0-Anschluss für das Flash-Gerät. Dieser ist in der Regel zuverlässiger und anfälliger für Probleme als USB 3.0.
+2. Überprüfen Sie die BIOS-/%%UEFI|uefi%%-Einstellungen, um sicherzustellen, dass das Flash-Gerät als primäres Boot-Gerät festgelegt ist.
+3. Untersuchen Sie das Flash-Gerät auf physische oder logische Fehler an einem Windows- oder macOS-Computer.
+4. Extrahieren Sie die Unraid-Release bz\* Dateien erneut auf das Flash-Laufwerk, um potenzielle Beschädigungen zu vermeiden.
+5. Erstellen Sie das Flash-Gerät neu, indem Sie mit einer sauberen Unraid-Kopie beginnen und dann Ihren `config`-Ordner wiederherstellen.
+6. Versuchen Sie, im [Abgesicherten Modus](../../using-unraid-to/customize-your-experience/plugins.mdx#troubleshooting-with-safe-mode) zu booten, um plugin-bezogene Probleme zu überprüfen.
+7. Testen Sie mit einem neuen Flash-Gerät und führen Sie eine saubere Unraid-Installation durch. So können Sie feststellen, ob es Probleme mit der Serverhardware gibt.
+8. Übertragen Sie bei Bedarf Ihre Lizenz auf ein neues Flash-Gerät.
+
+---
+
+## Wiederherstellung von einem verlorenen Boot-Laufwerk und unbekannten Parität-Laufwerken
+
+:::important
+
+Dieser Wiederherstellungsprozess birgt das Risiko eines Datenverlusts, wenn Laufwerke falsch zugewiesen werden. Vor dem Fortfahren:
+
+1. **Starten Sie das Array nicht**, bis Sie sich über die Laufwerkszuordnungen sicher sind.
+2. **Dokumentieren** Sie, welche Laufwerke zuvor Paritäts- vs. Datenträger waren
+3. **Erwägen Sie Rat**, wenn Sie sich unsicher sind, in den [Unraid-Foren](https://forums.unraid.net/) einzuholen
+
+Wenn Sie über aktuelle Backups oder Dokumentationen Ihrer Array-Konfiguration verfügen, überprüfen Sie diese zuerst.
+
+:::
+
+Wenn Ihr Unraid-Bootlaufwerk ausfällt und Sie keinen aktuellen Backup oder kein Wissen darüber haben, welche Laufwerke Parität sind, können Sie Ihr System wiederherstellen, indem Sie Unraids Fähigkeit nutzen, Datenträger anhand ihrer Dateisysteme zu erkennen. %%Paritätslaufwerke|parity-drives%% haben kein gültiges Dateisystem, was sie unterscheidbar macht.
+
+Unraid identifies data drives by detecting existing valid file systems. %%Parity drives|parity-drives%%, which lack a file system, appear unmountable. This characteristic allows you to distinguish %%parity drives|parity-drives%% from data drives after booting with a new flash device.
+
+### Wiederherstellungsverfahren
+
+Dieses Verfahren hilft Ihnen, Ihre Array-Konfiguration wiederherzustellen, wenn Sie Ihr Boot-Laufwerk verloren haben und nicht mehr wissen, welche Laufwerke Parität vs. Daten waren. Befolgen Sie jeden Schritt sorgfältig, um Datenverlust zu vermeiden.
+
+1. Erstellen Sie ein neues Unraid-Boot-Laufwerk.
+2. Starten Sie den Server von diesem neuen Laufwerk (weisen Sie noch keine Laufwerke zu).
+3. Aktivieren Sie eine Lizenz, entweder durch eine Testversion oder durch Übertragung einer bestehenden.
+4. Identifizieren Sie %%parity drives|parity-drives%% mithilfe einer der unten aufgeführten Methoden.
+5. Verwenden Sie ***Werkzeuge → Neue Konfig***, um das %%array|array%% zurückzusetzen, während Sie nach Möglichkeit vorherige Zuweisungen beibehalten.
+6. Korrigieren Sie die Laufwerkszuweisungen auf der ***Haupt***-Registerkarte, und stellen Sie sicher, dass Sie zwischen %%parity|parity%% und Datenlaufwerken unterscheiden.
+7. Starten Sie das %%array|array%%, um die Laufwerkszuweisungen zu bestätigen.
+8. If the %%parity|parity%% is valid, check the box for ***Parity is Already Valid***. If not, allow the %%parity|parity%% to rebuild.
+
+:::warning[Multiple Paritätslaufwerke]
+
+If you have multiple %%parity drives|parity-drives%% and had to identify them based on which drives were unmountable, **do not** use the **Parity is Already Valid** option. There's a 50:50 chance of getting the assignments wrong, and if you do, your %%array|array%% may appear protected but actually isn't. Always allow parity to rebuild in this scenario to ensure proper protection.
+
+:::
+
+9. Prüfen und passen Sie alle Benutzerfreigaben ein/einschließen/auszuschließen basierend auf den neuen Zuweisungen an.
+10. Führen Sie eine %%parity check|parity-check%% durch, um die Integrität zu überprüfen, insbesondere wenn die %%parity|parity%% nicht neu aufgebaut wurde.
+
+---
+
+### Parität-Laufwerke identifizieren
+
+<details>
+  <summary><strong>Mithilfe der integrierten Unraid-Funktion (empfohlene Methode)</strong> - Zum Ein- oder Ausblenden klicken</summary>
+
+  Diese Methode erfordert keine Plugins, aber sie ungültig die %%parity|parity%%, was einen Neuaufbau erforderlich macht.
+
+  So verwenden Sie diese Methode:
+
+  1. Weisen Sie alle Laufwerke als Datenträger zu und starten Sie es.
+  2. %%Parität-Laufwerke|parity-drives%% werden als nicht einhängbar angezeigt, da ihnen ein gültiges Dateisystem fehlt.
+  3. Confirm that the number of unmountable drives matches your %%parity|parity%% count.
+  4. Notieren Sie sich die Seriennummern dieser Laufwerke.
+  5. Falls zutreffend, können Sie eingehängte Datenträger prüfen, um deren Reihenfolge zu bestätigen.
+</details>
+
+<details>
+  <summary><strong>Mithilfe des Unassigned Devices-Plugins</strong> - Zum Ein- oder Ausblenden klicken</summary>
+
+  Diese Plugin-basierte Methode erhält die Gültigkeit der %%parity|parity%%, indem Laufwerke im Nur-Lese-Modus eingebunden werden.
+
+  So verwenden Sie diese Methode:
+
+  1. Installieren Sie das [**Unassigned Devices**-Plugin](https://unraid.net/community/apps?q=unassigned+devices#r:~:text=don%27t%20be%20carefull!!!-,Unassigned%20Devices,-dlandon) von der ***Apps***-Registerkarte.
+  2. Hängen Sie jedes Laufwerk nacheinander im Nur-Lesen-Modus ein.
+  3. Laufwerke, die nicht eingehängt werden können, sind wahrscheinlich %%parity drives|parity-drives%% (sie können nicht zwischen parity1 und parity2 unterscheiden).
+  4. Überprüfen Sie bei Bedarf die Reihenfolge der eingehängten Datenträger.
+</details>
+
+Weitere Informationen finden Sie im [Thread zum Unassigned Devices-Plugin](https://forums.unraid.net/topic/55481-unassigned-devices-managing-unassigned-devices-without-rebooting/) in den Unraid-Foren.
+
+---
+
+\* *„%%WireGuard|wireguard%%“ und das „%%WireGuard|wireguard%%“-Logo sind eingetragene Warenzeichen von Jason A. Donenfeld.*
