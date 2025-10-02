@@ -15,19 +15,20 @@ import WindowsUpgradeCleanInstall from './partials/windows-upgrade-clean-install
 Windows is one of the most popular guest operating systems for Unraid users, especially for gaming, productivity, and support for legacy applications. Here are essential considerations for running Windows %%VM|vm%%.
 
 :::caution[Before 开始]
+
 - 微软已于2020年1月结束了对Windows 7的支持，于2023年1月结束了对Windows 8.1的支持，并计划于2025年10月结束对Windows 10的支持。请使用Windows 11（或更新版本）或Server 2022（或更新版本）以获得持续的安全更新。
 - 在激活 Windows 许可之前，始终测试 %%VM|vm%% 的稳定性。
-- 对于%%GPU直通|gpu-passthrough%%，使用%%OVMF|ovmf%%（%%UEFI|uefi%%）BIOS与Windows 11或更新版本。
-:::
+- For %%GPU passthrough|gpu-passthrough%%, use %%OVMF|ovmf%% (%%UEFI|uefi%%) BIOS with Windows 11 or newer.
+  :::
 
 ### 支持的配置
 
-| Windows 版本          | 推荐的 BIOS           | 机器类型                            | 笔记                       |
-| ------------------- | ------------------ | ------------------------------- | ------------------------ |
-| Windows 11          | %%OVMF\|ovmf%% TPM | %%Q35\|q35%%                    | 需要 TPM 2.0 模拟            |
-| Windows Server 2022 | %%OVMF\|ovmf%%     | %%Q35\|q35%%                    | 适合企业负载                   |
-| Windows 10          | %%OVMF\|ovmf%%     | %%Q35\|q35%%                    | 已停用（生命周期结束于 2025 年 10 月） |
-| Windows Server 2019 | %%OVMF\|ovmf%%     | %%i440fx\|i440fx%%/%%Q35\|q35%% | 兼容但不推荐                   |
+| Windows edition     | Recommended BIOS   | Machine type                    | 笔记                         |
+| ------------------- | ------------------ | ------------------------------- | -------------------------- |
+| Windows 11          | %%OVMF\|ovmf%% TPM | %%Q35\|q35%%                    | Requires TPM 2.0 emulation |
+| Windows Server 2022 | %%OVMF\|ovmf%%     | %%Q35\|q35%%                    | 适合企业负载                     |
+| Windows 10          | %%OVMF\|ovmf%%     | %%Q35\|q35%%                    | Deprecated (EOL Oct 2025)  |
+| Windows Server 2019 | %%OVMF\|ovmf%%     | %%i440fx\|i440fx%%/%%Q35\|q35%% | 兼容但不推荐                     |
 
 ---
 
@@ -38,11 +39,11 @@ Windows 需要使用准虚拟化驱动程序以在 Unraid 的虚拟化堆栈上�
 安装或更新驱动程序：
 
 <Tabs>
-  <TabItem value="自动化" label="自动安装">
+  <TabItem value="Automatic" label="Automatic installation">
     <WindowsVirtioAutomatic />
   </TabItem>
 
-  <TabItem value="手动" label="手动更新">
+  <TabItem value="Manual" label="手动更新">
     <WindowsVirtioManual />
   </TabItem>
 </Tabs>
@@ -58,15 +59,16 @@ Using Unraid 7 or later, you can automatically inject %%VirtIO|virtio%% drivers 
 Hibernation lets you save your entire Windows %%VM|vm%% state - including open applications and documents - to disk. This allows you to power off the %%VM|vm%% without losing any work. When you resume, Windows restores everything exactly as you left it, skipping the normal boot process. This feature is handy when you need to reboot or power down your Unraid host or want to save energy while keeping your %%VM|vm%%'s state intact.
 
 :::note[Benefits 从休眠中]
+
 - 关闭闲置 %%VM|vm%% 来节约能源而又不丢失进度
 - 在主机维护或更新后快速恢复工作
-- 与频繁的完全关机和重启相比，降低 SSD 磨损
-:::
+- Reduce wear on SSDs compared to frequent complete shutdowns and reboots
+  :::
 
 To use hibernation reliably, you must install the %%QEMU|qemu%% %%Guest Agent|guest-agent%% in your Windows %%VM|vm%%. This agent allows Unraid to communicate with the %%VM|vm%% for advanced operations like hibernation, shutdown, and live statistics reporting.
 
 <details>
-  <summary><strong>如何安装 %%QEMU|qemu%% %%Guest Agent|guest-agent%%</strong> - 点击展开/收起</summary>
+  <summary><strong>How to install the %%QEMU|qemu%% %%Guest Agent|guest-agent%%</strong> - Click to expand/collapse</summary>
 
   1. 启动带有 %%VirtIO|virtio%% 驱动程序 ISO 的 Windows %%VM|vm%%。
   2. 打开 **文件资源管理器** 并导航到 %%VirtIO|virtio%% 驱动器媒体。
@@ -75,7 +77,7 @@ To use hibernation reliably, you must install the %%QEMU|qemu%% %%Guest Agent|gu
 </details>
 
 <details>
-  <summary><strong>如何在 Windows 中启用休眠</strong> - 点击展开/收起</summary>
+  <summary><strong>How to enable hibernation in Windows</strong> - Click to expand/collapse</summary>
 
   1. 打开 **控制面板** 并搜索 **电源选项**。
   2. 点击 **选择电源按钮的功能**。
@@ -83,7 +85,7 @@ To use hibernation reliably, you must install the %%QEMU|qemu%% %%Guest Agent|gu
   4. 勾选 **休眠** 选项。
   5. 点击 **保存更改**。
 
-  Windows 电源菜单中现在会显示 **休眠** 选项。
+  The **Hibernate** option will now appear in the Windows Power menu.
 </details>
 
 :::important[What 如果休眠失败？]
@@ -101,7 +103,7 @@ To use hibernation reliably, you must install the %%QEMU|qemu%% %%Guest Agent|gu
 禁用快速启动可以帮助防止设备通过时出现问题。它确保您的%%VM|vm%%硬件在每次启动时正确初始化。虽然此设置是为物理PC设计的，但在虚拟环境中往往会导致更多问题而非收益。
 
 <details>
-  <summary><strong>如何禁用快速启动</strong> - 点击展开/收起</summary>
+  <summary><strong>How to disable Fast Startup</strong> - Click to expand/collapse</summary>
 
   1. 打开 **控制面板** 并搜索 **电源**。
   2. 点击 **选择电源按钮的功能**。
@@ -115,7 +117,7 @@ To use hibernation reliably, you must install the %%QEMU|qemu%% %%Guest Agent|gu
 Windows中的休眠会创建一个名为`hiberfil.sys`的大型隐藏文件。此文件可能会占用大量磁盘空间，并增加%%VM|vm%%中的磁盘活动。如果您不依赖于休眠，禁用它可以释放存储空间并减少不必要的I/O活动。
 
 <details>
-  <summary><strong>如何禁用休眠并移除 hiberfil.sys</strong> - 点击展开/收起</summary>
+  <summary><strong>How to disable hibernation and remove hiberfil.sys</strong> - Click to expand/collapse</summary>
 
   1. 右键点击 **开始** 按钮并选择 **Windows 终端（管理员）** 或 **命令提示符（管理员）**。
   2. 输入：`powercfg /h off`
@@ -127,7 +129,7 @@ Windows中的休眠会创建一个名为`hiberfil.sys`的大型隐藏文件。�
 Windows Search indexing continuously scans your %%virtual machine|vm%%'s storage to catalog files for faster search results. However, on a %%virtual machine|vm%%, this can cause unnecessary disk I/O, slow down performance, and increase wear on your physical storage, especially SSDs in your [%%cache pool|cache-pool%%](../manage-storage/cache-pools.mdx).
 
 <details>
-  <summary><strong>如何禁用 Windows 索引</strong> - 点击展开/收起</summary>
+  <summary><strong>How to disable Windows indexing</strong> - Click to expand/collapse</summary>
 
   1. 按 **Windows + R** 打开运行对话框，输入 `services.msc`，然后按回车。
   2. 在服务窗口中，向下滚动并右键点击 **Windows Search**，然后选择 **停止**。
@@ -139,7 +141,7 @@ Windows Search indexing continuously scans your %%virtual machine|vm%%'s storage
 Windows旨在自动定期对物理硬盘进行碎片整理。在%%VM|vm%%上 - 尤其是在使用SSD存储或精简配置的%%vDisks|vdisk%%时 - 自动碎片整理是没有必要的，并且还会减少磁盘寿命并降低性能。
 
 <details>
-  <summary><strong>如何禁用自动磁盘碎片整理</strong> - 点击展开/收起</summary>
+  <summary><strong>How to disable automatic disk defragmenting</strong> - Click to expand/collapse</summary>
 
   1. 打开 **文件资源管理器**，右键点击 C: 驱动器，然后选择 **属性**。
   2. 转到 **工具** 标签并点击 **优化**。
@@ -154,7 +156,7 @@ Windows中的电源管理功能专为笔记本和台式机设计，以节约能�
 启用 **高性能** 模式可以确保您的 %%VM|vm%% 始终以全速运行，并且不太可能意外暂停或挂起。
 
 <details>
-  <summary><strong>如何启用高性能电源模式</strong> - 点击展开/收起</summary>
+  <summary><strong>How to enable high performance power mode</strong> - Click to expand/collapse</summary>
 
   1. 打开 **控制面板** 并搜索 "电源"。
   2. 点击 **选择电源计划**。
@@ -170,17 +172,17 @@ RDP不适用于Windows Home版。在启用RDP之前，请始终为您的Windows�
 :::
 
 <details>
-  <summary><strong>如何启用远程桌面（RDP）访问</strong> - 点击展开/收起</summary>
+  <summary><strong>How to enable remote desktop (RDP) access</strong> - Click to expand/collapse</summary>
 
-  要启用 RDP 访问，请按照以下步骤：
+  To enable RDP access, follow these steps:
 
   1. 按 **Windows + I** 打开设置，然后导航至 ***系统 → 关于*** 并点击 **高级系统设置**。
   2. 在系统属性窗口中，点击 **远程** 标签，然后选择 **启用远程桌面**。
   3. 点击 **确定** 确认更改。
   4. 从您的客户端设备，使用 Microsoft RDP 客户端连接到 **%%VM|vm%% 的 IP 地址**（而不是 Unraid 服务器）。
 
-  :::技巧
-  官方Microsoft RDP客户端适用于 Windows、Mac、Android 和 iOS。确保您的 %%VM|vm%% 处于允许局域网访问的网络桥上。
+  :::tip
+  Official Microsoft RDP clients are available for Windows, Mac, Android, and iOS. Make sure your %%VM|vm%% is on a network bridge that allows LAN access.
   :::
 </details>
 
@@ -189,10 +191,10 @@ RDP不适用于Windows Home版。在启用RDP之前，请始终为您的Windows�
 如果您在使用%%GPU透传|gpu-passthrough%%（常见于NVIDIA显卡）时在Windows %%VM|vm%%中遇到HDMI音频问题，启用消息信号中断（MSI）可能会有所帮助。MSI改善了对透传设备的中断管理。
 
 <details>
-  <summary><strong>如何启用 MSI 中断</strong> - 点击展开/收起</summary>
+  <summary><strong>How to enable MSI interrupts</strong> - Click to expand/collapse</summary>
 
-  :::注意
-  在进行注册表更改之前，请备份您的 %%VM|vm%%。不正确的修改可能导致系统不稳定。
+  :::caution
+  Back up your %%VM|vm%% before making any registry changes. Incorrect modifications can cause system instability.
   :::
 
   1. **验证 MSI 功能：**
@@ -205,7 +207,7 @@ RDP不适用于Windows Home版。在启用RDP之前，请始终为您的Windows�
      - 如果 MSI 显示`Enable-`，请遵循 [微软指南](https://learn.microsoft.com/en-us/windows-hardware/drivers/kernel/enabling-message-signaled-interrupts-in-the-registry) 或使用 [MSI 模式工具](https://forums.guru3d.com/threads/windows-line-based-vs-message-signaled-based-interrupts-msi-tool.378044/) 修改您的 Windows 注册表设置。
      - 在更改后重启 %%VM|vm%%。
 
-  获取更多技术细节，请参阅 [VFIO 中断解释](https://vfio.blogspot.com/2014/09/vfio-interrupts-and-how-to-coax-windows.html)。
+  For more technical details, see [VFIO interrupts explained](https://vfio.blogspot.com/2014/09/vfio-interrupts-and-how-to-coax-windows.html).
 </details>
 
 ---
@@ -215,10 +217,11 @@ RDP不适用于Windows Home版。在启用RDP之前，请始终为您的Windows�
 Windows 11 requires TPM 2.0 and Secure Boot. Unraid's **OVMF-TPM** BIOS provides the virtual TPM support needed for these requirements.
 
 :::important[Before 升级]
+
 - 创建完整的 %%VM|vm%% 备份。
 - 确保 Unraid 运行的是版本 6.10 或更高版本。
-- 确保您的 Windows 10 %%VM|vm%% 满足 [Windows 11 的系统要求](https://www.microsoft.com/en-us/windows/windows-11-specifications)。
-:::
+- Verify that your Windows 10 %%VM|vm%% meets the [Windows 11 system requirements](https://www.microsoft.com/en-us/windows/windows-11-specifications).
+  :::
 
 添加 TPM 支持：
 
@@ -230,11 +233,11 @@ Windows 11 requires TPM 2.0 and Secure Boot. Unraid's **OVMF-TPM** BIOS provides
 #### 升级方法
 
 <Tabs>
-  <TabItem value="就地升级" label="就地升级">
+  <TabItem value="In-place upgrade" label="In-place upgrade">
     <WindowsUpgradeInPlace />
   </TabItem>
 
-  <TabItem value="全新安装" label="全新安装">
+  <TabItem value="Clean install" label="Clean install">
     <WindowsUpgradeCleanInstall />
   </TabItem>
 </Tabs>
@@ -270,11 +273,11 @@ Windows 11 requires TPM 2.0 and Secure Boot. Unraid's **OVMF-TPM** BIOS provides
 
 <div className="flex-容器" style={{ margin: 'auto', maxWidth: '800px'}}>
   <figure className="flex-figure">
-    <img src="/img/Resize_vdisk_3.png" alt="调整虚拟磁盘3" />
+    <img src="/img/Resize_vdisk_3.png" alt="Resize vDisk 3" />
   </figure>
 
   <figure className="flex-figure">
-    <img src="/img/Resize_vdisk_4.png" alt="调整虚拟磁盘4" />
+    <img src="/img/Resize_vdisk_4.png" alt="Resize vDisk 4" />
   </figure>
 </div>
 
