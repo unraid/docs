@@ -42,7 +42,7 @@ Even though Unraid offers protection against various hardware failures, having r
 
 - **启用通知:** 在***设置 → 通知***中设置通知以接收有关系统问题的即时警报。
 - **寻求专家指导:** 如果您不确定恢复步骤，请在采取任何动作前咨询 [Unraid 论坛](https://forums.unraid.net/)。
-- **定期健康检查：** 监控您的驱动器的 [SMART 数据](../../system-administration/monitor-performance/smart-reports-and-disk-health.mdx)，并定期执行文件系统检查。
+- **定期健康检查:** 密切关注您驱动器的 [SMART 数据](../../system-administration/monitor-performance/smart-reports-and-disk-health.mdx)，并定期执行文件系统检查。
   :::
 
 ---
@@ -53,7 +53,7 @@ Even though Unraid offers protection against various hardware failures, having r
 Use these instructions strictly for data drives with file system corruption. Do not apply them to the parity drive, hardware issues, or missing drives.
 
 - 文件系统修复工具仅用于修复具有文件系统或挂载错误的数据或缓存驱动器。
-- 奇偶校验驱动器**没有**文件系统。在奇偶校验驱动器上运行任何修复工具可能会导致损坏，并可能导致不可逆的数据丢失。
+- 奇偶校验驱动器**没有**文件系统。对奇偶校验驱动器运行任何修复工具会导致损坏，可能导致不可逆转的数据丢失。
   :::
 
 ### 设备命名：路径和符号
@@ -63,7 +63,7 @@ Use these instructions strictly for data drives with file system corruption. Do 
 | 标签               | 典型路径       | 用途           | %%Parity\|奇偶%% 保护是否启用？   |
 | ---------------- | ---------- | ------------ | ------------------------ |
 | 磁盘 7             | /mnt/disk7 | Unraid 挂载点   | 是 (如果是 %%array\|阵列%% 磁盘) |
-| %%Array\|阵列%% 分区 | /dev/md7p1 | Unraid 管理的设备 | Yes                      |
+| %%Array\|阵列%% 分区 | /dev/md7p1 | Unraid 管理的设备 | 可以                       |
 | 原始分区             | /dev/sdj1  | 直接设备访问       | 不可以                      |
 
 :::warning
@@ -71,7 +71,7 @@ Never run file system repair tools on entire drives (like `/dev/sdj`); always us
 
 - 对于 %%array|array%% 驱动器，始终使用 Unraid 管理的设备（如 `/dev/md5p1`）以**保留 %%parity|parity%% 保护**。
 
-- 使用原始分区（例如，`/dev/sdj1`）不会更新%%parity|parity%%，会使其失效。
+- 使用原始分区（例如，`/dev/sdj1`）不会更新 %%parity|parity%%，会使其无效。
   :::
 
 - 始终使用 `/dev/mdXp1` 对于 %%array|array%% 驱动器以保持有效的 %%parity|parity%%。
@@ -110,7 +110,7 @@ This section covers how to diagnose and repair file system corruption on data dr
 
 | 文件系统             | 启动模式 | 需要维护模式？ | 笔记                                       |
 | ---------------- | ---- | ------- | ---------------------------------------- |
-| %%XFS\|xfs%%     | 维护模式 | Yes     | %%阵列\|array%%必须在维护模式下启动（驱动器未挂载）以进行检查/修复。 |
+| %%XFS\|xfs%%     | 维护模式 | 可以      | %%阵列\|array%%必须在维护模式下启动（驱动器未挂载）以进行检查/修复。 |
 | %%BTRFS\|btrfs%% | 正常模式 | 不可以     | 请正常启动 %%array\|阵列%%，而非维护模式，以便进行擦除/检查。    |
 
 - 为目标驱动器确定文件系统： **主** 选项卡 → 点击驱动器名称 → 检查 **文件系统类型**。
@@ -143,7 +143,7 @@ This section covers how to diagnose and repair file system corruption on data dr
 
 - 修复和检查操作可能需要长达半小时或更长时间，具体取决于您文件系统的大小和状态。
 - 严重的损坏可能会产生一个`lost+found`文件夹，其中包含恢复的文件和文件夹碎片。根据需要检查并恢复这些碎片；完成后删除。
-- 这类似于在 Windows 上运行 chkdsk 或 scandisk 并处理重命名为 `File0000.chk` 的文件。在查看 `lost+found` 内容时，请慢慢来。
+- 这类似于在Windows上运行chkdsk或scandisk，并处理重命名为`File0000.chk`等的文件。在查看`lost+found`内容时要花些时间。
   :::
 
 ---
@@ -290,7 +290,7 @@ Copying non-tried blocks... Pass 1 (forwards)
 - **坏区域/读取错误**：遇到的问题区域和读取错误的数量。
 - **恢复百分比**：到目前为止恢复的磁盘百分比。
 - **剩余时间**：估计完成时间。
-- **复制未尝试的块...**：ddrescue 正在首次尝试读取所有扇区。
+- **正在复制未尝试的块...**： ddrescue 正在首次尝试读取所有扇区。
   :::
 
 在初始复制后，ddrescue将通过多次传递和有时以两种方向读取块来恢复坏扇区中的数据。这一阶段可能需要更长的时间，尤其是在磁盘严重损坏的情况下。
@@ -311,7 +311,7 @@ Scraping failed blocks... (forwards)
 :::note[What's 正在发生？]
 
 - **刮取失败的块...**： ddrescue正在重复尝试恢复不可读的扇区。
-- **坏区域/读取错误**：这些数字可能会随着 ddrescue 发现更多损坏而增加，但目标是尽量减少无法恢复的数据。
+- **坏区域/读取错误**：随着 ddrescue 发现更多损坏，这些数字可能会增加，但目标是尽量减少无法恢复的数据。
   :::
 
 ### 挂载和检查已恢复的磁盘
