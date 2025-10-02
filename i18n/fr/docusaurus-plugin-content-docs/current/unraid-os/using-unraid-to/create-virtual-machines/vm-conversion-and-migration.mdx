@@ -15,9 +15,8 @@ Lorsque vous consolidez du matériel, préservez des systèmes hérités ou test
 - Votre serveur Unraid doit répondre aux [exigences matérielles minimales pour la virtualisation](./overview-and-system-prep.mdx#requirements) (voir tableau ci-dessous).
 - Le disque source doit être connecté à votre serveur Unraid (via SATA, USB ou comme périphérique non assigné).
 - Assurez-vous d'avoir suffisamment d'espace libre dans votre **%%array|array%%** ou **%%cache pool|cache-pool%%** pour accueillir la nouvelle image de disque virtuel.
-- Sauvegardez toutes les données critiques avant de démarrer le processus de conversion ou de migration.
-
-:::
+- Sauvegardez toutes les données critiques avant de commencer le processus de conversion ou de migration.
+  :::
 
 ## Exigences matérielles
 
@@ -45,14 +44,14 @@ Pour convertir un disque physique en %%VM|vm%% :
     3. Cliquez sur l'onglet **Principal**.
     4. Démarrez l'**%%array|array%%** s'il n'est pas déjà en cours d'exécution.
     5. Trouvez votre disque sous **Périphériques non assignés**.
-    6. Notez la lettre du périphérique (par exemple, `sdb`, `sdc`) et la taille du disque. Vous aurez besoin d'au moins cet espace libre sur votre **%%array|array%%** ou **%%cache pool|cache-pool%%** pour le nouveau %%virtual disk|vdisk%%.
+    6. Notez la lettre du périphérique (par ex., `sdb`, `sdc`) et la taille du disque. Vous aurez besoin d'au moins cet espace libre sur votre **%%array|array%%** ou **%%cache pool|cache-pool%%** pour le nouveau %%virtual disk|vdisk%%.
 
     <h4>Étape 2 : Créer une nouvelle machine virtuelle</h4>
 
     Référez-vous au guide [Créer vos propres machines virtuelles](../create-virtual-machines/vm-setup.mdx#creating-your-own-virtual-machines), avec les exceptions suivantes :
 
     - Réglez le **BIOS** sur **OVMF**.
-      Assurez-vous de préciser l'ISO de [pilotage VirtIO pour des performances optimales](./overview-and-system-prep.mdx#set-up-virtualization-preferences).
+      Assurez-vous de spécifier l'ISO des pilotes **VirtIO** pour [des performances optimales](./overview-and-system-prep.mdx#set-up-virtualization-preferences).
     - Stockez les images %%VM|vm%% sur un **%%cache pool|cache-pool%%** au lieu d'un %%array|array%% pour les [meilleures performances](./overview-and-system-prep.mdx#user-shares-for-virtualization).
 
     <h4>Étape 3 : Convertir le disque physique en image de %%disque virtuel|vdisk%%</h4>
@@ -66,8 +65,8 @@ Pour convertir un disque physique en %%VM|vm%% :
     ```
 
     - **/dev/sdX** : Remplacez par la lettre du périphérique de l'étape 1 (ex. : `/dev/sdb`)
-    - **\[vdisk\_share]** : Le partage où vous enregistrez vos images de %%VM|vm%%.
-    - **\[vmname]** : Le nom que vous souhaitez pour votre %%VM|vm%%
+    - **[vdisk_share]** : Le partage où vous enregistrez vos images %%VM|vm%%
+    - **[vmname]** : Le nom que vous souhaitez pour votre %%VM|vm%%
 
     **Décomposition de la commande :**
 
@@ -77,7 +76,7 @@ Pour convertir un disque physique en %%VM|vm%% :
     - `/dev/sdX` : La source correspond à votre disque physique.
     - `/mnt/user/[vdisk_share]/[vmname]/vdisk1.img` : Destination pour l'image %%disque virtuel|vdisk%%.
 
-    Attendez que l'opération soit terminée. Le fichier `.img` résultant sera le disque principal pour votre %%VM|vm%%.
+    Attendez que l'opération se termine. Le fichier `.img` résultant sera le disque principal pour votre %%VM|vm%%.
   </TabItem>
 
   <TabItem value="Windows" label="Windows">
@@ -85,7 +84,7 @@ Pour convertir un disque physique en %%VM|vm%% :
 
     - Dans l'onglet %%VMs|vm%%, cliquez sur l'icône %%VM|vm%% et sélectionnez **Modifier XML** dans le menu contextuel.
 
-    - Ensuite, faites défiler le XML et trouvez la balise `<target>` pour le `<disk>` qui a un fichier `<source>` défini sur `vdisk1.img`. Cela devrait ressembler à ceci :
+    - Ensuite, faites défiler vers le bas le XML et trouvez l'étiquette `<target>` pour le `<disk>` qui a un fichier `<source>` défini sur `vdisk1.img`. Cela devrait ressembler à ceci :
 
       ```xml
 
@@ -125,7 +124,7 @@ Pour convertir un disque physique en %%VM|vm%% :
       - Naviguez vers le dossier **Balloon**.
       - Dans ce dossier, trouvez le sous-dossier de votre **version de Windows OS** (par exemple, `w8.1`).
       - Allez dans le sous-dossier **amd64**.
-      - Cliquez avec le bouton droit sur le fichier **balloon.inf** et sélectionnez **Install** dans le menu contextuel. (Vous devez activer la visibilité de l'extension de fichier pour faire cela.)
+      - Cliquez avec le bouton droit sur le fichier **balloon.inf** et sélectionnez **Installer** dans le menu contextuel. (Vous devez activer la visibilité des extensions de fichier pour cela.)
     - Répétez ces étapes pour chacun des dossiers suivants :
       - **NetKVM**
       - **vioserial**
@@ -133,11 +132,11 @@ Pour convertir un disque physique en %%VM|vm%% :
     - Après avoir installé les pilotes, revenez dans le CD-ROM virtuel et ouvrez le dossier **guest-agent**.
     - Double-cliquez sur **qemu-ga-x64.msi** pour installer l'agent invité %%QEMU|qemu%%/%%KVM|kvm%%.
 
-    <h4>Étape 3 : Convertir le bus du disque en VirtIO</h4>
+    <h4>Étape 3 : Convertissez le bus du disque en VirtIO</h4>
 
     - Si votre %%VM|vm%% est en cours d'exécution, allez-y et **arrêtez-le**.
-    - Dans l'onglet **VMs**, cliquez sur l'icône %%VM|vm%% et sélectionnez **Edit XML** dans le menu contextuel.
-    - Localisez la section `<disk>` pour `vdisk1.img` et changez `bus='ide'` en `bus='virtio'` dans la balise `<target>`.
+    - Dans l'onglet **VMs**, cliquez sur l'icône %%VM|vm%% et sélectionnez **Modifier XML** dans le menu contextuel.
+    - Localisez la section `<disk>` pour `vdisk1.img` et changez `bus='ide'` en `bus='virtio'` dans l'étiquette `<target>`.
     - Cliquez sur **Mettre à jour** pour enregistrer vos modifications dans le %%VM|vm%%.
     - Vous pouvez maintenant démarrer votre %%machine virtuelle|vm%% convertie !
   </TabItem>
@@ -151,7 +150,6 @@ Vous pouvez exécuter une installation de Windows directement à partir d'un dis
 [Comment passer des disques durs, convertir des disques et tester les performances dans les VM Unraid (YouTube)](https://www.youtube.com/watch?v=QaB9HhpbDAI).
 
 :::important[Choosing votre approche de migration]
-Il existe deux méthodes courantes pour migrer une installation Windows vers une %%VM|vm%% sur Unraid :
 
 **Pass-through de disque physique** : utilise le disque original directement dans la %%VM|vm%%.
 
@@ -163,7 +161,7 @@ Il existe deux méthodes courantes pour migrer une installation Windows vers une
 - Avantages : Plus de flexibilité, permet d'utiliser le disque comme partage Unraid ou pour les snapshots.
 - Inconvénients : Nécessite du temps et de l'espace libre pour le processus de conversion.
 
-Choisissez le passage direct si vous souhaitez une migration simple ou prévoyez de double démarrage du disque. Optez pour la conversion d'image pour une meilleure portabilité et des options de sauvegarde.
+Choisissez le transfert direct si vous souhaitez une migration simple ou prévoyez de configurer un double démarrage pour le disque. Optez pour une conversion d'image pour une meilleure portabilité et des options de sauvegarde.
 :::
 
 :::note\[Prerequisites]
@@ -174,8 +172,7 @@ Choisissez le passage direct si vous souhaitez une migration simple ou prévoyez
   - **Microsoft Sysprep** (gratuit et intégré dans Windows 8.1 et versions ultérieures)
   - **Acronis True Image 2025** (solution commerciale avec des fonctionnalités avancées de migration)
 - Assurez-vous que votre serveur Unraid dispose d'un port SATA ou NVMe libre pour le disque physique.
-
-:::
+  :::
 
 <h4>Étape 1 : Préparer le disque Windows pour la migration</h4>
 
@@ -186,10 +183,11 @@ Déplacer une installation de Windows vers un nouveau matériel, qu'il soit phys
 Sysprep est intégré à Windows et élimine les informations système uniques, préparant Windows pour un matériel différent.
 
 :::note[Before exécution de sysprep]
+
 - Désactivez temporairement tout logiciel antivirus.
 - Nettoyez les profils utilisateurs et fichiers temporaires inutiles.
-- Corrigez ou supprimez toute application problématique du Microsoft Store pouvant empêcher l'exécution de sysprep.
-:::
+- Corrigez ou supprimez toutes les applications problématiques du Microsoft Store qui pourraient empêcher sysprep de s'exécuter.
+  :::
 
 1. **Exécuter sysprep :**
    - Ouvrir l'Invite de commandes en tant qu'administrateur.
@@ -258,7 +256,7 @@ Vous devez modifier la configuration XML du %%VM|vm%% pour connecter votre disqu
    </disk>
    ```
 
-   Remplacez ce bloc par ce qui suit, où `sdX` est la lettre du périphérique ou, mieux encore, utilisez `/dev/disk/by-id/[votre-id-disque]` pour une attribution de périphérique plus fiable (consultez le \[Unraid Docs : Utilisation d'un disque physique dans une VM]) :
+   Remplacez ce bloc par ce qui suit, où `sdX` est la lettre du périphérique ou, mieux encore, utilisez `/dev/disk/by-id/[votre-id-disque]` pour une attribution de périphérique plus fiable (consultez le [Unraid Docs : Utilisation d'un disque physique dans une VM]) :
 
    ```xml
 
@@ -435,5 +433,5 @@ Pour convertir une VM Windows de %%Xen|xen-hvm%% à %%KVM|kvm%%, suivez ces éta
   1. Réinstallez les pilotes %%VirtIO|virtio%% depuis l'ISO.
   2. Vérifiez les mises à jour Windows, qui peuvent fournir des pilotes plus récents.
   3. Visitez la page [Red Hat VirtIO Drivers](https://docs.fedoraproject.org/en-US/quick-docs/creating-windows-virtual-machines-using-virtio-drivers/) pour les dernières versions.
-  :::
+     :::
 </details>
