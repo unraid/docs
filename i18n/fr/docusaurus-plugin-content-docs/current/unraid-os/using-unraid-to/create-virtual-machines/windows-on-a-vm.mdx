@@ -15,18 +15,19 @@ import WindowsUpgradeCleanInstall from './partials/windows-upgrade-clean-install
 Windows est l'un des systèmes d'exploitation invités les plus populaires pour les utilisateurs d'Unraid, en particulier pour les jeux, la productivité et le support des applications héritées. Voici des considérations essentielles pour exécuter Windows %%VM|vm%%.
 
 :::caution[Before vous commencez]
+
 - Microsoft a mis fin au support de Windows 7 en janvier 2020, de Windows 8.1 en janvier 2023, et de Windows 10 en octobre 2025. Utilisez Windows 11 (ou plus récent) ou Server 2022 (ou plus récent) pour des mises à jour de sécurité continues.
 - Testez toujours la stabilité de votre %%VM|vm%% avant d'activer votre licence Windows.
-- Pour le passage du %%GPU|gpu-passthrough%%, utilisez le BIOS %%OVMF|ovmf%% (%%UEFI|uefi%%) avec Windows 11 ou plus récent.
-:::
+- For %%GPU passthrough|gpu-passthrough%%, use %%OVMF|ovmf%% (%%UEFI|uefi%%) BIOS with Windows 11 or newer.
+  :::
 
 ### Configurations prises en charge
 
-| Édition Windows     | BIOS recommandé    | Type de machine                 | Notes                                           |
+| Windows edition     | Recommended BIOS   | Machine type                    | Notes                                           |
 | ------------------- | ------------------ | ------------------------------- | ----------------------------------------------- |
-| Windows 11          | TPM %%OVMF\|ovmf%% | %%Q35\|q35%%                    | Nécessite l'émulation TPM 2.0                   |
+| Windows 11          | TPM %%OVMF\|ovmf%% | %%Q35\|q35%%                    | Requires TPM 2.0 emulation                      |
 | Windows Server 2022 | %%OVMF\|ovmf%%     | %%Q35\|q35%%                    | Idéal pour les charges de travail en entreprise |
-| Windows 10          | %%OVMF\|ovmf%%     | %%Q35\|q35%%                    | Obsolète (fin du support en oct. 2025)          |
+| Windows 10          | %%OVMF\|ovmf%%     | %%Q35\|q35%%                    | Deprecated (EOL Oct 2025)                       |
 | Windows Server 2019 | %%OVMF\|ovmf%%     | %%i440fx\|i440fx%%/%%Q35\|q35%% | Compatible mais non recommandé                  |
 
 ---
@@ -38,11 +39,11 @@ Windows nécessite des pilotes paravirtualisés pour des performances optimales 
 Pour installer ou mettre à jour les pilotes :
 
 <Tabs>
-  <TabItem value="Automatique" label="Installation automatique">
+  <TabItem value="Automatic" label="Automatic installation">
     <WindowsVirtioAutomatic />
   </TabItem>
 
-  <TabItem value="Manuel" label="Mise à jour manuelle">
+  <TabItem value="Manual" label="Mise à jour manuelle">
     <WindowsVirtioManual />
   </TabItem>
 </Tabs>
@@ -58,15 +59,16 @@ En utilisant Unraid 7 ou une version ultérieure, vous pouvez automatiquement in
 La mise en veille prolongée vous permet de sauvegarder l'état complet de votre Windows %%VM|vm%% - y compris les applications et documents ouverts - sur le disque. Cela vous permet d'éteindre le %%VM|vm%% sans perdre de travail. Lorsque vous reprenez, Windows restaure tout exactement comme vous l'avez laissé, sautant le processus de démarrage normal. Cette fonctionnalité est pratique lorsque vous devez redémarrer ou éteindre votre hôte Unraid ou que vous souhaitez économiser de l'énergie tout en gardant l'état de votre %%VM|vm%% intact.
 
 :::note[Benefits de l'hibernation]
+
 - Économisez de l'énergie en éteignant les %%VM|vm%% inactives sans perdre de progression
 - Reprenez rapidement le travail après la maintenance ou les mises à jour de l'hôte
-- Réduisez l'usure des SSD par rapport aux arrêts et redémarrages fréquents
-:::
+- Reduce wear on SSDs compared to frequent complete shutdowns and reboots
+  :::
 
 To use hibernation reliably, you must install the %%QEMU|qemu%% %%Guest Agent|guest-agent%% in your Windows %%VM|vm%%. This agent allows Unraid to communicate with the %%VM|vm%% for advanced operations like hibernation, shutdown, and live statistics reporting.
 
 <details>
-  <summary><strong>Comment installer le %%Agent invité QEMU|qemu%% %%Guest Agent|guest-agent%%</strong> - Cliquez pour développer/réduire</summary>
+  <summary><strong>How to install the %%QEMU|qemu%% %%Guest Agent|guest-agent%%</strong> - Click to expand/collapse</summary>
 
   1. Démarrez votre VM %%VM|vm%% Windows avec l'ISO des pilotes %%VirtIO|virtio%% monté.
   2. Ouvrez **l'Explorateur de Fichiers** et accédez aux médias des pilotes %%VirtIO|virtio%%.
@@ -75,7 +77,7 @@ To use hibernation reliably, you must install the %%QEMU|qemu%% %%Guest Agent|gu
 </details>
 
 <details>
-  <summary><strong>Comment activer l'hibernation dans Windows</strong> - Cliquez pour voir/fermer</summary>
+  <summary><strong>How to enable hibernation in Windows</strong> - Click to expand/collapse</summary>
 
   1. Ouvrez **Panneau de Configuration** et recherchez **Options d'alimentation**.
   2. Cliquez sur **Choisir ce que font les boutons d'alimentation**.
@@ -83,7 +85,7 @@ To use hibernation reliably, you must install the %%QEMU|qemu%% %%Guest Agent|gu
   4. Cochez l'option **Hibernation**.
   5. Cliquez sur **Sauvegarder les modifications**.
 
-  L'option **Hibernation** apparaîtra maintenant dans le menu d'alimentation Windows.
+  The **Hibernate** option will now appear in the Windows Power menu.
 </details>
 
 :::important[What si l'hibernation échoue?]
@@ -101,7 +103,7 @@ L'optimisation de votre Windows %%VM|vm%% peut améliorer la réactivité, rédu
 Désactiver le démarrage rapide peut aider à prévenir les problèmes avec le passage de périphériques. Il garantit que le matériel de votre %%VM|vm%% s'initialise correctement à chaque démarrage. Bien que ce paramètre soit conçu pour les PC physiques, dans un environnement virtuel, il peut souvent causer plus de problèmes que de bénéfices.
 
 <details>
-  <summary><strong>Comment désactiver le démarrage rapide</strong> - Cliquez pour voir/fermer</summary>
+  <summary><strong>How to disable Fast Startup</strong> - Click to expand/collapse</summary>
 
   1. Ouvrez **Panneau de Configuration** et recherchez **Alimentation**.
   2. Cliquez sur **Choisir ce que font les boutons d'alimentation**.
@@ -115,7 +117,7 @@ Désactiver le démarrage rapide peut aider à prévenir les problèmes avec le 
 La mise en veille prolongée sous Windows crée un fichier caché appelé `hiberfil.sys`. Ce fichier peut consommer un espace disque important et augmenter l'activité du disque dans votre %%VM|vm%%. Si vous ne vous fiez pas à la mise en veille prolongée, la désactiver libérera de l'espace de stockage et réduira l'activité d'E/S inutile.
 
 <details>
-  <summary><strong>Comment désactiver l'hibernation et supprimer hiberfil.sys</strong> - Cliquez pour voir/fermer</summary>
+  <summary><strong>How to disable hibernation and remove hiberfil.sys</strong> - Click to expand/collapse</summary>
 
   1. Cliquez droit sur le bouton **Démarrer** et sélectionnez **Terminal Windows (Admin)** ou **Invite de Commandes (Admin)**.
   2. Tapez : `powercfg /h off`
@@ -127,7 +129,7 @@ La mise en veille prolongée sous Windows crée un fichier caché appelé `hiber
 Windows Search indexing continuously scans your %%virtual machine|vm%%'s storage to catalog files for faster search results. However, on a %%virtual machine|vm%%, this can cause unnecessary disk I/O, slow down performance, and increase wear on your physical storage, especially SSDs in your [%%cache pool|cache-pool%%](../manage-storage/cache-pools.mdx).
 
 <details>
-  <summary><strong>Comment désactiver l'indexation de Windows</strong> - Cliquez pour voir/fermer</summary>
+  <summary><strong>How to disable Windows indexing</strong> - Click to expand/collapse</summary>
 
   1. Appuyez sur **Windows + R** pour ouvrir le dialogue Exécuter, tapez `services.msc` et appuyez sur Entrée.
   2. Dans la fenêtre Services, faites défiler vers le bas et cliquez droit sur **Recherche Windows**, puis sélectionnez **Arrêter**.
@@ -139,7 +141,7 @@ Windows Search indexing continuously scans your %%virtual machine|vm%%'s storage
 Windows est conçu pour défragmenter automatiquement les disques durs physiques selon un calendrier régulier. Sur un %%VM|vm%% - en particulier lors de l'utilisation de stockage SSD ou de %%vDisks|minces-provisionnés vdisks%% - la défragmentation automatique est inutile et peut également réduire la durée de vie du disque et dégrader les performances.
 
 <details>
-  <summary><strong>Comment désactiver la défragmentation automatique du disque</strong> - Cliquez pour voir/fermer</summary>
+  <summary><strong>How to disable automatic disk defragmenting</strong> - Click to expand/collapse</summary>
 
   1. Ouvrez **l'Explorateur de fichiers**, faites un clic droit sur le lecteur C: et sélectionnez **Propriétés**.
   2. Allez dans l'onglet **Outils** et cliquez sur **Optimiser**.
@@ -154,7 +156,7 @@ Les fonctionnalités de gestion de l'énergie de Windows sont conçues pour les 
 Activer le mode **Haute Performance** garantit que votre %%VM|vm%% fonctionne toujours à pleine vitesse et est moins susceptible de se mettre en pause ou de se suspendre de manière inattendue.
 
 <details>
-  <summary><strong>Comment activer le mode haute performance</strong> - Cliquez pour voir/fermer</summary>
+  <summary><strong>How to enable high performance power mode</strong> - Click to expand/collapse</summary>
 
   1. Ouvrez **Panneau de Configuration** et recherchez "alimentation."
   2. Cliquez sur **Choisir un mode de gestion de l'alimentation**.
@@ -170,9 +172,9 @@ RDP n'est pas disponible sur les éditions Home de Windows. Définissez toujours
 :::
 
 <details>
-  <summary><strong>Comment activer l'accès à distance (RDP)</strong> - Cliquez pour voir/fermer</summary>
+  <summary><strong>How to enable remote desktop (RDP) access</strong> - Click to expand/collapse</summary>
 
-  Pour activer l'accès RDP, suivez ces étapes :
+  To enable RDP access, follow these steps:
 
   1. Appuyez sur **Windows + I** pour ouvrir les Paramètres, puis allez dans ***Système → À propos*** et cliquez sur **Paramètres système avancés**.
   2. Dans la fenêtre Propriétés système, cliquez sur l'onglet **Distant**, puis sélectionnez **Activer le Bureau à distance**.
@@ -180,7 +182,7 @@ RDP n'est pas disponible sur les éditions Home de Windows. Définissez toujours
   4. Depuis votre appareil client, utilisez un client RDP de Microsoft pour vous connecter à l'**adresse IP de la %%VM|vm%%** (pas le serveur Unraid).
 
   :::tip
-  Les clients RDP officiels de Microsoft sont disponibles pour Windows, Mac, Android et iOS. Assurez-vous que votre %%VM|vm%% est sur un pont réseau qui permet l'accès LAN.
+  Official Microsoft RDP clients are available for Windows, Mac, Android, and iOS. Make sure your %%VM|vm%% is on a network bridge that allows LAN access.
   :::
 </details>
 
@@ -189,10 +191,10 @@ RDP n'est pas disponible sur les éditions Home de Windows. Définissez toujours
 If you're having trouble with HDMI audio in a Windows %%VM|vm%% that uses %%GPU passthrough|gpu-passthrough%% (which often occurs with NVIDIA graphics cards), enabling Message Signaled Interrupts (MSI) might help. MSI enhances the way interrupts are managed for passed-through devices.
 
 <details>
-  <summary><strong>Comment activer les interruptions MSI</strong> - Cliquez pour voir/fermer</summary>
+  <summary><strong>How to enable MSI interrupts</strong> - Click to expand/collapse</summary>
 
   :::caution
-  Sauvegardez votre %%VM|vm%% avant de faire des modifications dans le registre. Des modifications incorrectes peuvent causer une instabilité du système.
+  Back up your %%VM|vm%% before making any registry changes. Incorrect modifications can cause system instability.
   :::
 
   1. **Vérifiez la capacité MSI :**
@@ -205,7 +207,7 @@ If you're having trouble with HDMI audio in a Windows %%VM|vm%% that uses %%GPU 
      - Si MSI affiche `Enable-`, suivez le [guide de Microsoft](https://learn.microsoft.com/en-us/windows-hardware/drivers/kernel/enabling-message-signaled-interrupts-in-the-registry) ou utilisez l'[outil MSI Mode Utility](https://forums.guru3d.com/threads/windows-line-based-vs-message-signaled-based-interrupts-msi-tool.378044/) pour modifier les paramètres du registre Windows.
      - Redémarrez la %%VM|vm%% après avoir apporté les modifications.
 
-  Pour plus de détails techniques, voyez [Explication des interruptions VFIO](https://vfio.blogspot.com/2014/09/vfio-interrupts-and-how-to-coax-windows.html).
+  For more technical details, see [VFIO interrupts explained](https://vfio.blogspot.com/2014/09/vfio-interrupts-and-how-to-coax-windows.html).
 </details>
 
 ---
@@ -215,10 +217,11 @@ If you're having trouble with HDMI audio in a Windows %%VM|vm%% that uses %%GPU 
 Windows 11 nécessite TPM 2.0 et Secure Boot. Le BIOS **OVMF-TPM** d'Unraid fournit le support TPM virtuel nécessaire pour ces exigences.
 
 :::important[Before mise à niveau]
+
 - Créez une sauvegarde complète de votre %%VM|vm%%.
 - Assurez-vous qu'Unraid exécute la version 6.10 ou plus.
-- Vérifiez que votre %%VM|vm%% Windows 10 répond aux [exigences système de Windows 11](https://www.microsoft.com/fr-fr/windows/windows-11-specifications).
-:::
+- Verify that your Windows 10 %%VM|vm%% meets the [Windows 11 system requirements](https://www.microsoft.com/en-us/windows/windows-11-specifications).
+  :::
 
 Pour ajouter le support TPM :
 
@@ -230,11 +233,11 @@ Pour ajouter le support TPM :
 #### Méthodes de mise à niveau
 
 <Tabs>
-  <TabItem value="Mise à niveau sur place" label="Mise à niveau sur place">
+  <TabItem value="In-place upgrade" label="In-place upgrade">
     <WindowsUpgradeInPlace />
   </TabItem>
 
-  <TabItem value="Installation propre" label="Installation propre">
+  <TabItem value="Clean install" label="Clean install">
     <WindowsUpgradeCleanInstall />
   </TabItem>
 </Tabs>
@@ -270,11 +273,11 @@ Après avoir complété l'extension initiale du %%vDisk|vdisk%% :
 
 <div className="conteneur-flex" style={{ margin: 'auto', maxWidth: '800px'}}>
   <figure className="flex-figure">
-    <img src="/img/Resize_vdisk_3.png" alt="Redimensionner vDisk 3" />
+    <img src="/img/Resize_vdisk_3.png" alt="Resize vDisk 3" />
   </figure>
 
   <figure className="flex-figure">
-    <img src="/img/Resize_vdisk_4.png" alt="Redimensionner vDisk 4" />
+    <img src="/img/Resize_vdisk_4.png" alt="Resize vDisk 4" />
   </figure>
 </div>
 
