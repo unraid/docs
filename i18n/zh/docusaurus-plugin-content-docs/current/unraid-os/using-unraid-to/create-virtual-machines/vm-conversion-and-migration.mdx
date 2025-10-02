@@ -15,8 +15,7 @@ When consolidating hardware, preserving legacy systems, or testing upgrades in a
 - 您的 Unraid 服务器应满足[虚拟化的最低硬件要求](./overview-and-system-prep.mdx#requirements)（见下表）。
 - 源磁盘必须通过 SATA、USB 或作为未分配设备连接到您的 Unraid 服务器。
 - 确保您的 **%%array|array%%** 或 **%%cache pool|cache-pool%%** 有足够的可用空间来容纳新的虚拟磁盘映像。
-- 在开始转换或迁移过程之前备份任何关键数据。
-  :::
+- 在开始转换或迁移过程之前，备份任何重要数据。
 
 ## 硬件要求
 
@@ -335,16 +334,16 @@ Unraid no longer supports %%Xen|xen-hvm%% from version 6.2 onward. %%KVM|kvm%% i
 </details>
 
 <details>
-  <summary><strong>步骤 3：卸载 GPLPV 驱动程序</strong> - 点击展开/折叠</summary>
+  <summary><strong>步骤 1：确定您的 VM 是否使用 Xen 的 GPLPV 驱动程序</strong> -，点击展开/折叠</summary>
 
   重启后，使用 [Xen Project Wiki](https://wiki.xenproject.org/wiki/Xen_Windows_GPLPV) 中的全面手动移除过程从系统中完全清除所有 %%Xen|xen-hvm%% GPLPV 驱动程序。
 
-  :::注意
-  删除 GPLPV 需要进行大量注册表编辑和手动文件删除。完全按照 Xen Project Wiki 上的指示操作，因为错误可能导致系统不稳定或启动失败。  :::
+  :::提示
+  如果您不使用 GPLPV 驱动程序，可以跳过接下来的几个步骤，并从进入 %%KVM|kvm%% 模式部分继续。  :::
 </details>
 
 <details>
-  <summary><strong>步骤 4：创建新 KVM 虚拟机</strong> - 点击展开/折叠</summary>
+  <summary><strong>步骤 2：为 GPLPV 驱动程序移除准备 Windows</strong> - 点击展开/折叠</summary>
 
   1. 确保启用了 **VM 管理器**：
      - 前往 **设置 → VM 管理器**。
@@ -408,7 +407,7 @@ Unraid no longer supports %%Xen|xen-hvm%% from version 6.2 onward. %%KVM|kvm%% i
 </details>
 
 <details>
-  <summary><strong>步骤 6：最终配置 VM</strong> - 点击展开/折叠</summary>
+  <summary><strong>步骤 4：创建新 KVM 虚拟机</strong> - 点击展开/折叠</summary>
 
   1. 编辑 VM：
      - 通过点击红色减号图标移除临时的第二个 %%vDisk|vdisk%%。
@@ -424,8 +423,8 @@ Unraid no longer supports %%Xen|xen-hvm%% from version 6.2 onward. %%KVM|kvm%% i
      - 将主磁盘的 `bus` 从 `ide` 改为 `virtio`。
      - 点击 **Update** 并重启 VM。
 
-  :::提示[驱动程序故障排除]
-  如果您注意到迁移后设备上出现错误：
+  :::提示[为何使用临时磁盘？]
+  1MB 的临时磁盘强制 Unraid 将主磁盘分配为 `hda` (IDE) 而不是 `vda` (%%VirtIO|virtio%%)，这使 Windows 可以在没有 %%VirtIO|virtio%% 驱动程序的情况下启动。该临时磁盘将在驱动程序安装后移除。  :::
 
   1. 从 ISO 重新安装 %%VirtIO|virtio%% 驱动程序。
   2. 检查 Windows 更新，可能会提供更新的驱动程序。
