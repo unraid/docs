@@ -229,9 +229,9 @@ Plan your pool’s layout to fit your needs and future growth. Unlike the Unraid
 <details>
   <summary><strong>ZFS RAM 神话</strong> - 点击展开/折叠</summary>
 
-  You might have come across the outdated advice: “%%ZFS|zfs%% requires 1 GB of RAM per 1 TB of storage.” This is no longer applicable for most users. %%ZFS|zfs%% utilizes RAM for its Adaptive Replacement Cache (ARC), which speeds up frequently accessed reads.
+  您可能听过过时的建议：“%%ZFS|zfs%% 需要每1TB存储配备1GB内存。”这对大多数用户不再适用。%%ZFS|zfs%% 利用内存进行自适应替换缓存（ARC），从而加快频繁读取操作。
 
-  Unraid automatically limits %%ZFS|zfs%% to using a reasonable portion of your system's RAM (usually 1/8th of total RAM). This allows %%ZFS|zfs%% to perform well without affecting Docker containers, %%VMs|vm%%, or the Unraid OS.
+  Unraid 自动限制 %%ZFS|zfs%% 使用合理部分的系统内存（通常为总内存的1/8）。这使 %%ZFS|zfs%% 的性能表现良好，而不影响 Docker 容器、%%VMs|vm%% 或 Unraid OS。
 
   <div style={{ margin: 'auto', maxWidth: '600px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
     ![](/img/zfs14.png)
@@ -262,8 +262,8 @@ Unraid 可以轻松导入其他平台上创建的 %%ZFS|zfs%% 池。
   4. **设置文件系统为 "Auto"：** 点击池名称（例如，`raptor`）并将 **文件系统** 设置为 **Auto**。
   5. **完成并启动阵列:** 点击 **完成**，然后启动 %%array|array%%。
 
-  :::info[Automatic detection]
-  Unraid will automatically detect and import the %%ZFS|zfs%% pool. Support vdevs (like log, cache/L2ARC, special/dedup) are listed under **Subpools** in the %%WebGUI|web-gui%%. There is no need to add subpools separately after initiating the import. Unraid will automatically import them alongside the main data disks when all required drives are assigned.
+  :::info[自动检测]
+  Unraid 会自动检测和导入 %%ZFS|zfs%% 池。支持vdevs（如日志、缓存/L2ARC、特殊/去重）列在 **Subpools** 中的 %%WebGUI|web-gui%% 下。导入时无需单独添加子池。Unraid 会在所有必要的驱动器分配后自动将它们与主数据磁盘一起导入。
   :::
 
   导入后，强烈建议运行 %%scrub|scrub%% 以验证数据完整性。
@@ -286,13 +286,13 @@ Unraid 将 %%ZFS|zfs%% 支持vdevs称为子池。大多数用户**不**需要这
   ![](/img/zfs16.png)
 </div>
 
-| 支持的 vdev（子池）   | 用途                    | 风险/注意事项                                                   |
-| -------------- | --------------------- | --------------------------------------------------------- |
-| 特殊 vdev        | 存储元数据和小文件             | 如果丢失，池将无法读取。                                              |
-| 去重 vdev        | 启用去重功能                | 需要大量RAM；大多数用户来说风险大。除非有专门需要，否则请避免使用。                       |
-| 日志 vdev（SLOG）  | 提高同步写入性能              | Optional. Only beneficial for certain workloads.          |
-| 缓存 vdev（L2ARC） | 提供基于 SSD 的读取缓存        | Optional. Can improve read speeds for large working sets. |
-| 备用 vdev        | Unraid（截至 7.1.2 版）不支持 |                                                           |
+| 支持的 vdev（子池）   | 用途                    | 风险/注意事项                             |
+| -------------- | --------------------- | ----------------------------------- |
+| 特殊 vdev        | 存储元数据和小文件             | 如果丢失，池将无法读取。                        |
+| 去重 vdev        | 启用去重功能                | 需要大量RAM；大多数用户来说风险大。除非有专门需要，否则请避免使用。 |
+| 日志 vdev（SLOG）  | 提高同步写入性能              | 可选。仅对某些工作负载有益。                      |
+| 缓存 vdev（L2ARC） | 提供基于 SSD 的读取缓存        | 可选。可以提高大型工作集的读取速度。                  |
+| 备用 vdev        | Unraid（截至 7.1.2 版）不支持 |                                     |
 
 :::caution
 
@@ -308,11 +308,11 @@ Unraid 将 %%ZFS|zfs%% 支持vdevs称为子池。大多数用户**不**需要这
 
 如果在导入期间忘记包含一个支持 vdev 的驱动器，结果将取决于 vdev 的功能：
 
-| Vdev 类型          | 导入时驱动器缺失情况     | 结果                                                                                                 |
-| ---------------- | -------------- | -------------------------------------------------------------------------------------------------- |
-| 特殊 vdev 或去重 vdev | 池将无法导入或无法使用    | 这些 vdev 存储关键元数据或去重表。没有它们，%%ZFS\|zfs%% 无法安全挂载池。                                                     |
-| 日志（SLOG）vdev     | 池导入，但同步写入性能下降。 | 池仍然可访问，但你可能会注意到依赖同步写入的工作负载的性能变慢。                                                                   |
-| 缓存（L2ARC）vdev    | 池导入，但读取缓存丢失    | The pool works normally, but you lose the performance boost from the L2ARC cache. No data is lost. |
+| Vdev 类型          | 导入时驱动器缺失情况     | 结果                                             |
+| ---------------- | -------------- | ---------------------------------------------- |
+| 特殊 vdev 或去重 vdev | 池将无法导入或无法使用    | 这些 vdev 存储关键元数据或去重表。没有它们，%%ZFS\|zfs%% 无法安全挂载池。 |
+| 日志（SLOG）vdev     | 池导入，但同步写入性能下降。 | 池仍然可访问，但你可能会注意到依赖同步写入的工作负载的性能变慢。               |
+| 缓存（L2ARC）vdev    | 池导入，但读取缓存丢失    | 池正常工作，但失去了 L2ARC 缓存带来的性能提升。数据无丢失。              |
 
 :::tip
 
@@ -350,7 +350,7 @@ Unraid 将 %%ZFS|zfs%% 支持vdevs称为子池。大多数用户**不**需要这
 | ------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------ |
 | 用于 appdata 和 Docker 的快速 SSD/NVMe 池         | Store the appdata share for fast, responsive containers and databases. This supports %%snapshot\|snapshot%%s for easy rollbacks and can also host %%VM\|vm%%s for high I/O. | 许多用户为此选择 2 驱动器 %%ZFS\|zfs%% 镜像。它易于扩展并提供强大的性能。          |
 | 用于重要数据的%%ZFS\|zfs%%池                       | 为不可替代的文件（如照片、税务记录和 %%user share\|user-share%% 数据）使用 %%ZFS\|zfs%% 镜像或 RAIDZ2 池。%%ZFS\|zfs%% 检查腐败并通过冗余自我修复。                                                                   | 这种设置通过自动的完整性检查和自我修复功能保护关键数据。                           |
-| 每日备份或复制目标                                  | Use a %%ZFS\|zfs%% disk (even within the Unraid %%array\|array%%) as a replication target. You can replicate other pools locally or from another Unraid server.             | 利用 `zfs send/receive` 或诸如 Syncoid 之类的工具，以实现快速可靠的备份和还原。 |
+| 每日备份或复制目标                                  | 使用 %%ZFS\|zfs%% 磁盘（即使在 Unraid %%array\|array%% 中）作为复制目标。您可以在本地或从另一台 Unraid 服务器复制其他池。                                                                                        | 利用 `zfs send/receive` 或诸如 Syncoid 之类的工具，以实现快速可靠的备份和还原。 |
 | %%Snapshot\|snapshot%%-based recovery pool | Keep point-in-time %%snapshot\|snapshot%%s of critical data or containers. %%snapshot\|snapshot%%s can be auto-scheduled and are space-efficient.                           | 此功能可以从意外删除或配置错误中快速恢复。                                  |
 
 ## 避免常见的 ZFS 错误
