@@ -44,20 +44,20 @@ import FsRepairCliZfs from './partials/fs-repair-cli-zfs.mdx';
 </Tabs>
 
 :::note[Additional 笔记]
+
 - Mixing different file system types in your Unraid system is perfectly acceptable; the Unraid %%parity|parity%% system works independently of the file system used.
 - 始终在 Unraid 内格式化和分区驱动器以确保兼容性。
 - Linux  系统可以原生读取这些文件系统；然而，Windows 和 macOS 将需要额外的软件来访问。
 - 你可以对驱动器进行<u>加密</u>以增强安全性，但请记住，加密驱动器可能会给发生损坏时的恢复带来挑战。
-- 对于传输驱动器或外部设备，建议使用支持额外文件系统的 **[Unassigned Devices](#using-the-unassigned-devices-plugins)** 插件。
-:::
+- 对于传输驱动器或外部设备，建议使用 **[未分配设备](#using-the-unassigned-devices-plugins)** 插件，它支持附加文件系统。
 
 :::tip[Still 需要帮助选择吗？]
+
 - **对于数组驱动器：** %%XFS|xfs%%通常是大多数用户的最佳选择。
 - **对于高性能或高级功能：** 选择%%ZFS|zfs%%或%%BTRFS|btrfs%%用于%%cache pools|cache-pool%%或多设备设置。
 - **对于混合或扩展池：** 如果你想使用不同的驱动器大小或轻松地添加或删除设备，%%BTRFS|btrfs%% 是理想选择。
 
-如果不确定，开始默认设置是一种好的方法：对于%%array|array%%驱动器使用 %%XFS|xfs%% ，对于 %%cache pools|cache-pool%% 使用 %%BTRFS|btrfs%%。
-:::
+如果不确定，建议从默认设置开始：对于 %%array|array%% 驱动器使用 %%XFS|xfs%%，对于 %%cache pools|cache-pool%% 使用 %%BTRFS|btrfs%%。
 
 ---
 
@@ -123,11 +123,10 @@ import FsRepairCliZfs from './partials/fs-repair-cli-zfs.mdx';
 ## 转换到新的文件系统类型
 
 :::important
-从 Unraid 7.2 开始，***主*** 页面会警告如果任何阵列或池驱动器被格式化为旧版文件系统：
+Starting with Unraid 7.2, the ***Main*** page will warn if any array or pool drives are formatted in legacy filesystems:
 
 - 任何格式化为 ReiserFS 的驱动器需要尽快迁移到另一个文件系统，因为它们在未来版本的 Unraid（可能是 Unraid 7.3）中不可用。
-- 任何格式化为旧版 XFS 的驱动器需要在 2030 年之前迁移。
-:::
+- 任何格式化为较旧版本XFS的驱动器需要在2030年前迁移。
 
 要更改驱动器的文件系统类型但保留其数据，您必须在重新格式化之前迁移内容。该过程对于从不再支持的 ReiserFS（在旧版 Unraid 中使用）迁移到 %%XFS|xfs%% 或 %%BTRFS|btrfs%% 的用户尤为常见，但它适用于任何文件系统转换。
 
@@ -152,10 +151,8 @@ This process requires temporarily moving your data to another location. Make sur
 3. **将数据拷回**：（可选）根据文件移动的位置，您可能需要将它们移回到新格式化的驱动器。
 4. **根据需要重复：** 如果有多个驱动器需要转换，则为每个驱动器重复这些步骤，按照需要转移数据。
 
-:::note\[Timing]
-
+:::note[Timing]
 根据数据量和驱动器的速度，整个过程可能需要几个小时。大多数时间花在复制文件上，可以无人值守运行。
-
 :::
 
 ---
@@ -223,10 +220,8 @@ This process requires temporarily moving your data to another location. Make sur
 13. **重新启用 Docker 和 %%VM|vm%% 服务**。
 14. **启动阵列**。
 
-:::note\[Timing]
-
+:::note[Timing]
 使用 %%Mover|mover%% 移动数据和格式化驱动器所需时间可能从几分钟到几小时不等，具体取决于数据量和驱动器速度。
-
 :::
 
 ---
@@ -315,20 +310,18 @@ Do not format an unmountable drive unless you are okay with losing all the data 
 修复文件系统通常比重建驱动器所需时间更短，让您可以不丢失任何数据地访问它。请记住，重建驱动器**无法**修复文件系统问题；它仅确保物理驱动器与模拟驱动器相匹配，且将现有问题一同保留。
 
 :::important[Why 奇偶校验不足够吗？]
-While %%parity|parity%% helps recover a failed drive, it cannot fix file system problems. If the file system is corrupted, %%parity|parity%% will simply replicate that corruption to the new drive.
 
 如果您不确定：
 
 - 通过导航到 ***工具 → 诊断*** 来下载系统日志。
-- 如需专家帮助，请将您的问题连同诊断信息一起发布于 [Unraid 论坛](https://forums.unraid.net/)。
-:::
+- 如需专家帮助，请在 [Unraid 论坛](https://forums.unraid.net/) 上发布问题并附上诊断信息。
 
 :::note[Just 重申一下]
+
 - 仅当他们是全新的或想要擦除所有数据时，才格式化无法挂载的驱动器。
 - 使用文件系统检查/修复来解决损坏文件问题；不要依靠 %%parity|parity%% 来解决这些问题。
 - 对于有多个驱动器的 %%cache pools|cache-pool%%，可以考虑使用 %%BTRFS|btrfs%% 或 %%ZFS|zfs%%。
-- 在格式化或修复驱动器之前，请再次检查以避免意外的数据丢失。
-:::
+- 在格式化或修复驱动器之前务必仔细检查以避免意外丢失数据。
 
 ---
 
@@ -406,10 +399,10 @@ If the %%WebGUI|web-gui%% suggests formatting an unmountable drive, <strong>do n
 </Tabs>
 
 :::tip
+
 - 文件系统修复通常比完整重建更快，并能在不丢失数据的情况下恢复访问。
 - 重建磁盘并 **不会** 解决文件系统损坏；请始终先运行检查或修复。
-- 如果您有疑问，请在 Unraid [论坛](https://forums.unraid.net/) 上发布您的诊断和错误信息以获取专家协助。
-:::
+- 如果有疑问，请将诊断和错误信息发布到 Unraid [论坛](https://forums.unraid.net/) 以获取专家协助。
 
 ---
 
@@ -417,10 +410,8 @@ If the %%WebGUI|web-gui%% suggests formatting an unmountable drive, <strong>do n
 
 如果文件系统检查发现错误，您可能需要进行修复才能再次访问数据。修复通常比完全重建所需的时间少，但重要的是仔细阅读输出，并在不确定任何问题时在 [论坛](https://forums.unraid.net/) 上寻求帮助。
 
-:::note\[Timing]
-
+:::note[Timing]
 修复可能需要从几分钟到几个小时，尤其是对于更大或严重受损的文件系统。进度可能看起来很慢，但您可以通过查看主页上的读/写统计来查看活动。
-
 :::
 
 <h4>准备进行修复</h4>
@@ -468,9 +459,9 @@ If the %%WebGUI|web-gui%% suggests formatting an unmountable drive, <strong>do n
 </Tabs>
 
 :::info[After 修复]
+
 - Stop and restart the %%array|array%% in **Normal mode**.
 - 驱动器现在应挂载并可访问。
-- 如果您看到一个 `lost+found` 文件夹，请检查其内容是否有重要文件。
-:::
+- 如果看到 `lost+found` 文件夹，请检查内容以查找任何重要文件。
 
 如果您不理解修复输出或过程失败，请在 [Unraid 论坛](https://forums.unraid.net/) 上分享您的诊断和修复日志以获得进一步的帮助。
