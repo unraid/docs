@@ -11,7 +11,7 @@ Sélectionner le bon système de fichiers pour votre %%array|array%% Unraid ou %
 
 | Système de fichiers | Protection des données                                                                | Efficacité de l'espace                  | Fonctionnalités avancées                                         | Meilleur cas d'utilisation                                       |
 | ------------------- | ------------------------------------------------------------------------------------- | --------------------------------------- | ---------------------------------------------------------------- | ---------------------------------------------------------------- |
-| %%XFS\|xfs%%        | Aucune redondance intégrée                                                            | 100%                                    | Résistant à la corruption                                        | Par défaut pour les disques d'une baie ; haute fiabilité         |
+| %%XFS\|xfs%%        | Aucune redondance intégrée                                                            | 100 %                                   | Résistant à la corruption                                        | Par défaut pour les disques d'une baie ; haute fiabilité         |
 | %%ZFS\|zfs%%        | %%RAIDZ1\|raidz1%%/%%RAIDZ2\|raidz2%%/%%RAIDZ3\|raidz3%%, miroirs, etc.               | Varie selon le niveau de %%RAID\|raid%% | %%Checksums\|checksum%%, %%Snapshots\|snapshot%%, %%RAID\|raid%% | Baies multi-appareils, %%VMs\|vm%%, Docker, utilisateurs avancés |
 | %%BTRFS\|btrfs%%    | %%RAID 0\|raid0%%/%%RAID 1\|raid1%%/%%10\|raid10%%/%%5\|raid5%%/%%6\|raid6%%, miroirs | Varie selon le niveau de %%RAID\|raid%% | %%Checksums\|checksum%%, %%Snapshots\|snapshot%%, %%RAID\|raid%% | Baies multi-appareils, mélange SSD/HDD, baies flexibles          |
 
@@ -44,19 +44,21 @@ import FsRepairCliZfs from './partials/fs-repair-cli-zfs.mdx';
 </Tabs>
 
 :::note[Additional Notes]
+
 - Mélanger différents types de systèmes de fichiers dans votre système Unraid est tout à fait acceptable ; le système de %%parité|parity%% d'Unraid fonctionne indépendamment du système de fichiers utilisé.
 - Formatez toujours et partitionnez les disques dans Unraid pour assurer la compatibilité.
 - Les systèmes Linux peuvent lire ces systèmes de fichiers nativement ; cependant, Windows et macOS nécessitent des logiciels supplémentaires pour y accéder.
 - Vous pouvez <u>chiffrer</u> des disques pour une sécurité accrue, mais gardez à l'esprit que les disques chiffrés peuvent poser des défis pour la récupération en cas de corruption.
-- Pour les disques de transfert ou les appareils externes, il est recommandé d'utiliser le plugin **[Unassigned Devices](#using-the-unassigned-devices-plugins)**, qui prend en charge des systèmes de fichiers supplémentaires.
-:::
+- Pour les disques de transfert ou les périphériques externes, il est recommandé d'utiliser le plugin **[Périphériques Non Assignés](#using-the-unassigned-devices-plugins)**, qui prend en charge des systèmes de fichiers supplémentaires.
+  :::
 
 :::tip[Still besoin d'aide pour choisir?]
+
 - **Pour les disques de baie :** %%XFS|xfs%% est généralement le meilleur choix pour la plupart des utilisateurs.
 - **Pour des performances élevées ou des fonctionnalités avancées :** Choisissez %%ZFS|zfs%% ou %%BTRFS|btrfs%% pour %%cache pools|cache-pool%% ou des configurations multi-appareils.
 - **Pour les baies mixtes ou en expansion :** %%BTRFS|btrfs%% est idéal si vous voulez utiliser différentes tailles de disques ou ajouter ou retirer facilement des appareils.
 
-Si vous êtes incertain, commencer avec les paramètres par défaut est une bonne approche : utilisez %%XFS|xfs%% pour les disques %%array|array%% et %%BTRFS|btrfs%% pour les %%cache pools|cache-pool%%.
+Si vous n'êtes pas sûr, commencer avec les réglages par défaut est une bonne approche : utilisez %%XFS|xfs%% pour les disques %%array|array%% et %%BTRFS|btrfs%% pour les %%cache pools|cache-pool%%.
 :::
 
 ---
@@ -123,11 +125,11 @@ Si vous rencontrez des problèmes, n'hésitez pas à visiter les [forums Unraid]
 ## Conversion vers un nouveau type de système de fichiers
 
 :::important
-À partir d'Unraid 7.2, la page ***Principale*** avertira si des disques de l'array ou du pool sont formatés avec des systèmes de fichiers hérités.
+Starting with Unraid 7.2, the ***Main*** page will warn if any array or pool drives are formatted in legacy filesystems:
 
 - Tous les disques formatés en ReiserFS doivent être migrés vers un autre système de fichiers dès que possible, car ils ne seront plus utilisables dans une future version d'Unraid (probablement Unraid 7.3).
 - Tous les disques formatés dans une version antérieure de XFS doivent être migrés avant 2030.
-:::
+  :::
 
 Ce processus est particulièrement courant pour les utilisateurs passant du ReiserFS obsolète (utilisé dans les anciennes versions d'Unraid) au %%XFS|xfs%% ou au %%BTRFS|btrfs%%, mais il s'applique à toute conversion de système de fichiers.
 
@@ -152,10 +154,8 @@ Pour convertir en toute sécurité vers un nouveau type de système de fichiers 
 3. **Copiez vos données arrière** : (Facultatif) Selon l'endroit où vous avez déplacé les fichiers, vous voudrez peut-être les déplacer de nouveau sur le disque nouvellement formaté.
 4. **Répétez au besoin** : Si vous avez plus d'un disque à convertir, répétez ces étapes pour chaque disque, en transférant les données selon les besoins.
 
-:::note\[Timing]
-
+:::note[Timing]
 Le processus peut prendre plusieurs heures, en fonction de la quantité de données et de la vitesse de vos lecteurs. La majeure partie du temps est consacrée à la copie des fichiers, qui peut être effectuée sans surveillance.
-
 :::
 
 ---
@@ -223,10 +223,8 @@ Pour restaurer les données et les paramètres :
 13. **Réactivez les services Docker et VM**.
 14. **Démarrez la matrice**.
 
-:::note\[Timing]
-
+:::note[Timing]
 Le temps nécessaire pour déplacer les données avec le **Mover** et formater le disque peut varier de plusieurs minutes à plusieurs heures, selon la quantité de données et la vitesse du disque.
-
 :::
 
 ---
@@ -315,20 +313,20 @@ Si un lecteur est à la fois non montable et désactivé ('x' rouge), exécutez 
 Réparer le système de fichiers prend généralement moins de temps que de reconstruire le lecteur, vous permettant d'accéder à vos données sans rien perdre. Rappelez-vous, reconstruire un lecteur ne résout **pas** les problèmes de système de fichiers ; il assure simplement que le lecteur physique correspond à celui émulé, en conservant les problèmes existants.
 
 :::important[Why la parité n'est-elle pas suffisante?]
-Bien que la %%parité|parity%% aide à récupérer un lecteur défaillant, elle ne peut pas résoudre les problèmes de système de fichiers. Si le système de fichiers est corrompu, la %%parité|parity%% ne fera que répliquer cette corruption sur le nouveau lecteur.
 
 Si vous n'êtes pas sûr :
 
 - Téléchargez les journaux de votre système en naviguant vers **Outils → Diagnostiques**.
-- Pour une assistance experte, postez votre problème ainsi que les diagnostics sur les [forums d'Unraid](https://forums.unraid.net/).
-:::
+- Pour obtenir de l'aide experte, postez votre problème avec les diagnostics sur les [forums Unraid](https://forums.unraid.net/).
+  :::
 
 :::note[Just pour réitérer]
+
 - Ne formatez que les disques non montables s'ils sont neufs ou si vous souhaitez effacer toutes les données.
 - Utilisez la vérification/réparation du système de fichiers pour corriger les fichiers corrompus ; ne comptez pas sur la %%parité|parity%% pour résoudre ces problèmes.
 - Pour les %%cache pools|cache-pool%% avec plusieurs disques, envisagez d'utiliser soit le %%BTRFS|btrfs%% soit le %%ZFS|zfs%%.
-- Vérifiez toujours avant de formater ou de réparer des disques pour éviter la perte accidentelle de données.
-:::
+- Vérifiez toujours attentivement avant de formater ou de réparer les disques pour éviter une perte de données accidentelle.
+  :::
 
 ---
 
@@ -406,10 +404,11 @@ Ce système automatisé élimine le besoin pour les utilisateurs d'entrer manuel
 </Tabs>
 
 :::tip
+
 - Les réparations du système de fichiers sont généralement plus rapides qu'une reconstruction complète et peuvent restaurer l'accès sans perte de données.
 - Reconstruire un disque ne résout **pas** la corruption du système de fichiers ; effectuez toujours une vérification ou une réparation d'abord.
-- Si vous avez des doutes, publiez vos diagnostics et messages d'erreur sur les [forums d'Unraid](https://forums.unraid.net/) pour obtenir de l'aide d'experts.
-:::
+- Si vous avez des doutes, postez vos diagnostics et messages d'erreur sur les [forums Unraid](https://forums.unraid.net/) pour une assistance experte.
+  :::
 
 ---
 
@@ -417,10 +416,8 @@ Ce système automatisé élimine le besoin pour les utilisateurs d'entrer manuel
 
 Si une vérification de votre système de fichiers trouve des erreurs, vous devrez peut-être exécuter une réparation pour retrouver l'accès à vos données. Les réparations prennent généralement moins de temps qu'une reconstruction complète, mais il est important de lire attentivement la sortie et de demander de l'aide sur les [forums](https://forums.unraid.net/) si vous n'êtes pas sûr de quelque chose.
 
-:::note\[Timing]
-
+:::note[Timing]
 Les réparations peuvent prendre de quelques minutes à plusieurs heures, surtout pour les systèmes de fichiers plus grands ou lourdement corrompus. Le progrès peut sembler lent, mais vous pouvez vérifier l'activité en regardant les statistiques de lecture/écriture sur la page principale.
-
 :::
 
 <h4>Préparation à la réparation</h4>
@@ -468,9 +465,10 @@ Si vous n'êtes pas sûr de la sortie, copiez-la et partagez-la sur les [forums 
 </Tabs>
 
 :::info[After la réparation]
+
 - Arrêtez et redémarrez le %%array|array%% en **mode normal**.
 - Le lecteur devrait maintenant être monté et accessible.
-- Si vous voyez un dossier `lost+found`, vérifiez son contenu pour d'éventuels fichiers importants.
-:::
+- Si vous voyez un dossier `lost+found`, vérifiez son contenu pour tout fichier important.
+  :::
 
 Si vous ne comprenez pas le résultat de la réparation ou si le processus échoue, partagez vos diagnostics et le journal de réparation sur les [forums d'Unraid](https://forums.unraid.net/) pour obtenir de l'aide supplémentaire.
