@@ -1,0 +1,151 @@
+---
+sidebar_position: 2
+sidebar_label: Mise à niveau d'Unraid
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import UpgradeModern from './partials/upgrade-modern.mdx';
+import UpgradeLegacy611612 from './partials/upgrade-legacy-611-612.mdx';
+import ManualDowngradeSimplest from './partials/manual-downgrade-simplest.mdx';
+import ManualDowngradeCommandLine from './partials/manual-downgrade-command-line.mdx';
+
+# Mise à niveau d'Unraid
+
+La mise à niveau d'Unraid OS garantit que vous disposez des fonctionnalités, des mises à jour de sécurité et du support matériel les plus récents. Cette page décrit le processus de mise à niveau standard, ainsi que des conseils de dépannage et des options de mise à niveau manuelle.
+
+:::note\[Prerequisites]
+
+Avant de commencer la mise à niveau, assurez-vous de créer une sauvegarde complète de votre périphérique flash USB. Pour plus de détails, consultez [Sauvegarder votre périphérique flash](../maintain-and-update/changing-the-flash-device.mdx#backing-up-your-flash-device).
+
+:::
+
+:::tip[Best pratiques avant la mise à niveau]
+1. **Faites une sauvegarde** de votre clé USB et de toutes données importantes.
+2. **Lisez les notes de version** de la version que vous prévoyez d'installer.
+3. **Mettez à jour tous les plugins** vers leurs dernières versions.
+4. **Optionnellement, arrêtez le réseau** avant de procéder.
+5. **Mettez à jour Unraid OS** en utilisant la page ***Outils → Mise à jour de l'OS***.
+6. **Redémarrez** votre serveur pour finaliser la mise à jour.
+:::
+
+## Processus de mise à niveau standard
+
+<Tabs>
+  <TabItem value="Moderne (2025)" label="Unraid 7.x et plus" default>
+    <UpgradeModern />
+  </TabItem>
+
+  <TabItem value="Ancien (6.11 à 6.12)" label="Unraid 6.11 à 6.12">
+    <UpgradeLegacy611612 />
+  </TabItem>
+</Tabs>
+
+:::caution[ZFS avertissements de mise à niveau du pool]
+Lors de la mise à niveau vers Unraid 7.x, vous pouvez voir des avertissements concernant les mises à niveau des fonctionnalités du pool [%%ZFS|zfs%%](../../advanced-configurations/optimize-storage/zfs-storage.mdx) lors du démarrage ou dans le %%WebGUI|web-gui%%. Ces avertissements ne sont pas des signes de problème ; ils indiquent simplement que votre pool %%ZFS|zfs%% utilise des fonctionnalités d'une version antérieure de ZFS.
+
+Mettre à niveau votre pool n'est pas urgent, mais si vous décidez de le faire, gardez à l'esprit que cela peut ne pas fonctionner avec les versions précédentes d'Unraid. Cela signifie que vous ne pourrez peut-être pas revenir à une version antérieure d'Unraid après avoir effectué la mise à niveau.
+
+Comme toujours, n'oubliez pas de sauvegarder vos données avant de mettre à niveau vos pools %%ZFS|zfs%%.
+:::
+
+---
+
+## Dépannage des problèmes de mise à niveau
+
+Si vous rencontrez des problèmes après la mise à niveau, consultez la section correspondante ci-dessous pour obtenir de l'aide.
+
+<details>
+  <summary><strong>Les conteneurs de l'array ou de Docker sont lents à démarrer après la mise à niveau</strong> - Cliquez pour développer/réduire</summary>
+
+  Une migration unique peut être nécessaire pour les conteneurs Docker après certaines mises à jour. Ce processus peut prendre du temps, surtout si vous avez de nombreuses images. Soyez patient pendant ce processus ; les performances devraient se normaliser après le démarrage initial.
+</details>
+
+<details>
+  <summary><strong>Les conteneurs Docker ne fonctionnent pas correctement après une mise à niveau</strong> - Cliquez pour développer/réduire</summary>
+
+  Si vous rencontrez des erreurs du type *"les couches du manifeste ne correspondent pas à la configuration de l'image,"* il peut être nécessaire de reconstruire votre fichier d'image Docker. Voici comment :
+
+  1. Allez à ***Paramètres → Docker*** et arrêtez le service Docker.
+  2. Cochez la case pour supprimer l'image Docker et cliquez sur le bouton supprimer.
+  3. Redémarrez Docker pour recréer l'image.
+  4. Naviguez vers l'onglet **Applications**, **Applications Précédentes**, cochez ce que vous souhaitez réinstaller, puis cliquez sur **"Installer xx Applications"**.
+</details>
+
+<details>
+  <summary><strong>Les VMs affichent "impossible d'obtenir l'interface MTU" ou des erreurs réseau</strong> - Cliquez pour développer/réduire</summary>
+
+  Si vous avez utilisé un nom de pont personnalisé pour le réseau %%VM|vm%%, mettez à jour toutes les %%VMs|vm%% pour utiliser le pont `br0` par défaut en suivant ces étapes :
+
+  1. Allez à l'onglet **VMs** et modifiez chaque %%VM|vm%% (assurez-vous d'activer **Vue avancée**).
+  2. Réglez le pont réseau sur `br0` et cliquez sur **Appliquer**.
+  3. Allez à ***Paramètres → Gestionnaire de VM*** (en **Vue avancée**) et réglez le pont par défaut sur `br0`.
+</details>
+
+<details>
+  <summary><strong>L'accès VNC aux VMs ne fonctionne pas ou est lent</strong> - Cliquez pour développer/réduire</summary>
+
+  Pour les anciens %%VMs|vm%%, vous devrez peut-être mettre à jour le pilote vidéo %%VNC|vnc-session%% :
+
+  1. Modifiez la %%VM|vm%% de l'onglet **VMs** (sélectionnez **Vue avancée**).
+  2. Réglez le **Pilote Vidéo %%VNC|vnc-session%%** sur **QXL** (recommandé). Essayez **Cirrus** ou **vmvga** si vous avez un succès limité avec QXL.
+  3. Cliquez sur **Appliquer** pour enregistrer les modifications.
+</details>
+
+<details>
+  <summary><strong>La VM ne démarre pas (shell EFI apparaît)</strong> - Cliquez pour développer/réduire</summary>
+
+  If you have %%OVMF|ovmf%%-based %%VMs|vm%% created in older Unraid versions, you might encounter an EFI shell. You can boot the %%VM|vm%% by entering the following commands:
+
+  1. Tapez `fs0:`.
+  2. Ensuite, tapez `cd efi/boot`.
+  3. Enfin, tapez `bootx64.efi`.
+
+  Si `fs0:` ne fonctionne pas, vous pouvez essayer `fs1:` à la place. Si vous continuez à avoir des problèmes, veuillez visiter les [forums Unraid](https://forums.unraid.net/) pour obtenir de l'aide.
+</details>
+
+<details>
+  <summary><strong>Essayer de démarrer ma VM donne une erreur "Type de machine invalide"</strong> - Cliquez pour développer/réduire</summary>
+
+  Pour résoudre ce problème, modifiez le %%VM|vm%% dans le %%WebGUI|web-gui%% et cliquez sur **Appliquer** sans apporter de modifications. Cette action mettra à jour le type de machine vers la version la plus récente supportée.
+</details>
+
+<details>
+  <summary><strong>Performance médiocre de la VM après la mise à niveau</strong> - Cliquez pour développer/réduire</summary>
+
+  Si votre %%VM|vm%% est lente après une mise à jour, allez dans les paramètres du %%VM|vm%% (en **Vue Avancée**) et mettez à jour la version du type de **Machine** à la révision la plus récente (par exemple, passez de `i440fx-2.5` à `i440fx-2.7`). Assurez-vous de ne pas changer le préfixe (par exemple, ne passez pas de `i440fx` à `Q35`).
+</details>
+
+---
+
+## Mise à niveau ou rétrogradation manuelle
+
+Les mises à niveau manuelles sont rarement nécessaires mais peuvent être requises si vous ne pouvez pas accéder au %%WebGUI|web-gui%% ou avez besoin de revenir à une version antérieure. Avant de procéder, il est important de sauvegarder votre périphérique flash USB, dont les détails se trouvent dans [Sauvegarder votre périphérique flash](../maintain-and-update/changing-the-flash-device.mdx#backing-up-your-flash-device).
+
+### Utiliser l'outil de rétrogradation du système d'exploitation (si WebGUI est accessible)
+
+Si vous pouvez accéder au WebGUI :
+
+1. Connectez-vous au %%WebGUI|web-gui%%.
+2. Allez à ***Outils → Rétrograder OS***.
+3. Votre version précédente sera listée comme option de rétrogradation disponible.
+4. Cliquez sur **Rétrograder** et suivez les instructions.
+5. Redémarrez votre serveur lorsque vous y êtes invité.
+
+:::caution
+Gardez à l'esprit que la rétrogradation peut entraîner des problèmes de compatibilité avec les plugins ou les conteneurs Docker. Sauvegardez toujours votre périphérique flash USB et toutes les données importantes au préalable.
+:::
+
+### Méthodes manuelles (si WebGUI est inaccessible)
+
+Utilisez ces méthodes uniquement si vous ne pouvez pas accéder au %%WebGUI|web-gui%% :
+
+<Tabs>
+  <TabItem value="Méthode la plus simple" label="Méthode la plus simple">
+    <ManualDowngradeSimplest />
+  </TabItem>
+
+  <TabItem value="Méthode en ligne de commande" label="Méthode en ligne de commande">
+    <ManualDowngradeCommandLine />
+  </TabItem>
+</Tabs>

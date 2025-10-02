@@ -1,0 +1,86 @@
+---
+sidebar_position: 5
+sidebar_label: Resolución de problemas de Docker
+---
+
+# Resolución de problemas de Docker
+
+:::info
+Esta página ofrece orientación para la resolución de problemas específicamente para contenedores Docker en Unraid, gestionados por el equipo de Unraid. Para una resolución avanzada de problemas, detalles técnicos profundos o temas más allá de la implementación específica de Unraid, por favor, consulte la [documentación oficial de Docker](https://docs.docker.com/).
+:::
+
+Docker facilita la ejecución de una variedad de aplicaciones en su servidor Unraid, pero pueden surgir problemas como contenedores que no se inician, archivos de imagen de Docker corruptos o problemas de red. Esta página aborda algunos problemas comunes relacionados con Docker en Unraid y ofrece mejores prácticas para resolverlos eficazmente.
+
+---
+
+## Recrear el archivo de imagen de Docker
+
+A corrupted Docker image file (`docker.img`) is a common issue, often caused by the %%cache pool|cache-pool%% running out of space or an unclean shutdown. Luckily, a well-configured container stores all variable data outside the image file (usually in the `appdata` share), so you can safely recreate the image without losing your application settings or data.
+
+Para recrear el archivo de imagen de Docker:
+
+1. Vaya a ***Settings → Docker*** en el %%WebGUI|web-gui%%.
+2. Establece **Habilitar Docker** en **No** y haz clic en **Aplicar** para detener el servicio Docker.
+3. Seleccione la opción para eliminar el archivo del disco virtual de Docker, luego haga clic en **Aplicar**. También puede eliminar el archivo manualmente si es necesario.
+4. Confirme la ubicación y el nombre del archivo para el nuevo archivo de disco virtual de Docker. Esta configuración incluye tanto la ruta de la carpeta como el nombre del archivo.
+5. Establezca el tamaño deseado para el nuevo archivo de imagen. El tamaño predeterminado suele ser suficiente para la mayoría de los usuarios.
+6. Configure **Habilitar Docker** a **Sí** y haga clic en **Aplicar**. Unraid creará y formateará un nuevo archivo `docker.img` usando %%BTRFS|btrfs%%.
+
+Ahora está listo para reinstalar sus contenedores utilizando sus configuraciones guardadas.
+
+---
+
+## Reinstalación de aplicaciones Docker
+
+Unraid guarda automáticamente una plantilla para cada contenedor instalado en su unidad flash. Estas plantillas almacenan su configuración, haciendo que sea fácil restaurar los contenedores después de recrear el archivo de imagen de Docker.
+
+Para reinstalar sus contenedores:
+
+1. Ve a la pestaña **Apps** en el %%WebGUI|web-gui%%.
+2. Abra la sección **Aplicaciones Anteriores**.
+3. Seleccione los contenedores que desea reinstalar.
+4. Proceda con la instalación. Unraid volverá a descargar cada contenedor y aplicará automáticamente sus configuraciones anteriores.
+
+:::important
+Este proceso restaura sus contenedores a su estado anterior, siempre que todos los datos variables estuvieran mapeados fuera del archivo de imagen Docker (por ejemplo, en la compartición `appdata`).
+:::
+
+:::tip
+Si un contenedor no se inicia después de reinstalarlo, revise sus registros en el menú contextual de la pestaña **Docker** para mensajes de error y pistas de resolución de problemas.
+:::
+
+:::note
+Verifique que todas las rutas de host mapeadas existan y tengan los permisos correctos después de restaurar sus contenedores. Las asignaciones incorrectas o los permisos son una causa común de problemas de inicio.
+:::
+
+---
+
+## Restaurando redes personalizadas de Docker
+
+Las redes Docker personalizadas no persisten si se elimina el archivo de imagen de Docker. Antes de eliminar la imagen, documente los nombres de su red personalizada abriendo una terminal y ejecutando:
+
+```
+docker network ls
+```
+
+Anote los nombres de cualquier red que haya creado (excluyendo las redes predeterminadas `bridge`, `host` y `none`).
+
+Para restaurar las redes personalizadas:
+
+1. Después de recrear el archivo de imagen de Docker, recree cada red personalizada utilizando:
+
+   ```
+   docker network create <network-name>
+   ```
+
+   Reemplace `<network-name>` con el nombre exacto que registró anteriormente.
+
+2. Actualice sus contenedores para que utilicen las redes restauradas según sea necesario.
+
+:::note
+Puede habilitar el acceso de host a redes personalizadas en ***Settings → Docker*** configurando **Acceso de host a redes personalizadas** en **Habilitado** si su configuración lo requiere.
+:::
+
+:::tip
+Si los contenedores no pueden comunicarse como se esperaba después de la restauración, inspeccione sus configuraciones de red Docker para detectar conflictos o problemas de conectividad.
+:::

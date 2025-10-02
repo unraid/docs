@@ -1,0 +1,109 @@
+---
+sidebar_position: 2
+sidebar_label: Wake-on-LAN (WoL)
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import WakeOnLanWindows from './partials/wake-on-lan/windows.mdx';
+import WakeOnLanMacos from './partials/wake-on-lan/macos.mdx';
+import WakeOnLanLinux from './partials/wake-on-lan/linux.mdx';
+
+# Wake-on-LAN (WoL)
+
+%%Wake-on-LAN (WOL)|wake-on-lan%% te permite despertar remotamente tu servidor Unraid desde un estado de apagado o suspensión enviando un "paquete mágico" a través de la red. Esta página te ayudará a configurar WoL para tu red local.
+
+## Requisitos
+
+Para que WoL funcione correctamente, asegúrate de cumplir con los siguientes requisitos:
+
+- **Soporte NIC**: Tu controlador de interfaz de red debe admitir WoL; la mayoría de los NIC modernos lo hacen.
+
+- **Configuraciones BIOS/UEFI**: Habilita WoL en el BIOS/%%UEFI|uefi%% de tu placa madre bajo gestión de energía. Aquí hay algunos nombres de configuraciones comunes:
+
+  | Nombre de configuración            | Descripción                                      |
+  | ---------------------------------- | ------------------------------------------------ |
+  | Despertar con LAN                  | Configuración genérica de WoL                    |
+  | Despertar por evento PME           | Para eventos de despertar PCIe                   |
+  | Encender por dispositivos PCI/PCIe | Nombre alternativo para WoL                      |
+  | Listo para ErP                     | Debe estar *deshabilitado* para que WoL funcione |
+
+- **Conexión de energía**: Asegúrate de que tu servidor esté conectado a una fuente de energía.
+
+- **Conexión de red**: Conecta tu servidor a tu LAN con un cable Ethernet (WoL no es compatible con WiFi).
+
+:::caution[Hardware compatibilidad]
+No todo el hardware soporta el modo de suspensión S3 o WoL de manera fiable. Algunos sistemas pueden experimentar problemas para entrar en suspensión, fallar al despertar correctamente, o requerir configuraciones adicionales de BIOS/%%UEFI|uefi%%. Siempre prueba estas funciones a fondo antes de confiar en ellas.
+:::
+
+## Poner un servidor Unraid en suspensión
+
+La forma preferida y fácil de usar para gestionar el modo de suspensión en Unraid es con el [**plugin Dynamix S3 Sleep**](https://unraid.net/community/apps/c/plugins/p3?srsltid=AfmBOorpfP2Psw_bCorklf-QVCUHvADYGsdbsAH-4CldU4V2hWgoO-09#r:~:text=%3E%3E-,Dynamix%20S3%20Sleep,-Dynamix%20Repository). Este plugin ofrece una interfaz gráfica para ayudar a programar el sueño, el despertar y el comportamiento inactivo, mientras resuelve problemas comunes que pueden surgir con varias configuraciones de hardware.
+
+Para instalación y configuración:
+
+1. Abre la pestaña de ***Aplicaciones*** en el %%WebGUI|web-gui%% de Unraid.
+2. Busca "Dynamix S3 Sleep" e instala el complemento.
+3. Navega a ***Configuración → Configuración de suspensión*** para establecer tus opciones de suspensión y despertar.
+
+El complemento gestiona la mayoría de las opciones de configuración de suspensión.
+
+<details>
+  <summary><strong>Método manual alternativo</strong> - Haz clic para expandir/contraer</summary>
+
+  Si deseas más control o necesitas personalización avanzada, puedes configurar los ajustes de suspensión y WoL a través de la línea de comandos. Este método es recomendado para usuarios avanzados.
+
+  Para configurar la suspensión manualmente:
+
+  1. Conéctate a tu servidor usando el terminal %%WebGUI|web-gui%% o [%%SSH|ssh%%](../../system-administration/advanced-tools/command-line-interface.mdx#accessing-the-terminal).
+
+  2. Identifica tu interfaz de red principal (generalmente `eth0`) ejecutando el siguiente comando:
+
+     ```
+     ifconfig
+     ```
+
+     Anota la dirección MAC (etiquetada como `ether`).
+
+  3. Habilita WoL en la interfaz con este comando:
+
+     ```
+     ethtool -s eth0 wol g
+     ```
+
+  4. Pon el servidor en suspensión ingresando este comando:
+
+     ```
+     echo -n mem > /sys/power/state
+     ```
+
+  :::caution[Persistencia]
+  Los ajustes de WoL configurados manualmente **no son persistentes** a través de los reinicios por defecto. Para hacerlos permanentes:
+
+  1. Crea un archivo `go` en tu unidad flash en `/boot/config/go`.
+
+  2. Agrega esta línea:
+
+  ```
+  /sbin/ethtool -s eth0 wol g
+  ```
+  :::
+</details>
+
+## Despertar tu servidor Unraid
+
+Para despertar su servidor Unraid remotamente, necesitas enviar un "paquete mágico" especial a través de tu red local. Este paquete incluye la dirección MAC de tu servidor e instruye a la interfaz de red para encender el sistema desde un estado de sueño o apagado. Los diferentes sistemas operativos proporcionan varias herramientas y métodos para enviar este paquete. A continuación, se detallan las instrucciones específicas para Windows, macOS y Linux.
+
+<Tabs>
+  <TabItem value="Windows" label="Windows">
+    <WakeOnLanWindows />
+  </TabItem>
+
+  <TabItem value="macOS" label="macOS">
+    <WakeOnLanMacos />
+  </TabItem>
+
+  <TabItem value="Linux" label="Linux">
+    <WakeOnLanLinux />
+  </TabItem>
+</Tabs>

@@ -1,0 +1,71 @@
+---
+sidebar_position: 2
+sidebar_label: Den USB-Stick sichern
+---
+
+# Den USB-Stick sichern
+
+Das USB-Flashlaufwerk ist für Ihren Unraid Server unerlässlich, da es alle Konfigurationsdaten, Lizenzen und Systemeinstellungen speichert. Aufgrund seiner Bedeutung ist es entscheidend, seine Inhalte jederzeit sicher und zugänglich zu halten.
+
+## Backups
+
+Ein aktuelles Backup Ihres USB-Flashlaufwerks stellt sicher, dass Sie sich schnell von Hardwarefehlern, unbeabsichtigten Änderungen oder Datenbeschädigungen erholen können. Erstellen Sie Backups in den folgenden Situationen:
+
+- Vor dem Upgrade von Unraid oder der Installation von Plugins
+- Nach dem Hinzufügen oder Entfernen von Laufwerken
+- Nach Änderungen an Netzwerk-, Freigabe- oder Sicherheitseinstellungen
+- Vor wesentlichen Konfigurationsänderungen
+- Regelmäßig im Rahmen Ihrer Wartungsroutine
+
+Um Ihren USB-Stick mit dem Unraid WebGUI zu sichern, folgen Sie diesen Schritten:
+
+1. Wählen Sie Ihren USB-Stick im **Main**-Tab aus.
+2. Klicken Sie in den **Flash-Geräteeinstellungen** auf **Flash-Backup**.
+
+<div style={{ margin: 'auto', maxWidth: '600px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+  ![Wählen Sie die Flash-Backup-Schaltfläche](/img/flashbackup.png)
+</div>
+
+3. Unraid erstellt eine ZIP-Datei mit dem Inhalt des USB-Sticks.
+4. Speichern Sie diese ZIP-Datei an einem sicheren Ort außerhalb Ihres Unraid-Servers (z.B. auf einem separaten PC, NAS oder in einer Cloud).
+
+Wenn Sie Ihren USB-Stick neu erstellen müssen, verwenden Sie dieses Backup mit dem [USB Creator Tool](https://unraid.net/download).
+
+:::tip
+Erwägen Sie, nach Hardwareänderungen einen Screenshot Ihrer [Plattenzuordnungen](../../getting-started/set-up-unraid/configure-your-array.mdx#assign-parity-and-data-disks) zu speichern. Dies gewährleistet die korrekte Plattenplatzierung, falls Sie von Ihrem Backup wiederherstellen müssen.
+:::
+
+---
+
+## Netzwerkzugriff
+
+Sie können steuern, ob Ihr USB-Flashlaufwerk über das Netzwerk zugänglich ist, ähnlich wie andere Freigaben in Unraid. Der Netzwerkzugriff sollte jedoch eingeschränkt werden, da das USB-Flashlaufwerk vertrauliche Konfigurations- und Lizenzierungsdaten enthält. Ziehen Sie Folgendes in Betracht:
+
+- **Netzwerksichtbarkeit:** Entscheiden Sie, ob Ihr USB-Stick im Netzwerk sichtbar oder verborgen sein soll.
+- **Zugriffsrechte:** Wenn der Netzwerkzugriff aktiviert ist, legen Sie Berechtigungen fest, um zu begrenzen, wer die Inhalte anzeigen oder ändern kann.
+
+:::important[Reducing Sicherheitsrisiken]
+- **Freigabe deaktivieren:** Setzen Sie den %%SMB|samba%% Export des Flash-Laufwerks auf **Nein**, um den Netzwerkzugriff vollständig zu verhindern.
+- **Zugang beschränken:** Falls Sie den USB-Stick freigeben müssen, setzen Sie die Sicherheit auf **Privat** und gewähren nur vertrauenswürdigen Benutzern mit starken Passwörtern Zugriff.
+- **Öffentlichen Zugang vermeiden:** Lassen Sie die USB-Stick-Freigabe niemals auf **Öffentlich** oder **Sicher**, wenn Gastzugriff mit Schreibrechten möglich ist.
+
+Diese Schritte tragen dazu bei, unerlaubte Änderungen oder die Offenlegung kritischer Dateien zu verhindern.
+:::
+
+---
+
+## Berechtigungen
+
+Um die Systemsicherheit zu erhöhen, können Dateien auf dem USB-Flashlaufwerk nicht mehr über Ausführungsrechte verfügen. Diese Änderung verhindert, dass bösartiger oder unbeabsichtigter Code direkt vom USB-Flashlaufwerk ausgeführt wird, wodurch das Risiko einer Ausnutzung oder versehentlichen Systemänderung vermindert wird.
+
+Wenn Sie benutzerdefinierte Skripte oder Programme auf dem USB-Stick gespeichert haben, gehen Sie wie folgt vor:
+
+1. **Kopieren Sie Skripte an einen ausführbaren Ort:**
+   - Verwenden Sie `/usr/local/bin`, wenn Sie die Skripte im Standard-Systempfad wollen.
+   - Automatisieren Sie dies, indem Sie Kopierbefehle in Ihre `config/go`-Datei einfügen.
+   - Setzen Sie nach dem Kopieren die Ausführungsrechte auf die Dateien.
+
+2. **Skripte mit einem Interpreter ausführen:**
+   - Schließen Sie das Skript mit dem Interpreter ein (z.B. `bash /boot/config/scripts/myscript.sh`).
+
+Dieser Ansatz hält Ihr System sicher, während fortgeschrittene Benutzer ihre Skripte ausführen können.

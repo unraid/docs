@@ -1,0 +1,237 @@
+---
+sidebar_position: 7
+sidebar_label: WireGuard
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import WireGuardConfigureMobile from './partials/wireguard-configure-mobile.mdx';
+import WireGuardConfigureOtherDevices from './partials/wireguard-configure-other-devices.mdx';
+
+# WireGuard
+
+Bien que Tailscale offre une expérience conviviale pour la plupart des utilisateurs, [WireGuard](https://www.wireguard.com/) est une solution VPN robuste intégrée dans Unraid qui brille dans des scénarios avancés de mise en réseau spécifiques. Il est particulièrement utile lorsque vous avez besoin d'un contrôle détaillé sur le routage du VPN ou que vous nécessitez des connexions serveur à serveur ou LAN à LAN sans dépendre de services tiers. Voici quelques scénarios clés où WireGuard excelle.
+
+<h4>Quand choisir WireGuard</h4>
+
+| Scénario                          | Pourquoi choisir %%WireGuard\|wireguard%% ?                                                                                   |
+| --------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| **Configuration avancée**         | Permet des configurations %%VPN Tunnel\|vpn-tunnel%% personnalisées et une intégration avec l'infrastructure réseau existante |
+| **Tunnels serveur-à-serveur**     | Vous permet de créer des liens cryptés persistants entre les serveurs Unraid                                                  |
+| **Intégration LAN-à-LAN**         | Connecte des réseaux entiers sans impliquer de services intermédiaires                                                        |
+| **Tâches à forte bande passante** | Offre un minimum de surcharge de protocole pour un débit maximal                                                              |
+
+:::info
+Pour la plupart des utilisateurs, [**Tailscale**](../secure-your-server/tailscale.mdx) peut accomplir tout ce que WireGuard peut faire, souvent plus facilement. Il ne nécessite généralement pas de redirection de port ou de configuration manuelle. Cependant, si vous avez besoin de configurations VPN avancées et personnalisées ou avez des exigences de compatibilité spécifiques, choisir WireGuard peut être une meilleure option pour certains.
+:::
+
+<h4>Types de connexion et cas d'utilisation</h4>
+
+Connaître les types de connexion dans %%WireGuard|wireguard%% peut vous aider à décider si c'est le bon choix :
+
+| Type de connexion           | Cas d'utilisation réel                                                                                                           |
+| :-------------------------- | :------------------------------------------------------------------------------------------------------------------------------- |
+| Accès à distance au serveur | Accédez à l'Unraid %%WebGUI\|web-gui%%, aux conteneurs Docker, aux %%VM\|vm%%s et aux partages réseau à distance.                |
+| Accès à distance au LAN     | Accédez à tous les appareils de votre réseau local à distance comme si vous étiez sur le réseau local.                           |
+| Accès serveur à serveur     | Connectez en toute sécurité deux serveurs Unraid pour le partage de données ou la sauvegarde.                                    |
+| Accès LAN-à-LAN             | Connectez sans interruption deux LAN entiers pour une communication fluide entre réseaux.                                        |
+| Accès serveur hub & spoke   | Permettre à plusieurs clients VPN de se connecter entre eux via le serveur.                                                      |
+| Accès LAN hub & spoke       | Permet la communication entre plusieurs LAN via un serveur central.                                                              |
+| Accès VPN tunnelisé         | Dirigez des conteneurs Docker spécifiques et %%VM\|vm%%s via un fournisseur de VPN commercial %%WireGuard\|wireguard%%.          |
+| Accès en tunnel à distance  | Routez de manière sécurisée tout votre trafic Internet via votre serveur Unraid lorsque vous êtes sur des réseaux non sécurisés. |
+
+## Configuration de WireGuard sur Unraid
+
+:::note\[Prerequisites]
+
+- **DNS dynamique :** Configurez un DDNS pour un accès fiable si votre adresse IP publique change. Les options populaires incluent [Cloudflare](https://www.cloudflare.com/) (nécessite la propriété du domaine), [No-IP](https://www.noip.com/) ou [DuckDNS](https://www.duckdns.org/) (gratuit, mais peut connaître des interruptions occasionnelles).
+- **Configuration du routeur :**
+  - Activez %%UPnP|upnp%% dans ***Paramètres → Accès à la gestion*** pour la redirection automatique des ports.
+  - Si %%UPnP|upnp%% n'est pas disponible, redirigez manuellement le port UDP 51820 vers l'IP de votre serveur Unraid.
+- **Logiciel client :** Installez %%WireGuard|wireguard%% sur vos appareils ([Windows](https://www.wireguard.com/install/), [macOS](https://apps.apple.com/us/app/wireguard/id1451685025), [iOS](https://apps.apple.com/us/app/wireguard/id1441195209), [Android](https://play.google.com/store/apps/details?id=com.wireguard.android)).
+
+:::
+
+<h4>Étape 1 : Générer des clés</h4>
+
+1. Accédez à ***Paramètres → Gestion des VPN***.
+
+<div style={{ margin: 'auto', maxWidth: '600px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+  ![Gestion des VPN](/img/wg0.png)
+</div>
+
+2. Nommez votre tunnel (par exemple, "VPN Maison").
+3. Cliquez sur **Générer une paire de clés** pour créer des clés publiques/privées.
+
+:::warning
+Stockez la clé privée en toute sécurité car elle offre un accès complet au réseau.
+:::
+
+<h4>Étape 2 : Configurez votre point d'extrémité</h4>
+
+- **Pour les utilisateurs de DDNS :** Remplacez l'IP dans **Point d'extrémité local** par votre URL DDNS (par exemple, `myhome.duckdns.org`).
+- Conservez le port par défaut (`51820`) sauf s'il entre en conflit avec des services existants.
+
+<h4>Étape 3 : Configurer le transfert de port</h4>
+
+- **Utilisateurs de %%UPnP|upnp%% :** Unraid transférera automatiquement les ports si activé dans ***Paramètres → Accès à la gestion***.
+
+<div style={{ margin: 'auto', maxWidth: '600px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+  ![UPnP activé](/img/upnp-yes.png)
+</div>
+
+- **Configuration manuelle :** Si %%UPnP|upnp%% n'est pas disponible :
+  1. Connectez-vous à votre routeur.
+  2. Rediriger le port UDP `51820` vers l'IP LAN de votre serveur Unraid.
+  3. Utilisez le même port pour les paramètres externes et internes.
+
+<div style={{ margin: 'auto', maxWidth: '600px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+  ![UPnP désactivé](/img/upnp-no.png)
+</div>
+
+<h4>Étape 4 : Activez votre tunnel</h4>
+
+1. Basculer sur **Actif** pour activer %%WireGuard|wireguard%%.
+2. Activez **Démarrage automatique** pour exécuter %%WireGuard|wireguard%% au démarrage.
+
+<div style={{ margin: 'auto', maxWidth: '600px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+  ![Basculer l'activation](/img/activate.png)
+</div>
+
+:::important[Security meilleures pratiques]
+- **Accès de confiance uniquement :** L'accès VPN est similaire à l'accès physique au réseau, autorisez donc uniquement les appareils de confiance.
+- **Gestion des clés :** Ne partagez jamais de clés privées ; traitez-les comme des mots de passe.
+- **Segmentation réseau :** Pour des configurations complexes (Docker/%%VM|vm%%s personnalisés), isolez le trafic VPN à l'aide de VLANs ou de sous-réseaux séparés.
+- **Audits réguliers :** Examinez les appareils connectés et les autorisations d'accès tous les trimestres.
+:::
+
+### Définir un pair (client)
+
+Un pair est un appareil client - tel qu'un téléphone, un ordinateur portable ou un autre serveur - qui se connecte à votre VPN Unraid %%WireGuard|wireguard%%. Définir un pair signifie créer une identité unique et sécuriser des clés pour cet appareil.
+
+1. Sélectionnez **Ajouter un pair**.
+
+<div style={{ margin: 'auto', maxWidth: '600px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+  ![Ajouter un pair](/img/peer-add.png)
+</div>
+
+2. Nommez le pair (par exemple, *MonAndroid*).
+3. Choisissez le type de connexion initial pour un accès complet au réseau, généralement *Accès à distance au LAN*.
+4. Cliquez sur **Générer une paire de clés** pour créer des clés publiques et privées. Gardez la clé privée en sécurité.
+5. Facultativement, générez une clé pré-partagée pour une sécurité supplémentaire.
+6. Cliquez sur **Appliquer**.
+
+:::note
+Bien que les pairs puissent générer leurs propres clés, laisser Unraid générer les clés simplifie la configuration en fournissant des fichiers de configuration complets.
+:::
+
+:::caution
+Ajouter un nouveau pair peut désactiver temporairement le tunnel %%WireGuard|wireguard%%, ce qui peut interrompre votre connexion. Assurez-vous d'avoir un accès local à votre serveur avant de procéder à des changements.
+:::
+
+### Configuration d'un pair (client)
+
+<Tabs>
+  <TabItem value="mobile" label="Appareil mobile" default>
+    <WireGuardConfigureMobile />
+  </TabItem>
+
+  <TabItem value="autre" label="Autres appareils">
+    <WireGuardConfigureOtherDevices />
+  </TabItem>
+</Tabs>
+
+### Configuration de votre DNS
+
+1. Accédez aux appareils en utilisant des adresses IP ou des noms de domaine complets (par exemple, `yourpersonalhash.unraid.net`).
+
+:::note
+Les noms courts comme "tour" ou les entrées DNS gérées par le routeur peuvent ne pas fonctionner via le VPN.
+:::
+
+2. Pour activer la résolution de noms courts :
+   - Allez dans ***Paramètres → Gestion des VPN*** dans Unraid.
+   - Basculer du mode **Basique** au mode **Avancé**.
+   - Entrez l'adresse IP de votre serveur DNS préféré dans le champ **Serveur DNS pair**.
+   - Sauvegardez les modifications et mettez à jour le fichier de configuration du client.
+3. Serveurs DNS recommandés :
+   - L'adresse IP de votre routeur LAN.
+   - Serveurs DNS publics comme `8.8.8.8`.
+
+Cette configuration est particulièrement importante pour le mode **Accès en tunnel à distance**, où le serveur DNS d'origine du client peut être inaccessible.
+
+:::note
+Les adresses %%mDNS|mdns%% (par exemple, `tower.local`) ne fonctionnent que sur le réseau local et pas via le VPN %%WireGuard|wireguard%%.
+:::
+
+### Réseaux complexes
+
+For most users, the default **Use NAT** setting works out of the box and allows access to Unraid and most LAN devices. However, if you use Docker containers with custom IPs or %%VM|vm%%s with strict networking requirements:
+
+1. Dans votre configuration de tunnel %%WireGuard|wireguard%%, réglez **Utiliser NAT** sur **Non**.
+2. Sur votre routeur, ajoutez une route statique pour le réseau de tunnel WireGuard (par exemple, `10.253.0.0/24`) pointant vers l'IP de votre serveur Unraid.
+3. Dans ***Paramètres → Paramètres Docker***, réglez **Accès hôte aux réseaux personnalisés** sur **Activé**.
+
+### Configurations à éviter
+
+| Paramètre d'utilisation de NAT | Accès hôte aux réseaux personnalisés   | Serveur & Dockers (Pont/hôte) | Machines virtuelles & autres systèmes LAN | Dockers avec IP personnalisée | Notes                                                                    |
+| ------------------------------ | -------------------------------------- | ----------------------------- | ----------------------------------------- | ----------------------------- | ------------------------------------------------------------------------ |
+| Oui                            | Désactivé (Route statique optionnelle) | Accessible                    | Accessible                                | Non accessible                | Configuration réseau simple; recommandé pour la plupart des utilisateurs |
+| Oui                            | Activé (Route statique optionnelle)    | Accessible                    | Non accessible                            | Non accessible                | Évitez cette configuration                                               |
+| Non                            | Désactivé (Aucune route statique)      | Accessible                    | Non accessible                            | Non accessible                | Évitez; nécessite une route statique pour fonctionner correctement       |
+| Non                            | Désactivé (Avec route statique)        | Accessible                    | Accessible                                | Non accessible                | Presque correct; activez l'accès hôte aux réseaux personnalisés          |
+| Non                            | Activé (Avec route statique)           | Accessible                    | Accessible                                | Accessible                    | Configuration recommandée pour les réseaux complexes                     |
+
+## Dépannage de WireGuard
+
+WireGuard est conçu pour être discret - si quelque chose ne fonctionne pas, il ne fournira pas de messages d'erreur. Pour dépanner efficacement, vous devez vérifier systématiquement chaque aspect de votre configuration.
+
+#### Liste de vérification de connexion
+
+- ✅ Le tunnel est actif à la fois sur Unraid et les appareils clients. *("Actif" signifie que le tunnel a démarré mais n'est pas nécessairement connecté.)*
+- ✅ L'URL DDNS pointe vers votre IP publique actuelle et est définie dans **Point d'extrémité local**.
+- ✅ Le port UDP correct est transféré de votre routeur vers Unraid, correspondant au port de l'**endpoint local**.
+- ✅ Les clients disposent des derniers fichiers de configuration après des modifications côté serveur.
+- ✅ Les modifications sont enregistrées avant de visualiser ou de distribuer les configurations de pairs (codes QR/fichiers).
+
+#### Suggestions supplémentaires de dépannage
+
+<details>
+  <summary><strong>Conseils pour la première configuration</strong> - Cliquez pour développer/réduire</summary>
+
+  Si vous configurez WireGuard pour la première fois, ces conseils peuvent vous aider à éviter les pièges courants :
+
+  - Configurez votre premier client en utilisant un appareil mobile sur des données cellulaires (pas en Wi-Fi) pour écarter les problèmes de réseau local.
+  - Utilisez la méthode du code QR pour le transfert de configuration le plus simple.
+</details>
+
+<details>
+  <summary><strong>Problèmes de connexion et de poignée de main</strong> - Cliquez pour développer/réduire</summary>
+
+  Si vous ne voyez pas de poignée de main ou ne pouvez pas vous connecter, essayez ces vérifications ciblées :
+
+  - Si vous ne voyez pas de poignée de main, essayez de générer du trafic (par exemple, pinger le serveur) pour déclencher la connexion.
+  - Désactivez les fonctionnalités d'économie d'énergie, de gestion des données ou d'économie de batterie sur les clients mobiles, car cela peut interférer avec le fonctionnement du VPN.
+  - Assurez-vous que les réseaux client et serveur utilisent des sous-réseaux différents (par exemple, évitez que les deux utilisent `192.168.1.0/24`).
+  - Si vous utilisez Cloudflare pour le DDNS, configurez le **statut du proxy** sur **DNS uniquement** (pas \*\*Proxy). Laissez le temps nécessaire pour que les changements DNS se propagent.
+  - Si vous pouvez vous connecter depuis certains endroits mais pas d'autres, le réseau distant peut bloquer le trafic UDP. %%WireGuard|wireguard%% ne prend actuellement pas en charge TCP comme solution de repli.
+</details>
+
+<details>
+  <summary><strong>Conflits réseau avancés</strong> - Cliquez pour développer/réduire</summary>
+
+  Si votre configuration réseau est plus complexe, ou si vous suspectez un conflit IP, consultez ces étapes avancées de dépannage :
+
+  - En mode **Avancé**, confirmez que votre **pool de réseau de tunnel local** ne chevauche aucun réseau existant de chaque côté. En cas de conflit, changez pour un autre sous-réseau privé (par exemple, `10.10.10.0/24`).
+  - Pour les conteneurs Docker avec IPs personnalisées ou %%VM|vm%%s avec des exigences strictes, voir la section [Réseaux complexes](#complex-networks).
+</details>
+
+<details>
+  <summary><strong>Récupération d'urgence</strong> - Cliquez pour développer/réduire</summary>
+
+  Si vous perdez l'accès à l'Unraid %%WebGUI|web-gui%% et devez désactiver le démarrage automatique de %%WireGuard|wireguard%%
+
+  - Supprimez `/boot/config/wireguard/autostart` de votre clé USB et redémarrez.
+</details>
+
+\* *"%%WireGuard|wireguard%%" et le logo "%%WireGuard|wireguard%%" sont des marques déposées de Jason A. Donenfeld.*

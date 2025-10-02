@@ -1,0 +1,210 @@
+---
+title: CLI-Referenz
+description: Vollständige Referenz für alle Unraid API CLI-Befehle.
+sidebar_position: 4
+---
+
+# CLI-Befehle
+
+:::info[Command Struktur]
+Alle Befehle folgen dem Muster: `unraid-api <command> [options]`
+:::
+
+## 🚀 Dienstverwaltung
+
+### Start
+
+```bash
+unraid-api start [--log-level <level>]
+```
+
+Startet den Unraid API-Dienst.
+
+Optionen:
+
+- `--log-level`: Protokollierungsstufe festlegen (trace|debug|info|warn|error|fatal)
+
+Alternative: Sie können die Protokollierungsstufe auch mit der Umgebungsvariable `LOG_LEVEL` festlegen:
+
+```bash
+LOG_LEVEL=trace unraid-api start
+```
+
+### Stoppen
+
+```bash
+unraid-api stop [--delete]
+```
+
+Stoppt den Unraid API-Dienst.
+
+- `--löschen`: Optional. Das PM2-Heimverzeichnis löschen
+
+### Neustart
+
+```bash
+unraid-api restart [--log-level <level>]
+```
+
+Startet den Unraid API-Dienst neu.
+
+Optionen:
+
+- `--log-level`: Protokollierungsstufe festlegen (trace|debug|info|warn|error|fatal)
+
+Alternative: Sie können die Protokollierungsstufe auch mit der Umgebungsvariable `LOG_LEVEL` festlegen:
+
+```bash
+LOG_LEVEL=trace unraid-api restart
+```
+
+### Protokolle
+
+```bash
+unraid-api logs [-l <lines>]
+```
+
+Zeigt die API-Protokolle an.
+
+- `-l, --zeilen`: Optional. Anzahl der anzuzeigenden Zeilen (Standard: 100)
+
+## ⚙️ Konfigurationsbefehle
+
+### Konfiguration
+
+```bash
+unraid-api config
+```
+
+Zeigt aktuelle Konfigurationswerte an.
+
+### Umgebung wechseln
+
+```bash
+unraid-api switch-env [-e <environment>]
+```
+
+Wechselt zwischen Produktions- und Staging-Umgebungen.
+
+- `-e, --umgebung`: Optional. Zielumgebung (produktion|staging)
+
+### Entwicklermodus
+
+:::tip[Web GUI-Management]
+Entwickleroptionen können auch über die Weboberfläche unter **Einstellungen** → **Verwaltungszugriff** → **Entwickleroptionen** verwaltet werden.
+:::
+
+```bash
+unraid-api developer                       # Interactive prompt for tools
+unraid-api developer --sandbox true        # Enable GraphQL sandbox
+unraid-api developer --sandbox false       # Disable GraphQL sandbox
+unraid-api developer --enable-modal        # Enable modal testing tool
+unraid-api developer --disable-modal       # Disable modal testing tool
+```
+
+Entwicklerfunktionen für die API konfigurieren:
+
+- **GraphQL-Sandbox**: Apollo GraphQL-Sandbox unter `/graphql` aktivieren/deaktivieren.
+- **Modal-Testwerkzeug**: Aktivieren/deaktivieren des UI-Modul-Tests im Unraid-Menü.
+
+## API-Schlüsselverwaltung
+
+:::tip[Web GUI-Management]
+API-Schlüssel können auch über das Webinterface unter **Einstellungen** → **Verwaltungszugriff** → **API-Schlüssel** verwaltet werden.
+:::
+
+### API-Schlüsselbefehle
+
+```bash
+unraid-api apikey [options]
+```
+
+Erstellen und verwalten Sie API-Schlüssel über die CLI.
+
+Optionen:
+
+- `--name <name>`: Name des Schlüssels
+- `--create`: Erstellen Sie einen neuen Schlüssel
+- `-r, --roles <roles>`: Comma-separated list of roles
+- `-p, --permissions <permissions>`: Comma-separated list of permissions
+- `-d, --description <description>`: Description for the key
+
+## SSO (Single Sign-On) Verwaltung
+
+:::info[OIDC Konfiguration]
+Für die OIDC/SSO-Anbieter-Konfiguration siehe die Weboberfläche unter **Einstellungen** → **Verwaltungszugriff** → **API** → **OIDC** oder beziehen Sie sich auf den [OIDC-Anbieter-Einrichtungsleitfaden](./oidc-provider-setup.mdx).
+:::
+
+### SSO-Befehlsbasis
+
+```bash
+unraid-api sso
+```
+
+#### SSO-Benutzer hinzufügen
+
+```bash
+unraid-api sso add-user
+# or
+unraid-api sso add
+# or
+unraid-api sso a
+```
+
+Einen neuen Benutzer für die SSO-Authentifizierung hinzufügen.
+
+#### SSO-Benutzer entfernen
+
+```bash
+unraid-api sso remove-user
+# or
+unraid-api sso remove
+# or
+unraid-api sso r
+```
+
+Einen Benutzer (oder alle Benutzer) aus SSO entfernen.
+
+#### SSO-Benutzer auflisten
+
+```bash
+unraid-api sso list-users
+# or
+unraid-api sso list
+# or
+unraid-api sso l
+```
+
+Alle konfigurierten SSO-Benutzer auflisten.
+
+#### SSO-Token validieren
+
+```bash
+unraid-api sso validate-token <token>
+# or
+unraid-api sso validate
+# or
+unraid-api sso v
+```
+
+Ein SSO-Token validieren und seinen Status zurückgeben.
+
+## Berichterstellung
+
+### Bericht erstellen
+
+```bash
+unraid-api report [-r] [-j]
+```
+
+Ein Systembericht erstellen.
+
+- `-r, --raw`: Rohbefehlsausgabe anzeigen
+- `-j, --json`: Ausgabe im JSON-Format anzeigen
+
+## Anmerkungen
+
+1. Die meisten Befehle erfordern entsprechende Berechtigungen, um den Systemstatus zu ändern.
+2. Einige Befehle erfordern, dass die API läuft oder gestoppt ist.
+3. API-Schlüssel sollten sicher aufbewahrt werden, da sie Zugriff auf das System gewähren.
+4. Änderungen an der SSO-Konfiguration können einen Neustart des Dienstes erfordern.

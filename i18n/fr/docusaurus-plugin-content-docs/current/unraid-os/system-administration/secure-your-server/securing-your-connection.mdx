@@ -1,0 +1,294 @@
+---
+sidebar_position: 4
+sidebar_label: Sécurisation de votre connexion
+---
+
+# Sécurisation de votre connexion
+
+Sécuriser votre Unraid %%WebGUI|web-gui%% avec le cryptage %%SSL|ssl%% protège les données sensibles—telles que les identifiants de connexion et les détails de configuration—contre l'interception ou la falsification sur votre réseau local ou Internet. Vous pouvez utiliser des certificats %%SSL|ssl%% génériques fournis par [Let's Encrypt](https://letsencrypt.org/) pour les scénarios locaux et d'[accès à distance Unraid Connect](../../../unraid-connect/remote-access.mdx).
+
+:::important[The importance du SSL]
+%%SSL|ssl%% (Secure Sockets Layer) crypte tout le trafic entre votre navigateur et le serveur Unraid, empêchant l'écoute clandestine et les attaques de type homme du milieu. Sans %%SSL|ssl%%, toute personne ayant accès à votre réseau pourrait potentiellement intercepter des données sensibles ou détourner votre session. L'utilisation de %%SSL|ssl%% est fortement recommandée pour la gestion locale et distante de votre serveur Unraid.
+:::
+
+---
+
+## Paramètres SSL
+
+Plusieurs paramètres dans Unraid affectent la façon dont %%SSL|ssl%% est configuré et utilisé. Les comprendre vous aide à choisir le bon certificat et la bonne méthode de connexion pour vos besoins.
+
+| Paramètre            | Description                                                                             |
+| -------------------- | --------------------------------------------------------------------------------------- |
+| **Nom du serveur**   | Défini dans ***Paramètres → Identification***. Par défaut, c'est `tower`.               |
+| **TLD local**        | Défini dans ***Paramètres → Accès de gestion***. Par défaut, c'est `local`.             |
+| **Utiliser SSL/TLS** | Défini dans ***Paramètres → Accès à la gestion***. Contrôle si %%SSL\|ssl%% est activé. |
+| **Port HTTP**        | Défini dans ***Paramètres → Accès de gestion***. Par défaut, c'est `80`.                |
+| **Port HTTPS**       | Défini dans ***Paramètres → Accès de gestion***. Par défaut, c'est `443`.               |
+| **Certificat**       | Type de certificat %%SSL\|ssl%% utilisé (voir ci-dessous).                              |
+| **IP lan**           | L'adresse IP LAN de votre serveur, formatée pour être utilisée dans les URL.            |
+| **IP wan**           | L'adresse IP publique de votre serveur, formatée pour être utilisée dans les URL.       |
+| **%%Hash\|hash%%**   | Identifiant unique de 40 caractères attribué au certificat de votre serveur.            |
+
+### Types de certificats SSL
+
+| Type             | Quand l'utiliser                                                                                                                                             | Avantages/Inconvénients                                                                                                         |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------- |
+| **Auto-signé**   | Pour un accès local seulement lorsque vous n'avez pas besoin d'un certificat de confiance.                                                                   | Facile à configurer, mais les navigateurs affichent des avertissements. Le trafic est chiffré une fois l'avertissement accepté. |
+| **Myunraid.net** | Pour un accès sécurisé local et à distance, spécialement avec Unraid Connect ou si vous voulez un cert de confiance.                                         | Fiable par les navigateurs, aucune alerte. Permet un accès à distance sécurisé via Unraid Connect.                              |
+| **Personnalisé** | Pour les utilisateurs avancés qui souhaitent un certificat de domaine générique ou personnalisé (nécessite une configuration de %%DNS\|résolution-de-dns%%). | De confiance, flexible, mais nécessite une configuration supplémentaire.                                                        |
+
+---
+
+## Moyens d'accéder à votre WebGUI
+
+Voici les principales façons d'accéder à votre Unraid %%WebGUI|web-gui%%, selon votre configuration %%SSL|ssl%% :
+
+#### HTTP uniquement (non chiffré)
+
+<details>
+  <summary><strong>Cliquer pour développer/réduire</strong></summary>
+
+  Avec HTTP uniquement, le trafic entre votre navigateur et le serveur n'est pas chiffré.
+
+  1. Allez dans ***Paramètres → Accès à la gestion***.
+  2. Réglez **Utiliser SSL/TLS** sur *Non*.
+  3. Conservez **TLD local** comme `local` à moins d'avoir votre propre DNS.
+  4. Accéder aux URL :
+     - `http://[nom du serveur].[TLD local]` (ex. `http://tower.local`)
+     - `http://[adresse ip]` (ex. `http://192.168.100.1`)
+  5. Cliquez sur **Appliquer**.
+
+  :::warning
+  Toute personne sur votre réseau peut intercepter les données envoyées via HTTP. Utilisez HTTPS dès que possible.
+  :::
+</details>
+
+---
+
+#### HTTPS avec certificat auto-signé
+
+<details>
+  <summary><strong>Cliquer pour développer/réduire</strong></summary>
+
+  Le trafic est chiffré, mais les navigateurs afficheront un avertissement car le certificat n'est pas signé par une autorité de confiance.
+
+  1. Allez dans ***Paramètres → Accès à la gestion***.
+  2. Réglez **Utiliser SSL/TLS** sur *Oui*.
+  3. Conservez **TLD local** comme `local` à moins d'avoir votre propre DNS.
+  4. Accéder aux URL :
+     - `https://[nom du serveur].[TLD local]` (ex. `https://tower.local`)
+     - `https://[adresse ip]` (ex. `https://192.168.100.1`)
+  5. Cliquez sur **Appliquer**.
+
+  :::important
+  Les navigateurs afficheront une erreur de certificat. Tout le trafic est toujours chiffré après acceptation de l'avertissement.
+  :::
+</details>
+
+---
+
+#### HTTPS avec certificat Myunraid.net et URL de repli
+
+<details>
+  <summary><strong>Cliquer pour développer/réduire</strong></summary>
+
+  Vous pouvez accéder à votre serveur de manière sécurisée via le %%WebGUI|web-gui%% en utilisant un certificat Myunraid.net, et configurer une URL de secours au cas où votre résolution %%DNS|dns-name-resolution%% est en panne. Tout le trafic sera chiffré, et le serveur est configuré pour revenir à une méthode secondaire lorsque %%DNS|dns-name-resolution%% est indisponible.
+
+  1. Allez dans ***Paramètres → Accès à la gestion***.
+  2. Conservez **TLD local** aux valeurs par défaut de `local` sauf si vous pouvez fournir votre propre résolution DNS (cela est utilisé pour le certificat de repli).
+  3. Laissez **Utiliser SSL/TLS** réglé sur *Non* ou *Oui*.
+  4. Appuyez sur **Provision** pour générer le certificat myunraid.net.
+
+  **Vos URL principales lorsque Utiliser SSL/TLS est réglé sur *Non* :**
+
+  - `http://[nom du serveur].[TLD local]` (exemple : `http://tower.local`)
+  - `http://[adresse ip]` (exemple : `http://192.168.100.1`)
+
+  **Vos URL principales lorsque Utiliser SSL/TLS est réglé sur *Oui* (utilise un certificat auto-signé) :**
+
+  - `https://[nom du serveur].[TLD local]` (exemple : `https://tower.local`)
+  - `https://[adresse ip]` (exemple : `https://192.168.100.1`)
+
+  **Votre URL myunraid.net alternative :**
+
+  - `https://[lan-ip].[hash].myunraid.net` (exemple : `https://192-168-100-1.a1b2c3d4e5.myunraid.net`)
+  - Cette URL est affichée dans le champ **URLs d'accès local** sur la page **Accès à la gestion**.
+  - Si vous installez le plugin [Unraid Connect](../../../unraid-connect/overview-and-setup.mdx), il apparaîtra également sur le tableau de bord Connect.
+
+  :::info
+  Le certificat myunraid.net est approuvé par les navigateurs et ne montre pas d'avertissements. L'URL utilise votre adresse IP LAN avec les points remplacés par des tirets, plus un %%hash|hash%% unique de 40 caractères attribué à votre serveur.
+  :::
+
+  :::tip[Accès de secours]
+  Si la résolution %%DNS|dns-name-resolution%% devient indisponible (par exemple, votre connexion Internet est coupée), vous pouvez utiliser les URLs locales avec votre nom de serveur ou l'adresse IP comme méthodes d'accès de secours.
+  :::
+</details>
+
+#### HTTPS avec certificat Myunraid.net et sans URL de secours
+
+<details>
+  <summary><strong>Cliquer pour développer/réduire</strong></summary>
+
+  Cette méthode offre le niveau le plus élevé d'application %%SSL|ssl%% en exigeant que tous les accès au %%WebGUI|web-gui%% utilisent le certificat Myunraid.net et l'URL. Elle est idéale pour les utilisateurs qui souhaitent une sécurité maximale et n'ont pas besoin d'accéder à leur serveur via l'IP locale ou le nom d'hôte si %%DNS|dns-name-resolution%% est indisponible.
+
+  1. Allez dans ***Paramètres → Accès à la gestion*** dans le %%WebGUI|web-gui%%.
+  2. Conservez **TLD local** sur `local` sauf si vous avez votre propre résolution de noms %%DNS|dns-name-resolution%% (cela est utilisé pour le certificat de repli si vous exécutez ensuite la commande `use_ssl`).
+  3. Cliquez sur **Provision** pour générer un certificat Myunraid.net.
+  4. Si votre réseau n'a pas de problèmes de rebinding %%DNS|dns-name-resolution%%, l'option *Strict* pour **Utiliser SSL/TLS** sera disponible.
+  5. Réglez **Utiliser SSL/TLS** sur *Strict* (ou *Auto* dans les versions Unraid antérieures).
+  6. Votre URL d'accès sera :\
+     `https://[lan-ip].[hash].myunraid.net` (ex : `https://192-168-100-1.a1b2c3d4e5.myunraid.net`)
+
+     Si vous installez le plugin [Unraid Connect](../../../unraid-connect/overview-and-setup.mdx), il apparaîtra également sur le tableau de bord Connect.
+
+  :::caution
+  Si la résolution %%DNS|dns-name-resolution%% devient indisponible (par exemple, votre connexion Internet tombe en panne), vous ne pourrez pas accéder au %%WebGUI|web-gui%% en utilisant l'URL Myunraid.net.
+
+  Pour retrouver l'accès :
+
+  - Utilisez Telnet, %%SSH|ssh%% ou un clavier/écran local pour vous connecter.
+  - Exécutez `use_ssl no` pour passer à HTTP (`http://[nom du serveur].[TLD local]` ou `http://[adresse ip]`).
+  - Exécutez `use_ssl yes` pour passer à HTTPS en utilisant un certificat auto-signé (`https://[servername].[localTLD]` ou `https://[ipaddress]`). Voir [HTTPS avec un certificat auto-signé](#https-with-self-signed-certificate) ci-dessus pour plus de détails.
+  - Une fois que la %%DNS|dns-name-resolution%% est rétablie, réglez **Utiliser SSL/TLS** à *Strict* pour une sécurité totale.
+  :::
+</details>
+
+---
+
+## Redirections
+
+Lorsque vous accédez à `http://[nom du serveur].[TLD local]`, le comportement de redirection dépend de votre réglage **Utiliser SSL/TLS** :
+
+- **Strict** : Vous serez redirigé vers `https://[lan-ip].[hash].myunraid.net`.
+  :::note
+  Cela peut rendre l'accès local difficile si la %%DNS|dns-name-resolution%% est indisponible. Voir la mise en garde sous [HTTPS avec certificat Myunraid.net et sans URL de secours](#https-with-myunraidnet-certificate-and-with-no-fallback-url).
+  :::
+
+- **Oui** : Vous serez redirigé vers `https://[servername].[localTLD]`. Cela fonctionnera toujours même si votre connexion Internet est en panne.
+
+- **Non** : L'URL HTTP se chargera directement, sans redirection ni cryptage.
+
+:::tip
+Les redirections ne fonctionnent qu'à partir des URL HTTP, pas les URL HTTPS.
+:::
+
+---
+
+## Certificats personnalisés
+
+Les certificats personnalisés vous permettent de sécuriser votre Unraid %%WebGUI|web-gui%% avec votre propre certificat %%SSL|ssl%%, tel qu'un émis par une autorité de certificat commerciale ou un certificat wildcard pour votre domaine.
+
+Un certificat personnalisé est tout certificat %%SSL|ssl%% que vous fournissez et gérez vous-même, plutôt qu'un généré par Unraid ou Let's Encrypt. C'est utile si vous souhaitez utiliser votre propre nom de domaine, un certificat générique, ou intégrer l'infrastructure PKI de votre organisation.
+
+:::info[When en utilisant un certificat personnalisé, vous êtes responsable...]
+- Obtenir le certificat auprès d'une autorité de certificat (CA) de confiance
+- Gérer les enregistrements %%DNS|dns-name-resolution%% pour votre domaine choisi
+- Télécharger et renouveler le certificat si nécessaire
+- S'assurer que le certificat correspond au nom de domaine de votre serveur (dans les champs Subject ou Subject Alternative Name)
+:::
+
+Si votre certificat est invalide ou ne correspond pas à l'URL du serveur, Unraid le supprimera et reviendra à un certificat par défaut.
+
+### HTTPS avec certificat personnalisé (avec accès distant Unraid Connect en option)
+
+<details>
+  <summary><strong>Accès via HTTPS avec certificat personnalisé</strong> - Cliquez pour dérouler/replier</summary>
+
+  1. Allez dans ***Paramètres → Accès à la gestion***.
+  2. Réglez **Utiliser SSL/TLS** sur *Oui*.
+  3. Configurez **TLD local** avec le nom de domaine utilisé dans le Subject de votre certificat.
+  4. Accédez à votre serveur à `https://[servername].[localTLD]` (par exemple, `https://tower.mydomain.com`). Vous devez gérer le DNS pour cette URL.
+  5. Téléchargez votre certificat vers `/boot/config/ssl/certs/[nom du serveur]_unraid_bundle.pem`.
+  6. Le certificat doit être valide pour `[nom du serveur].[TLD local]` ou en tant que wildcard `*.[TLD local]` (où `[TLD local]` correspond exactement à ce que vous avez entré dans le champ **TLD local**).
+     - Le domaine doit apparaître dans les champs Subject ou Subject Alternative Name (Unraid 6.10.3+ supporte les SAN).
+     - Si le certificat ne correspond pas, Unraid le supprimera.
+  7. Activez en option [l'accès distant Unraid Connect](../../../unraid-connect/remote-access.mdx) pour une gestion à distance sécurisée, approuvée par les navigateurs.
+
+  :::tip
+  Pour les certificats wildcard, assurez-vous que le champ Nom Alternatif du Sujet ou Sujet du certificat contient `*.[localTLD]` où `[localTLD]` est la valeur exacte que vous avez entré dans le champ **TLD Local** dans **Accès de gestion**.
+  :::
+</details>
+
+---
+
+## Dépannage SSL et configuration avancée
+
+Cette section couvre les problèmes courants liés au SSL et les options de configuration avancée qui s'appliquent lors de l'utilisation de certificats myunraid.net, que vous ayez installé Unraid Connect ou non.
+
+### Protection contre le rebinding DNS
+
+La protection contre le rebondissement DNS est une fonctionnalité de sécurité sur de nombreux routeurs qui empêche les entrées DNS publiques de se résoudre en adresses IP locales. Cela aide à protéger votre réseau contre certaines attaques, mais peut causer des problèmes lors de l'utilisation de certificats %%SSL|ssl%% pour un accès local à l'interface %%WebGUI|web-gui%% d'Unraid.
+
+Si vous rencontrez une erreur de rebinding DNS lors de la provision d'un certificat %%SSL|ssl%% (par exemple, après avoir cliqué sur le bouton **Provisionner**), envisagez les étapes suivantes :
+
+- Cliquez sur **OK** dans le message d'erreur, attendez 2 à 5 minutes et réessayez.
+- Si l'erreur persiste, vérifiez les paramètres de votre routeur pour des options liées à « protection contre le rebinding DNS » ou des termes similaires.
+- Autoriser le rebinding DNS pour le domaine `myunraid.net`.
+- Gardez à l'esprit que les changements DNS peuvent prendre du temps à se propager, donc vous pourriez voir l'erreur à nouveau après avoir effectué des mises à jour.
+
+Les étapes exactes peuvent varier selon le modèle et le firmware de votre routeur.
+
+### Accéder à votre serveur lorsque le DNS est en panne
+
+Lorsque %%SSL|ssl%% est activé avec un certificat myunraid.net, vous accédez généralement à votre serveur Unraid en utilisant un nom de domaine pleinement qualifié (FQDN), tel que :
+
+```
+https://ip.yourpersonalhash.myunraid.net
+```
+
+Ou, si vous utilisez un port HTTPS personnalisé :
+
+```
+https://ip.yourpersonalhash.myunraid.net:<https_port>
+```
+
+Cela garantit que vous utilisez un certificat %%SSL|ssl%% valide pour un accès sécurisé. Toutefois, si votre connexion Internet tombe en panne et que votre navigateur n'a pas mis en cache l'entrée DNS, vous pouvez perdre l'accès à l'interface %%WebGUI|web-gui%%.
+
+Si vous perdez l'accès DNS ou Internet :
+
+- Si l'option **Utiliser SSL/TLS** est définie sur **Oui**, essayez d'accéder à votre serveur à :
+  ```
+  https://[servername].[localTLD]
+  ```
+  Ou avec un port personnalisé :
+  ```
+  https://servername.[localTLD]:<https_port>
+  ```
+
+- Si cela ne fonctionne pas, ou si **Utiliser SSL/TLS** est défini sur **Strict** :
+  1. Utilisez telnet, %%SSH|ssh%%, ou un clavier/moniteur connecté directement pour vous connecter à votre serveur.
+  2. Exécutez la commande :
+     ```bash
+     use_ssl no
+     ```
+  3. Vous pouvez maintenant accéder à l'interface %%WebGUI|web-gui%% à :
+     ```
+     http://<ip_address>
+     ```
+     Ou, si vous utilisez un port personnalisé :
+     ```
+     http://<server_ip>:<http_port>
+     ```
+     (Note : cela utilise HTTP, pas HTTPS.)
+
+Une fois l'accès Internet restauré, allez à ***Paramètres → Accès à la gestion*** et réglez **Utiliser SSL/TLS** sur **Strict** pour réactiver le SSL local.
+
+### Désactivation de SSL pour l'accès local
+
+Vous devriez désactiver %%SSL|ssl%% pour l'accès local si vous préférez une connexion HTTP simple sur votre réseau domestique de confiance ou si vous rencontrez des problèmes permanents avec la fourniture de certificats %%SSL|ssl%%, le rebinding DNS ou la compatibilité du navigateur.
+
+Pour désactiver %%SSL|ssl%% pour l'accès local :
+
+1. Allez à ***Paramètres → Accès à la gestion*** dans l'interface WebGUI.
+2. Réglez **Utiliser SSL/TLS** sur **Non**.
+3. Cliquez sur **Appliquer**.
+
+Ce changement désactivera également la fonction d'accès à distance, car %%SSL|ssl%% est nécessaire pour les connexions à distance sécurisées.
+
+:::caution
+Désactiver %%SSL|ssl%% signifie que votre %%WebGUI|web-gui%% sera accessible via le HTTP non-chiffré. Cela expose vos identifiants de connexion et les données de session à toute personne sur votre réseau local et n'est pas recommandé à moins que vous soyez certain que votre réseau est sécurisé et que vous n'avez pas besoin d'un accès à distance. Pour une meilleure sécurité, gardez %%SSL|ssl%% activé autant que possible.
+:::
+
+:::note
+La gestion de %%SSL|ssl%% est une fonctionnalité centrale d'Unraid et ne dépend pas du plugin Unraid Connect. Vous pouvez désactiver %%SSL|ssl%% sans affecter les autres fonctionnalités d'Unraid.
+:::

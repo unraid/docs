@@ -1,0 +1,49 @@
+如果您对命令行感到满意，使用此方法可以让您有更多的控制权，并且当 WebGUI 选项不可用时可能非常有用。有关使用命令行接口的更多信息，请参阅[命令行接口](../../../system-administration/advanced-tools/command-line-interface.mdx)。
+
+:::note[Before 您开始]
+- 确保您的池的 %%RAID|raid%% 配置支持设备移除；在 2 设备的 %%RAID 1|raid1%% 池中，必须先将其更改为单一配置以便移除设备。
+- 检查剩余设备是否有足够的空间容纳您的数据。
+:::
+
+通过命令行移除磁盘：
+
+1. **打开终端会话**：确保 %%array|array%% 正在运行，并打开您的命令行接口。
+
+2. **移除设备**：输入以下命令，将 `X` 替换为要移除的驱动器对应的字母（如主选项卡所示）：
+
+   ```bash
+   btrfs device remove /dev/sdX1 /mnt/cache
+   ```
+
+   - 对于加密设备，使用：`/dev/mapper/sdX1`。
+   - 对于 NVMe 设备，使用：`nvmeXn1p1`。
+
+3. **等待完成**：当您看到光标返回时，设备将被移除。
+
+4. **让 Unraid "遗忘" 已删除的成员**：
+   - 停止%%array|array%%。
+   - 取消分配所有池设备。
+   - 启动 %%array|array%% （Unraid 将清除池配置）。
+   - 如果任何 Docker/%%VM|vm%% 服务使用此池，请在启动 %%array|array%% 之前禁用它们，以防 Unraid 在其他地方重新创建映像。
+
+5. **重新分配设备**：再次停止 %%array|array%%，重新分配除已移除设备外的所有剩余池成员，随后启动 %%array|array%%。
+
+**移除多个设备**：
+
+您可以在一个命令中进行：
+
+```bash
+btrfs device remove /dev/sdX1 /dev/sdY1 /mnt/cache
+```
+
+不过，请记住移除仍然是一个一个进行的。
+
+:::note\[Timing]
+
+与 %%WebGUI|web-gui%% 方法相似，移除设备和再平衡可能需要几个小时，取决于数据量和设备速度。
+
+:::
+
+:::important
+如果池中只剩下一个设备，您将需要将 RAID 配置文件转换为 **单一** 以确保一切正常运作。更多指示，请参阅[切换池 RAID 级别到单一](#changing-pool-raid-levels)部分。
+:::

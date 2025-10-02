@@ -1,0 +1,237 @@
+---
+sidebar_position: 7
+sidebar_label: WireGuard
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import WireGuardConfigureMobile from './partials/wireguard-configure-mobile.mdx';
+import WireGuardConfigureOtherDevices from './partials/wireguard-configure-other-devices.mdx';
+
+# WireGuard
+
+While Tailscale provides a user-friendly experience for most, [WireGuard](https://www.wireguard.com/) is a robust built-in VPN solution in Unraid that shines in specific advanced networking scenarios. It’s particularly useful when you need detailed control over VPN routing or require server-to-server or LAN-to-LAN connections without relying on third-party services. Below are key scenarios where WireGuard excels.
+
+<h4>何时选择WireGuard</h4>
+
+| 场景             | 为何选择 %%WireGuard\|wireguard%%?                  |
+| -------------- | ----------------------------------------------- |
+| **高级配置**       | 允许自定义 %%VPN Tunnel\|vpn-tunnel%% 设置并与现有网络基础设施集成 |
+| **服务器到服务器的隧道** | 允许您创建持久加密链接以连接 Unraid 服务器。                      |
+| **LAN到LAN的集成** | 在不涉及中介服务的情况下连接整个网络                              |
+| **带宽密集型任务**    | 为最大吞吐量提供最小的协议开销                                 |
+
+:::info
+对于大多数用户而言，[**Tailscale**](../secure-your-server/tailscale.mdx)可以轻松实现WireGuard的所有功能，通常更容易。它通常不需要端口转发或手动配置。然而，如果您需要高级自定义VPN设置，或有特定兼容性要求，选择WireGuard可能是更好的选择。
+:::
+
+<h4>连接类型和使用场景</h4>
+
+了解%%WireGuard|wireguard%%中的连接类型可以帮助您决定它是否适合您：
+
+| 连接类型                     | 实际使用案例                                                                                                       |
+| :----------------------- | :----------------------------------------------------------------------------------------------------------- |
+| 远程访问服务器                  | Access Unraid %%WebGUI\|web-gui%%, Docker containers, %%VM\|vm%%s, and network shares remotely.              |
+| 远程访问LAN                  | 远程访问LAN上的所有设备，就像您在本地网络上一样。                                                                                   |
+| 服务器到服务器访问                | 安全连接两个 Unraid 服务器以进行数据共享或备份。                                                                                 |
+| LAN到LAN访问                | 无缝连接两个完整的LAN，以实现网络间的平滑通信。                                                                                    |
+| 服务器枢纽和辐射访问               | 允许多个%%VPN\|vpn-tunnel%%客户端通过服务器相互连接。                                                                         |
+| LAN枢纽和辐射访问               | 通过中心服务器启用多个LAN之间的通信。                                                                                         |
+| %%VPN隧道的\|vpn-tunnel%%访问 | Route specific Docker containers and %%VM\|vm%%s through a commercial %%WireGuard\|wireguard%% VPN provider. |
+| 远程隧道访问                   | 在不受信任的网络中，安全地通过 Unraid 服务器路由所有互联网流量。                                                                         |
+
+## 在 Unraid 上设置 WireGuard
+
+:::note\[Prerequisites]
+
+- \*\*动态DNS：\*\*设置DDNS以确保公开IP更改时仍能可靠访问。热门选项包括[Cloudflare](https://www.cloudflare.com/)（需要域名所有权）、[No-IP](https://www.noip.com/)或[DuckDNS](https://www.duckdns.org/)（免费但可能偶尔无法使用）。
+- **路由器配置：**
+  - 在***设置 → 管理访问***中启用%%UPnP|upnp%%以进行自动端口转发。
+  - 如果 %%UPnP|upnp%% 不可用，请手动将 UDP 端口 51820 转发至您的 Unraid 服务器的 IP。
+- **客户端软件：** 在您的设备上安装%%WireGuard|wireguard%%（[Windows](https://www.wireguard.com/install/), [macOS](https://apps.apple.com/us/app/wireguard/id1451685025), [iOS](https://apps.apple.com/us/app/wireguard/id1441195209), [Android](https://play.google.com/store/apps/details?id=com.wireguard.android)）。
+
+:::
+
+<h4>步骤1：生成密钥</h4>
+
+1. 前往***设置 → VPN管理***。
+
+<div style={{ margin: 'auto', maxWidth: '600px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+  ![VPN管理](/img/wg0.png)
+</div>
+
+2. 为您的隧道命名（例如，“家庭VPN”）。
+3. 点击 **生成密钥对** 来创建公钥/私钥。
+
+:::warning
+安全地存储私钥，因为它提供了完整的网络访问。
+:::
+
+<h4>步骤2：配置您的端点</h4>
+
+- **对于DDNS用户：** 将**本地端点**中的IP替换为您的DDNS URL（例如，`myhome.duckdns.org`）。
+- 除非与现有服务冲突，否则保持默认端口(`51820`)。
+
+<h4>步骤3：设置端口转发</h4>
+
+- **%%UPnP|upnp%% 用户：** 如果在 ***设置 → 管理访问*** 中启用，Unraid 将自动转发端口。
+
+<div style={{ margin: 'auto', maxWidth: '600px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+  ![UPnP启用](/img/upnp-yes.png)
+</div>
+
+- **手动设置：** 如果%%UPnP|upnp%%不可用：
+  1. 登录到您的路由器。
+  2. 将 UDP 端口 `51820` 转发至您的 Unraid 服务器的 LAN IP。
+  3. 对外部和内部设置使用相同的端口。
+
+<div style={{ margin: 'auto', maxWidth: '600px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+  ![UPnP禁用](/img/upnp-no.png)
+</div>
+
+<h4>步骤4：激活您的隧道</h4>
+
+1. 切换**活动**以启用%%WireGuard|wireguard%%。
+2. 启用**自动启动**以在启动时运行%%WireGuard|wireguard%%。
+
+<div style={{ margin: 'auto', maxWidth: '600px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+  ![激活切换](/img/activate.png)
+</div>
+
+:::important[Security 最佳做法]
+- **仅限受信任的访问：** VPN访问类似于物理网络访问，所以只授权受信任的设备。
+- **密钥管理：** 切勿共享私钥；像密码一样对待它们。
+- **网络分段：** 对于复杂的设置（自定义 Docker/%%VM|vm%%s），使用 VLAN 或独立子网隔离 VPN 流量。
+- **定期审核：** 每季度审查连接设备和访问权限。
+:::
+
+### 定义一个对等（客户端）
+
+A peer is a client device - such as a phone, laptop, or another server - that connects to your Unraid %%WireGuard|wireguard%% VPN. Defining a peer means creating a unique identity and securing keys for that device.
+
+1. 选择**添加对等**。
+
+<div style={{ margin: 'auto', maxWidth: '600px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+  ![增加对等](/img/peer-add.png)
+</div>
+
+2. 为对等命名（例如，*MyAndroid*）。
+3. 选择初始连接类型以获得完整的网络访问，通常是*远程访问LAN*。
+4. 点击**生成秘钥对**以创建公钥和私钥。请保持私钥的安全。
+5. 可选地，生成预共享密钥以增加安全性。
+6. 点击 **应用**。
+
+:::note
+虽然 peer 可以生成它们自己的密钥，但让 Unraid 生成密钥可以通过提供完整的配置文件简化设置。
+:::
+
+:::caution
+添加一个新peer可能会暂时禁用%%WireGuard|wireguard%%隧道，这可能会中断您的连接。确保在进行更改之前有本地的服务器访问。
+:::
+
+### 配置对等（客户端）
+
+<Tabs>
+  <TabItem value="移动设备" label="移动设备" default>
+    <WireGuardConfigureMobile />
+  </TabItem>
+
+  <TabItem value="其他" label="其他设备">
+    <WireGuardConfigureOtherDevices />
+  </TabItem>
+</Tabs>
+
+### 配置您的DNS
+
+1. 使用IP地址或完全限定的域名访问设备（例如，`yourpersonalhash.unraid.net`）。
+
+:::note
+像“tower”这样的短名称或由路由器管理的DNS条目可能无法通过VPN工作。
+:::
+
+2. 要启用短名称解析：
+   - 转到 Unraid 中的 ***设置 → VPN 管理器***。
+   - 从**基本**模式切换到**高级**模式。
+   - 在**对等DNS服务器**字段中输入所选DNS服务器的IP地址。
+   - 保存更改并更新客户端配置文件。
+3. 推荐的DNS服务器：
+   - 您的LAN路由器的IP地址。
+   - 公共DNS服务器如`8.8.8.8`。
+
+这种设置对于**远程隧道访问**模式尤为重要，在这种模式下，客户端的原始DNS服务器可能不可访问。
+
+:::note
+%%mDNS|mdns%%地址（例如，`tower.local`）只能在本地网络上工作，而在%%WireGuard|wireguard%% VPN上则不能。
+:::
+
+### 复杂网络
+
+For most users, the default **Use NAT** setting works out of the box and allows access to Unraid and most LAN devices. However, if you use Docker containers with custom IPs or %%VM|vm%%s with strict networking requirements:
+
+1. 在您的%%WireGuard|wireguard%%隧道配置中，将**使用NAT**设置为**否**。
+2. 在您的路由器上，为 WireGuard 隧道网络（例如，`10.253.0.0/24`）添加静态路由，指向您的 Unraid 服务器的 IP。
+3. 在***设置→Docker设置***中，将**主机访问自定义网络**设置为**启用**。
+
+### 应避免的配置
+
+| 使用NAT设置 | 自定义网络的主机访问 | 服务器和Dockers（桥接/主机） | %%VMs\|vm%% 和其他 LAN 系统 | 具有自定义IP的Dockers | 笔记                |
+| ------- | ---------- | ------------------ | ---------------------- | --------------- | ----------------- |
+| 可以      | 禁用（静态路由可选） | 可访问                | 可访问                    | 不可访问            | 简单的网络设置；推荐给大多数用户  |
+| 可以      | 启用（静态路由可选） | 可访问                | 不可访问                   | 不可访问            | 避免这种配置            |
+| 不可以     | 禁用（无静态路由）  | 可访问                | 不可访问                   | 不可访问            | 避免；需要静态路由正确运行     |
+| 不可以     | 禁用（带静态路由）  | 可访问                | 可访问                    | 不可访问            | 几乎正确；启用主机自定义网络的访问 |
+| 不可以     | 启用（带静态路由）  | 可访问                | 可访问                    | 可访问             | 复杂网络的推荐设置         |
+
+## WireGuard故障排除
+
+WireGuard设计为不干扰——如果某些功能不起作用，它不会提供错误信息。要有效进行故障排除，您应该系统地检查设置的每个方面。
+
+#### 连接检查表
+
+- ✅ The tunnel is active on both Unraid and client devices. *("Active" means the tunnel has started but is not necessarily connected.)*
+- ✅ DDNS URL指向您当前的公网IP并设置在**本地端点**中。
+- ✅ 从路由器到 Unraid 转发正确的 UDP 端口，匹配 **本地端点** 端口。
+- ✅ 客户端在任何服务器端更改后都拥有最新的配置文件。
+- ✅ 在查看或分发对等配置（QR 代码/文件）之前保存更改。
+
+#### 其他故障排除方法
+
+<details>
+  <summary><strong>第一次设置技巧</strong> - 点击以展开/折叠</summary>
+
+  如果您是首次设置WireGuard，这些提示可以帮助您避免常见问题：
+
+  - 使用移动设备在蜂窝数据（而非 Wi-Fi）上设置您的第一个客户端，以排除本地网络问题。
+  - 使用二维码方法进行最简便的配置传输。
+</details>
+
+<details>
+  <summary><strong>握手和连接问题</strong> - 点击以展开/折叠</summary>
+
+  如果未看到握手或无法连接，请尝试以下有针对性的检查：
+
+  - 如果您看不到握手，请尝试生成流量（例如，ping 服务器）以触发连接。
+  - 禁用移动客户端上的节能、数据节省或电池节能功能，因为这些功能可能会干扰 VPN 操作。
+  - 确保客户端和服务器网络使用不同的子网（例如，避免同时使用 `192.168.1.0/24`）。
+  - 如果使用Cloudflare进行DDNS，将**代理状态**设置为**仅DNS**（而非**代理**）。允许时间使DNS更改传播。
+  - 如果您可以从某些位置连接，但不能从其他位置连接，可能是远程网络阻止了UDP流量。%%WireGuard|wireguard%%目前不支持启用TCP作为回退。
+</details>
+
+<details>
+  <summary><strong>高级网络冲突</strong> - 点击以展开/折叠</summary>
+
+  如果您的网络设置更复杂，或怀疑 IP 冲突，请查看这些高级故障排除步骤：
+
+  - 在**高级**模式下，确认您的**本地隧道网络池**没有与任何现有的网络重叠。如果发生冲突，请更改为另一个私有子网（例如，`10.10.10.0/24`）。
+  - 对于具有自定义 IP 的 Docker 容器或满足严格要求的 %%VM|vm%%s，请参阅 [复杂网络](#complex-networks) 部分。
+</details>
+
+<details>
+  <summary><strong>紧急恢复</strong> - 点击以展开/折叠</summary>
+
+  如果您失去对 Unraid %%WebGUI|web-gui%% 的访问权限并需要禁用 %%WireGuard|wireguard%% 自动启动
+
+  - 从您的闪存驱动器中删除 `/boot/config/wireguard/autostart` 并重启。
+</details>
+
+\* “%%WireGuard|wireguard%%”和“%%WireGuard|wireguard%%”徽标是Jason A. Donenfeld的注册商标。

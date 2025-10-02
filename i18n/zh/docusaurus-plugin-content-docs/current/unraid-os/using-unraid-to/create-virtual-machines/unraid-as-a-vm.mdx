@@ -1,0 +1,140 @@
+---
+sidebar_position: 4
+sidebar_label: 作为虚拟机运行 Unraid
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+# 作为虚拟机运行 Unraid
+
+在您的主要 Unraid 服务器上将 Unraid 作为虚拟机运行对开发、测试和评估非常有帮助。这种配置允许您：
+
+- 开发和测试插件或 Docker 容器，而不危及您的生产服务器。
+- 在升级主系统之前评估新的 Unraid 版本。
+- 创建隔离环境以进行故障排除或培训。
+
+:::caution[Important 注意事项]
+- Lime Technology 不正式支持用于生产数据的此配置。
+- 虚拟化引入了一些开销；相比直接在硬件上运行，性能会降低。
+- 您需要为虚拟机准备一个单独的、有效的许可证密钥。
+:::
+
+:::note\[Prerequisites]
+
+- 为虚拟机准备有效的 Unraid 许可证密钥
+- 专用 USB 闪存驱动器（使用与主机引导驱动器不同的制造商）
+- 虚拟机需要 Unraid 版本 6.4.0 或更高版本（旧版本需要手动设置）
+
+:::
+
+要启动 Unraid 作为虚拟机：
+
+<details>
+  <summary><strong>1. 准备虚拟机的闪存驱动器</strong> - 点击展开/折叠</summary>
+
+  准备好您的闪存驱动器对于无缝和可靠的%%VM|虚拟机%%启动过程至关重要。以下是如何通过独特和正确配置的启动设备来设置您的%%VM|虚拟机%%环境。
+
+  1. 在您的桌面上使用 [Unraid USB Creator](https://unraid.net/download) 工具准备闪存驱动器：
+     - 选择 **允许 EFI 启动**。
+     - 设置唯一的服务器名称（例如，如果您的主机是 `Tower`，则设置 `TowerVM`）。
+     - 将映像写入闪存驱动器。
+
+  2. 修改配置文件：
+     - 将闪存驱动器标签从 `UNRAID` 重命名为唯一名称（例如，`UNRAID-VM`）。
+
+     - 编辑闪存驱动器上的 `syslinux/syslinux.cfg` 文件：
+
+       ```
+       label Unraid OS
+         menu default
+         kernel /bzimage
+         append unraidlabel=UNRAID-VM initrd=/bzroot
+       ```
+
+     - 在文件的所有启动模式（GUI/安全模式）下进行此更改。
+
+     - 将更新后的 `syslinux.cfg` 文件复制到 `EFI/boot/syslinux.cfg`
+
+  3. 在闪存驱动器的根目录中创建一个名为 `startup.nsh` 的文件，其中包含以下内容：
+
+     ```
+     \EFI\boot\bootx64.efi
+     ```
+
+  4. 请注意闪存驱动器的制造商（稍后在虚拟机设置中需要）。
+</details>
+
+<details>
+  <summary><strong>2. 在主机上设置虚拟机</strong> - 点击展开/折叠</summary>
+
+  配置 Unraid 虚拟机需要一些特定设置以确保正常运行。
+
+  创建虚拟机模板：
+
+  1. 在主机 Unraid 服务器上，转到 ***设置 → 虚拟机管理***，确保虚拟机已启用。
+  2. 导航至 **VMs** 标签并点击 **添加 VM**。
+  3. 选择 **Slackware** 模板，因为它与 Unraid 最为接近。
+  4. （可选）如果有可用的替换选项，将 Slackware 图标替换为 Unraid 图标。
+  5. 命名虚拟机（例如，`UNRAID-VM`）。
+  6. （可选）添加描述，如\*“Unraid 测试环境 - vX.XX.X。”\*
+  7. 分配资源：
+     - 处理器：2-4 核心
+     - RAM：4-8 GB（设置初始值和最大值相同）
+  8. 将 **机器类型** 设置为 **Q35（最新）**。
+  9. 将 **BIOS** 设置为 **OVMF** 和 **USB 控制器** 设置为 **3.0（QEMU XHCI）**。
+  10. 配置虚拟磁盘：
+      - 为缓存/数据添加 %%vDisks|vdisk%%，使用 **RAW** 格式和 **SATA** 总线。
+      - 以不同的大小设置磁盘以便于识别（例如，%%parity|parity%% > 数据 > %%cache|cache%%）。
+  11. 保留图形、声音和网络的默认设置。
+  12. 在 **USB 设备** 下，根据 **制造商** 而不是标签选择闪存驱动器。
+
+  :::important
+  %%VM|虚拟机%%的闪存驱动器必须与主机的启动驱动器来自不同的制造商。如果它们相同，%%VM|虚拟机%%驱动器将不可见。
+  :::
+</details>
+
+<details>
+  <summary><strong>3. 创建并启动虚拟机</strong> - 点击展开/折叠</summary>
+
+  在配置后启动虚拟机：
+
+  1. 取消选中 **创建后启动虚拟机** 如果您希望手动控制。
+  2. 点击 **创建**。
+  3. 在 **虚拟机** 选项卡中，点击 Unraid 虚拟机图标并选择 **从控制台开始（%%VNC|vnc-session%%）**。
+  4. 在 %%VNC|vnc-session%% 控制台中观看启动过程，并在登录前注意显示的虚拟机 IP 地址。
+</details>
+
+<details>
+  <summary><strong>4. 配置虚拟机</strong> - 点击展开/折叠</summary>
+
+  虚拟机运行后，与物理 Unraid 服务器一样进行设置：
+
+  1. 访问虚拟机的 **WebGUI**，地址为 `http://[VM-IP]`。
+  2. 转到 ***设置 → 标识***：
+     - 设置唯一的 **服务器名称**（例如，`Unraid-VM`）。
+     - 添加描述如“开发实例”。
+  3. （可选）转到 ***设置 → 显示设置*** 并选择另一种配色主题以区别于主机。
+  4. 进入 ***设置 → %%SMB|samba%% 设置 → 工作组设置*** 并将 **本地主机** 设置为 *否* 以避免冲突。
+  5. 对于 UPS 直通（如果主机有 UPS）：
+     - 在虚拟机上进入 ***设置 → UPS***。
+     - 将 **UPS 电缆** 设置为 *Ether*。
+     - 将 **UPS 类型** 设置为 *net*。
+     - 在 **设备** 中输入主机的 IP。
+     - 配置 **运行时间** 以在主机之前关闭虚拟机。
+  6. 使用配置好的设备启动 %%array|array%%。
+  7. 安装 [**社区应用程序**](https://unraid.net/community/apps) 进行插件/Docker 测试。
+  8. 通过 ***工具 → 更新操作系统*** 更新虚拟机，就像物理服务器一样。
+</details>
+
+### 故障排除
+
+如果您在修改虚拟机设置后遇到与 USB 闪存设备相关的*执行错误*：
+
+1. 编辑虚拟机并切换到 **XML 视图**。
+2. 找到定义闪存设备的 `<hostdev>` 节点（通常靠近末尾）。
+3. 删除整个 `<hostdev>...</hostdev>` 块。
+4. 点击 **Update**。
+5. 在 **表单视图** 中重新编辑虚拟机。
+6. 在 **USB 设备** 下重新选择闪存驱动器。
+7. 再次点击**更新**。%%VM|虚拟机%% 现在应该正常启动。

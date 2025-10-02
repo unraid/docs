@@ -1,0 +1,116 @@
+---
+sidebar_position: 2
+sidebar_label: Sauvegarde flash automatisée
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+# Sauvegarde flash automatisée
+
+Sauvegarder votre clé USB Unraid est crucial pour une récupération rapide en cas de problèmes tels que des pannes matérielles, des suppressions accidentelles ou de la corruption de données. Si les sauvegardes locales (comme la copie de votre clé USB vers un autre périphérique USB ou un partage réseau) permettent un accès et un contrôle faciles, elles peuvent être vulnérables au vol, aux incendies ou à des pannes matérielles pouvant affecter l'ensemble de votre configuration. En revanche, les sauvegardes cloud offrent un stockage sécurisé hors site pour votre configuration, protégeant contre les désastres locaux et permettant une récupération de n'importe où.
+
+Contrairement aux sauvegardes traditionnelles qui se concentrent sur les données utilisateur, les %%VMs|vm%% ou les conteneurs Docker, les sauvegardes de clé préservent spécifiquement la configuration de votre OS Unraid, sa licence et ses paramètres système. Cette attention vous permet de restaurer le fonctionnement de votre serveur rapidement sans avoir à repartir de zéro. Unraid Connect permet des sauvegardes automatiques basées sur le cloud de la configuration de votre système d'exploitation. Si votre clé USB échoue, vous pouvez rapidement restaurer votre dernière sauvegarde avec l'[outil Unraid USB Flash Creator](https://unraid.net/download).
+
+La sauvegarde flash est entièrement optionnelle lors de l'utilisation d'Unraid Connect.
+
+:::tip
+Utilisez à la fois des méthodes de sauvegarde locales et cloud pour une protection maximale. Les sauvegardes cloud offrent une couche de résilience supplémentaire que les solutions locales seules ne peuvent offrir.
+:::
+
+## Collecte des données et confidentialité
+
+<details>
+  <summary><strong>Cliquez pour voir quelles données sont collectées et comment nous les gérons</strong></summary>
+
+  Unraid Connect prend votre vie privée et vos données au sérieux lors de l'utilisation de la sauvegarde flash :
+
+  <h4>Objectif</h4>
+
+  La sauvegarde flash conserve uniquement les fichiers de configuration nécessaires pour restaurer votre environnement Unraid OS. Cela vous aide à récupérer rapidement et à maintenir la continuité du service en cas de défaillance de votre dispositif flash.
+
+  <h4>Données collectées</h4>
+
+  La sauvegarde inclut uniquement les fichiers de configuration, garantissant que les informations sensibles, telles que les mots de passe et les clés %%WireGuard|wireguard%%, sont exclues. Les fichiers XML des modèles Docker peuvent faire partie de la sauvegarde et pourraient contenir des identifiants spécifiques aux applications.
+
+  <h4>Conservation des données</h4>
+
+  Seule la dernière sauvegarde est conservée. Si une sauvegarde dépasse certaines limites — spécifiquement, si des fichiers individuels dépassent 10 Mo ou si la taille totale du dépôt dépasse 100 Mo — elle sera supprimée et recréée. Les sauvegardes sont également supprimées lorsque vous désactivez la fonction de sauvegarde flash ou après une période d'inactivité spécifique.
+
+  <h4>Partage des données</h4>
+
+  Les données de sauvegarde flash ne sont jamais partagées avec des tiers. Elles sont stockées exclusivement pour vous fournir des services de sauvegarde et de restauration.
+</details>
+
+## Activation de la sauvegarde flash
+
+Unraid Connect exclut les données sensibles - comme les mots de passe de compte et les clés %%WireGuard|wireguard%% - des sauvegardes jusqu'à ce qu'une cryptage complet soit disponible. Cependant, les fichiers XML des modèles Docker (qui peuvent contenir des identifiants d'application) sont inclus. Des solutions de chiffrement sont en cours de développement.
+
+Pour activer la sauvegarde flash :
+
+1. Allez à ***Paramètres → Accès à la gestion → API d'Unraid***.
+
+<div style={{ margin: 'auto', maxWidth: '600px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+  ![Sauvegarde du flash](/img/flashbackupbutton.png)
+</div>
+
+2. Sous **Sauvegarde flash**, cliquez sur **Activer**.
+3. Attendez que l'activation et la sauvegarde initiale soient terminées. Le statut affichera **Activé : À jour** une fois terminé.
+
+Après l'activation, tout changement de configuration est automatiquement sauvegardé sur le cloud dans 1 à 2 minutes.
+
+:::important
+Les sauvegardes n'incluent pas les fichiers `config/shadow` ou `config/smbpasswd`. Les comptes utilisateur sont préservés, mais les mots de passe ne le sont pas. Vous devrez réinitialiser tous les mots de passe utilisateur, y compris le mot de passe root, après la restauration. Les clés %%WireGuard|wireguard%% sont également exclues.
+:::
+
+La sauvegarde de clé est conçue pour stocker les fichiers de configuration essentiels, pas une copie complète de votre clé USB. Elle ne sauvegarde pas les fichiers transitoires (tels que les journaux) ou les binaires des applications. Les configurations de plugins sont incluses, mais les fichiers d'application devront être retéléchargés au démarrage. Les fichiers individuels jusqu'à 10 Mo sont sauvegardés; si la sauvegarde totale dépasse 100 Mo, elle sera supprimée et recréée.
+
+## Restauration d'une sauvegarde flash
+
+Pour restaurer votre configuration :
+
+1. Connectez-vous à Unraid Connect.
+2. Sélectionnez **Détails** sur le tableau de bord.
+3. Cliquez sur **Générer la sauvegarde flash** à partir de la vignette de sauvegarde flash.
+4. Le système crée un fichier zip contenant votre configuration OS et la version de la release.
+5. Cliquez sur **Télécharger la sauvegarde flash** pour obtenir le fichier zip.
+6. Utilisez le [Créateur de clé USB Unraid](https://unraid.net/download) pour restaurer la sauvegarde sur une nouvelle clé USB.
+
+### Étapes après la restauration
+
+Après avoir démarré avec la clé USB restaurée :
+
+- Réactivez la sauvegarde flash dans ***Paramètres → Accès à la gestion → API d'Unraid***.
+- Réinitialisez les mots de passe pour tous les utilisateurs (y compris root) sur la page Utilisateurs.
+- Pour chaque %%VPN Tunnel|vpn-tunnel%% et pair dans ***Paramètres → Gestionnaire VPN***, générez de nouvelles clés et téléchargez les configurations clients mises à jour.
+- Si l'accès à Internet n'est pas disponible immédiatement après le démarrage, réinstallez les plugins via ***Apps → Previous Apps*** une fois la connectivité rétablie. Les fichiers de configuration seront prêts à être utilisés.
+
+## Désactivation de la sauvegarde flash
+
+Pour désactiver la sauvegarde flash :
+
+1. Dans ***Paramètres → Accès à la gestion → API d'Unraid***, cliquez sur **Désactiver** pour la sauvegarde flash.
+2. Dans la boîte de dialogue de confirmation, cochez **Supprimer également la sauvegarde cloud** si vous souhaitez supprimer immédiatement votre sauvegarde. Sinon, les sauvegardes seront automatiquement supprimées après une période d'inactivité.
+
+## Confidentialité et sécurité
+
+### Chiffrement des sauvegardes
+
+Actuellement, les sauvegardes de clé sont stockées dans le cloud sans cryptage. Par précaution, les données sensibles - y compris tous les mots de passe utilisateur et root, ainsi que toutes les clés %%WireGuard|wireguard%% - ne sont jamais incluses dans la sauvegarde.
+
+### Politique de données sensibles
+
+Pour protéger votre vie privée, les éléments suivants ne sont **jamais** stockés dans les sauvegardes cloud :
+
+- Les mots de passe de comptes root ou utilisateur d'Unraid
+- Les clés %%WireGuard|wireguard%% publiques, privées ou partagées
+
+:::note\[Reminder]
+
+La sauvegarde de clé est uniquement destinée à la récupération de configuration. Intégrez toujours des stratégies de sauvegarde supplémentaires pour vos données et secrets critiques.
+
+:::
+
+---
+
+\* *"%%WireGuard|wireguard%%" et le logo "%%WireGuard|wireguard%%" sont des marques déposées de Jason A. Donenfeld.*

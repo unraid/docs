@@ -1,0 +1,188 @@
+---
+sidebar_position: 8
+sidebar_label: Sichern Sie Ihre ausgehenden Kommunikationen
+---
+
+# Sichern Sie Ihre ausgehenden Kommunikationen
+
+Der ausgehende Proxy-Manager und %%Tailscale|tailscale%%-Ausgangsknoten bieten eine Möglichkeit, die ausgehenden Kommunikationen von Unraid durch sichere Kanäle zu leiten. Diese Tools sind nützlich zum Umgehen restriktiver Firewalls, Einhaltung von Netzwerk-Richtlinien oder zum Schutz Ihres ausgehenden Datenverkehrs. Auch wenn sich diese Lösungen hauptsächlich auf den Systemverkehr von Unraid konzentrieren, gibt es Konfigurationsmöglichkeiten, um ihre Reichweite auf Ihr gesamtes Netzwerk auszuweiten.
+
+Es gibt drei Hauptmethoden, um Ihre ausgehenden Kommunikationen zu sichern:
+
+1. [**Ausgehender Proxy-Manager**](#setting-up-a-proxy-server) - Dieses Werkzeug leitet HTTP-Verkehr über einen Proxy-Server, sodass Sie Ihre Webanfragen sicher verwalten und steuern können.
+2. [**%%Tailscale|tailscale%% Exit-Nodes**](#tailscale-exit-nodes) - Mit %%Tailscale|tailscale%% Exit-Nodes kann Ihr gesamter Datenverkehr durch das Mesh-Netzwerk von %%Tailscale|tailscale%% geleitet werden, um eine sichere Verbindung zwischen Ihren Geräten zu gewährleisten.
+3. [**%%WireGuard|wireguard%% %%VPN|vpn-tunnel%%**](#outgoing-vpn-connections) - Sie können auch %%WireGuard|wireguard%% %%VPN|vpn-tunnel%% verwenden, um Ihren Datenverkehr über kommerzielle %%VPN|vpn-tunnel%%-Anbieter zu leiten, und so eine zusätzliche Schicht von Privatsphäre und Sicherheit hinzufügen.
+
+### Ausgehender Proxy-Manager vs. Tailscale/WireGuard/VPN
+
+| Anwendungsfall                                                | Empfohlenes Werkzeug                         | Warum                                                                                                                                                         |
+| ------------------------------------------------------------- | -------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Firewall für Unraid-Systemaktualisierungen umgehen            | Ausgehender Proxy-Manager                    | Leitet nur den Systemverkehr von Unraid durch einen Proxy; einfache und minimale Konfiguration.                                                               |
+| Gesamten ausgehenden Datenverkehr mit Mesh-Netzwerken sichern | %%Tailscale\|tailscale%% Exit-Nodes          | Verschlüsselt Datenverkehr durch das Mesh-Netzwerk von %%Tailscale\|tailscale%%; einfache Einrichtung mit bestehender %%Tailscale\|tailscale%% Infrastruktur. |
+| Gesamten ausgehenden Datenverkehr (systemweit) sichern        | %%WireGuard\|wireguard%% %%VPN\|vpn-tunnel%% | Verschlüsselt und tunneliert den gesamten Datenverkehr von Unraid (einschließlich Docker/VMs) zu kommerziellen %%VPN\|vpn-tunnel%%-Anbietern.                 |
+| Traffic von Docker oder VMs isolieren                         | %%VPN\|vpn-tunnel%% oder Container-Proxy     | Konfigurieren Sie %%VPN\|vpn-tunnel%% auf Container/VM-Ebene für granulare Kontrolle.                                                                         |
+| Zugriff auf das Heimnetzwerk von überall aus                  | %%Tailscale\|tailscale%% Exit-Nodes          | Leiten Sie den Verkehr durch Ihr Heimnetzwerk für eine konsistente IP und Geostandorte.                                                                       |
+
+Für die meisten Benutzer sind Lösungen wie [%%Tailscale|tailscale%%](./tailscale.mdx) oder [%%WireGuard|wireguard%%](./wireguard.mdx) bevorzugt für vollständige Systemsicherheit und Privatsphäre. Verwenden Sie den ausgehenden Proxy-Manager, wenn Sie nur Unraid's eigene HTTP-Anfragen proxyen müssen.
+
+### Einen Proxy-Server einrichten
+
+Um einen Proxy-Server einzurichten:
+
+1. Navigieren Sie zu ***Einstellungen → Ausgehender Proxy-Manager*** im %%WebGUI|web-gui%%.
+
+<div style={{ margin: 'auto', maxWidth: '600px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+  ![Ausgehender Proxy-Manager](/img/outgoing-proxy-manager.png)
+</div>
+
+2. Fügen Sie den Namen, die URL und (falls erforderlich) den Benutzernamen/das Passwort Ihres Proxy ein.
+3. Klicken Sie auf **Übernehmen**.
+4. Wählen Sie Ihren neuen Proxy aus der Liste und klicken Sie erneut auf **Anwenden**.
+
+The %%WebGUI|web-gui%% will automatically use the selected proxy for outgoing system traffic. If you have open web terminals or %%SSH|ssh%% sessions, close and reopen them to apply the new proxy settings. This usage is transparent—monitor proxy server logs to verify activity.
+
+### Einen HTTP-Proxy-Server auswählen
+
+- **Wenn Ihre Organisation einen Proxy bereitstellt:** Verwenden Sie die von Ihrem Netzwerkadministrator bereitgestellte Adresse und Anmeldedaten.
+- **Falls Sie selbst einen einrichten müssen:**
+  - Der [Proxy Server Docker-Container von @ich777](https://forums.unraid.net/profile/72388-ich777/) wurde getestet und funktioniert gut mit Unraid.
+  - Sie können diesen Container konfigurieren, um den Verkehr über einen kommerziellen %%VPN|vpn-tunnel%% unter Verwendung von Unraid's [%%WireGuard|wireguard%% %%VPN|vpn-tunnel%%](wireguard.mdx) zu leiten oder ihn mit einem anderen Docker-basierten %%VPN|vpn-tunnel%%-Dienst zu verbinden.
+  - Aus Gründen der Zuverlässigkeit hosten Sie den Proxy-Server auf einem separaten System von Unraid, um die Netzwerkverfügbarkeit während des Bootens zu gewährleisten.
+
+Um den Proxy-Verkehr zu überwachen, gehen Sie auf die **Docker** Registerkarte auf dem Proxy-Host-System, wählen Sie den **Proxy Server** Container und sehen Sie sich die **Logs** an.
+
+### Automatischer Import und Plug-in-Kompatibilität
+
+- Wenn Sie vorher das **Proxy Editor** Plugin verwendet haben, wird es automatisch entfernt, sobald Sie auf Unraid 7.0+ mit eingebauter Proxy-Unterstützung aktualisieren.
+- Alte Proxy-Einstellungen in Ihrem `config/go` Skript oder in `community.applications/proxy.cfg` werden automatisch importiert und die alten Dateien zu Ihrer Sicherheit umbenannt.
+
+### Plugin-Kompatibilität
+
+- Plugins, die PHP’s `curl_init()` Funktion verwenden, nutzen automatisch den ausgehenden Proxy.
+- Plugins, die `file_get_contents()` verwenden, sollten auf `curl_init()` migrieren, um Proxy-Kompatibilität zu gewährleisten.
+- Für Kommandozeilen-Prozesse bevorzugen Sie `curl` über `wget` für Proxy-Unterstützung.
+
+Für weitere Informationen über Plugin-Entwicklung und Kompatibilität, besuchen Sie den [Plugins-Abschnitt der Dokumentation](../../using-unraid-to/customize-your-experience/plugins.mdx).
+
+## Tailscale Exit-Nodes
+
+%%Tailscale|tailscale%% exit nodes offer a secure and modern way to route your Unraid server's outgoing traffic through another device on your %%Tailnet|tailnet%%. This setup provides the security of a %%VPN|vpn-tunnel%% while leveraging %%Tailscale|tailscale%%'s easy-to-use mesh networking, making it ideal for users who want encrypted outgoing traffic without the complexity of traditional %%VPN|vpn-tunnel%%s.
+
+:::tip\[When "Wann Sie Tailscale Exit-Nodes verwenden sollten"
+
+Erwägen Sie die Verwendung von %%Tailscale|tailscale%% Exit-Nodes für:
+
+- Sichern des ausgehenden Datenverkehrs von Ihrem Heimnetzwerk während des Reisens
+- Beibehalten konsistenter IP-Adressen für Dienste, die VPN-Verkehr blockieren
+- Nahtlose Integration mit bestehender %%Tailscale|tailscale%%-Infrastruktur
+
+:::
+
+### Konfigurieren von Tailscale Exit-Nodes
+
+Um einen %%Tailscale|tailscale%% Exit-Node für den ausgehenden Datenverkehr Ihres Servers einzurichten:
+
+1. **Installieren Sie das [Tailscale Plugin](https://unraid.net/community/apps/c/plugins?q=tailscale#r:~:text=Plugins-,Tailscale%20\(Plugin\),-Derek%20Kaser)** von Community Applications, falls es noch nicht installiert ist.
+2. **Richten Sie einen Ausgangsknoten** in Ihrem %%Tailnet|tailnet%% ein. Dies kann ein weiterer Unraid-Server, ein Docker-Container oder jedes Gerät sein, das %%Tailscale|tailscale%% ausführt.
+3. **Konfigurieren Sie Ihren Unraid-Server**, um den Exit-Node zu nutzen:
+   - Navigieren Sie zu ***Einstellungen → Tailscale***.
+   - Im **Use Exit Node**-Feld wählen Sie Ihren verfügbaren Exit-Node.
+   - Klicken Sie auf **Übernehmen**.
+
+### Mullvad-Integration
+
+Tailscale hat sich mit Mullvad VPN zusammengetan, um kommerzielle Ausgangsknoten bereitzustellen. Sie können [Mullvad VPN über Tailscale](https://tailscale.com/mullvad) erwerben und haben Zugriff auf ihr weltweites Netzwerk von Servern als Ausgangsknoten. Diese Kombination bietet das Mesh-Netzwerk von Tailscale zusammen mit der auf Privatsphäre ausgerichteten Infrastruktur von Mullvad.
+
+### Docker-Container Exit-Nodes
+
+Sie können auch einen Docker-Container einrichten, um als %%Tailscale|tailscale%% Exit-Node auf Ihrem Unraid-Server zu fungieren.
+
+1. **Stellen Sie einen %%Tailscale|tailscale%%-Container bereit**, indem Sie das [offizielle %%Tailscale|tailscale%% Docker-Bild](https://hub.docker.com/r/tailscale/tailscale) verwenden.
+2. **Konfigurieren Sie den Container**, indem Sie das `--advertise-exit-node` Flag hinzufügen.
+3. **Genehmigen Sie den Exit-Node** in Ihrer %%Tailscale|tailscale%%-Admin-Konsole.
+4. **Wählen Sie den Container** als Exit-Node für Ihre anderen Geräte im %%Tailnet|tailnet%% aus.
+
+## Ausgehende VPN-Verbindungen
+
+Unraid unterstützt ausgehende WireGuard-VPN-Verbindungen zu kommerziellen Anbietern, sodass Sie Docker-Container oder den gesamten Traffic Ihres Servers durch einen sicheren Tunnel leiten können. Dies ist nützlich für den Schutz der Privatsphäre, das Umgehen von geografischen Einschränkungen oder das Sichern ausgehender Daten. Für Community-Einblicke und Fehlersuche sehen Sie den [WireGuard VPN tunneled access Forum Thread](https://forums.unraid.net/topic/84316-wireguard-vpn-tunneled-access/).
+
+### Einen VPN-Anbieter wählen
+
+Die Auswahl des richtigen %%VPN|vpn-tunnel%%-Anbieters hängt von Ihren Prioritäten ab - Geschwindigkeit, Privatsphäre, Benutzerfreundlichkeit und Support. Die folgenden Anbieter werden gut von Unraid unterstützt und bieten eine starke %%WireGuard|wireguard%%-Integration:
+
+| Anbieter                                                                                                 | Am besten geeignet für              | Schlüsselfunktionen                                                    | Unterstützung in Unraid | Anmerkungen                                    |
+| -------------------------------------------------------------------------------------------------------- | ----------------------------------- | ---------------------------------------------------------------------- | ----------------------- | ---------------------------------------------- |
+| [NordVPN](https://nordvpn.com/)                                                                          | Geschwindigkeit, Privatsphäre, Wert | Double NAT, keine Protokolle, globales Netzwerk                        | Ausgezeichnet           | NordLynx-Protokoll, schnell                    |
+| [Surfshark](https://surfshark.com/)                                                                      | Budget, unbegrenzte Geräte          | Keine Protokolle, unbegrenzte Verbindungen, schnelle Geschwindigkeiten | Ausgezeichnet           | Großer Wert, einfache Einrichtung              |
+| [ProtonVPN](https://protonvpn.com/)                                                                      | Privatsphäre, Open-Source           | Double NAT, Secure Core, keine Protokolle                              | Ausgezeichnet           | Open-Source, starke Privatsphäre               |
+| [Mullvad](https://mullvad.net/en)                                                                        | Anonymität, Einfachheit             | Keine persönlichen Daten, Festpreis, Open-Source                       | Ausgezeichnet           | Mit Bargeld zahlen, keine E-Mail               |
+| [PureVPN](https://www.purevpn.com/)                                                                      | Streaming, Flexibilität             | Großes Netzwerk, einfache Unraid-Integration                           | Gut                     | Gute Unterstützung, schnelle Geschwindigkeiten |
+| [CyberGhost](https://www.cyberghostvpn.com/)                                                             | Streaming, Benutzerfreundlichkeit   | Optimierte Server, schnelle Geschwindigkeiten                          | Gut                     | Benutzerfreundliche Apps                       |
+| [IVPN](https://www.ivpn.net/en/), [OVPN](https://www.ovpn.com/en), [Windscribe](https://windscribe.com/) | Spezifische Bedürfnisse             | Erweiterte Privatsphäre, regionale Optionen                            | Gut                     | Community-unterstützt                          |
+
+:::tip
+Wählen Sie einen Anbieter mit nativer %%WireGuard|wireguard%%-Unterstützung und starken Datenschutzrichtlinien. Vermeiden Sie Anbieter, die benutzerdefinierte Clients oder proprietäre Protokolle erfordern.
+:::
+
+### VPN-Tunneling-Zugriff für Docker konfigurieren
+
+Sie können spezifische Docker-Container durch einen kommerziellen %%VPN|vpn-tunnel%% Tunnel leiten - keine Routeränderungen erforderlich.
+
+1. Laden Sie die %%WireGuard|wireguard%%-Konfigurationsdatei von Ihrem gewählten Anbieter herunter.
+2. In ***Einstellungen → VPN-Manager*** wählen Sie **Konfig importieren** und laden Sie die Datei hoch. Dies erstellt einen neuen Tunnel.
+3. Der **Peer-Typ von Zugriff** ist standardmäßig auf *VPN-Tunneling-Zugriff für Docker* eingestellt. Optional können Sie ihm einen lokalen Namen geben.
+4. Klicken Sie auf **Übernehmen**.
+5. Setzen Sie den Tunnel-Schalter auf **Aktiv**.
+
+:::tip
+Beachten Sie den Tunnelnamen (z.B., `wg0`, `wg1`, `wg2`). Sie benötigen ihn bei der Konfiguration von Docker-Containern.\nWenn Ihr Anbieter einen DNS-Server in seiner Konfiguration angibt, merken Sie ihn sich für die spätere Verwendung. Wenn nicht, verwenden Sie einen öffentlichen DNS wie `8.8.8.8`.
+:::
+
+### Den Docker-Tunnel testen
+
+Um zu überprüfen, ob Ihr Docker-Tunnel funktioniert und keine DNS- oder IP-Informationen verliert:
+
+1. Installieren Sie einen [Firefox](https://unraid.net/community/apps?q=Firefox) Docker-Container über Community Applications.
+2. Setzen Sie den **Netzwerk-Typ** auf **Benutzerdefiniert: wgX** (ersetzen Sie X durch Ihren Tunnelnamen).
+3. Wechseln Sie zur **Erweiterten** Ansicht und fügen Sie Ihren DNS-Provider zu **Zusätzliche Parameter** hinzu (z. B. `--dns=8.8.8.8`).
+4. Änderungen anwenden und den Container starten.
+5. Starten Sie Firefox und besuchen Sie [whatismyipaddress.com](https://whatismyipaddress.com/), um zu überprüfen, ob Ihre IP-Adresse mit dem Land des VPN-Servers übereinstimmt.
+6. Besuchen Sie [dnsleaktest.com](https://www.dnsleaktest.com/) und bestätigen Sie, dass nur die DNS-Server Ihres VPN erkannt werden.
+
+Sie können diesem Tunnel zusätzliche Container zuweisen oder mehrere Tunnel erstellen.
+
+### VPN-Tunneling-Zugriff für das System konfigurieren
+
+Um den gesamten Unraid-Verkehr durch einen kommerziellen VPN zu leiten:
+
+1. Laden Sie die %%WireGuard|wireguard%%-Konfigurationsdatei von Ihrem Anbieter herunter.
+2. In ***Einstellungen → VPN-Manager*** wählen Sie **Konfig importieren** und laden Sie die Datei hoch.
+3. Benennen Sie den Tunnel optional um.
+4. Klicken Sie auf **Übernehmen**.
+5. Setzen Sie den Tunnel-Schalter auf **Aktiv**.
+
+:::note
+- Möglicherweise müssen Sie den Tunnel vorübergehend deaktivieren, um Unraid-Updates oder Plugin-Installationen durchzuführen.
+- Gleichzeitig kann nur ein systemweiter Tunnel aktiv sein.
+- Unraid ignoriert DNS-Einstellungen aus der importierten Konfiguration. Setzen Sie Unraid's DNS auf einen zuverlässigen öffentlichen Server (z.B., `8.8.8.8`, `8.8.4.4`).
+:::
+
+### Testen des Systemtunnels
+
+1. Installieren Sie den [Firefox](https://unraid.net/community/apps?q=Firefox) Docker-Container.
+2. Akzeptieren Sie alle Vorgaben.
+3. Starten Sie Firefox und besuchen Sie [whatismyipaddress.com](https://whatismyipaddress.com/). Ihre IP-Adresse sollte mit dem Standort Ihres VPN-Anbieters übereinstimmen.
+
+---
+
+### Unterstützung und Community-Ressourcen
+
+Für die aktuellsten Anleitungen, Problemlösungshilfen und Community-Tipps besuchen Sie die folgenden Ressourcen in den [Unraid-Foren](https://forums.unraid.net/):
+
+- **[WireGuard VPN Vernetzte Verbindung](https://forums.unraid.net/topic/84316-wireguard-vpn-tunneled-access/)** - Diese Community-Diskussion konzentriert sich auf die Leitung von Docker-Containern oder systemweitem Datenverkehr über kommerzielle WireGuard VPN-Anbieter. Sie beinhaltet Praxisbeispiele, DNS-Lecktests und Tipps zur Fehlersuche für ausgehende Tunnel.
+
+- **[Dynamix WireGuard Plugin Thread](https://forums.unraid.net/topic/84229-dynamix-wireguard-vpn/)** - Dies ist der offizielle Thread für das Dynamix WireGuard-Plugin. Er behandelt Plugin-Updates, Funktionsanfragen, Fehlerberichte und allgemeine Fragen und Antworten im Zusammenhang mit der integrierten WireGuard-Unterstützung von Unraid.
+
+- **[WireGuard Schnellstart](https://forums.unraid.net/topic/84226-wireguard-quickstart/)** - Eine Schritt-für-Schritt-Anleitung zur Einrichtung von eingehenden WireGuard-VPN-Verbindungen zu Unraid. Dieses Ressourcen bietet Konfigurationsanleitungen, Schritt-für-Schritt-Setups und Tipps für den Remotezugriff.
+
+\* *"WireGuard" und das "WireGuard"-Logo sind eingetragene Marken von Jason A. Donenfeld.*

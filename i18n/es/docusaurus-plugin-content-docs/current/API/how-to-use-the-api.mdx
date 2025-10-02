@@ -1,0 +1,241 @@
+---
+title: Usando la API de Unraid
+description: Aprenda cómo interactuar con su servidor Unraid a través de la API GraphQL
+sidebar_position: 2
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import ManageApiKeysGui from './partials/manage-api-keys-gui.mdx';
+import ManageApiKeysCli from './partials/manage-api-keys-cli.mdx';
+
+# Usando la API de Unraid
+
+:::tip[Quick Iniciar]
+La API de Unraid proporciona una potente interfaz GraphQL para gestionar su servidor. Esta guía cubre la autenticación, consultas comunes y las mejores prácticas.
+:::
+
+La API de Unraid proporciona una interfaz GraphQL que le permite interactuar con su servidor Unraid. Esta guía le ayudará a comenzar a explorar y usar la API.
+
+## 🎮 Habilitación del Sandbox de GraphQL
+
+### Método GUI Web (Recomendado)
+
+:::info[Preferred Método]
+Usar la GUI Web es la forma más fácil de habilitar el sandbox de GraphQL.
+:::
+
+1. Navegue a **Configuración** → **Acceso de Administración** → **Opciones de Desarrollador**
+2. Habilite el interruptor **Sandbox de GraphQL**
+3. Acceda al playground de GraphQL navegando a:
+
+   ```txt
+   http://YOUR_SERVER_IP/graphql
+   ```
+
+### Método CLI
+
+Alternativamente, puede habilitar el modo desarrollador usando la CLI:
+
+```bash
+unraid-api developer --sandbox true
+```
+
+O use el modo interactivo:
+
+```bash
+unraid-api developer
+```
+
+## 🔑 Autenticación
+
+:::warning[Required para la mayoría de las operaciones]
+La mayoría de las consultas y operaciones requieren autenticación. Siempre incluya las credenciales apropiadas en sus solicitudes.
+:::
+
+Puede autenticarse usando:
+
+1. **Claves API** - Para acceso programático
+2. **Cookies** - Automáticamente al iniciar sesión en la WebGUI
+3. **SSO/OIDC** - Cuando se configura con proveedores externos
+
+### Gestión de Claves API
+
+<Tabs>
+  <TabItem value="gui" label="Interfaz Gráfica de Usuario Web (Recomendado)" default>
+    <ManageApiKeysGui />
+  </TabItem>
+
+  <TabItem value="cli" label="Método CLI">
+    <ManageApiKeysCli />
+  </TabItem>
+</Tabs>
+
+### Usando Claves API
+
+La clave API generada debe incluirse en sus solicitudes GraphQL como un encabezado:
+
+```json
+{
+    "x-api-key": "YOUR_API_KEY"
+}
+```
+
+## 📊 Esquemas Disponibles
+
+La API proporciona acceso a varios aspectos de su servidor Unraid:
+
+### Información del Sistema
+
+- Consultar detalles del sistema incluyendo CPU, memoria e información del SO
+- Monitorear el estado y salud del sistema
+- Acceder a información de placa base y hardware
+
+### Gestión de Arreglos
+
+- Consultar estado y configuración del arreglo
+- Gestionar operaciones del arreglo (iniciar/detener)
+- Monitorear estado y salud del disco
+- Realizar comprobaciones de paridad
+
+### Gestión Docker
+
+- Listar y gestionar contenedores Docker
+- Monitorear el estado del contenedor
+- Gestionar redes Docker
+
+### Acceso Remoto
+
+- Configurar y gestionar configuraciones de acceso remoto
+- Manejar configuración SSO
+- Gestionar orígenes permitidos
+
+### 💻 Consultas de Ejemplo
+
+#### Verificar Estado del Sistema
+
+```graphql
+query {
+    info {
+        os {
+            platform
+            distro
+            release
+            uptime
+        }
+        cpu {
+            manufacturer
+            brand
+            cores
+            threads
+        }
+    }
+}
+```
+
+#### Monitorear Estado del Arreglo
+
+```graphql
+query {
+    array {
+        state
+        capacity {
+            disks {
+                free
+                used
+                total
+            }
+        }
+        disks {
+            name
+            size
+            status
+            temp
+        }
+    }
+}
+```
+
+#### Listar Contenedores Docker
+
+```graphql
+query {
+    dockerContainers {
+        id
+        names
+        state
+        status
+        autoStart
+    }
+}
+```
+
+## 🏗️ Tipos de Esquema
+
+La API incluye varios tipos fundamentales:
+
+### Tipos Base
+
+- `Node`: Interfaz para objetos con IDs únicos - por favor, vea [Identificación de Objeto](https://graphql.org/learn/global-object-identification/)
+- `JSON`: Para datos JSON complejos
+- `DateTime`: Para valores de marca de tiempo
+- `Long`: Para enteros de 64 bits
+
+### Tipos de Recursos
+
+- `Array`: Gestión de arreglos y discos
+- `Docker`: Gestión de contenedores y redes
+- `Info`: Información del sistema
+- `Config`: Configuración de servidor
+- `Connect`: Configuración de acceso remoto
+
+### Acceso Basado en Roles
+
+Roles disponibles:
+
+- `admin`: Acceso completo
+- `connect`: Características de acceso remoto
+- `guest`: Acceso de solo lectura limitado
+
+## ✨ Mejores Prácticas
+
+:::tip[Pro Consejos]
+1. Use the Apollo Sandbox to explore the schema and test queries
+2. Empieza con consultas pequeñas y gradualmente agrega campos según sea necesario
+3. Monitoree la complejidad de su consulta para mantener el rendimiento
+4. Use roles y permisos apropiados para sus claves API
+5. Mantenga sus claves API seguras y rótelas periódicamente
+:::
+
+## ⏱️ Limitación de Tasa
+
+:::caution[Rate Límites]
+La API implementa la limitación de tasa para prevenir abusos. Asegúrese de que sus aplicaciones gestionen adecuadamente las respuestas de límite de tasa.
+:::
+
+## 🚨 Manejo de Errores
+
+La API devuelve errores estándar de GraphQL en el siguiente formato:
+
+```json
+{
+  "errors": [
+    {
+      "message": "Error description",
+      "locations": [...],
+      "path": [...]
+    }
+  ]
+}
+```
+
+## 📚 Recursos Adicionales
+
+:::info[Learn Más]
+- Use the Apollo Sandbox's schema explorer to browse all available types and fields
+- Check the documentation tab in Apollo Sandbox for detailed field descriptions
+- Monitor the API's health using `unraid-api status`
+- Generate reports using `unraid-api report` for troubleshooting
+
+For more information about specific commands and configuration options, refer to the [CLI documentation](cli.mdx) or run `unraid-api --help`.
+:::

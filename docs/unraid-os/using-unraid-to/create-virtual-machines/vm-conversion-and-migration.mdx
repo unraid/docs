@@ -11,12 +11,10 @@ import TabItem from '@theme/TabItem';
 When consolidating hardware, preserving legacy systems, or testing upgrades in a virtual environment, you may need to convert a physical disk or migrate an existing system into a %%virtual machine|vm%% on Unraid. This process applies to both Linux and Windows systems, enabling you to run your installation as a %%VM|vm%% within your Unraid server.
 
 :::note[Prerequisites]
-
 - Your Unraid server should meet the minimum [hardware requirements for virtualization](./overview-and-system-prep.mdx#requirements) (see table below).
 - The source disk must be connected to your Unraid server (via SATA, USB, or as an unassigned device).
 - Ensure you have enough free space in your **%%array|array%%** or **%%cache pool|cache-pool%%** to accommodate the new virtual disk image.
 - Backup any critical data before starting the conversion or migration process.
-
 :::
 
 ## Hardware requirements
@@ -78,7 +76,6 @@ To convert a physical disk to a %%VM|vm%%:
     - `/mnt/user/[vdisk_share]/[vmname]/vdisk1.img`: Destination for the %%virtual disk|vdisk%% image.
 
     Wait for the operation to complete. The resulting `.img` file will be the primary disk for your %%VM|vm%%.
-
   </TabItem>
 
   <TabItem value="Windows" label="Windows">
@@ -141,7 +138,6 @@ To convert a physical disk to a %%VM|vm%%:
     - Locate the `<disk>` section for `vdisk1.img` and change `bus='ide'` back to `bus='virtio'` in the `<target>` tag.
     - Click **Update** to save your changes to the %%VM|vm%%.
     - Now you can start your converted %%virtual machine|vm%%!
-
   </TabItem>
 </Tabs>
 
@@ -153,7 +149,6 @@ You can run a Windows installation directly from a physical disk in an Unraid vi
 [How to pass through hard drives, convert disks, and test performance in Unraid VMs (YouTube)](https://www.youtube.com/watch?v=QaB9HhpbDAI).
 
 :::important[Choosing your migration approach]
-
 There are two common ways to migrate a Windows installation to a %%VM|vm%% in Unraid:
 
 **Physical disk passthrough:** This uses the original disk directly in the %%VM|vm%%.
@@ -167,18 +162,15 @@ There are two common ways to migrate a Windows installation to a %%VM|vm%% in Un
 - Cons: Requires time and free space for the conversion process.
 
 Choose passthrough if you want a simple migration or plan to dual-boot the disk. Opt for image conversion for better portability and backup options.
-
 :::
 
 :::note[Prerequisites]
-
 - Back up your Windows installation before starting.
 - Have a spare USB flash drive ready for recovery tools.
 - Select a hardware preparation tool that enables Windows to boot on virtualized hardware by modifying drivers and the hardware abstraction layer (HAL):
   - **Microsoft Sysprep** (free and built into Windows 8.1 and later)
   - **Acronis True Image 2025** (commercial solution with advanced migration capabilities)
 - Ensure your Unraid server has a free SATA or NVMe port for the physical disk.
-
 :::
 
 <h4>Step 1: Prepare the Windows disk for migration</h4>
@@ -190,11 +182,9 @@ Moving a Windows installation to new hardware, whether physical or virtual, can 
 Sysprep is built into Windows and eliminates unique system information, preparing Windows for different hardware.
 
 :::note[Before running sysprep]
-
 - Temporarily disable any antivirus software.
 - Clean up unnecessary user profiles and temporary files.
 - Fix or remove any problematic Microsoft Store apps that may block sysprep from running.
-
 :::
 
 1. **Run sysprep:**
@@ -294,9 +284,7 @@ You'll need to modify the %%VM|vm%%'s XML configuration to connect your physical
 Remember to reinstall those applications after migration if you use software that installs its own drivers (such as antivirus programs).
 
 :::tip
-
 If you are stuck at %%SeaBIOS|seabios%% with a "Booting from Hard Disk" message, it’s likely because your Windows OS was installed using %%UEFI|uefi%% instead of the traditional BIOS. In this case, recreate the VM using %%OVMF|ovmf%% as the BIOS type rather than %%SeaBIOS|seabios%%. Most modern Windows installations (Windows 8.1, 10, and 11) support %%UEFI|uefi%% and may need %%OVMF|ovmf%% to boot successfully. The rest of the conversion process will remain the same.
-
 :::
 
 ---
@@ -304,9 +292,7 @@ If you are stuck at %%SeaBIOS|seabios%% with a "Booting from Hard Disk" message,
 ## Xen to KVM migration
 
 :::info[Historical Context]
-
 Unraid supported %%Xen|xen-hvm%% from early 6.x versions until it was deprecated in 6.2 (September 2016) and later removed entirely. This migration guide is relevant for users upgrading from very old Unraid installations (pre-2017) to modern versions.
-
 :::
 
 A %%Xen|xen-hvm%% hypervisor is a virtualization platform that allows multiple operating systems to run on the same hardware. In Unraid, %%Xen|xen-hvm%% was historically used for %%virtual machines|vm%%, but %%KVM|kvm%% is now the standard. Migrating from %%Xen|xen-hvm%% to %%KVM|kvm%% is essential for utilizing modern Unraid features, enabling hardware passthrough, and ensuring compatibility with current releases.
@@ -316,9 +302,7 @@ The process of migrating a %%VM|vm%% from %%Xen|xen-hvm%% to %%KVM|kvm%% varies 
 Always create a backup of your %%Xen|xen-hvm%% virtual disk before starting this process. And test your migration on the backup to prevent data loss.
 
 :::info[Why migrate?]
-
 Unraid no longer supports %%Xen|xen-hvm%% from version 6.2 onward. %%KVM|kvm%% is now mandatory for VM management, hardware passthrough, and ongoing updates. Migrating ensures your VMs remain secure and compatible with new features.
-
 :::
 
 ### Windows conversion procedure
@@ -336,7 +320,6 @@ To convert a Windows VM from %%Xen|xen-hvm%% to %%KVM|kvm%%, follow these steps.
   :::tip
   If you are not using GPLPV drivers, you can skip the next several steps and continue from the rebooting into %%KVM|kvm%% mode section.
   :::
-
 </details>
 
 <details>
@@ -348,7 +331,6 @@ To convert a Windows VM from %%Xen|xen-hvm%% to %%KVM|kvm%%, follow these steps.
      bcdedit -set loadoptions nogplpv
      ```
   3. Reboot your VM.
-
 </details>
 
 <details>
@@ -359,7 +341,6 @@ To convert a Windows VM from %%Xen|xen-hvm%% to %%KVM|kvm%%, follow these steps.
   :::caution
   GPLPV removal requires extensive registry editing and manual file deletion. Follow the Xen Project Wiki instructions **exactly** as written, as errors can cause system instability or boot failures.
   :::
-
 </details>
 
 <details>
@@ -404,7 +385,6 @@ To convert a Windows VM from %%Xen|xen-hvm%% to %%KVM|kvm%%, follow these steps.
   :::tip[Why the temporary disk?]
   The 1MB temporary disk forces Unraid to assign the primary disk as `hda` (IDE) instead of `vda` (%%VirtIO|virtio%%), allowing Windows to boot without %%VirtIO|virtio%% drivers initially. This temporary disk will be removed after the driver installation.
   :::
-
 </details>
 
 <details>
@@ -426,7 +406,6 @@ To convert a Windows VM from %%Xen|xen-hvm%% to %%KVM|kvm%%, follow these steps.
      - Open File Explorer and navigate to `D:\guest-agent\`.
      - Double-click `qemu-ga-x64.msi`.
   6. Shut down the VM.
-
 </details>
 
 <details>
@@ -453,5 +432,4 @@ To convert a Windows VM from %%Xen|xen-hvm%% to %%KVM|kvm%%, follow these steps.
   2. Check for Windows updates, which may provide newer drivers.
   3. Visit the [Red Hat VirtIO Drivers](https://docs.fedoraproject.org/en-US/quick-docs/creating-windows-virtual-machines-using-virtio-drivers/) page for the latest versions.
   :::
-
 </details>

@@ -1,0 +1,969 @@
+---
+sidebar_position: 2
+sidebar_label: 阵列配置
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import AddDataDiskParityProtected from './partials/add-data-disk-parity-protected.mdx';
+import AddDataDiskNoParity from './partials/add-data-disk-no-parity.mdx';
+import ParitySwapWhat from './partials/parity-swap-what.mdx';
+import ParitySwapWhen from './partials/parity-swap-when.mdx';
+import RemoveDataDiskStandard from './partials/remove-data-disk-standard.mdx';
+import RemoveDataDiskParityPreserve from './partials/remove-data-disk-parity-preserve.mdx';
+import ArrayCheckParity from './partials/array-check-parity.mdx';
+import ArrayCheckRead from './partials/array-check-read.mdx';
+import TroubleshootMissingDisks from './partials/troubleshoot-missing-disks.mdx';
+import TroubleshootDeviceLimit from './partials/troubleshoot-device-limit.mdx';
+import TroubleshootLicenseIssues from './partials/troubleshoot-license-issues.mdx';
+import TroubleshootKeyServer from './partials/troubleshoot-key-server.mdx';
+import TroubleshootWithdrawnRelease from './partials/troubleshoot-withdrawn-release.mdx';
+
+# 阵列配置
+
+Unraid's storage system combines flexibility with data protection through its %%array|array%% and %%cache|cache%% architecture. The %%array|array%% manages your primary storage with optional %%parity|parity%% protection, while cache pools accelerate performance.
+
+以下是一些重要的阵列配置原则：
+
+<details>
+  <summary><strong>始终使用最大的驱动器用于校验。</strong></summary>
+
+  当您稍后向%%array|array%%中添加更多磁盘时，请记住，数据磁盘的大小不能超过您的%%parity disks|parity-drives%%。一开始购买最大的硬盘用于%%parity disks|parity-drives%%是个不错的主意。这样，当您后续扩展时，不会受到较小存储容量的限制。
+
+  如果您使用两个%%parity disks|parity-drives%%，它们可以是不同大小。但是，请记住，%%array|array%%中没有任何磁盘可以大于您所拥有的最小%%parity disks|parity-drives%%。
+</details>
+
+<details>
+  <summary><strong>不要在阵列中使用SSD - 将它们用于缓存池或未分配设备。</strong></summary>
+
+  Unraid does not support TRIM or Discard operations for SSDs in the main array. Over time, this will cause SSD performance to degrade if they are used as array members. For best results, use SSDs in %%cache pools|cache-pool%% or as unassigned devices, where these features are supported and long-term performance is maintained. Most modern SSDs, including NVMe, work well in these roles.
+</details>
+
+<details>
+  <summary><strong>使用缓存提高阵列写入性能。</strong></summary>
+
+  数据不是直接写入主存储，而是首先发送到专用磁盘或磁盘组。此数据通常在凌晨3:40安排时间转移到主存储。伟大的事情是，保存到%%cache|cache%%的数据仍然通过%%user shares|user-share%%显示出来，因此您不需要更改访问文件的方式。
+</details>
+
+<details>
+  <summary><strong>创建缓存池有助于保护缓存数据的安全。</strong></summary>
+
+  仅使用一个缓存设备会使您的缓存数据在转移到主阵列之前面临风险。为了确保您的数据始终受到保护，使用多个设备配置为%%cache pool|cache-pool%%。这种设置为缓存数据提供冗余，降低由于缓存设备故障导致数据丢失的可能性。
+</details>
+
+<details>
+  <summary><strong>SSD缓存设备非常适合应用程序和虚拟机。</strong></summary>
+
+  使用SSD可以使应用程序和虚拟机（VM）运行更快，因为它们可以更快地访问数据。SSD在%%cache pool|cache-pool%%中表现良好，为您提供速度、效率和数据安全的出色组合。
+</details>
+
+<details>
+  <summary><strong>加密默认关闭。</strong></summary>
+
+  如果您想在系统上使用加密，必须使用加密文件系统类型重新格式化磁盘 - 这个过程会擦除驱动器上的所有现有数据。在启用加密之前，将数据移出磁盘，将文件系统更改为加密选项，格式化磁盘，然后将数据移回。详细信息，请参阅[如何在Unraid中加密驱动器](../../system-administration/secure-your-server/securing-your-data.mdx#how-to-encrypt-a-drive-in-unraid)。
+
+  请记住，使用加密会导致数据恢复难度增加，因此仅在您真正需要时才使用它。
+</details>
+
+:::info[Disk 识别和端口灵活性]
+Unraid identifies disks based on their serial numbers and sizes, not the specific SATA ports they're connected to. This means you can switch drives between different SATA ports without affecting their assignments in Unraid. This feature is particularly useful for troubleshooting hardware problems, like finding a faulty port or replacing unreliable power or SATA cables.
+:::
+
+:::caution
+如果您分配或连接的设备数量超过许可证密钥允许的数量，您的阵列将不会启动。
+:::
+
+## 启动/停止阵列
+
+系统启动时，通常会自动启动磁盘阵列。但是，如果您最近更改了磁盘设置（例如，添加了新磁盘），则阵列将保持关闭状态，以便您可以检查您的配置。
+
+:::caution
+请记住，您需要先停止阵列才能进行任何调整。停止它将完全停止所有Docker容器和网络共享，关闭或休眠虚拟机，并卸载存储设备，直到重新启动阵列后，数据和应用程序将不可访问。
+:::
+
+要启动或停止阵列：
+
+1. 点击**主界面**选项卡。
+2. 导航到 **阵列操作** 部分。
+3. 点击 **开始** 或 **停止**。在继续之前，您可能需要勾选"是，我想执行此操作"选项。
+
+---
+
+## 阵列操作
+
+Unraid provides several maintenance and configuration options for your storage array. Key operations include:
+
+import DocCardList from '@theme/DocCardList';
+
+<DocCardList
+  items={[
+  { type: 'link', href: '#adding-disks', label: '添加磁盘', description: '扩展存储容量' },
+  { type: 'link', href: '#replacing-disks', label: '替换磁盘', description: '升级或更换故障驱动器' },
+  { type: 'link', href: '#removing-disks', label: '移除磁盘', description: '退役或缩小阵列规模' },
+  { type: 'link', href: '#checking-array-devices', label: '检查阵列设备', description: '监控SMART数据和诊断' },
+  { type: 'link', href: '#spinning-disks-down-or-up', label: '调整磁盘旋转', description: '管理磁盘旋转启停' },
+  { type: 'link', href: '#reset-the-array-configuration', label: '重置阵列配置', description: '重建阵列结构' }
+  ]}
+/>
+
+---
+
+### 添加磁盘
+
+#### 设置新磁盘
+
+1. 转到界面的 ***主界面 → 阵列设备***。
+2. 选择想要添加磁盘的插槽，并从下拉列表中选择磁盘。
+3. 默认情况下，新的阵列驱动器将使用%%XFS|xfs%%格式化。如果希望改用%%ZFS|zfs%%或%%BTRFS|btrfs%%，请从下拉菜单中选择所需的文件系统。
+
+:::tip[Hot-Swap 特征]
+If you're using modern Unraid-compatible hardware, you can change disks without shutting down your server. This feature, known as hot-swap, has been available in LimeTech servers since the beginning.
+:::
+
+#### 清除与预清除
+
+Unraid requires disks to be in a cleared state - completely filled with zeros and marked with a special signature - before adding them to a parity-protected array. This process ensures parity integrity and keeps the array online during disk preparation.
+
+Clearance is mandatory when adding a data disk to a %%parity|parity%%-protected array. If you are adding a %%parity disk|parity-drives%% or working with an array that does not use %%parity|parity%%, clearance is not required.
+
+内置的清除操作在后台向磁盘写入零填充，使阵列保持可用状态。该过程完成后，磁盘必须在使用前进行格式化。此方法高效、无需第三方工具、适合快速扩展。
+
+更为彻底的方法是在插件如[未分配设备预清](https://unraid.net/community/apps?q=unassigned+devices#r:~:text=enable%20destructive%20mode.-,Unassigned%20Devices%20Preclear,-dlandon)进行的预清操作中执行预读以检查坏扇区，零填写磁盘，然后通过后读验证完整性。此额外步骤有助于检测早期驱动器故障，但所需时间明显更长并需手动安装插件。
+
+**基本准则：** 使用内置清除操作快速添加到您的阵列中，或者选择预清除如果您想在将驱动器投入使用之前广泛检测其健康状况。
+
+<h4>清除与预清除比较</h4>
+
+<div style={{ margin: 'auto', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+  |          | 清除       | 预清除         |
+  | -------- | -------- | ----------- |
+  | **目的**   | 确保基本兼容性  | 测试驱动器并准备使用  |
+  | **速度**   | 处理快速     | 过程十分缓慢      |
+  | **阵列影响** | 在后台运行    | 需要将磁盘从使用中移除 |
+  | **最佳用途** | 非常适合快速扩展 | 适合检查新驱动器    |
+</div>
+
+**清除**快速准备磁盘使用，使其与系统兼容，并允许您在短短几小时内扩展存储。
+
+**预清除**耗时较长，但提供全面测试，以确保新磁盘在成为阵列一部分之前是可靠的。
+
+:::caution[Critical 注意]
+避免在将预先清除的磁盘包括在阵列中之前对其进行格式化，因为这将移除清除签名。
+:::
+
+#### 添加数据盘
+
+Adding data disks is a great way to increase your Unraid array's storage space. By adding more disks, you can keep more files, applications, and backups, while still protecting your data.
+
+:::important[Important 注意:]
+添加新数据磁盘时，必须与当前%%parity disks|parity-drives%%的尺寸相同或更小。如果希望使用更大的磁盘，首先需要用更大的磁盘替换%%parity disks|parity-drives%%，然后用旧的%%parity disks|parity-drives%%用作数据盘。
+:::
+
+<details>
+  <summary><strong>如何添加数据盘</strong></summary>
+
+  ```mdx-code-block
+
+  <Tabs>
+    <TabItem value="standard" label="Standard addition (Parity-protected)" default>
+      <AddDataDiskParityProtected />
+    </TabItem>
+
+    <TabItem value="no-parity" label="Addition without parity">
+      <AddDataDiskNoParity />
+    </TabItem>
+  </Tabs>
+  ```
+</details>
+
+#### 添加奇偶盘
+
+%%Parity disks|parity-drives%%是一个有用的功能，为您的数据提供额外的保护层。它们允许您的存储系统在硬盘故障时恢复信息。虽然使用%%parity disks|parity-drives%%是可选的，但强烈建议以确保您的数据安全。
+
+:::important\[Requirements]
+
+- **单一奇偶：** 该磁盘的大小必须至少与最大数据驱动器相同。
+- **双Parity：** 两个%%parity disks|parity-drives%%的大小也必须不小于您最大的一个数据磁盘，但彼此之间可以有不同的大小。
+
+:::
+
+添加%%parity disk|parity-drives%%类似于添加数据磁盘，但还有一个重要步骤需要注意：
+
+1. 选择%%parity disk|parity-drives%%并启动存储阵列后，将开始一个称为**Parity计算**的过程。
+2. 在此过程中，您仍然可以访问文件。但是，系统可能会运行得稍慢，因为它正在计算%%parity|parity%%。
+
+<details>
+  <summary><strong>深入了解：什么是校验以及为什么重要？</strong> - 点击展开/折叠</summary>
+
+  %%Parity|parity%% in Unraid protects your data by ensuring that you can recover from a drive failure. With the use of a %%parity disk|parity-drives%%, any single missing disk can be reconstructed by combining the information from all other data drives along with the %%parity|parity%% data.
+
+  Unraid 依赖于实时奇偶校验的两个主要目的：
+
+  - 当驱动器故障时重建数据
+  - 发现坏扇区时纠正错误
+
+  此功能允许您保持数据安全，即使驱动器最终会随着时间的推移而失效。
+</details>
+
+<details>
+  <summary><strong>In-depth: How does Unraid parity work?</strong> - Click to expand/collapse</summary>
+
+  Unraid works with a special bit called the *parity bit*, which is stored for each bit position across all data disks and is managed by a dedicated %%parity disk|parity-drives%%. The %%parity|parity%% is calculated such that the total number of bits in each position across all disks (including the %%parity disk|parity-drives%%) is always an even number, a process known as even parity.
+
+  以下是其分解说明：
+
+  - Unraid 使用 XOR（异或）操作进行该计算。
+  - 例如，如果你有四个驱动器，其第57位的比特位是1，1，1，1，那么该位置的奇偶位将为0（因为1 + 1 + 1 + 1 + 0 = 偶数）。
+  - 但是，如果第57个位是1、0、0、0，则该位置的%%parity|parity%%将是1（以确保总数保持为偶数）。
+
+  When adding a new drive, Unraid first clears it by writing zeros to all bits. This allows for quick inclusion into the protected array since writing zeros does not interfere with the current parity calculations.
+</details>
+
+<details>
+  <summary><strong>深入了解：如何使用校验重建数据？</strong> - 点击展开/折叠</summary>
+
+  Unraid 能用以下步骤重建缺失的驱动器或修复坏扇区：
+
+  - 它会读取所有剩余的驱动器，包括%%parity disk|parity-drives%%。
+  - 它应用偶%%parity|parity%%来解决丢失的数据。
+
+  例如，如果驱动器2出现故障：
+
+  - If the related bits are 1, 1, 1 (in addition to the %%parity|parity%%), Unraid calculates: 1 + x + 1 + 1 + 0 = even. Here, x must be 1 to maintain an even total.
+  - 如果比特位显示为1, x, 0, 0, 1 = 偶数，则x将等于0。
+
+  This %%parity|parity%% feature allows Unraid to "simulate" the missing disk. You can continue using the array as if the drive were still functional. Once you install a new drive in the failed slot, Unraid will recreate all the missing data based on the current state of %%parity|parity%% and the other disks.
+
+  为了确保持续的保护和有效的恢复，定期运行%%parity checks|parity-check%%是很重要的。
+</details>
+
+<details>
+  <summary><strong>我的校验磁盘需要多大？</strong> - 点击展开/折叠</summary>
+
+  您的%%parity disk|parity-drives%%必须等于或大于您的最大数据磁盘。例如：
+
+  - 如果最大的一个数据磁盘是10TB，则您的%%parity disk|parity-drives%%至少应为10TB。
+  - 您可以自由组合不同大小的数据磁盘，只要它们没有超过%%parity disk|parity-drives%%的大小即可。
+</details>
+
+<details>
+  <summary><strong>深入了解：校验如何影响写入性能？</strong> - 点击展开/折叠</summary>
+
+  Writing to a %%parity|parity%%-protected array involves four disk operations for each write: reading data, reading %%parity|parity%%, writing data, and writing %%parity|parity%%. This process requires a full rotation from each affected drive, so the overall write speed is limited by the slowest drive involved in the operation.
+
+  增加更快的%%parity disk|parity-drives%%不一定能提高写入速度，除非您同时向多个慢速数据磁盘写入数据，这样%%parity disk|parity-drives%%可以承担负载。通常，写入速度受要写入的最慢数据驱动器的约束。
+</details>
+
+<details>
+  <summary><strong>深入了解：双重校验如何工作？</strong> - 点击展开/折叠</summary>
+
+  Dual %%parity|parity%% enables recovery from **two simultaneous disk failures**. In Unraid, the second %%parity disk|parity-drives%% doesn't simply mirror the first. Instead:
+
+  - \*\*Parity 1：\*\*采用标准的XOR（偶）%%parity|parity%%计算。
+  - **Parity 2:** Utilizes a more complex algorithm (Galois field, rather than Reed-Solomon as in traditional %%RAID 6|raid6%%), allowing Unraid to rebuild from any two missing disks at the same time. This feature is significant for larger arrays, where the risk of multiple failures increases. Dual %%parity|parity%% significantly boosts resilience without the added overhead of mirrored redundancy.
+</details>
+
+:::caution\[Remember]
+
+设置新的数据存储系统时，首先添加您的数据盘，确保它们都使用兼容的文件系统。**在**放置好数据盘后，您可以添加%%parity disk|parity-drives%%以防止驱动器故障。
+
+一旦您的%%parity disk|parity-drives%%已添加，请记住，您想要包含在阵列中的任何新磁盘在整合之前必须先进行清理（零化）。这是为了确保%%parity|parity%%保持有效并继续保护您的数据。
+
+:::
+
+#### 升级奇偶校验磁盘
+
+您可以将%%parity disk|parity-drives%%设备升级到更大以便在阵列中使用更大尺寸的磁盘或添加额外的%%parity disk|parity-drives%%。
+
+:::caution
+如果您计划采取以下步骤且只有一个%%parity disk|parity-drives%%，请记住这些要点：
+
+- 在%%parity|parity%%重建完成之前，您的数据将没有保护。如果数据磁盘在此期间故障，您可能会丢失那块磁盘上的信息。
+- 如果您已有一个故障数据盘，遵循这些步骤将阻止您能够重建该盘。在这种情况下，应该遵循**Parity Swap**程序。
+:::
+
+要移除奇偶校验驱动器：
+
+1. **停止阵列：** 使用%%WebGUI|web-gui%%停止阵列。
+
+:::tip
+如果您的服务器支持热插拔，更换磁盘时不需要关机。您可以安全地跳过步骤2和步骤4。
+:::
+
+2. **关闭服务器：** 关闭服务器以安全地进行硬件更改。
+3. **安装新的%%parity disk|parity-drives%%：** 将新的、更大的%%parity disk|parity-drives%%放入您的服务器中。
+4. **启动服务器：** 重新打开服务器。
+5. **分配新磁盘：** 进入设置中的校验槽分配新磁盘，替换旧磁盘。
+6. **启动阵列：** 使用%%WebGUI|web-gui%%重新启动阵列。
+
+Once the array is back up, Unraid will start building %%parity|parity%% on the new disk. You can still access your data during this time, but keep in mind that it might be a bit slower until the process is done. Once the %%parity|parity%% build is complete, your data is protected again!
+
+:::important[Important 提示]
+- **保留旧磁盘：** 在新的%%parity|parity%%构建完成之前，不要移除旧的%%parity disk|parity-drives%%。如果在升级过程中数据磁盘出现故障，保留旧磁盘可能有助于您恢复数据。
+
+- \*\*双重校验用户：\*\*如果您有两个%%parity disks|parity-drives%%，请一次升级一个以增加安全性。
+
+- **旧磁盘的再利用：** 升级后，如果旧%%parity disk|parity-drives%%仍然能满足您的存储需求，您可以将其用作数据磁盘。
+:::
+
+---
+
+### 更换磁盘
+
+您可能会需要因以下两个主要原因来更换阵列中的磁盘：
+
+1. [**容量升级**](#upgrading-capacity)：您的存储空间接近满载，您希望使用更大的磁盘。
+2. [**故障或退役**](#replacing-faileddisabled-disks)：某个磁盘已故障或不再支持。
+
+虽然两种情况下更换磁盘的过程相似，但请注意，替换过程中存在数据丢失的风险。校验设备可以保护您的数据；一个校验设备可以防止单个磁盘故障导致的数据丢失，而两个设备可以在两个磁盘故障情况下保护数据。更换磁盘时，请始终了解您的保护级别。
+
+#### 升级容量
+
+在将数据驱动器升级为更大的驱动器时，请注意以下几点：
+
+- **不可挂载的磁盘：** 在升级之前修复任何不可挂载的磁盘。不可挂载状态在重建期间不会被解决。
+
+- **单个校验的风险：** 如果您只有单个校验，在升级期间如果另一个驱动器发生故障，您将面临数据丢失的风险。如果发生这种情况，请在论坛中寻求建议。
+
+- **双校验保护：** 通过双校验，如果在升级单个驱动器时一个驱动器出现故障，您可以放心，不会丢失数据。您还可以同时升级两个驱动器，但请注意这会增加风险，因为您将没有另一驱动器故障的保护。
+
+- **备份旧磁盘：** 在确认升级成功之前，保持原磁盘完好无损。这为出现任何问题时提供了回退选项。
+
+:::warning
+更换驱动器总是涉及到一定的风险。如果在升级期间另一块驱动器故障，特别是只有单一校验的情况下，您可能会丢失数据。在开始之前务必检查驱动器的健康状况，并确保在升级完成并确认数据安全之前保持旧驱动器完整无损。
+:::
+
+要升级现有数据磁盘：
+
+1. **Run a parity check:** First, ensure the integrity of your data by running a %%parity check|parity-check%%. Go to [***Tools → Parity Check***](#checking-array-devices) and make sure there are **zero errors**. If parity isn't valid, rebuilding the disk will corrupt its file system.
+
+2. **停止阵列：**接下来，您需要停止阵列。导航到***主菜单 → 阵列操作***并选择**停止**。
+
+3. **取消分配目标磁盘：** 一旦阵列停止，找到要替换的磁盘。将其从***主菜单 → 阵列设备***中的插槽中移除。
+
+4. **Start the array:** Now, start the array again. Unraid will emulate the missing disk using the existing parity and data disks. You have two modes to choose from:
+   - **维护模式：** 此模式可防止任何写入到%%emulated disk|emulated-disk%%。
+   - **正常模式：** 如果您需要对%%emulated disk|emulated-disk%%进行读/写访问，请选择此选项。
+
+:::note
+在此时以正常模式启动阵列是可选的。您可以用它来验证是否可以挂载模拟磁盘且数据看起来正确，然后继续，但这不是升级过程所必需的。
+:::
+
+5. **再次停止阵列：** 阵列现在应该显示未分配的磁盘已经失败。再次停止阵列。
+
+6. **分配替换的磁盘：** 将新的更大磁盘插入阵列中的空余插槽。
+
+7. **Start the array to rebuild:** Finally, start the array again. Unraid will now rebuild the contents of the %%emulated disk|emulated-disk%% onto the new disk. The file system will automatically adjust to take full advantage of the larger disk's capacity.
+
+#### 更换故障/禁用磁盘
+
+<details>
+  <summary><strong>什么是故障/禁用磁盘？</strong></summary>
+
+  A failed or disabled disk is one that Unraid has stopped using for writing data, usually because it encountered a write error. Keep in mind these don't always mean the drive itself is broken; sometimes, it might be due to bad connections, power issues, or just a temporary glitch.
+
+  一些指示包括：
+
+  <div class="text--center">
+    ![Red "X" indicates write error](/img/Diskfailureindicator.png)
+    <p class="caption-center">*This red "X" shows which disk needs replacement.*</p>
+  </div>
+
+  <br />
+
+  <div class="text--center">
+    ![Failure notification alert](/img/Diskfailurenotification.png)
+    <p class="caption-center">*Keep an eye out for these alerts.*</p>
+  </div>
+
+  <br />
+
+  <details>
+    <summary><strong>点击查看不同奇偶校验配置如何处理磁盘故障</strong></summary>
+
+    | 故障场景 | 无奇偶校验 | 单一奇偶校验 | 双重奇偶校验 |
+    | ---- | ----- | ------ | ------ |
+
+    \| **1磁盘故障** | 数据丢失 | 可重建 | 可重建 |
+    \| **2磁盘故障** | 数据丢失 | 数据丢失 | 可重建 |
+
+    :::tip[安全重建提示]
+    - **对于单个校验：** 您只能一次替换一个磁盘。如果在重建期间另一个磁盘出现故障，您可能会丢失数据。
+    - **对于双重校验：** 您可以同时替换一到两个磁盘，但如果超过两个磁盘出现故障，请谨慎处理。
+    :::
+
+    :::重要
+    如果您遇到了**超过校验保护能力的磁盘损坏:**
+
+    1. **立即停止所有写操作**以防止进一步的数据丢失。
+    2. 通过在[Unraid 论坛](https://forums.unraid.net/)发帖并附上诊断信息寻求帮助。
+    3. **在收到建议之前不要尝试重建** - 首先关注数据的抢救。
+       :::
+  </details>
+</details>
+
+<details>
+  <summary><strong>如何诊断问题</strong></summary>
+
+  要诊断问题，请从检查%%syslog|syslog%%和%%SMART报告|smart-report%%开始：
+
+  - 如果%%syslog|syslog%%显示磁盘已重置，可能是连接或电缆有问题。
+  - %%SMART报告|smart-report%%可以评估驱动器的健康状态，但最好通过运行%%SMART|smart%%扩展测试来检查。如果测试没有错误，则驱动器可能是正常的。
+  - If you see %%CRC errors|crc-errors%%, it usually points to issues with the cabling. Keep an eye on these errors, as they accumulate over time and don't reset.
+
+  :::tip
+  要了解驱动器问题，[启用通知](../../getting-started/set-up-unraid/customize-unraid-settings.mdx#notification-settings)在Unraid中。这样，一旦出现问题，您就会立即得到警报，从而降低数据风险。
+  :::
+</details>
+
+<details>
+  <summary><strong>什么是模拟？</strong></summary>
+
+  When a drive is disabled, Unraid will use its parity and other working drives to emulate the failed drive. This means your system continues to operate, and you can still access the data stored on the %%emulated drive|emulated-disk%%:
+
+  - Unraid 将停止写入物理磁盘，任何更新将会保存在校验和仿真中。
+  - 在更换故障驱动之前，您可以检查并从%%emulated drive|emulated-disk%%恢复数据，这将使物理磁盘保持完整以便潜在恢复。
+  - If you can't access the %%emulated drive|emulated-disk%%, repairing the file system is essential before any rebuild since fixing the file system is quicker and more effective than a rebuild.
+</details>
+
+<details>
+  <summary><strong>为磁盘更换做准备</strong></summary>
+
+  当您需要更换驱动器时，请确保新驱动器至少与故障驱动器一样大但不超过您的最小校验驱动器。如果必须使用更大的驱动器，请遵循**校验交换**程序。
+
+  虽然不是强制性的，许多用户选择预清理新驱动器以测试它们并帮助防止早期故障。您可以使用Preclear插件、%%SMART|smart%%延伸测试或制造商工具来执行此操作。
+
+  :::小心
+  如果您试图使用不可挂载的%%emulated drive|emulated-disk%%进行重建，新驱动器也将无法挂载。在尝试重建之前务必修复文件系统。
+  :::
+</details>
+
+If a disk in your Unraid system has failed or is disabled, don't worry! You can replace it and recover your data. Just follow these simple steps. Remember, you need a new disk that is the same size or larger than the one you're replacing, but it can't be larger than your smallest %%parity disk|parity-drives%%.
+
+:::important
+Before you start, make sure to check for any disk errors or warnings. Unraid must be able to read all the remaining disks without any issues for the rebuild to work correctly. If another disk is failing, it could lead to data loss.
+:::
+
+替换和重建磁盘：
+
+1. **停止阵列：**
+
+   - 登录 Unraid WebGUI（网页界面）。
+   - 找选项停止阵列，这是更换任何磁盘之前的必要步骤。
+
+:::tip
+如果您的服务器支持热插入，您可以跳过下一步，只需停止阵列。
+:::
+
+2. **关闭服务器电源**（仅在**不**使用热插拔时）：
+   - 如果您的服务器不支持热插拔，您需要完全关闭它。
+
+3. **更换故障磁盘：**
+   - 从服务器中移除旧的故障磁盘。
+   - Insert the new disk. Just remember, it has to be at least the same size as the old disk but no bigger than your smallest %%parity disk|parity-drives%%.
+
+4. **启动服务器**（如果您已将其关闭）：
+   - 如果您已关闭服务器，则重新打开它。
+
+5. **分配新磁盘：**
+   - 返回到 Unraid WebGUI。
+   - 找到故障磁盘的槽位，并将新磁盘分配到该槽位。
+
+6. **确认您的操作：**
+   - 勾选“是，我想这么做”的选项并确认。
+
+7. **（可选）选择%%维护模式|maintenance-mode%%：**
+   - 您可以选择%%维护模式|maintenance-mode%%，这可以加快重建过程。但是，在此期间您将无法访问阵列。
+   - 如果选择了%%维护模式|maintenance-mode%%，请确保点击**同步**以开始重建。
+
+8. **开始重建：**
+   - Click **Start** to begin the process. Unraid will copy your data from the %%emulated disk|emulated-disk%% to the new disk.
+   - 如果您的新磁盘更大，Unraid 将为您管理额外的空间。
+
+:::warning
+If Unraid prompts you to format the new disk during the rebuild, **do not do it**. Formatting will wipe all data and make recovery impossible.
+:::
+
+<h4>重建期间的期望</h4>
+
+- 在重建过程中（除非您处于 %%Maintenance Mode|维护模式%%），此阵列仍可用，但它可能会运行得更慢。
+- 重建可能需要几个小时，具体取决于您的磁盘大小和系统使用情况。
+- 新磁盘将具有与原始磁盘相同的文件系统。
+- 如果旧磁盘由于文件系统问题而无法挂载，新的磁盘也将无法挂载。请在开始重建之前修复任何文件系统问题。
+
+:::note[Additional 笔记]
+- 重建过程不会改变磁盘的文件格式；它只是恢复其先前的形式。
+- 在开始重建之前，始终检查每个磁盘的健康状况，以避免任何潜在问题。
+:::
+
+#### 校验交换
+
+```mdx-code-block
+
+<Tabs>
+  <TabItem value="what" label="What is parity swap?">
+    <ParitySwapWhat />
+  </TabItem>
+
+  <TabItem value="when" label="When to use parity swap?">
+    <ParitySwapWhen />
+  </TabItem>
+</Tabs>
+```
+
+<details>
+  <summary><strong>示例场景</strong></summary>
+
+  您有一个 Unraid 设置，其中有一个**2TB 校验盘**和一个**1TB 数据盘**，并希望将 1TB 磁盘换成**4TB 磁盘**。
+
+  首先，将新4TB驱动器分配为校验驱动器，以替换2TB驱动器。然后将原始的2TB驱动器移动到数据槽，并完全移除1TB驱动器。
+
+  经过这些更改后，您将拥有一个4TB驱动器作为新校验，以确保可以添加未来最大至4TB的数据驱动器。2TB驱动器将存储现有数据，而1TB驱动器可以重新分配用途。
+
+  这种交换保持您的数据安全并保护您的阵列，允许将来进行升级。
+</details>
+
+:::important\[Prerequisites]
+
+- Before starting, ensure the data drive you want to replace is disabled. If the drive has failed (shows a red indicator), it is already disabled. If the drive is healthy but you want to replace it, unassign the drive and start the array once without it to force Unraid to mark it as disabled.
+- 如果您的更换数据磁盘不大于您的校验盘，请使用标准的[更换数据磁盘](#replacing-faileddisabled-disks)程序。
+- This procedure is only needed for replacing data drives in an Unraid array with a disk larger than the current parity drive. If you only need to upgrade your parity drive, simply remove the old parity drive, add the new one, and start the array. Parity will rebuild automatically.
+
+:::
+
+:::warning\[Warnings]
+
+- Always verify the health of all drives using %%SMART reports|smart-report%% before starting a %%parity swap|parity-swap%%. Attempting this procedure with another failing or unhealthy disk increases the risk of data loss.
+- 如果可能，请预清理新磁盘。尽管不需要，但预清理可以对磁盘进行压力测试并减少早期失效的风险。
+- 正确识别所有磁盘，然后开始。记下每个磁盘的型号和序列号最后四位，以避免分配时的错误。
+
+:::
+
+执行奇偶校验交换：
+
+:::note
+如果要替换的驱动器已禁用（故障），您可能不需要执行步骤1–4。如果您已经安装了新的替换驱动器（例如，预清理后），您可以跳过步骤5–8。
+:::
+
+1. **停止阵列**，如果它正在运行。
+2. **卸载旧数据驱动器**，如果仍然分配。如果该磁盘之前正常，您可能会看到缺少磁盘的错误通知—这是预期的。
+3. **启动阵列。** 如果收到提示，勾选框确认操作。数据驱动器现在应显示为“未安装”。
+4. \*\*再次停止阵列。\*\*此时，阵列将磁盘视为已失效。
+5. **关闭服务器电源。**
+
+   :::tip
+   如果您的系统支持**热插拔**，您不需要断电即可拆装驱动器。只需在进行硬件更改前停止阵列。
+   :::
+
+:::
+
+6. *(Optional)* **Remove the old drive.** You may wish to keep it installed for testing or reassignment.
+7. **Install the new drive.** Pre-clearing is strongly recommended, but formatting is not needed.
+8. **Power on the server.**
+9. **Stop the array** if it started automatically. If you see a message about retrying to unmount disk shares, disable Docker and/or VM services in Settings, reboot, and try again.
+10. **Unassign the parity drive.**
+11. **Assign the new drive to the parity slot.** You may receive error notifications - this is normal.
+12. **Assign the old %%parity drive|parity-drives%% to the data slot** of the drive being replaced. Both the parity and replacement data drives should now display blue status indicators.
+13. **Go to *Main → Array Operation.*** You should see a **Copy** button and a message stating "Copy will copy the parity information to the new %%parity disk|parity-drives%%."
+14. **Confirm and start the copy process.** Check the confirmation box and click **Copy**. The array will not be available during this operation.
+
+- 复制过程可能需要很长时间，具体取决于磁盘大小。完成后，阵列将停止并准备进行数据重建。
+
+15. **启动阵列以开始数据重建。**
+    - 如有提示确认您的操作。现在阵列已启动，数据已重建到新的数据盘上。
+    - 您可以在重建期间使用阵列，但为获得最佳性能，请限制使用。
+    - 重建过程也将需要数小时。
+
+:::warning
+在该过程中永远不要格式化磁盘。格式化将擦除所有数据并更新校验，使恢复不可能。
+:::
+
+After completion, you will have a larger parity disk and a replaced data disk. Many users run a %%parity check|parity-check%% afterward for extra confidence, though this is optional.
+
+---
+
+### 移除磁盘
+
+There may come a time when you want to remove a disk from your Unraid array. Whether you're looking to save on power, retire an old or unreliable drive, or repurpose hardware for a different use, the process is fairly straightforward.
+
+#### 移除校验盘
+
+If you find that you no longer need the level of %%parity|parity%% protection in your setup, you can remove a %%parity disk|parity-drives%% whenever you want.
+
+To remove a %%parity drives|parity-drives%%:
+
+1. \*\*停止阵列：\*\*开始通过访问%%WebGUI|web-gui%%并停止阵列。
+2. **Unassign the %%parity drives|parity-drives%%:** Locate the %%parity drives|parity-drives%% slot and set it to "Unassigned."
+3. **Start the array:** Finally, restart the array to commit the changes and successfully remove the %%parity drives|parity-drives%% from the configuration.
+
+:::warning
+Before you make any changes, please keep this in mind: If you already have any failed data drives in your array, removing a %%parity disk|parity-drives%% can decrease the number of failures Unraid can handle without risking data loss.
+
+- 使用双重校验可以从单个失效驱动器中恢复，但请注意，在重建过程中，您将无法承受另一次故障。
+- 使用单校验，您将失去所有冗余，这意味着任何额外的驱动器故障都可能导致数据丢失。
+:::
+
+#### 移除数据磁盘
+
+Removing a data disk is a straightforward process, but it's important to remember that you'll need to perform a %%parity|parity%% sync afterwards. Until this sync is complete, there's a risk of data loss if another disk fails.
+
+您可以选择两种方法来移除数据磁盘：
+
+1. **标准方法** - 推荐大多数用户使用。
+2. **保留校验方法** - 适合希望在移除过程中保持校验的高级用户。
+
+```mdx-code-block
+
+<Tabs>
+  <TabItem value="standard" label="Standard method" default>
+    <RemoveDataDiskStandard />
+  </TabItem>
+
+  <TabItem value="parity-preserve" label="Parity-preserve method (Advanced)">
+    <RemoveDataDiskParityPreserve />
+  </TabItem>
+</Tabs>
+```
+
+---
+
+### 检查阵列设备
+
+Regularly checking your Unraid array is crucial for maintaining data integrity and identifying potential issues before they result in data loss. You can initiate a check using the **Check** button under ***Array Operations***. Depending on your array's configuration, this button allows you to conduct either a %%parity check|parity-check%% or a %%read check|read-check%%.
+
+<div style={{ margin: 'auto', maxWidth: '400px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+  ![检查按钮可让您进行校验和读取检查](/img/Check_button.PNG)
+</div>
+
+为方便起见，您可以通过导航至***设置→计划程序***按适合您的间隔自动安排这些检查。建议每月或每季度执行自动、非校正检查，以确保数据的持续健康。
+
+#### 奇偶校验 & 读取检查
+
+```mdx-code-block
+
+<Tabs>
+  <TabItem value="parity-check" label="Parity checks" default>
+    <ArrayCheckParity />
+  </TabItem>
+
+  <TabItem value="read-check" label="Read checks">
+    <ArrayCheckRead />
+  </TabItem>
+</Tabs>
+```
+
+#### 检查历史
+
+Whenever the system performs a %%parity check|parity-check%% or a %%read check|read-check%%, it keeps a record of what happened. You can view these details easily by clicking the **History** button found under ***Array Operations*** in the interface.
+
+For those who want to dive deeper, all these records are saved in a text file located in the `config` directory on your Unraid USB flash device.
+
+---
+
+### 磁盘升降速操作
+
+Unraid allows you to control the power states of your hard drives. You can easily %%spin them up or down|spin-state%%, and manage SSDs to be active or in standby. This helps save energy, extend the life of your drives, and reduce noise when the disks are not being used.
+
+<h4>为什么要启动或停止？</h4>
+
+- \*\*停止（Spin down）：\*\*如果您有不常用的驱动器，停止它们可以节省能源并延长寿命。
+- \*\*启动（Spin up）：\*\*如果您知道很快将需要文件，提前启动磁盘可以减少等待时间。
+
+<h4>如何控制启动状态</h4>
+
+您可以通过%%WebGUI|web-gui%%的**主**选项卡来控制磁盘的旋转状态：
+
+1. **转到主标签**并找到您的阵列设备。
+2. **找到启动控制按钮**-每个磁盘会显示：
+   - 点击🔘按钮以 **启动** 如果磁盘当前处于停止状态
+   - 点击🟢按钮以 **停止** 如果磁盘当前正在旋转
+3. **点击合适的按钮**进行您所需的操作：
+   - 点击 **停止** 🟢 以关闭空闲磁盘并节省能源
+   - 点击 **启动** 🔘 以启动当前处于停止状态的磁盘
+
+请记住，如果磁盘被访问（例如打开文件），它将保持活动并忽略任何停止请求。
+
+当磁盘不转时，其温度将不会在%%WebGUI|web-gui%%中显示。然而，一旦任何应用程序或用户访问它，它将自动开始转动。
+
+:::tip
+使用旋转控制来节省电力并减少对驱动器的损耗。请记住，正在被使用的磁盘将保持开启状态，直到所有任务完成。
+:::
+
+---
+
+### 重置阵列配置
+
+重置阵列配置是一个需要谨慎对待的重要步骤。此过程通常在移除磁盘、以新阵列布局重头开始或修复磁盘分配问题时是必要的。请注意，此操作可能会影响数据保护和校验，因此请确保只有在确有必要时才继续进行。
+
+重置阵列的常见原因包括：
+
+- \*\*删除或替换磁盘：\*\*如果您需要移除或更换阵列中的任何磁盘。
+- \*\*重新开始：\*\*当您希望为阵列创建全新的布局时。
+- \*\*修复磁盘分配错误：\*\*解决当前磁盘分配的任何问题。
+- \*\*从配置问题中恢复：\*\*面临现有设置挑战时。
+
+<div style={{ margin: 'auto', maxWidth: '650px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+  ![重置磁盘配置可以通过新配置页面完成](/img/Newconfig.png)
+</div>
+
+要重置阵列配置：
+
+1. 转到**工具**页面并点击**新配置**。
+2. 如果您只希望进行一些小的调整，可以保留一些现有的磁盘分配。这可以节省时间并将错误的几率减小。
+3. 通过勾选框确认您的选择，然后点击**应用**。
+4. 应用更改后，您的配置将被重置。
+5. 通过适当地分配或取消分配磁盘做出任何必要的配置更改。
+6. 启动阵列于正常或维护模式以完成更新。
+
+:::important
+- **Data preservation:** Unraid will attempt to recognize previously used drives and preserve data where possible.
+- \*\*对校验的影响：\*\*移除数据驱动器将始终使校验无效，除非在移除之前清零该驱动器。
+- \*\*磁盘重新排序：\*\*更改磁盘顺序不会影响校验1，但*可能*使校验2失效。
+:::
+
+:::caution
+When you see the **Start** button, there is a checkbox labeled **Parity is Valid**. Only check this box if you are certain it is correct or if an experienced Unraid user has advised you to do so during recovery. Incorrectly checking this option can lead to data loss.
+
+Do not use **New Config** if your goal is to rebuild a disk. Performing a New Config clears the array history required for a rebuild, and Unraid will not offer to rebuild the disk afterward. Follow the disk rebuild procedure instead.
+:::
+
+#### 撤销重置
+
+如果您需要撤销重置：
+
+1. 通过网络 (SMB) 访问您的闪存设备。
+2. 找到并打开 `config` 文件夹。
+3. 将文件 `super.old` 重命名为 `super.dat`。
+4. 重启您的服务器，之前的阵列配置应得到恢复。
+
+---
+
+### 状态报告
+
+Unraid provides status reports that help you keep track of the health of your storage array. These reports are a quick way to check if any of your disks are disabled or having issues with reading or writing data.
+
+- \*\*当前状态：\*\*状态报告显示您的阵列当前情况。重要的是要注意，这些信息在系统重新启动后将被重置，因此不会保留过去的历史问题。
+
+- \*\*无历史数据：\*\*如果您想查看重启前发生了什么，您需要去其它地方查看，因为这些报告不保存过去的状态。
+
+:::important
+请记住，状态报告不包括%%SMART|smart%%数据。%%SMART报告|smart-report%%为您提供了单个磁盘健康的更详细视图。因此，即使您的状态报告显示一切正常，定期检查%%SMART报告|smart-report%%以尽早发现任何潜在问题仍然是个好主意。
+:::
+
+---
+
+## 阵列写入模式
+
+Unraid provides various write modes for managing array operations, each with its own pros and cons regarding speed, power consumption, and drive wear. Knowing how these modes work, along with the role of a cache drive or pool, can help you fine-tune your server to best suit your needs.
+
+**写入模式概览**
+
+| 写入模式            | 速度（典型）                                  | 能耗 | 何时驱动器启动   | 数据保护    | 最佳使用场景                                                                |
+| --------------- | --------------------------------------- | -- | --------- | ------- | --------------------------------------------------------------------- |
+| 读/修改/写          | 20–40 MB/s                              | 低  | 仅校验和目标驱动器 | 可以      | 大多数工作负载，节能，小写入                                                        |
+| Turbo Write（重建） | 40–120 MB/s                             | 高  | 所有驱动器     | 可以      | Large file transfers, array rebuilds, %%parity checks\|parity-check%% |
+| 缓存写入（SSD/NVMe）  | 50–110 MB/s (SSD)，250–900 MB/s (NVMe)\* | 变化 | 仅缓存驱动器    | 否（直到移动） | 应用，虚拟机，频繁写入，最大化速度                                                     |
+
+<h3>读取/修改/写入</h3>
+
+<details>
+  <summary>点击展开/折叠</summary>
+
+  <h4>它是如何工作的</h4>
+  该模式读取现有数据和校验，计算新的校验，然后写入更新的数据。只有%%parity drive|parity-drives%%和目标数据驱动器与之旋转，从而降低了功耗和驱动器磨损。然而，由于额外的读/写循环，可能会较慢。
+
+  <h4>使用时机</h4>
+
+  - 随时，尤其是当您想节省能源并让空闲驱动器停止时。
+  - 非常适合小型或不频繁的写入。
+</details>
+
+<h3>Turbo Write（重建写入）</h3>
+
+<details>
+  <summary>点击展开/折叠</summary>
+
+  Turbo write, also known as reconstruct write, is a feature designed to boost the writing speed of your Unraid array. It works by reading all data drives and updating the parity simultaneously. This process eliminates the delays caused by waiting for the platters to rotate, as seen in the default write mode. However, it's important to note that all array drives need to be spinning and functioning properly for this to work effectively.
+
+  <h4>原理</h4>
+
+  - 当您写入新数据时，Unraid 会读取所有其他数据驱动器并同时重新计算校验。新数据和更新的校验会同时写入。
+  - 阵列中的所有驱动器都必须是操作正常并积极旋转的。
+  - 这一方法大大提高了写入速度，与默认写入模式相比。
+
+  <h4>什么时候使用Turbo Write</h4>
+
+  - 在将大文件传输到阵列时使用Turbo write。
+  - 在数组重建或%%parity checks|parity-check%%期间很有效，因为所有驱动器都会旋转。
+  - 当减少写入时间是优先考虑的并且可以确认所有驱动器健康时，此模式非常有用。
+
+  <h4>什么时候避免使用Turbo Write</h4>
+
+  - 如果你希望驱动器在空闲时间停止以节省能量，避免使用此模式。
+  - Turbo写入不适合小型或不频繁的写入操作，因为它会导致每次写入时所有驱动器旋转，增加了功耗和驱动磨损。
+  - 如果你怀疑任何驱动器发生故障或不可靠，最好避开turbo write，因为它依赖于每个驱动器正常运行。
+
+  :::信息
+  Turbo写入最适合大宗操作和需要高吞吐量的场景。然而，如果您关注节能和最小化驱动器磨损，它可能不是日常任务的最佳选择。
+  :::
+</details>
+
+<h3>缓存写入</h3>
+
+<details>
+  <summary>点击展开/折叠</summary>
+
+  <h4>原理</h4>
+
+  数据首先写入快速SSD或NVMe %%cache|cache%%，然后通过称为%%Mover|mover%%的过程移动到主阵列。速度可变：
+
+  - SSD：50–110 MB/s
+  - NVMe：250–900 MB/s（可以利用10GbE网络）
+
+  一旦数据被移动到阵列，其受到校检保护。
+
+  <h4>使用缓存写入的时机</h4>
+
+  - 对于应用、虚拟机或下载等频繁写入的共享。
+  - 提升性能并减少任何感知的写入延迟。
+
+  <h4>性能预期</h4>
+
+  - 没有缓存驱动：平均20–30 MB/s，峰值达40 MB/s。
+  - 使用SSD缓存：50–110 MB/s。
+  - 使用NVMe缓存：250–900 MB/s，取决于网络或驱动限制。
+
+  :::tip
+  在%%Mover|mover%%运行之前，请考虑使用缓存池（多个设备）以增加冗余和数据保护。
+  :::
+</details>
+
+:::info[Automated 解决方案]
+- **自动**模式（未来功能）将仅在所有驱动器已旋转时启用turbo写入。
+- 社区插件（在应用标签中搜索“Turbo Write”）可能提供增强的自动化或调度选项。
+:::
+
+更改写入模式：
+
+1. 导航到 ***设置→磁盘设置***。
+2. 定位 **可调项（md\_写入\_方法）**。
+3. 选择您喜欢的模式：
+   - **读/修改/写** (默认)
+   - **重建写入** (Turbo Write)
+   - **自动** (未来功能)
+4. 点击**应用**以确认您的选择。
+
+:::important[Quick 回顾]
+- 当你需要速度时使用 **Turbo Write**，但要注意增加的功耗和驱动启动。
+- 使用 **缓存写入**以获得最佳性能，特别是在使用SSD或NVMe驱动器时。
+- 对于大多数用户，默认写入模式提供了最佳平衡，除非你特别需要更高的速度。
+:::
+
+---
+
+## 读取模式
+
+When using Unraid, the speed at which you can read files is mainly determined by the individual drive that holds each file. Unlike traditional %%RAID|raid%% systems, which combine multiple drives to improve performance, Unraid stores each file on a single disk. This means read speeds won't be boosted by the combined speeds of multiple drives.
+
+<h3>性能期望</h3>
+
+- **典型单个HDD：** 70–250 MB/s（取决于驱动型号、年龄和数据位置）
+- **典型SATA SSD：** 400–550 MB/s
+- **NVMe SSD（在池中）：** 250–7,000 MB/s（受PCIe代和网络/PCIe限制影响；例如，10GbE网络限制约1,100 MB/s）
+
+:::note[Special 案例]
+- If a disk is disabled and its data is being reconstructed, Unraid will use the remaining drives along with parity information to recreate the data. During this process, the read speed may slow down to 30–60 MB/s or even lower, depending on the slowest drive in your system.
+- Any ongoing operations in the array, such as a %%parity check|parity-check%% or rebuilding a drive, can also affect read performance. This is due to increased movement of the drive heads and overall contention for resources.
+:::
+
+---
+
+## 缓存池
+
+%%Cache pools|cache-pool%% in Unraid provide significant advantages, particularly for write-heavy tasks, virtual machines (VMs), and Docker containers. These pools operate separately from the main array and can be set up with multiple drives using either the %%BTRFS|btrfs%% or %%ZFS|zfs%% file system, supporting various %%RAID|raid%% configurations for speed and data protection.
+
+<h3>缓存池与主阵列对比</h3>
+
+| 功能        | 缓存池 （BTRFS）                                                                            | 缓存池 （ZFS）                                                                                                                | 主阵列（Unraid）            |
+| --------- | -------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ | ---------------------- |
+| **读取速度**  | SSD：400–550 MB/s，NVMe：250–7,000 MB/s\*                                                 | SSD：400–550 MB/s，NVMe：250–7,000 MB/s\*                                                                                   | HDD：70–250 MB/s（每个磁盘）  |
+| **写入速度**  | SSD：400–550 MB/s，NVMe：250–7,000 MB/s\*                                                 | SSD：400–550 MB/s，NVMe：250–7,000 MB/s\*                                                                                   | 20–120 MB/s（取决于奇偶校验模式） |
+| **数据保护**  | %%RAID 1\|raid1%%/%%RAID 10\|raid10%%；%%RAID 5\|raid5%%/%%RAID 6\|raid6%%（实验性，不适合关键数据） | %%RAID 1\|raid1%%/%%RAID 10\|raid10%%；%%RAIDZ1\|raidz1%%/%%RAIDZ2\|raidz2%%/%%RAIDZ3\|raidz3%% （稳定，适合生产）                 | 基于奇偶校验，文件系统无关          |
+| **扩展**    | 混合驱动器尺寸；动态添加/删除设备                                                                      | Limited add/remove device support; cannot remove from RAIDZ; single-device add to expand single-vdev RAIDZ in Unraid 7.2 | 添加驱动器，但无条带化或性能扩展       |
+| **恢复复杂性** | 数据丢失风险较高；需要%%BTRFS\|btrfs%%工具                                                          | 数据丢失风险更高；需要%%ZFS\|zfs%%工具                                                                                                | 更易基于奇偶校验的重建            |
+| **最佳用途**  | 应用程序、VMs、频繁写入                                                                          | 应用程序、VMs、频繁写入、企业工作负载                                                                                                     | 批量存储、媒体库               |
+
+\*实际NVMe速度取决于PCIe代、散热和网络带宽（例如10GbE上限约为\~1,100 MB/s）。\*
+
+<h4>缓存池的优点</h4>
+
+- \*\*更高性能：\*\*NVMe池可以饱和10GbE/40GbE网络（1,100–3,500 MB/s）。
+- **灵活的RAID：** %%BTRFS|btrfs%% 和 %%ZFS|zfs%%均支持%%RAID 1|raid1%%/%%RAID 10|raid10%%，以实现冗余而无需匹配驱动器大小。
+- \*\*低延迟：\*\*非常适合数据库、VMs和Docker容器。
+- **ZFS优势：**%%ZFS|zfs%%提供企业级功能，如数据完整性检查、压缩和快照。
+
+<h4>缓存池的缺点</h4>
+
+- \*\*无奇偶校验保护：\*\*在移动到数组之前，数据未受保护。
+- **恢复风险：** %%BTRFS|btrfs%% %%RAID 5|raid5%%/%%RAID 6|raid6%%不稳定；单驱动器池缺乏冗余。
+- **ZFS考虑因素：**%%ZFS|zfs%%需要更多的RAM，并且硬件要求比%%BTRFS|btrfs%%更严格。
+
+For more detailed information about %%cache pools|cache-pool%%, including how to set them up, manage them, and advanced features, check the [Cache pools](./cache-pools.mdx) page.
+
+---
+
+## 故障排除
+
+### 故障排除数组启动失败
+
+如果您的阵列无法启动，请按照以下步骤识别和修复常见问题。在***主菜单 → 阵列操作***下查找错误消息。
+
+```mdx-code-block
+
+<Tabs>
+  <TabItem value="missing-disks" label="Missing disks" default>
+    <TroubleshootMissingDisks />
+  </TabItem>
+
+  <TabItem value="device-limit" label="Device limit">
+    <TroubleshootDeviceLimit />
+  </TabItem>
+
+  <TabItem value="key-issues" label="License issues">
+    <TroubleshootLicenseIssues />
+  </TabItem>
+
+  <TabItem value="key-server" label="Key server connection">
+    <TroubleshootKeyServer />
+  </TabItem>
+
+  <TabItem value="withdrawn" label="Withdrawn release">
+    <TroubleshootWithdrawnRelease />
+  </TabItem>
+</Tabs>
+```
+
+### 重建期间的磁盘故障
+
+如果在重建另一个磁盘时发生第二个磁盘故障，您能做的将取决于您的奇偶校验设置。
+
+<h4>Single %%parity disk|parity-drives%%</h4>
+
+如果在重建另一个磁盘时一个磁盘故障，重建将停止，因为数据无法准确恢复。
+
+<h4>Dual %%parity disk|parity-drives%%</h4>
+
+If you have two %%parity drives|parity-drives%%, you have more options:
+
+- 您可以等待第一个重建完成，然后再处理第二个故障磁盘。
+- 或者，您可以停止当前重建，替换第二个故障磁盘，然后启动阵列以同时重建两个磁盘。
+
+如果第一次重建快要完成，通常最好让它完成。如果刚开始，重建两个可能会更快。
+
+:::warning
+重建磁盘会给所有驱动器带来很大压力，从而增加新故障的概率。在开始重建前，请使用%%SMART报告|smart-report%%检查磁盘健康。
+:::
+
+:::info[Rebuild 时间]
+要准备好重建过程可能需要几个小时。时间可能因磁盘大小和系统忙碌程度而异。较大的磁盘和繁忙的系统可能需要更长时间。
+:::

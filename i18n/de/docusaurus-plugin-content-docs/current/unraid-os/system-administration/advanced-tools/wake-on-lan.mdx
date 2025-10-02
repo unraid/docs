@@ -1,0 +1,109 @@
+---
+sidebar_position: 2
+sidebar_label: Wake-on-LAN (WoL)
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import WakeOnLanWindows from './partials/wake-on-lan/windows.mdx';
+import WakeOnLanMacos from './partials/wake-on-lan/macos.mdx';
+import WakeOnLanLinux from './partials/wake-on-lan/linux.mdx';
+
+# Wake-on-LAN (WoL)
+
+%%Wake-on-LAN (WOL)|wake-on-lan%% ermöglicht es Ihnen, Ihren Unraid-Server aus einem Herunter- oder Schlafmodus aus der Ferne zu wecken, indem Sie ein "magisches Paket" über das Netzwerk senden. Diese Seite hilft Ihnen dabei, WoL für Ihr lokales Netzwerk einzurichten.
+
+## Anforderungen
+
+Damit WoL ordnungsgemäß funktioniert, stellen Sie sicher, dass Sie die folgenden Anforderungen erfüllen:
+
+- **NIC-Unterstützung**: Ihr Netzwerk-Interface-Controller sollte WoL unterstützen; die meisten modernen NICs tun dies.
+
+- **BIOS/UEFI-Einstellungen**: Aktivieren Sie WoL im BIOS/%%UEFI|uefi%% Ihres Motherboards unter Energiemanagement. Hier sind einige gängige Einstellungennamen:
+
+  | Einstellungsname                  | Beschreibung                                      |
+  | --------------------------------- | ------------------------------------------------- |
+  | Wake on LAN                       | Generische WoL-Einstellung                        |
+  | PME-Ereignisaufweckung            | Für PCIe-Weckereignisse                           |
+  | Einschalten durch PCI/PCIe-Geräte | Alternativer Name für WoL                         |
+  | ErP bereit                        | Muss *deaktiviert* werden, damit WoL funktioniert |
+
+- **Stromanschluss**: Stellen Sie sicher, dass Ihr Server an eine Stromquelle angeschlossen ist.
+
+- **Netzwerkverbindung**: Verbinden Sie Ihren Server mit Ihrem LAN über ein Ethernet-Kabel (WiFi WoL wird nicht unterstützt).
+
+:::caution[Hardware kompatibilität]
+Nicht alle Hardware unterstützt den S3-Schlaf oder WoL zuverlässig. Einige Systeme können beim Einschlafen Probleme haben, nicht korrekt aufwachen oder erfordern zusätzliche BIOS/%%UEFI|uefi%%-Einstellungen. Testen Sie diese Funktionen immer gründlich, bevor Sie sich darauf verlassen.
+:::
+
+## Einen Unraid-Server in den Schlaf versetzen
+
+Der bevorzugte und benutzerfreundliche Weg, den Schlafmodus auf Unraid zu verwalten, ist die Verwendung des [**Dynamix S3 Sleep-Plugins**](https://unraid.net/community/apps/c/plugins/p3?srsltid=AfmBOorpfP2Psw_bCorklf-QVCUHvADYGsdbsAH-4CldU4V2hWgoO-09#r:~:text=%3E%3E-,Dynamix%20S3%20Sleep,-Dynamix%20Repository). Dieses Plugin bietet eine grafische Oberfläche, um den Schlaf-, Weck- und Leerlaufverhalten zu planen, und adressiert gleichzeitig gängige Probleme, die bei verschiedenen Hardwarekonfigurationen auftreten können.
+
+Zum Installieren und Konfigurieren:
+
+1. Öffnen Sie die ***Apps-Schaltfläche*** im Unraid %%WebGUI|web-gui%%.
+2. Suchen Sie nach "Dynamix S3 Sleep" und installieren Sie das Plugin.
+3. Navigieren Sie zu ***Einstellungen → Schlaf-Einstellungen***, um Ihre Schlaf- und Weckoptionen einzurichten.
+
+Das Plugin verwaltet die meisten Schlafkonfigurationsoptionen.
+
+<details>
+  <summary><strong>Alternative manuelle Methode</strong> - Klicken zum Erweitern/Einklappen</summary>
+
+  Wenn Sie mehr Kontrolle wünschen oder erweiterte Anpassungen benötigen, können Sie die Schlaf- und WoL-Einstellungen über die Befehlszeile konfigurieren. Diese Methode wird für fortgeschrittene Benutzer empfohlen.
+
+  So konfigurieren Sie den Schlafmodus manuell:
+
+  1. Verbinden Sie sich mit Ihrem Server über das %%WebGUI|web-gui%% Terminal oder [%%SSH|ssh%%](../../system-administration/advanced-tools/command-line-interface.mdx#accessing-the-terminal).
+
+  2. Identifizieren Sie Ihr primäres Netzwerk-Interface (normalerweise `eth0`) durch Ausführen des folgenden Befehls:
+
+     ```
+     ifconfig
+     ```
+
+     Notieren Sie die MAC-Adresse (beschriftet als `ether`).
+
+  3. Aktivieren Sie WoL auf dem Interface mit diesem Befehl:
+
+     ```
+     ethtool -s eth0 wol g
+     ```
+
+  4. Setzen Sie den Server in den Schlafmodus mit diesem Befehl:
+
+     ```
+     echo -n mem > /sys/power/state
+     ```
+
+  :::caution[Beständigkeit]
+  Manuell konfigurierte WoL-Einstellungen sind **standardmäßig nicht beständig** über Neustarts hinweg. Um sie dauerhaft zu machen:
+
+  1. Erstellen Sie eine `go`-Datei auf Ihrem Flash-Laufwerk unter `/boot/config/go`.
+
+  2. Fügen Sie diese Zeile hinzu:
+
+  ```
+  /sbin/ethtool -s eth0 wol g
+  ```
+  :::
+</details>
+
+## Wecken Sie Ihren Unraid-Server
+
+Um Ihren Unraid-Server aus der Ferne zu wecken, müssen Sie ein spezielles "magisches Paket" über Ihr lokales Netzwerk senden. Dieses Paket enthält die MAC-Adresse Ihres Servers und weist die Netzwerkschnittstelle an, das System aus einem Schlaf- oder Heruntergefahrenmodus einzuschalten. Verschiedene Betriebssysteme bieten verschiedene Tools und Methoden zum Senden dieses Pakets. Nachfolgend finden Sie spezifische Anweisungen für Windows, macOS und Linux.
+
+<Tabs>
+  <TabItem value="Windows" label="Windows">
+    <WakeOnLanWindows />
+  </TabItem>
+
+  <TabItem value="macOS" label="macOS">
+    <WakeOnLanMacos />
+  </TabItem>
+
+  <TabItem value="Linux" label="Linux">
+    <WakeOnLanLinux />
+  </TabItem>
+</Tabs>

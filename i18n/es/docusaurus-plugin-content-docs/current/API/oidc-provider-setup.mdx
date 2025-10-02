@@ -1,0 +1,415 @@
+---
+title: Configuración del proveedor OIDC
+description: Configurar proveedores OIDC (OpenID Connect) para la autenticación SSO en la API de Unraid
+sidebar_position: 3
+---
+
+# Configuración del proveedor OIDC
+
+:::info[What ¿Qué es OIDC?]
+OpenID Connect (OIDC) es un protocolo de autenticación que permite a los usuarios iniciar sesión usando sus cuentas existentes de proveedores como Google, Microsoft, o su proveedor de identidad corporativa. Facilita el inicio de sesión único (SSO) para una autenticación fluida y segura.
+:::
+
+Esta guía le guía a través de la configuración de proveedores OIDC (OpenID Connect) para la autenticación SSO en la API de Unraid utilizando la interfaz web.
+
+## 🚀 Inicio Rápido
+
+<details open>
+  <summary><strong>Navegando a la Configuración de OIDC</strong></summary>
+
+  1. Navega a la interfaz web de tu servidor Unraid
+  2. Ve a **Configuración** → **Acceso de Gestión** → **API** → **OIDC**
+  3. Verás pestañas para diferentes proveedores - haz clic en el botón **+** para añadir un nuevo proveedor
+</details>
+
+### Descripción general de la Interfaz de Proveedores OIDC
+
+![Página de inicio de sesión con opciones SSO](/img/api/sso-with-options.png)
+*Página de inicio de sesión mostrando el formulario de inicio de sesión tradicional con opciones SSO - botones "Iniciar sesión con Unraid.net" e "Iniciar sesión con Google"*
+
+La interfaz incluye:
+
+- **Pestañas de proveedor**: Cada proveedor configurado (Unraid.net, Google, etc.) aparece como una pestaña
+- **Botón Añadir Proveedor**: Haz clic en el botón **+** para añadir nuevos proveedores
+- **Desplegable de Modo de Autorización**: Alternar entre modos "simple" y "avanzado"
+- **Sección de Autorización Simple**: Configura dominios de correo permitidos y direcciones específicas
+- **Botones Añadir Elemento**: Haz clic para añadir múltiples reglas de autorización
+
+## Entendiendo los Modos de Autorización
+
+La interfaz ofrece dos modos de autorización:
+
+### Modo Simple (Recomendado)
+
+El modo sencillo es la forma más fácil de configurar la autorización. Puedes:
+
+- Permitir dominios de correo específicos (por ejemplo, @empresa.com)
+- Permitir direcciones de correo específicas
+- Configurar quién puede acceder a tu servidor Unraid con una configuración mínima
+
+**Cuándo usar el Modo Simple:**
+
+- Deseas permitir a todos los usuarios de tu dominio corporativo
+- Tienes una lista pequeña de usuarios específicos
+- Eres nuevo en la configuración de OIDC
+
+<details>
+  <summary><strong>Modo Avanzado</strong></summary>
+
+  El modo avanzado ofrece un control granular utilizando reglas basadas en claims. Usted puede:
+
+  - Crear reglas de autorización complejas basadas en claims de JWT
+  - Usar operadores como equals, contains, endsWith, startsWith
+  - Combinar múltiples condiciones con lógica OR/AND
+  - Elegir si CUALQUIER regla debe pasar (modo OR) o TODAS las reglas deben pasar (modo AND)
+
+  **Cuándo usar el Modo Avanzado:**
+
+  - Necesitas verificar membresías de grupos
+  - Deseas verificar múltiples claims (por ejemplo, dominio de correo Y estado verificado)
+  - Tienes requisitos de autorización complejos
+  - Necesitas un control detallado sobre cómo se evalúan las reglas
+</details>
+
+## Reglas de Autorización
+
+![Configuración de Reglas de Autorización](/img/api/advanced-rules.png)
+*Reglas avanzadas de autorización mostrando configuración de claims de JWT con operador de endsWith para control de acceso basado en dominio*
+
+### Ejemplos de Modo Simple
+
+#### Permitir Dominio Corporativo
+
+En Autorización Simple:
+
+- **Dominios de Correo Permitidos**: Ingresar `empresa.com`
+- Esto permite a cualquier persona con correo @empresa.com
+
+#### Permitir Usuarios Específicos
+
+- **Direcciones de Correo Específicas**: Añadir correos individuales
+- Haz clic en **Añadir Elemento** para añadir múltiples direcciones
+
+<details>
+  <summary><strong>Ejemplos de Modo Avanzado</strong></summary>
+
+  #### Modo de Reglas de Autorización
+
+  Al usar múltiples reglas, puedes elegir cómo son evaluadas:
+
+  - **Modo OR** (predeterminado): El usuario está autorizado si CUALQUIER regla pasa
+  - **Modo AND**: El usuario está autorizado solo si TODAS las reglas pasan
+
+  #### Correo de Dominio con Verificación (Modo AND)
+
+  Para requerir tanto el dominio del correo como la verificación:
+
+  1. Configura **Modo de Reglas de Autorización** a `AND`
+  2. Añadir dos reglas:
+     - Regla 1:
+       - **Claim**: `email`
+       - **Operador**: `endsWith`
+       - **Valor**: `@empresa.com`
+     - Regla 2:
+       - **Claim**: `email_verified`
+       - **Operador**: `equals`
+       - **Valor**: `true`
+
+  Esto asegura que los usuarios deben tener tanto un correo de la empresa COMO una dirección de correo verificada.
+
+  #### Acceso Basado en Grupos (Modo OR)
+
+  Para permitir el acceso a múltiples grupos:
+
+  1. Configura **Modo de Reglas de Autorización** a `OR` (predeterminado)
+  2. Agrega reglas para cada grupo:
+     - **Claim**: `groups`
+     - **Operador**: `contains`
+     - **Valor**: `admins`
+       O añada otra regla:
+     - **Claim**: `groups`
+     - **Operador**: `contains`
+     - **Valor**: `developers`
+
+  Los usuarios en el grupo `admins` O `developers` serán autorizados.
+
+  #### Múltiples Dominios
+
+  - **Claim**: `email`
+  - **Operador**: `endsWith`
+  - **Valores**: Añadir múltiples dominios (por ejemplo, `empresa.com`, `filial.com`)
+
+  #### Autorización Compleja (Modo AND)
+
+  Para seguridad estricta que requiere múltiples condiciones:
+
+  1. Configura **Modo de Reglas de Autorización** a `AND`
+  2. Añadir múltiples reglas que TODAS deben pasar:
+     - El correo debe ser del dominio de la empresa
+     - El correo debe estar verificado
+     - El usuario debe estar en un grupo específico
+     - La cuenta debe tener 2FA habilitado (si el claim está disponible)
+</details>
+
+<details>
+  <summary><strong>Detalles de la Interfaz de Configuración</strong></summary>
+
+  ### Pestañas de Proveedores
+
+  - Cada proveedor configurado aparece como una pestaña en la parte superior
+  - Haz clic en una pestaña para cambiar entre configuraciones de proveedores
+  - El botón **+** a la derecha añade un nuevo proveedor
+
+  ### Desplegable de Modo de Autorización
+
+  - **simple**: Mejor para la autorización basada en correo (recomendado para la mayoría de los usuarios)
+  - **avanzado**: Para reglas complejas basadas en claims utilizando claims de JWT
+
+  ### Campos de Autorización Simple
+
+  Cuando el modo "simple" está seleccionado, verás:
+
+  - **Dominios de Correo Permitidos**: Ingresa dominios sin @ (por ejemplo, `empresa.com`)
+    - Texto de ayuda: "Usuarios con correos que terminan en estos dominios pueden iniciar sesión"
+  - **Direcciones de Correo Específicas**: Añadir direcciones de correo individuales
+    - Texto de ayuda: "Solo estas direcciones de correo exactas pueden iniciar sesión"
+  - Botones **Añadir Elemento** para añadir múltiples entradas
+
+  ### Campos de Autorización Avanzada
+
+  Cuando el modo "avanzado" está seleccionado, verás:
+
+  - **Modo de Reglas de Autorización**: Elige `OR` (cualquier regla pasa) o `AND` (todas las reglas deben pasar)
+  - **Reglas de Autorización**: Añadir múltiples reglas basadas en claims
+  - **Para cada regla**:
+    - **Claim**: El claim de JWT a verificar
+    - **Operador**: Cómo comparar (equals, contains, endsWith, startsWith)
+    - **Valor**: Qué coincidir
+
+  ### Elementos Adicionales de la Interfaz
+
+  - **Habilitar Sandbox de Desarrollador**: Toggle para habilitar el sandbox de GraphQL en `/graphql`
+  - La interfaz utiliza un tema oscuro para mejor visibilidad
+  - Los indicadores de validación de campos ayudan a garantizar una configuración correcta
+</details>
+
+### URI de Redirección Requerida
+
+:::caution[Important Configuración]
+Todos los proveedores deben configurarse con este formato exacto de URI de redirección:
+:::
+
+```bash
+http://YOUR_UNRAID_IP/graphql/api/auth/oidc/callback
+```
+
+:::tip
+Reemplaza `TU_IP_UNRAID` con la dirección IP actual de tu servidor (por ejemplo, `192.168.1.100` o `tower.local`).
+:::
+
+### Formato de URL del Emisor
+
+El campo **URL del Emisor** acepta ambos formatos, pero **se recomienda encarecidamente el URL base** por seguridad:
+
+- **URL Base** (recomendado): `https://accounts.google.com`
+- **URL completa de descubrimiento**: `https://accounts.google.com/.well-known/openid-configuration`
+
+**⚠️ Nota de seguridad**: Siempre use el formato de URL base cuando sea posible. El sistema añade automáticamente `/.well-known/openid-configuration` para el descubrimiento de OIDC. Usar directamente la URL de descubrimiento completa desactiva importantes verificaciones de validación del emisor y no es recomendado por la especificación OpenID Connect.
+
+**Ejemplos de URLs base correctas:**
+
+- Google: `https://accounts.google.com`
+- Microsoft/Azure: `https://login.microsoftonline.com/YOUR_TENANT_ID/v2.0`
+- Keycloak: `https://keycloak.example.com/realms/YOUR_REALM`
+- Authelia: `https://auth.yourdomain.com`
+
+## ✅ Probando Tu Configuración
+
+![Página de inicio de sesión con Botones SSO](/img/api/sso-with-options.png)
+*Página de inicio de sesión de Unraid mostrando tanto la autenticación de usuario/contraseña tradicional como opciones SSO con botones personalizados de proveedores*
+
+1. Guarda la configuración de tu proveedor
+2. Cerrar sesión (si estás conectado)
+3. Navegar a la página de inicio de sesión
+4. El botón de tu proveedor configurado debería aparecer
+5. Haz clic para probar el flujo de inicio de sesión
+
+## 🔧 Resolución de Problemas
+
+### Problemas Comunes
+
+#### Error de "Proveedor no encontrado"
+
+- Asegúrate de que la URL del Emisor sea correcta
+- Verifica que el proveedor soporte el descubrimiento OIDC (/.well-known/openid-configuration)
+
+#### "Autorización fallida"
+
+- En el Modo Simple: Verifica que los dominios de correo estén ingresados correctamente (sin @)
+- En el Modo Avanzado:
+  - Verifica que los nombres de claims coincidan exactamente con lo que tu proveedor envía
+  - Comprueba si el Modo de Reglas de Autorización está configurado correctamente (OR vs AND)
+  - Asegúrate de que todos los claims requeridos estén presentes en el token
+- Habilita el registro de depuración para ver los claims reales y la evaluación de reglas
+
+#### "URI de redirección inválido"
+
+- Asegúrate de que el URI de redirección en tu proveedor coincida exactamente
+- Incluye el puerto correcto si estás usando una configuración no estándar
+- Verifica que el protocolo de URI de redirección coincida con la configuración de tu servidor (HTTP o HTTPS)
+
+#### No se puede ver el botón de inicio de sesión
+
+- Verifica que al menos una regla de autorización esté configurada
+- Verifica que el proveedor esté habilitado/guardado
+
+### Modo de Depuración
+
+Para solucionar problemas:
+
+1. Habilitar registro de depuración:
+
+```bash
+LOG_LEVEL=debug unraid-api start --debug
+```
+
+2. Verificar logs para:
+
+- Claims recibidos del proveedor
+- Evaluación de reglas de autorización
+- Errores de validación de tokens
+
+## 🔐 Mejores prácticas de seguridad
+
+1. **Usar Modo Simple para la autorización** - Previene configuraciones excesivamente permisivas y reduce el riesgo de errores de configuración
+2. **Ser específico con la autorización** - No uses reglas demasiado amplias
+3. **Rotar secretos regularmente** - Actualiza los secretos del cliente periódicamente
+4. **Probar exhaustivamente** - Verifica que solo los usuarios autorizados puedan acceder
+
+## 💡 ¿Necesitas ayuda?
+
+- Consulta la documentación OIDC del proveedor
+- Revisa los registros de la API de Unraid para obtener mensajes de error detallados
+- Asegúrate de que tu proveedor soporte el descubrimiento estándar de OIDC
+- Verifica la conectividad de red entre Unraid y el proveedor
+
+## 🏢 Configuración específica del proveedor
+
+### Proveedor Unraid.net
+
+El proveedor Unraid.net está incorporado y preconfigurado. Solo necesitas configurar las reglas de autorización en la interfaz.
+
+**Configuración:**
+
+- **URL del emisor**: Preconfigurado (proveedor integrado)
+- **ID/Secreto del Cliente**: Preconfigurado (proveedor integrado)
+- **URI de redirección**: `http://YOUR_UNRAID_IP/graphql/api/auth/oidc/callback`
+
+:::tip[Redirect Protocolo URI]
+**Hacer coincidir el protocolo con la configuración de su servidor:** Use `http://` si está accediendo a su servidor Unraid sin SSL/TLS (típico para acceso a la red local). Use `https://` si ha configurado SSL/TLS en su servidor. Algunos proveedores de OIDC (como Google) requieren HTTPS y no aceptarán URI de redirección HTTP.
+:::
+
+Configura reglas de autorización usando Modo Simple (dominios/correos electrónicos permitidos) o Modo Avanzado para requisitos complejos.
+
+### Google
+
+<details>
+  <summary><strong>📋 Pasos de configuración</strong></summary>
+
+  Configura las credenciales OAuth 2.0 en [Google Cloud Console](https://console.cloud.google.com/):
+
+  1. Ve a **APIs y servicios** → **Credenciales**
+  2. Haz clic en **Crear credenciales** → **ID de cliente OAuth**
+  3. Elige **Aplicación web** como el tipo de aplicación
+  4. Agrega tu URI de redirección a **URIs de redirección autorizados**
+  5. Configura la pantalla de consentimiento OAuth si se solicita
+</details>
+
+**Configuración:**
+
+- **URL del Emisor**: `https://accounts.google.com`
+- **ID/Secreto del Cliente**: Desde tus credenciales de cliente OAuth 2.0
+- **Ámbitos requeridos**: `openid`, `profile`, `email`
+- **URI de redirección**: `http://YOUR_UNRAID_IP/graphql/api/auth/oidc/callback`
+
+:::warning[Google Requisitos de dominio]
+**Google requiere nombres de dominio válidos para los URI de redirección OAuth.** Las direcciones IP locales y los dominios `.local` no son aceptados. Para usar Google OAuth con su servidor Unraid, necesitará:
+
+- **Opción 1: Proxy inverso** - Configura un proxy inverso (como NGINX Proxy Manager o Traefik) con un nombre de dominio válido que apunte a tu API de Unraid
+- **Opción 2: Tailscale** - Usa Tailscale para obtener un dominio `*.ts.net` válido que Google aceptará
+- **Opción 3: DNS dinámico** - Usa un servicio de DNS dinámico para obtener un nombre de dominio público para tu servidor
+
+Recuerda actualizar tu URI de redirección tanto en Google Cloud Console como en la configuración OIDC de tu Unraid para usar el dominio válido.
+:::
+
+Para los dominios de Google Workspace, usa Modo Avanzado con la propiedad `hd` para restringir el acceso al dominio de tu organización.
+
+### Authelia
+
+Configura el cliente OIDC en tu `configuration.yml` de Authelia con el ID de cliente `unraid-api` y genera un secreto con hash usando el comando hash-password de Authelia.
+
+**Configuración:**
+
+- **URL del Emisor**: `https://auth.yourdomain.com`
+- **ID de Cliente**: `unraid-api` (o según configurado en Authelia)
+- **Secreto del Cliente**: Tu secreto sin cifrar
+- **Ámbitos requeridos**: `openid`, `profile`, `email`, `groups`
+- **URI de redirección**: `http://YOUR_UNRAID_IP/graphql/api/auth/oidc/callback`
+
+Usa Modo Avanzado con la propiedad `groups` para autorización basada en grupos.
+
+### Microsoft/Azure AD
+
+Registrar una nueva aplicación en [Azure Portal](https://portal.azure.com/) bajo Azure Active Directory → Registros de la aplicación. Anote el ID de la aplicación, cree un secreto de cliente y anote su ID de arrendatario.
+
+**Configuración:**
+
+- **URL del Emisor**: `https://login.microsoftonline.com/YOUR_TENANT_ID/v2.0`
+- **ID de Cliente**: Tu ID de aplicación (cliente)
+- **Secreto del Cliente**: Secreto de cliente generado
+- **Ámbitos requeridos**: `openid`, `profile`, `email`
+- **URI de redirección**: `http://YOUR_UNRAID_IP/graphql/api/auth/oidc/callback`
+
+Las reglas de autorización pueden configurarse en la interfaz usando dominios de correo electrónico o propiedades avanzadas.
+
+### Keycloak
+
+Crea un nuevo cliente confidencial en el Console de Administración de Keycloak con el protocolo `openid-connect` y copia el secreto del cliente desde la pestaña de Credenciales.
+
+**Configuración:**
+
+- **URL del Emisor**: `https://keycloak.example.com/realms/YOUR_REALM`
+- **ID de Cliente**: `unraid-api` (o según configurado en Keycloak)
+- **Secreto del Cliente**: De la pestaña Credenciales de Keycloak
+- **Ámbitos requeridos**: `openid`, `profile`, `email`
+- **URI de redirección**: `http://YOUR_UNRAID_IP/graphql/api/auth/oidc/callback`
+
+Para autorización basada en roles, usa Modo Avanzado con propiedades `realm_access.roles` o `resource_access`.
+
+### Authentik
+
+Crea un nuevo Proveedor OAuth2/OpenID en Authentik, luego crea una aplicación y vincúlala al proveedor.
+
+**Configuración:**
+
+- **URL del Emisor**: `https://authentik.example.com/application/o/<application_slug>/`
+- **ID de Cliente**: De la configuración del proveedor Authentik
+- **Secreto del Cliente**: De la configuración del proveedor Authentik
+- **Ámbitos requeridos**: `openid`, `profile`, `email`
+- **URI de redirección**: `http://YOUR_UNRAID_IP/graphql/api/auth/oidc/callback`
+
+Las reglas de autorización pueden configurarse en la interfaz.
+
+### Okta
+
+Crea una nueva aplicación web OIDC en el Console de Administración de Okta y asigna los usuarios o grupos apropiados.
+
+**Configuración:**
+
+- **URL del Emisor**: `https://YOUR_DOMAIN.okta.com`
+- **ID de Cliente**: De la configuración de la aplicación Okta
+- **Secreto del Cliente**: De la configuración de la aplicación Okta
+- **Ámbitos requeridos**: `openid`, `profile`, `email`
+- **URI de redirección**: `http://YOUR_UNRAID_IP/graphql/api/auth/oidc/callback`
+
+Las reglas de autorización pueden configurarse en la interfaz usando dominios de correo electrónico o propiedades avanzadas.

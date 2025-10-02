@@ -1,0 +1,151 @@
+---
+sidebar_position: 2
+sidebar_label: Actualización de Unraid
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import UpgradeModern from './partials/upgrade-modern.mdx';
+import UpgradeLegacy611612 from './partials/upgrade-legacy-611-612.mdx';
+import ManualDowngradeSimplest from './partials/manual-downgrade-simplest.mdx';
+import ManualDowngradeCommandLine from './partials/manual-downgrade-command-line.mdx';
+
+# Actualización de Unraid
+
+Actualizar el sistema operativo Unraid garantiza que dispongas de las características más recientes, actualizaciones de seguridad y soporte para hardware. Esta página describe el proceso estándar de actualización, junto con consejos para solucionar problemas y opciones de actualización manual.
+
+:::note\[Prerequisites]
+
+Antes de comenzar la actualización, asegúrate de crear una copia de seguridad completa de tu dispositivo USB. Para más detalles, consulta [Respaldar tu dispositivo flash](../maintain-and-update/changing-the-flash-device.mdx#backing-up-your-flash-device).
+
+:::
+
+:::tip[Best prácticas antes de la actualización]
+1. **Hacer una copia de seguridad** de su unidad flash y cualquier dato importante.
+2. **Lea las notas de la versión** para la versión que planea instalar.
+3. **Actualice todos los complementos** a sus versiones más recientes.
+4. **Opcionalmente, detenga el array** antes de proceder.
+5. **Actualice Unraid OS** utilizando la página ***Herramientas → Actualizar OS***.
+6. **Reinicie** su servidor para completar la actualización.
+:::
+
+## Proceso de actualización estándar
+
+<Tabs>
+  <TabItem value="Moderno (2025)" label="Unraid 7.x y posteriores" default>
+    <UpgradeModern />
+  </TabItem>
+
+  <TabItem value="Legado (6.11 a 6.12)" label="Unraid 6.11 a 6.12">
+    <UpgradeLegacy611612 />
+  </TabItem>
+</Tabs>
+
+:::caution[ZFS advertencias de actualización de pool]
+Al actualizar a Unraid 7.x, puede ver advertencias sobre actualizaciones de características del pool [%%ZFS|zfs%%](../../advanced-configurations/optimize-storage/zfs-storage.mdx) durante el arranque o en el %%WebGUI|web-gui%%. Estas advertencias no son un signo de un problema; simplemente indican que su pool de %%ZFS|zfs%% está utilizando características de una versión anterior de ZFS.
+
+No es urgente actualizar tu grupo, pero si decides hacerlo, ten en cuenta que podría no funcionar con versiones anteriores de Unraid. Esto significa que es posible que no puedas volver a una versión anterior de Unraid después de actualizar.
+
+Como siempre, recuerde hacer una copia de seguridad de sus datos antes de actualizar sus pools %%ZFS|zfs%%.
+:::
+
+---
+
+## Solución de problemas de actualización
+
+Si encuentra problemas después de la actualización, consulte la sección relevante a continuación para obtener asistencia.
+
+<details>
+  <summary><strong>El array o los contenedores Docker son lentos al arrancar después de la actualización</strong> - Haga clic para expandir/colapsar</summary>
+
+  Podría ser necesaria una migración única para los contenedores de Docker después de ciertas actualizaciones. Este proceso puede llevar tiempo, especialmente si tienes muchas imágenes. Sé paciente durante este proceso; el rendimiento debería normalizarse después del inicio inicial.
+</details>
+
+<details>
+  <summary><strong>Los contenedores Docker no funcionan correctamente después de la actualización</strong> - Haga clic para expandir/colapsar</summary>
+
+  Si encuentras errores como *"las capas del manifiesto no coinciden con la configuración de la imagen",* es posible que necesites reconstruir tu archivo de imagen de Docker. Aquí te explicamos cómo:
+
+  1. Vaya a ***Configuración → Docker*** y detenga el servicio Docker.
+  2. Marque la casilla para eliminar la imagen Docker y haga clic en el botón de eliminar.
+  3. Reinicie Docker para recrear la imagen.
+  4. Navegue a la pestaña **Aplicaciones**, **Aplicaciones anteriores** y marque lo que desea reinstalar y haga clic en **"Instalar xx Aplicaciones"**.
+</details>
+
+<details>
+  <summary><strong>Las VMs muestran "no se puede obtener la interfaz MTU" o errores de red</strong> - Haga clic para expandir/colapsar</summary>
+
+  Si ha utilizado un nombre de puente personalizado para la red %%VM|vm%%, actualice todas las %%VMs|vm%% para usar el puente predeterminado `br0` siguiendo estos pasos:
+
+  1. Vaya a la pestaña **VMs** y edite cada %%VM|vm%% (asegúrese de habilitar **Vista avanzada**).
+  2. Configure el puente de red en `br0` y haga clic en **Aplicar**.
+  3. Navegue a ***Configuración → Administrador de VM*** (en **Vista avanzada**) y configure el puente predeterminado en `br0`.
+</details>
+
+<details>
+  <summary><strong>El acceso VNC a las VMs no funciona o es lento</strong> - Haga clic para expandir/colapsar</summary>
+
+  Para las %%VMs|vm%% viejas, es posible que deba actualizar el controlador de video %%VNC|vnc-session%%:
+
+  1. Edite la %%VM|vm%% desde la pestaña **VMs** (seleccione **Vista avanzada**).
+  2. Establece el controlador de vídeo **%%VNC|vnc-session%%** en **QXL** (recomendado). Prueba con **Cirrus** o **vmvga** si tienes éxito limitado con QXL.
+  3. Haga clic en **Aplicar** para guardar los cambios.
+</details>
+
+<details>
+  <summary><strong>La VM no arranca (aparece shell EFI)</strong> - Haga clic para expandir/colapsar</summary>
+
+  Si tienes %%OVMF|ovmf%%-basados %%VMs|vm%% creados en versiones anteriores de Unraid, podrías encontrar un shell EFI. Puedes arrancar el %%VM|vm%% introduciendo los siguientes comandos:
+
+  1. Escriba `fs0:`.
+  2. Luego escriba `cd efi/boot`.
+  3. Finalmente, escriba `bootx64.efi`.
+
+  Si `fs0:` no funciona, puedes intentar con `fs1:`. Si continúas teniendo problemas, por favor visita los [foros de Unraid](https://forums.unraid.net/) para obtener asistencia.
+</details>
+
+<details>
+  <summary><strong>Intentar iniciar mi VM da un error de "Tipo de máquina inválido"</strong> - Haga clic para expandir/colapsar</summary>
+
+  Para resolver esto, edita el %%VM|vm%% en la %%WebGUI|web-gui%% y haz clic en **Aplicar** sin realizar cambios. Esta acción actualizará el tipo de máquina a la última versión compatible.
+</details>
+
+<details>
+  <summary><strong>Pobre rendimiento de VM después de la actualización</strong> - Haga clic para expandir/colapsar</summary>
+
+  Si tu %%VM|vm%% está lento después de una actualización, ve a la configuración del %%VM|vm%% (en **Vista Avanzada**) y actualiza la versión del tipo de **Máquina** a la última revisión (por ejemplo: cambia de `i440fx-2.5` a `i440fx-2.7`). Asegúrate de no cambiar el prefijo (por ejemplo, no cambies de `i440fx` a `Q35`).
+</details>
+
+---
+
+## Actualización o degradación manual
+
+Las actualizaciones manuales son raras, pero pueden ser necesarias si no puedes acceder al %%WebGUI|web-gui%% o necesitas volver a una versión anterior. Antes de proceder, es importante hacer un respaldo de tu dispositivo USB, cuyos detalles puedes encontrar en [Respaldar tu dispositivo flash](../maintain-and-update/changing-the-flash-device.mdx#backing-up-your-flash-device).
+
+### Degradar utilizando la herramienta Downgrade OS (si el WebGUI es accesible)
+
+Si puede acceder al WebGUI:
+
+1. Inicie sesión en el %%WebGUI|web-gui%%.
+2. Navegue a ***Herramientas → Degradar OS***.
+3. Su versión anterior se listará como la opción de degradación disponible.
+4. Haga clic en **Degradar** y siga las indicaciones.
+5. Reinicie su servidor cuando se le indique.
+
+:::caution
+Ten en cuenta que bajar de versión puede generar problemas de compatibilidad con complementos o contenedores de Docker. Siempre respalda tu dispositivo USB y cualquier dato importante de antemano.
+:::
+
+### Metodos manuales (si el WebGUI es inaccesible)
+
+Solo utilice estos métodos si no puede acceder al %%WebGUI|web-gui%%:
+
+<Tabs>
+  <TabItem value="Método más simple" label="Método más simple">
+    <ManualDowngradeSimplest />
+  </TabItem>
+
+  <TabItem value="Método de línea de comandos" label="Método de línea de comandos">
+    <ManualDowngradeCommandLine />
+  </TabItem>
+</Tabs>

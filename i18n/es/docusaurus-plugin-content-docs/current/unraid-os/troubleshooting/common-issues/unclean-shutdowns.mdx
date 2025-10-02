@@ -1,0 +1,150 @@
+---
+sidebar_position: 2
+sidebar_label: Apagados no limpios
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import UncleanShutdownsPower from './partials/unclean-shutdowns/unexpected-power-loss.mdx';
+import UncleanShutdownsFlash from './partials/unclean-shutdowns/flash-drive-failure.mdx';
+import UncleanShutdownsTerminal from './partials/unclean-shutdowns/open-terminal-sessions.mdx';
+
+# Apagados no limpios
+
+An unclean shutdown happens when Unraid detects that the %%array|array%% was not properly stopped before the system powered off. This situation can trigger an automatic %%parity check|parity-check%% during the next boot to ensure data integrity.
+
+:::important[Recommendations para prevenir apagados no limpios]
+Tomar algunas medidas proactivas puede ayudarte a evitar o identificar apagados no limpios:
+
+- **Usa un SAI:** Mantén tu servidor conectado a un Sistema de Alimentación Ininterrumpida (SAI) y configúralo para iniciar un apagado controlado cuando la energía de la batería sea baja.
+- **Intentar un apagado ordenado:** Si su servidor no responde, presione brevemente el botón de encendido para activar un apagado seguro. No mantenga el botón presionado, ya que esto forzará un apagado duro y provocará un apagado no limpio.
+- **Habilitar registro persistente:** Vaya a ***Ajustes → Servidor de Syslog*** para activar el registro que persiste después de un reinicio. Consulte [Registros persistentes (servidor Syslog)](../diagnostics/capture-diagnostics-and-logs.mdx#persistent-logs-syslog-server) para más detalles.
+- **Adjuntar diagnósticos para obtener soporte:** Si ocurre un apagado no limpio, Unraid intentará guardar diagnósticos en `/log/diagnostics.zip` en su dispositivo flash. Adjunte este archivo a las publicaciones del foro cuando busque ayuda.
+:::
+
+:::tip[UPS mejores prácticas de configuración]
+Un SAI bien configurado es tu mejor defensa contra apagados no limpios causados por pérdida de energía.
+
+- **Conecta el SAI vía USB** a tu servidor Unraid.
+- **Habilitar el soporte de SAI** en ***Configuración → Configuración de SAI***.
+- **Configurar tiempos de espera de apagado:** Configure el SAI para que desencadene un apagado controlado antes de que la batería se agote. Ajuste los umbrales de "Tiempo restante de la batería" o "Nivel de carga de la batería" para proporcionar tiempo suficiente para que Unraid [detenga el %%array|array%%](../../using-unraid-to/manage-storage/array-configuration.mdx#startstop-the-array) y se apague de forma segura.
+- **Prueba tu configuración:** Simula una pérdida de energía para asegurarte de que el SAI y Unraid respondan correctamente.
+
+Examina el [plugin NUT](https://unraid.net/community/apps/c/plugins/p4?srsltid=AfmBOop675PrJQW4iqb4JBN3GyPpwDDiSmnZReq78t27XyxkFdMX8inO#:~:text=NUT%20%2D%20Network%20UPS%20Tools) para una mayor compatibilidad con modelos más avanzados de SAI o hardware no compatible.
+:::
+
+## Eventos que causan apagados no limpios
+
+Comprender los principales desencadenantes de apagados no limpios le ayuda a prevenirlos. Explore las pestañas a continuación para obtener detalles sobre cada escenario.
+
+<Tabs>
+  <TabItem value="energía" label="Pérdida de energía inesperada" default>
+    <UncleanShutdownsPower />
+  </TabItem>
+
+  <TabItem value="flash" label="Fallo de unidad flash">
+    <UncleanShutdownsFlash />
+  </TabItem>
+
+  <TabItem value="terminal" label="Abrir sesiones de terminal">
+    <UncleanShutdownsTerminal />
+  </TabItem>
+</Tabs>
+
+---
+
+## Configuración de tiempos de apagado
+
+Configurar correctamente los tiempos de espera de apagado es esencial para asegurar que su servidor Unraid pueda detener efectivamente todos los servicios, previniendo apagados no limpios, especialmente durante pérdidas de energía o mantenimiento. Cada componente de su sistema - %%VM|vm%%s, contenedores de Docker, y el %%array|array%% general - tiene su propia configuración de tiempo de espera que puede ajustarse.
+
+### Configuraciones recomendadas de tiempo de espera
+
+| Configuración                                   | Defecto | Recomendación mínima                                                     | Dónde configurar                                                             |
+| ----------------------------------------------- | ------- | ------------------------------------------------------------------------ | ---------------------------------------------------------------------------- |
+| Tiempo de espera para apagado de %%VM\|vm%%     | 60s     | 300s (5 min)                                                             | ***Configuración → Gestor de VM → Apagado de VM (Avanzado)***                |
+| Tiempo de espera para detener contenedor Docker | 10s     | 30–60s                                                                   | ***Configuración → Docker (Avanzado)***                                      |
+| Tiempo de espera general de apagado             | 90s     | 3 × tiempo de espera de %%VM\|vm%% + tiempo de espera de Docker + 15–30s | ***Configuración → Configuración de Disco → Tiempo de espera para apagado*** |
+
+### Tiempo de espera para máquinas virtuales
+
+<details>
+  <summary><strong>Haga clic para expandir/contraer</strong></summary>
+
+  Unraid primero apaga todas las máquinas virtuales configuradas (%%VMs|vm%%) antes de detener los contenedores de Docker o el %%array|array%% en sí. El Tiempo de Espera de Apagado de VM determina cuánto tiempo espera Unraid para que cada %%VM|vm%% se apague de manera ordenada.
+
+  <h4>Dónde configurarlo</h4>
+
+  - ***Configuración → Gestor de VM → Apagado de VM*** (activar vista Avanzada)
+
+  <h4>Considerar</h4>
+
+  - Las %%VMs|vm%% de Windows pueden tardar más en apagarse, especialmente si hay actualizaciones pendientes o la %%VM|vm%% está en modo de suspensión/hibernación.
+  - Si el tiempo de espera es muy corto, las %%VMs|vm%% se detendrán a la fuerza, arriesgando pérdida o corrupción de datos.
+
+  <h4>Mejores prácticas</h4>
+
+  Establezca el tiempo de espera en al menos 300 segundos (5 minutos) para las %%VMs|vm%% de Windows. Programe las actualizaciones para ejecutarse al inicio, no al apagarse, para evitar retrasos.
+</details>
+
+### Tiempo de espera para contenedores Docker
+
+<details>
+  <summary><strong>Haga clic para expandir/contraer</strong></summary>
+
+  Después de las %%VMs|vm%%, Unraid detiene todos los contenedores de Docker en ejecución. El Tiempo de Espera de Detención de Contenedor de Docker controla cuánto tiempo espera Unraid para que cada contenedor salga limpiamente.
+
+  <h4>Dónde configurarlo</h4>
+
+  - ***Configuración → Docker*** (activar vista Avanzada)
+
+  <h4>Considerar</h4>
+
+  - Los contenedores se detienen en paralelo.
+  - Los contenedores complejos, o aquellos con grandes bases de datos, pueden necesitar más de los 10 segundos predeterminados para apagarse con seguridad.
+  - Si el temporizador expira, los contenedores se detienen forzosamente.
+
+  <h4>Mejores prácticas</h4>
+  Aumenta el tiempo de espera a 30–60 segundos si ejecutas contenedores Docker que requieren más tiempo de apagado.
+</details>
+
+### Temporizador general de apagado
+
+<details>
+  <summary><strong>Haga clic para expandir/contraer</strong></summary>
+
+  El tiempo total de espera de apagado es el tiempo máximo que Unraid permite para todos los procesos de apagado - %%VM|vm%%s, Docker y operaciones de disco - antes de forzar un apagado.
+
+  <h4>Dónde configurarlo</h4>
+
+  - ***Configuración → Configuración de Disco → Tiempo de espera para apagado***
+
+  <h4>Cómo calcular</h4>
+
+  Suma tus tiempos de espera para %%VM|vm%% y Docker, luego añade 15–30 segundos para el desmontaje de disco y otros procesos.
+
+  - Ejemplo: `3 × ***Tiempo de espera para Apagado de VM*** + ***Tiempo de espera para detener Docker*** + 15–30 segundos`
+
+  <h4>Mejores prácticas</h4>
+  Establece este temporizador lo suficientemente alto para cubrir tu escenario de apagado más lento, especialmente si tienes muchas unidades o un gran %%array|array%%.
+</details>
+
+### Vida útil de la batería del SAI
+
+<details>
+  <summary><strong>Haga clic para expandir/contraer</strong></summary>
+
+  Tu SAI debe proporcionar suficiente tiempo de funcionamiento para permitir que todos los temporizadores de apagado expiren antes de que el servidor pierda energía.
+
+  <h4>Dónde configurarlo</h4>
+
+  - ***Configuración → Configuración de SAI*** (ver **Tiempo de ejecución restante** con todos los discos activados)
+
+  <h4>Considerar</h4>
+
+  - El SAI debería activar un apagado lo suficientemente temprano para permitir que toda la secuencia de apagado se complete.
+  - Si la batería se agota antes de que el apagado se complete, existe el riesgo de un apagado no limpio y posible pérdida de datos.
+
+  <h4>Mejores prácticas</h4>
+
+  Prueba tu SAI simulando un corte de energía y confirma que Unraid se apague limpiamente con tiempo de sobra.
+</details>

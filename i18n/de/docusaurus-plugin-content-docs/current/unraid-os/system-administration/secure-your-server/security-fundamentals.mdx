@@ -1,0 +1,172 @@
+---
+sidebar_position: 1
+sidebar_label: Sicherheitsgrundlagen
+---
+
+# Sicherheitsgrundlagen
+
+:::note[Principle des geringsten Privilegs]
+Das Prinzip des geringsten Privilegs bedeutet, dass Benutzern und Geräten nur der minimale Zugriff gewährt wird, der notwendig ist, um ihre Aufgaben auszuführen, niemals mehr. Dieser Ansatz begrenzt potenziellen Schaden durch kompromittierte Konten oder versehentliche Handlungen und ist ein Kernkonzept in der modernen Sicherheit, einschließlich Zero-Trust-Modelle. Wenden Sie dieses Prinzip in Ihrer Unraid-Konfiguration an, insbesondere wenn Sie Benutzer für Freigaben erstellen und Berechtigungen zuweisen.
+:::
+
+## Zugriff auf freigegebene Ordner steuern
+
+### Wählen eines Netzwerkdateifreigabeprotokolls
+
+Beim Teilen von Dateien mit Ihrem Unraid-Server über Ihr Heim- oder Büronetzwerk haben Sie einige Möglichkeiten, wie Sie sich verbinden können. Unraid unterstützt gängige Methoden, die als Kommunikationsprotokolle bekannt sind, und erleichtern den Austausch zwischen Geräten.
+
+| Protokoll                             | Hauptnutzung                          | Vorteil                                                                                            | Nachteil                                                                                            | Empfohlene Anwendungsfälle                                                                                                              |
+| ------------------------------------- | ------------------------------------- | -------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| %%SMB\|samba%% (Server Message Block) | Nahtlose Windows/macOS-Integration    | Integrierte Windows-Unterstützung; unterstützt Drucker und VM-Speicher; schnell mit großen Dateien | Ältere Versionen (SMBv1) unsicher; langsamer bei kleinen Dateien                                    | Windows- und Mac-Netzwerke; gemischte Ressourcenumgebungen (Drucker, VMs)                                                               |
+| %%NFS\|nfs%% (Network File System)    | Nahtlose Unix/Linux-Integration       | Optimiert für Linux/Unix; effizient mit kleinen Dateien; geringer Overhead                         | Erfordert zusätzliche Tools für Windows; Netzwerksicherheit entscheidend; begrenzte Sperrfunktion   | Linux- und Unix-Umgebungen; kleine Dateioperationen; statische Datenlasten                                                              |
+| %%FTP\|ftp%% (File Transfer Protocol) | Plattformübergreifende Kompatibilität | Universelle Client-Unterstützung; einfache Einrichtung; Stapelübertragungen von Dateien            | Klartextprotokoll ohne Verschlüsselung; Anmeldedaten unverschlüsselt gesendet; veraltete Sicherheit | Nur für nicht sensible oder Legacy-Übertragungen; Verwenden Sie FTPS (FTP über TLS) oder SFTP (FTP über SSH) für sichere Dateitransfers |
+
+:::important
+Mit Beginn der Unraid-Version 6.9 wurde die Unterstützung für das **%%AFP|AFP%% (Apple Filing Protocol)** entfernt. Um sicherzustellen, dass Ihre Mac-Computer gut mit Ihrem Unraid-Server funktionieren, einschließlich Funktionen wie Time Machine-Backups, gehen Sie zu ***Einstellungen → SMB*** und aktivieren Sie die **Erweiterte macOS-Interoperabilität**.
+:::
+
+Die Entscheidung, welches Protokoll verwendet werden soll, hängt von den Gerätetypen ab, die Sie haben, und was Sie mit Ihren Dateien machen müssen. Standardmäßig aktiviert Unraid %%SMB|samba%%, da es von modernen Windows- und macOS-Systemen weitgehend unterstützt wird. %%NFS|nfs%% und %%FTP|ftp%% sind ausgeschaltet, können aber bei Bedarf aktiviert werden.
+
+For instance, if you use an %%FTP|ftp%% client to connect to your Unraid server, you can easily transfer large files and even pause and resume your uploads or downloads if needed.
+
+---
+
+### Verwalten der Netzwerkaufmerksamkeit von Freigaben
+
+Sie können unterschiedliche Zugriffsberechtigungen für Ihre Netzwerkordner (Freigaben) in Unraid einrichten, indem Sie:
+
+1. Gehen Sie zum Reiter **Freigaben**: Beginnen Sie, indem Sie im %%WebGUI|web-gui%% auf den Reiter **Freigaben** klicken.
+
+2. **Wählen Sie eine Freigabe aus**: Wählen Sie eine vorhandene Freigabe aus, die Sie anpassen möchten.
+
+3. **Scrollen Sie zu Sicherheitseinstellungen**: Am unteren Rand der Freigabeneinstellungsseite sehen Sie einen Abschnitt für Sicherheitsoptionen für jedes aktivierte Netzwerkprotokoll.
+
+4. **Anpassung der Export-Einstellungen**: Diese Einstellung steuert, wie die Freigabe im Netzwerk angezeigt wird. Sie haben drei Möglichkeiten:
+
+   - **Ja**: Die Freigabe ist sichtbar und jeder, der im Netzwerk surft, hat Zugriff.
+   - **Ja (Versteckt)**: Die Freigabe wird nicht in den Netzwerksuchlisten angezeigt, aber wenn jemand den Namen der Freigabe kennt, kann er darauf zugreifen.
+   - **Nein**: Die Freigabe ist vollständig versteckt und über dieses bestimmte Protokoll nicht zugänglich.
+
+Durch die Anpassung dieser Optionen können Sie steuern, wer jede Freigabe sehen und darauf zugreifen kann. Sie können sicherstellen, dass alles sicher bleibt, während Sie gewährleisten, dass die richtigen Personen den Zugang haben, den sie benötigen, unabhängig davon, ob sie %%SMB|samba%%, %%NFS|nfs%% oder %%FTP|ftp%% verwenden.
+
+---
+
+### Benutzerberechtigungen für Freigaben festlegen
+
+Die Sicherheitskontrollen für Freigaben steuern, wie Benutzer auf freigegebene Dateien auf Ihrem System zugreifen können Sie können eine Freigabe so einrichten, dass für den Zugriff auf die Dateien ein Benutzername und ein Passwort erforderlich sind, den Zugriff auf nur Lesezugriff beschränken oder sie vollständig öffentlich ohne erforderliche Anmeldedaten machen.
+
+:::note\[Example]
+
+Wenn Sie eine `movies`-Freigabe auf Ihrem Unraid-Server erstellen, können Sie wählen, ob für das Lesen von Daten ein gültiger Benutzername und ein Passwort erforderlich sind oder ob öffentlicher Zugriff erlaubt werden soll. Wenn Sie Benutzer hinzufügen müssen, kann ein %%root user|root-user%% Benutzer für Freigaben erstellen, indem er dem Prozess in [**Benutzerverwaltung**](./user-management.mdx#add-users) folgt.
+
+:::
+
+Wenn Sie auf die Registerkarte **Freigaben** gehen und eine Freigabe auswählen, sehen Sie deren Einstellungen, einschließlich eines Sicherheitsabschnitts, in dem Sie [Zugriffsberechtigungen](#managing-network-visibility-of-shares) basierend auf den aktivierten Protokollen verwalten können. Auf diese Weise können Sie festlegen, wer je nach Bedarf auf Ihre Dateien zugreifen kann.
+
+Die **Sicherheitseinstellung** hat folgende Optionen:
+
+| Typ            | Erklärung                                                                                | Gebrauchsfall                                                                                  |
+| -------------- | ---------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| **Öffentlich** | Offener Zugang: Jeder kann in diesem Ordner lesen und schreiben.                         | Geeignet für nicht sensible Informationen, wie freigegebene Medien oder öffentliche Downloads. |
+| **Sicher**     | Eingeschränkter Zugang: Alle können lesen, aber nur bestimmte Benutzer können schreiben. | Gut für gemeinsame Projekte, bei denen Zusammenarbeit erforderlich ist, wie Team-Ordner.       |
+| **Privat**     | Eingeschränkter Zugriff: Nur bestimmte Benutzer können lesen oder schreiben.             | Ideal für sensible Informationen, wie Finanzberichte oder persönliche Dokumente.               |
+
+:::caution[Windows SMB-Zugriff]
+Modern versions of Windows (Windows 10 1709+, Windows 11, Server 2019+) block access to **Public** (guest/anonymous) %%SMB|samba%% shares by default, due to stricter security policies. Attempting to connect to a public share will usually fail unless you manually enable insecure guest logons in Windows settings - which is not recommended for security reasons.
+
+**Best Practice:** Richten Sie Benutzerkonten und Passwörter für Ihre Unraid-Freigaben ein und verwenden Sie diese Anmeldedaten für zuverlässigen Zugriff von Windows.
+
+**Anmeldeangaben-Beschränkung:** Windows erlaubt gleichzeitig nur einen Satz von Anmeldedaten pro Server. Wenn Sie versuchen, sich mit unterschiedlichen Anmeldedaten bei verschiedenen Freigaben auf demselben Server zu verbinden, schlägt die Verbindung fehl.
+
+**Problemumgehung:** Wenn Sie auf Anmeldeprobleme stoßen, versuchen Sie, eine Freigabe mit dem Servernamen und eine andere mit dessen IP-Adresse zu verbinden. Windows behandelt diese als getrennte Server.
+
+Für weitere Details siehe [Microsofts Dokumentation zum SMB-Gastzugang](https://learn.microsoft.com/en-us/windows-server/storage/file-server/enable-insecure-guest-logons-smb2-and-smb3).
+:::
+
+---
+
+## Netzwerksicherheit
+
+### Stellen Sie ein starkes Root-Passwort ein
+
+Wenn Sie das %%WebGUI|web-gui%% zum ersten Mal nach der Installation aufrufen, müssen Sie ein Passwort für den %%root user|root-user%% festlegen. Unraid erzwingt jedoch keine Anforderungen an die Passwortkomplexität – es liegt an Ihnen als Benutzer, das gewünschte Sicherheitsniveau für Ihr Server-Passwort festzulegen.
+
+- Gehen Sie zur Registerkarte **Benutzer**, wählen Sie den %%root user|root-user%% und legen Sie ein Passwort fest.
+- Erwägen Sie die Verwendung des **Dynamix-Passwort-Validators** von [Community Apps](../../using-unraid-to/run-docker-containers/community-applications.mdx) für Echtzeit-Feedback zur Stärke.
+- Für weitere Informationen beachten Sie bitte das [Bitwarden Passwortstärke-Tool](https://bitwarden.com/), das online bereitgestellt wird.
+
+### Überprüfen und minimieren Sie das Port-Forwarding
+
+Das Weiterleiten von Ports von Ihrem Router zu Ihrem Unraid-Server kann für den Fernzugriff auf Dienste notwendig sein, birgt jedoch erhebliche Risiken für Ihr Netzwerk. Leiten Sie nur Ports weiter, die Sie vollständig verstehen und benötigen.
+
+| Port(s)    | Typische Nutzung                     | Sicherheitsrisiko                                                                                      | Sichere Alternative                                                                                                                                                                        |
+| ---------- | ------------------------------------ | ------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 80 / 443   | %%WebGUI\|web-gui%% (HTTP/HTTPS)     | Setzt Management-Interface aus; Risiko von Abfangung oder Brute-Force-Angriffen bei schwachem Passwort | Verwenden Sie Unraid Connect oder VPN für den Remotezugriff. Beachten Sie, dass Unraid Connect die Weiterleitung von WAN-Ports oder UPnP erfordert (kein ständig verfügbares Cloud-Relay). |
+| 445        | %%SMB\|samba%% (Dateifreigaben)      | Exponiert Freigaben im Internet; Risiko von Datendiebstahl oder -löschung                              | Verwenden Sie VPN für sicheren Fernzugriff auf Dateien                                                                                                                                     |
+| 111 / 2049 | %%NFS\|nfs%%                         | Exposes %%NFS\|nfs%% shares; similar risks as %%SMB\|samba%%                                           | Verwenden Sie VPN für Fernzugriff                                                                                                                                                          |
+| 22 / 23    | %%SSH\|ssh%%/Telnet                  | Setzt Konsolenzugriff aus; Risiko von Brute-Force-Angriffen oder Anmeldedatendiebstahl                 | Use %%SSH\|ssh%% keys or VPN; never forward Telnet                                                                                                                                         |
+| 57xx       | %%VNC\|vnc-session%% für %%VMs\|vm%% | Bietet Zugriff auf %%VM\|vm%%-Konsolen; Risiko eines unbefugten Fernzugriffs                           | Verwenden Sie Unraid Connect oder VPN                                                                                                                                                      |
+
+:::tip
+Wenn Sie eine Portweiterleitungsregel sehen, die Sie nicht verstehen, entfernen Sie sie und überwachen Sie eventuelle Probleme. Sie können sie bei Bedarf jederzeit erneut hinzufügen.
+:::
+
+:::caution
+Setzen Sie Ihren Server niemals in die DMZ Ihres Netzwerks. Das Platzieren Ihres Unraid-Servers in der DMZ setzt alle Ports dem Internet aus und erhöht drastisch das Risiko einer Kompromittierung. Selbst mit starken Passwörtern wird dies niemals empfohlen.
+:::
+
+---
+
+## Zugriffssicherheit für Freigaben
+
+### Sichtbarkeit und Berechtigungen der Freigaben kontrollieren
+
+- Verwenden Sie die Registerkarte **Freigaben** im WebGUI, um die Export- und Sicherheitseinstellungen jeder Freigabe festzulegen.
+- Bevorzugen Sie private oder sichere Freigaben für sensible Daten. Öffentliche Freigaben sind für jeden im Netzwerk zugänglich und aus Sicherheitsgründen in modernen Windows-Versionen standardmäßig blockiert.
+- Weisen Sie Benutzerkonten nur die für ihre Rolle benötigten Berechtigungen zu (geringstes Privileg).
+- Begrenzen Sie den Freigabezugang wann immer möglich auf bestimmte Benutzer.
+
+### Benutzerberechtigungen sorgfältig zuweisen
+
+- Weisen Sie Benutzern Zugriff auf Freigaben mit Lesezugriff oder Lese-/Schreibzugriff nach Bedarf zu.
+- Das %%root user|root-user%%-Konto ist für die Systemadministration und kann nicht auf Netzfreigaben zugreifen. Erstellen Sie dedizierte Benutzerkonten für den Zugriff auf Netzfreigaben.
+- Überprüfen Sie regelmäßig Benutzerrechte und entfernen Sie nicht mehr benötigte Konten.
+
+### Begrenzen Sie den Freigabezugang auf privat oder schreibgeschützt
+
+Obwohl der passwortlose Zugriff auf Freigaben bequem ist, kann er Ihre Daten gefährden, wenn Geräte in Ihrem lokalen Netzwerk kompromittiert werden. Dies umfasst PCs, Macs, mobile Geräte und IoT-Geräte. Standardmäßig sind Unraid-Freigaben so eingestellt, dass sie für jeden im Netzwerk öffentlich lesbar und beschreibbar sind, was bedeutet, dass jedes Gerät im Netzwerk potentiell Dateien stehlen, löschen oder verschlüsseln könnte, wenn es kompromittiert wird. Darüber hinaus können böswillige Benutzer unerwünschte Daten auf Ihren Server hochladen.
+
+- Setzen Sie empfindliche Freigaben im **Freigaben**-Reiter des %%WebGUI|web-gui%% auf **Privat**.
+- Wenn eine **öffentliche** Freigabe erforderlich ist, setzen Sie sie wann immer möglich auf **schreibgeschützt**.
+- Geben Sie Schreibzugriff nur an autorisierte Benutzer mit starken Passwörtern.
+
+### Exposition der Flash-Freigabe vermeiden oder privat machen
+
+Das Unraid-Flashgerät enthält wichtige System- und Konfigurationsdateien. Auch wenn es bequem sein mag, die Flash-Freigabe über %%SMB|samba%% für erweiterte Konfigurationen zu öffnen, stellt dies ein erhebliches Risiko dar, wenn sie öffentlich bleibt.
+
+- Exponieren Sie die Flash-Freigabe nur, wenn es absolut notwendig ist, und stellen Sie sie auf **Privat**.
+- Erfordern Sie einen Benutzernamen und ein starkes Passwort für den Zugriff.
+- Entfernen Sie die Freigabe oder deaktivieren Sie sie, wenn sie nicht verwendet wird, um das Risiko zu minimieren.
+
+### Halten Sie Ihren Server auf dem neuesten Stand
+
+Regelmäßige Updates sind essenziell für die Sicherheit. Neue Schwachstellen (CVEs) werden häufig entdeckt, und Lime Technology gibt aktiv Patches für Unraid OS heraus. Updates sind nur dann effektiv, wenn Sie sie auch tatsächlich anwenden.
+
+- Überprüfen Sie verfügbare Updates unter ***Tools → Update OS*** im %%WebGUI|web-gui%%.
+- Aktivieren Sie Benachrichtigungen unter ***Einstellungen → Benachrichtigungen***, um informiert zu werden, wenn Updates verfügbar sind.
+- Aktualisieren Sie Plugins und Docker-Container über den **Apps**-Reiter, um sicherzustellen, dass alle Komponenten sicher sind und kompatibel bleiben.
+- Wenden Sie Updates schnell an, um Ihren Server vor bekannten Bedrohungen zu schützen.
+
+### Sichere Methoden für die Fernverwaltung verwenden
+
+Setzen Sie das %%WebGUI|web-gui%% niemals direkt dem Internet aus. Verwenden Sie stattdessen sichere Lösungen für den Fernzugriff:
+
+- **%%Tailscale|tailscale%%** ist eine empfohlene Option mit einem dedizierten Plugin für Unraid. Es erstellt ein sicheres privates Netzwerk (Tailnet) für den Zugriff auf Ihren Server und Dienste von überall aus, ohne Ports freizugeben oder komplexe Firewall-Regeln zu konfigurieren.
+- **%%WireGuard|wireguard%% VPN** ist in Unraid integriert und bietet einen sicheren, verschlüsselten Tunnel für die Fernverwaltung.
+- **%%OpenVPN|openvpn%%** ist als Plugin oder Docker-Container verfügbar.
+- Viele moderne Router bieten integrierte VPN-Unterstützung - überprüfen Sie die Router-Dokumentation für die Einrichtung.
+- Das [Unraid Connect](../../../unraid-connect/overview-and-setup.mdx) Plugin erlaubt den Fernzugriff auf das %%WebGUI|web-gui%%, erfordert jedoch, dass ein Port an Ihrem Router weitergeleitet wird.
+
+---
+
+\* *„%%WireGuard|wireguard%%“ und das „%%WireGuard|wireguard%%“-Logo sind eingetragene Warenzeichen von Jason A. Donenfeld.*

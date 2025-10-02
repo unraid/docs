@@ -1,0 +1,250 @@
+---
+title: Programmatic API Key Management
+description: 通过编程方式创建、使用和删除 API 密钥，以实现自动化工作流
+sidebar_position: 4
+---
+
+# Programmatic API Key Management
+
+本指南解释了如何利用 Unraid API CLI 通过编程方式创建、使用和删除 API 密钥，从而实现自动化工作流和脚本。
+
+## 概述
+
+`unraid-api apikey` 命令支持交互模式和非交互模式，适用于：
+
+- 自动化部署脚本
+- CI/CD 管道
+- 临时访问权限供应
+- 基础设施即代码工作流
+
+:::tip[Quick 开始]
+跳转到 [完整工作流示例](#complete-workflow-example) 查看一切操作。
+:::
+
+## 通过编程方式创建 API 密钥
+
+### 使用 JSON 输出进行基本创建
+
+使用 `--json` 标志获取机器可读的输出：
+
+```bash
+unraid-api apikey --create --name "workflow key" --roles ADMIN --json
+```
+
+**输出：**
+
+```json
+{
+    "key": "your-generated-api-key-here",
+    "name": "workflow key",
+    "id": "generated-uuid"
+}
+```
+
+### 高级创建以及权限管理
+
+```bash
+unraid-api apikey --create \
+  --name "limited access key" \
+  --permissions "DOCKER:READ_ANY,ARRAY:READ_ANY" \
+  --description "Read-only access for monitoring" \
+  --json
+```
+
+### 处理现有密钥
+
+如果已有同名密钥，使用 `--overwrite`：
+
+```bash
+unraid-api apikey --create --name "existing key" --roles ADMIN --overwrite --json
+```
+
+:::warning[Key 替换]
+`--overwrite` 标志将永久替换现有的密钥。旧密钥将立即失效。
+:::
+
+## 通过编程方式删除 API 密钥
+
+### 非交互删除
+
+通过名称删除密钥，无提示：
+
+```bash
+unraid-api apikey --delete --name "workflow key"
+```
+
+**输出：**
+
+```
+Successfully deleted 1 API key
+```
+
+### 删除的 JSON 输出
+
+使用 `--json` 标志获取机器可读的删除确认：
+
+```bash
+unraid-api apikey --delete --name "workflow key" --json
+```
+
+**成功输出：**
+
+```json
+{
+    "deleted": 1,
+    "keys": [
+        {
+            "id": "generated-uuid",
+            "name": "workflow key"
+        }
+    ]
+}
+```
+
+**错误输出：**
+
+```json
+{
+    "deleted": 0,
+    "error": "No API key found with name: nonexistent key"
+}
+```
+
+### 错误处理
+
+指定密钥不存在时：
+
+```bash
+unraid-api apikey --delete --name "nonexistent key"
+# Output: No API keys found to delete
+```
+
+**JSON 错误输出：**
+
+```json
+{
+    "deleted": 0,
+    "message": "No API keys found to delete"
+}
+```
+
+## 完整工作流示例
+
+以下是一个临时访问权限供应的完整示例：
+
+```bash
+#!/bin/bash
+set -e
+
+# 1. Create temporary API key
+echo "Creating temporary API key..."
+KEY_DATA=$(unraid-api apikey --create \
+  --name "temp deployment key" \
+  --roles ADMIN \
+  --description "Temporary key for deployment $(date)" \
+  --json)
+
+# 2. Extract the API key
+API_KEY=$(echo "$KEY_DATA" | jq -r '.key')
+echo "API key created successfully"
+
+# 3. Use the key for operations
+echo "Configuring services..."
+curl -H "Authorization: Bearer $API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"provider": "azure", "clientId": "your-client-id"}' \
+  http://localhost:3001/graphql
+
+# 4. Clean up (always runs, even on error)
+trap 'echo "Cleaning up..."; unraid-api apikey --delete --name "temp deployment key"' EXIT
+
+echo "Deployment completed successfully"
+```
+
+## 命令参考
+
+### 创建命令选项
+
+| 标志                      | 描述       | 示例                                |
+| ----------------------- | -------- | --------------------------------- |
+| `--name <name>`         | 密钥名称（必需） | `--name "my key"`                 |
+| `--roles <roles>`       | 逗号分隔的角色  | `--roles ADMIN,VIEWER`            |
+| `--permissions <perms>` | 资源：操作对   | `--permissions "DOCKER:READ_ANY"` |
+| `--description <desc>`  | 密钥描述     | `--description "CI/CD key"`       |
+| `--overwrite`           | 替换现有密钥   | `--overwrite`                     |
+| `--json`                | 机器可读输出   | `--json`                          |
+
+### 可用角色
+
+- `ADMIN` - 完整系统访问
+- `CONNECT` - Unraid Connect 功能
+- `VIEWER` - 只读访问
+- `GUEST` - 限制访问
+
+### 可用资源和操作
+
+**资源：** `ACTIVATION_CODE`, `API_KEY`, `ARRAY`, `CLOUD`, `CONFIG`, `CONNECT`, `CONNECT__REMOTE_ACCESS`, `CUSTOMIZATIONS`, `DASHBOARD`, `DISK`, `DISPLAY`, `DOCKER`, `FLASH`, `INFO`, `LOGS`, `ME`, `NETWORK`, `NOTIFICATIONS`, `ONLINE`, `OS`, `OWNER`, `PERMISSION`, `REGISTRATION`, `SERVERS`, `SERVICES`, `SHARE`, `VARS`, `VMS`, `WELCOME`
+
+**操作：** `CREATE_ANY`, `CREATE_OWN`, `READ_ANY`, `READ_OWN`, `UPDATE_ANY`, `UPDATE_OWN`, `DELETE_ANY`, `DELETE_OWN`
+
+### 删除命令选项
+
+| 标志              | 描述         | 示例                |
+| --------------- | ---------- | ----------------- |
+| `--delete`      | 启用删除模式     | `--delete`        |
+| `--name <name>` | 要删除的密钥（可选） | `--name "my key"` |
+
+**注意：** 如果省略 `--name`，命令将以交互方式运行。
+
+## 最佳实践
+
+:::info[Security 最佳实践]
+**最小权限**
+
+- 尽可能使用特定权限代替 ADMIN 角色
+- 示例：`--permissions "DOCKER:READ_ANY"` 而不是 `--roles ADMIN`
+
+**密钥生命周期管理**
+
+- 使用后始终清理临时密钥
+- 安全地存储 API 密钥（环境变量、秘密管理）
+- 使用描述性名称和描述进行审计跟踪
+:::
+
+### 错误处理
+
+- 每个命令后检查退出代码 (`$?`)
+- 在 bash 脚本中使用 `set -e` 实现快速失败
+- 使用 `trap` 实现适当的清理
+
+### 密钥命名
+
+- 使用包含用途和日期的描述性名称
+- 名称必须仅包含字母、数字和空格
+- 支持 Unicode 字母
+
+## 故障排除
+
+### 常见问题
+
+:::note[Common 错误信息]
+**"API 密钥名称只能包含字母、数字和空格"**
+
+- **解决方法：** 删除特殊字符如连字符、下划线或符号
+
+**"名为 'x' 的 API 密钥已存在"**
+
+- **解决方法：** 使用 `--overwrite` 标志或选择不同名称
+
+**"请为密钥添加至少一个角色或权限"**
+
+- **解决方法：** 指定 `--roles` 或 `--permissions`（或两者皆有）
+:::
+
+### 调试模式
+
+为故障排除，使用调试日志运行：
+
+```bash
+LOG_LEVEL=debug unraid-api apikey --create --name "debug key" --roles ADMIN
+```

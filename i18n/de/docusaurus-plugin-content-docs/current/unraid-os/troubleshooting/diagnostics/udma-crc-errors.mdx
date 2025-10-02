@@ -1,0 +1,142 @@
+---
+sidebar_position: 2
+sidebar_label: UDMA CRC-Fehler
+---
+
+# UDMA CRC-Fehler
+
+**%%UDMA|udma%% %%CRC-Fehler|crc-errors%%** ([%%SMART|smart%% Attribut 199](../../system-administration/monitor-performance/smart-reports-and-disk-health.mdx)) sind bei Unraid-Nutzern typisch und treten häufig in Berichten zur Laufwerksgesundheit auf. Für die meisten Benutzer weisen diese Fehler auf ein Kommunikationsproblem zwischen dem Laufwerk und dem Server hin, anstatt auf einen Ausfall des Laufwerks selbst.
+
+Tritt ein %%CRC-Fehler|crc-errors%% auf, erkennt das Laufwerk, dass Daten nicht korrekt vom Host empfangen wurden. Unraid versucht automatisch, die Daten erneut zu senden. Wenn das erneute Senden erfolgreich ist, wird der Vorgang wie gewohnt fortgesetzt, obwohl möglicherweise langsamere Schreibgeschwindigkeiten aufgrund der Wiederholungsversuche auftreten. Diese Ereignisse werden im %%syslog|syslog%% protokolliert.
+
+If recovery attempts fail after several retries, Unraid treats it as a read error. In %%parity|parity%%-protected %%arrays|array%%, Unraid will attempt to rewrite the affected sector using %%parity|parity%% and data from other drives. If this rewrite is successful, operation resumes; if not, the drive is disabled and marked with a red 'x' in the %%WebGUI|web-gui%%.
+
+<details>
+  <summary><strong>Was ist ein CRC-Fehler? (technische Erklärung)</strong> - Klicken zum Erweitern/Zusammenklappen</summary>
+
+  A **%%cyclic redundancy check (CRC)|crc%%** is a mathematical checksum that detects accidental changes to raw data during transmission. In the context of %%UDMA|udma%% (ultra direct memory access), %%CRC errors|crc-errors%% mean the data sent between your drive and controller failed this integrity check. This usually indicates a physical communication issue - such as a loose or faulty cable - rather than a problem with the drive's platters or flash memory.
+</details>
+
+---
+
+## Mögliche Ursachen für UDMA CRC-Fehler
+
+%UDMA CRC-Fehler|crc-errors%% weisen auf Übertragungsprobleme zwischen Ihren Laufwerken und dem System hin. Wenn sie nicht kontrolliert werden, können diese Fehler Datenkorruption, Leistungsprobleme und Laufwerksausfälle verursachen. Die Ursachen zu verstehen hilft Ihnen, gezielte Lösungen zu implementieren, anstatt auf Vermutungen zu setzen.
+
+<h4>Häufige Ursachen zur Untersuchung</h4>
+
+- **Lose oder schlecht sitzende SATA-Kabel:** SATA-Stecker sind nicht sehr robust und können sich durch Vibration oder Kabelspannung leicht lösen. Vermeiden Sie enge Kabelbündelungen, da dies zu Übersprechen und Störungen führen kann.
+- **Defekte SATA-Kabel:** Beschädigte oder minderwertige Kabel sind häufige Ursachen für %%CRC-Fehler|crc-errors%%.
+- **Probleme bei der Stromversorgung:** Unzureichende oder instabile Stromversorgung, oft durch Splitterkabel oder ein überlastetes Netzteil, kann zu sporadischen Fehlern führen.
+- **Nicht vollständig eingesetzter Festplatten-Controller:** Kommunikationsfehler können auftreten, wenn die Controller-Karte nicht vollständig in ihren Steckplatz eingesetzt ist.
+- **Fehler in der Laufwerkshardware:** Auch wenn selten, kann ein ausfallendes Laufwerk ebenfalls CRC-Fehler erzeugen.
+- **Kabelführungsprobleme:**
+  - **Bindestraps:** Wenn Binde-Straps zur Kabelverwaltung verwendet werden, halten Sie sie locker, nicht eng oder übermäßig fest. Ideal ist die Verwendung von Klettbändern.
+  - **Verlauf von Strom- und Datenkabeln:** Vermeiden Sie es, Stromkabel neben SATA-Datenkabeln zu verlegen. Wenn sie sich berühren oder sehr nahe beieinander liegen müssen, sollten sie sich im 90-Grad-Winkel kreuzen, um Störungen zu minimieren.
+  - **Biegen von SATA-Kabeln:** SATA-Kabel sollten niemals erzwungen werden, um 90-Grad-Biegungen zu machen. Dies kann das Kabel beschädigen und Kommunikationsprobleme verursachen.
+
+---
+
+## Wiederherstellungsprozess
+
+Wenn Sie %%CRC-Fehler|crc-errors%% bemerken, ist der erste Schritt, die SATA- und Stromkabel zu Ihren Laufwerken sorgfältig zu überprüfen und neu zu verbinden. Ersetzen Sie alle Kabel, die beschädigt erscheinen oder nicht sicher sitzen. Wenn Fehler weiterhin bestehen, überprüfen Sie Ihre Stromversorgung und Controller-Anschlüsse und erwägen Sie das Austauschen von Kabeln oder Ports, um das Problem einzugrenzen.
+
+Wenn %%CRC-Fehler|crc-errors%% nach Behebung von Verkabelungs- und Stromproblemen weiterhin auftreten, sind weitere Untersuchungen erforderlich, um einen ausfallenden Controller oder ein ausfallendes Laufwerk auszuschließen.
+
+---
+
+## CRC-Fehlerindikatoren verstehen
+
+### Gelegentliche vs. häufige Fehler
+
+<details>
+  <summary><strong>Klicken zum Erweitern/Reduzieren</strong></summary>
+
+  Das Verständnis der Häufigkeit und das Muster von %%CRC-Fehlern|crc-errors%% hilft Ihnen, die Dringlichkeit Ihrer Antwort zu bestimmen. Nicht alle Fehler erfordern sofortige Maßnahmen, aber Muster können zugrunde liegende Probleme aufdecken, die Aufmerksamkeit erfordern.
+
+  <h4>Gelegentliche Fehler (niedrige Bedenken)</h4>
+  Einige %%CRC-Fehler|crc-errors%% über Wochen oder Monate hinweg sind normalerweise kein Grund zur Sorge. Diese isolierten Vorfälle können durch vorübergehende Stromschwankungen, Kabelbewegungen während der Wartung oder andere vorübergehende Probleme verursacht werden, die sich von selbst lösen.
+
+  <h4>Häufige Fehler (hohe Bedenken)</h4>
+  Tägliche oder wöchentliche %%CRC-Fehler|crc-errors%% oder schnell ansteigende Fehlerraten deuten auf ein anhaltendes Problem hin, das sofortige Untersuchung erfordert. Dieses Muster weist oft auf Hardwareprobleme wie lose Verbindungen, defekte Kabel oder Probleme mit der Stromversorgung hin, die sich mit der Zeit nur verschlimmern werden.
+
+  <h4>Wann man Maßnahmen ergreifen sollte</h4>
+  Untersuchen Sie sofort, wenn Fehler häufig sind oder zunehmen. Überprüfen Sie Ihre Verkabelung und Stromversorgung auf intermittierende Probleme und überwachen Sie die Fehlerraten, um sich verschlechternde Bedingungen zu erkennen. Ziehen Sie vorbeugende Wartungsmaßnahmen in Betracht, wenn Fehler bestehen bleiben, da diese Probleme sich selten von selbst lösen und zu schwerwiegenderen Ausfällen führen können.
+</details>
+
+### Anzahl der ausstehenden Sektoren
+
+<details>
+  <summary><strong>Klicken zum Erweitern/Reduzieren</strong></summary>
+
+  Der **Aktuelle anhängige Sektoranzahl** ([%%SMART|smart%% Attribut 197](../../system-administration/monitor-performance/smart-reports-and-disk-health.mdx)) ist ein kritischer Indikator, der oft neben %%CRC-Fehlern|crc-errors%% erscheint. Diese Kombination weist auf ein ernstes Problem hin, das sofortige Aufmerksamkeit und sorgfältige Überwachung erfordert.
+
+  Anhängige Sektoren zeigen auf, dass die Festplattenbereiche möglicherweise beim Zugriff nicht lesbar sind. Dies sind Sektoren, die Lese-Fehler erfahren haben und nun vom Laufwerksfirmware als potenziell problematisch markiert wurden. Wenn anhängige Sektoren neben %%CRC-Fehlern|crc-errors%% auftreten, deutet dies darauf hin, dass Kommunikationsprobleme physische Schäden am Laufwerk verursachen, die Fähigkeit, Daten zuverlässig zu speichern und abzurufen, erschweren.
+
+  <h4>Warum diese Kombination gefährlich ist</h4>
+  %%CRC-Fehler|crc-errors%% deuten auf Kommunikationsprobleme zwischen Laufwerk und Controller hin, während anhängige Sektoren anzeigen, dass einige Bereiche der Festplatte unzuverlässig werden. Zusammen schaffen sie eine Hochrisikosituation, in der der Schutz Ihrer Daten gefährdet sein könnte. Wenn währenddessen ein weiteres Laufwerk ausfällt und dieses noch anhängige Sektoren hat, könnte Ihre Fähigkeit zur Datenwiederherstellung schwer beeinträchtigt werden, was die [Datenwiederherstellung](../../troubleshooting/common-issues/data-recovery.mdx) gefährden könnte.
+
+  Wenn Sie diese Kombination sehen, sollten Sie:
+
+  - **Sofort** alle wichtigen Daten sichern, die nicht bereits geschützt sind.
+  - Check the drive's health using extended %%SMART|smart%% tests, and consider drive replacement if pending sectors continue to increase.
+  - Beobachten Sie die Situation genau auf weitere Warnzeichen und seien Sie bereit, Ihr Array neu aufzubauen, wenn das Laufwerk unzuverlässig wird.
+</details>
+
+### Beständigkeit der CRC-Anzahl
+
+<details>
+  <summary><strong>Klicken zum Erweitern/Reduzieren</strong></summary>
+
+  Die Anzahl der %%CRC-Fehler|crc-errors%% in den [%%SMART|smart%% Daten](../../system-administration/monitor-performance/smart-reports-and-disk-health.mdx) Ihres Laufwerks wird nie zurückgesetzt - sie steigt nur an.
+
+  Diese kumulative Natur bedeutet:
+
+  - Die Anzahl repräsentiert die gesamten Fehler über die Lebensdauer des Laufwerks
+  - Überwachen Sie die Steigerungsrate, um sich verschlechternde Bedingungen zu identifizieren
+  - Sobald ein Fehler auftritt, wird er dauerhaft aufgezeichnet
+  - Verwenden Sie die Anzahl, um vorbeugende Wartung zu planen, bevor Probleme eskalieren
+
+  Geraten Sie nicht in Panik, wenn Sie ein paar CRC-Fehler sehen, aber verfolgen Sie die Anstiegsrate. Ein plötzlicher Anstieg der Fehlerrate zeigt oft ein neues Problem an, das sofortige Aufmerksamkeit erfordert.
+</details>
+
+### Dashboard-Warnsymbol
+
+<details>
+  <summary><strong>Klicken zum Erweitern/Reduzieren</strong></summary>
+
+  Wenn Unraid einen %%CRC-Fehler|crc-errors%% erkennt, zeigt das **Dashboard** ein Warnsymbol neben dem betroffenen Laufwerk an. Dies ist eine %%SMART|smart%% Warnung, die Sie dazu veranlassen sollte, das Problem zu überprüfen und zu beheben.
+
+  <h4>Warum das wichtig ist</h4>
+
+  - Frühwarnsystem für potenzielle Hardwareprobleme
+  - Hilft, Datenverlust zu verhindern, indem Probleme frühzeitig erkannt werden
+  - Weist darauf hin, wann vorbeugende Wartung erforderlich ist
+  - Teil von Unraid's proaktivem Überwachungssystem
+
+  Klicken Sie auf das Warnsymbol, um detaillierte %%SMART|smart%% Informationen anzuzeigen und die Warnung zur Kenntnis zu nehmen.
+</details>
+
+### Bestätigung von SMART-Warnungen
+
+<details>
+  <summary><strong>Klicken zum Erweitern/Reduzieren</strong></summary>
+
+  Um SMART-Warnungen zu bestätigen und zu löschen:
+
+  1. Klicken Sie auf das **orangefarbene Warnsymbol** neben dem betroffenen Laufwerk
+  2. Wählen Sie **Bestätigen** aus dem Optionsmenü
+  3. Bestätigen Sie die Aktion, wenn Sie dazu aufgefordert werden
+  4. Das Symbol wird **grün**, um die Bestätigung anzuzeigen
+
+  <h4>Was die Bestätigung bewirkt</h4>
+
+  - Entfernt die Warnung aus Ihrer unmittelbaren Ansicht
+  - Verfolgt, dass Sie das Problem gesehen haben
+  - Warnt nur erneut, wenn die Fehleranzahl weiter zunimmt
+  - Beibehaltung der Überwachung des zugrundeliegenden Problems
+
+  :::wichtig
+  Das Bestätigen einer Warnung behebt das zugrunde liegende Problem nicht – es zeigt lediglich Unraid an, dass Sie darüber informiert sind. Sie sollten dennoch die Ursache der %%CRC-Fehler|crc-errors%% untersuchen und beheben.
+  :::
+</details>

@@ -1,0 +1,250 @@
+---
+title: Programmgesteuerte API-Schlüsselverwaltung
+description: Erstellen, verwenden und löschen Sie API-Schlüssel programmgesteuert für automatisierte Workflows
+sidebar_position: 4
+---
+
+# Programmgesteuerte API-Schlüsselverwaltung
+
+Diese Anleitung erklärt, wie man API-Schlüssel mit der Unraid API CLI programmgesteuert erstellt, verwendet und löscht, um automatisierte Workflows und Skripte zu ermöglichen.
+
+## Übersicht
+
+Der Befehl `unraid-api apikey` unterstützt sowohl interaktive als auch nicht-interaktive Modi und eignet sich für:
+
+- Automatisierte Bereitstellungsskripte
+- CI/CD-Pipelines
+- Temporäre Zugangsbereitstellung
+- Infrastruktur-als-Code-Workflows
+
+:::tip[Quick Start]
+Springen Sie zum [kompletten Workflow-Beispiel](#complete-workflow-example), um alles in Aktion zu sehen.
+:::
+
+## Programmatische Erstellung von API-Schlüsseln
+
+### Grundlegende Erstellung mit JSON-Ausgabe
+
+Verwenden Sie das `--json`-Flag, um maschinenlesbare Ausgabe zu erhalten:
+
+```bash
+unraid-api apikey --create --name "workflow key" --roles ADMIN --json
+```
+
+**Ausgabe:**
+
+```json
+{
+    "key": "your-generated-api-key-here",
+    "name": "workflow key",
+    "id": "generated-uuid"
+}
+```
+
+### Erweiterte Erstellung mit Berechtigungen
+
+```bash
+unraid-api apikey --create \
+  --name "limited access key" \
+  --permissions "DOCKER:READ_ANY,ARRAY:READ_ANY" \
+  --description "Read-only access for monitoring" \
+  --json
+```
+
+### Umgang mit bestehenden Schlüsseln
+
+Verwenden Sie `--overwrite`, wenn ein Schlüssel mit demselben Namen existiert:
+
+```bash
+unraid-api apikey --create --name "existing key" --roles ADMIN --overwrite --json
+```
+
+:::warning[Key Ersatz]
+Das `--overwrite`-Flag wird den vorhandenen Schlüssel dauerhaft ersetzen. Der alte Schlüssel wird sofort ungültig gemacht.
+:::
+
+## Programmatisches Löschen von API-Schlüsseln
+
+### Nicht-interaktive Löschung
+
+Löschen Sie einen Schlüssel nach Namen ohne Aufforderungen:
+
+```bash
+unraid-api apikey --delete --name "workflow key"
+```
+
+**Ausgabe:**
+
+```
+Successfully deleted 1 API key
+```
+
+### JSON-Ausgabe für das Löschen
+
+Verwenden Sie das `--json`-Flag für maschinenlesbare Löschbestätigung:
+
+```bash
+unraid-api apikey --delete --name "workflow key" --json
+```
+
+**Erfolgs-Ausgabe:**
+
+```json
+{
+    "deleted": 1,
+    "keys": [
+        {
+            "id": "generated-uuid",
+            "name": "workflow key"
+        }
+    ]
+}
+```
+
+**Fehlerausgabe:**
+
+```json
+{
+    "deleted": 0,
+    "error": "No API key found with name: nonexistent key"
+}
+```
+
+### Fehlerbehandlung
+
+Wenn der angegebene Schlüssel nicht existiert:
+
+```bash
+unraid-api apikey --delete --name "nonexistent key"
+# Output: No API keys found to delete
+```
+
+**JSON Fehlerausgabe:**
+
+```json
+{
+    "deleted": 0,
+    "message": "No API keys found to delete"
+}
+```
+
+## Komplettes Workflow-Beispiel
+
+Hier ist ein vollständiges Beispiel zur Bereitstellung von temporärem Zugriff:
+
+```bash
+#!/bin/bash
+set -e
+
+# 1. Create temporary API key
+echo "Creating temporary API key..."
+KEY_DATA=$(unraid-api apikey --create \
+  --name "temp deployment key" \
+  --roles ADMIN \
+  --description "Temporary key for deployment $(date)" \
+  --json)
+
+# 2. Extract the API key
+API_KEY=$(echo "$KEY_DATA" | jq -r '.key')
+echo "API key created successfully"
+
+# 3. Use the key for operations
+echo "Configuring services..."
+curl -H "Authorization: Bearer $API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"provider": "azure", "clientId": "your-client-id"}' \
+  http://localhost:3001/graphql
+
+# 4. Clean up (always runs, even on error)
+trap 'echo "Cleaning up..."; unraid-api apikey --delete --name "temp deployment key"' EXIT
+
+echo "Deployment completed successfully"
+```
+
+## Befehlsübersicht
+
+### Befehlserstellungsoptionen
+
+| Kennzeichnung           | Beschreibung                     | Beispiel                          |
+| ----------------------- | -------------------------------- | --------------------------------- |
+| `--name <name>`         | Schlüsselname (erforderlich)     | `--name "mein Schlüssel"`         |
+| `--roles <roles>`       | Komma-getrennte Rollen           | `--roles ADMIN,VIEWER`            |
+| `--permissions <perms>` | Ressource:Aktionspaare           | `--permissions "DOCKER:READ_ANY"` |
+| `--description <desc>`  | Schlüsselbeschreibung            | `--description "CI/CD Schlüssel"` |
+| `--overwrite`           | Existierenden Schlüssel ersetzen | `--overwrite`                     |
+| `--json`                | Maschinenlesbare Ausgabefunktion | `--json`                          |
+
+### Verfügbare Rollen
+
+- `ADMIN` - Voller Systemzugang
+- `CONNECT` - Unraid Connect Funktionen
+- `VIEWER` - Nur-Lesezugriff
+- `GUEST` - Eingeschränkter Zugriff
+
+### Verfügbare Ressourcen und Aktionen
+
+**Ressourcen:** `ACTIVATION_CODE`, `API_KEY`, `ARRAY`, `CLOUD`, `CONFIG`, `CONNECT`, `CONNECT__REMOTE_ACCESS`, `CUSTOMIZATIONS`, `DASHBOARD`, `DISK`, `DISPLAY`, `DOCKER`, `FLASH`, `INFO`, `LOGS`, `ME`, `NETWORK`, `NOTIFICATIONS`, `ONLINE`, `OS`, `OWNER`, `PERMISSION`, `REGISTRATION`, `SERVERS`, `SERVICES`, `SHARE`, `VARS`, `VMS`, `WELCOME`
+
+**Aktionen:** `CREATE_ANY`, `CREATE_OWN`, `READ_ANY`, `READ_OWN`, `UPDATE_ANY`, `UPDATE_OWN`, `DELETE_ANY`, `DELETE_OWN`
+
+### Befehlslöschungsoptionen
+
+| Kennzeichnung   | Beschreibung                       | Beispiel                  |
+| --------------- | ---------------------------------- | ------------------------- |
+| `--delete`      | Löschmodus aktivieren              | `--delete`                |
+| `--name <name>` | Zu löschender Schlüssel (optional) | `--name "mein Schlüssel"` |
+
+**Hinweis:** Wenn `--name` weggelassen wird, wird der Befehl interaktiv ausgeführt.
+
+## Beste Praktiken
+
+:::info[Security Beste Praktiken]
+**Minimale Berechtigungen**
+
+- Spezifische Berechtigungen anstelle der ADMIN-Rolle verwenden, wenn möglich
+- Beispiel: `--permissions "DOCKER:READ_ANY"` anstelle von `--roles ADMIN`
+
+**Schlüssel-Lebenszyklus-Management**
+
+- Temporäre Schlüssel immer nach Gebrauch bereinigen
+- API-Schlüssel sicher speichern (Umgebungsvariablen, Geheimnismanagement)
+- Verwenden Sie beschreibende Namen und Beschreibungen für Prüfpfade
+:::
+
+### Fehlerbehandlung
+
+- Überprüfen Sie Exit-Codes (`$?`) nach jedem Befehl
+- Verwenden Sie `set -e` in Bash-Skripten, um bei Fehlern schnell zu scheitern
+- Führen Sie eine ordnungsgemäße Reinigung mit `trap` durch
+
+### Schlüsselbenennung
+
+- Verwenden Sie beschreibende Namen, die Zweck und Datum enthalten
+- Namen müssen nur Buchstaben, Zahlen und Leerzeichen enthalten
+- Unicode-Buchstaben werden unterstützt
+
+## Fehlerbehebung
+
+### Häufige Probleme
+
+:::note[Common Fehlermeldungen]
+**"API-Schlüsselname darf nur Buchstaben, Zahlen und Leerzeichen enthalten"**
+
+- **Lösung:** Entfernen Sie Sonderzeichen wie Bindestriche, Unterstriche oder Symbole
+
+**"API-Schlüssel mit Namen 'x' existiert bereits"**
+
+- **Lösung:** Verwenden Sie das `--overwrite`-Flag oder wählen Sie einen anderen Namen
+
+**"Bitte fügen Sie mindestens eine Rolle oder Berechtigung zum Schlüssel hinzu"**
+
+- **Lösung:** Geben Sie entweder `--roles` oder `--permissions` an (oder beides)
+:::
+
+### Debug-Modus
+
+Führen Sie für die Fehlerbehebung mit Debug-Protokollierung aus:
+
+```bash
+LOG_LEVEL=debug unraid-api apikey --create --name "debug key" --roles ADMIN
+```

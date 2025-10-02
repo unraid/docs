@@ -1,0 +1,186 @@
+---
+sidebar_position: 1
+sidebar_label: ¿Qué es Unraid?
+---
+
+# ¿Qué es Unraid?
+
+Unraid is an embedded operating system designed to give you complete control over your hardware.  It functions as a robust network-attached storage (NAS) system, an %%application server|application-server%%, and a host for %%virtual machines (VMs)|vm%%.
+
+Unraid se instala en una unidad flash USB y arranca desde ella, cargándose en un sistema de archivos raíz en RAM. Utiliza un moderno kernel de Linux con controladores de hardware actualizados, permitiéndole funcionar en casi cualquier sistema x86\_64 de 64 bits mientras mantiene un mínimo de uso de memoria. Toda la configuración del sistema operativo se almacena en la unidad flash y se carga simultáneamente con el sistema operativo.
+
+Unraid cuenta con una [interfaz web fácil de usar](./explore-the-user-interface/tour-the-web-gui.mdx) para una gestión sencilla. Ofrece controles básicos para tareas comunes y configuraciones avanzadas para usuarios experimentados. Aunque sus valores predeterminados son adecuados para la mayoría de las personas, también permite personalización. Esta combinación de simplicidad y flexibilidad te ayuda a almacenar, proteger, compartir y disfrutar tu contenido de manera efectiva.
+
+**Las capacidades fundamentales de Unraid se encuentran en tres áreas principales:**
+
+<details>
+  <summary><h3>NAS definido por software</h3>Permitiendo a los usuarios compartir capacidad de almacenamiento por una red de manera eficiente.</summary>
+
+  ### Arreglos y Paridad
+
+  Unraid proporciona una solución simple y flexible para convertir cualquier sistema compatible con 64 bits en un dispositivo de Almacenamiento Conectado a la Red (NAS). Puede manejar una variedad de unidades, ya sea que se conecten a través de IDE, SATA o SAS, y admite diferentes tamaños de unidades. Esto significa que puedes agregar nuevas unidades una a la vez a medida que tus necesidades de almacenamiento crecen, sin tener que reorganizar tus datos existentes cuando expandes tu configuración.
+
+  The main job of an Unraid %%array|array%% is to organize and protect the data stored across several drives. It does this by using up to two special drives called %%parity drive|parity-drives%%s. These %%parity drive|parity-drives%%s are important because they help reconstruct your data if one of the other drives fails. In fact, with just one %%parity drive|parity-drives%%, you can protect all the other drives in your %%array|array%%, keeping your data safe. Plus, you can mix different sized drives and easily expand your storage over time, making Unraid a user-friendly option for anyone looking to manage their data effectively.
+
+  <details>
+    <summary><strong>Cómo funciona la paridad</strong> - Haz clic para expandir/contraer</summary>
+
+    En Unraid, la información de %%parity|paridad%% se actualiza en tiempo real. Para entender cómo funciona esto, imagina el contenido de un disco duro como un largo flujo de bits, donde cada bit es un cero o un uno. Sumando los valores del bit n en todos los discos y determinando si esa suma es par o impar, el bit de %%parity|paridad%% correspondiente se puede ajustar en consecuencia. Si un disco de datos falla, esta información de %%parity|paridad%% permite una determinación precisa de los valores exactos de los bits, facilitando una reconstrucción precisa en el disco de reemplazo.
+
+    Por ejemplo:
+
+    <div style={{ maxWidth: '600px', margin: '1rem auto' }}>
+      ![Sin Paridad](/img/No_parity_500px.png)
+    </div>
+
+    En la imagen de arriba, tres discos contienen flujos de bits que varían según el tamaño del dispositivo. Estos discos no están protegidos, por lo que si uno falla, se perderán los datos. Para protegerse contra fallos, necesitamos un cuarto disco como %%parity disk|disco de paridad%%, que debe ser igual o mayor que el disco de datos más grande.
+
+    Para establecer los bits de %%parity|paridad%%, encontramos el total para cada columna. Si la suma es par, el bit de %%parity|paridad%% es 0; si es impar, el bit de %%parity|paridad%% es 1.
+
+    Aquí está la misma imagen que antes, pero con %%paridad|parity%% calculada por cuadro:
+
+    <div style={{ maxWidth: '600px', margin: '1rem auto' }}>
+      ![Paridad](/img/Parity@500px.png)
+    </div>
+
+    Supongamos que el disco 2 en nuestro ejemplo ha fallado y se ha comprado un nuevo disco para reemplazarlo:
+
+    <div style={{ maxWidth: '600px', margin: '1rem auto' }}>
+      ![Falla del Disco](/img/Drive_failure@500px.png)
+    </div>
+
+    Para reconstruir los datos en el nuevo disco, determinamos el bit faltante en lugar de calcular el bit de %%parity|paridad%%. Para la columna 1, la suma es 0, por lo que el bit faltante es 0. Para la columna 6, con una suma de 1, el bit faltante es 1.
+
+    Reconstruir un disco usando %%paridad|parity%% protege contra la pérdida de datos y ofrece tolerancia a fallos, garantizando el acceso completo al sistema incluso si un disco falla.
+  </details>
+
+  ### User shares
+
+  Unraid es diferente de la mayoría de los sistemas %%RAID|raid%% porque guarda los datos en discos individuales en lugar de combinarlos en uno solo. Como %%root user|usuario root%%, puedes crear %%user shares|comparticiones de usuario%%, que son como carpetas de nivel superior que recopilan archivos de varios discos en la %%array|matriz%% o %%cache pool|pool de cache%%. Esto significa que no necesitas preocuparte por qué disco específico almacena tus archivos; están organizados para ti.
+
+  También puedes personalizar estas comparticiones para incluir o excluir ciertos discos y decidir cómo se distribuyen los archivos en tu almacenamiento. Además, puedes gestionar cómo los usuarios acceden a las comparticiones configurando opciones de red, como %%SMB|samba%% y %%NFS|nfs%%, y aplicando ajustes de seguridad. Para mantener los datos privados seguros, puedes crear cuentas de usuario y establecer límites de acceso para personas de confianza.
+
+  ```mdx-code-block
+
+    <div className="flex-container">
+      <figure className="flex-figure">
+        <img src="/img/User_shares_-_distribution@500px.png" alt="User shares distribution example" />
+
+        <figcaption>User shares - Distribution</figcaption>
+      </figure>
+
+      <figure className="flex-figure">
+        <img src="/img/User_shares_-_access@500px.png" alt="User shares distribution example larger" />
+
+        <figcaption>User shares - Access</figcaption>
+      </figure>
+    </div>
+
+  ```
+
+  ### Entendiendo las Unidades de Caché
+
+  Una de las características destacadas de Unraid es el %%cache drive|disco de cache%%, que ayuda a acelerar la transferencia de datos. Cuando utilizas un %%cache drive|disco de cache%% junto a tres o más discos, puedes escribir datos hasta **tres veces más rápido**. Cuando guardas archivos en una %%user shares|compartición de usuario%% con un %%cache drive|disco de cache%%, los datos primero se almacenan en el %%cache drive|disco de cache%%. Esto permite una escritura rápida, y luego, un proceso llamado %%Mover|mover%% transfiere los datos al %%array|matriz%% de almacenamiento principal, a menudo durante la noche, liberando espacio en el %%cache drive|disco de cache%%.
+
+  Para mayor seguridad de los datos, puedes configurar un %%cache pool|pool de cache%% con múltiples discos. Esta configuración no solo incrementa el espacio de almacenamiento, sino que también utiliza tecnologías como %%ZFS|zfs%% o %%BTRFS|btrfs%% para proporcionar protección adicional para tus datos, similar a %%RAID 1|raid1%%. En general, la gestión de comparticiones y %%cache drives|discos de cache%% de Unraid crea una solución de almacenamiento flexible, eficiente y segura.
+
+  [Aprende más sobre cómo configurar comparticiones y caché aquí.](../using-unraid-to/manage-storage/array-configuration.mdx)
+
+  <div style={{ maxWidth: '600px', margin: '1rem auto' }}>
+    ![Cómo funciona la captura de datos con Cache Pool](/img/Cache-pool.gif)
+  </div>
+</details>
+
+<details>
+  <summary><h3>Servidor de Aplicaciones</h3>Facilitando la ejecución de aplicaciones contenedorizadas.</summary>
+
+  Unraid transforma tu solución de almacenamiento en un %%application server|servidor de aplicaciones%% versátil a través de la contenedorización de Docker. Este enfoque supera las limitaciones tradicionales de NAS al mismo tiempo que mantiene la estabilidad del sistema y la facilidad de uso.
+
+  Las soluciones tradicionales de NAS presentan tres desafíos clave para el alojamiento de aplicaciones:
+
+  1. **Problemas de compatibilidad de sistemas operativos** - Incapacidad para ejecutar aplicaciones diseñadas para diferentes sistemas operativos.
+  2. **Gestión compleja del ciclo de vida** - Experiencias de instalación difíciles pueden dejar artefactos residuales después de la eliminación.
+  3. **Conflicto de aplicaciones** - Los componentes del software pueden interferir entre ellos o con las operaciones del sistema.
+
+  El uso de Docker por parte de Unraid aborda estos desafíos de tres maneras clave:
+
+  1. **Independencia del SO** - Cada contenedor se ejecuta en su propio entorno Linux, eliminando problemas de compatibilidad con el sistema operativo anfitrión.
+  2. **Implementación basada en imágenes** - Paquetes de aplicaciones preconfigurados permiten la instalación con un solo clic y la desinstalación completa de aplicaciones.
+  3. **Aislamiento de procesos** - Las aplicaciones en contenedores operan en espacios de usuario separados, evitando cualquier conflicto entre los software.
+
+  Los contenedores de Docker te permiten ejecutar aplicaciones en entornos aislados y ligeros sin la sobrecarga asociada con las %%virtual machines|máquinas virtuales%%. Unraid simplifica el uso de Docker proporcionando acceso a miles de aplicaciones preconfiguradas a través de [Docker Hub](https://hub.docker.com/) y [Community Applications](../using-unraid-to/run-docker-containers/community-applications.mdx). Este enfoque contenedorizado permite a los usuarios de Unraid ejecutar múltiples aplicaciones simultáneamente sin problemas de compatibilidad. También ayuda a mantener el sistema organizado mediante el uso de paquetes de aplicaciones auto-contenidos y facilita la mejora de las capacidades del servidor a través del ecosistema de Docker.
+
+  :::note
+  Para configuraciones avanzadas de Docker, consulta [Ejecutar contenedores Docker](../using-unraid-to/run-docker-containers/managing-and-customizing-containers.mdx).
+  :::
+</details>
+
+<details>
+  <summary><h3>Plataforma de Virtualización</h3> Ejecución de máquinas virtuales con rendimiento cercano al hardware nativo.</summary>
+
+  Unraid funciona como un anfitrión de virtualización, usando un %%hypervisor|hypervisor%% para asignar recursos de forma segura a los huéspedes virtualizados. Esto te permite ejecutar diversas aplicaciones en entornos aislados, yendo más allá del simple almacenamiento conectado a la red.
+
+  :::tip
+  Para utilizar la virtualización de hardware en Unraid, asegúrate de que tu CPU, chipset, BIOS y controladores de dispositivos sean compatibles. Una lista completa de requisitos está disponible en la [guía de configuración de VM](../using-unraid-to/create-virtual-machines/overview-and-system-prep.mdx). Si tu servidor no cumple con estos requisitos, el menú %%VMs|vm%% estará deshabilitado en el %%WebGUI|web-gui%% de Unraid.
+  :::
+
+  <details>
+    <summary><strong>Beneficios de Usar Máquinas Virtuales (VMs)</strong> - Haz clic para expandir/contraer</summary>
+
+    Aunque los contenedores Docker son populares para aplicaciones basadas en Linux, las %%VMs|vm%% mejoran la flexibilidad y eficiencia de la configuración de tu servidor Unraid y ofrecen ventajas distintivas en tu servidor Unraid:
+
+    - **Aislamiento:** Las %%VMs|vm%% se ejecutan de manera independiente en entornos separados, asegurando que la falla de una no afecte a las demás.
+
+    - **Consolidación:** Consolida múltiples servidores físicos en una sola máquina Unraid, reduciendo las necesidades de hardware y simplificando el mantenimiento.
+
+    - **Asignación de Recursos:** Unraid te permite asignar recursos específicos de CPU, memoria, almacenamiento y red a cada %%VM|vm%%, asegurando que las cargas de trabajo críticas reciban los recursos necesarios.
+
+    - **Pruebas y Desarrollo:** Las %%VMs|vm%% permiten la creación y prueba fácil de software en diferentes entornos sin requerir múltiples máquinas físicas.
+
+    - **Seguridad:** El aislamiento de las %%VMs|vm%% mejora la seguridad, dificultando la propagación de malware entre ellas.
+
+    - **Soporte de Aplicaciones Legado:** Las %%VMs|vm%% te permiten ejecutar aplicaciones o sistemas operativos antiguos que pueden no ser compatibles con hardware moderno.
+
+    - **Aislamiento de Recursos:** Cada %%VM|vm%% puede tener recursos dedicados, previniendo problemas de rendimiento entre %%VMs|vm%%.
+
+    - **Exceso de Recursos:** Puedes ejecutar más %%VMs|vm%% de las que los recursos físicos permiten típicamente, entendiendo que no todas utilizarán completamente sus asignaciones al mismo tiempo.
+  </details>
+
+  <details>
+    <summary><strong>Soporte de Dispositivos Asignables para Virtualización</strong> - Haz clic para expandir/contraer</summary>
+
+    Unraid's %%KVM|kvm%%-based virtualization uses modern tools for flexible hardware assignment while maintaining host stability.
+
+    Los componentes clave incluyen:
+
+    **Tecnologías centrales**
+
+    - %%QEMU|qemu%% y %%libvirt|libvirt%%: Manejan ciclos de vida de %%VM|maquina virtual%%.
+    - Passthrough de dispositivo %%VFIO|vfio%%: Proporciona acceso directo al hardware.
+    - %%VirtIO|virtio%% y %%VirtFS|virtfs%%: Optimizar el rendimiento de almacenamiento y red.
+    - %%OVMF|ovmf%%: Soporta %%UEFI|uefi%% y Arranque Seguro.
+
+    **Recursos asignados**
+
+    - **Computación:** Núcleos de CPU dedicados a través de %%CPU pinning|fijación-de-cpu%%.
+    - **Memoria:** RAM aislada.
+    - **Almacenamiento:** Discos virtuales optimizados para SSD vía %%VirtIO|virtio%%.
+    - **Periféricos:** Paso completo de dispositivo PCI/USB, incluyendo soporte de %%GPU passthrough|passthrough-gpu%%.
+
+    **Flexibilidad de la plataforma**
+
+    - Soporta tipos de máquinas %%i440fx|i440fx%% y %%Q35|q35%%.
+    - Compatible con cargas de trabajo %%Xen HVM|xen-hvm%% y %%Xen PV|xen-pv%%.
+    - Habilita la virtualización de hardware %%Intel VT-x|intel-vt-x%% y %%AMD-V|amd-v%%.
+
+    <div style={{ maxWidth: '600px', margin: '1rem auto' }}>
+      ![Recursos asignables](/img/KVM@2x.png)
+    </div>
+  </details>
+
+  Para los pasos de configuración de %%VM|vm%%, consulta [Crear máquinas virtuales](../using-unraid-to/create-virtual-machines/overview-and-system-prep.mdx).
+
+  :::caution
+  El %%GPU passthrough|passthrough de GPU%% requiere hardware compatible (consulta [configuración de VM](../using-unraid-to/create-virtual-machines/vm-setup.mdx)).
+  :::
+</details>

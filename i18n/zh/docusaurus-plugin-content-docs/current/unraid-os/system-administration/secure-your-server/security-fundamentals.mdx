@@ -1,0 +1,172 @@
+---
+sidebar_position: 1
+sidebar_label: 安全基础
+---
+
+# 安全基础
+
+:::note[Principle 最低权限]
+The principle of least privilege means granting users and devices only the minimum access necessary to perform their tasks, never more. This approach limits potential damage from compromised accounts or accidental actions and is a core concept in modern security, including zero trust models. Apply this principle throughout your Unraid configuration, especially when creating share users and assigning permissions.
+:::
+
+## 控制共享文件夹的访问
+
+### 选择网络文件共享协议
+
+When sharing files with your Unraid server over your home or office network, you have some choices about how to connect. Unraid supports popular methods, known as communication protocols, that help devices talk to each other.
+
+| 协议                      | 主要用途              | 优势                               | 劣势                                | 推荐使用场景                                                        |
+| ----------------------- | ----------------- | -------------------------------- | --------------------------------- | ------------------------------------------------------------- |
+| %%SMB\|samba%% (服务器消息块) | 原生Windows/macOS集成 | 内置Windows支持；支持打印机和虚拟机存储；处理大文件速度快 | 旧版本（SMBv1）不安全；处理小文件速度慢            | 适用于Windows和Mac网络；资源混合环境（打印机、虚拟机）                              |
+| %%NFS\|nfs%% (网络文件系统)   | 本地 Unix/Linux 集成  | 针对 Linux/Unix 优化；对小文件实现高效；低开销    | 需要额外的工具用于Windows；网络可靠性至关重要；锁定功能有限 | 适用于Linux和Unix环境；小文件操作；静态数据工作负载                                |
+| %%FTP\|ftp%% (文件传输协议)   | 跨平台兼容性            | 通用客户端支持；简单设置；批量文件传输              | 明文协议，无加密；凭证未加密发送；过时的安全性           | 仅用于非敏感或旧系统传输；为安全文件传输使用 FTPS（FTP over TLS）或 SFTP（FTP over SSH） |
+
+:::important
+Starting with Unraid version 6.9, support for **%%AFP|AFP%% (Apple Filing Protocol)** has been removed. To ensure that your Mac computers work well with your Unraid server, including features like Time Machine backups, go to ***Settings → SMB*** and turn on **Enhanced macOS interoperability**.
+:::
+
+Deciding which protocol to use depends on the types of devices you have and what you need to do with your files. By default, Unraid enables %%SMB|samba%% because it's widely supported by modern Windows and macOS systems. %%NFS|nfs%% and %%FTP|ftp%% are turned off but can be enabled if needed.
+
+例如，如果您使用 %%FTP|ftp%% 客户端连接到 Unraid 服务器，您可以轻松传输大文件，甚至需要时暂停和恢复上传或下载。
+
+---
+
+### 管理共享的网络可见性
+
+您可以通过以下方式在 Unraid 中为网络文件夹（共享）设置不同的访问权限：
+
+1. **转到共享选项卡**：首先点击%%WebGUI|web-gui%%中的**共享**选项卡。
+
+2. **选择一个共享**：选择您想要调整的现有共享。
+
+3. **滚动到安全设置**：在共享设置页面底部，您将看到针对每个启用协议的安全选项部分。
+
+4. **调整导出设置**：此设置控制共享在网络中的显示方式。您有三种选项：
+
+   - **是**：共享是可见的，任何浏览网络的人都可以访问它。
+   - **是（隐藏）**：共享不会出现在网络浏览列表中，但如果有人知道共享的名称，他们仍然可以访问。
+   - **否**：共享完全隐藏，通过该特定协议不可访问。
+
+通过调整这些选项，您可以管理每个共享的可见性和访问权限，从而更轻松地保持安全，同时确保合适的人可以使用 %%SMB|samba%%、%%NFS|nfs%% 或 %%FTP|ftp%% 进行访问。
+
+---
+
+### 设置用户权限用于共享
+
+共享安全性控制用户如何访问系统上的共享文件。您可以设置某个共享以要求用户名和密码来访问文件，限制为只读访问，或不需要凭证的完全公开访问。
+
+:::note\[Example]
+
+If you create a `movies` share on your Unraid server, you can choose whether to require a valid username and password just for reading data or allow public access. If you need to add users, a %%root user|root-user%% can create share users by following the process in [**User management**](./user-management.mdx#add-users).
+
+:::
+
+进入**共享**选项卡并选择一个共享，您会看到其设置，包括安全性部分，可以根据启用的协议管理此处的[访问权限](#managing-network-visibility-of-shares)。这样，您可以根据需要调整文件的访问权限。
+
+**安全**设置有以下选项：
+
+| 类型     | 解释                        | 常见使用场景               |
+| ------ | ------------------------- | -------------------- |
+| **公开** | 开放访问：每个人都可以读取和写入此文件夹。     | 适合非敏感信息，如共享媒体或公开下载。  |
+| **安全** | 限制访问：每个人可以读取，但只有特定用户可以写入。 | 适用于需要协作的共享项目，如团队文件夹。 |
+| **私有** | 限制访问：只有特定用户可以读取或写入。       | 适用于敏感信息，如财务记录或个人文件。  |
+
+:::caution[Windows SMB访问权限]
+由于更严格的安全策略，现代版本的Windows（Windows 10 1709+，Windows 11，服务器2019+）默认阻止访问**公共**（访客/匿名） %%SMB|samba%% 共享。尝试连接到公共共享通常会失败，除非您在Windows设置中手动启用不安全的访客登录，但出于安全原因不建议这样做。
+
+**最佳实践：** 为您的 Unraid 共享设置用户帐户和密码，并使用这些凭据从 Windows 可靠访问。
+
+**凭证限制：** Windows每次仅允许对一个服务器使用一组登录凭证。如果尝试使用不同凭证连接同一服务器上的不同共享，连接将失败。
+
+**解决方法：** 如果遇到凭证问题，请尝试使用服务器名称连接一个共享，而使用其IP地址连接另一个共享。Windows将它们视为不同的服务器。
+
+有关更多详细信息，请参阅[Microsoft关于SMB访客访问的文档](https://learn.microsoft.com/en-us/windows-server/storage/file-server/enable-insecure-guest-logons-smb2-and-smb3)。
+:::
+
+---
+
+## 网络安全
+
+### 设置强大的 root 密码
+
+When you first access the %%WebGUI|web-gui%% after install, you are required to set a password for the %%root user|root-user%%.  However, Unraid does not enforce password complexity requirements - it's up to you as the user to set the degree of password security for your server.
+
+- 转到**用户**选项卡，选择%%root用户|root-user%%并设置密码。
+- 考虑使用来自[社区应用](../../using-unraid-to/run-docker-containers/community-applications.mdx)的**Dynamix密码验证器**插件进行实时强度反馈。
+- 有关更多指导，请查看在线提供的[Bitwarden密码强度工具](https://bitwarden.com/)。
+
+### 审查和最小化端口转发
+
+Forwarding ports from your router to your Unraid server can be necessary for remote access to services, but it exposes your network to significant risks. Only forward ports that you fully understand and need.
+
+| 端口         | 典型用途                                | 安全风险                                      | 更安全的替代方案                                                                             |
+| ---------- | ----------------------------------- | ----------------------------------------- | ------------------------------------------------------------------------------------ |
+| 80 / 443   | %%WebGUI\|web-gui%% (HTTP/HTTPS)    | 暴露管理界面；如果密码较弱，存在被拦截或暴力破解的风险               | 使用 Unraid Connect 或 VPN 进行远程访问，请注意 Unraid Connect 需要进行 WAN 端口转发或使用 UPnP（而不是始终在线的云中继） |
+| 445        | %%SMB\|samba%% (文件共享)               | 将共享暴露在互联网上；存在数据盗窃或删除的风险                   | 使用VPN进行安全的远程文件访问                                                                     |
+| 111 / 2049 | %%NFS\|nfs%%                        | 公开 %%NFS\|nfs%% 共享；与 %%SMB\|samba%% 类似的风险 | 使用VPN进行远程访问                                                                          |
+| 22 / 23    | %%SSH\|ssh%%/Telnet                 | 暴露控制台访问；存在暴力破解或凭证盗窃的风险                    | 使用 %%SSH\|ssh%% 密钥或 VPN；永远不要转发 Telnet                                                |
+| 57xx       | %%VNC\|vnc-session%% 用于 %%VMs\|vm%% | 公开 %%VM\|vm%% 控制台；有未经授权的远程访问风险            | 使用 Unraid Connect 或 VPN                                                              |
+
+:::tip
+如果看到不理解的端口转发规则，请删除它并监控问题。如有必要，可以重新添加。
+:::
+
+:::caution
+Never put your server in your network's DMZ. Placing your Unraid server in the DMZ exposes all ports to the internet, dramatically increasing the risk of a compromise. Even with strong passwords, this is never recommended.
+:::
+
+---
+
+## 共享访问安全
+
+### 控制共享的可见性和权限
+
+- 使用 WebGUI 中的 **Shares** 选项卡设置每个共享的导出和安全设置。
+- 对于敏感数据，建议使用私人或安全共享。公共共享可被网络上的任何人访问，在现代Windows版本中默认被阻止以确保安全。
+- 为用户账户分配其角色所需的权限（最小特权）。
+- 尽可能限制共享访问给特定用户。
+
+### 仔细分配用户权限
+
+- 根据需要使用只读或读/写访问将用户分配给共享。
+- %%root用户|root-user%%账户用于系统管理，不能访问网络共享。为网络共享访问创建专用用户账户。
+- 定期检查用户权限并移除未使用账户。
+
+### 限制共享访问至私有或只读
+
+While passwordless access to shares is convenient, it can also put your data at risk if devices on your local network become compromised. This includes PCs, Macs, mobile devices, and IoT devices. By default, Unraid shares are set to be publicly readable and writable, meaning any device on your network could potentially steal, delete, or encrypt your files if it gets compromised. Additionally, malicious users can upload unwanted data to your server.
+
+- 在%%WebGUI|web-gui%%的**共享**选项卡中将敏感共享设置为**私有**。
+- 如果需要**公开**共享，请尽可能将其设置为**只读**。
+- 只将写入权限给予拥有强密码的授权用户。
+
+### 避免公开闪存共享，或使其保密
+
+The Unraid flash device contains critical system and configuration files. While it may be convenient to expose the flash share over %%SMB|samba%% for advanced configuration, this introduces significant risk if left public.
+
+- 仅在绝对必要时曝光闪存共享并将其设为**私有**。
+- 访问时要求用户名和强密码。
+- 在不使用时删除或禁用共享以降低风险。
+
+### 保持服务器更新
+
+Regular updates are essential for security. New vulnerabilities (CVEs) are discovered frequently, and Lime Technology actively issues patches for Unraid OS. Updating is only effective if you actually apply the updates.
+
+- 在%%WebGUI|web-gui%%中的***工具 → 更新OS***中检查更新。
+- 在***设置 → 通知***中启用通知，以便在有更新时收到提醒。
+- 通过**应用程序**选项卡更新插件和Docker容器，确保所有组件安全且兼容。
+- 及时应用更新，确保您的服务器免受已知威胁。
+
+### 使用安全的方法进行远程管理
+
+绝不要将%%WebGUI|web-gui%%直接暴露于互联网。相反，请使用安全的远程访问解决方案：
+
+- **%%Tailscale|tailscale%%** is a recommended option, with a dedicated plugin for Unraid. It creates a secure private network (tailnet) for accessing your server and services from anywhere, without the need to expose ports or configure complex firewall rules.
+- **%%WireGuard|wireguard%% VPN** is built into Unraid and provides a secure, encrypted tunnel for remote management.
+- **%%OpenVPN|openvpn%%** 可作为插件或Docker容器使用。
+- 许多现代路由器提供内置VPN支持 - 查看路由器文档了解设置。
+- [Unraid Connect](../../../unraid-connect/overview-and-setup.mdx)插件使得可以远程访问%%WebGUI|web-gui%%，但需要在路由器上转发端口。
+
+---
+
+\* “%%WireGuard|wireguard%%”和“%%WireGuard|wireguard%%”徽标是Jason A. Donenfeld的注册商标。

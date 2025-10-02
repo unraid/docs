@@ -1,0 +1,116 @@
+---
+sidebar_position: 2
+sidebar_label: Automatisiertes Flash-Backup
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+# Automatisiertes Flash-Backup
+
+Das Sichern Ihres Unraid-Flash-Laufwerks ist entscheidend für eine schnelle Wiederherstellung bei Problemen wie Hardwarefehlern, versehentlichen Löschungen oder Datenbeschädigungen. Während lokale Backups (wie das Kopieren Ihres Flash-Laufwerks auf ein anderes USB-Gerät oder einen Netzwerkspeicher) einfachen Zugriff und Kontrolle ermöglichen, können sie anfällig für Diebstahl, Feuer oder Hardwarefehler sein, die Ihre gesamte Einrichtung betreffen könnten. Andererseits bieten Cloud-Backups sichere Offsite-Speicherung für Ihre Konfiguration und schützen vor lokalen Katastrophen, sodass eine Wiederherstellung von überall aus möglich ist.
+
+Im Gegensatz zu herkömmlichen Backups, die sich auf Benutzerdaten, VMs oder Docker-Container konzentrieren, sichern Flash-Backups speziell Ihre Unraid-OS-Konfiguration, -Lizenzen und -Systemeinstellungen. Diese Fokussierung ermöglicht Ihnen, die Operationen Ihres Servers schnell wiederherzustellen, ohne bei Null anfangen zu müssen. Unraid Connect ermöglicht automatische, cloudbasierte Backups Ihrer OS-Konfiguration. Wenn Ihr Flash-Laufwerk ausfällt, können Sie Ihr neuestes Backup schnell mit dem [Unraid USB Flash Creator Tool](https://unraid.net/download) wiederherstellen.
+
+Flash-Backup ist optional, wenn Sie Unraid Connect verwenden.
+
+:::tip
+Verwenden Sie sowohl lokale als auch Cloud-Backup-Methoden für maximalen Schutz. Cloud-Backups bieten eine zusätzliche Widerstandsfähigkeitsebene, die lokale Lösungen allein nicht bieten können.
+:::
+
+## Datenerfassung und Datenschutz
+
+<details>
+  <summary><strong>Klicken Sie, um zu sehen, welche Daten gesammelt werden und wie wir sie handhaben</strong></summary>
+
+  Unraid Connect legt großen Wert auf Ihre Privatsphäre und Daten beim Verwenden des Flash-Backup:
+
+  <h4>Zweck</h4>
+
+  Flash-Backup speichert nur die Konfigurationsdateien, die zur Wiederherstellung Ihrer Unraid-OS-Umgebung benötigt werden. Dies hilft Ihnen, sich schnell zu erholen und den Dienstbetrieb aufrechtzuerhalten, falls Ihr Flash-Gerät ausfällt.
+
+  <h4>Gesammelte Daten</h4>
+
+  Das Backup enthält nur Konfigurationsdateien, sodass vertrauliche Informationen, wie Passwörter und %%WireGuard|WireGuard%%-Schlüssel, ausgeschlossen sind. Docker-Vorlagen-XML-Dateien könnten Teil des Backups sein und anwendungsspezifische Anmeldedaten enthalten.
+
+  <h4>Datenaufbewahrung</h4>
+
+  Nur das letzte Backup wird aufbewahrt. Wenn ein Backup bestimmte Grenzen überschreitet – insbesondere, wenn einzelne Dateien 10 MB überschreiten oder die Gesamtgröße des Repositories 100 MB übersteigt – wird es gelöscht und neu erstellt. Backups werden auch entfernt, wenn Sie die Flash-Backup-Funktion deaktivieren oder nach einem bestimmten Zeitraum der Inaktivität.
+
+  <h4>Datenaustausch</h4>
+
+  Flash-Backup-Daten werden niemals mit Dritten geteilt. Sie werden ausschließlich gespeichert, um Ihnen Backup- und Wiederherstellungsdienste bereitzustellen.
+</details>
+
+## Flash-Backup aktivieren
+
+Unraid Connect schließt sensible Daten - wie Kontopasswörter und WireGuard-Schlüssel - aus Backups aus, solange keine vollständige Verschlüsselung verfügbar ist. Docker-Vorlagen-XML-Dateien (die Anmeldeinformationen enthalten könnten), sind jedoch enthalten. Verschlüsselungslösungen befinden sich in der Entwicklung.
+
+So aktivieren Sie Flash-Backup:
+
+1. Gehen Sie zu ***Einstellungen → Management-Zugriff → Unraid API***.
+
+<div style={{ margin: 'auto', maxWidth: '600px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+  ![Flash-Backup aktivieren](/img/flashbackupbutton.png)
+</div>
+
+2. Unter **Flash-Backup** klicken Sie auf **Aktivieren**.
+3. Warten Sie, bis die Aktivierung und das erste Backup abgeschlossen sind. Der Status zeigt **Aktiviert: Auf dem neuesten Stand** an, wenn es fertig ist.
+
+Nach der Aktivierung werden alle Konfigurationsänderungen innerhalb von 1–2 Minuten automatisch in die Cloud gesichert.
+
+:::important
+Backups schließen keine `config/shadow`- oder `config/smbpasswd`-Dateien ein. Benutzerkonten werden beibehalten, aber Passwörter nicht. Sie müssen alle Benutzerpasswörter, einschließlich des Root-Passworts, nach der Wiederherstellung zurücksetzen. Auch WireGuard-Schlüssel sind ausgeschlossen.
+:::
+
+Flash-Backup ist so konzipiert, dass es nur die wesentlichen Konfigurationsdateien speichert, nicht eine vollständige Kopie Ihres Flash-Laufwerks. Es sichert keine temporären Dateien (wie Protokolle) oder Anwendungs-Binärdateien. Plugin-Konfigurationen sind enthalten, aber Anwendungsdateien müssen beim Booten erneut heruntergeladen werden. Einzelne Dateien bis zu 10 MB werden gesichert; wenn das Gesamt-Backup 100 MB überschreitet, wird es gelöscht und neu erstellt.
+
+## Flash-Backup wiederherstellen
+
+So stellen Sie Ihre Konfiguration wieder her:
+
+1. Melden Sie sich bei Unraid Connect an.
+2. Wählen Sie **Details** auf dem Dashboard.
+3. Klicken Sie auf **Flash-Backup generieren** aus der Flash-Backup-Kachel.
+4. Das System erstellt eine ZIP-Datei, die Ihre OS-Konfiguration und Versionsinformationen enthält.
+5. Klicken Sie auf **Flash-Backup herunterladen**, um die ZIP-Datei zu erhalten.
+6. Verwenden Sie den [Unraid USB Flash Creator](https://unraid.net/download), um das Backup auf ein neues Flash-Laufwerk wiederherzustellen.
+
+### Schritte nach der Wiederherstellung
+
+Nach dem Booten mit dem wiederhergestellten Flash-Laufwerk:
+
+- Aktivieren Sie Flash-Backup erneut in ***Einstellungen → Management-Zugriff → Unraid API***.
+- Setzen Sie die Passwörter für alle Benutzer (einschließlich Root) auf der Benutzerseite zurück.
+- Generieren Sie für jeden %%VPN Tunnel|vpn-tunnel%% und Peer in ***Einstellungen → VPN Manager*** neue Schlüssel und laden Sie aktualisierte Client-Konfigurationen herunter.
+- Falls beim Starten kein Internetzugang verfügbar ist, installieren Sie Plugins erneut über ***Apps → Vorherige Apps***, sobald die Verbindung wiederhergestellt ist. Konfigurationsdateien stehen bereit.
+
+## Flash-Backup deaktivieren
+
+So schalten Sie Flash-Backup aus:
+
+1. Klicken Sie in **Einstellungen → Management-Zugriff → Unraid API** auf **Deaktivieren** für Flash-Backup.
+2. Aktivieren Sie im Bestätigungsdialog **Auch Cloud-Backup löschen**, wenn Sie Ihr Backup sofort entfernen möchten. Andernfalls werden Backups automatisch nach einem Inaktivitätszeitraum gelöscht.
+
+## Datenschutz und Sicherheit
+
+### Backups-Verschlüsselung
+
+Derzeit werden Flash-Backups ohne Verschlüsselung in der Cloud gespeichert. Als Vorsichtsmaßnahme werden sensible Daten - einschließlich aller Benutzer- und Root-Passwörter sowie aller WireGuard-Schlüssel - nie im Backup eingeschlossen.
+
+### Richtlinie für sensible Daten
+
+Um Ihre Privatsphäre zu schützen, werden die folgenden **niemals** in Cloud-Backups gespeichert:
+
+- Unraid-Root- oder Benutzerkonto-Passwörter
+- Öffentliche, private oder gemeinsame %%WireGuard|wireguard%%-Schlüssel
+
+:::note\[Reminder]
+
+Flash-Backup ist nur für die Konfigurationswiederherstellung gedacht. Integrieren Sie immer zusätzliche Backup-Strategien für Ihre Daten und kritischen Geheimnisse.
+
+:::
+
+---
+
+\* *„%%WireGuard|wireguard%%“ und das „%%WireGuard|wireguard%%“-Logo sind eingetragene Warenzeichen von Jason A. Donenfeld.*

@@ -1,0 +1,25 @@
+:::caution
+这种方法仅应在您熟悉 Linux 命令行时使用，因为操作错误可能会让系统无法启动。
+:::
+
+1. 从 [版本历史](../../../download_list.mdx) 复制所需 Unraid 版本 ZIP 文件的 URL。
+2. 通过 %%SSH|ssh%% 或控制台登录。
+3. 逐个执行以下命令（将 `<URL>` 替换为复制的链接）：
+
+   ```bash
+   cd /tmp
+   rm -f unraid.zip
+   rm -rf unraid_install
+   wget -O unraid.zip <URL>
+   [[ -s unraid.zip ]] && echo "OK to continue" || echo "STOP: the file was not downloaded"
+   unzip -d unraid_install unraid.zip
+   [[ -s unraid_install/bzroot ]] && echo "OK to continue" || echo "STOP: the file was not extracted properly"
+   [[ ! -d /boot/previous ]] && mkdir /boot/previous
+   mv /boot/bz* /boot/previous
+   mv /boot/changes.txt /boot/previous
+   cp unraid_install/bz* /boot
+   cp unraid_install/changes.txt /boot
+   sync -f /boot
+   sleep 5
+   reboot
+   ```

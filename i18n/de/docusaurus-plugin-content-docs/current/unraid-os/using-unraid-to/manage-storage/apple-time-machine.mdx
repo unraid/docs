@@ -1,0 +1,115 @@
+---
+sidebar_position: 5
+sidebar_label: Apple Time Machine
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+# Apple Time Machine
+
+Apples Time Machine ist ein Sicherungstool, das bei jedem Mac enthalten ist. Es erleichtert den Schutz Ihrer Dateien, Anwendungen und Systemeinstellungen, indem es sie automatisch sichert. Indem Sie Time Machine mit Ihrem Unraid-Server verbinden, können Sie diese Sicherungen sicher auf Ihrer eigenen Hardware speichern. Diese Einrichtung gibt Ihnen nicht nur mehr Kontrolle, sondern ermöglicht auch eine einfachere Skalierbarkeit und zusätzlicher Seelenfrieden.
+
+::::note[macOS kompatibilität]
+Diese Anleitung gilt für macOS Ventura (13.x), Sonoma (14.x) und Sequoia (15.x) Versionen. Einige Funktionen, wie %%SMB|samba%% Erweiterungen und Time Machine-Unterstützung über %%SMB|samba%%, erfordern macOS-Versionen, die diese Protokolle unterstützen.
+
+Für die besten Ergebnisse halten Sie Ihren Mac auf dem neuesten Stand mit der kompatiblen macOS-Version für Ihre Hardware.
+:::Vorsicht[macOS Sequoia (15.x) Überlegungen]
+Einige Benutzer berichten über gelegentliche Probleme mit Time Machine und Netzwerkfreigaben auf macOS Sequoia. Wenn Sie Backup-Fehler erleben, ziehen Sie die Verwendung des [Time Machine Docker-Containers](https://unraid.net/community/apps?q=time+machine#r) als Alternative in Betracht.
+:::
+::::
+
+:::
+
+:::
+
+## Erstellen einer Time Machine-Freigabe
+
+:::caution[Before Sie beginnen]
+Stellen Sie sicher, dass **%%SMB|samba%%** im %%WebGUI|web-gui%% aktiviert ist:
+
+1. Gehen Sie zu ***Einstellungen → SMB*** unter „Netzwerkdienste“.
+2. Setzen Sie **%%SMB|samba%% aktivieren** auf **Ja** (Sie müssen das %%array|array%% anhalten, um dies zu ändern).
+3. Setzen Sie **Erweiterte macOS-Interoperabilität** auf **Ja**.
+
+<div style={{ margin: 'auto', maxWidth: '600px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+  ![Erweiterte MacOS-Interoperabilität](/img/enhancedmacos.png)
+</div>
+:::
+
+Um eine Time Machine-Freigabe zu erstellen:
+
+1. Gehen Sie im %%WebGUI|web-gui%% zu **Shares** und klicken Sie auf **%%user share|user-share%% hinzufügen**.
+
+2. Konfigurieren Sie die folgenden Einstellungen:
+
+   | Einstellung                                     | Beschreibung                                                                                                                                                                                                                                                                               |
+   | ----------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+   | **%%Benutzerfreigabe\|benutzerfreigabe%% Name** | Benennen Sie Ihren %%user share\|user-share%% (z. B. Time Machine).                                                                                                                                                                                                                        |
+   | **Mindestfreier Speicherplatz**                 | Wird auf **1** (1 KB) gestellt, um die besten Ergebnisse zu erzielen. Dies verhindert, dass Time Machine fehlschlägt, wenn Festplatten an ihre Kapazitätsgrenze stoßen.                                                                                                                    |
+   | **Eingeschlossene Festplatte(n)**               | Wählen Sie die Festplatte(n) im %%array\|array%% aus, die für die Time Machine %%user share\|user-share%% verwendet werden sollen.                                                                                                                                                         |
+   | **Copy-on-write aktivieren**                    | Lassen Sie es auf **Auto** für beste Leistung.                                                                                                                                                                                                                                             |
+   | **%%SMB\|samba%% Export**                       | Setzen Sie auf **Ja (Time Machine)**, um die Unterstützung für Time Machine zu aktivieren.                                                                                                                                                                                                 |
+   | **Time Machine-Volume-Größe**                   | Auf die gewünschte maximale Größe setzen oder nicht festlegen. Wenn kein minimaler freier Speicherplatz auf 1 gesetzt werden soll, zuerst die Freigabe anwenden, dann nachbearbeiten und das Volumen auf weniger als den berechneten minimalen freien Speicherplatz setzen, der erscheint. |
+   | **Sicherheitseinstellungen**                    | Konfigurieren Sie die %%SMB\|samba%% Sicherheitsparameter nach Wunsch.                                                                                                                                                                                                                     |
+
+3. Klicken Sie auf **Anwenden**, um die %%usershare|user-share%% zu erstellen.
+
+Für weitere Details zum Erstellen und Verwalten von Freigaben siehe [Benutzerfreigaben](./shares.mdx).
+
+## Vom macOS aus verbinden
+
+Um sich von Ihrem Mac mit Ihrer %%usershare|user-share%% zu verbinden:
+
+1. Drücken Sie im **Finder** **Command + K**, um das Fenster „Mit Server verbinden“ zu öffnen.
+2. Enter the %%SMB|samba%% address of your Unraid server. For example, use the format `smb://[server-ip]/[Time Machine share name]` and click **Connect**.
+3. Wenn Sie dazu aufgefordert werden, geben Sie Ihren Unraid-Benutzernamen und Ihr Passwort ein, das Zugriff auf die Freigabe hat, und klicken Sie dann auf **Verbinden**.
+4. Öffnen Sie **Systemeinstellungen**, wenn Sie macOS Ventura 13.0 oder später verwenden, oder **Systemvorgaben**, wenn Sie macOS Monterey 12.x oder früher verwenden. Navigieren Sie dann zu **Time Machine**.
+5. Klicken Sie auf **Datenträger auswählen** oder **Sicherungsdatenträger hinzufügen**, wählen Sie Ihre Unraid Time Machine %%usershare|user-share%% aus, und klicken Sie dann auf **Disk verwenden**.
+6. (Optional) Wenn Sie Ihre Sicherung mit einem Passwort sichern möchten, aktivieren Sie **Verschlüsselung**.
+7. Falls Sie dazu aufgefordert werden, bestätigen Sie die Verbindung und geben Sie ggf. erneut die Unraid %%root user|root-user%%-Anmeldedaten ein.
+8. Time Machine wird automatisch mit dem initialen Backup beginnen. Beachten Sie, dass das erste Backup einige Zeit in Anspruch nehmen kann, aber zukünftige Backups werden schneller sein, da sie inkrementell sind.
+
+:::tip
+Für mehr Kontrolle über die Sicherungsplanung und -optionen ziehen Sie ein Drittanbieter-Tool wie [Time Machine Editor](https://tclementdev.com/timemachineeditor/) in Betracht.
+
+<div style={{ margin: 'auto', maxWidth: '600px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+  ![Time Machine Editor](/img/TimeMachineEditor.png)
+</div>
+:::
+
+## Mehrere Time Machine-Setups
+
+:::tip
+Für Familien oder Umgebungen mit mehreren Macs bietet diese Methode eine klare Trennung von Backups, verbessert die Sicherheit und vereinfacht die Verwaltung.
+:::
+
+Um separate Backups für verschiedene Benutzer oder Macs auf Ihrem Unraid-Server zu erstellen:
+
+1. **Erstellen Sie einzigartige Unraid %%root user|root-user%%-Konten** für jede Person oder jeden Mac, der Daten sichern wird. Zum Beispiel Benutzer namens `larry`, `curly` und `moe`. Dies stellt sicher, dass jeder Benutzer seine eigene Identität und Berechtigungen hat.
+
+2. **Erstellen Sie individuelle Time Machine %%user shares|user-share%%** für jeden Benutzer und benennen Sie sie so, dass sie dem Benutzer entsprechen, wie `tm-larry`, `tm-curly` und `tm-moe`. Die Trennung der Freigaben hilft, die Speichernutzung und den Zugriff jedes Nutzers zu verwalten.
+
+3. **Weisen Sie geeignete Benutzerberechtigungen** für jede %%usershare|user-share%% zu:
+   - Set the %%user share|user-share%%'s %%SMB|samba%% security settings to ensure that only the corresponding user has access.
+   - Stellen Sie sicher, dass nur der beabsichtigte Benutzer auf seine Time Machine %%user-share|user-share%% lesend und schreibend zugreifen kann.
+
+4. **Konfigurieren Sie Time Machine auf jedem Mac**, um sich mit seiner vorgesehenen %%user-share|user-share%% zu verbinden:
+   - On each Mac, connect to the Unraid server using the %%SMB|samba%% path for their specific %%user share|user-share%% (e.g., `smb://unraid-server/tm-larry`).
+   - Befolgen Sie die üblichen Schritte zum Einrichten von Time Machine, um die %%usershare|user-share%% als Sicherungsdisk auszuwählen.
+
+5. **Überwachen und verwalten Sie die Speichernutzung**:
+   - Sie können optional Volumengrößenlimits für jede Time Machine %%user-share|user-share%% einstellen, um zu verhindern, dass ein Benutzer zu viel Speicherplatz einnimmt.
+   - Überprüfen Sie regelmäßig die Nutzung und passen Sie die Quoten bei Bedarf an.
+
+Weitere Informationen zum Benutzer- und Sicherheitsmanagement finden Sie unter [Benutzerverwaltung](../../system-administration/secure-your-server/user-management.mdx).
+
+## Fehlerbehebung
+
+Wenn Time Machine-Sicherungen fehlschlagen oder unzuverlässig werden:
+
+1. **Versuchen Sie den Time Machine Docker-Container**: [Verfügbar über Community-Anwendungen](https://unraid.net/community/apps?q=time+machine#r), diese Option kann stabilere Sicherungen bereitstellen als direkte %%SMB|samba%% %%user-share|user-share%%.
+2. **Überprüfen Sie die macOS-Firewall**: Deaktivieren Sie vorübergehend die Firewall, um zu sehen, ob Verbindungen blockiert werden.
+3. **Erstellen Sie ein frisches Sicherungsziel**: Löschen und erneuern Sie die Time Machine %%user-share|user-share%%, falls die Probleme weiterhin bestehen.
+
+Für zusätzliche Hilfe bei der Fehlerbehebung siehe [Fehlerbehebung](../../troubleshooting/troubleshooting.mdx) oder besuchen Sie die [Unraid-Foren](https://forums.unraid.net/).

@@ -1,0 +1,241 @@
+---
+title: 使用 Unraid API
+description: 学习如何通过 GraphQL API 与您的 Unraid 服务器交互
+sidebar_position: 2
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import ManageApiKeysGui from './partials/manage-api-keys-gui.mdx';
+import ManageApiKeysCli from './partials/manage-api-keys-cli.mdx';
+
+# 使用 Unraid API
+
+:::tip[Quick 开始]
+Unraid API 提供了一个强大的 GraphQL 接口用于管理您的服务器。本指南涵盖身份验证、常见查询和最佳实践。
+:::
+
+Unraid API 提供了一个 GraphQL 接口，使您能够与 Unraid 服务器进行交互。本指南将帮助您开始探索和使用此 API。
+
+## 🎮 启用 GraphQL 沙箱
+
+### Web GUI方法（推荐）
+
+:::info[Preferred 方法]
+使用Web GUI是启用GraphQL沙盒最简单的方式。
+:::
+
+1. 导航到 **设置** → **管理访问** → **开发者选项**
+2. 启用 **GraphQL 沙箱** 切换
+3. 通过导航到以下位置访问 GraphQL playground：
+
+   ```txt
+   http://YOUR_SERVER_IP/graphql
+   ```
+
+### CLI 方法
+
+或者，您可以使用 CLI 启用开发者模式：
+
+```bash
+unraid-api developer --sandbox true
+```
+
+或使用交互模式：
+
+```bash
+unraid-api developer
+```
+
+## 🔑 身份验证
+
+:::warning[Required 大多数操作需要]
+大多数查询和变更请求需要身份验证。请始终在您的请求中包含适当的凭证。
+:::
+
+您可以使用以下方式进行身份验证：
+
+1. **API 密钥** - 对编程访问来说
+2. **Cookies** - 当登录到 WebGUI 时自动
+3. **SSO/OIDC** - 配置为与外部提供商一起使用时
+
+### API 密钥管理
+
+<Tabs>
+  <TabItem value="gui" label="网页界面（推荐）" default>
+    <ManageApiKeysGui />
+  </TabItem>
+
+  <TabItem value="cli" label="CLI 方法">
+    <ManageApiKeysCli />
+  </TabItem>
+</Tabs>
+
+### 使用 API 密钥
+
+生成的 API 密钥应作为标头包含在您的 GraphQL 请求中：
+
+```json
+{
+    "x-api-key": "YOUR_API_KEY"
+}
+```
+
+## 📊 可用模式
+
+API 提供对 Unraid 服务器各个方面的访问：
+
+### 系统信息
+
+- 查询系统详细信息，包括 CPU、内存和操作系统信息
+- 监控系统状态和健康
+- 访问主板和硬件信息
+
+### 阵列管理
+
+- 查询阵列状态和配置
+- 管理阵列操作（启动/停止）
+- 监控磁盘状态和健康
+- 执行校验检查
+
+### Docker 管理
+
+- 列出和管理 Docker 容器
+- 监控容器状态
+- 管理 Docker 网络
+
+### 远程访问
+
+- 配置和管理远程访问设置
+- 处理 SSO 配置
+- 管理允许的来源
+
+### 💻 示例查询
+
+#### 检查系统状态
+
+```graphql
+query {
+    info {
+        os {
+            platform
+            distro
+            release
+            uptime
+        }
+        cpu {
+            manufacturer
+            brand
+            cores
+            threads
+        }
+    }
+}
+```
+
+#### 监控阵列状态
+
+```graphql
+query {
+    array {
+        state
+        capacity {
+            disks {
+                free
+                used
+                total
+            }
+        }
+        disks {
+            name
+            size
+            status
+            temp
+        }
+    }
+}
+```
+
+#### 列出 Docker 容器
+
+```graphql
+query {
+    dockerContainers {
+        id
+        names
+        state
+        status
+        autoStart
+    }
+}
+```
+
+## 🏗️ 模式类型
+
+API 包括几个核心类型：
+
+### 基本类型
+
+- `Node`：适用于具有唯一 ID 的对象的接口 - 请参阅[对象识别](https://graphql.org/learn/global-object-identification/)
+- `JSON`：用于复杂的 JSON 数据
+- `DateTime`：用于时间戳值
+- `Long`：用于 64 位整数
+
+### 资源类型
+
+- `Array`: 阵列和磁盘管理
+- `Docker`: 容器和网络管理
+- `Info`: 系统信息
+- `Config`: 服务器配置
+- `Connect`: 远程访问设置
+
+### 基于角色的访问
+
+可用角色：
+
+- `admin`：完全访问
+- `connect`：远程访问功能
+- `guest`：有限读取访问
+
+## ✨ 最佳实践
+
+:::tip[Pro 提示]
+1. 使用 Apollo Sandbox 探索模式和测试查询
+2. 从小查询开始，逐渐按需添加字段
+3. 监控您的查询复杂度以保持性能
+4. 对于您的 API 密钥，使用适当的角色和权限
+5. 保持您的 API 密钥安全并定期更换
+:::
+
+## ⏱️ 速率限制
+
+:::caution[Rate 限制]
+该 API 实施了速率限制以防止滥用。请确保您的应用程序能够正确处理速率限制的响应。
+:::
+
+## 🚨错误处理
+
+API 以以下格式返回标准的 GraphQL 错误：
+
+```json
+{
+  "errors": [
+    {
+      "message": "Error description",
+      "locations": [...],
+      "path": [...]
+    }
+  ]
+}
+```
+
+## 📚 额外资源
+
+:::info[Learn 更多]
+- 使用 Apollo Sandbox 的模式浏览器浏览所有可用类型和字段
+- 查看 Apollo Sandbox 中的文档选项卡以获取详细的字段描述
+- 使用 `unraid-api status` 监控 API 的健康状况
+- 使用 `unraid-api report` 生成报告以进行故障排除
+
+有关特定命令和配置选项的更多信息，请参阅 [CLI 文档](cli.mdx) 或运行 `unraid-api --help`。
+:::

@@ -1,0 +1,228 @@
+---
+sidebar_position: 3
+sidebar_label: 系统崩溃与稳定性
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+# 系统崩溃与稳定性
+
+系统崩溃和稳定性问题可能难以诊断和解决。它们通常源于硬件故障、配置错误或软件中的冲突。本节将指导您了解常见原因、诊断步骤和最佳实践，以帮助保持 Unraid 服务器的稳定性。
+
+---
+
+## 内存问题
+
+内存问题是系统不稳定和数据损坏的最常见原因之一。RAM 随时间的推移会磨损，导致难以诊断的不可预测错误。本节介绍如何识别和解决与内存相关的稳定性问题。
+
+内部存储器问题的常见症状包括：
+
+- 无法解释的系统崩溃或冻结
+- 文件或%%array|数组%%中的数据损坏
+- 随机的应用程序错误
+- 在负载下系统不稳定
+- %%parity checks|校验%%失败
+
+### 检测RAM
+
+内存测试是诊断稳定性问题的关键。Unraid 启动菜单包括用于全面 RAM 测试的 Memtest86+，适用于 Legacy 和 %%UEFI|uefi%% 系统。
+
+要检测您的RAM：
+
+1. 重启你的服务器，从启动菜单中选择**Memtest86+**。
+2. 让测试运行至少 2-4 小时以进行全面覆盖。
+3. 监控任何错误消息或失败的测试。
+
+:::note[Other RAM测试工具]
+- [**MemTest86+**](https://www.memtest.org/): Open source tool included with Unraid
+- [**MemTest86**](https://www.memtest86.com/): 支持现代硬件的商业工具
+- [**Karhu RAM Test**](https://www.karhusoftware.com/)：一款付费但有效的Windows工具，可比传统方法更快地检测错误，检测率在30分钟内达到95.67%（理想适用于DDR5系统）
+- [**HCI MemTest**](https://hcidesign.com/memtest/)：流行的、免费的Windows检测工具
+- [**Prime95**](https://prime95.net/)：同时验证RAM和CPU的稳定性
+:::
+
+:::important[If 找到RAM错误时]
+如果 Memtest86+ 显示错误，请尝试重新插装 RAM 模块并重新运行测试。单独测试每个 RAM 条以找出故障模块。参考您的主板文档，以了解支持的 RAM 速度和配置，并避免混合不同品牌或速度的 RAM，以尽量减少兼容性问题。
+:::
+
+### 超频RAM
+
+RAM 超频可能会显著影响系统稳定性。许多用户想让他们的 RAM 运行在制造商指定的最高速度，但主板和 CPU 组合的最大可靠 RAM 速度通常低于 RAM 的额定值。
+
+:::caution[RAM 超频风险与建议]
+\*\*购买：\*\*如有可能，请始终购买列在您主板的 QVL（合格供应商列表）上的 RAM，而非 RAM 制造商的 QVL。这可以确保更好的兼容性和稳定性。
+
+**Intel XMP和AMD AMP配置文件是超频**。为了最佳稳定性，总是以SPD速度而不是XMP/AMP速度运行RAM。
+
+**超频的风险：**
+
+- 系统不稳定和随机崩溃
+- 数据损坏和文件系统错误
+- 硬件寿命缩短
+- 与其他组件不兼容
+
+\*\*故障排除：\*\*如果 Memtest86+ 测试通过但您仍遇到问题，禁用 XMP/AMP 并重试。性能差异通常很小，但稳定性改进可能显著。
+:::
+
+<h4>最佳做法</h4>
+
+1. 在尝试超频之前，始终检查您的主板和CPU规范。
+2. \*\*为了最大稳定性：\*\*禁用XMP/AMP配置文件，并以默认SPD速度运行RAM。
+3. 从保守的设置开始，并逐渐增加。
+4. 在任何更改后，用Memtest86+检测稳定性。
+5. 如果发现不稳定，立即恢复到默认或较低的速度。
+6. 在服务器环境中考虑性能与稳定性之间的平衡。
+
+## 关键稳定性因素
+
+系统稳定性不仅依赖于 RAM 或 CPU 性能。多个硬件和软件组件共同作用以保持可靠运行。本节涵盖影响 Unraid 服务器稳定性的关键领域，并提供可操作的步骤以防止和解决问题。
+
+系统稳定性通常取决于：
+
+- 电源质量和可靠性
+- 适当的热管理
+- 磁盘健康和I/O性能
+- 插件和应用程序兼容性
+- 当前固件和BIOS版本
+- 主动监控和维护
+
+### 电源可靠性
+
+<details>
+  <summary><strong>点击展开/折叠</strong></summary>
+
+  稳定且充足的电源供应是保证服务器不间断运行的关键。电源问题常常被忽视，但可能导致最恼人的稳定性问题。
+
+  常见的电力相关问题包括：
+
+  - 无法解释的系统崩溃或冻结
+  - 写入过程中数据损坏
+  - 突发无警告的关机
+  - 硬件组件故障
+  - 不一致的性能
+
+  <h4>预防和维护</h4>
+
+  主动进行电源维护可预防最常见的稳定性问题。定期检查和选择合适的组件可避免昂贵的停机和数据丢失。
+
+  1. 始终为您的硬件使用高质量、适当额定的PSU。
+  2. \*\*关键：\*\*确保您的电源能处理所有连接存储设备的同时启动。12V 轨电流额定值必须考虑到所有驱动器的同时启动电流，而不是分级启动。
+  3. 尽可能避免使用电源分配器。它们可能导致电压下降和不稳定，尤其是在驱动器启动等高电流事件中。
+  4. 考虑对企业和多硬盘系统使用冗余电源。
+  5. 确保每个PSU单元正确插入和连接。
+  6. 如果可用，请监测PSU健康指示器（如AC OK LED）。
+  7. 立即更换故障单元以避免停机。
+  8. 定期检查所有电源线是否牢固。
+  9. 确认电路没有过载。
+</details>
+
+### 热管理与过热
+
+<details>
+  <summary><strong>点击展开/折叠</strong></summary>
+
+  过热是硬件故障和服务器异常行为的主要原因之一。温度问题可能导致组件降速运行或彻底失效。
+
+  热问题的迹象包括：
+
+  - 系统节能或性能降低
+  - 高负载时随机崩溃
+  - 风扇噪音或不寻常的冷却行为
+  - 硬件组件故障
+  - 系统行为不一致
+
+  <h4>冷却解决方案与最佳实践</h4>
+
+  适当的冷却对于维持系统稳定性和防止热节流至关重要。这些做法有助于确保服务器在安全温度范围内运行。
+
+  1. 确保服务器位于通风良好的区域。
+  2. 保持环境温度控制（理想温度18-24°C/64-75°F）。
+  3. 使用足够的冷却方案（高质量风扇、机架式空调）。
+  4. 使用硬件传感器监测系统温度。
+  5. 定期清洁冷却组件上的灰尘和碎片。
+  6. 避免将服务器放置在狭窄或通风不良的空间中。
+  7. 考虑对高性能系统额外冷却。
+
+  Monitoring temperatures proactively helps identify cooling issues before they cause system instability. Use Unraid's built-in temperature sensors or hardware monitoring tools compatible with your system.
+</details>
+
+### 磁盘健康和I/O错误
+
+<details>
+  <summary><strong>点击展开/折叠</strong></summary>
+
+  无论是因为驱动老化还是突然故障，磁盘错误都可能破坏系统稳定性并危及数据。IO问题通常表现为性能问题，然后才导致完全故障。
+
+  磁盘问题的症状包括：
+
+  - 服务器高负载或性能缓慢
+  - %%parity checks|校验%%失败
+  - 数据损坏或读/写错误
+  - 磁盘活动异常或噪音
+  - 磁盘操作期间系统冻结
+
+  <h4>预防性维护</h4>
+
+  定期维护有助于在磁盘问题导致数据丢失或系统不稳定之前发现问题。这些主动步骤可以显著延长驱动器寿命并维护性能。
+
+  1. 定期使用 Unraid 内置的[磁盘健康工具](../../system-administration/monitor-performance/smart-reports-and-disk-health.mdx)监控驱动器的 %%SMART|smart%% 数据。
+  2. 定期运行[%%parity checks|parity-check%%s](../../using-unraid-to/manage-storage/array-configuration.mdx#parity--read-checks)以确保数据完整性。
+  3. 监控磁盘温度和性能指标。
+  4. 保持驱动器适当通风和冷却。
+
+  <h4>当问题发生时</h4>
+
+  快速响应磁盘问题可以防止数据丢失并将停机时间降到最低。系统地按照这些步骤来识别和解决问题。
+
+  1. 及时更换故障驱动器以防止数据丢失。
+  2. 检查电缆、电源供应和驱动器控制器健康状况。
+  3. 检查松动的连接或损坏的电缆。
+  4. 考虑为可疑的驱动器运行扩展 %%SMART|smart%% 测试。
+  5. 监控系统日志以获取I/O错误模式。
+</details>
+
+### 应用程序和插件稳定性
+
+<details>
+  <summary><strong>点击展开/折叠</strong></summary>
+
+  Unraid’s flexibility comes from its support for plugins and Docker containers. However, third-party plugins can introduce instability, especially if they are outdated or incompatible with your current Unraid version.
+
+  进行故障排除时...
+
+  - 使用[安全模式](../../using-unraid-to/customize-your-experience/plugins.mdx#troubleshooting-with-safe-mode)暂时禁用插件并识别问题来源。
+  - 优先使用Docker容器而不是插件来添加功能，因为容器提供了更好的核心操作系统隔离，不太可能导致系统范围的问题。
+  - 定期更新或删除未使用或不再支持的插件以保持稳定性。
+</details>
+
+### 固件和BIOS更新
+
+<details>
+  <summary><strong>点击展开/折叠</strong></summary>
+
+  过时的固件或BIOS可能导致不稳定性、安全漏洞和硬件兼容性问题。定期更新对于维护系统稳定性和安全性至关重要。
+
+  - 为您的主板和关键组件定期检查固件和BIOS更新。
+  - 在更新之前始终备份您的配置，并如可能在受控环境中测试更新。
+  - 记录您的更新流程，并时不时进行审核以确保您遵循最佳做法。
+
+  保持系统固件更新有助于避免意外崩溃，并解锁新的硬件功能。
+
+  :::tip[推荐]
+  - 使用制造商的工具进行无风险更新，例如[华硕Armoury Crate](https://www.asus.com/supportonly/armoury%20crate/helpdesk_download/)、[技嘉@BIOS](https://www.gigabyte.com/Support/Consumer/Download)或[MSI中心](https://www.msi.com/Landing/MSI-Center)。
+  - 检查主板BIOS设置中是否有自动更新选项。
+  :::
+</details>
+
+### 主动系统监控
+
+<details>
+  <summary><strong>点击展开/折叠</strong></summary>
+
+  持续监控对早期问题检测至关重要。
+
+  - 在 Unraid 中启用[持久日志记录](../../troubleshooting/diagnostics/capture-diagnostics-and-logs.mdx)，以保留跨重启的日志。
+  - 利用系统监控工具跟踪温度、电压和驱动器健康。为关键阈值设置警报，以便在小问题升级前采取行动。
+  - 定期查看系统日志，发现模式并解决潜在原因，避免它们导致停机。
+</details>

@@ -1,0 +1,89 @@
+---
+sidebar_position: 3
+sidebar_label: Konfigurieren Sie Ihr Array
+---
+
+# Konfigurieren Sie Ihr Array
+
+Nach der Installation Ihres Registrierungsschlüssels besteht der nächste Schritt darin, Ihren Speicher zu konfigurieren, indem Sie Geräten zum %%array|array%% und **Poolgeräten** zuweisen. Diese Konfiguration bestimmt, wie Unraid OS Ihre Daten verwaltet, sie mit %%parity|parity%% schützt und die Leistung mit %%cache pools|cache-pool%% optimiert.
+
+:::important
+Wenn Sie mit einem Teil der Unraid-Installation Schwierigkeiten haben, schauen Sie sich unbedingt unsere [Installations-FAQ](../../troubleshooting/faq.mdx#installation)!
+:::
+
+## Zuweisung von Parity- und Datenlaufwerken
+
+Sie verwenden die Registerkarte **Main** in der Unraid %%WebGUI|web-gui%%, um Geräte zuzuweisen und zu überprüfen, einschließlich %%array|array%% und Pool-Zuweisungen zusammen mit nicht zugewiesenen Geräten und Ihrem Boot-Gerät (dem **USB-Flashgerät**).
+
+![Konfigurieren des Arrays](/img/configuringarray1.png)
+
+### Geräterollen
+
+Unraid OS verwendet Laufwerke für verschiedene Zwecke:
+
+- **Array-Geräte**, die in zwei Kategorien unterteilt sind:
+  - **Paritätsgeräte:** Bieten Fehlertoleranz, die eine Wiederherstellung von Daten ermöglicht, falls ein Datenlaufwerk ausfällt. Sie können bis zu zwei Paritätslaufwerke zuweisen.
+  - **Daten-Geräte:** Speichern Ihre benutzerdefinierten Freigaben und Ordner sowie alle Dateien, die Sie ihnen hinzufügen, z. B. Mediendateien.
+
+- **Pool-Geräte:** Hochleistungsfestplatten, die hauptsächlich als **Cache** verwendet werden und Dateien vorübergehend speichern, um die Leistung zu verbessern, bevor sie in das %%array|array%% übertragen werden.
+
+- **Boot-Gerät:** Das USB-Flash-Gerät, das Unraid OS enthält und Ihren Server startet.
+
+<details>
+  <summary>Disk-Zuweisungsempfehlungen</summary>
+
+  Diese Empfehlungen zur Datenträgerzuweisung sind darauf ausgelegt, Ihr Unraid-%%array|array%% zu optimieren, die Leistung zu steigern, den Datenschutz zu gewährleisten und die zukünftige Erweiterungsmöglichkeiten zu verbessern. Indem Sie diesen folgen, können Sie Ihre Speichereinheiten effektiv maximieren und gängige Setup-Probleme vermeiden.
+
+  1. **Select the largest %%parity device|parity-drives%%:**
+     Always choose the largest available storage device as your %%parity device|parity-drives%%(s). When expanding your %%array|array%%, data disks must be equal to or smaller than your %%parity device|parity-drives%%(s). You should purchase the largest **HDD** for your initial %%parity device|parity-drives%% to avoid future limitations. For dual %%parity disks|parity-drives%%, each parity disk must be greater than or equal to the largest data disk.
+
+  2. **Utilize HDDs for the %%array|array%% and SSD/NVMe drives for pools:**
+     For optimal performance, use **HDDs** as the primary storage devices in the %%array|array%% for general storage and %%parity|parity%% protection. Assign **SSD** or **NVMe** drives to a %%cache pool|cache-pool%% or dedicated pool to enhance high-speed read and write operations. This setup improves overall performance by taking advantage of the strengths of each type of drive.
+
+  3. **Protect cached data with a %%multi-device pool|multi-device-pool%%:**
+     To safeguard cached data, assign more than one device to the %%cache pool|cache-pool%%. A single device does not offer protection from data loss. %%Cache pools|cache-pool%% can be expanded on demand.
+
+  :::warning
+  SSD support is experimental in the %%array|array%%. Some SSDs may not perform well due to variations in %%TRIM/Discard|trim-discard%% implementation, which could lead to undesirable results. This does not apply to %%cache pools|cache-pool%%. [Learn more about filesystem options here](../../using-unraid-to/manage-storage/file-systems.mdx).
+  :::
+
+  :::note
+  SSD-basierte Pools sind optimal für Anwendungen und virtuelle Maschinen, da sie die SSD-Leistung für schnellere Interaktionen nutzen. [Hier erfahren Sie mehr über die Ausführung von Anwendungen](../../using-unraid-to/run-docker-containers/overview.mdx).
+  :::
+</details>
+
+:::important
+Your %%array|array%% will not start if you exceed the number of storage devices permitted by your license key.
+:::
+
+## Starten und Formatieren des Arrays
+
+After assigning all your devices, click the **Start** button under **Array Operation** to mount them and start the %%array|array%%.
+
+<div style={{ margin: 'auto', maxWidth: '500px'}}>
+  ![Array-Betrieb Start](/img/arrayoperation_start.png)
+</div>
+
+New devices will appear as *Unformatted* and cannot be used until formatted. Unraid defaults to the %%XFS|xfs%% filesystem for array devices. For %%cache pools|cache-pool%%, %%BTRFS|btrfs%% is always used by default when using auto mode, but you can choose your desired filesystem when adding devices to a pool. You can change the default filesystem for the array in ***Settings → System Settings → Disk Settings***.
+
+Um Ihre Geräte zu formatieren, aktivieren Sie das **Format**-Feld unter **Array-Betrieb**, lesen Sie die Aufforderung sorgfältig und klicken Sie auf die Schaltfläche **Format**.
+
+A parity sync will run in the background to protect the %%array|array%% even before formatting is complete. The %%array|array%% will function in an unprotected state until the sync finishes, so it's best to wait before adding data.
+
+### Ändern von Dateisystemen auf vorhandenen Laufwerken
+
+Um das Dateisystem eines bestehenden Laufwerks zu ändern:
+
+1. **Sichern Sie Ihre Daten:** Durch das Neuformatieren werden alle Daten auf dem Laufwerk gelöscht.
+2. **Stoppen Sie die Array**.
+3. **Klicken Sie auf das Laufwerk** und ändern Sie den Dateisystemtyp (z. B. %%XFS|xfs%%, %%BTRFS|btrfs%%).
+4. **Starten Sie das Array** und aktivieren Sie das **Format**-Feld unter **Array-Betrieb**.
+5. **Klicken Sie auf Format**, um das neue Dateisystem anzuwenden.
+
+:::caution
+Reformatting a drive will erase all its data. For %%RAID|raid%% setups, check the %%parity|parity%% to avoid data loss during rebuilds. Use the [Unassigned Devices plugin](https://unraid.net/community/apps?q=unassigned+devices#r:~:text=don%27t%20be%20carefull!!!-,Unassigned%20Devices,-dlandon) to back up your files before reformatting.
+:::
+
+:::info
+Sie können das Array stoppen, herunterfahren oder neu starten, indem Sie die entsprechenden Schaltflächen im selben Abschnitt **Array-Betrieb** auf der Registerkarte **Main** verwenden.
+:::

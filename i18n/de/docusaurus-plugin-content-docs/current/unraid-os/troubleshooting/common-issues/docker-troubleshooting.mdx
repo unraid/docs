@@ -1,0 +1,86 @@
+---
+sidebar_position: 5
+sidebar_label: Docker-Fehlerbehebung
+---
+
+# Docker-Fehlerbehebung
+
+:::info
+Diese Seite bietet spezifische Lösungsansätze für Probleme mit Docker-Containern auf Unraid, die vom Unraid-Team verwaltet werden. Für fortgeschrittene Fehlersuche, tiefgehende technische Details oder Themen, die über die spezifische Implementierung in Unraid hinausgehen, konsultieren Sie bitte die [offizielle Docker-Dokumentation](https://docs.docker.com/).
+:::
+
+Docker ermöglicht das einfache Ausführen verschiedener Anwendungen auf Ihrem Unraid-Server, allerdings können Probleme auftreten, wie Container, die nicht starten, beschädigte Docker-Image-Dateien oder Netzwerkprobleme. Diese Seite behandelt einige häufige Themen im Zusammenhang mit Docker auf Unraid und bietet bewährte Praktiken zur effektiven Problemlösung.
+
+---
+
+## Das Docker-Image-Datei neu erstellen
+
+A corrupted Docker image file (`docker.img`) is a common issue, often caused by the %%cache pool|cache-pool%% running out of space or an unclean shutdown. Luckily, a well-configured container stores all variable data outside the image file (usually in the `appdata` share), so you can safely recreate the image without losing your application settings or data.
+
+Um die Docker-Image-Datei neu zu erstellen:
+
+1. Gehen Sie zu ***Einstellungen → Docker*** in der %%WebGUI|web-gui%%.
+2. Setzen Sie **Docker aktivieren** auf **Nein** und klicken Sie auf **Anwenden**, um den Docker-Dienst zu stoppen.
+3. Wählen Sie die Option zum Löschen der Docker-vdisk-Datei und klicken Sie dann auf **Anwenden**. Sie können die Datei bei Bedarf auch manuell löschen.
+4. Bestätigen Sie den Speicherort und den Dateinamen für die neue Docker-vdisk-Datei. Diese Einstellung umfasst sowohl den Ordnerpfad als auch den Dateinamen.
+5. Legen Sie die gewünschte Größe für die neue Image-Datei fest. Die Standardgröße ist normalerweise für die meisten Benutzer ausreichend.
+6. Setzen Sie **Docker aktivieren** auf **Ja** und klicken Sie auf **Anwenden**. Unraid erstellt und formatiert eine neue `docker.img`-Datei mit %%BTRFS|btrfs%%.
+
+Nun sind Sie bereit, Ihre Container mit ihren gespeicherten Einstellungen neu zu installieren.
+
+---
+
+## Docker-Anwendungen neu installieren
+
+Unraid speichert automatisch eine Vorlage für jeden installierten Container auf Ihrem Flash-Laufwerk. Diese Vorlagen speichern Ihre Konfiguration, was das Wiederherstellen von Containern nach dem Neustellen der Docker-Image-Datei erleichtert.
+
+Um Ihre Container neu zu installieren:
+
+1. Gehen Sie zum **Apps**-Tab in der %%WebGUI|web-gui%%.
+2. Öffnen Sie den Abschnitt **Vorherige Apps**.
+3. Wählen Sie die Container aus, die Sie neu installieren möchten.
+4. Fahren Sie mit der Installation fort. Unraid lädt jeden Container erneut herunter und wendet automatisch Ihre vorherigen Einstellungen an.
+
+:::important
+Dieser Prozess stellt Ihre Container in ihren vorherigen Zustand wieder her, sofern alle variablen Daten außerhalb der Docker-Image-Datei abgebildet wurden (zum Beispiel im `appdata`-Share).
+:::
+
+:::tip
+Wenn ein Container nach der Neuinstallation nicht startet, prüfen Sie seine Protokolle im Kontextmenü des **Docker**-Tabs auf Fehlermeldungen und Hinweise zur Fehlerbehebung.
+:::
+
+:::note
+Überprüfen Sie, dass alle zugeordneten Hostpfade vorhanden sind und die richtigen Berechtigungen haben, nachdem Sie Ihre Container wiederhergestellt haben. Falsche Zuordnungen oder Berechtigungen sind eine häufige Ursache für Startprobleme.
+:::
+
+---
+
+## Wiederherstellung von Docker-Benutzernetzwerken
+
+Benutzerdefinierte Docker-Netzwerke bleiben nicht bestehen, wenn die Docker-Image-Datei gelöscht wird. Bevor Sie das Image entfernen, dokumentieren Sie Ihre benutzerdefinierten Netzwerknamen, indem Sie ein Terminal öffnen und ausführen:
+
+```
+docker network ls
+```
+
+Notieren Sie sich die Namen aller von Ihnen erstellten Netzwerke (mit Ausnahme der Standardnetzwerke `bridge`, `host` und `none`).
+
+Um benutzerdefinierte Netzwerke wiederherzustellen:
+
+1. Erstellen Sie nach dem Neu-Erstellen der Docker-Image-Datei jedes benutzerdefinierte Netzwerk erneut mit:
+
+   ```
+   docker network create <network-name>
+   ```
+
+   Ersetzen Sie `<network-name>` durch den zuvor aufgenommenen genauen Namen.
+
+2. Aktualisieren Sie Ihre Container, um die wiederhergestellten Netzwerke bei Bedarf zu verwenden.
+
+:::note
+Sie können den Hostzugriff auf benutzerdefinierte Netzwerke unter ***Einstellungen → Docker*** aktivieren, indem Sie **Hostzugriff auf benutzerdefinierte Netzwerke** auf **Aktiviert** setzen, wenn Ihre Einrichtung dies erfordert.
+:::
+
+:::tip
+Wenn Container nach der Wiederherstellung nicht wie erwartet kommunizieren können, überprüfen Sie Ihre Docker-Netzwerkeinstellungen auf Konflikte oder Verbindungsprobleme.
+:::

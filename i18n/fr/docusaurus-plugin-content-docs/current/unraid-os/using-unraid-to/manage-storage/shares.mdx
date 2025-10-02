@@ -1,0 +1,613 @@
+---
+sidebar_position: 1
+sidebar_label: Partages
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import SharesPrimaryStorage612 from './partials/shares-primary-storage-612.mdx';
+import SharesPrimaryStorage611 from './partials/shares-primary-storage-611.mdx';
+import SharesCacheToArray612 from './partials/shares-cache-to-array-612.mdx';
+import SharesCacheToArray611 from './partials/shares-cache-to-array-611.mdx';
+import SharesArrayToCache612 from './partials/shares-array-to-cache-612.mdx';
+import SharesArrayToCache611 from './partials/shares-array-to-cache-611.mdx';
+
+# Partages
+
+A key feature of Unraid is the management of shares. Shares are folders or drives on your Unraid server that can be accessed over a network. You can create as many shares as you want on your Unraid server. These shares can be secured, and their configuration determines how data is written and distributed across your %%array|array%% or named %%pool|cache-pool%% of drives.
+
+Unraid propose deux types de partages pour optimiser la gestion de vos données :
+
+- [**Partages utilisateurs**](#user-shares) : Ceux-ci utilisent **Linux FUSE** et représentent des dossiers dans le système de fichiers plus global.
+- [**Partages de disques**](#disk-shares) : Ceux-ci partagent le disque entier en utilisant le [système de fichiers](./file-systems.mdx) du disque.
+
+<div style={{ margin: 'auto', maxWidth: '500px'}}>
+  ![Partages Utilisateurs vs Partages de Disques](/img/usersharesvsdiskshares.png)
+</div>
+
+Il est important de se rappeler que les deux types de partages présentent des vues différentes du même système de fichiers sous-jacent ; tout fichier ou dossier visible dans un %%user share|user-share%% apparaîtra également sous le partage de disque pour son disque physique respectif.
+
+Lorsque vous démarrez des services comme Docker ou le gestionnaire de machines virtuelles, Unraid crée automatiquement un [ensemble de partages utilisateur par défaut](#default-shares) conçus pour prendre en charge les plugins courants, les conteneurs Docker et les **machines virtuelles (VMs)**. Vous pouvez facilement créer des partages supplémentaires pour vos données personnelles selon vos besoins.
+
+:::note
+Pour gérer vos partages, il suffit de naviguer vers l'onglet **Partages** dans le WebGUI. Ici, vous pouvez facilement activer ou désactiver les partages via ***Paramètres → Paramètres Globaux de Partage***. Par défaut, %%user shares%% sont activés, offrant un point de départ simple pour l'organisation de vos fichiers.
+:::
+
+---
+
+## Partages utilisateurs
+
+%%User shares|user-share%% provide an aggregated view of top-level folders with the same name across **%%cache|cache%%** and **array drives**. The share name corresponds to the folder name, creating a unified network-accessible view that spans multiple drives. It's important to note that while directories appear merged, individual files remain stored on a single drive.
+
+### Gestion des partages utilisateurs
+
+Vous pouvez accéder et gérer les %%user shares%% à partir de l'onglet **Partages** dans le **WebGUI**. Cette interface vous permet de :
+
+- Examiner tous les partages existants
+- Créer de nouveaux partages
+- Modifier ou supprimer des partages existants
+
+Tout dossier de niveau supérieur créé manuellement sur un disque est automatiquement reconnu comme un partage utilisateur et se voit attribuer des attributs par défaut.
+
+### Structure du système de fichiers
+
+At the Linux level, %%User shares|user-share%% are accessible under `/mnt/user`, which combines files from both the %%array|array%% and %%pools|cache-pool%%. This logical view overlays the physical file system, meaning files are also visible through **Disk Shares** at the drive level.
+
+:::warning
+Le point de montage obsolète `/mnt/user0` (qui exclut les fichiers de %%pool|cache-pool%%) pourrait être supprimé dans les futures versions d'Unraid.
+:::
+
+### Allocation de stockage
+
+The physical drive that stores a file is determined by share settings such as **%%Allocation Method|allocation-method%%**, **%%Included/Excluded Disks|included-or-excluded-disks%%**, and **%%Split Level|split-level%%**. Changes to these settings will affect only new files; existing files will remain untouched unless moved manually.
+
+:::caution\[Critical]
+
+**Ne mélangez pas les Partages Utilisateurs et les Partages Disques**
+
+Ne copiez ou ne déplacez jamais de fichiers directement entre un **user share** et un **disk share** (par exemple, entre `/mnt/user/share` et `/mnt/disk1/share`) - surtout si les noms de dossier sont les mêmes. Cela peut entraîner une corruption de fichiers ou une perte de données permanente.
+
+Pour des pratiques de gestion des fichiers sécurisées et plus de détails, voir les [lignes directrices sur les Partages de Disques](#disk-share-guidelines) ci-dessous.
+
+:::
+
+### Ajouter un partage
+
+Avant de créer un partage, réfléchissez à comment vous allez l'utiliser, vos besoins en performances, la sécurité, et où les fichiers doivent être stockés.
+
+Pour ajouter un partage :
+
+1. **Démarrer le processus :** Allez à l'onglet **Shares** et cliquez sur **Ajouter un partage**.
+
+2. **Choisir un nom de partage :** Choisissez un nom unique pour votre partage, comme `Média` ou `Documents`.
+
+:::important[Share nom]
+Even though network shares (%%SMB|samba%%) don’t care about capitalization (e.g., `MEDIA` is the same as `media`), Linux file systems do. Avoid using names that are identical but only differ in case to prevent issues.
+:::
+
+3. **Paramètres optionnels :**
+   - **Commentaires :** Écrivez une courte description pour identifier votre partage (par ex., "Photos de famille").
+   - **Espace minimum libre :** Décidez d'une quantité minimale d'espace libre (par exemple, `50GB` pour les gros fichiers).  (Pour plus de détails, voir [espace minimum libre](#minimum-free-space))
+
+4. **Sélectionnez les emplacements de stockage :**
+
+   - **Stockage principal :** Choisissez où le partage sera initialement stocké (par ex., **%%cache|cache%%**, **%%array|array%%**, ou un %%pool|cache-pool%% spécifique).
+   - **Stockage secondaire :** Définissez un emplacement de débordement qui peut être utilisé lorsque le stockage principal est plein, servant également comme destination finale pour le mouvement par le %%Mover|mover%%.
+
+   (Pour plus de détails, voir [Stockage principal et secondaire](#primary-and-secondary-storage).)
+
+5. **Définir les règles de données :**
+   - **%%allocation-method%% :** Choisissez comment les données seront stockées - les options comprennent high-water, remplir, ou le plus libre.  (Pour plus de détails, voir [Méthode d'allocation](#allocation-method).)
+   - **%%Split Level|split-level%%:** Determine how folders should be organized. (For more details, see [Split level](#split-level).)
+
+6. **Gérer les disques :**
+
+   - **Disques inclus :** Choisissez des disques spécifiques à inclure (par ex., `disk1,disk2`).
+   - **Disques exclus :** Spécifiez tout disque que vous souhaitez exclure (comme les disques anciens).
+
+   (Pour plus de détails, voir [Disques inclus ou exclus](#included-or-excluded-disks).)
+
+:::tip
+Vous pouvez configurer soit **Disques inclus** soit **Disques exclus**, mais pas les deux en même temps.
+:::
+
+7. **Paramètres du Mover (si nécessaire)**
+
+   - **Action du Mover :** Décider de la direction du mouvement des données (soit *Principal → Secondaire* soit *Secondaire → Principal*).
+
+   (Pour plus de détails, voir [Déplacement des fichiers entre le cache et l'array](#moving-files-between-cache-and-array).)
+
+8. **Terminer le processus :** Cliquez sur **Ajouter un partage** pour terminer la configuration de votre nouveau partage.
+
+:::important
+Par défaut, un nouveau partage ne sera pas partagé sur le réseau. Vous devez configurer [l'accès réseau](../../system-administration/secure-your-server/security-fundamentals.mdx#managing-network-visibility-of-shares) après la création du partage.
+:::
+
+### Supprimer un partage
+
+:::important
+Pour éviter toute perte de données potentielle, les partages contenant des données ne peuvent pas être supprimés. Par conséquent, vous devez d'abord supprimer ou déplacer tout le contenu à l'intérieur du partage. Vérifiez toujours deux fois pour vous assurer que le partage est vide avant de procéder à sa suppression pour un processus sécurisé.
+:::
+
+**Partages contenant des données**
+
+Pour les partages contenant des données :
+
+1. **Vider d'abord le partage :**
+   - Utilisez le gestionnaire de fichiers intégré accessible via les raccourcis système (***Outils → Gestionnaire de Fichiers***) ou cliquez sur l'icône ![Gestionnaire de Fichiers](/img/filemanager.png) en haut à droite.
+   - Trouvez votre partage dans **Shares** et cliquez sur l'icône **Parcourir**.
+   - Supprimez ou déplacez tous les fichiers à l'aide du gestionnaire de fichiers.
+
+<details>
+  <summary>Utilisation de la ligne de commande (Avancé)</summary>
+
+  1. **Ouvrir le terminal :** Utilisez le **Terminal Web** (***Outils → Terminal***) ou connectez-vous via %%SSH|ssh%%.
+
+  2. **Supprimer les fichiers :**
+     Exécutez cette commande, en remplaçant `[share_name]` par le nom de votre partage :
+
+  ```
+  rm -rf /mnt/user/[share_name]/*
+  ```
+
+  3. **Supprimer le partage :** Suivez les étapes pour supprimer un partage vide ci-dessus.
+
+  :::caution
+  - La commande `rm -rf` supprimera définitivement les fichiers. Vérifiez bien avant de l'utiliser.
+  - Assurez-vous qu'aucun service Docker ou VM n'utilise le partage avant de le supprimer.
+  :::
+</details>
+
+:::note[Alternative Méthode]
+Si vous pouvez accéder au partage via le réseau :
+
+- Utilisez **l'Explorateur Windows** (%%SMB|samba%%) ou **le Finder de macOS** (%%AFP|AFP%%/%%SMB|samba%%) pour vous connecter au partage.
+- Supprimez manuellement les fichiers, puis retirez le partage via le **WebGUI**.
+:::
+
+2. **Supprimer le partage :**
+   - Retournez à **Shares** et cliquez sur le partage désormais vide.
+   - Cochez la case **Supprimer** et cliquez sur **Supprimer**.
+   - Confirmez et cliquez sur **Fait**.
+
+#### Suppression d'un partage vide
+
+1. Allez dans l'onglet **Partages**.
+2. Cliquez sur le partage que vous souhaitez supprimer.
+3. Cochez la case à côté de **Supprimer**. Le bouton deviendra **Supprimer**.
+4. Cliquez sur **Supprimer**.
+5. Confirmez la suppression et cliquez sur **Fait**.
+
+---
+
+## Paramètres du partage
+
+### Espace libre minimal
+
+The **Minimum Free Space** setting works in conjunction with the **%%allocation method|allocation-method%%** and **%%split level|split-level%%** to determine where new files are stored. This setting specifies the amount of free space that must remain on a drive for it to be considered eligible for new file writes. If a drive’s free space falls below this threshold, Unraid will stop placing new data on that drive, provided that the **%%split level|split-level%%** permits splitting to another disk.
+
+<details>
+  <summary><strong>Comment ça fonctionne</strong> - Cliquer pour développer/réduire</summary>
+
+  Lors du transfert d'un fichier (par exemple, `fichier.eg`), Unraid sélectionne un disque en fonction des paramètres disponibles mais ne peut pas prédire la taille finale du fichier. Si le disque choisi est plein pendant le transfert, l'opération échouera avec une erreur "disque plein". Pour éviter cela, définissez l'espace libre minimum (**Minimum Free Space**) sur une valeur supérieure à votre plus grand fichier. Cela garantit qu'Unraid évite les disques ne pouvant pas accueillir l'ensemble du fichier.
+</details>
+
+<h4>Recommandations</h4>
+
+Définissez cette valeur à **deux fois la taille de votre plus gros fichier**. Par exemple :
+
+- Si votre plus grand fichier est de 8 Go, alors définissez l'Espace Libre Minimum à 16 Go.
+
+Ce tampon tient compte des variations de taille de fichier et aide à prévenir les échecs de transfert.
+
+<h4>Configuration</h4>
+
+- Entrez la valeur en Ko, Mo, Go, ou To (par ex., `50GB`).
+- Les nouveaux %%user shares|user-share%% par défaut à 10% de la capacité totale du disque.
+
+:::warning
+Configurez toujours **Espace libre minimum** lors de l'utilisation de la méthode d'%%allocation|allocation-method%% *remplissage*. Si vous ne le définissez pas, vous risquez de rencontrer des erreurs du type "espace disque plein" lors des opérations d'écriture.
+:::
+
+:::caution
+There is a separate **Minimum Free Space** setting for **%%cache pools|cache-pool%%**. You can access this by going to the **Main** tab and clicking on a %%pool|cache-pool%%. Make sure to set this value higher than your largest file to avoid overfilling, especially for shares configured with *Yes* or *Prefer* cache modes.
+:::
+
+<h4>Limitations</h4>
+
+- Unraid prioritizes **%%split level|split-level%%** rules over free space settings. If splitting is not allowed, files may still fill up a disk regardless of the free space threshold.
+- La mise à jour des fichiers existants (par exemple, lors de l'expansion des fichiers de sauvegarde) ne déclenche pas de redistribution, ce qui peut conduire à des erreurs "disque plein" au fil du temps.
+
+Pour des recommandations plus détaillées, utilisez l'icône **Aide** dans le **WebGUI** lors de la configuration de vos partages.
+
+---
+
+## Stockage principal et secondaire
+
+Unraid’s storage management lets you control where new files are written and how data moves between %%pools|cache-pool%%, %%cache|cache%%, and the %%array|array%%. The options and terminology differ between Unraid 6.12+ and earlier versions.
+
+<Tabs>
+  <TabItem value="6.12" label="Unraid 6.12 et plus tard" default>
+    <SharesPrimaryStorage612 />
+  </TabItem>
+
+  <TabItem value="6.11" label="Unraid 6.11 et antérieur">
+    <SharesPrimaryStorage611 />
+  </TabItem>
+</Tabs>
+
+---
+
+### Déplacement des fichiers entre cache et array
+
+Unraid provides a straightforward way to manage file placement between **%%cache pools|cache-pool%%** and the **%%array|array%%**, allowing you to optimize performance and manage your data effectively. The key is to set up your share settings based on your preferred data flow and let the **%%Mover|mover%%** handle file transfers automatically according to its schedule.
+
+:::tip[Scheduling le Mover]
+You can configure the [**%%Mover|mover%%** schedule](../../getting-started/set-up-unraid/customize-unraid-settings.mdx#scheduler) by going to **Settings → Scheduler → Mover Settings**. Running it automatically during off-peak hours helps move files between the %%cache|cache%% and %%array|array%% without requiring manual action.
+:::
+
+#### Cache vers array
+
+*Cas d'utilisation :* Déplacer des fichiers de votre %%cache|cache%% à haute vitesse vers l'%%array|array%% pour un stockage à long terme.
+
+<Tabs>
+  <TabItem value="6.12+" label="Unraid 6.12+" default>
+    <SharesCacheToArray612 />
+  </TabItem>
+
+  <TabItem value="6.11" label="Unraid 6.11 ou inférieur">
+    <SharesCacheToArray611 />
+  </TabItem>
+</Tabs>
+
+#### Array vers cache
+
+*Cas d'utilisation :* Améliorer les performances des conteneurs Docker et des VM en déplaçant les fichiers vers le %%cache|cache%%.
+
+<Tabs>
+  <TabItem value="6.12+" label="Unraid 6.12+" default>
+    <SharesArrayToCache612 />
+  </TabItem>
+
+  <TabItem value="6.11+" label="Unraid 6.11 ou inférieur">
+    <SharesArrayToCache611 />
+  </TabItem>
+</Tabs>
+
+:::tip[Enabling Activation de la journalisation du Mover pour le dépannage]
+Si vous rencontrez des problèmes avec le déplacement de fichiers, vous pouvez activer le **journal des déplacements** via la page ***Paramètres → Planificateur → Paramètres des déplacements***. Cela enregistre chaque fichier déplacé et peut être consulté dans ***Outils → Journal Système***.
+:::
+
+:::caution[Critical Étapes pour les deux directions]
+- Assurez-vous que votre %%parity|parité%% est valide avant de déplacer des fichiers de l'%%array|array%% vers le %%cache|cache%%.
+- Si vous traitez de grands jeux de données, suivez l'activité du %%Mover|mover%% via les journaux.
+- Si les fichiers semblent "bloqués", envisagez de désactiver temporairement Docker et le Gestionnaire de VM, puis d'exécuter le %%Mover|mover%% manuellement via ***Principal → Opérations de l'Array → Déplacer***.
+:::
+
+---
+
+### Méthode d'allocation
+
+Lorsque vous créez un nouveau partage utilisateur ou ajoutez un fichier ou un dossier à l'intérieur, le système doit décider où stocker ces données. En général, il choisira le disque de données qui a le plus d'espace libre disponible. Cependant, vous pouvez ajuster la façon dont cette décision est prise à l'aide de certains paramètres.
+
+Il existe trois options simples que vous pouvez sélectionner pour déterminer comment le système alloue le stockage pour votre partage utilisateur :
+
+<Tabs>
+  <TabItem value="mi-hauteur" label="Mi-hauteur (Recommandé)" default>
+    <h4>Comment ça fonctionne</h4>
+
+    La méthode **Moitié pleine (High-water)** remplit progressivement les disques en utilisant des "points de basculement" basés sur la moitié de la capacité du plus grand disque. Cela équilibre l'utilisation des disques tout en gardant les fichiers connexes ensemble et limite le démarrage des disques.
+
+    <h4>Exemple avec des disques de 8 To, 3 To et 2 To</h4>
+
+    1. **Premier passage :** Remplir le disque de 8 To jusqu'à ce qu'il reste 4 To libre (la moitié de 8 To).
+    2. **Deuxième passage :** Remplir les disques de 8 To/3 To jusqu'à ce qu'il reste 2 To libre.
+    3. **Troisième passage :** Remplir tous les disques jusqu'à ce qu'il reste 1 To libre.
+
+    <h4>Meilleur pour :</h4>
+
+    - Serveurs multimédias (par exemple, Plex)
+    - Scénarios où maintenir des fichiers sur moins de disques améliore l'efficacité de l'arrêt des disques
+    - Arrays avec des tailles de disques mixtes
+
+    :::note
+    La méthode Moitié pleine est la méthode par défaut et fonctionne bien pour la plupart des utilisateurs. Elle réduit le brassage des disques comparé à "Le plus libre".
+    :::
+  </TabItem>
+
+  <TabItem value="plus libre" label="Plus libre">
+    <h4>Comment ça fonctionne</h4>
+
+    La méthode **Le plus libre (Most-free)** sélectionne le disque ayant le plus d'espace libre pour chaque nouveau fichier. Cela maximise l'efficacité du stockage mais augmente le brassage des disques.
+
+    <h4>Impact sur les performances</h4>
+
+    - Des commutateurs fréquents de disques gardent plusieurs disques allumés
+    - Peut réduire la vitesse d'écriture de la %%parité|parity%% en raison des opérations qui se chevauchent
+
+    <h4>Meilleur pour :</h4>
+
+    - Flux de travail à haut débit (par exemple, montage vidéo)
+    - Temporary or %%cache|cache%%-like data
+    - Arrays où la performance est plus importante que les économies d'énergie
+
+    :::tip
+    Combine with **%%split level|split-level%%** settings to group related files despite frequent disk switching.
+    :::
+  </TabItem>
+
+  <TabItem value="remplir jusqu'au bord" label="Remplir jusqu'au bord">
+    <h4>Comment ça fonctionne</h4>
+
+    La méthode **Fill-up** écrit sur les disques dans l'ordre numérique jusqu'à ce qu'ils atteignent le seuil de l'**Espace Libre Minimum**, puis passe au disque suivant.
+
+    <h4>Exigences</h4>
+
+    - Toujours définir **Espace Libre Minimum** (par exemple, 2x la taille de fichier la plus grande)
+    - Configurer **Niveau de Fractionnement** pour contrôler le regroupement des fichiers
+
+    <h4>Meilleur pour :</h4>
+
+    - Archives de données statiques
+    - Utilisateurs préférant une gestion manuelle des disques
+    - Arrays de disques de tailles identiques
+
+    :::caution
+    Sans espace libre minimum (**Minimum Free Space**) configuré, des erreurs "disque plein" se produiront lorsqu'un disque est près de sa capacité.
+    :::
+  </TabItem>
+</Tabs>
+
+---
+
+### Niveau de découpe
+
+The **Split Level** setting in Unraid helps manage how files and folders are organized across multiple disks. It determines how deep folder structures can go on different disks while keeping certain files together. The %%split level|split-level%% is numbered starting from 1, where the top level (the main share) is considered level 1.
+
+<Tabs>
+  <TabItem value="automatique-n'importe" label="Divise automatiquement tout répertoire selon les besoins (par défaut)" default>
+    <h4>Comportement</h4>
+
+    Unraid crée les dossiers requis sur le disque sélectionné, quel que soit la profondeur du dossier. Les nouveaux fichiers et dossiers sont placés en fonction de la méthode d'allocation (%%allocation method|allocation-method%%) et de l'espace disponible, même si leurs répertoires parents n'existent pas déjà sur ce disque.
+
+    <h4>Cas d'utilisation</h4>
+
+    Idéal pour les partages de données générales où la structure des dossiers n'est pas critique, comme les téléchargements ou les bibliothèques multimédia mixtes. Cela permet une flexibilité maximale pour le placement des fichiers et l'utilisation des disques.
+  </TabItem>
+
+  <TabItem value="auto-haut" label="Diviser automatiquement seulement le niveau supérieur">
+    <h4>Comportement</h4>
+
+    Unraid ne créera que des sous-dossiers de premier niveau sur un disque s'ils n'existent pas déjà. Pour les dossiers plus profonds, de nouveaux fichiers et dossiers sont placés sur le disque où le répertoire parent existe.
+
+    <h4>Cas d'utilisation</h4>
+
+    Idéal pour les bibliothèques multimédia (par ex., Films/Titre) où vous souhaitez que tous les fichiers pour un sous-dossier spécifique (comme un film ou une série) restent ensemble sur le même disque.
+  </TabItem>
+
+  <TabItem value="automatique-n" label="Diviser automatiquement les niveaux supérieurs 'N'">
+    <h4>Comportement</h4>
+
+    Vous spécifiez combien de niveaux de répertoire (N) Unraid gérera automatiquement. Pour les dossiers au niveau N ou au-dessus, Unraid peut les créer selon les besoins. Pour les niveaux plus profonds, de nouveaux fichiers sont placés sur le disque où le répertoire parent existe.
+
+    <h4>Cas d'utilisation</h4>
+
+    Utile pour des structures de dossiers complexes, telles que des répertoires de projets imbriqués, où vous souhaitez regrouper le contenu lié au-delà du niveau supérieur.
+  </TabItem>
+
+  <TabItem value="manuel" label="Manuel (Pas de division automatique)">
+    <h4>Comportement</h4>
+
+    Unraid ne place que les nouveaux fichiers ou dossiers sur les disques où le répertoire parent existe déjà. Aucun nouveau répertoire n'est créé automatiquement.
+
+    <h4>Cas d'utilisation</h4>
+
+    Idéal pour les utilisateurs avancés qui souhaitent un contrôle manuel total sur le placement des fichiers, ou pour les données d'archives où la structure des dossiers doit rester fixe.
+  </TabItem>
+</Tabs>
+
+:::important
+S'il y a des conflits entre **Espace Minimum Libre**, **Niveau de Division**, et **%%allocation-method%%**, le paramètre **Niveau de Division** prend la priorité. Cela peut entraîner des erreurs « espace insuffisant », même si d'autres disques ont de l'espace disponible.
+:::
+
+---
+
+### Disques inclus ou exclus
+
+Ces paramètres vous aident à gérer quels disques peuvent contenir des fichiers pour votre partage. Vous pouvez soit inclure des disques spécifiques soit en exclure certains - mais ne faites pas les deux en même temps ! Si vous ne choisissez aucun disque spécifique, tous les disques autorisés dans ***Paramètres → Paramètres Globaux de Partage*** seront utilisés.
+
+Unraid first checks any included disks, then looks at excluded disks to determine where to store a file. After that, it uses the %%split level|split-level%% and %%allocation method|allocation-method%% to select an appropriate disk.
+
+<div style={{ margin: 'auto', maxWidth: '272px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+  ![Logiciel de sélection de disques](/img/diskselectionlogic.png)
+</div>
+
+:::important
+The settings for %%included and excluded disks|included-or-excluded-disks%% only affect where new files can be saved. Any existing files in folders that match your share name will still be accessible for reading, even if they’re on a different disk.
+:::
+
+<Tabs>
+  <TabItem value="inclure" label="Disques inclus" default>
+    <h4>Comportement</h4>
+
+    Unraid ne prendra en compte que les disques listés lorsqu'il décide où placer de nouveaux fichiers pour le partage. Tous les autres disques sont ignorés pour les nouvelles écritures, mais les fichiers déjà présents sur d'autres disques restent accessibles en lecture.
+
+    <h4>Cas d'utilisation</h4>
+
+    Utilisez ce paramètre si vous souhaitez restreindre un partage à certains disques, comme conserver des documents importants sur des disques plus récents ou de plus grande capacité, ou isoler une bibliothèque multimédia à des disques spécifiques pour des raisons de performances ou d'organisation.
+  </TabItem>
+
+  <TabItem value="exclure" label="Disques exclus">
+    <h4>Comportement</h4>
+
+    Unraid utilisera tous les disques éligibles sauf ceux listés ici lors du placement de nouveaux fichiers pour le partage. Comme avec les disques inclus, les fichiers déjà présents sur les disques exclus restent accessibles en lecture.
+
+    <h4>Cas d'utilisation</h4>
+
+    Utilisez ce paramètre pour empêcher un partage d'utiliser certains disques, tels que l'exclusion de disques plus anciens, de disques plus lents, ou de disques réservés à d'autres types de données.
+  </TabItem>
+</Tabs>
+
+---
+
+### Partages par défaut
+
+Lorsque vous utilisez Unraid avec **Docker** ou des **Machines Virtuelles (VMs)**, il crée automatiquement certains partages par défaut.
+
+:::important
+Ces partages ne sont créés qu'après avoir démarré leurs services respectifs (Docker ou Gestionnaire de VM). Si vous ne voyez pas ces partages, assurez-vous que Docker et/ou le Gestionnaire de VM sont activés et fonctionnent.
+:::
+
+Vous n'êtes pas obligé d'utiliser ces partages si vous ne le souhaitez pas, et vous pouvez les supprimer si vous le préférez, mais nous recommandons généralement de les conserver pour plus de commodité. Ces partages aident à garder les choses organisées et à faciliter le support pour tous en cas de problème.
+
+Voici un aperçu rapide de la fonction de chaque partage par défaut :
+
+- `appdata`: C'est là que tous les fichiers de travail pour vos conteneurs Docker sont stockés. Chaque conteneur Docker a généralement son propre dossier ici.
+- `system` : Ce partage contient les fichiers essentiels pour vos applications Docker et les modèles XML pour vos VMs.
+- `domains` : Ce partage est désigné pour le stockage des images de disques virtuels (vdisks) utilisées par vos VMs.
+- `isos` : C’est ici que vous pouvez enregistrer les images ISO de CD que vous souhaitez utiliser avec vos VMs.
+
+:::important
+Il est préférable de ne pas modifier les permissions sur la plupart de ces partages par défaut car cela pourrait causer des problèmes avec le fonctionnement des conteneurs Docker et des VMs. Le seul partage pour lequel il est recommandé de modifier les permissions est le partage `isos`, car celui-ci peut être accessible via le réseau pour ajouter de nouveaux fichiers ISO pour les machines virtuelles.
+:::
+
+---
+
+## Partages de disques
+
+Disk shares are simply individual drives or %%pools|cache-pool%% of drives within your Unraid system that can be accessed over the network. By default, these shares are turned off, but you can easily enable them in the ***Settings → Global Share Settings*** section.
+
+Pour garantir la sécurité, assurez-vous de définir [les permissions d'accès utilisateur](../../system-administration/secure-your-server/user-management.mdx) pour ces partages de manière appropriée. Cela est particulièrement important si vous avez plusieurs utilisateurs accédant à votre réseau.
+
+Pour activer les partages de disques :
+
+1. Navigatez vers **Paramètres**.
+2. Cliquez sur **Paramètres Globaux de Partage**.
+3. Activez les partages de disques pour les rendre visibles dans votre réseau.
+
+Once you enable them, you'll notice disk shares in the Unraid GUI under a section labeled **Disk Shares** in the **Shares** tab. Each drive in your %%array|array%% can be accessed like this:
+
+- **Lecteurs individuels :** Ils apparaissent sous la forme `/mnt/diskX` où X est le numéro du disque (par exemple, `disk1`, `disk2`, etc.).
+- **Pools of drives:** If you have multiple drives grouped together, they will show up as `/mnt/pool-name`. The most common %%pools|cache-pool%% is called `cache`, but you can name your %%pools|cache-pool%% however you like.
+
+:::important
+Le périphérique flash Unraid, qui stocke vos paramètres Unraid, n'est pas traité comme un partage de disque. Si vous voulez qu'il soit accessible sur le réseau, vous pouvez le configurer comme un partage nommé 'flash'. Ce périphérique est monté sur `/boot` dans Linux.
+
+Pour des raisons de sécurité, il est préférable de garder vos partages en mode *Privé* et de ne donner accès qu'aux utilisateurs de confiance.
+:::
+
+### Directives de partage de disque
+
+:::danger[Important Rappel]
+**Ne copiez jamais des fichiers directement entre un partage utilisateur et un partage de disque** si leurs noms de dossier sont identiques. Cela pourrait entraîner une corruption ou une suppression des fichiers, entraînant une perte de données permanente.
+:::
+
+Les **user shares** et les **disk shares** peuvent sembler différents dans l'interface mais peuvent pointer vers les mêmes fichiers sur le disque. Les commandes Linux comme `cp` ou `rsync` ne peuvent pas toujours faire la différence, ce qui peut entraîner l'écrasement ou la suppression accidentelle des fichiers.
+
+**Conseils pour une copie sécurisée**
+
+1. **Adoptez un seul type de partage :**
+   - Copiez seulement des fichiers entre les %%user shares|user-share%% OU les partages de disque, pas les deux en même temps.
+   - *Exemple :* Pour copier un fichier d'un partage utilisateur à un autre : `cp /mnt/user/share1/file /mnt/user/share2/file`
+
+2. **Utilisez les lecteurs externes en toute sécurité :**
+   - Connectez les disques externes en utilisant le **[plugin Unassigned Devices](https://unraid.net/community/apps?q=unassigned+devices#r:~:text=don%27t%20be%20carefull!!!-,Unassigned%20Devices,-dlandon)** pour éviter les problèmes.
+   - Copiez les fichiers depuis `/mnt/disks/` plutôt que depuis les chemins principaux du %%array|array%% ou %%cache|cache%%.
+
+3. **Vérifiez vos copies :** lors du déplacement de fichiers localement, vous pouvez utiliser `rsync -c` pour vérifier que les fichiers ont bien été copiés.
+
+4. **Ne mélangez pas les types de partage :** Évitez d'utiliser des chemins qui mélangent les %%user shares|user-share%% et les partages de disque, tels que `/mnt/user/share/` avec `/mnt/disk1/share/` dans la même commande.
+
+---
+
+## Transfert de fichiers depuis un partage réseau
+
+Il existe plusieurs outils que vous pouvez utiliser pour copier des fichiers depuis un partage Windows ou Linux vers votre serveur Unraid. Pour rester simple et fiable, commencez par l'outil de gestion de fichiers intégré d'Unraid avant d'explorer des options tierces.
+
+### Utilisation de Midnight Commander (intégré)
+
+Unraid inclut **Midnight Commander** (`mc`), un gestionnaire de fichiers basé sur du texte et à double fenêtre. Vous pouvez y accéder via le [terminal Web](../../system-administration/advanced-tools/command-line-interface.mdx).
+
+1. **Ouvrez le terminal web :** vous trouverez cette option dans le menu en haut à droite du %%WebGUI|web-gui%% Unraid.
+2. **Lancez Midnight Commander :**
+
+   ```bash
+   mc
+   ```
+
+   Cette interface propose une navigation par glisser-déposer entre les partages locaux et les chemins réseau montés.
+3. **Montez un partage réseau** (s'il n'est pas déjà monté) :
+
+   ```bash
+   mkdir /work
+   mount -t cifs //workstation/share /work -o username=youruser,password=yourpassword,iocharset=utf8
+   ```
+
+   - Remplacez `workstation`, `share` et `youruser` par les valeurs appropriées.
+   - L'option `iocharset=utf8` aide à maintenir les noms de fichiers internationaux.
+4. **Utilisez les volets de MC** pour transférer des fichiers entre `/work` (le partage réseau) et n'importe quel partage `/mnt/user/` ou `/mnt/diskX`.
+5. **Nettoyez après :**
+
+   ```bash
+   umount /work
+   rmdir /work
+   ```
+
+Midnight Commander fonctionne entièrement dans le système intégré, nécessitant aucune installation supplémentaire. Il convient à la plupart des besoins de transfert, y compris ceux impliquant des noms de fichiers Unicode, et il préserve les attributs de fichier lorsque la source et la destination les prennent en charge.
+
+### Utilisation de Krusader
+
+Si vous préférez une interface utilisateur graphique, vous pouvez utiliser des conteneurs Docker tels que [Krusader](https://unraid.net/community/apps?q=krusader#r:~:text=batch%20renaming%2C%20etc.-,Krusader,-Productivity%2C%20Tools) comme solution tierce.
+
+1. **Installez Krusader :**
+   - Naviguez jusqu'à l'onglet **Apps** (Applications Communautaires).
+   - Recherchez et installez le conteneur Docker **Krusader**.
+2. **Lancez Krusader :** démarrez le conteneur et accédez à son WebUI à partir de l'onglet **Docker**.
+3. **Connectez-vous aux partages distants** dans Krusader, et utilisez le glisser-déposer ou le copier-coller pour transférer des fichiers entre le partage réseau et votre %%array|array%% Unraid.
+
+:::info
+D'autres conteneurs de gestion de fichiers populaires incluent [**Double Commander**](https://unraid.net/community/apps?q=double+commander#r:~:text=of%201%20App-,doublecommander,-Tools%20/%20Utilities%2C) et [**CloudCommander**](https://unraid.net/community/apps?q=cloudcommander#r:~:text=of%201%20App-,CloudCommander,-Tools%20/%20Utilities%2C), tous deux disponibles via les Applications Communautaires.
+:::
+
+### Méthodes en ligne de commande
+
+Pour les utilisateurs avancés ou ceux utilisant l'automatisation, vous pouvez également utiliser des méthodes de transfert en ligne de commande.
+
+<details>
+  <summary>Cliquer pour déplier les instructions en ligne de commande</summary>
+
+  1. **Ouvrez le terminal** (Terminal Web ou %%SSH|ssh%% en tant que `root`).
+
+  2. **Créez et montez un partage réseau :**
+
+     ```bash
+     mkdir /work
+     mount -t cifs //workstation/share /work -o username=youruser,password=yourpassword,iocharset=utf8
+     ```
+
+  3. **Copiez les fichiers :**
+     - Vous pouvez utiliser `cp` :
+
+       ```bash
+       cp -r /work/* /mnt/disk1
+       ```
+
+     - Ou, utilisez `rsync` pour un suivi détaillé :
+
+       ```bash
+       rsync -av --progress /work/ /mnt/disk1/
+       ```
+
+  4. **Démontez et supprimez le répertoire temporaire :**
+
+     ```bash
+     umount /work
+     rmdir /work
+     ```
+</details>
+
+:::caution
+Lors du transfert de fichiers avec des caractères spéciaux ou internationaux, montez toujours le partage avec l'option `iocharset=utf8`. Ne pas le faire peut entraîner des noms de fichiers incorrects ou des fichiers illisibles sur d'autres plateformes.
+
+En outre, si vous copiez des fichiers en tant que `root` via le terminal, ils peuvent avoir des permissions restrictives. Si cela se produit, utilisez l'outil **Nouvelles Permissions** depuis le menu **Outils** dans le WebGUI ou le **Docker Safe New Perms** si vous traitez avec des partages impliquant Docker pour réinitialiser les permissions, assurant que tous les utilisateurs ont accès au réseau.
+:::

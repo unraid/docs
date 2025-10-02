@@ -1,0 +1,287 @@
+---
+sidebar_position: 3
+sidebar_label: Ventanas en una MV
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import WindowsVirtioAutomatic from './partials/windows-virtio-automatic.mdx';
+import WindowsVirtioManual from './partials/windows-virtio-manual.mdx';
+import WindowsUpgradeInPlace from './partials/windows-upgrade-in-place.mdx';
+import WindowsUpgradeCleanInstall from './partials/windows-upgrade-clean-install.mdx';
+
+# Ventanas en una MV
+
+Windows es uno de los sistemas operativos invitados más populares para los usuarios de Unraid, especialmente para juegos, productividad y soporte de aplicaciones heredadas. Aquí están las consideraciones esenciales para ejecutar Windows %%VM|vm%%.
+
+:::caution[Before comienza]
+- Microsoft terminó el soporte para Windows 7 en enero de 2020, Windows 8.1 en enero de 2023 y Windows 10 en octubre de 2025. Use Windows 11 (o posterior) o Server 2022 (o posterior) para recibir actualizaciones de seguridad continuas.
+- Siempre pruebe la estabilidad del %%VM|vm%% antes de activar su licencia de Windows.
+- For %%GPU passthrough|gpu-passthrough%%, use %%OVMF|ovmf%% (%%UEFI|uefi%%) BIOS with Windows 11 or newer.
+:::
+
+### Configuraciones compatibles
+
+| Edición de Windows  | BIOS recomendado   | Tipo de máquina                 | Notas                                      |
+| ------------------- | ------------------ | ------------------------------- | ------------------------------------------ |
+| Windows 11          | %%OVMF\|ovmf%% TPM | %%Q35\|q35%%                    | Requiere emulación TPM 2.0                 |
+| Windows Server 2022 | %%OVMF\|ovmf%%     | %%Q35\|q35%%                    | Ideal para cargas de trabajo empresariales |
+| Windows 10          | %%OVMF\|ovmf%%     | %%Q35\|q35%%                    | Obsoleto (EOL oct 2025)                    |
+| Windows Server 2019 | %%OVMF\|ovmf%%     | %%i440fx\|i440fx%%/%%Q35\|q35%% | Compatible pero no recomendado             |
+
+---
+
+### Gestión de controladores VirtIO
+
+Windows requiere controladores para-virtualizados para un rendimiento óptimo con la pila de virtualización de Unraid.
+
+Para instalar o actualizar controladores:
+
+<Tabs>
+  <TabItem value="Automático" label="Instalación automática">
+    <WindowsVirtioAutomatic />
+  </TabItem>
+
+  <TabItem value="Manual" label="Actualización manual">
+    <WindowsVirtioManual />
+  </TabItem>
+</Tabs>
+
+:::tip
+Usando Unraid 7 o posterior, puede inyectar automáticamente controladores %%VirtIO|virtio%% durante la instalación de Windows. Habilite esto en ***Configuración de VM → Opciones Avanzadas***.
+:::
+
+---
+
+### Configuración de hibernación
+
+La hibernación le permite guardar todo el estado de su %%VM|vm%% de Windows, incluidas las aplicaciones y documentos abiertos, en el disco. Esto le permite apagar el %%VM|vm%% sin perder ningún trabajo. Cuando reanuda, Windows restablece todo exactamente como lo dejó, omitiendo el proceso de arranque normal. Esta función es útil cuando necesita reiniciar o apagar su host de Unraid o desea ahorrar energía mientras mantiene intacto el estado de su %%VM|vm%%.
+
+:::note[Benefits de la hibernación]
+- Ahorre energía apagando un %%VM|vm%% inactivo sin perder progreso
+- Reanude el trabajo rápidamente después del mantenimiento del host o de las actualizaciones
+- Reduzca el desgaste de los SSD en comparación con los apagados y reinicios completos frecuentes
+:::
+
+To use hibernation reliably, you must install the %%QEMU|qemu%% %%Guest Agent|guest-agent%% in your Windows %%VM|vm%%. This agent allows Unraid to communicate with the %%VM|vm%% for advanced operations like hibernation, shutdown, and live statistics reporting.
+
+<details>
+  <summary><strong>Cómo instalar el %%QEMU|qemu%% %%Guest Agent|guest-agent%%</strong> - Haz clic para expandir/colapsar</summary>
+
+  1. Inicie su %%VM|vm%% de Windows con el ISO de controladores %%VirtIO|virtio%% montado.
+  2. Abra el **Explorador de archivos** y navegue a los medios de controladores %%VirtIO|virtio%%.
+  3. Abra la carpeta `guest-agent`.
+  4. Ejecute `qemu-ga-x64.msi` para instalar el agente. (Puede que vea brevemente un cuadro de comando; no aparecerá un cuadro de diálogo de confirmación.)
+</details>
+
+<details>
+  <summary><strong>Cómo habilitar la hibernación en Windows</strong> - Haz clic para expandir/colapsar</summary>
+
+  1. Abra el **Panel de control** y busque **Opciones de energía**.
+  2. Haga clic en **Elija qué hacen los botones de encendido**.
+  3. Haga clic en **Cambiar configuraciones que actualmente no están disponibles** para desbloquear configuraciones de apagado.
+  4. Marque la opción **Hibernar**.
+  5. Haga clic en **Guardar cambios**.
+
+  La opción **Hibernar** ahora aparecerá en el menú de energía de Windows.
+</details>
+
+:::important[What ¿si falla la hibernación?]
+If your %%VM|vm%% fails to hibernate or resume properly, you may lose unsaved work or face a failed restore. Always save important data before hibernating. If issues persist, ensure the %%QEMU|qemu%% %%Guest Agent|guest-agent%% is installed and updated, and check the Windows event log for errors.
+:::
+
+---
+
+### Ajuste de rendimiento
+
+Optimizar su %%VM|vm%% de Windows puede mejorar la capacidad de respuesta, reducir el uso del disco y evitar problemas comunes con el passthrough de dispositivos o el apagado. Estos ajustes son opcionales y se pueden aplicar según sea necesario.
+
+#### Desactivar inicio rápido
+
+Desactivar el inicio rápido puede ayudar a prevenir problemas con el passthrough de dispositivos. Asegura que el hardware de su %%VM|vm%% se inicialice correctamente cada vez que se inicia. Aunque esta configuración está diseñada para PCs físicas, en un entorno virtual, a menudo puede causar más problemas que beneficios.
+
+<details>
+  <summary><strong>Cómo desactivar el inicio rápido</strong> - Haz clic para expandir/colapsar</summary>
+
+  1. Abra el **Panel de control** y busque **Energía**.
+  2. Haga clic en **Elija qué hacen los botones de encendido**.
+  3. Haga clic en **Cambiar configuraciones que actualmente no están disponibles**.
+  4. Desmarque **Activar inicio rápido** en **Configuraciones de apagado**.
+  5. Haga clic en **Guardar cambios**.
+</details>
+
+#### Desactivar hiberfil.sys
+
+La hibernación en Windows crea un gran archivo oculto llamado `hiberfil.sys`. Este archivo puede consumir un espacio significativo en el disco e incrementar la actividad del disco en su %%VM|vm%%. Si no depende de la hibernación, desactivarla liberará espacio en almacenamiento y reducirá la actividad de E/S innecesaria.
+
+<details>
+  <summary><strong>Cómo desactivar la hibernación y eliminar hiberfil.sys</strong> - Haz clic para expandir/colapsar</summary>
+
+  1. Haga clic derecho en el botón **Inicio** y seleccione **Terminal de Windows (Admin)** o **Símbolo del sistema (Admin)**.
+  2. Escriba: `powercfg /h off`
+  3. Presione Enter y reinicie su %%VM|vm%%. El archivo `hiberfil.sys` se eliminará de su unidad C:.
+</details>
+
+#### Desactivar la indexación de Windows
+
+Windows Search indexing continuously scans your %%virtual machine|vm%%'s storage to catalog files for faster search results. However, on a %%virtual machine|vm%%, this can cause unnecessary disk I/O, slow down performance, and increase wear on your physical storage, especially SSDs in your [%%cache pool|cache-pool%%](../manage-storage/cache-pools.mdx).
+
+<details>
+  <summary><strong>Cómo desactivar la indexación de Windows</strong> - Haz clic para expandir/colapsar</summary>
+
+  1. Presione **Windows + R** para abrir el cuadro de diálogo Ejecutar, escriba `services.msc` y presione Enter.
+  2. En la ventana de Servicios, desplácese hacia abajo, haga clic derecho en **Windows Search** y luego seleccione **Detener**.
+  3. Haga doble clic en **Windows Search**, cambie el **Tipo de inicio** a **Deshabilitado** y haga clic en **OK**.
+</details>
+
+#### Desactivar desfragmentación automática del disco
+
+Windows está diseñado para desfragmentar automáticamente los discos duros físicos según un programa regular. En un %%VM|vm%% - especialmente cuando se utiliza almacenamiento SSD o %%vDiscos|vdisk%% provisionados de forma delgada - la desfragmentación automática es innecesaria y también puede reducir la vida útil del disco y degradar el rendimiento.
+
+<details>
+  <summary><strong>Cómo desactivar la desfragmentación automática del disco</strong> - Haz clic para expandir/colapsar</summary>
+
+  1. Abra el **Explorador de archivos**, haga clic derecho en la unidad C: y seleccione **Propiedades**.
+  2. Vaya a la pestaña **Herramientas** y haga clic en **Optimizar**.
+  3. Haga clic en **Cambiar configuraciones**.
+  4. Desmarque **Ejecutar en un horario** y haga clic en **OK**.
+</details>
+
+#### Habilitar modo de energía de alto rendimiento
+
+Las funciones de administración de energía en Windows están diseñadas para laptops y desktops para ahorrar energía. En un entorno %%VM|vm%%, estas funciones pueden reducir innecesariamente el rendimiento o suspender su %%VM|vm%%, haciéndolo menos receptivo y difícil de gestionar.
+
+Habilitar el modo **Alto rendimiento** asegura que su %%VM|vm%% siempre funcione a toda velocidad y es menos probable que se pause o se suspenda inesperadamente.
+
+<details>
+  <summary><strong>Cómo habilitar el modo de energía de alto rendimiento</strong> - Haz clic para expandir/colapsar</summary>
+
+  1. Abra el **Panel de control** y busque "energía".
+  2. Haga clic en **Elegir un plan de energía**.
+  3. Seleccione **Alto rendimiento** bajo **Planes preferidos**.
+</details>
+
+#### Habilitar acceso remoto de escritorio
+
+El protocolo de escritorio remoto (RDP) le permite acceder a su %%VM|vm%% de Windows desde otro dispositivo. Ofrece mejor rendimiento y compatibilidad en comparación con %%VNC|vnc-session%%. Tenga en cuenta que RDP es compatible solo con las ediciones Professional y Enterprise de Windows. Además, su cuenta de usuario de Windows **debe** tener configurada una contraseña.
+
+:::caution
+RDP no está disponible en las ediciones Home de Windows. Siempre configure una contraseña segura para su cuenta de usuario de Windows antes de habilitar RDP.
+:::
+
+<details>
+  <summary><strong>Cómo habilitar el acceso a escritorio remoto (RDP)</strong> - Haga clic para expandir/colapsar</summary>
+
+  Para habilitar el acceso RDP, siga estos pasos:
+
+  1. Presione **Windows + I** para abrir Configuración, luego navegue a ***Sistema → Acerca de*** y haga clic en **Configuraciones avanzadas del sistema**.
+  2. En la ventana Propiedades del sistema, haga clic en la pestaña **Remoto**, luego seleccione **Habilitar escritorio remoto**.
+  3. Haga clic en **OK** para confirmar los cambios.
+  4. Desde su dispositivo cliente, use un cliente RDP de Microsoft para conectarse a la **dirección IP del %%VM|vm%%** (no al servidor Unraid).
+
+  :::tip
+  Los clientes oficiales de Microsoft RDP están disponibles para Windows, Mac, Android e iOS. Asegúrate de que tu %%VM|vm%% esté en un puente de red que permita acceso a LAN.
+  :::
+</details>
+
+#### Solucionar problemas de audio HDMI con interrupciones MSI
+
+If you're having trouble with HDMI audio in a Windows %%VM|vm%% that uses %%GPU passthrough|gpu-passthrough%% (which often occurs with NVIDIA graphics cards), enabling Message Signaled Interrupts (MSI) might help. MSI enhances the way interrupts are managed for passed-through devices.
+
+<details>
+  <summary><strong>Cómo habilitar las interrupciones MSI</strong> - Haz clic para expandir/colapsar</summary>
+
+  :::caution
+  Haz una copia de seguridad de tu %%VM|vm%% antes de realizar cualquier cambio en el registro. Las modificaciones incorrectas pueden causar inestabilidad en el sistema.
+  :::
+
+  1. **Verifique la capacidad de MSI:**
+     - Inicie su %%VM|vm%% con %%GPU passthrough|gpu-passthrough%% habilitado.
+     - Accede a Unraid a través de [WebTerminal o SSH](../../system-administration/advanced-tools/command-line-interface.mdx).
+     - Ejecute el comando `lspci -v -s 01:00.0` (reemplace `01:00.0` con la dirección PCI de su GPU).
+     - Busque la línea: `Capacidades: [68] MSI: Enable+ Count=1/1 Maskable- 64bit+`.
+
+  2. **Habilitar MSI en Windows:**
+     - Si MSI muestra `Enable-`, sigue [la guía de Microsoft](https://learn.microsoft.com/en-us/windows-hardware/drivers/kernel/enabling-message-signaled-interrupts-in-the-registry) o usa la [herramienta de modo MSI](https://forums.guru3d.com/threads/windows-line-based-vs-message-signaled-based-interrupts-msi-tool.378044/) para modificar la configuración del registro de Windows.
+     - Reinicie el %%VM|vm%% después de hacer los cambios.
+
+  Para obtener más detalles técnicos, consulta [explicación de las interrupciones VFIO](https://vfio.blogspot.com/2014/09/vfio-interrupts-and-how-to-coax-windows.html).
+</details>
+
+---
+
+### Actualización a Windows 11
+
+Windows 11 requiere TPM 2.0 y Arranque Seguro. El BIOS **OVMF-TPM** de Unraid proporciona el soporte TPM virtual necesario para estos requisitos.
+
+:::important[Before actualización]
+- Cree una copia de seguridad completa de su %%VM|vm%%.
+- Asegúrese de que Unraid esté ejecutando la versión 6.10 o posterior.
+- Verifique que su %%VM|vm%% de Windows 10 cumpla con los [requisitos del sistema de Windows 11](https://www.microsoft.com/en-us/windows/windows-11-specifications).
+:::
+
+Para agregar soporte TPM:
+
+1. Apaga tu Windows 10 %%VM|vm%%.
+2. Edita la configuración del %%VM|vm%%.
+3. Cambia **BIOS** de *%%OVMF|ovmf%%* a *%%OVMF|ovmf%%-TPM*.
+4. Guarda los cambios y inicia el %%VM|vm%%.
+
+#### Métodos de actualización
+
+<Tabs>
+  <TabItem value="Actualización en el lugar" label="Actualización en el lugar">
+    <WindowsUpgradeInPlace />
+  </TabItem>
+
+  <TabItem value="Instalación limpia" label="Instalación limpia">
+    <WindowsUpgradeCleanInstall />
+  </TabItem>
+</Tabs>
+
+## Ampliación de particiones vDisk de Windows VM
+
+:::caution[Data riesgo de pérdida]
+Expandir o modificar el diseño de particiones y %%vDisco|vdisk%% puede llevar a una pérdida irreversible de datos si no se realiza con cuidado. Siempre cree una copia de seguridad completa o instantánea de su %%VM|vm%% antes de proceder.
+:::
+
+Después de expandir su %%vDisco|vdisk%% siguiendo los pasos en [Expandir un vDisco](../create-virtual-machines/vm-setup.mdx#expand-a-vdisk), puede encontrar un problema donde la partición de recuperación predeterminada de Windows le impida expandir fácilmente su partición del sistema (C:) para utilizar el nuevo espacio. Para resolver este problema, necesita eliminar la partición de recuperación y luego usar el Administrador de discos de Windows para expandir la partición.
+
+<div style={{ margen: 'auto', maxAnchura: '600px', display: 'flex', flexDirection: 'columna', alignItems: 'centro' }}>
+  ![Redimensionar vDisk 2](/img/Resize_vdisk_2.png)
+</div>
+
+Después de completar la expansión inicial de %%vDisk|vdisk%%:
+
+1. Inicia tu Windows VM.
+2. **Abre el símbolo del sistema:** Presiona la tecla de Windows, escribe `cmd`, y presiona Enter.
+3. **Lanza diskpart:** Escribe `diskpart` y presiona Enter.
+4. **Lista discos:** Escribe `list disk` y presiona Enter.
+5. **Selecciona el disco expandido:** Escribe `select disk #`, sustituyendo `#` por el número correcto del disco.
+6. **Lista particiones:** Escribe `list partition` y presiona Enter.
+7. **Identifica la partición de recuperación:** Busca la partición de recuperación que sigue a tu partición principal.
+8. **Seleccione y elimine la partición de recuperación:**
+   - Escribe `select partition #`, sustituyendo `#` por el número de la partición de recuperación.
+   - Escribe `delete partition override` y presiona Enter.
+9. **Expande la partición C:**
+   - Haz clic derecho en el menú de Inicio y selecciona **Administración de discos**.
+   - Haga clic derecho en la partición que desea extender (usualmente C:) y elija **Extender volumen...**.
+   - Sigue las indicaciones para usar el espacio no asignado.
+
+<div className="contenedor-flexible" style={{ margin: 'auto', maxWidth: '800px'}}>
+  <figure className="figura-flexible">
+    <img src="/img/Resize_vdisk_3.png" alt="Redimensionar vDisk 3" />
+  </figure>
+
+  <figure className="figura-flexible">
+    <img src="/img/Resize_vdisk_4.png" alt="Redimensionar vDisk 4" />
+  </figure>
+</div>
+
+:::tip
+Solo necesita eliminar la partición de recuperación si bloquea el acceso al espacio libre adyacente. Si el espacio no asignado ya está junto a su partición C:, puede extenderla sin eliminar nada.
+:::
+
+:::warning
+Los cambios realizados a las particiones de disco son permanentes y no se pueden deshacer. Asegúrese de que sus datos estén respaldados de forma segura antes de eliminar cualquier partición.
+:::

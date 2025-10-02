@@ -1,0 +1,415 @@
+---
+title: Configuration du fournisseur OIDC
+description: Configurez des fournisseurs OIDC (OpenID Connect) pour l'authentification SSO dans l'API Unraid
+sidebar_position: 3
+---
+
+# Configuration du fournisseur OIDC
+
+:::info[What Qu'est-ce que l'OIDC?]
+OpenID Connect (OIDC) est un protocole d'authentification qui permet aux utilisateurs de se connecter en utilisant leurs comptes existants de fournisseurs comme Google, Microsoft ou votre fournisseur d'identité d'entreprise. Il permet l'authentification unique (SSO) pour une authentification fluide et sécurisée.
+:::
+
+Ce guide vous guide à travers la configuration des fournisseurs OIDC (OpenID Connect) pour l'authentification SSO dans l'API Unraid en utilisant l'interface web.
+
+## 🚀 Démarrage rapide
+
+<details open>
+  <summary><strong>Accéder aux paramètres OIDC</strong></summary>
+
+  1. Accédez à l'interface web de votre serveur Unraid
+  2. Allez à **Paramètres** → **Accès à la gestion** → **API** → **OIDC**
+  3. Vous verrez des onglets pour différents fournisseurs - cliquez sur le bouton **+** pour ajouter un nouveau fournisseur
+</details>
+
+### Aperçu de l'interface des fournisseurs OIDC
+
+![Page de connexion avec options SSO](/img/api/sso-with-options.png)
+*Page de connexion affichant un formulaire de connexion traditionnel avec des options SSO - boutons "Connexion avec Unraid.net" et "Connexion avec Google"*
+
+L'interface comprend :
+
+- **Onglets des fournisseurs** : Chaque fournisseur configuré (Unraid.net, Google, etc.) apparaît sous forme d'onglet
+- **Bouton Ajouter un fournisseur** : Cliquez sur le bouton **+** pour ajouter de nouveaux fournisseurs
+- **Mode de l'autorisation** : Basculer entre les modes "simple" et "avancé"
+- **Section d'autorisation simple** : Configurer les domaines d'email autorisés et les adresses spécifiques
+- **Boutons Ajouter élément** : Cliquez pour ajouter plusieurs règles d'autorisation
+
+## Comprendre les modes d'autorisation
+
+L'interface propose deux modes d'autorisation :
+
+### Mode simple (recommandé)
+
+Le mode simple est le moyen le plus facile de configurer l'autorisation. Vous pouvez :
+
+- Autoriser des domaines d'email spécifiques (e.g., @company.com)
+- Autoriser des adresses email spécifiques
+- Configurer qui peut accéder à votre serveur Unraid avec une configuration minimale
+
+**Quand utiliser le mode simple :**
+
+- Vous souhaitez autoriser tous les utilisateurs de votre domaine d'entreprise
+- Vous avez une petite liste de utilisateurs spécifiques
+- Vous êtes débutant dans la configuration OIDC
+
+<details>
+  <summary><strong>Mode avancé</strong></summary>
+
+  Le mode avancé offre un contrôle granulaire utilisant des règles basées sur les assertions. Vous pouvez :
+
+  - Créer des règles d'autorisation complexes basées sur les revendications JWT
+  - Utiliser des opérateurs comme équivaut, contient, termine par, commence par
+  - Combiner plusieurs conditions avec la logique OU/ET
+  - Choisir si TOUTE règle doit passer (mode OU) ou si TOUTES les règles doivent passer (mode ET)
+
+  **Quand utiliser le mode avancé :**
+
+  - Vous devez vérifier les appartenances à des groupes
+  - Vous souhaitez vérifier plusieurs revendications (e.g., domaine de l'email ET statut vérifié)
+  - Vous avez des exigences d'autorisation complexes
+  - Vous avez besoin d'un contrôle minutieux sur la façon dont les règles sont évaluées
+</details>
+
+## Règles d'autorisation
+
+![Configuration des règles d'autorisation](/img/api/advanced-rules.png)
+*Règles avancées d'autorisation montrant la configuration des revendications JWT avec l'opérateur termine par pour le contrôle d'accès basé sur le domaine*
+
+### Exemples de mode simple
+
+#### Autoriser le domaine de l'entreprise
+
+Dans l'autorisation simple :
+
+- **Domaines d'email autorisés** : Saisir `company.com`
+- Cela autorise quiconque avec un email @company.com
+
+#### Autoriser des utilisateurs spécifiques
+
+- **Adresses email spécifiques** : Ajouter des emails individuels
+- Cliquez sur **Ajouter un élément** pour ajouter plusieurs adresses
+
+<details>
+  <summary><strong>Exemples de mode avancé</strong></summary>
+
+  #### Mode des règles d'autorisation
+
+  Lorsque vous utilisez plusieurs règles, vous pouvez choisir comment elles sont évaluées :
+
+  - **Mode OU** (par défaut) : L'utilisateur est autorisé si TOUTE règle passe
+  - **Mode ET** : L'utilisateur est autorisé uniquement si TOUTES les règles passent
+
+  #### Domaine d'email avec vérification (mode ET)
+
+  Pour exiger à la fois le domaine de l'email ET la vérification :
+
+  1. Réglez **Mode Règle d'Autorisation** sur `ET`
+  2. Ajouter deux règles :
+     - Règle 1 :
+       - **Revendication** : `email`
+       - **Opérateur** : `termine par`
+       - **Valeur** : `@company.com`
+     - Règle 2 :
+       - **Revendication** : `email_verified`
+       - **Opérateur** : `équivaut`
+       - **Valeur** : `true`
+
+  Cela assure que les utilisateurs doivent avoir à la fois un email d'entreprise ET une adresse email vérifiée.
+
+  #### Accès basé sur les groupes (mode OU)
+
+  Pour autoriser l'accès à plusieurs groupes :
+
+  1. Réglez **Mode Règle d'Autorisation** sur `OU` (par défaut)
+  2. Ajouter des règles pour chaque groupe :
+     - **Revendication** : `groups`
+     - **Opérateur** : `contient`
+     - **Valeur** : `admins`
+       Ou ajoutez une autre règle :
+     - **Revendication** : `groups`
+     - **Opérateur** : `contient`
+     - **Valeur** : `développeurs`
+
+  Les utilisateurs dans le groupe `admins` OU `développeurs` seront autorisés.
+
+  #### Domaines multiples
+
+  - **Revendication** : `email`
+  - **Opérateur** : `termine par`
+  - **Valeurs** : Ajouter plusieurs domaines (par ex., `company.com`, `subsidiary.com`)
+
+  #### Autorisation complexe (mode ET)
+
+  Pour une sécurité stricte nécessitant plusieurs conditions :
+
+  1. Réglez **Mode Règle d'Autorisation** sur `ET`
+  2. Ajouter plusieurs règles qui DOIVENT TOUTES passer :
+     - L'email doit provenir du domaine de l'entreprise
+     - L'email doit être vérifié
+     - L'utilisateur doit être dans un groupe spécifique
+     - Le compte doit avoir une authentification à deux facteurs activée (si la réclamation est disponible)
+</details>
+
+<details>
+  <summary><strong>Détails de l'interface de configuration</strong></summary>
+
+  ### Onglets des fournisseurs
+
+  - Chaque fournisseur configuré apparaît comme un onglet en haut
+  - Cliquez sur un onglet pour basculer entre les configurations des fournisseurs
+  - Le bouton **+** à droite ajoute un nouveau fournisseur
+
+  ### Menu déroulant Mode d'Autorisation
+
+  - **simple**: Idéal pour l'autorisation basée sur email (recommandé pour la plupart des utilisateurs)
+  - **avancé**: Pour des règles complexes basées sur les assertions à l'aide de revendications JWT
+
+  ### Champs d'Autorisation Simple
+
+  Quand le mode "simple" est sélectionné, vous verrez :
+
+  - **Domaines d'email autorisés** : Entrez des domaines sans @ (e.g., `company.com`)
+    - Texte d'aide : "Les utilisateurs avec des emails se terminant par ces domaines peuvent se connecter"
+  - **Adresses email spécifiques** : Ajouter des adresses email individuelles
+    - Texte d'aide : "Seules ces adresses email exactes peuvent se connecter"
+  - **Boutons Ajouter un élément** pour ajouter plusieurs entrées
+
+  ### Champs d'Autorisation Avancée
+
+  Quand le mode "avancé" est sélectionné, vous verrez :
+
+  - **Mode Règle d'Autorisation** : Choisissez `OU` (toute règle passe) ou `ET` (toutes les règles doivent passer)
+  - **Règles d'Autorisation** : Ajouter plusieurs règles basées sur les revendications
+  - **Pour chaque règle** :
+    - **Revendication** : La revendication JWT à vérifier
+    - **Opérateur** : Comment comparer (équivaut, contient, termine par, commence par)
+    - **Valeur** : À quoi appariement
+
+  ### Éléments supplémentaires de l'interface
+
+  - **Activer le bac à sable développeur** : Basculer pour activer le bac à sable GraphQL sur `/graphql`
+  - L'interface utilise un thème sombre pour une meilleure visibilité
+  - Les indicateurs de validation des champs aident à garantir une configuration correcte
+</details>
+
+### URI de redirection requis
+
+:::caution[Important Configuration]
+Tous les fournisseurs doivent être configurés avec ce format exact d'URI de redirection :
+:::
+
+```bash
+http://YOUR_UNRAID_IP/graphql/api/auth/oidc/callback
+```
+
+:::tip
+Remplacez `YOUR_UNRAID_IP` par l'adresse IP réelle de votre serveur (par exemple, `192.168.1.100` ou `tower.local`).
+:::
+
+### Format de l'URL de l'émetteur
+
+Le champ **URL de l'émetteur** accepte les deux formats, mais **l'URL de base est fortement recommandée** pour la sécurité :
+
+- **URL de base** (recommandé) : `https://accounts.google.com`
+- **URL complète de la découverte** : `https://accounts.google.com/.well-known/openid-configuration`
+
+**⚠️ Note de sécurité** : Utilisez toujours le format de base de l'URL lorsque possible. Le système ajoute automatiquement `/ .well-known/openid-configuration` pour la découverte OIDC. Utiliser directement l'URL complète de découverte désactive d'importantes vérifications de validation de l'émetteur et n'est pas recommandé par la spécification OpenID Connect.
+
+**Exemples d'URL de base correctes :**
+
+- Google : `https://accounts.google.com`
+- Microsoft/Azure : `https://login.microsoftonline.com/YOUR_TENANT_ID/v2.0`
+- Keycloak : `https://keycloak.example.com/realms/YOUR_REALM`
+- Authelia : `https://auth.yourdomain.com`
+
+## ✅ Tester votre configuration
+
+![Page de connexion avec boutons SSO](/img/api/sso-with-options.png)
+*Page de connexion Unraid affichant à la fois l'authentification par nom d'utilisateur/mot de passe traditionnel et les options SSO avec des boutons de fournisseur personnalisés*
+
+1. Enregistrez votre configuration de fournisseur
+2. Déconnectez-vous (si connecté)
+3. Accédez à la page de connexion
+4. Votre bouton de fournisseur configuré devrait apparaître
+5. Cliquez pour tester le processus de connexion
+
+## 🔧 Dépannage
+
+### Problèmes courants
+
+#### Erreur "Fournisseur non trouvé"
+
+- Assurez-vous que l'URL de l'émetteur est correcte
+- Vérifiez que le fournisseur prend en charge la découverte OIDC (/.well-known/openid-configuration)
+
+#### "Autorisation échouée"
+
+- En mode simple : Vérifiez que les domaines d'email sont correctement saisis (sans le @)
+- En mode avancé :
+  - Vérifiez que les noms de revendications correspondent exactement à ce que votre fournisseur envoie
+  - Assurez-vous que le Mode d'Autorisation est correctement configuré (OU versus ET)
+  - Assurez-vous que toutes les revendications requises sont présentes dans le jeton
+- Activez la journalisation du débogage pour voir les revendications réelles et l'évaluation des règles
+
+#### "URI de redirection invalide"
+
+- Assurez-vous que l'URI de redirection dans votre fournisseur correspond exactement
+- Incluez le port correct si vous utilisez une configuration non standard
+- Vérifiez que le protocole de l'URI de redirection correspond à la configuration de votre serveur (HTTP ou HTTPS)
+
+#### Impossible de voir le bouton de connexion
+
+- Vérifiez qu'au moins une règle d'autorisation est configurée
+- Vérifiez que le fournisseur est activé/enregistré
+
+### Mode Débogage
+
+Pour résoudre les problèmes :
+
+1. Activer la journalisation du débogage :
+
+```bash
+LOG_LEVEL=debug unraid-api start --debug
+```
+
+2. Vérifiez les journaux pour :
+
+- Réclamations reçues du fournisseur
+- Évaluation des règles d'autorisation
+- Erreurs de validation de jeton
+
+## 🔐 Meilleures pratiques de sécurité
+
+1. **Utilisez le mode simple pour l'autorisation** - Prévoit des configurations trop permissives et réduit les risques de mauvaise configuration
+2. **Soyez spécifique avec l'autorisation** - N'utilisez pas de règles trop larges
+3. **Faites tourner les secrets régulièrement** - Mettez à jour les secrets clients périodiquement
+4. **Testez minutieusement** - Vérifiez que seuls les utilisateurs prévus peuvent accéder
+
+## 💡 Besoin d'aide ?
+
+- Consultez la documentation OIDC du fournisseur
+- Examinez les journaux API d'Unraid pour des messages d'erreur détaillés
+- Assurez-vous que votre fournisseur prend en charge la découverte standard OIDC
+- Vérifiez la connectivité réseau entre Unraid et le fournisseur
+
+## 🏢 Configuration spécifique au fournisseur
+
+### Fournisseur Unraid.net
+
+Le fournisseur Unraid.net est intégré et préconfiguré. Vous avez seulement besoin de configurer les règles d'autorisation dans l'interface.
+
+**Configuration** :
+
+- **URL de l'émetteur** : Préconfiguré (fournisseur intégré)
+- **ID/Secret Client** : Préconfiguré (fournisseur intégré)
+- **URI de redirection** : `http://YOUR_UNRAID_IP/graphql/api/auth/oidc/callback`
+
+:::tip[Redirect Protocole URI]
+**Adaptez le protocole à votre configuration de serveur:** Utilisez `http://` si vous accédez à votre serveur Unraid sans SSL/TLS (typique pour l'accès réseau local). Utilisez `https://` si vous avez configuré SSL/TLS sur votre serveur. Certains fournisseurs OIDC (comme Google) exigent HTTPS et n'accepteront pas les URI de redirection HTTP.
+:::
+
+Configurez les règles d'autorisation en utilisant le mode simple (domaines/adresses e-mail permis) ou le mode avancé pour des exigences complexes.
+
+### Google
+
+<details>
+  <summary><strong>📋 Étapes de configuration</strong></summary>
+
+  Configurez des identifiants OAuth 2.0 dans [le Google Cloud Console](https://console.cloud.google.com/) :
+
+  1. Allez dans **APIs & Services** → **Informations d'identification**
+  2. Cliquez sur **Créer des identifiants** → **ID client OAuth**
+  3. Choisissez **Application Web** comme type d'application
+  4. Ajoutez votre URI de redirection à **URIs de redirection autorisés**
+  5. Configurez l'écran de consentement OAuth si vous y êtes invité
+</details>
+
+**Configuration** :
+
+- **URL de l'émetteur** : `https://accounts.google.com`
+- **ID/Secret Client** : De vos identifiants de client OAuth 2.0
+- **Portées requises** : `openid`, `profile`, `email`
+- **URI de redirection** : `http://YOUR_UNRAID_IP/graphql/api/auth/oidc/callback`
+
+:::warning[Google Exigences de domaine]
+**Google exige des noms de domaine valides pour les URI de redirection OAuth.** Les adresses IP locales et les domaines `.local` ne sont pas acceptés. Pour utiliser Google OAuth avec votre serveur Unraid, vous aurez besoin de :
+
+- **Option 1 : Proxy inverse** - Configurez un proxy inverse (comme NGINX Proxy Manager ou Traefik) avec un nom de domaine valide pointant vers votre API Unraid
+- **Option 2 : Tailscale** - Utilisez Tailscale pour obtenir un domaine `*.ts.net` valide que Google acceptera
+- **Option 3 : DNS dynamique** - Utilisez un service DDNS pour obtenir un nom de domaine public pour votre serveur
+
+N'oubliez pas de mettre à jour votre URI de redirection à la fois dans le Google Cloud Console et dans votre configuration OIDC Unraid pour utiliser le domaine valide.
+:::
+
+Pour les domaines Google Workspace, utilisez le mode avancé avec la revendication `hd` pour restreindre l'accès au domaine de votre organisation.
+
+### Authelia
+
+Configurez le client OIDC dans votre `configuration.yml` d'Authelia avec l'ID client `unraid-api` et générez un secret haché en utilisant la commande hash-password d'Authelia.
+
+**Configuration** :
+
+- **URL de l'émetteur** : `https://auth.votredomaine.com`
+- **ID client** : `unraid-api` (ou tel que configuré dans Authelia)
+- **Secret du client** : Votre secret non haché
+- **Portées requises** : `openid`, `profile`, `email`, `groups`
+- **URI de redirection** : `http://YOUR_UNRAID_IP/graphql/api/auth/oidc/callback`
+
+Utilisez le mode avancé avec la revendication `groups` pour l'autorisation basée sur les groupes.
+
+### Microsoft/Azure AD
+
+Inscrivez une nouvelle application dans [Azure Portal](https://portal.azure.com/) sous Azure Active Directory → Enregistrements d'application. Notez l'identifiant de l'application, créez un secret client, et notez votre identifiant de locataire.
+
+**Configuration** :
+
+- **URL de l'émetteur** : `https://login.microsoftonline.com/YOUR_TENANT_ID/v2.0`
+- **ID client** : Votre ID d'application (client)
+- **Secret du client** : Secret client généré
+- **Portées requises** : `openid`, `profile`, `email`
+- **URI de redirection** : `http://YOUR_UNRAID_IP/graphql/api/auth/oidc/callback`
+
+Les règles d'autorisation peuvent être configurées dans l'interface en utilisant des domaines email ou des revendications avancées.
+
+### Keycloak
+
+Créez un nouveau client confidentiel dans la console d'administration Keycloak avec le protocole `openid-connect` et copiez le secret du client à partir de l'onglet Credentials.
+
+**Configuration** :
+
+- **URL de l'émetteur** : `https://keycloak.exemple.com/realms/YOUR_REALM`
+- **ID client** : `unraid-api` (ou tel que configuré dans Keycloak)
+- **Secret du client** : Depuis l'onglet Credentials de Keycloak
+- **Portées requises** : `openid`, `profile`, `email`
+- **URI de redirection** : `http://YOUR_UNRAID_IP/graphql/api/auth/oidc/callback`
+
+Pour l'autorisation basée sur les rôles, utilisez le mode avancé avec les revendications `realm_access.roles` ou `resource_access`.
+
+### Authentik
+
+Créez un nouveau fournisseur OAuth2/OpenID dans Authentik, puis créez une application et liez-la au fournisseur.
+
+**Configuration** :
+
+- **URL de l'émetteur** : `https://authentik.exemple.com/application/o/<application_slug>/`
+- **ID client** : Depuis la configuration du fournisseur Authentik
+- **Secret du client** : Depuis la configuration du fournisseur Authentik
+- **Portées requises** : `openid`, `profile`, `email`
+- **URI de redirection** : `http://YOUR_UNRAID_IP/graphql/api/auth/oidc/callback`
+
+Les règles d'autorisation peuvent être configurées dans l'interface.
+
+### Okta
+
+Créez une nouvelle application Web OIDC dans la console d'administration Okta et assignez des utilisateurs ou des groupes appropriés.
+
+**Configuration** :
+
+- **URL de l'émetteur** : `https://YOUR_DOMAIN.okta.com`
+- **ID client** : Depuis la configuration de l'application Okta
+- **Secret du client** : Depuis la configuration de l'application Okta
+- **Portées requises** : `openid`, `profile`, `email`
+- **URI de redirection** : `http://YOUR_UNRAID_IP/graphql/api/auth/oidc/callback`
+
+Les règles d'autorisation peuvent être configurées dans l'interface en utilisant des domaines email ou des revendications avancées.

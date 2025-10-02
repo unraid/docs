@@ -1,0 +1,190 @@
+---
+sidebar_position: 1
+sidebar_label: Capture diagnostics et journaux
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import SyslogMirror from './partials/syslog-server/mirror.mdx';
+import SyslogRemote from './partials/syslog-server/remote.mdx';
+import SyslogLocal from './partials/syslog-server/local.mdx';
+import DockerLogsViaWebGUI from './partials/docker-logs/via-webgui.mdx';
+import DockerLogsCommandLine from './partials/docker-logs/command-line.mdx';
+import DockerLogsPersistent from './partials/docker-logs/persistent.mdx';
+
+# Capture d'informations de diagnostic
+
+Lorsque vous rencontrez des problèmes avec votre serveur Unraid, rassembler des informations détaillées est crucial pour un dépannage efficace. Ces informations aident les autres à fournir une assistance précise et en temps opportun, surtout lorsque vous publiez sur des forums.
+
+:::info[Diagnostics inclus...]
+Le fichier zip de diagnostics contient plusieurs fichiers texte anonymisés qui créent un instantané détaillé de votre système Unraid, y compris :
+
+- **Configuration du système** : Informations sur votre %%array|array%%, partages, paramètres réseau et plugins installés.
+- **Journaux du système** : Journaux du noyau, %%WebGUI|web-gui%%, et des services système, documentant les événements ayant pu causer le problème.
+- **Informations sur le matériel** : Détails concernant les disques connectés, contrôleurs, et autres composants matériels.
+- **Infos Docker et %%VM|vm%%** : Configuration globale pour Docker et les machines virtuelles (aucune information sur vos containers individuels ou %%VMs|vm%% n'est incluse).
+:::
+
+---
+
+## Diagnostics du système
+
+Unraid fournit un outil de **Diagnostics** situé sous ***Tools → Diagnostics*** dans le %%WebGUI|web-gui%% pour capturer des informations système complètes pour le dépannage. Cet outil générera un fichier zip que vous pouvez télécharger et joindre aux messages dans les forums pour obtenir de l'aide. Tous les fichiers de diagnostics sont basés sur du texte, et les utilisateurs peuvent les revoir pour comprendre quelles informations sont incluses.
+
+| Scénario                                 | Comment capturer                                                                                                                                    | Notes                                                                                                                                            |
+| ---------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| %%WebGUI\|web-gui%% disponible           | Utilisez ***Outils → Diagnostics*** dans le **%%WebGUI\|web-gui%%** pour générer et télécharger le fichier zip de diagnostics.                      | Les diagnostics sont anonymisés par défaut pour protéger les données sensibles.                                                                  |
+| %%WebGUI\|web-gui%% non disponible       | Accès via **%%SSH\|ssh%%**, telnet ou console directe pour exécuter la commande `diagnostics`. Le fichier zip se sauvegarde dans `/boot/logs`.      | Capturez toujours les diagnostics avant de redémarrer pour conserver les journaux intacts.                                                       |
+| %%Array\|array%% démarrée en mode normal | C'est la méthode privilégiée pour capturer les diagnostics, car elle fournit les informations les plus complètes, notamment sur l'état des disques. | Si ce n'est pas possible, consultez la section [Journaux persistants](#persistent-logs-syslog-server) pour des méthodes alternatives de capture. |
+
+<div style={{ margin: 'auto', maxWidth: '600px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+  ![Logique de sélection du disque](/img/Diagnostics.jpg)
+</div>
+
+:::important
+Joignez le fichier zip unique des diagnostics lors de la publication sur les forums - évitez de télécharger les fichiers extraits individuellement.
+:::
+
+### Anonymisation des données de diagnostic
+
+By default, diagnostics are automatically anonymized. If you enable %%Mover|mover%% logging under ***Settings → Scheduler → Mover Settings***, the %%syslog|syslog%% will include details about files the %%Mover|mover%% processes. It's best to allow %%Mover|mover%% logging only when troubleshooting specific %%Mover|mover%%-related issues, as it may reveal file paths and names.
+
+Lorsque votre système s'éteint correctement, le journal de session est enregistré automatiquement sur le lecteur flash. Vous pouvez y accéder après le redémarrage en allant à ***Tools → Syslog → syslog-previous***. Ce journal est également inclus dans les diagnostics au prochain démarrage. Cependant, si le système se bloque, le journal système sera perdu. Dans ces cas, il est recommandé d'activer la mise en miroir du %%syslog|syslog%% sur le flash ou d'utiliser un %%syslog server|syslog-server%% distant pour préserver les journaux pour le dépannage.
+
+---
+
+## Tester la performance de lecture des disques
+
+Vous pouvez utiliser les outils Linux intégrés pour évaluer les performances de lecture de vos disques durs. Cela est utile lors du diagnostic de synchronisations de %%parity|parity%% lentes, de réponses de disque lentes ou de vitesses non uniformes parmi les disques d'une %%array|array%% ou d'un %%cache|cache%%.
+
+:::important[When et pourquoi tester la vitesse]
+Envisagez d'exécuter des tests de benchmark de lecture de disque si vous rencontrez :
+
+- Extremely slow %%parity|parity%% builds or %%parity check|parity-check%%s
+- Des transferts de fichiers anormalement lents depuis un disque spécifique
+- Des anomalies de performance après avoir ajouté ou remplacé des disques, particulièrement lors du mélange de SSDs et de HDDs
+- Secteurs réalloués ou erreurs %%CRC UDMA|crc-errors%%, qui peuvent indiquer des disques défaillants
+
+Bien que ces tests ne vous donnent pas des vitesses de transfert de fichiers réelles précises, ils peuvent montrer des disques sous-performants et tout goulet d'étranglement du contrôleur.
+:::
+
+### Test rapide (hdparm)
+
+L'outil `hdparm` mesure à la fois les vitesses de lecture en cache et en tampon d'un disque.
+
+Pour exécuter le test, remplacez `X` par votre périphérique de disque (comme `sdb` ou `sdg`) et entrez la commande suivante :
+
+```
+hdparm -tT /dev/sdX
+```
+
+- Le résultat `-T` affiche la vitesse de lecture du cache.
+- Le résultat `-t` affiche la performance de lecture tamponnée (séquentielle) du disque.
+
+:::tip
+Exécutez ce test plusieurs fois pour obtenir une référence plus fiable. Par exemple, vous pouvez utiliser la commande suivante pour exécuter le test 12 fois :
+
+```
+for ((i=0;i<12;i++)); do hdparm -tT /dev/sdX; done
+```
+:::
+
+:::note
+Assurez-vous de remplacer `/dev/sdX` par un appareil physique valide. Évitez les appareils logiques Unraid, tels que `/dev/md1`, qui incluent des processus de %%parity|parity%% susceptibles de fausser les lectures de performances brutes.
+:::
+
+### Test complet (diskspeed.sh)
+
+Pour une évaluation plus détaillée de tous les disques connectés, y compris les disques de %%parity|parity%% et de données, envisagez d'utiliser le script communautaire `diskspeed.sh`.
+
+Ce script :
+
+- Testes les vitesses de lecture à plusieurs décalages linéaires sur la surface du disque
+- Génère des données CSV et des cartes de chaleur de performance (images)
+- Peut identifier des zones de mauvaise performance, ce qui pourrait être un signe de matériel défaillant ou de disques SMR problématiques
+
+Pour commencer avec `diskspeed.sh` :
+
+1. Téléchargez le script depuis les [forums Unraid](https://forums.unraid.net/topic/31073-disk-speed-test-graphs-disk-bottlenecks-identified-see-how-fast-your-disks-can-really-go/).
+2. Placez-le dans un chemin persistant comme `/boot/scripts/`.
+3. Rendez-le exécutable :
+
+```
+chmod +x /boot/scripts/diskspeed.sh
+```
+
+4. Exécutez le script :
+
+```
+bash /boot/scripts/diskspeed.sh
+```
+
+:::note
+Ce script effectue uniquement des opérations en lecture seule et ne modifiera pas les données de vos disques. Cependant, il est préférable de programmer le test pendant les périodes d'inactivité, car cela peut affecter l'E/S du disque et interférer avec les performances de l'%%array|array%%.
+:::
+
+---
+
+## Journaux persistants (serveur syslog)
+
+Les journaux persistants sont essentiels pour conserver un enregistrement des événements système entre les redémarrages. Contrairement aux journaux standard qui se réinitialisent lorsque le système redémarre, les journaux persistants utilisent le %%syslog server|syslog-server%% intégré d'Unraid pour garantir que vous pouvez diagnostiquer les pannes ou les problèmes intermittents qui surviennent au fil du temps.
+
+### Choisir la bonne méthode de journalisation
+
+Allez à ***Settings → Syslog Server*** pour configurer la journalisation persistante. Chaque méthode a ses avantages et inconvénients :
+
+| Méthode                       | Avantages                                                                                       | Inconvénients                                    | Idéal pour                                      |
+| ----------------------------- | ----------------------------------------------------------------------------------------------- | ------------------------------------------------ | ----------------------------------------------- |
+| **Miroir vers flash**         | Capture les événements du processus de démarrage                                                | Peut user rapidement la clé USB                  | Diagnostics à court terme (quelques jours)      |
+| **Remote %%syslog\|syslog%%** | Les journaux sont stockés sur un autre appareil                                                 | Nécessite un serveur toujours en marche distinct | Surveillance à long terme (semaines à mois)     |
+| **Local %%syslog\|syslog%%**  | Conserve les journaux sur l'%%array\|array%% ou le %%cache\|cache%%, réduisant l'usure du flash | Moins accessible s'il y a un plantage système    | Journalisation continue sans appareils externes |
+
+:::tip
+Pour obtenir de l'aide détaillée sur la configuration, consultez l'icône **Aide** dans la barre d'outils WebGUI.
+:::
+
+### Activation du serveur syslog
+
+<Tabs>
+  <TabItem value="miroir" label="Miroir vers flash" default>
+    <SyslogMirror />
+  </TabItem>
+
+  <TabItem value="à distance" label="Serveur syslog distant">
+    <SyslogRemote />
+  </TabItem>
+
+  <TabItem value="local" label="Serveur syslog local">
+    <SyslogLocal />
+  </TabItem>
+</Tabs>
+
+---
+
+## Accès aux journaux des containers Docker
+
+Bien que les diagnostics standards ne fournissent que des données limitées pour Docker et %%VM|vm%%, vous pouvez accéder directement aux journaux des containers pour un dépannage plus détaillé.
+
+Pour récupérer les journaux Docker :
+
+<Tabs>
+  <TabItem value="via-webgui" label="Via WebGUI" default>
+    <DockerLogsViaWebGUI />
+  </TabItem>
+
+  <TabItem value="ligne de commande" label="Via la ligne de commande">
+    <DockerLogsCommandLine />
+  </TabItem>
+
+  <TabItem value="persistant" label="Journalisation persistante">
+    <DockerLogsPersistent />
+  </TabItem>
+</Tabs>
+
+### Journaux des machines virtuelles
+
+Les journaux %%VM|vm%% peuvent être accessibles via leurs hyperviseurs respectifs (par exemple, les journaux %%QEMU|qemu%% se trouvent dans `/var/log/libvirt/`). Consultez la documentation de votre plate-forme %%VM|vm%% pour plus de détails.
+
+:::important
+N'oubliez pas de joindre les journaux pertinents des containers ou %%VM|vm%% séparément lorsque vous cherchez du support pour des problèmes spécifiques aux applications.
+:::

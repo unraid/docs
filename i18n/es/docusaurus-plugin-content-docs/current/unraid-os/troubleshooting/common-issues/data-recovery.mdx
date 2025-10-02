@@ -1,0 +1,333 @@
+---
+sidebar_position: 4
+sidebar_label: Recuperación de datos
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import RepairXfs from './partials/data-recovery/repair-xfs.mdx';
+import RepairBtrfs from './partials/data-recovery/repair-btrfs.mdx';
+import XfsCheckWebGUI from './partials/data-recovery/xfs-check-webgui.mdx';
+import XfsCheckCli from './partials/data-recovery/xfs-check-cli.mdx';
+
+# Recuperación de datos
+
+Entender la protección de datos es importante al gestionar tu servidor de Unraid. Aunque Unraid ofrece una fuerte protección contra fallos comunes de hardware, ningún sistema puede garantizar una inmunidad completa a la pérdida de datos. Esta sección proporciona guía sobre las mejores prácticas para proteger tus datos, reconocer problemas potenciales y recuperar datos cuando ocurran problemas.
+
+Una recuperación de datos efectiva comienza con estrategias de protección de datos sólidas, que incluyen copias de seguridad regulares, monitoreo proactivo y manejo cuidadoso de las configuraciones de los discos y el arreglo.
+
+---
+
+## Fundamentos de la estrategia de respaldo
+
+Aunque Unraid ofrece protección contra diversos fallos de hardware, tener copias de seguridad confiables de tus datos cruciales es vital. Las copias de seguridad son tu última defensa contra fallos catastróficos, ransomware o eliminaciones accidentales.
+
+- **Evaluar datos críticos:** Identificar archivos irremplazables o esenciales, tales como documentos personales, fotos y videos importantes.
+- **Copias de seguridad múltiples:** Sigue la regla 3-2-1: mantén al menos tres copias de tus datos en dos tipos diferentes de medios, con una copia almacenada fuera del sitio o en la nube. Esto minimiza el riesgo de desastres físicos como incendios o robos.
+- **Frecuencia de respaldo:** Programe copias de seguridad regulares para reducir las posibilidades de pérdida de datos.
+- **Protección contra ransomware:** Al menos una copia de seguridad debe estar fuera de línea o inaccesible para proteger contra posibles corrupciones.
+- **Herramientas de respaldo:** Para Unraid 7.0 y versiones superiores, se recomienda usar [Unraid Connect](../../../unraid-connect/overview-and-setup.mdx) para copias de seguridad automáticas de tu flash y configuración en la nube. Soluciones adicionales populares para respaldo incluyen:
+  - **[Duplicati](https://unraid-production-481d40bf.preview.craft.cloud/community/apps?q=Duplicati#r:~:text=of%202%20Apps-,duplicati,-Backup%2C%20Cloud):** Una herramienta de respaldo versátil y de código abierto que ofrece deduplicación y cifrado, compatible con destinos en la nube, locales, USB y remotos.
+  - **[rclone](https://unraid-production-481d40bf.preview.craft.cloud/community/apps?q=rclone#r:~:text=various%20cloud%20services.-,rclone,-Waseh%27s%20Repository):** Una solución robusta para sincronización y respaldo de proveedores de almacenamiento en la nube.
+  - **[rsync](https://rsync.samba.org/):** Una opción eficiente para copias de seguridad locales o remotas.
+  - **[borgbackup](https://www.borgbackup.org/):** Una opción para usuarios avanzados interesados en copias de seguridad deduplicadas y cifradas.
+
+Los usuarios deben evaluar su tolerancia al riesgo y sus necesidades de respaldo, pero el uso de la integración en la nube y la automatización es un buen punto de partida para la mayoría de los usuarios de Unraid.
+
+:::tip[Modern estrategia de respaldo]
+Con Unraid 7.0 y superiores, habilita [Unraid Connect](../../../unraid-connect/overview-and-setup.mdx) para copias de seguridad automáticas en la nube de tu dispositivo flash y configuración. Considera usar Duplicati, rclone, o herramientas similares para archivos importantes y compartir para crear respaldos programados en ubicaciones locales, remotas, o en la nube. Prueba siempre tu proceso de restauración para asegurar que tus respaldos funcionen cuando sea necesario.
+:::
+
+:::info[Proactive monitoreo y soporte]
+- **Habilitar notificaciones:** Configure notificaciones en ***Configuraciones → Notificaciones*** para recibir alertas inmediatas sobre problemas del sistema.
+- **Busque orientación experta:** Si no está seguro sobre los pasos de recuperación, consulte los [foros de Unraid](https://forums.unraid.net/) antes de tomar cualquier acción.
+- **Controles de salud regulares:** Manténgase al tanto de los [datos SMART](../../system-administration/monitor-performance/smart-reports-and-disk-health.mdx) de su disco y realice verificaciones de sistema de archivos periódicamente.
+:::
+
+---
+
+## Reparar sistemas de archivos
+
+:::caution
+Usa estas instrucciones estrictamente para unidades de datos con corrupción del sistema de archivos. No las apliques a la unidad de paridad, problemas de hardware o unidades faltantes.
+
+- Las herramientas de reparación del sistema de archivos están destinadas solo para corregir discos de datos o de caché que tienen errores de sistema de archivos o de montaje.
+- La unidad de paridad **no** tiene un sistema de archivos. Ejecutar cualquier herramienta de reparación en la unidad de paridad puede corromperla y resultar en pérdida de datos irreversible.
+:::
+
+### Nomenclatura de dispositivos: rutas y símbolos
+
+Cuando se usa el **%%WebGUI|web-gui%%**, las rutas de los dispositivos se gestionan automáticamente. Si eliges reparar a través de la línea de comandos, asegúrate siempre de estar utilizando la **ruta de partición** correcta:
+
+| Etiqueta                       | Ruta típica | Uso                               | ¿Protección por %%parity\|paridad%%?  |
+| ------------------------------ | ----------- | --------------------------------- | ------------------------------------- |
+| Disco 7                        | /mnt/disk7  | Punto de montaje de Unraid        | Sí (si es disco de %%array\|matriz%%) |
+| Partición de %%array\|matriz%% | /dev/md7p1  | Dispositivo gestionado por Unraid | Sí                                    |
+| Partición bruta                | /dev/sdj1   | Acceso directo al dispositivo     | No                                    |
+
+:::warning
+Nunca ejecute herramientas de reparación de sistemas de archivos en discos completos (como `/dev/sdj`); siempre use rutas de partición (como `/dev/sdj1` o gestionadas por Unraid `/dev/mdXp1`).
+
+- Para discos %%array|array%%, siempre use el dispositivo gestionado por Unraid (como `/dev/md5p1`) para **preservar la protección por %%paridad|parity%%**.
+- Usar la partición bruta (por ejemplo, `/dev/sdj1`) no actualizará la %%paridad|parity%%, dejándola inválida.
+:::
+
+- Siempre use `/dev/mdXp1` para discos %%array|array%% para mantener la %%paridad|parity%% válida.
+- For non-%%array|array%% drives (like %%cache|cache%%-only devices), use the direct partition path, e.g., `/dev/sdj1`.
+
+### Eligiendo el método de reparación adecuado
+
+Todas las versiones de Unraid desde **v6.0.0** soportan reparaciones de sistema de archivos a través del %%WebGUI|web-gui%% para %%XFS|xfs%% y %%BTRFS|btrfs%%.
+
+Para la mayoría de usuarios, el método recomendado es:
+
+1. Abra el %%WebGUI|web-gui%%.
+2. Navegue a la pestaña **Principal**.
+3. Haga clic en el dispositivo %%array|array%% o %%cache|cache%% apropiado.
+4. Siga las indicaciones para ejecutar la verificación y reparación integrada del sistema de archivos.
+
+Si prefiere usar la línea de comandos, siempre:
+
+- Identifique la partición gestionada por Unraid correcta (`/dev/mdXp1`) para discos %%array|array%%.
+- Use las herramientas de reparación apropiadas para su sistema de archivos:
+  - **XFS:** `xfs_repair`
+  - **BTRFS:** `btrfs scrub`
+
+:::caution[Know tu sistema de archivos]
+Usar la herramienta de reparación incorrecta puede causar más daños. Verifica que tu disco esté formateado como **%%XFS|xfs%%**, **%%BTRFS|btrfs%%**, u otro tipo de sistema de archivos compatible antes de iniciar reparaciones.
+:::
+
+---
+
+## Verificar y reparar discos en el WebGUI
+
+Esta sección cubre cómo diagnosticar y reparar la corrupción del sistema de archivos en unidades de datos usando las herramientas incorporadas de Unraid. Los problemas del sistema de archivos pueden ocurrir después de apagados no limpios, fallos de energía o problemas de hardware, pero Unraid proporciona métodos de reparación seguros que mantienen tu protección %%parity|parity%% mientras solucionan los problemas subyacentes.
+
+### Preparándose para la prueba
+
+| Sistema de Archivos | Modo de inicio        | ¿Se requiere modo de mantenimiento? | Notas                                                                                                             |
+| ------------------- | --------------------- | ----------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| %%XFS\|xfs%%        | Modo de Mantenimiento | Sí                                  | La %%array\|matriz%% debe iniciarse en Modo de Mantenimiento (unidades no montadas) para verificación/reparación. |
+| %%BTRFS\|btrfs%%    | Modo normal           | No                                  | La %%array\|matriz%% debe iniciarse normalmente, no en Modo de Mantenimiento, para raspado/verificación.          |
+
+- Identifique el sistema de archivos para el disco objetivo: pestaña **Principal** → Haga clic en el nombre del disco → Revise **Tipo de sistema de archivos**.
+- Desde la pantalla Principal, haga clic en el disco para ser probado o reparado.
+
+### Ejecutando la prueba
+
+1. El predeterminado para la mayoría de sistemas de archivos (como %%XFS|xfs%%) es una revisión de solo lectura (sin cambios), usualmente con la opción `-n` (no modificar). (Para una salida más detallada con %%XFS|xfs%%, añade la opción `-v` (verboso), resultando en `-nv`.)
+2. Para %%BTRFS|btrfs%%, utilizará el comando `scrub` en lugar de la operación `balance`.
+3. Haga clic en **Verificar** para comenzar; use el botón **Actualizar** para monitorear el progreso si es necesario.
+4. Si no se encuentran corrupciones, proceda a [**Después de la prueba y reparación**](#after-the-test-and-repair).
+
+### Ejecutando la Reparación
+
+<Tabs>
+  <TabItem value="unidades-xfs" label="Para unidades XFS" default>
+    <RepairXfs />
+  </TabItem>
+
+  <TabItem value="unidades-btrfs" label="Para unidades y grupos de BTRFS">
+    <RepairBtrfs />
+  </TabItem>
+</Tabs>
+
+### Después de la prueba y reparación
+
+Si usó el %%Modo de Mantenimiento|maintenance-mode%%, detenga el array y reinicie en modo normal para reanudar las operaciones.
+
+:::tip[What qué esperar después de la reparación]
+- Las operaciones de reparación y verificación pueden tardar hasta media hora o más, dependiendo del tamaño y estado de su sistema de archivos.
+- La corrupción extensa puede crear una carpeta `lost+found` que contiene archivos y fragmentos de carpetas recuperados. Examina y restaura estos según sea necesario; elimínalos cuando hayas terminado.
+- Esto es similar a ejecutar chkdsk o scandisk en Windows y trabajar con archivos renombrados como `File0000.chk`, etc. Tómate tu tiempo al revisar el contenido de `lost+found`.
+:::
+
+---
+
+### Verificación y reparación XFS
+
+<Tabs>
+  <TabItem value="webguicheck" label="Verificación y reparación del WebGUI" default>
+    <XfsCheckWebGUI />
+  </TabItem>
+
+  <TabItem value="reparacion_xfs_cl" label="Ejecutando xfs_repair mediante la línea de comandos">
+    <XfsCheckCli />
+  </TabItem>
+</Tabs>
+
+---
+
+## Disco(s) no montable(s)
+
+Si un disco previamente funcional se vuelve no montable, por lo general indica corrupción del sistema de archivos, a menudo causada por un apagado inadecuado o error de escritura.
+
+:::danger[Critical acción]
+¡Nunca formatees un disco no montable a través de la %%WebGUI|interfaz web%%! Formatear borra todos los datos y actualiza la %%paridad|paridad%%, haciendo que la recuperación sea imposible.
+:::
+
+### Procedimiento de recuperación
+
+Cuando un disco que funcionaba correctamente de repente se vuelve no montable, es natural preocuparse por tus datos. Este tipo de problema es a menudo causado por la corrupción del sistema de archivos, que puede ocurrir después de un apagado no limpio, una interrupción de energía o una operación de escritura fallida. Lo más importante a recordar es: **no formatees la unidad** si te lo pide el %%WebGUI|web-gui%%. Formatear borrará todos los datos existentes y hará que la recuperación sea difícil, si no imposible.
+
+En cambio, tu primer paso debe ser intentar una reparación del sistema de archivos. Unraid proporciona herramientas incorporadas para esto, y siguiendo el procedimiento correcto, a menudo puedes restaurar el acceso a tus datos con mínimo riesgo.
+
+Así es como proceder:
+
+1. Revisa la [sección de reparación del sistema de archivos](#repair-file-systems). Esta guía te lleva a través del proceso para tu sistema de archivos específico.
+
+2. Para discos que usan el sistema de archivos %%XFS|xfs%% (el predeterminado para la mayoría de las configuraciones de Unraid), ejecute:
+
+   ```
+   xfs_repair -v /dev/mdXp1
+   ```
+
+   Reemplaza **X** con el número de disco correcto. La bandera `-v` proporciona información detallada del progreso. Este comando verifica e intenta reparar el sistema de archivos en el disco especificado.
+
+3. Para discos formateados con %%BTRFS|btrfs%%, primero ejecute una comprobación de solo lectura:
+
+   ```
+   btrfs check /dev/mdXp1
+   ```
+
+   Reemplaza **X** con el número de disco correcto. Usa el modo de reparación solo si es absolutamente necesario y después de entender los riesgos:
+
+   ```
+   btrfs check --repair /dev/mdXp1
+   ```
+
+:::danger
+La opción `--repair` es extremadamente peligrosa y puede causar una pérdida de datos adicional. Siempre realiza una copia de seguridad o crea una imagen del disco primero. Revisa [la documentación](https://btrfs.readthedocs.io/en/latest/btrfs-check.html) y considera buscar asesoramiento adicional si no estás seguro.
+:::
+
+Si estos intentos de reparación no resuelven el problema o si encuentras errores que no entiendes, es mejor pausar y pedir ayuda en los foros de Unraid. Muchos usuarios experimentados y moderadores están disponibles para ayudarte a guiarte a través de los siguientes pasos, y obtener una segunda opinión antes de continuar es siempre más seguro.
+
+---
+
+## Configuración de la matriz perdida
+
+Perder tu configuración %%array|array%% puede ser estresante, pero no significa que tus datos hayan desaparecido. El archivo de configuración de %%array|array%% (ubicado en `config/super.dat` en tu dispositivo flash) le dice a Unraid cómo están asignados tus discos y cuáles sirven como %%parity|parity%%. Si perdiste tu unidad flash o no tienes una copia de seguridad reciente, puedes recuperar tu %%array|array%% reasignando cuidadosamente los discos.
+
+Esto es lo que debe hacer si se encuentra en esta situación:
+
+1. En el %%WebGUI|web-gui%%, asigna todos los discos disponibles como discos de datos. No asignes ninguno como %%parity|parity%% todavía.
+2. Inicia el %%array|array%%. Los discos previamente usados para %%parity|parity%% aparecerán como *no montables* porque no contienen un sistema de archivos.
+3. Anote o tome una captura de pantalla de los números de serie de estos discos no montables: estos son sus discos %%parity|paridad%%.
+4. Detenga el %%array|array%%.
+5. Vaya a ***Herramientas → Nueva Configuración*** y seleccione la opción para retener las asignaciones actuales.
+6. Haga clic en la casilla de verificación confirmando que desea continuar y haga clic en **Aplicar**.
+7. Regrese a la pestaña **Principal** y asigne correctamente los discos %%parity|paridad%% usando los números de serie que anotó.
+8. Inicie el %%array|matriz%% para reconstruir %%parity|paridad%% basado en sus asignaciones correctas.
+
+---
+
+## Recuperar datos usando ddrescue
+
+Cuando los métodos de recuperación estándar de Unraid, como el procedimiento de [reemplazo de discos](../../using-unraid-to/manage-storage/array-configuration.mdx#replacing-disks), no son viables debido a múltiples fallas de discos o %%parity|paridad%% inválida, herramientas especializadas como **ddrescue** pueden ayudarlo a rescatar la mayor cantidad de datos posibles de un disco en falla.
+
+:::note[Best prácticas para la recuperación de datos]
+Antes de comenzar, recuerda que la recuperación de datos es un proceso delicado. Siempre trabaja desde una copia de tu disco fallido cuando sea posible y evita escribir nuevos datos en el disco fuente. Si tus datos son irremplazables, considera servicios profesionales de recuperación antes de intentar una recuperación avanzada por ti mismo. Documenta tus acciones y tómate tiempo: apresurarse aumenta el riesgo de pérdida permanente de datos.
+:::
+
+El método recomendado para instalar ddrescue es a través del plugin **[Nerd Tools](https://unraid.net/community/apps?q=nerd+tools#r)** (que reemplazó al NerdPack obsoleto en 2022).
+
+Para habilitar ddrescue:
+
+1. Instale [Nerd Tools](https://unraid-production-481d40bf.preview.craft.cloud/community/apps?q=nerd+tools#r:~:text=of%201%20App-,Nerd%20Tools,-unRaid.es) desde la pestaña **Aplicaciones** en el %%WebGUI|web-gui%% de Unraid.
+2. Abra ***Configuración → Nerd Tools*** y habilite **ddrescue**.
+
+### Clonar un disco en falla
+
+Necesitarás un disco de destino saludable que sea al menos tan grande como el disco fuente fallido. Asegúrate de que ninguno de los dos discos esté montado durante el proceso. Verifica dos veces tus asignaciones de dispositivos antes de comenzar; el destino incorrecto sobrescribirá y destruirá sus datos.
+
+Para clonar todo el disco, abra un terminal o una sesión de %%SSH|ssh%% y ejecute el siguiente comando:
+
+```
+ddrescue -f /dev/sdX /dev/sdY /boot/ddrescue.log
+```
+
+- Reemplace **X** con la letra de su disco de origen y **Y** con la letra de su disco de destino.
+- El archivo `/boot/ddrescue.log` llevará un seguimiento del progreso y le permitirá continuar si el proceso se interrumpe.
+
+Si desea clonar directamente a un disco de %%array|matriz%% mientras mantiene %%parity|paridad%%, use el dispositivo `md#` e inicie el %%array|matriz%% en Modo de Mantenimiento:
+
+```
+ddrescue -f /dev/sdX1 /dev/md\# /boot/ddrescue.log
+```
+
+- Reemplace **X** con la letra de su disco de origen (note el `1` para la partición).
+- Reemplace **#** con el número de su disco de destino.
+
+:::caution
+Siempre verifica las asignaciones de dispositivos antes de ejecutar ddrescue. Usar el destino incorrecto podría llevar a una pérdida total de datos en ese disco.
+:::
+
+### Traduciendo la salida de ddrescue
+
+Durante el proceso de recuperación, ddrescue mostrará el progreso en tiempo real.
+
+Aquí hay un ejemplo de lo que podría ver durante el primer pase:
+
+```
+GNU ddrescue 1.27
+ipos: 926889 MB, non-trimmed: 1695 kB, current rate: 95092 kB/s
+opos: 926889 MB, non-scraped: 0 B, average rate: 79236 kB/s
+non-tried: 1074 GB, bad-sector: 0 B, error rate: 0 B/s
+rescued: 925804 MB, bad areas: 0, run time: 3h 14m 44s
+pct rescued: 46.28%, read errors: 54, remaining time: 3h 18m
+time since last successful read: 0s
+Copying non-tried blocks... Pass 1 (forwards)
+```
+
+:::note[What ¿qué significa esto?]
+- **ipos/opos**: Posiciones de lectura/escritura actuales en los discos de origen y destino.
+- **rescatado**: Cantidad de datos copiados con éxito.
+- **áreas defectuosas/errores de lectura**: Número de regiones problemáticas y errores de lectura encontrados.
+- **pct rescatado**: Porcentaje del disco recuperado hasta ahora.
+- **tiempo restante**: Tiempo estimado para completar.
+- **Copiando bloques no probados...**: ddrescue está haciendo su primer intento de leer todos los sectores.
+:::
+
+Después de la copia inicial, ddrescue trabajará en recuperar datos de sectores defectuosos haciendo múltiples pasadas y, a veces, leyendo bloques en ambas direcciones. Esta fase puede tardar mucho más, especialmente si el disco está gravemente dañado.
+
+Aquí hay un ejemplo de salida durante esta fase:
+
+```
+GNU ddrescue 1.27
+ipos: 17878 MB, non-trimmed: 0 B, current rate: 0 B/s
+opos: 17878 MB, non-scraped: 362496 B, average rate: 74898 kB/s
+non-tried: 0 B, bad-sector: 93696 B, error rate: 102 B/s
+rescued: 2000 GB, bad areas: 101, run time: 7h 25m 8s
+pct rescued: 99.99%, read errors: 260, remaining time: 25m
+time since last successful read: 10s
+Scraping failed blocks... (forwards)
+```
+
+:::note[What's ¿está sucediendo ahora?]
+- **Raspando bloques fallidos...**: ddrescue está haciendo intentos repetidos de recuperar sectores ilegibles.
+- **áreas defectuosas/errores de lectura**: Estos números pueden aumentar a medida que ddrescue encuentra más daños, pero el objetivo es minimizar los datos irrecuperables.
+:::
+
+### Montando y verificando el disco recuperado
+
+Una vez que ddrescue esté completo, puedes intentar montar el disco de destino. Usa el complemento [**Dispositivos Desasignados**](https://unraid.net/community/apps?q=unassigned+devices#r:~:text=don%27t%20be%20carefull!!!-,Unassigned%20Devices,-dlandon) para un montaje fácil en el %%WebGUI|web-gui%%. Si el disco no se monta, ejecuta la herramienta de reparación de sistema de archivos adecuada, como `xfs_repair` o `btrfs check`. Incluso si el disco se monta, es una buena idea realizar una verificación del sistema de archivos para asegurarse de su integridad.
+
+Una vez que hayas recuperado los archivos, cópialos a una ubicación segura en tu %%array|array%%. Ten en cuenta que algunos archivos pueden estar corruptos, especialmente si el disco tenía muchos sectores ilegibles. Usar %%checksums|checksum%% (o %%BTRFS|btrfs%% con comprobación de integridad incorporada) puede ayudarte a identificar archivos dañados.
+
+### Identificando archivos corruptos sin sumas de verificación
+
+Si no tiene sumas de verificación, aún puede identificar archivos afectados por sectores dañados utilizando el modo de llenado de ddrescue:
+
+1. Cree un archivo temporal con una cadena única:
+
+   ```
+   printf "Unraid " > ~/fill.txt
+   ```
+
+2. Llene los bloques dañados en el disco clonado con esa cadena:
+
+   ```
+   ddrescue --fill-mode='-' ~/fill.txt /dev/sdY /boot/ddrescue.log
+   ```
+
+   Reemplace **Y** con el disco de destino y use el archivo de mapa existente de ddrescue.

@@ -1,0 +1,186 @@
+---
+sidebar_position: 1
+sidebar_label: 什么是 Unraid？
+---
+
+# 什么是 Unraid？
+
+Unraid is an embedded operating system designed to give you complete control over your hardware.  It functions as a robust network-attached storage (NAS) system, an %%application server|application-server%%, and a host for %%virtual machines (VMs)|vm%%.
+
+Unraid 安装在 USB 闪存驱动器上并从中启动，加载到根 RAM 文件系统中。 它使用了现代 Linux 内核和更新的硬件驱动程序，允许它以最小的内存容量运行在几乎所有 64 位 x86\_64 系统上。 操作系统的所有配置数据都存储在闪存驱动器上，并与操作系统同时加载。
+
+Unraid 具有用户友好的 [网页界面](./explore-the-user-interface/tour-the-web-gui.mdx) ，易于管理。 它为常见任务提供基本控制，为经验丰富的用户提供高级设置。 虽然默认设置适合大多数人，但也允许自定义。 这种简单性和灵活性的结合有效地帮助您存储、保护、共享和享受内容。
+
+**Unraid 的核心功能集中在三个主要方面：**
+
+<details>
+  <summary><h3>软件定义NAS</h3>允许用户高效地在网络上共享存储容量。</summary>
+
+  ### 阵列和校验
+
+  Unraid 提供了一种简单灵活的解决方案，可以将任何支持 64 位的系统转换为网络附加存储 (NAS) 设备。它可以处理各种驱动器，无论是通过 IDE、SATA 还是 SAS 连接，并支持不同的驱动器大小。这意味着您可以随着存储需求的增长逐个添加新驱动器，而无需在扩展设置时重新整理现有数据。
+
+  The main job of an Unraid %%array|array%% is to organize and protect the data stored across several drives. It does this by using up to two special drives called %%parity drive|parity-drives%%s. These %%parity drive|parity-drives%%s are important because they help reconstruct your data if one of the other drives fails. In fact, with just one %%parity drive|parity-drives%%, you can protect all the other drives in your %%array|array%%, keeping your data safe. Plus, you can mix different sized drives and easily expand your storage over time, making Unraid a user-friendly option for anyone looking to manage their data effectively.
+
+  <details>
+    <summary><strong>校验工作原理</strong> - 点击展开/折叠</summary>
+
+    In Unraid, %%parity|parity%% information is updated in real time.  To understand how this works, imagine the contents of a hard drive as a long stream of bits, where each bit is either a zero or a one.  By summing the nth bit values across all drives and determining whether that sum is even or odd, the corresponding nth %%parity|parity%% bit can be set accordingly.  If a data drive ever fails, this %%parity|parity%% information allows for an accurate determination of the exact bit values, facilitating a precise rebuild on the replacement drive.
+
+    例如：
+
+    <div style={{ maxWidth: '600px', margin: '1rem auto' }}>
+      ![无校验](/img/No_parity_500px.png)
+    </div>
+
+    在上面的图像中，三个驱动器包含的比特流因设备大小而异。这些驱动器未被保护，因此如果一个驱动器发生故障，数据将丢失。为防止故障，我们需要第四个磁盘作为 %%parity disk|奇偶校验驱动器%%，其大小必须等于或大于最大的驱动数据盘。
+
+    为了设置 %%parity|奇偶校验%% 位，我们找到每列的总和。如果总和为偶数，则 %%parity|奇偶校验%% 位是0；如果为奇数，则 %%parity|奇偶校验%% 位是1。
+
+    这是与之前相同的图像，但其中的 %%parity|奇偶校验%% 是根据每个帧计算的：
+
+    <div style={{ maxWidth: '600px', margin: '1rem auto' }}>
+      ![校验](/img/Parity@500px.png)
+    </div>
+
+    假设我们的例子中磁盘2出现故障，并购买了新磁盘来替换它：
+
+    <div style={{ maxWidth: '600px', margin: '1rem auto' }}>
+      ![磁盘故障](/img/Drive_failure@500px.png)
+    </div>
+
+    要在新磁盘上重建数据，我们确定缺失的位，而不是计算 %%parity|奇偶校验%% 位。对于第1列，总和是0，所以缺失的位是0。对于第6列，总和是1， 所以缺失的位是1。
+
+    使用 %%parity|奇偶校验%% 重建磁盘可防止数据丢失并提供容错能力，即使驱动器故障仍确保系统的完全访问。
+  </details>
+
+  ### 用户份额
+
+  Unraid 的不同之处在于，它将数据保存在单个驱动器上，而不是将它们合并成一个驱动器。作为 %%root user|root 用户%%，您可以创建 %%user shares|用户共享%%，它们就像顶级文件夹，收集 %%array|阵列%% 或 %%cache pool|缓存池%% 中多个驱动器上的文件。这意味着您不必担心哪个特定驱动器存储您的文件；它们已为您整理好。
+
+  您还可以自定义这些共享以包含或排除某些驱动器，并决定如何将文件分布在存储中。此外，您可以通过设置网络选项来管理用户如何访问共享，例如 %%SMB|samba%% 和 %%NFS|nfs%% ，并应用安全设置。为了保障私人数据安全，您可以创建用户账户并为可信个体设置访问限制。
+
+  ```mdx-code-block
+
+    <div className="flex-container">
+      <figure className="flex-figure">
+        <img src="/img/User_shares_-_distribution@500px.png" alt="User shares distribution example" />
+
+        <figcaption>User shares - Distribution</figcaption>
+      </figure>
+
+      <figure className="flex-figure">
+        <img src="/img/User_shares_-_access@500px.png" alt="User shares distribution example larger" />
+
+        <figcaption>User shares - Access</figcaption>
+      </figure>
+    </div>
+
+  ```
+
+  ### 理解缓存驱动器
+
+  Unraid 的一大突出特点是 %%cache drive|缓存%%，可以加快数据传输速度。当您在三台或更多驱动器旁边使用 %%cache drive|缓存%% 时，数据写入速度可提高高达**三倍**。当您将文件保存到使用 %%cache drive|缓存%% 的 %%user shares|用户共享%% 时，数据首先储存在 %%cache drive|缓存%% 上。这允许快速写入，然后一个称为 %%Mover|搬运者%% 的过程将数据传输到主存储 %%array|阵列%% 中——通常在晚上——为 %%cache drive|缓存%% 腾出空间。
+
+  为了增强数据安全性，您可以设置具有多个驱动器的 %%cache pool|缓存池%%。这种设置不仅可以增加存储空间，还可以使用 %%ZFS|zfs%% 或 %%BTRFS|btrfs%% 提供类似 %%RAID 1|raid1%% 的额外数据保护。总体而言，Unraid 的共享和 %%cache drives|缓存%% 管理方案提供了灵活、高效且安全的存储解决方案。
+
+  [在此处了解有关配置共享和缓存的更多信息。](../using-unraid-to/manage-storage/array-configuration.mdx)
+
+  <div style={{ maxWidth: '600px', margin: '1rem auto' }}>
+    ![缓存池数据捕获工作原理](/img/Cache-pool.gif)
+  </div>
+</details>
+
+<details>
+  <summary><h3>应用程序服务器</h3>支持容器化应用程序的执行。</summary>
+
+  Unraid 通过 Docker 容器技术将您的存储解决方案变成多功能 %%application server|应用服务器%%。这种方法克服了传统 NAS 的局限性，同时保持系统稳定性和易用性。
+
+  传统的NAS解决方案在应用程序托管方面面临三个关键挑战：
+
+  1. **操作系统兼容性问题** - 无法运行为不同操作系统设计的应用程序。
+  2. **复杂的生命周期管理** - 困难的安装体验可能会在删除后留下残留物。
+  3. **应用程序冲突** - 软件组件可能会干扰彼此或系统操作。
+
+  Unraid 使用Docker通过以下三种关键方式解决这些挑战：
+
+  1. **操作系统独立性** - 每个容器在自己的Linux环境中运行，消除了与主操作系统的兼容性问题。
+  2. **基于映像的部署** - 预配置的应用程序包允许一键安装和完全卸载应用程序。
+  3. **进程隔离** - 容器化应用程序在单独的用户空间中运行，防止软件之间的任何冲突。
+
+  Docker 容器允许您在隔离、轻量的环境中运行应用程序，而不需承担 %%virtual machines|虚拟机%% 相关开销。Unraid 通过 [Docker Hub](https://hub.docker.com/) 和 [Community Applications](../using-unraid-to/run-docker-containers/community-applications.mdx) 提供的预配置应用程序，简化了 Docker 的使用。这种容器化方法使 Unraid 用户能够同时运行多个应用程序而不会有兼容性问题。它还通过使用独立的应用程序包帮助保持系统有序，并便于通过 Docker 的生态系统增强服务器功能。
+
+  :::note
+  有关高级 Docker 设置，请查看 [Run Docker Containers](../using-unraid-to/run-docker-containers/managing-and-customizing-containers.mdx)。
+  :::
+</details>
+
+<details>
+  <summary><h3>虚拟化平台</h3>允许以接近裸机硬件的性能运行虚拟机。</summary>
+
+  Unraid 作为虚拟化主机运作，通过使用 %%hypervisor|虚拟机管理程序%% 安全分配资源给虚拟化的客户环境。这使您能够在隔离环境中运行各种应用程序，而不仅仅是网络附加存储。
+
+  :::tip
+  要在 Unraid 中使用硬件虚拟化，请确保您的 CPU、芯片组、BIOS 和设备驱动程序兼容。完整的要求列表可在 [VM setup guide](../using-unraid-to/create-virtual-machines/overview-and-system-prep.mdx) 中找到。如果您的服务器不符合这些要求，Unraid 的 %%VMs|虚拟机%% 菜单将会在 %%WebGUI|WebGUI%% 中禁用。
+  :::
+
+  <details>
+    <summary><strong>使用虚拟机的好处</strong> - 点击展开/折叠</summary>
+
+    虽然 Docker 容器在基于 Linux 的应用程序中很受欢迎，%%虚拟机|vm%% 提高了 Unraid 服务器设置的灵活性和效率，并为您的 Unraid 服务器提供了显著优势：
+
+    - **隔离：**%%VMs|vm%%在独立的环境中运行，确保其中一个失败不会影响其他。
+
+    - **整合：** 将多个物理服务器整合到一台 Unraid 机器上，减少硬件需求，简化维护。
+
+    - **资源分配：** Unraid 允许您为每个 %%虚拟机|vm%% 分配特定的 CPU、内存、存储和网络资源，以确保关键任务获得必要的资源。
+
+    - **测试与开发：**%%VMs|vm%%允许轻松创建和测试软件在不同环境中的运行，而不需要多台物理机器。
+
+    - **安全：**%%VMs|vm%%的隔离增强了安全性，使恶意软件很难在它们之间传播。
+
+    - **遗留应用程序支持：**%%VMs|vm%%允许您运行可能与现代硬件不兼容的遗留应用程序或操作系统。
+
+    - \*\*资源隔离：\*\*每个%%VM|vm%%可以具有专用资源，防止%%VMs|vm%%之间的性能问题。
+
+    - \*\*资源过度承诺：\*\*您可以运行比通常的物理资源允许的更多%%VMs|vm%%，理解到并非所有资源会同时完全利用它们的分配。
+  </details>
+
+  <details>
+    <summary><strong>用于虚拟化的可分配设备支持</strong> - 点击展开/折叠</summary>
+
+    Unraid's %%KVM|kvm%%-based virtualization uses modern tools for flexible hardware assignment while maintaining host stability.
+
+    主要组件包括：
+
+    **核心技术**
+
+    - %%QEMU|qemu%% 和 %%libvirt|libvirt%%：管理 %%VM|vm%% 生命周期。
+    - %%VFIO|vfio%% 设备直通：提供直接硬件访问。
+    - %%VirtIO|virtio%% 和 %%VirtFS|virtfs%%：优化存储和网络性能。
+    - %%OVMF|ovmf%%：支持 %%UEFI|uefi%% 和安全启动。
+
+    **分配资源**
+
+    - **计算：** 通过 %%CPU pinning|cpu-pinning%% 绑定专用 CPU 核心。
+    - **内存：** 隔离的内存。
+    - **存储：** 通过 %%VirtIO|virtio%% 优化的 SSD 虚拟磁盘。
+    - **外设：** 全 PCI/USB 设备直通，包括 %%GPU passthrough|gpu-passthrough%% 支持。
+
+    **平台灵活性**
+
+    - 支持 %%i440fx|i440fx%% 和 %%Q35|q35%% 机器类型。
+    - 兼容 %%Xen HVM|xen-hvm%% 和 %%Xen PV|xen-pv%% 工作负载。
+    - 启用 %%Intel VT-x|intel-vt-x%% 和 %%AMD-V|amd-v%% 硬件虚拟化。
+
+    <div style={{ maxWidth: '600px', margin: '1rem auto' }}>
+      ![可分配资源](/img/KVM@2x.png)
+    </div>
+  </details>
+
+  对于 %%虚拟机|vm%% 设置步骤，请查看 [创建虚拟机](../using-unraid-to/create-virtual-machines/overview-and-system-prep.mdx)。
+
+  :::caution
+  %%GPU passthrough|GPU直通%% 需要兼容的硬件（参见 [VM setup](../using-unraid-to/create-virtual-machines/vm-setup.mdx)）。
+  :::
+</details>

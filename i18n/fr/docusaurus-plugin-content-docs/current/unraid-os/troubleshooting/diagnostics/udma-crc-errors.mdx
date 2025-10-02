@@ -1,0 +1,142 @@
+---
+sidebar_position: 2
+sidebar_label: Erreurs UDMA CRC
+---
+
+# Erreurs UDMA CRC
+
+**Erreurs CRC %%UDMA|udma%% %%CRC|crc-errors%%** ([attribut %%SMART|smart%% 199](../../system-administration/monitor-performance/smart-reports-and-disk-health.mdx)) sont typiques pour les utilisateurs d'Unraid et apparaissent souvent dans les rapports de santé des disques. Pour la plupart des utilisateurs, ces erreurs indiquent un problème de communication entre le disque et le serveur plutôt qu'une défaillance du disque lui-même.
+
+Lorsqu'une erreur %%CRC|crc-errors%% se produit, le disque détecte que les données n'ont pas été correctement reçues de l'hôte. Unraid essaie automatiquement de récupérer en renvoyant les données. Si le renvoi réussit, l'opération continue comme d'habitude, bien que vous puissiez remarquer des vitesses d'écriture plus lentes en raison de la réessai. Ces événements sont enregistrés dans le %%syslog|syslog%%.
+
+Si les tentatives de récupération échouent après plusieurs réessais, Unraid le traite comme une erreur de lecture. Dans les %%array|parity%%-protégées à %%parité|parity%%, Unraid tentera de réécrire le secteur affecté en utilisant la %%parité|parity%% et les données provenant d'autres disques. Si cette réécriture réussit, l'opération reprend ; sinon, le disque est désactivé et marqué par un 'x' rouge dans le WebGUI.
+
+<details>
+  <summary><strong>Qu'est-ce qu'une erreur CRC ? (explication technique)</strong> - Cliquez pour développer/réduire</summary>
+
+  A **%%cyclic redundancy check (CRC)|crc%%** is a mathematical checksum that detects accidental changes to raw data during transmission. In the context of %%UDMA|udma%% (ultra direct memory access), %%CRC errors|crc-errors%% mean the data sent between your drive and controller failed this integrity check. This usually indicates a physical communication issue - such as a loose or faulty cable - rather than a problem with the drive's platters or flash memory.
+</details>
+
+---
+
+## Causes possibles des erreurs UDMA CRC
+
+Les erreurs UDMA CRC indiquent des problèmes de transmission de données entre vos disques et le système. Ces erreurs peuvent provoquer une corruption des données, des performances lentes, et des pannes de disque si elles ne sont pas corrigées. Comprendre les causes profondes vous aide à mettre en œuvre des correctifs ciblés plutôt que de deviner des solutions.
+
+<h4>Causes courantes à examiner</h4>
+
+- **Câbles SATA desserrés ou mal assis :** Les connecteurs SATA ne sont pas très robustes et peuvent facilement se desserrer en raison des vibrations ou de la tension des câbles. Évitez de regrouper étroitement les câbles, car cela peut provoquer des interférences et des diaphonie.
+- **Câbles SATA défectueux :** Les câbles endommagés ou de mauvaise qualité sont des sources courantes d'erreurs %%CRC|crc-errors%%.
+- **Problèmes d'alimentation :** Une alimentation insuffisante ou instable, souvent due à des câbles séparateurs ou à une alimentation surchargée, peut provoquer des erreurs intermittentes.
+- **Contrôleur de disque mal inséré :** Des erreurs de communication peuvent survenir si la carte contrôleur n'est pas complètement insérée dans son logement.
+- **Défauts matériels du disque :** Bien que rares, un disque défaillant peut également produire des erreurs CRC.
+- **Problèmes de gestion des câbles :**
+  - **Attaches :** Si vous utilisez des attaches pour la gestion des câbles, gardez-les lâches, pas serrées ou trop serrées. Utilisez idéalement des attaches Velcro à la place.
+  - **Routage des câbles d'alimentation et de données :** Évitez de faire passer les câbles d'alimentation à côté des câbles de données SATA. S'ils doivent se toucher ou être très proches, ils devraient se croiser à 90 degrés pour minimiser les interférences.
+  - **Courbure des câbles SATA :** Ne forcez jamais la courbure des câbles SATA pour effectuer des virages à 90 degrés. Cela peut endommager le câble et causer des problèmes de communication.
+
+---
+
+## Processus de récupération
+
+Lorsque vous remarquez des erreurs %%CRC|crc-errors%%, la première étape consiste à vérifier soigneusement et réinsérer à la fois les câbles SATA et d'alimentation de vos disques. Remplacez tous les câbles qui semblent endommagés ou qui ne s'adaptent pas en toute sécurité. Si les erreurs persistent, vérifiez vos connexions d'alimentation et de contrôleur, et envisagez de remplacer les câbles ou les ports pour isoler le problème.
+
+Si les erreurs %%CRC|crc-errors%% persistent après avoir corrigé le câblage et l'alimentation, une enquête plus approfondie pourrait être nécessaire pour écarter un contrôleur ou un disque défaillant.
+
+---
+
+## Comprendre les indicateurs d'erreurs CRC
+
+### Erreurs occasionnelles vs. fréquentes
+
+<details>
+  <summary><strong>Cliquer pour développer/réduire</strong></summary>
+
+  Understanding the frequency and pattern of %%CRC errors|crc-errors%% helps you determine the urgency of your response. Not all errors require immediate action, but patterns can reveal underlying problems that need attention.
+
+  <h4>Occasional errors (low concern)</h4>
+  A few %%CRC errors|crc-errors%% over weeks or months are typically not a concern. These isolated incidents may be caused by temporary power fluctuations, cable movement during maintenance, or other transient issues that resolve themselves.
+
+  <h4>Frequent errors (high concern)</h4>
+  %%CRC errors|crc-errors%% occurring daily or weekly, or rapidly increasing error counts, indicate a persistent problem that needs immediate investigation. This pattern often points to hardware issues like loose connections, failing cables, or power supply problems that will only worsen over time.
+
+  <h4>Quand agir</h4>
+  Enquêter immédiatement si les erreurs sont fréquentes ou en augmentation. Vérifiez votre cablage et l'alimentation pour des problèmes intermittents, et suivez les taux d'erreurs pour identifier les conditions qui se dégradent. Envisagez une maintenance préventive si les erreurs persistent, car ces problèmes se résolvent rarement d'eux-mêmes et peuvent conduire à des défaillances plus graves.
+</details>
+
+### Nombre de secteurs en attente
+
+<details>
+  <summary><strong>Cliquer pour développer/réduire</strong></summary>
+
+  The **Current Pending Sector Count** ([%%SMART|smart%% attribute 197](../../system-administration/monitor-performance/smart-reports-and-disk-health.mdx)) is a critical indicator that often appears alongside %%CRC errors|crc-errors%%. This combination signals a serious problem that requires immediate attention and careful monitoring.
+
+  Pending sectors indicate unreliable disk areas that may not be readable when accessed. These are sectors that have experienced read errors and are now marked as potentially problematic by the drive's firmware. When pending sectors appear alongside %%CRC errors|crc-errors%%, it suggests that communication problems are causing physical damage to the drive's ability to store and retrieve data reliably.
+
+  <h4>Why this combination is dangerous</h4>
+  %%CRC errors|crc-errors%% indicate communication issues between the drive and controller, while pending sectors show that some areas of the disk are becoming unreliable. Together, they create a high-risk situation where your data protection may be compromised. If another drive fails while this one has pending sectors, your ability to recover data could be severely limited, potentially jeopardizing [data recovery](../../troubleshooting/common-issues/data-recovery.mdx) efforts.
+
+  Quand vous voyez cette combinaison, vous devriez :
+
+  - **Sauvegarder immédiatement** toutes les données critiques qui ne sont pas déjà protégées.
+  - Vérifiez la santé du disque en utilisant des tests %%SMART|smart%% étendus, et envisagez le remplacement du disque si les secteurs en attente continuent d'augmenter.
+  - Surveillez de près la situation pour d'autres signes d'avertissement, et soyez prêt à reconstruire votre tableau si le disque devient peu fiable.
+</details>
+
+### Persistance du compte CRC
+
+<details>
+  <summary><strong>Cliquer pour développer/réduire</strong></summary>
+
+  Le nombre d'erreurs %%CRC|crc-errors%% dans les données [%%SMART|smart%% du disque](../../system-administration/monitor-performance/smart-reports-and-disk-health.mdx) ne se réinitialise jamais - il ne fait qu'augmenter.
+
+  Grâce à cette nature cumulative :
+
+  - Le nombre représente les erreurs totales à vie de ce disque
+  - Surveillez le taux d'augmentation pour identifier les conditions qui se dégradent.
+  - Une fois qu'une erreur se produit, elle est enregistrée de façon permanente
+  - Utilisez le compte pour planifier une maintenance préventive avant que les problèmes ne s'aggravent
+
+  Ne paniquez pas si vous voyez quelques erreurs CRC, mais suivez le taux d'augmentation. Une augmentation soudaine des erreurs indique souvent un nouveau problème qui nécessite une attention immédiate.
+</details>
+
+### Icône d'avertissement sur le tableau de bord
+
+<details>
+  <summary><strong>Cliquer pour développer/réduire</strong></summary>
+
+  When Unraid detects a %%CRC error|crc-errors%%, the **Dashboard** displays a warning icon next to the affected drive. This is a %%SMART|smart%% warning that should prompt you to review and address the issue.
+
+  <h4>Pourquoi cela importe</h4>
+
+  - Système d'alerte précoce pour les problèmes matériels potentiels
+  - Aide à prévenir la perte de données en détectant tôt les problèmes
+  - Indique quand une maintenance préventive est nécessaire
+  - Fait partie du système de surveillance proactive d'Unraid
+
+  Cliquez sur l'icône d'avertissement pour voir des informations détaillées %%SMART|smart%% et reconnaître l'avertissement.
+</details>
+
+### Reconnaissance des avertissements SMART
+
+<details>
+  <summary><strong>Cliquer pour développer/réduire</strong></summary>
+
+  Pour reconnaître et effacer les avertissements SMART :
+
+  1. Cliquez sur l'**icône orange d'avertissement** à côté du disque concerné
+  2. Sélectionnez **Reconnaître** dans le menu d'options
+  3. Confirmez l'action si demandé
+  4. L'icône deviendra **verte** pour indiquer la reconnaissance
+
+  <h4>Ce que fait la reconnaissance</h4>
+
+  - Efface l'avertissement de votre vue immédiate
+  - Enregistre que vous avez vu le problème
+  - Rappelle uniquement si le nombre d'erreurs augmente plus tard
+  - Maintient le suivi du problème sous-jacent
+
+  :::important
+  Acknowledging a warning doesn't fix the underlying issue - it just tells Unraid you're aware of it. You should still investigate and resolve the root cause of the %%CRC errors|crc-errors%%.
+  :::
+</details>

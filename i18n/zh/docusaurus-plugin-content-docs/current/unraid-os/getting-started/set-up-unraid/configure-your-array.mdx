@@ -1,0 +1,89 @@
+---
+sidebar_position: 3
+sidebar_label: 配置你的阵列
+---
+
+# 配置你的阵列
+
+安装您的注册码后，下一步是为存储配置，通过将设备分配到 %%array|阵列%% 和 **池设备**中。此设置决定了 Unraid OS 如何管理数据、通过 %%parity|校验%% 保护数据，并通过 %%cache pools|高速缓存池%% 优化性能。
+
+:::important
+如果您在 Unraid 安装的任何部分遇到困难，请务必查看我们的[安装常见问题](../../troubleshooting/faq.mdx#installation)！
+:::
+
+## 分配校验盘和数据盘
+
+您将在 Unraid %%WebGUI|WebGUI%% 的 **Main** 标签页中分配和查看设备，包括 %%array|阵列%% 和池分配、任何未分配的设备以及您的启动设备（**USB 闪存设备**）。
+
+![配置阵列](/img/configuringarray1.png)
+
+### 设备角色
+
+Unraid OS用于不同目的的驱动器：
+
+- **阵列设备**，分为两类：
+  - **冗余校验设备：** 提供故障容错能力，如果某个数据驱动器出现故障，允许恢复数据。您可以分配多达两个冗余校验驱动器。
+  - \*\*数据设备：\*\*存储您的自定义共享和文件夹，以及您添加的任何文件，例如媒体文件。
+
+- **存储池设备：**主要用作**缓存**的高性能驱动器，在转移到%%array|array%%之前暂时存储文件以提高性能。
+
+- **启动设备：** 包含 Unraid OS 的 USB 闪存设备，可启动您的服务器。
+
+<details>
+  <summary>磁盘分配推荐</summary>
+
+  这些磁盘分配建议旨在优化您的 Unraid %%array|array%%，提高性能、数据保护和未来扩展性。通过遵循这些建议，您可以有效地最大化存储设备并避免常见设置问题。
+
+  1. **Select the largest %%parity device|parity-drives%%:**
+     Always choose the largest available storage device as your %%parity device|parity-drives%%(s). When expanding your %%array|array%%, data disks must be equal to or smaller than your %%parity device|parity-drives%%(s). You should purchase the largest **HDD** for your initial %%parity device|parity-drives%% to avoid future limitations. For dual %%parity disks|parity-drives%%, each parity disk must be greater than or equal to the largest data disk.
+
+  2. **使用 HDD 为 %%array|array%%，使用 SSD/NVMe 驱动器为池：**
+     为获得最佳性能，在 %%array|array%% 中使用 **HDDs** 作为主要存储设备用于一般存储和 %%parity|parity%% 保护。分配 **SSD** 或 **NVMe** 驱动器到 %%cache pool|cache-pool%% 或专用池，以提高高速读写操作。这种设置通过利用不同驱动器类型的优势来提高整体性能。
+
+  3. **用 %%multi-device pool|multi-device-pool%% 保护缓存数据：**
+     为保护缓存数据，将多个设备分配到 %%cache pool|cache-pool%%。单一设备无法提供数据丢失保护。%%Cache pools|cache-pool%% 可按需扩展。
+
+  :::warning
+  SSD 在 %%array|array%% 中的支持是实验性的。由于%%TRIM/Discard|trim-discard%% 实现的差异，一些 SSDs 性能可能不佳，可能导致不良结果。这不适用于 %%cache pools|cache-pool%%。 [在这里了解更多关于文件系统选项的信息](../../using-unraid-to/manage-storage/file-systems.mdx)。
+  :::
+
+  :::note
+  基于 SSD 的池是为应用程序和虚拟机优化的，利用 SSD 性能进行更快的交互。[在这里了解更多关于运行应用程序的信息](../../using-unraid-to/run-docker-containers/overview.mdx)。
+  :::
+</details>
+
+:::important
+如果超过许可证密钥允许的存储设备数量，您的 %%array|array%% 将无法启动。
+:::
+
+## 启动并格式化阵列
+
+分配所有设备后，单击**阵列操作**下的**启动**按钮以挂载它们并启动%%array|array%%。
+
+<div style={{ margin: 'auto', maxWidth: '500px'}}>
+  ![阵列操作启动](/img/arrayoperation_start.png)
+</div>
+
+新设备将显示为*未格式化*，在格式化之前不能使用。Unraid 默认情况下使用 %%XFS|xfs%% 文件系统用于阵列设备。对于 %%cache pools|缓存池%%，在使用自动模式时始终默认使用 %%BTRFS|btrfs%%，但您可以在将设备添加到池中时选择所需的文件系统。你可以在 ***设置 → 系统设置 → 磁盘设置*** 中更改默认的阵列文件系统。
+
+要格式化您的设备，请在**阵列操作**下勾选**格式化**框，仔细阅读提示，然后单击**格式化**按钮。
+
+即使格式化尚未完成，也会在后台运行校验同步，以保护 %%array|阵列%%。在同步完成之前，%%array|阵列%% 将处于无保护状态，因此最好等待同步完成后再添加数据。
+
+### 更改现有驱动器的文件系统
+
+要更改现有驱动器的文件系统：
+
+1. **备份您的数据**：重新格式化会擦除驱动器上的所有数据。
+2. **停止阵列**。
+3. **单击驱动器**并更改文件系统类型（例如，%%XFS|xfs%%，%%BTRFS|btrfs%%）。
+4. **启动阵列**并在**阵列操作**下勾选**格式化**框。
+5. **单击格式化**以应用新文件系统。
+
+:::caution
+重新格式化驱动器将擦除其所有数据。对于 %%RAID|raid%% 设置，请检查 %%parity|校验%% 以避免在重建期间数据丢失。在重新格式化之前使用 [未分配设备插件](https://unraid.net/community/apps?q=unassigned+devices#r:~:text=don%27t%20be%20carefull!!!-,Unassigned%20Devices,-dlandon) 备份文件。
+:::
+
+:::info
+您可以在**主界面**选项卡的同一**阵列操作**部分中使用相应按钮停止阵列、关闭或重启。
+:::
