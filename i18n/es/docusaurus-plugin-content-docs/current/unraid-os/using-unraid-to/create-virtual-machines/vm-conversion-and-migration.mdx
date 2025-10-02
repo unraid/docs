@@ -15,8 +15,7 @@ Al consolidar hardware, preservar sistemas heredados, o probar actualizaciones e
 - Su servidor Unraid debe cumplir con los [requisitos mínimos de hardware para la virtualización](./overview-and-system-prep.mdx#requirements) (vea la tabla a continuación).
 - El disco fuente debe estar conectado a su servidor Unraid (vía SATA, USB, o como dispositivo no asignado).
 - Asegúrese de tener suficiente espacio libre en su **%%array|array%%** o **%%cache pool|cache-pool%%** para alojar la nueva imagen del disco virtual.
-- Realiza una copia de seguridad de cualquier dato crítico antes de comenzar el proceso de conversión o migración.
-  :::
+- Haga una copia de seguridad de cualquier dato crítico antes de comenzar el proceso de conversión o migración.
 
 ## Requisitos de hardware
 
@@ -336,17 +335,17 @@ Para convertir una VM de Windows de %%Xen|xen-hvm%% a %%KVM|kvm%%, sigue estos p
 </details>
 
 <details>
-  <summary><strong>Paso 3: Desinstale los controladores GPLPV</strong> – Haga clic para expandir/colapsar</summary>
+  <summary><strong>Paso 1: Determine si su máquina virtual utiliza los controladores GPLPV de Xen</strong> – Haga clic para expandir/colapsar</summary>
 
   Después del reinicio, elimine todos los controladores GPLPV de %%Xen|xen-hvm%% de su sistema usando el proceso de eliminación manual completo documentado en el [Wiki del Proyecto Xen](https://wiki.xenproject.org/wiki/Xen_Windows_GPLPV).
 
-  :::caution
-  La eliminación de GPLPV requiere una edición extensa del registro y una eliminación manual de archivos. Siga las instrucciones de la Wiki del Proyecto Xen **exactamente** como están escritas, ya que los errores pueden causar inestabilidad en el sistema o fallos al iniciar.
+  :::tip
+  Si no estás usando controladores GPLPV, puedes omitir los siguientes pasos y continuar desde la sección de reinicio en modo %%KVM|kvm%%.
   :::
 </details>
 
 <details>
-  <summary><strong>Paso 4: Cree una nueva máquina virtual KVM</strong> – Haga clic para expandir/colapsar</summary>
+  <summary><strong>Paso 2: Prepare Windows para la eliminación de controladores GPLPV</strong> – Haga clic para expandir/colapsar</summary>
 
   1. Asegúrese de que el **administrador de VM** esté habilitado:
      - Vaya a ***Configuración → Administrador de VM***.
@@ -411,7 +410,7 @@ Para convertir una VM de Windows de %%Xen|xen-hvm%% a %%KVM|kvm%%, sigue estos p
 </details>
 
 <details>
-  <summary><strong>Paso 6: Finalice la configuración de la VM</strong> – Haga clic para expandir/collapsar</summary>
+  <summary><strong>Paso 4: Cree una nueva máquina virtual KVM</strong> – Haga clic para expandir/colapsar</summary>
 
   1. Edite la VM:
      - Elimine el %%disco virtual secundario temporal|vdisk%% haciendo clic en el icono rojo menos.
@@ -427,8 +426,9 @@ Para convertir una VM de Windows de %%Xen|xen-hvm%% a %%KVM|kvm%%, sigue estos p
      - Cambie el `bus` del disco principal de `ide` a `virtio`.
      - Haga clic en **Actualizar** y reinicie la VM.
 
-  :::tip[Solución de problemas del controlador]
-  Si nota errores en los dispositivos después de la migración:
+  :::tip[¿Por qué el disco temporal?]
+  El disco temporal de 1MB fuerza a que Unraid asigne el disco principal como `hda` (IDE) en lugar de `vda` (%%VirtIO|virtio%%), permitiendo que Windows arranque sin controladores %%VirtIO|virtio%% inicialmente. Este disco temporal se eliminará después de la instalación del controlador.
+  :::
 
   1. Reinstale los controladores %%VirtIO|virtio%% desde el ISO.
   2. Busque actualizaciones de Windows, que pueden proporcionar controladores más recientes.
