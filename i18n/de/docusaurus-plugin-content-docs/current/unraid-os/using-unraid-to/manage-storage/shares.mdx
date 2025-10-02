@@ -62,13 +62,11 @@ The deprecated `/mnt/user0` mount point (which excludes %%pool|cache-pool%% file
 The physical drive that stores a file is determined by share settings such as **%%Allocation Method|allocation-method%%**, **%%Included/Excluded Disks|included-or-excluded-disks%%**, and **%%Split Level|split-level%%**. Changes to these settings will affect only new files; existing files will remain untouched unless moved manually.
 
 :::caution\[Critical]
-
-**Nicht %%User Shares|user-share%% und %%Disk Shares|disk-share%% mischen**
+**Do not mix User Shares and Disk Shares**
 
 Kopieren oder verschieben Sie niemals Dateien direkt zwischen einer **Benutzerfreigabe** und einer **Laufwerksfreigabe** (zum Beispiel zwischen `/mnt/user/share` und `/mnt/disk1/share`) – besonders wenn die Ordnernamen gleich sind. Dies kann zu Dateikorruption oder permanentem Datenverlust führen.
 
-Für sichere Dateiverwaltungspraktiken und weitere Details siehe die untenstehenden [Richtlinien für Festplattenfreigaben](#disk-share-guidelines).
-
+Für sichere Dateiverwaltungspraktiken und weitere Details, siehe die [Richtlinien zum Festplattenfreigabe](#disk-share-guidelines) unten.
 :::
 
 ### Eine Freigabe hinzufügen
@@ -153,17 +151,17 @@ Für Freigaben mit Daten:
   3. **Freigabe löschen:** Folgen Sie den Schritten zum Löschen einer leeren Freigabe oben.
 
   :::vorsicht
+
   - Der Befehl `rm -rf` löscht Dateien dauerhaft. Überprüfen Sie vor der Verwendung doppelt.
   - Stellen Sie sicher, dass keine Docker- oder VM-Dienste die Freigabe verwenden, bevor Sie sie löschen
-  :::
+    :::
 </details>
 
 :::note[Alternative Methode]
-Wenn Sie auf die Freigabe über das Netzwerk zugreifen können:
 
 - Verwenden Sie **Windows Explorer** (%%SMB|samba%%) oder **macOS Finder** (%%AFP|AFP%%/%%SMB|samba%%), um sich mit der Freigabe zu verbinden.
-- Löschen Sie die Dateien manuell und entfernen Sie dann die Freigabe über das **WebGUI**.
-:::
+- Löschen Sie die Dateien manuell und entfernen Sie dann die Freigabe über die **WebGUI**.
+  :::
 
 2. **Freigabe löschen:**
    - Gehe zurück zu **Freigaben** und klicke auf die jetzt leere Freigabe.
@@ -279,10 +277,11 @@ Wenn Sie Probleme mit Dateibewegungen haben, können Sie durch die Seite ***Eins
 :::
 
 :::caution[Critical Kritische Schritte für beide Richtungen]
+
 - Make sure your %%parity|parity%% is valid before moving files from the %%array|array%% to the %%cache|cache%%.
 - Wenn Sie mit großen Datensätzen arbeiten, überwachen Sie die %%Mover|mover%%-Aktivität über die Protokolle.
-- Wenn Dateien scheinbar "feststecken", sollten Sie in Betracht ziehen, Docker und den VM-Manager vorübergehend zu deaktivieren und den %%Mover|mover%% manuell über ***Hauptnavigation → Array-Betrieb → Verschieben*** auszuführen.
-:::
+- Wenn Dateien "festzustecken" scheinen, sollten Sie in Betracht ziehen, Docker und den VM-Manager vorübergehend zu deaktivieren und dann den %%Mover|mover%% manuell über ***Hauptmenü → Array-Operation → Verschieben*** auszuführen.
+  :::
 
 ---
 
@@ -491,9 +490,9 @@ Once you enable them, you'll notice disk shares in the Unraid GUI under a sectio
 - **Pools of drives:** If you have multiple drives grouped together, they will show up as `/mnt/pool-name`. The most common %%pools|cache-pool%% is called `cache`, but you can name your %%pools|cache-pool%% however you like.
 
 :::important
-Das Unraid-Flash-Gerät, das Ihre Unraid-Einstellungen speichert, wird nicht als Laufwerksfreigabe behandelt. Wenn Sie es über das Netzwerk zugänglich machen möchten, können Sie es als Freigabe mit dem Namen 'flash' einrichten. Dieses Gerät wird unter `/boot` in Linux eingebunden.
+The Unraid flash device, which stores your Unraid settings, is not treated as a disk share. If you want it to be accessible over the network, you can set it up as a share named 'flash'. This device is mounted at `/boot` in Linux.
 
-Aus Sicherheitsgründen ist es am besten, Ihre Freigaben im *Privat*-Modus zu halten und nur vertrauenswürdigen Benutzern Zugriff zu gewähren.
+Zur Sicherheit ist es am besten, Ihre Freigaben im *Privatmodus* zu behalten und nur vertrauenswürdigen Benutzern Zugriff zu gewähren.
 :::
 
 ### Leitlinien für Laufwerksfreigaben
@@ -607,7 +606,7 @@ Für fortgeschrittene Benutzer oder solche, die Automatisierung nutzen, können 
 </details>
 
 :::caution
-Beim Übertragen von Dateien mit speziellen oder internationalen Zeichen, montieren Sie die Freigabe immer mit der Option `iocharset=utf8`. Andernfalls können falsche Dateinamen oder nicht lesbare Dateien auf anderen Plattformen resultieren.
+When transferring files with special or international characters, always mount the share with the `iocharset=utf8` option. Failing to do so may result in incorrect filenames or unreadable files on other platforms.
 
-Außerdem, wenn Sie als `root` über das Terminal Dateien kopieren, können sie restriktive Berechtigungen haben. Falls dies auftritt, verwenden Sie das Tool **Neue Berechtigungen** aus dem Menü **Tools** im WebGUI oder die **Docker Safe New Perms**, wenn Sie mit Docker-beteiligten Freigaben zu tun haben, um die Berechtigungen zurückzusetzen und sicherzustellen, dass alle Benutzer Netzwerkzugriff haben.
+Wenn Sie Dateien als `root` über das Terminal kopieren, können sie möglicherweise einschränkende Berechtigungen haben. In diesem Fall verwenden Sie das **Neue Berechtigungen** Werkzeug aus dem **Tools** Menü in der WebGUI oder die **Docker Safe New Perms**, wenn es sich um durch Docker betroffene Freigaben handelt, um Berechtigungen zurückzusetzen und allen Benutzern Netzwerkzugriff zu gewährleisten.
 :::
