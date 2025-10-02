@@ -45,14 +45,14 @@ Para convertir un disco físico a una %%VM|vm%%:
     3. Haga clic en la pestaña **Principal**.
     4. Inicie el **%%array|array%%** si no está ya en funcionamiento.
     5. Busque su disco bajo **Dispositivos no asignados**.
-    6. Take note of the device letter (e.g., `sdb`, `sdc`) and disk size. You’ll need at least this free space on your **%%array|array%%** or **%%cache pool|cache-pool%%** for the new %%virtual disk|vdisk%%.
+    6. Tome nota de la letra del dispositivo (por ejemplo, `sdb`, `sdc`) y el tamaño del disco. Necesitará al menos este espacio libre en su **%%array|array%%** o **%%cache pool|cache-pool%%** para el nuevo %%virtual disk|vdisk%%.
 
     <h4>Paso 2: Cree una nueva máquina virtual</h4>
 
     Consulte la guía de [Creación de sus propias máquinas virtuales](../create-virtual-machines/vm-setup.mdx#creating-your-own-virtual-machines), con las siguientes excepciones:
 
-    - Set the **BIOS** to **OVMF**.
-      Make sure to specify the **VirtIO Drivers ISO** for [optimal performance](./overview-and-system-prep.mdx#set-up-virtualization-preferences).
+    - Configure el **BIOS** a **OVMF**.
+      Asegúrese de especificar el **ISO de los Controladores VirtIO** para [rendimiento óptimo](./overview-and-system-prep.mdx#set-up-virtualization-preferences).
     - Guarde las imágenes %%VM|vm%% en un **%%cache pool|cache-pool%%** en lugar de un %%array|array%% para el [mejor rendimiento](./overview-and-system-prep.mdx#user-shares-for-virtualization).
 
     <h4>Paso 3: Convierta el disco físico a una imagen de %%disco virtual|vdisk%%</h4>
@@ -66,7 +66,7 @@ Para convertir un disco físico a una %%VM|vm%%:
     ```
 
     - **/dev/sdX**: Reemplace con la letra del dispositivo desde el paso 1 (por ejemplo, `/dev/sdb`)
-    - **[vdisk_share]**: The share where you save your %%VM|vm%% images
+    - **[vdisk_share]**: El directorio compartido donde guardas tus imágenes de %%VM|vm%%.
     - **[vmname]**: El nombre que desea para su %%VM|vm%%
 
     **Desglose del comando:**
@@ -77,7 +77,7 @@ Para convertir un disco físico a una %%VM|vm%%:
     - `/dev/sdX`: La fuente es su disco físico.
     - `/mnt/user/[vdisk_share]/[vmname]/vdisk1.img`: Destino para la imagen del %%disco virtual|vdisk%%.
 
-    Wait for the operation to complete. The resulting `.img` file will be the primary disk for your %%VM|vm%%.
+    Espere a que la operación se complete. El archivo `.img` resultante será el disco principal para su %%VM|vm%%.
   </TabItem>
 
   <TabItem value="Windows" label="Windows">
@@ -85,7 +85,7 @@ Para convertir un disco físico a una %%VM|vm%%:
 
     - En la pestaña de %%VMs|vm%%, haga clic en el ícono de %%VM|vm%% y seleccione **Editar XML** desde el menú contextual.
 
-    - Next, scroll down the XML and find the `<target>` tag for the `<disk>` that has a `<source>` file set to `vdisk1.img`. It should look like this:
+    - A continuación, desplácese hacia abajo en el XML y encuentre la etiqueta `<target>` para el `<disk>` que tiene un archivo `<source>` establecido en `vdisk1.img`. Debería verse así:
 
       ```xml
 
@@ -125,7 +125,7 @@ Para convertir un disco físico a una %%VM|vm%%:
       - Navegue a la carpeta **Balloon**.
       - Dentro de esa carpeta, encuentre la subcarpeta para su **versión del sistema operativo Windows** (por ejemplo, `w8.1`).
       - Vaya a la subcarpeta **amd64**.
-      - Right-click on the **balloon.inf** file and select **Install** from the context menu. (You need to enable file extension visibility to do this.)
+      - Haz clic derecho en el archivo **balloon.inf** y selecciona **Instalar** desde el menú contextual. (Necesitas habilitar la visibilidad de la extensión de archivo para hacer esto.)
     - Repita estos pasos para cada una de las siguientes carpetas:
       - **NetKVM**
       - **vioserial**
@@ -133,11 +133,11 @@ Para convertir un disco físico a una %%VM|vm%%:
     - Después de haber instalado los controladores, navegue de regreso al CD-ROM virtual y abra la carpeta **guest-agent**.
     - Haga doble clic en **qemu-ga-x64.msi** para instalar el agente huésped %%QEMU|qemu%%/%%KVM|kvm%%.
 
-    <h4>Step 3: Convert the disk bus back to VirtIO</h4>
+    <h4>Paso 3: Convertir el bus del disco de vuelta a VirtIO</h4>
 
     - Si su %%VM|vm%% está en funcionamiento, apáguelo.
-    - In the **VMs** tab, click the %%VM|vm%% icon and select **Edit XML** from the context menu.
-    - Locate the `<disk>` section for `vdisk1.img` and change `bus='ide'` back to `bus='virtio'` in the `<target>` tag.
+    - En la pestaña **VMs**, haga clic en el icono %%VM|vm%% y seleccione **Editar XML** del menú contextual.
+    - Ubique la sección `<disk>` para `vdisk1.img` y cambie `bus='ide'` de vuelta a `bus='virtio'` en la etiqueta `<target>`.
     - Haga clic en **Actualizar** para guardar los cambios en la %%VM|vm%%.
     - ¡Ahora puede iniciar su %%máquina virtual|vm%% convertida!
   </TabItem>
@@ -332,7 +332,7 @@ Para convertir una VM de Windows de %%Xen|xen-hvm%% a %%KVM|kvm%%, sigue estos p
      - Si no es así, salte al paso sobre reiniciar en modo %%KVM|kvm%%.
 
   :::tip
-  If you are not using GPLPV drivers, you can skip the next several steps and continue from the rebooting into %%KVM|kvm%% mode section.
+  Si no estás usando controladores GPLPV, puedes omitir los siguientes pasos y continuar desde la sección de reinicio en modo %%KVM|kvm%%.
   :::
 </details>
 
@@ -353,7 +353,7 @@ Para convertir una VM de Windows de %%Xen|xen-hvm%% a %%KVM|kvm%%, sigue estos p
   Después del reinicio, elimine todos los controladores GPLPV de %%Xen|xen-hvm%% de su sistema usando el proceso de eliminación manual completo documentado en el [Wiki del Proyecto Xen](https://wiki.xenproject.org/wiki/Xen_Windows_GPLPV).
 
   :::caution
-  GPLPV removal requires extensive registry editing and manual file deletion. Follow the Xen Project Wiki instructions **exactly** as written, as errors can cause system instability or boot failures.
+  La eliminación de GPLPV requiere una edición extensa del registro y una eliminación manual de archivos. Siga las instrucciones de la Wiki del Proyecto Xen **exactamente** como están escritas, ya que los errores pueden causar inestabilidad en el sistema o fallos al iniciar.
   :::
 </details>
 
@@ -396,8 +396,8 @@ Para convertir una VM de Windows de %%Xen|xen-hvm%% a %%KVM|kvm%%, sigue estos p
       - Cambie `bus='virtio'` a `bus='ide'` en la etiqueta `<target>`.
       - Haga clic en **Actualizar**.
 
-  :::tip[Why the temporary disk?]
-  The 1MB temporary disk forces Unraid to assign the primary disk as `hda` (IDE) instead of `vda` (%%VirtIO|virtio%%), allowing Windows to boot without %%VirtIO|virtio%% drivers initially. This temporary disk will be removed after the driver installation.
+  :::tip[¿Por qué el disco temporal?]
+  El disco temporal de 1MB fuerza a que Unraid asigne el disco principal como `hda` (IDE) en lugar de `vda` (%%VirtIO|virtio%%), permitiendo que Windows arranque sin controladores %%VirtIO|virtio%% inicialmente. Este disco temporal se eliminará después de la instalación del controlador.
   :::
 </details>
 
@@ -439,11 +439,11 @@ Para convertir una VM de Windows de %%Xen|xen-hvm%% a %%KVM|kvm%%, sigue estos p
      - Cambie el `bus` del disco principal de `ide` a `virtio`.
      - Haga clic en **Actualizar** y reinicie la VM.
 
-  :::tip[Driver troubleshooting]
-  If you notice errors on devices after migration:
+  :::tip[Solución de problemas del controlador]
+  Si nota errores en los dispositivos después de la migración:
 
   1. Reinstale los controladores %%VirtIO|virtio%% desde el ISO.
   2. Busque actualizaciones de Windows, que pueden proporcionar controladores más recientes.
-  3. Visit the [Red Hat VirtIO Drivers](https://docs.fedoraproject.org/en-US/quick-docs/creating-windows-virtual-machines-using-virtio-drivers/) page for the latest versions.
+  3. Visite la página de [Controladores VirtIO de Red Hat](https://docs.fedoraproject.org/en-US/quick-docs/creating-windows-virtual-machines-using-virtio-drivers/) para obtener las versiones más recientes.
      :::
 </details>
