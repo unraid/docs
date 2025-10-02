@@ -25,7 +25,7 @@ Bei der Konsolidierung von Hardware, der Sicherung älterer Systeme oder dem Tes
 | -------------------- | --------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
 | **CPU**              | 64-Bit mit Hardware-Virtualisierung (%%Intel VT-X\|intel-vt-x%%/%%AMD-V\|amd-v%%) | Multi-Core-CPU mit VT-d/AMD-Vi für Passthrough                   |
 | **RAM**              | 8 GB                                                                              | 16 GB oder mehr                                                  |
-| **Speicher**         | SSD or NVMe %%cache pool\|cache-pool%% with sufficient space                      | Dedicated NVMe %%cache pool\|cache-pool%% for %%VM\|vm%% storage |
+| **Speicher**         | SSD oder NVMe %%cache pool\|cache-pool%% mit ausreichend Platz                    | Dedicated NVMe %%cache pool\|cache-pool%% for %%VM\|vm%% storage |
 | **Motherboard/BIOS** | %%UEFI\|uefi%% mit aktivierter Virtualisierung                                    | %%UEFI\|uefi%% mit aktivierten %%IOMMU\|iommu%%/VT-d/AMD-Vi      |
 
 ---
@@ -43,16 +43,15 @@ So konvertieren Sie eine physische Festplatte in eine %%VM|vm%%:
     1. Verbinden Sie die Quellfestplatte mit Ihrem Unraid-Server (über SATA oder USB).
     2. Melden Sie sich bei der %%WebGUI|web-gui%% (`http://tower` oder `http://tower.local`) an.
     3. Klicken Sie auf die Registerkarte **Haupt**.
-    4. Start the **%%array|array%%** if it isn’t already running.
+    4. Starten Sie das **%%array|array%%**, wenn es nicht bereits läuft.
     5. Finden Sie Ihre Festplatte unter **Nicht zugewiesene Geräte**.
-    6. Take note of the device letter (e.g., `sdb`, `sdc`) and disk size. You’ll need at least this free space on your **%%array|array%%** or **%%cache pool|cache-pool%%** for the new %%virtual disk|vdisk%%.
+    6. Notieren Sie sich den Gerätebuchstaben (z.B. `sdb`, `sdc`) und die Festplattengröße. Sie benötigen mindestens diesen freien Speicherplatz auf Ihrem **%%array|array%%** oder **%%cache pool|cache-pool%%** für den neuen %%virtuellen Datenträger|vdisk%%.
 
     <h4>Schritt 2: Erstellen Sie eine neue virtuelle Maschine</h4>
 
     Lesen Sie den [Leitfaden zum Erstellen Ihrer eigenen virtuellen Maschinen](../create-virtual-machines/vm-setup.mdx#creating-your-own-virtual-machines) mit den folgenden Ausnahmen:
 
-    - Set the **BIOS** to **OVMF**.
-      Make sure to specify the **VirtIO Drivers ISO** for [optimal performance](./overview-and-system-prep.mdx#set-up-virtualization-preferences).
+    - Setzen Sie das **BIOS** auf **OVMF**. Stellen Sie sicher, dass Sie die **VirtIO Drivers ISO** für [optimale Leistung](./overview-and-system-prep.mdx#set-up-virtualization-preferences) angeben.
     - Store %%VM|vm%% images on a **%%cache pool|cache-pool%%** instead of an %%array|array%% for the [best performance](./overview-and-system-prep.mdx#user-shares-for-virtualization).
 
     <h4>Schritt 3: Konvertieren Sie die physische Festplatte in ein %%virtuelles Festplatten-Image|vdisk%%</h4>
@@ -66,18 +65,18 @@ So konvertieren Sie eine physische Festplatte in eine %%VM|vm%%:
     ```
 
     - **/dev/sdX**: Ersetzen Sie durch den Gerätebuchstaben aus Schritt 1 (z. B. `/dev/sdb`)
-    - **[vdisk_share]**: The share where you save your %%VM|vm%% images
-    - **[vmname]**: The name you want for your %%VM|vm%%
+    - **[vdisk_share]**: Der Speicherort, an dem Sie Ihre %%VM|vm%%-Bilder speichern
+    - **[vmname]**: Der Name, den Sie für Ihre %%VM|vm%% verwenden möchten
 
     **Befehlsübersicht:**
 
     - `qemu-img convert`: Dieses Tool wird zur Konvertierung von Festplatten-Images verwendet.
     - `-p`: Zeigt den Fortschritt als Prozentsatz an.
-    - `-O raw`: Sets the output format to raw (Unraid's default).
+    - `-O raw`: Setzt das Ausgabeformat auf roh (Standard bei Unraid).
     - `/dev/sdX`: Quelle ist Ihre physische Festplatte.
     - `/mnt/user/[vdisk_share]/[vmname]/vdisk1.img`: Ziel für das %%virtuelle Festplatten-Image|vdisk%%.
 
-    Wait for the operation to complete. The resulting `.img` file will be the primary disk for your %%VM|vm%%.
+    Warten Sie, bis der Vorgang abgeschlossen ist. Die resultierende `.img`-Datei wird die primäre Festplatte für Ihre %%VM|vm%% sein.
   </TabItem>
 
   <TabItem value="Windows" label="Windows">
@@ -85,7 +84,7 @@ So konvertieren Sie eine physische Festplatte in eine %%VM|vm%%:
 
     - Klicken Sie im %%VMs|vm%%-Tab auf das %%VM|vm%%-Symbol und wählen Sie **XML bearbeiten** aus dem Kontextmenü.
 
-    - Next, scroll down the XML and find the `<target>` tag for the `<disk>` that has a `<source>` file set to `vdisk1.img`. It should look like this:
+    - Scrollen Sie als nächstes im XML nach unten und finden Sie den `<target>`-Tag für den `<disk>` mit einer `<source>`-Datei, die auf `vdisk1.img` gesetzt ist. Er sollte folgendermaßen aussehen:
 
       ```xml
 
@@ -125,7 +124,7 @@ So konvertieren Sie eine physische Festplatte in eine %%VM|vm%%:
       - Navigieren Sie zum **Balloon**-Ordner.
       - Finden Sie innerhalb dieses Ordners den Unterordner für Ihre **Windows-Betriebssystemversion** (zum Beispiel `w8.1`).
       - Öffnen Sie den Unterordner **amd64**.
-      - Right-click on the **balloon.inf** file and select **Install** from the context menu. (You need to enable file extension visibility to do this.)
+      - Klicken Sie mit der rechten Maustaste auf die **balloon.inf**-Datei und wählen Sie **Installieren** aus dem Kontextmenü. (Sie müssen die Anzeige von Dateierweiterungen aktivieren, um dies zu tun.)
     - Wiederholen Sie diese Schritte für jeden der folgenden Ordner:
       - **NetKVM**
       - **vioserial**
@@ -133,11 +132,11 @@ So konvertieren Sie eine physische Festplatte in eine %%VM|vm%%:
     - Nachdem Sie die Treiber installiert haben, navigieren Sie zurück in das virtuelle CD-ROM und öffnen Sie den **guest-agent**-Ordner.
     - Doppelklicken Sie auf **qemu-ga-x64.msi**, um den %%QEMU|qemu%%/%%KVM|kvm%%-Gastagenten zu installieren.
 
-    <h4>Step 3: Convert the disk bus back to VirtIO</h4>
+    <h4>Schritt 3: Konvertieren Sie den Datenträger-Bus zurück in VirtIO</h4>
 
     - Wenn Ihre %%VM|vm%% läuft, schalten Sie sie herunter.
-    - In the **VMs** tab, click the %%VM|vm%% icon and select **Edit XML** from the context menu.
-    - Locate the `<disk>` section for `vdisk1.img` and change `bus='ide'` back to `bus='virtio'` in the `<target>` tag.
+    - Klicken Sie im **VMs**-Tab auf das %%VM|vm%%-Symbol und wählen Sie **XML bearbeiten** aus dem Kontextmenü.
+    - Suchen Sie den `<disk>`-Abschnitt für `vdisk1.img` und ändern Sie `bus='ide'` zurück zu `bus='virtio'` im `<target>`-Tag.
     - Klicken Sie auf **Aktualisieren**, um Ihre Änderungen an der %%VM|vm%% zu speichern.
     - Nun können Sie Ihre konvertierte %%virtuelle Maschine|vm%% starten!
   </TabItem>
@@ -331,7 +330,7 @@ To convert a Windows VM from %%Xen|xen-hvm%% to %%KVM|kvm%%, follow these steps.
      - Wenn nicht, fahren Sie mit dem Schritt zum Neustart im %%KVM|kvm%%-Modus fort.
 
   :::tip
-  If you are not using GPLPV drivers, you can skip the next several steps and continue from the rebooting into %%KVM|kvm%% mode section.
+  Wenn Sie keine GPLPV-Treiber verwenden, können Sie die nächsten Schritte überspringen und mit dem Abschnitt zum Neustart im %%KVM|kvm%%-Modus fortfahren.
   :::
 </details>
 
@@ -352,7 +351,7 @@ To convert a Windows VM from %%Xen|xen-hvm%% to %%KVM|kvm%%, follow these steps.
   Nach dem Neustart entfernen Sie alle %%Xen|xen-hvm%% GPLPV-Treiber manuell aus Ihrem System, indem Sie den umfassenden manuellen Entfernungsprozess im [Xen Project Wiki](https://wiki.xenproject.org/wiki/Xen_Windows_GPLPV) dokumentieren.
 
   :::caution
-  GPLPV removal requires extensive registry editing and manual file deletion. Follow the Xen Project Wiki instructions **exactly** as written, as errors can cause system instability or boot failures.
+  Das Entfernen von GPLPV erfordert umfangreiche Registrierungsbearbeitungen und manuelle Dateienlöschungen. Befolgen Sie die Anweisungen des Xen Project Wiki **genau**, da Fehler Systeminstabilität oder Bootfehler verursachen können.
   :::
 </details>
 
@@ -395,8 +394,8 @@ To convert a Windows VM from %%Xen|xen-hvm%% to %%KVM|kvm%%, follow these steps.
       - Ändern Sie `bus='virtio'` zu `bus='ide'` im `<target>`-Tag.
       - Klicken Sie auf **Aktualisieren**.
 
-  :::tip[Why the temporary disk?]
-  The 1MB temporary disk forces Unraid to assign the primary disk as `hda` (IDE) instead of `vda` (%%VirtIO|virtio%%), allowing Windows to boot without %%VirtIO|virtio%% drivers initially. This temporary disk will be removed after the driver installation.
+  :::tip[Warum die temporäre Festplatte?]
+  Die 1MB temporäre Festplatte zwingt Unraid, die primäre Festplatte als `hda` (IDE) anstelle von `vda` (%%VirtIO|virtio%%) zuzuweisen, was es Windows ermöglicht, ohne %%VirtIO|virtio%%-Treiber zu starten. Diese temporäre Festplatte wird nach der Installation des Treibers entfernt.
   :::
 </details>
 
@@ -438,11 +437,11 @@ To convert a Windows VM from %%Xen|xen-hvm%% to %%KVM|kvm%%, follow these steps.
      - Ändern Sie den `bus` der primären Festplatte von `ide` zu `virtio`.
      - Klicken Sie auf **Aktualisieren** und starten Sie die VM neu.
 
-  :::tip[Driver troubleshooting]
-  If you notice errors on devices after migration:
+  :::tip[Fehlerbehebung bei Treibern]
+  Wenn Sie nach der Migration Fehler bei Geräten feststellen:
 
   1. Installieren Sie die %%VirtIO|virtio%%-Treiber von der ISO erneut.
   2. Überprüfen Sie Windows-Updates, die möglicherweise neuere Treiber bereitstellen.
-  3. Visit the [Red Hat VirtIO Drivers](https://docs.fedoraproject.org/en-US/quick-docs/creating-windows-virtual-machines-using-virtio-drivers/) page for the latest versions.
+  3. Besuchen Sie die [Red Hat VirtIO Drivers](https://docs.fedoraproject.org/en-US/quick-docs/creating-windows-virtual-machines-using-virtio-drivers/) Seite für die neuesten Versionen.
      :::
 </details>
