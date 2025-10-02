@@ -29,13 +29,14 @@ In Unraid, a %%cache pool|cache-pool%% is a collection of one or more drives, ty
 4. **Flexible and dedicated storage:** With multiple %%cache pools|cache-pool%%, you can assign specific pools for different tasks. For instance, you could have one pool dedicated to downloads and another for %%virtual machines|vm%%, reducing competition for resources and boosting efficiency.
 
 :::info[Keep 铭记在心]
+
 - **多个池：** 您可以创建并命名不同的 %%cache pool|cache-pool%%，以便根据您的具体需要进行调整。
 - **SSD 与 HDD：** SSD 适合于速度，而 HDD 可用于大型顺序数据处理。此外，HDD 可以延长 SSD 的使用寿命。
 - **Redundancy matters:** To protect your data, use more than one drive in a %%cache pool|cache-pool%%. A single drive pool won't protect you from potential drive failure.
 - **File system choice:** The default file system for %%cache pools|cache-pool%% is %%BTRFS|btrfs%%, which supports various %%RAID|raid%% options for added redundancy and flexibility. For more details on file system selection, see [File systems](./file-systems.mdx).
 - **%%Mover|mover%% integration:** Data written to a %%cache pool|cache-pool%% is automatically transferred to your main %%array|array%% based on a schedule you set. This keeps your [%%user shares|user-share%%](./shares.mdx) organized and easy to manage.
-- **应用程序性能：** 通过将 Docker 容器、应用程序数据和 %%VM|vm%% 磁盘放在 %%cache pool|cache-pool%% 上，您可以提升访问速度，并最大限度地减少对主存储的压力。
-:::
+- **Application performance:** By placing Docker containers, app data, and %%VM|vm%% disks on a %%cache pool|cache-pool%%, you enhance access speed and minimize strain on your main storage.
+  :::
 
 ---
 
@@ -242,9 +243,8 @@ Removing a disk from a %%BTRFS|btrfs%% or %%ZFS|zfs%% multi-device %%cache pool|
 
 - **Check your pool configuration:** Make sure your pool is set up with a redundant %%RAID|raid%% profile, like %%RAID 1|raid1%%. You can do this by going to ***Main → Pool → Balance Status*** (for %%BTRFS|btrfs%%) or ZFS pool status (for %%ZFS|zfs%%) in your management interface.
 - \*\*选择合适的替换磁盘：\*\*新磁盘的大小必须与您要替换的磁盘相同或更大。
-- \*\*热插拔能力：\*\*如果您的硬件支持热插拔，您不需要关闭系统电源来更换磁盘。
-
-:::
+- \*\*热插拔能力：\*\*如果您的硬件支持热插拔，则无需关机即可替换磁盘。
+  :::
 
 在池中更换磁盘：
 
@@ -256,10 +256,8 @@ Removing a disk from a %%BTRFS|btrfs%% or %%ZFS|zfs%% multi-device %%cache pool|
 6. **启动 %%array|array%%**：点击 **启动** 按钮，开始将新磁盘集成到 %%array|array%% 中的过程。
 7. **监控重建：** 系统将自动开始将数据重构到新磁盘。您可以在 WebGUI 中查看进度。
 
-:::important\[Timing]
-
+:::important[Timing]
 重建可能需要一些时间，具体取决于磁盘的大小和系统的当前负载。例如，在 RAID 1 设置中重建 4TB 的 SSD 可能需要大约 3-6 小时。建议您计划在系统可以不受干扰地工作的情况下进行。
-
 :::
 
 ---
@@ -268,10 +266,8 @@ Removing a disk from a %%BTRFS|btrfs%% or %%ZFS|zfs%% multi-device %%cache pool|
 
 Setting a minimum free space for your %%cache pool|cache-pool%% can provide better control over file placement, especially when dealing with large files like high-resolution videos. This setting helps Unraid know when to stop writing to the pool and start writing directly to the larger storage %%array|array%%, avoiding interruptions or data corruption.
 
-:::tip\[Example]
-
+:::tip[Example]
 如果您常常下载大约 10GB 的文件，则将最低空闲空间设置为至少 10GB，最好是 20GB 以便调整。
-
 :::
 
 您可以通过点击 **主** 选项卡中的池名称并转到 **个人池设置** 来访问最低空闲空间。
@@ -317,7 +313,7 @@ There are times when you may need to move files between your %%cache pool|cache-
 </Tabs>
 
 <details>
-  <summary><strong>为什么文件有时会进入错误的池或缓存？</strong> - 点击以展开/折叠</summary>
+  <summary><strong>为什么文件有时会在错误的池或缓存中？</strong> - 点击展开/收起</summary>
 
   When you move files between [%%user shares|user-share%%](./shares.mdx) at the Linux level (for example, using `mv` or within a Docker container), Linux tries to optimize the operation. If both the source and destination appear on the same mount point (`/mnt/user`), Linux might rename the file instead of moving it. This can result in files remaining on the original disk or pool, even if the share's "Use cache" setting is set to "No."
 
@@ -354,10 +350,11 @@ Unraid 允许您创建和管理最多 35 个独立的存储池，每个池最多
 | 快照和备份目标           | %%ZFS\|zfs%%池，%%RAIDZ1\|raidz1%%/%%RAIDZ2\|raidz2%%（多设备）                   | 支持原生快照和备份  |
 
 :::info[Supported 文件系统]
+
 - %%BTRFS|btrfs%%: 适合多设备存储池（支持 %%RAID 0|raid0%%, %%RAID 1|raid1%%, %%RAID 10|raid10%%, %%RAID 5|raid5%%, %%RAID 6|raid6%%）。
 - ZFS： 对于单个和多设备池都很出色（Unraid 6.12+），对 RAIDZ1 和 RAIDZ2 支持成熟。有关高级 ZFS 特性和配置，请参见[ZFS 存储](../../advanced-configurations/optimize-storage/zfs-storage.mdx)。
-- %%XFS|xfs%%: 适合单设备存储池。
-:::
+- %%XFS|xfs%%：适用于单设备池。
+  :::
 
 When accessing a [%%user share|user-share%%](./shares.mdx) from multiple pools and %%array|array%% disks, Unraid merges the directory listings in this order:
 
@@ -369,10 +366,8 @@ When accessing a [%%user share|user-share%%](./shares.mdx) from multiple pools a
 
 Unraid 不允许通过 %%WebGUI|web-gui%% 直接在存储池间移动文件，但可以使用 %%Mover|mover%% 工具或通过命令行实现。
 
-:::note\[Remember]
-
+:::note[Remember]
 如果文件属于 Docker 容器和/或％VM|vm%%，则必须禁用这些服务才能让文件成功移动。
-
 :::
 
 <Tabs>
