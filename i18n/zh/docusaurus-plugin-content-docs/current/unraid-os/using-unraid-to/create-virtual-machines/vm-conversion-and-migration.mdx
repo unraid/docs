@@ -15,9 +15,8 @@ When consolidating hardware, preserving legacy systems, or testing upgrades in a
 - 您的 Unraid 服务器应满足[虚拟化的最低硬件要求](./overview-and-system-prep.mdx#requirements)（见下表）。
 - 源磁盘必须通过 SATA、USB 或作为未分配设备连接到您的 Unraid 服务器。
 - 确保您的 **%%array|array%%** 或 **%%cache pool|cache-pool%%** 有足够的可用空间来容纳新的虚拟磁盘映像。
-- 在开始转换或迁移过程之前，备份任何重要数据。
-
-:::
+- 在开始转换或迁移过程之前备份任何关键数据。
+  :::
 
 ## 硬件要求
 
@@ -43,16 +42,16 @@ When consolidating hardware, preserving legacy systems, or testing upgrades in a
     1. 通过 SATA 或 USB 将源磁盘连接到您的 Unraid 服务器。
     2. 登录 %%WebGUI|web-gui%% (`http://tower` 或 `http://tower.local`)。
     3. 点击**主界面**选项卡。
-    4. 启动 **%%array|array%%** 如果尚未运行。
+    4. 启动 **%%array|array%%**，如果其尚未运行。
     5. 在 **未分配设备** 中找到您的磁盘。
-    6. 请注意设备字母（例如，`sdb`，`sdc`）和磁盘大小。您需要在您的 **%%array|array%%** 或 **%%cache pool|cache-pool%%** 上至少拥有此可用空间以创建新的 %%virtual disk|vdisk%%。
+    6. 注意设备字母（例如，`sdb`，`sdc`）和磁盘大小。你需要在你的 **%%array|array%%** 或 **%%cache pool|cache-pool%%** 上至少有这个空闲空间用于新的 %%virtual disk|vdisk%%。
 
     <h4>步骤 2: 创建新的虚拟机</h4>
 
     参考[创建您的虚拟机](../create-virtual-machines/vm-setup.mdx#creating-your-own-virtual-machines)指南，但有以下例外：
 
     - 设置 **BIOS** 为 **OVMF**。
-      请确保指定 **VirtIO Drivers ISO** 以获得[最佳性能](./overview-and-system-prep.mdx#set-up-virtualization-preferences)。
+      确保指定 **VirtIO 驱动程序 ISO** 以获得[最佳性能](./overview-and-system-prep.mdx#set-up-virtualization-preferences)。
     - 将 %%VM|vm%% 映像存储在 **%%cache pool|cache-pool%%** 上，而不是 %%array|array%%，以获得 [最佳性能](./overview-and-system-prep.mdx#user-shares-for-virtualization)。
 
     <h4>步骤 3: 将物理磁盘转换为 %%虚拟磁盘|vdisk%% 映像</h4>
@@ -66,8 +65,8 @@ When consolidating hardware, preserving legacy systems, or testing upgrades in a
     ```
 
     - **/dev/sdX**: 替换为步骤 1 中的设备字母 (例如 `/dev/sdb`)
-    - **\[vdisk\_share]**: 保存您 %%VM|vm%% 映像的共享位置
-    - **\[vmname]**: 您为您的 %%VM|vm%% 所选择的名称
+    - **[vdisk_share]**: 保存你的 %%VM|vm%% 映像的共享
+    - **[vmname]**: 你想为你的 %%VM|vm%% 指定的名称
 
     **命令分解：**
 
@@ -77,7 +76,7 @@ When consolidating hardware, preserving legacy systems, or testing upgrades in a
     - `/dev/sdX`: 源是您的物理磁盘。
     - `/mnt/user/[vdisk_share]/[vmname]/vdisk1.img`: 目标是 %%虚拟磁盘|vdisk%% 映像。
 
-    等待操作完成。生成的 `.img` 文件将是您 %%VM|vm%% 的主磁盘。
+    等待操作完成。生成的 `.img` 文件将是你的 %%VM|vm%% 的主磁盘。
   </TabItem>
 
   <TabItem value="Windows" label="Windows">
@@ -85,7 +84,7 @@ When consolidating hardware, preserving legacy systems, or testing upgrades in a
 
     - 在 %%VMs|vm%% 选项卡中，点击 %%VM|vm%% 图标并从上下文菜单中选择 **编辑 XML**。
 
-    - Next, scroll down the XML and find the `<target>` tag for the `<disk>` that has a `<source>` file set to `vdisk1.img`. It should look like this:
+    - 接下来，向下滚动 XML，找到 `<target>` 标签，其中 `<disk>` 设置的 `<source>` 文件为 `vdisk1.img`。它应该如下所示：
 
       ```xml
 
@@ -125,7 +124,7 @@ When consolidating hardware, preserving legacy systems, or testing upgrades in a
       - 进入 **Balloon** 文件夹。
       - 在该文件夹中，找到适合您的 **Windows 操作系统版本** 的子文件夹（例如，`w8.1`）。
       - 进入 **amd64** 子文件夹。
-      - 右键单击 **balloon.inf** 文件，从上下文菜单中选择 **安装**。（此操作需要启用文件扩展名可见性。）
+      - 右键单击 **balloon.inf** 文件并从上下文菜单中选择 **安装**。（你需要启用文件扩展名可见性才能执行此操作。）
     - 为每个以下文件夹重复这些步骤：
       - **NetKVM**
       - **vioserial**
@@ -136,8 +135,8 @@ When consolidating hardware, preserving legacy systems, or testing upgrades in a
     <h4>步骤 3：将磁盘总线转换回 VirtIO</h4>
 
     - 如果您的 %%VM|vm%% 正在运行，请继续**关闭它**。
-    - 在 **VMs** 选项卡中，单击 %%VM|vm%% 图标，从上下文菜单中选择 **编辑 XML**。
-    - 找到 `vdisk1.img` 的 `<disk>` 部分，并在 `<target>` 标签中将 `bus='ide'` 更改回 `bus='virtio'`。
+    - 在 **VMs** 选项卡中，单击 %%VM|vm%% 图标并从上下文菜单中选择 **编辑 XML**。
+    - 找到 `vdisk1.img` 的 `<disk>` 部分，并在 `<target>` 标签中将 `bus='ide'` 改回 `bus='virtio'`。
     - 点击 **更新** 保存您对 %%VM|vm%% 的更改。
     - 现在您可以启动转换后的 %%虚拟机|vm%%！
   </TabItem>
@@ -151,7 +150,6 @@ You can run a Windows installation directly from a physical disk in an Unraid vi
 [How to pass through hard drives, convert disks, and test performance in Unraid VMs (YouTube)](https://www.youtube.com/watch?v=QaB9HhpbDAI).
 
 :::important[Choosing 您的迁移方法]
-有两种常见方式可以将 Windows 安装迁移到 Unraid 中的 %%VM|vm%%：
 
 **物理磁盘直通：** 这直接在 %%VM|vm%% 中使用原始磁盘。
 
@@ -163,7 +161,7 @@ You can run a Windows installation directly from a physical disk in an Unraid vi
 - 优点：更灵活，允许将磁盘用作 Unraid 共享或用于快照。
 - 缺点：需时，还需转换过程的可用空间。
 
-如果您想进行简单的迁移或计划双启动磁盘，请选择直通。如果需要更好的便携性和备份选项，请选择镜像转换。
+如果你想进行简单的迁移或计划双启动磁盘，请选择直通。选择映像转换以获得更好的便携性和备份选项。
 :::
 
 :::note\[Prerequisites]
@@ -173,9 +171,8 @@ You can run a Windows installation directly from a physical disk in an Unraid vi
 - 选择一个硬件准备工具，以通过修改驱动程序和硬件抽象层（HAL）来启用在虚拟化硬件上的 Windows 启动：
   - **Microsoft Sysprep**（免费并内置于 Windows 8.1 及更高版本）
   - **Acronis True Image 2025**（具有高级迁移功能的商用解决方案）
-- 确保您的 Unraid 服务器有一个空闲的 SATA 或 NVMe 端口用于物理磁盘。
-
-:::
+- 确保你的 Unraid 服务器有一个用于实体磁盘的空闲 SATA 或 NVMe 接口。
+  :::
 
 <h4>步骤 1: 准备 Windows 磁盘以进行迁移</h4>
 
@@ -186,10 +183,11 @@ You can run a Windows installation directly from a physical disk in an Unraid vi
 Sysprep 内置于 Windows 中，消除了独特的系统信息，准备在不同硬件上使用 Windows。
 
 :::note[Before 运行 sysprep]
+
 - 暂时禁用任何杀毒软件。
 - 清理不必要的用户配置文件和临时文件。
-- 修复或删除可能阻止 sysprep 运行的任何问题 Microsoft Store 应用程序。
-:::
+- 修复或删除任何可能阻止 sysprep 运行的问题 Microsoft Store 应用。
+  :::
 
 1. **运行 sysprep：**
    - 以管理员身份打开命令提示符。
@@ -258,7 +256,7 @@ Acronis True Image 2025 带有通用恢复功能，可协助硬件迁移。
    </disk>
    ```
 
-   将此块替换为以下内容，其中 `sdX` 为设备字母，或者更好的使用 `/dev/disk/by-id/[your-disk-id]` 以便更可靠的设备分配（参考 \[Unraid Docs：在 VM 中使用物理磁盘]）：
+   将此块替换为以下内容，其中 `sdX` 为设备字母，或者更好的使用 `/dev/disk/by-id/[your-disk-id]` 以便更可靠的设备分配（参考 [Unraid Docs：在 VM 中使用物理磁盘]）：
 
    ```xml
 
@@ -384,7 +382,7 @@ Unraid no longer supports %%Xen|xen-hvm%% from version 6.2 onward. %%KVM|kvm%% i
       - 在 `<target>` 标签中将 `bus='virtio'` 修改为 `bus='ide'`。
       - 点击 **Update**。
 
-  :::提示\[为何使用临时磁盘？]
+  :::提示[为何使用临时磁盘？]
   1MB 的临时磁盘强制 Unraid 将主磁盘分配为 `hda` (IDE) 而不是 `vda` (%%VirtIO|virtio%%)，这使 Windows 可以在没有 %%VirtIO|virtio%% 驱动程序的情况下启动。该临时磁盘将在驱动程序安装后移除。  :::
 </details>
 
@@ -426,7 +424,7 @@ Unraid no longer supports %%Xen|xen-hvm%% from version 6.2 onward. %%KVM|kvm%% i
      - 将主磁盘的 `bus` 从 `ide` 改为 `virtio`。
      - 点击 **Update** 并重启 VM。
 
-  :::提示\[驱动程序故障排除]
+  :::提示[驱动程序故障排除]
   如果您注意到迁移后设备上出现错误：
 
   1. 从 ISO 重新安装 %%VirtIO|virtio%% 驱动程序。
