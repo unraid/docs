@@ -39,21 +39,22 @@ Con Unraid 7.0 y superiores, habilita [Unraid Connect](../../../unraid-connect/o
 :::
 
 :::info[Proactive monitoreo y soporte]
+
 - **Habilitar notificaciones:** Configure notificaciones en ***Configuraciones → Notificaciones*** para recibir alertas inmediatas sobre problemas del sistema.
 - **Busque orientación experta:** Si no está seguro sobre los pasos de recuperación, consulte los [foros de Unraid](https://forums.unraid.net/) antes de tomar cualquier acción.
-- **Controles de salud regulares:** Manténgase al tanto de los [datos SMART](../../system-administration/monitor-performance/smart-reports-and-disk-health.mdx) de su disco y realice verificaciones de sistema de archivos periódicamente.
-:::
+- **Revisiones de salud regulares:** Mantén un ojo en los [datos SMART](../../system-administration/monitor-performance/smart-reports-and-disk-health.mdx) de tu unidad y realiza revisiones periódicas del sistema de archivos.
+  :::
 
 ---
 
 ## Reparar sistemas de archivos
 
 :::caution
-Usa estas instrucciones estrictamente para unidades de datos con corrupción del sistema de archivos. No las apliques a la unidad de paridad, problemas de hardware o unidades faltantes.
+Use these instructions strictly for data drives with file system corruption. Do not apply them to the parity drive, hardware issues, or missing drives.
 
 - Las herramientas de reparación del sistema de archivos están destinadas solo para corregir discos de datos o de caché que tienen errores de sistema de archivos o de montaje.
-- La unidad de paridad **no** tiene un sistema de archivos. Ejecutar cualquier herramienta de reparación en la unidad de paridad puede corromperla y resultar en pérdida de datos irreversible.
-:::
+- La unidad de paridad **no** tiene un sistema de archivos. Ejecutar cualquier herramienta de reparación en la unidad de paridad puede corromperla y podría resultar en pérdida de datos irreversible.
+  :::
 
 ### Nomenclatura de dispositivos: rutas y símbolos
 
@@ -62,17 +63,19 @@ Cuando se usa el **%%WebGUI|web-gui%%**, las rutas de los dispositivos se gestio
 | Etiqueta                       | Ruta típica | Uso                               | ¿Protección por %%parity\|paridad%%?  |
 | ------------------------------ | ----------- | --------------------------------- | ------------------------------------- |
 | Disco 7                        | /mnt/disk7  | Punto de montaje de Unraid        | Sí (si es disco de %%array\|matriz%%) |
-| Partición de %%array\|matriz%% | /dev/md7p1  | Dispositivo gestionado por Unraid | Sí                                    |
+| Partición de %%array\|matriz%% | /dev/md7p1  | Dispositivo gestionado por Unraid | Yes                                   |
 | Partición bruta                | /dev/sdj1   | Acceso directo al dispositivo     | No                                    |
 
 :::warning
-Nunca ejecute herramientas de reparación de sistemas de archivos en discos completos (como `/dev/sdj`); siempre use rutas de partición (como `/dev/sdj1` o gestionadas por Unraid `/dev/mdXp1`).
+Never run file system repair tools on entire drives (like `/dev/sdj`); always use partition paths (like `/dev/sdj1` or Unraid-managed `/dev/mdXp1`).
 
 - Para discos %%array|array%%, siempre use el dispositivo gestionado por Unraid (como `/dev/md5p1`) para **preservar la protección por %%paridad|parity%%**.
-- Usar la partición bruta (por ejemplo, `/dev/sdj1`) no actualizará la %%paridad|parity%%, dejándola inválida.
-:::
+
+- Utilizar la partición cruda (por ejemplo, `/dev/sdj1`) no actualizará %%parity|parity%%, dejándola inválida.
+  :::
 
 - Siempre use `/dev/mdXp1` para discos %%array|array%% para mantener la %%paridad|parity%% válida.
+
 - For non-%%array|array%% drives (like %%cache|cache%%-only devices), use the direct partition path, e.g., `/dev/sdj1`.
 
 ### Eligiendo el método de reparación adecuado
@@ -107,7 +110,7 @@ Esta sección cubre cómo diagnosticar y reparar la corrupción del sistema de a
 
 | Sistema de Archivos | Modo de inicio        | ¿Se requiere modo de mantenimiento? | Notas                                                                                                             |
 | ------------------- | --------------------- | ----------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
-| %%XFS\|xfs%%        | Modo de Mantenimiento | Sí                                  | La %%array\|matriz%% debe iniciarse en Modo de Mantenimiento (unidades no montadas) para verificación/reparación. |
+| %%XFS\|xfs%%        | Modo de Mantenimiento | Yes                                 | La %%array\|matriz%% debe iniciarse en Modo de Mantenimiento (unidades no montadas) para verificación/reparación. |
 | %%BTRFS\|btrfs%%    | Modo normal           | No                                  | La %%array\|matriz%% debe iniciarse normalmente, no en Modo de Mantenimiento, para raspado/verificación.          |
 
 - Identifique el sistema de archivos para el disco objetivo: pestaña **Principal** → Haga clic en el nombre del disco → Revise **Tipo de sistema de archivos**.
@@ -137,10 +140,11 @@ Esta sección cubre cómo diagnosticar y reparar la corrupción del sistema de a
 Si usó el %%Modo de Mantenimiento|maintenance-mode%%, detenga el array y reinicie en modo normal para reanudar las operaciones.
 
 :::tip[What qué esperar después de la reparación]
+
 - Las operaciones de reparación y verificación pueden tardar hasta media hora o más, dependiendo del tamaño y estado de su sistema de archivos.
 - La corrupción extensa puede crear una carpeta `lost+found` que contiene archivos y fragmentos de carpetas recuperados. Examina y restaura estos según sea necesario; elimínalos cuando hayas terminado.
 - Esto es similar a ejecutar chkdsk o scandisk en Windows y trabajar con archivos renombrados como `File0000.chk`, etc. Tómate tu tiempo al revisar el contenido de `lost+found`.
-:::
+  :::
 
 ---
 
@@ -280,13 +284,14 @@ Copying non-tried blocks... Pass 1 (forwards)
 ```
 
 :::note[What ¿qué significa esto?]
+
 - **ipos/opos**: Posiciones de lectura/escritura actuales en los discos de origen y destino.
 - **rescatado**: Cantidad de datos copiados con éxito.
 - **áreas defectuosas/errores de lectura**: Número de regiones problemáticas y errores de lectura encontrados.
 - **pct rescatado**: Porcentaje del disco recuperado hasta ahora.
 - **tiempo restante**: Tiempo estimado para completar.
-- **Copiando bloques no probados...**: ddrescue está haciendo su primer intento de leer todos los sectores.
-:::
+- **Copiando bloques no intentados...**: ddrescue está haciendo su primer intento de leer todos los sectores.
+  :::
 
 Después de la copia inicial, ddrescue trabajará en recuperar datos de sectores defectuosos haciendo múltiples pasadas y, a veces, leyendo bloques en ambas direcciones. Esta fase puede tardar mucho más, especialmente si el disco está gravemente dañado.
 
@@ -304,9 +309,10 @@ Scraping failed blocks... (forwards)
 ```
 
 :::note[What's ¿está sucediendo ahora?]
+
 - **Raspando bloques fallidos...**: ddrescue está haciendo intentos repetidos de recuperar sectores ilegibles.
-- **áreas defectuosas/errores de lectura**: Estos números pueden aumentar a medida que ddrescue encuentra más daños, pero el objetivo es minimizar los datos irrecuperables.
-:::
+- **áreas dañadas/errores de lectura**: Estos números pueden aumentar a medida que ddrescue encuentra más daños, pero el objetivo es minimizar la pérdida irrecuperable de datos.
+  :::
 
 ### Montando y verificando el disco recuperado
 
