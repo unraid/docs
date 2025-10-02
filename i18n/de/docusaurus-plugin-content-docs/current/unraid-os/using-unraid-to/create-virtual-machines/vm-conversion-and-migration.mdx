@@ -17,15 +17,13 @@ Bei der Konsolidierung von Hardware, der Sicherung älterer Systeme oder dem Tes
 - Ensure you have enough free space in your **%%array|array%%** or **%%cache pool|cache-pool%%** to accommodate the new virtual disk image.
 - Sichern Sie alle wichtigen Daten, bevor Sie mit dem Konvertierungs- oder Migrationsprozess beginnen.
 
-:::
-
 ## Hardwareanforderungen
 
 | Komponente           | Mindestanforderung                                                                | Empfohlen für beste Leistung                                     |
 | -------------------- | --------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
 | **CPU**              | 64-Bit mit Hardware-Virtualisierung (%%Intel VT-X\|intel-vt-x%%/%%AMD-V\|amd-v%%) | Multi-Core-CPU mit VT-d/AMD-Vi für Passthrough                   |
 | **RAM**              | 8 GB                                                                              | 16 GB oder mehr                                                  |
-| **Speicher**         | SSD oder NVMe %%cache pool\|cache-pool%% mit ausreichend Platz                    | Dedicated NVMe %%cache pool\|cache-pool%% for %%VM\|vm%% storage |
+| **Speicher**         | SSD oder NVMe %%cache pool\|cache-pool%% mit ausreichendem Speicherplatz          | Dedicated NVMe %%cache pool\|cache-pool%% for %%VM\|vm%% storage |
 | **Motherboard/BIOS** | %%UEFI\|uefi%% mit aktivierter Virtualisierung                                    | %%UEFI\|uefi%% mit aktivierten %%IOMMU\|iommu%%/VT-d/AMD-Vi      |
 
 ---
@@ -43,15 +41,16 @@ So konvertieren Sie eine physische Festplatte in eine %%VM|vm%%:
     1. Verbinden Sie die Quellfestplatte mit Ihrem Unraid-Server (über SATA oder USB).
     2. Melden Sie sich bei der %%WebGUI|web-gui%% (`http://tower` oder `http://tower.local`) an.
     3. Klicken Sie auf die Registerkarte **Haupt**.
-    4. Starten Sie das **%%array|array%%**, wenn es nicht bereits läuft.
+    4. Starten Sie das **%%array|array%%**, wenn es noch nicht läuft.
     5. Finden Sie Ihre Festplatte unter **Nicht zugewiesene Geräte**.
-    6. Notieren Sie sich den Gerätebuchstaben (z.B. `sdb`, `sdc`) und die Festplattengröße. Sie benötigen mindestens diesen freien Speicherplatz auf Ihrem **%%array|array%%** oder **%%cache pool|cache-pool%%** für den neuen %%virtuellen Datenträger|vdisk%%.
+    6. Notieren Sie den Gerätebuchstaben (z.B. `sdb`, `sdc`) und die Festplattengröße. Sie benötigen mindestens diesen freien Speicherplatz auf Ihrem **%%array|array%%** oder **%%cache pool|cache-pool%%** für das neue %%virtual disk|vdisk%%.
 
     <h4>Schritt 2: Erstellen Sie eine neue virtuelle Maschine</h4>
 
     Lesen Sie den [Leitfaden zum Erstellen Ihrer eigenen virtuellen Maschinen](../create-virtual-machines/vm-setup.mdx#creating-your-own-virtual-machines) mit den folgenden Ausnahmen:
 
-    - Setzen Sie das **BIOS** auf **OVMF**. Stellen Sie sicher, dass Sie die **VirtIO Drivers ISO** für [optimale Leistung](./overview-and-system-prep.mdx#set-up-virtualization-preferences) angeben.
+    - Stellen Sie das **BIOS** auf **OVMF** ein.
+      Stellen Sie sicher, dass Sie die **VirtIO Drivers ISO** für [optimale Leistung](./overview-and-system-prep.mdx#set-up-virtualization-preferences) angeben.
     - Store %%VM|vm%% images on a **%%cache pool|cache-pool%%** instead of an %%array|array%% for the [best performance](./overview-and-system-prep.mdx#user-shares-for-virtualization).
 
     <h4>Schritt 3: Konvertieren Sie die physische Festplatte in ein %%virtuelles Festplatten-Image|vdisk%%</h4>
@@ -65,14 +64,14 @@ So konvertieren Sie eine physische Festplatte in eine %%VM|vm%%:
     ```
 
     - **/dev/sdX**: Ersetzen Sie durch den Gerätebuchstaben aus Schritt 1 (z. B. `/dev/sdb`)
-    - **\[vdisk\_share]**: Der Speicherort, an dem Sie Ihre %%VM|vm%%-Bilder speichern
-    - **\[vmname]**: Der Name, den Sie für Ihre %%VM|vm%% verwenden möchten
+    - **[vdisk_share]**: Der Share, wo Sie Ihre %%VM|vm%%-Bilder speichern.
+    - **[vmname]**: Der Name, den Sie für Ihre %%VM|vm%% möchten.
 
     **Befehlsübersicht:**
 
     - `qemu-img convert`: Dieses Tool wird zur Konvertierung von Festplatten-Images verwendet.
     - `-p`: Zeigt den Fortschritt als Prozentsatz an.
-    - `-O raw`: Setzt das Ausgabeformat auf roh (Standard bei Unraid).
+    - `-O raw`: Sets the output format to raw (Unraid's default).
     - `/dev/sdX`: Quelle ist Ihre physische Festplatte.
     - `/mnt/user/[vdisk_share]/[vmname]/vdisk1.img`: Ziel für das %%virtuelle Festplatten-Image|vdisk%%.
 
@@ -84,7 +83,7 @@ So konvertieren Sie eine physische Festplatte in eine %%VM|vm%%:
 
     - Klicken Sie im %%VMs|vm%%-Tab auf das %%VM|vm%%-Symbol und wählen Sie **XML bearbeiten** aus dem Kontextmenü.
 
-    - Scrollen Sie als nächstes im XML nach unten und finden Sie den `<target>`-Tag für den `<disk>` mit einer `<source>`-Datei, die auf `vdisk1.img` gesetzt ist. Er sollte folgendermaßen aussehen:
+    - Scrollen Sie als Nächstes durch das XML und finden Sie den `<target>`-Tag für das `<disk>`, das mit einer `<source>`-Datei auf `vdisk1.img` gesetzt ist. Es sollte so aussehen:
 
       ```xml
 
@@ -124,7 +123,7 @@ So konvertieren Sie eine physische Festplatte in eine %%VM|vm%%:
       - Navigieren Sie zum **Balloon**-Ordner.
       - Finden Sie innerhalb dieses Ordners den Unterordner für Ihre **Windows-Betriebssystemversion** (zum Beispiel `w8.1`).
       - Öffnen Sie den Unterordner **amd64**.
-      - Klicken Sie mit der rechten Maustaste auf die **balloon.inf**-Datei und wählen Sie **Installieren** aus dem Kontextmenü. (Sie müssen die Anzeige von Dateierweiterungen aktivieren, um dies zu tun.)
+      - Klicken Sie mit der rechten Maustaste auf die **balloon.inf**-Datei und wählen Sie **Installieren** aus dem Kontextmenü. (Sie müssen die Sichtbarkeit der Dateierweiterungen aktivieren, um dies zu tun.)
     - Wiederholen Sie diese Schritte für jeden der folgenden Ordner:
       - **NetKVM**
       - **vioserial**
@@ -132,11 +131,11 @@ So konvertieren Sie eine physische Festplatte in eine %%VM|vm%%:
     - Nachdem Sie die Treiber installiert haben, navigieren Sie zurück in das virtuelle CD-ROM und öffnen Sie den **guest-agent**-Ordner.
     - Doppelklicken Sie auf **qemu-ga-x64.msi**, um den %%QEMU|qemu%%/%%KVM|kvm%%-Gastagenten zu installieren.
 
-    <h4>Schritt 3: Konvertieren Sie den Datenträger-Bus zurück in VirtIO</h4>
+    <h4>Schritt 3: Konvertieren Sie den Plattenbus zurück zu VirtIO</h4>
 
     - Wenn Ihre %%VM|vm%% läuft, schalten Sie sie herunter.
-    - Klicken Sie im **VMs**-Tab auf das %%VM|vm%%-Symbol und wählen Sie **XML bearbeiten** aus dem Kontextmenü.
-    - Suchen Sie den `<disk>`-Abschnitt für `vdisk1.img` und ändern Sie `bus='ide'` zurück zu `bus='virtio'` im `<target>`-Tag.
+    - Klicken Sie auf der Registerkarte **VMs** auf das %%VM|vm%%-Symbol und wählen Sie **XML bearbeiten** aus dem Kontextmenü.
+    - Suchen Sie den `<disk>`-Abschnitt für `vdisk1.img` und ändern Sie `bus='ide'` wieder auf `bus='virtio'` im `<target>`-Tag.
     - Klicken Sie auf **Aktualisieren**, um Ihre Änderungen an der %%VM|vm%% zu speichern.
     - Nun können Sie Ihre konvertierte %%virtuelle Maschine|vm%% starten!
   </TabItem>
@@ -148,9 +147,7 @@ So konvertieren Sie eine physische Festplatte in eine %%VM|vm%%:
 
 Sie können eine Windows-Installation direkt von einer physischen Festplatte in einer Unraid-%%virtuellen Maschine|vm%% ausführen. Diese Methode hilft bei der Migration eines bestehenden Windows-Systems, ohne es in ein virtuelles Festplatten-Image zu konvertieren. Für eine visuelle Anleitung schauen Sie sich Spaceinvader One’s Tutorial an: [How to pass through hard drives, convert disks, and test performance in Unraid VMs (YouTube)](https://www.youtube.com/watch?v=QaB9HhpbDAI).
 
-:::important\[Choosing \[Dein Migrationsansatz]
-
-Es gibt zwei gängige Methoden, um eine Windows-Installation in eine %%VM|vm%% in Unraid zu migrieren:
+:::important[Choosing [Dein Migrationsansatz]
 
 **Physikalischer Festplattendurchlauf:** Verwendet die Originalfestplatte direkt in der %%VM|vm%%.
 
@@ -162,9 +159,7 @@ Es gibt zwei gängige Methoden, um eine Windows-Installation in eine %%VM|vm%% i
 - Vorteile: Mehr Flexibilität, ermöglicht die Verwendung der Festplatte als Unraid-Share oder für Snapshots.
 - Nachteile: Erfordert Zeit und freien Speicherplatz für den Konvertierungsprozess.
 
-Wählen Sie Passthrough, wenn Sie eine einfache Migration wünschen oder planen, das Laufwerk dual zu starten. Entscheiden Sie sich für die Bildkonvertierung für bessere Portabilität und Sicherungsmöglichkeiten.
-
-:::
+**Disk-Image-Konvertierung:** Dies konvertiert die physische Festplatte in ein %%virtuelles Festplatten-Image|vdisk%% (`.img`) zur Verwendung in der %%VM|vm%%.
 
 :::note\[Prerequisites]
 
@@ -174,8 +169,7 @@ Wählen Sie Passthrough, wenn Sie eine einfache Migration wünschen oder planen,
   - **Microsoft Sysprep** (kostenlos und in Windows 8.1 und später integriert)
   - **Acronis True Image 2025** (kommerzielle Lösung mit erweiterten Migrationsfunktionen)
 - Stellen Sie sicher, dass Ihr Unraid-Server einen freien SATA- oder NVMe-Anschluss für die physische Festplatte hat.
-
-:::
+  :::
 
 <h4>Schritt 1: Bereiten Sie die Windows-Festplatte für die Migration vor</h4>
 
@@ -185,13 +179,12 @@ Das Verschieben einer Windows-Installation auf neue Hardware, sei es physisch od
 
 Sysprep ist in Windows integriert und eliminiert eindeutige Systeminformationen, um Windows für unterschiedliche Hardware vorzubereiten.
 
-:::note\[Before \[Sysprep ausführen]
+:::note[Before [Sysprep ausführen]
 
 - Deaktivieren Sie temporär jegliche Antivirensoftware.
 - Bereinigen Sie unnötige Benutzerprofile und temporäre Dateien.
-- Beheben Sie problematische Microsoft Store-Anwendungen oder entfernen Sie diese, die verhindern könnten, dass Sysprep ausgeführt wird.
-
-:::
+- Beheben oder entfernen Sie problematische Microsoft Store-Apps, die möglicherweise verhindern, dass Sysprep ausgeführt wird.
+  :::
 
 1. **Sysprep ausführen:**
    - Öffnen Sie die Eingabeaufforderung als Administrator.
@@ -260,7 +253,7 @@ Sie müssen die XML-Konfiguration des %%VM|vm%% ändern, um Ihre physische Festp
    </disk>
    ```
 
-   Ersetzen Sie diesen Block durch den folgenden, wobei `sdX` der Geräteschreibbuchstabe ist, oder verwenden Sie besser `/dev/disk/by-id/[Ihre-Platten-ID]` für eine zuverlässigere Gerätzuordnung (siehe \[Unraid-Dokumente: Verwendung einer physikalischen Platte in einer VM]):
+   Ersetzen Sie diesen Block durch den folgenden, wobei `sdX` der Geräteschreibbuchstabe ist, oder verwenden Sie besser `/dev/disk/by-id/[Ihre-Platten-ID]` für eine zuverlässigere Gerätzuordnung (siehe [Unraid-Dokumente: Verwendung einer physikalischen Platte in einer VM]):
 
    ```xml
 
@@ -297,10 +290,8 @@ Wenn Sie bei %%SeaBIOS|seabios%% mit der Nachricht „Booting from Hard Disk“ 
 
 ## Xen zu KVM Migration
 
-:::info\[Historical \[Kontext]
-
+:::info[Historical [Kontext]
 Unraid unterstützte %%Xen|xen-hvm%% von den frühen 6.x-Versionen bis es in Version 6.2 (September 2016) veraltet wurde und später vollständig entfernt wurde. Dieser Migrationsleitfaden ist relevant für Benutzer, die von sehr alten Unraid-Installationen (vor 2017) auf moderne Versionen aktualisieren.
-
 :::
 
 A %%Xen|xen-hvm%% hypervisor is a virtualization platform that allows multiple operating systems to run on the same hardware. In Unraid, %%Xen|xen-hvm%% was historically used for %%virtual machines|vm%%, but %%KVM|kvm%% is now the standard. Migrating from %%Xen|xen-hvm%% to %%KVM|kvm%% is essential for utilizing modern Unraid features, enabling hardware passthrough, and ensuring compatibility with current releases.
@@ -309,10 +300,8 @@ Der Prozess der Migration einer %%VM|vm%% von %%Xen|xen-hvm%% zu %%KVM|kvm%% var
 
 Always create a backup of your %%Xen|xen-hvm%% virtual disk before starting this process. And test your migration on the backup to prevent data loss.
 
-:::info\[Why \[Migrieren?]
-
+:::info[Why [Migrieren?]
 Unraid unterstützt %%Xen|xen-hvm%% ab Version 6.2 nicht mehr. %%KVM|kvm%% ist jetzt zur Verwaltung von %%virtuellen Maschinen|vm%%, Hardware-Passthrough und laufenden Updates verpflichtend. Die Migration gewährleistet, dass Ihre %%virtuellen Maschinen|vm%% sicher und mit neuen Funktionen kompatibel bleiben.
-
 :::
 
 ### Verfahren zur Windows-Konvertierung
@@ -441,5 +430,5 @@ To convert a Windows VM from %%Xen|xen-hvm%% to %%KVM|kvm%%, follow these steps.
   1. Installieren Sie die %%VirtIO|virtio%%-Treiber von der ISO erneut.
   2. Überprüfen Sie Windows-Updates, die möglicherweise neuere Treiber bereitstellen.
   3. Besuchen Sie die [Red Hat VirtIO Drivers](https://docs.fedoraproject.org/en-US/quick-docs/creating-windows-virtual-machines-using-virtio-drivers/) Seite für die neuesten Versionen.
-  :::
+     :::
 </details>
