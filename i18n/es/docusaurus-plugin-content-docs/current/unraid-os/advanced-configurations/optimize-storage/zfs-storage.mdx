@@ -9,9 +9,7 @@ import TabItem from '@theme/TabItem';
 # Almacenamiento ZFS
 
 :::important[Special gracias]
-
 Nos gustaría expresar nuestro agradecimiento a Ed Rawlings ([Spaceinvader One](https://www.youtube.com/c/SpaceinvaderOne)) por la experiencia y la guía de la que esta documentación de almacenamiento de %%ZFS|zfs%% ha sido adaptada. Sus tutoriales y perspectivas han asistido a innumerables usuarios de Unraid en dominar técnicas avanzadas de almacenamiento. Apreciamos sus continuas contribuciones a la comunidad de Unraid.
-
 :::
 
 %%ZFS|zfs%% trae integridad de datos avanzada, configuraciones de almacenamiento flexibles y alto rendimiento a su sistema Unraid. Esta guía explica los conceptos básicos de %%ZFS|zfs%% y lo guía a través de la administración de pools de %%ZFS|zfs%% directamente desde el %%WebGUI|web-gui%% de Unraid. Ya sea configurando nuevo almacenamiento %%ZFS|zfs%% o integrando un pool existente, encontrará los pasos y el contexto que necesita para comenzar con confianza.
@@ -43,9 +41,7 @@ Puede usar %%snapshots|snapshot%% de %%ZFS|zfs%% y replicación en un solo disco
 </div>
 
 :::note
-
 The hybrid %%ZFS|zfs%%-in-array approach is helpful for specific backup or replication scenarios but is not a replacement for a full %%ZFS|zfs%% pool. %%ZFS|zfs%% disks in the %%array|array%% are managed individually; you do not get the combined performance, redundancy, or self-healing of a true multi-disk %%ZFS|zfs%% pool. For full %%ZFS|zfs%% functionality, always use dedicated %%ZFS|zfs%% pools.
-
 :::
 
 ### Pools, vdevs y redundancia
@@ -53,9 +49,7 @@ The hybrid %%ZFS|zfs%%-in-array approach is helpful for specific backup or repli
 Un pool de %%ZFS|zfs%% (denominado "zpool") está compuesto por uno o más vdevs (dispositivos virtuales). Cada vdev es un grupo de discos físicos con su propio nivel de redundancia. %%ZFS|zfs%% escribe datos a través de los vdevs, pero cada vdev es responsable de su tolerancia a fallos.
 
 :::caution
-
 La redundancia siempre es por vdev. Si falla algún vdev, todo el pool falla, incluso si otros vdevs están en buen estado. ¡Planee sus vdevs con cuidado!
-
 :::
 
 <div style={{ margen: 'auto', maxAnchura: '600px', display: 'flex', flexDirection: 'columna', alignItems: 'centro' }}>
@@ -79,9 +73,7 @@ Para crear un grupo %%ZFS|zfs%% usando el %%WebGUI|web-gui%%:
 4. Configure el número de ranuras para coincidir con el número de discos que desea en sus vdev(s) de datos primarios.
 
 :::note
-
 Este conteo inicial de ranuras es solo para vdevs de datos. Los vdevs de soporte (como unidades de registro o caché) se pueden agregar por separado después de crear el pool.
-
 :::
 
 <div style={{ margen: 'auto', maxAnchura: '600px', display: 'flex', flexDirection: 'columna', alignItems: 'centro' }}>
@@ -104,9 +96,7 @@ Este conteo inicial de ranuras es solo para vdevs de datos. Los vdevs de soporte
 8. Elija su perfil de asignación: esto determina la redundancia y el rendimiento de su grupo.
 
 :::tip
-
 Antes de finalizar, revise las secciones sobre perfiles de asignación y topología para tomar una decisión informada.
-
 :::
 
 <div style={{ margen: 'auto', maxAnchura: '600px', display: 'flex', flexDirection: 'columna', alignItems: 'centro' }}>
@@ -127,13 +117,11 @@ Antes de finalizar, revise las secciones sobre perfiles de asignación y topolog
 Puede agregar un disco %%ZFS|zfs%% independiente a su %%array|array%% de Unraid (no un grupo %%ZFS|zfs%%) para combinar características de %%ZFS|zfs%% con la protección de %%paridad|parity%% de Unraid.
 
 :::info[What esto permite]
-
 - **Protección de paridad:** El disco %%ZFS|zfs%% está protegido por la %%parity|parity%% de la %%array|array%% de Unraid, asegurando que sus datos estén seguros contra fallos de disco simples (o múltiples, dependiendo de sus %%parity drives|parity-drives%%).
 
 - **Integridad de datos:** %%ZFS|zfs%% proporciona verificaciones de integridad a nivel de bloque (checksums). Si bien un solo disco no puede autocurarse de bit rot, %%ZFS|zfs%% detectará corrupción y le alertará, permitiéndole restaurar desde una copia de seguridad antes de que ocurra la pérdida de datos silenciosa.
 
 - **Características de %%ZFS|zfs%%:** Puede utilizar %%snapshots|snapshot%% y replicación de %%ZFS|zfs%% en este disco, lo que lo hace ideal para objetivos de respaldo, conjuntos de datos específicos o escenarios donde desea características de %%ZFS|zfs%% junto con el almacenamiento tradicional de Unraid.
-
 :::
 
 Para añadir un disco %%ZFS|zfs%% al %%array|array%%:
@@ -175,11 +163,9 @@ Cuando configura un pool de %%ZFS|zfs%%, su perfil de asignación determina cóm
 | RAIDZ3 | 3 discos por vdev              | Como Z2, con más sobrecarga de escritura (para máxima seguridad)                 | Agregar nuevos vdevs | Inferior            | Crítico para la misión, tolerancia a fallas de 3 discos |
 
 :::important[How elegir]
-
 - Use **Espejo** si quiere el mejor rendimiento y expansión fácil y flexible, y está de acuerdo en utilizar más espacio en disco para la redundancia.
 - Elija **RAIDZ1/2/3** si desea maximizar el espacio utilizable y almacenar archivos grandes, pero tenga en cuenta que la expansión es menos flexible y el rendimiento de escrita aleatoria es inferior.
 - **Raya** solo es adecuada para datos no críticos y temporales; si falla un disco, se pierde todo.
-
 :::
 
 ---
@@ -198,9 +184,7 @@ Cómo agrupar discos en vdevs afecta tanto la seguridad de los datos como la vel
 - Expandir un grupo %%ZFS|zfs%% generalmente significa agregar un nuevo vdev con la misma disposición, no solo un disco.
 
 :::tip
-
 Planifique la disposición de su pool para que se adapte a sus necesidades y crecimiento futuro. A diferencia del %%array|array%% de Unraid, no puede agregar un solo disco a un vdev existente usando el %%WebGUI|web-gui%%.
-
 :::
 
 ---
@@ -221,9 +205,7 @@ Esto ofrece dos beneficios importantes:
 </div>
 
 :::tip
-
 Active la compresión %%ZFS|zfs%% para la mayoría de los pools %%ZFS|zfs%% de Unraid. Es segura, eficiente y rara vez afecta la compatibilidad o estabilidad.
-
 :::
 
 <details>
@@ -239,9 +221,7 @@ Active la compresión %%ZFS|zfs%% para la mayoría de los pools %%ZFS|zfs%% de U
 </details>
 
 :::info
-
 %%ZFS|zfs%% se escala bien con la memoria disponible. Más RAM puede mejorar el rendimiento de la caché, pero %%ZFS|zfs%% funciona de manera fiable con hardware modesto. No deje que las recomendaciones antiguas le impidan usar %%ZFS|zfs%% en Unraid.
-
 :::
 
 ---
@@ -295,9 +275,7 @@ Unraid se refiere a los vdevs de soporte de %%ZFS|zfs%% como subpools. La mayor�
 | Vdev de repuesto          | No soportado en Unraid (a partir de la versión 7.1.2) |                                                                                                                                       |
 
 :::caution
-
 La mayoría de los usuarios de Unraid deberían evitar los vdevs/subpools de soporte a menos que tenga una necesidad específica y bien entendida. Están diseñados para cargas de trabajo especializadas y pueden introducir complejidad o riesgo si se utilizan incorrectamente.
-
 :::
 
 ---
@@ -315,9 +293,7 @@ Si olvidas incluir una unidad que formaba parte de un vdev de soporte durante la
 | Vdev de cache (L2ARC)            | El pool se importa, pero se pierde el cache de lectura                   | El pool funciona normalmente, pero pierdes el aumento de rendimiento de la cache L2ARC. No se pierde ningún dato.                     |
 
 :::tip
-
 Always assign every physical drive from your original %%ZFS|zfs%% pool, including all support vdevs, when importing into Unraid. This ensures smooth detection and integration. For new pools created in Unraid, support vdevs are optional and generally not needed for most users.
-
 :::
 
 ---
@@ -335,9 +311,7 @@ Formas de expandir tu pool incluyen:
 - **Crear un nuevo pool:** Iniciar un nuevo pool de %%ZFS|zfs%% mantiene las cosas organizadas e independientes para diferentes tipos de datos o cargas de trabajo.
 
 :::tip[Planning adelante]
-
 Antes de construir su pool, considere cuánta almacenamiento necesitará, no solo hoy, sino en el futuro. %%ZFS|zfs%% recompensa la buena planificación, especialmente si desea evitar actualizaciones disruptivas más adelante.
-
 :::
 
 ---
