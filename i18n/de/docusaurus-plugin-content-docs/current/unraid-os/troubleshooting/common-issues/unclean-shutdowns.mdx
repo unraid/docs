@@ -1,6 +1,6 @@
 ---
 sidebar_position: 2
-sidebar_label: Unbereinigt heruntergefahrene Systeme
+sidebar_label: Unclean shutdowns
 ---
 
 import Tabs from '@theme/Tabs';
@@ -9,31 +9,31 @@ import UncleanShutdownsPower from './partials/unclean-shutdowns/unexpected-power
 import UncleanShutdownsFlash from './partials/unclean-shutdowns/flash-drive-failure.mdx';
 import UncleanShutdownsTerminal from './partials/unclean-shutdowns/open-terminal-sessions.mdx';
 
-# Unbereinigt heruntergefahrene Systeme
+# Unclean shutdowns
 
 An unclean shutdown happens when Unraid detects that the %%array|array%% was not properly stopped before the system powered off. This situation can trigger an automatic %%parity check|parity-check%% during the next boot to ensure data integrity.
 
-:::important[Recommendations um unsaubere Abschaltungen zu verhindern]
+:::important[Recommendations to prevent unclean shutdowns]
 
-- **Verwenden Sie eine USV:** Halten Sie Ihren Server mit einer unterbrechungsfreien Stromversorgung (USV) verbunden und richten Sie diese ein, um einen kontrollierten Shutdown einzuleiten, wenn der Batteriestrom niedrig wird.
-- **Versuchen Sie ein geordnetes Herunterfahren:** Wenn Ihr Server nicht reagiert, drücken Sie kurz den Netzschalter, um ein sicheres Herunterfahren zu initiieren. Halten Sie den Knopf nicht gedrückt, da dies ein hartes Ausschalten erzwingt und zu einem nicht ordnungsgemäßen Herunterfahren führt.
-- **Aktivieren Sie persistente Protokollierung:** Gehen Sie zu ***Settings → Syslog Server***, um die Protokollierung zu aktivieren, die nach einem Neustart bestehen bleibt. Weitere Details finden Sie unter [Persistente Protokolle (Syslog-Server)](../diagnostics/capture-diagnostics-and-logs.mdx#persistent-logs-syslog-server).
+- **Use a UPS:** Keep your server connected to an Uninterruptible Power Supply (UPS) and set it up to initiate a controlled shutdown when battery power runs low.
+- **Attempt a graceful shutdown:** If your server is unresponsive, briefly press the power button to trigger a safe shutdown. Do not hold the button down, as this will force a hard power off and lead to an unclean shutdown.
+- **Enable persistent logging:** Go to ***Settings → Syslog Server*** to activate logging that persists after a reboot. See [Persistent logs (Syslog server)](../diagnostics/capture-diagnostics-and-logs.mdx#persistent-logs-syslog-server) for more details.
 - **Diagnosen anhängen, um Unterstützung zu erhalten:** Bei einem nicht ordnungsgemäßen Herunterfahren versucht Unraid, Diagnosen in `/log/diagnostics.zip` auf Ihrem Flash-Gerät zu speichern. Fügen Sie diese Datei Forenbeiträgen hinzu, wenn Sie Hilfe suchen.
   :::
 
-:::tip[UPS beste Konfigurationspraktiken]
+:::tip[UPS configuration best practices]
 
-- **Verbinden Sie die USV über USB** mit Ihrem Unraid-Server.
-- **Aktivieren Sie die USV-Unterstützung** unter ***Einstellungen → USV-Einstellungen***.
+- **Connect the UPS via USB** to your Unraid server.
+- **Enable UPS support** in ***Settings → UPS Settings***.
 - **Configure shutdown timeouts:** Set the UPS to trigger a controlled shutdown before the battery runs low. Adjust the "Battery runtime left" or "Battery charge level" thresholds to provide enough time for Unraid to [stop the %%array|array%%](../../using-unraid-to/manage-storage/array-configuration.mdx#startstop-the-array) and power down safely.
-- **Testen Sie Ihre Konfiguration:** Simulieren Sie einen Stromausfall, um sicherzustellen, dass die USV und Unraid korrekt reagieren.
+- **Test your configuration:** Simulate a power loss to ensure the UPS and Unraid respond correctly.
 
 Schauen Sie sich das [NUT-Plugin](https://unraid.net/community/apps/c/plugins/p4?srsltid=AfmBOop675PrJQW4iqb4JBN3GyPpwDDiSmnZReq78t27XyxkFdMX8inO#:~:text=NUT%20%2D%20Network%20UPS%20Tools) für breitere Kompatibilität mit fortschrittlicheren USV-Modellen oder nicht unterstützter Hardware an.
 :::
 
-## Ereignisse, die unbereinigte Herunterfahrten verursachen
+## Events That Cause Unclean Shutdowns
 
-Das Verständnis der Hauptauslöser für nicht ordnungsgemäßes Herunterfahren hilft Ihnen, diese zu verhindern. Erkunden Sie die untenstehenden Tabs für Details zu jedem Szenario.
+Understanding the main triggers for unclean shutdowns helps you prevent them. Explore the tabs below for details on each scenario.
 
 <Tabs>
   <TabItem value="leistung" label="Unerwarteter Stromausfall" default>
@@ -44,26 +44,26 @@ Das Verständnis der Hauptauslöser für nicht ordnungsgemäßes Herunterfahren 
     <UncleanShutdownsFlash />
   </TabItem>
 
-  <TabItem value="Terminal" label="Terminalsitzungen öffnen">
+  <TabItem value="terminal" label="Terminalsitzungen öffnen">
     <UncleanShutdownsTerminal />
   </TabItem>
 </Tabs>
 
 ---
 
-## Konfigurierung der Shutdown-Timeouts
+## Configuring shutdown timeouts
 
 Properly configuring shutdown timeouts is essential to ensure your Unraid server can stop all services effectively, preventing unclean shutdowns, particularly during power loss or maintenance. Each component of your system - %%VM|vm%%s, Docker containers, and the overall %%array|array%% - has its own timeout setting that can be adjusted.
 
-### Empfohlene Timeout-Einstellungen
+### Recommended timeout settings
 
-| Einstellung                                  | Standard | Empfohlene Mindestdauer                                                 | Wo einstellen                                                   |
-| -------------------------------------------- | -------- | ----------------------------------------------------------------------- | --------------------------------------------------------------- |
-| %%VM\|vm%% Herunterfahren-Zeitüberschreitung | 60s      | 300s (5 Min)                                                            | ***Einstellungen → VM-Manager → VM-Shutdown (Erweitert)***      |
-| Docker-Container-Stop-Timeout                | 10s      | 30–60s                                                                  | ***Einstellungen → Docker (Erweitert)***                        |
-| Allgemeiner Shutdown-Timeout                 | 90s      | 3 × %%VM\|vm%% Zeitüberschreitung + Docker-Zeitüberschreitung + 15–30 s | ***Einstellungen → Laufwerkseinstellungen → Shutdown-Timeout*** |
+| Einstellung                                  | Default | Empfohlene Mindestdauer                          | Wo einstellen                                        |
+| -------------------------------------------- | ------- | ------------------------------------------------ | ---------------------------------------------------- |
+| %%VM\|vm%% Herunterfahren-Zeitüberschreitung | 60s     | 300s (5 Min)                                     | ***Settings → VM Manager → VM Shutdown (Advanced)*** |
+| Docker container stop timeout                | 10s     | 30–60s                                           | ***Einstellungen → Docker (Erweitert)***             |
+| Allgemeiner Shutdown-Timeout                 | 90s     | 3 × %%VM\|vm%% timeout + Docker timeout + 15–30s | ***Settings → Disk Settings → Shutdown time-out***   |
 
-### Timeout für virtuelle Maschinen
+### Virtual machines timeout
 
 <details>
   <summary><strong>Klicken zum Erweitern/Reduzieren</strong></summary>
@@ -72,19 +72,19 @@ Properly configuring shutdown timeouts is essential to ensure your Unraid server
 
   <h4>Wo festlegen</h4>
 
-  - ***Einstellungen → VM-Manager → VM-Shutdown*** (erweiterte Ansicht aktivieren)
+  - ***Settings → VM Manager → VM Shutdown*** (enable Advanced view)
 
   <h4>Betrachten</h4>
 
-  - Windows-%%VMs|vm%% können mehr Zeit zum Herunterfahren benötigen, insbesondere wenn Updates anstehen oder die %%VM|vm%% im Schlaf-/Ruhezustand ist.
-  - Wenn das Timeout zu kurz ist, werden %%VMs|vm%% zwangsweise gestoppt, was zu Datenverlust oder Beschädigung führen kann.
+  - Windows %%VMs|vm%% may take longer to shut down, especially if updates are pending or the %%VM|vm%% is in sleep/hibernation.
+  - If the timeout is too short, %%VMs|vm%% will be force-stopped, risking data loss or corruption.
 
   <h4>Best Practice</h4>
 
   Stellen Sie die Zeitüberschreitung auf mindestens 300 Sekunden (5 Minuten) für Windows-%%VMs|vm%%. Planen Sie Updates so, dass sie beim Start und nicht beim Herunterfahren ausgeführt werden, um Verzögerungen zu vermeiden.
 </details>
 
-### Docker-Container-Timeout
+### Docker containers timeout
 
 <details>
   <summary><strong>Klicken zum Erweitern/Reduzieren</strong></summary>
@@ -93,19 +93,19 @@ Properly configuring shutdown timeouts is essential to ensure your Unraid server
 
   <h4>Wo festlegen</h4>
 
-  - ***Einstellungen → Docker*** (erweiterte Ansicht aktivieren)
+  - ***Settings → Docker*** (enable Advanced view)
 
   <h4>Betrachten</h4>
 
-  - Container werden parallel gestoppt.
-  - Komplexe Container oder solche mit großen Datenbanken benötigen möglicherweise mehr als die voreingestellten 10 Sekunden, um sicher herunterzufahren.
-  - Wenn der Timer abläuft, werden Container erzwungenermaßen gestoppt.
+  - Containers are stopped in parallel.
+  - Complex containers, or those with large databases, may need more than the default 10 seconds to shut down safely.
+  - If the timer expires, containers are force-stopped.
 
   <h4>Best Practice</h4>
   Erhöhen Sie das Timeout auf 30–60 Sekunden, wenn Sie Docker-Container betreiben, die zusätzliche Shutdown-Zeit benötigen.
 </details>
 
-### Allgemeiner Shutdown-Timer
+### General shutdown timer
 
 <details>
   <summary><strong>Klicken zum Erweitern/Reduzieren</strong></summary>
@@ -114,19 +114,19 @@ Properly configuring shutdown timeouts is essential to ensure your Unraid server
 
   <h4>Wo festlegen</h4>
 
-  - ***Einstellungen → Laufwerkseinstellungen → Shutdown-Timeout***
+  - ***Settings → Disk Settings → Shutdown time-out***
 
   <h4>Wie berechnen</h4>
 
   Addieren Sie Ihre %%VM-%% und Docker-Timeouts, dann 15–30 Sekunden für das Unmounten von Laufwerken und andere Prozesse.
 
-  - Beispiel: `3 × ***VM-Shutdown-Timeout*** + ***Docker-Stop-Timeout*** + 15–30 Sekunden`
+  - Example: `3 × ***VM Shutdown timeout*** + ***Docker stop timeout*** + 15–30 seconds`
 
   <h4>Beste Praxis</h4>
   Stellen Sie diesen Timer hoch genug ein, um Ihr langsamstes Herunterszenario abzudecken, insbesondere wenn Sie viele Laufwerke oder ein großes %%array|array%% haben.
 </details>
 
-### USV-Batterielebensdauer
+### UPS battery life
 
 <details>
   <summary><strong>Klicken zum Erweitern/Reduzieren</strong></summary>
@@ -135,12 +135,12 @@ Properly configuring shutdown timeouts is essential to ensure your Unraid server
 
   <h4>Wo festlegen</h4>
 
-  - ***Einstellungen → USV-Einstellungen*** (siehe **Verbleibende Laufzeit** mit allen Laufwerken im Betrieb)
+  - ***Settings → UPS Settings*** (see **Runtime left** with all disks spun up)
 
   <h4>Betrachten</h4>
 
-  - Die USV sollte einen Shutdown früh genug auslösen, um die vollständige Shutdown-Abfolge abzuschließen.
-  - Wenn der Akku leer ist, bevor der Shutdown abgeschlossen ist, besteht das Risiko eines unbereinigten Herunterfahrens und möglicher Datenverluste.
+  - The UPS should trigger a shutdown early enough to allow the full shutdown sequence to complete.
+  - If the battery runs out before shutdown completes, you risk an unclean shutdown and possible data loss.
 
   <h4>Best Practice</h4>
 
