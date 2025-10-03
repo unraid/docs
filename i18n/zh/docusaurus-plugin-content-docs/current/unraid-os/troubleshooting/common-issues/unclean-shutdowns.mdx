@@ -1,6 +1,6 @@
 ---
 sidebar_position: 2
-sidebar_label: Unclean shutdowns
+sidebar_label: 非正常关机
 ---
 
 import Tabs from '@theme/Tabs';
@@ -9,30 +9,30 @@ import UncleanShutdownsPower from './partials/unclean-shutdowns/unexpected-power
 import UncleanShutdownsFlash from './partials/unclean-shutdowns/flash-drive-failure.mdx';
 import UncleanShutdownsTerminal from './partials/unclean-shutdowns/open-terminal-sessions.mdx';
 
-# Unclean shutdowns
+# 非正常关机
 
-An unclean shutdown happens when Unraid detects that the %%array|array%% was not properly stopped before the system powered off. This situation can trigger an automatic %%parity check|parity-check%% during the next boot to ensure data integrity.
+当 Unraid 检测到 %%array|array%% 没有在系统断电前正确停止时，就会出现不干净关机。这种情况可能会在下次启动时触发自动 %%parity check|parity-check%% 以确保数据完整性。
 
-:::important[Recommendations to prevent unclean shutdowns]
+:::important[Recommendations 防止不洁的关闭]
 
-- **Use a UPS:** Keep your server connected to an Uninterruptible Power Supply (UPS) and set it up to initiate a controlled shutdown when battery power runs low.
-- **Attempt a graceful shutdown:** If your server is unresponsive, briefly press the power button to trigger a safe shutdown. Do not hold the button down, as this will force a hard power off and lead to an unclean shutdown.
-- **Enable persistent logging:** Go to ***Settings → Syslog Server*** to activate logging that persists after a reboot. See [Persistent logs (Syslog server)](../diagnostics/capture-diagnostics-and-logs.mdx#persistent-logs-syslog-server) for more details.
+- \*\*使用不间断电源（UPS）：\*\*确保服务器连接到UPS并设置在电池电量不足时自动关闭。
+- \*\*尝试优雅关闭：\*\*如果您的服务器无响应，短按电源按钮以触发安全关闭。不要长按该按钮，因为这将强制硬关机并导致不洁关机。
+- **启用持久日志记录：**前往***设置 → 系统日志服务器***以激活在重新启动后持久存在的日志记录。详细信息请参阅[持久日志 (系统日志服务器)](../diagnostics/capture-diagnostics-and-logs.mdx#persistent-logs-syslog-server)。
 - **附加诊断以获取支持：** 如果发生未经清理的关机，Unraid 将尝试将诊断保存到您的闪存设备的 `/log/diagnostics.zip`。在您寻求帮助的论坛帖子中附加此文件。
 
-:::tip[UPS configuration best practices]
+:::tip[UPS 配置最佳实践]
 
-- **Connect the UPS via USB** to your Unraid server.
-- **Enable UPS support** in ***Settings → UPS Settings***.
-- **Configure shutdown timeouts:** Set the UPS to trigger a controlled shutdown before the battery runs low. Adjust the "Battery runtime left" or "Battery charge level" thresholds to provide enough time for Unraid to [stop the %%array|array%%](../../using-unraid-to/manage-storage/array-configuration.mdx#startstop-the-array) and power down safely.
-- **Test your configuration:** Simulate a power loss to ensure the UPS and Unraid respond correctly.
+- **通过 USB 连接 UPS 到 Unraid 服务器。**
+- **在设置中启用 UPS 支持。**
+- \*\*配置关机超时时间：\*\*设置UPS以便在电池电量不足之前触发受控关机。调整“剩余电池运行时间”或“电池充电电平”阈值，以提供足够的时间让Unraid [停止%%array|array%%](../../using-unraid-to/manage-storage/array-configuration.mdx#startstop-the-array) 并安全关机。
+- **测试配置：** 模拟掉电以确保 UPS 和 Unraid 的正确反应。
 
 查看[NUT插件](https://unraid.net/community/apps/c/plugins/p4?srsltid=AfmBOop675PrJQW4iqb4JBN3GyPpwDDiSmnZReq78t27XyxkFdMX8inO#:~:text=NUT%20%2D%20Network%20UPS%20Tools)，以便能够更广泛地兼容更多高级的UPS型号或不支持的硬件。
 :::
 
-## Events That Cause Unclean Shutdowns
+## 导致非正常关机的事件
 
-Understanding the main triggers for unclean shutdowns helps you prevent them. Explore the tabs below for details on each scenario.
+了解导致不洁关机的主要触发因素有助于您防止此类事件发生。探索下方选项卡以获取每种情况的详细信息。
 
 <Tabs>
   <TabItem value="电源" label="“意外的电源损失”" default>
@@ -43,26 +43,26 @@ Understanding the main triggers for unclean shutdowns helps you prevent them. Ex
     <UncleanShutdownsFlash />
   </TabItem>
 
-  <TabItem value="terminal" label="打开终端会话">
+  <TabItem value="终端" label="打开终端会话">
     <UncleanShutdownsTerminal />
   </TabItem>
 </Tabs>
 
 ---
 
-## Configuring shutdown timeouts
+## 配置关机超时
 
 Properly configuring shutdown timeouts is essential to ensure your Unraid server can stop all services effectively, preventing unclean shutdowns, particularly during power loss or maintenance. Each component of your system - %%VM|vm%%s, Docker containers, and the overall %%array|array%% - has its own timeout setting that can be adjusted.
 
-### Recommended timeout settings
+### 推荐的超时设置
 
-| 设置                            | Default | 推荐最小值                                            | 配置位置                                                 |
-| ----------------------------- | ------- | ------------------------------------------------ | ---------------------------------------------------- |
-| %%VM\|vm%% 关机超时               | 60秒     | 300秒（5 分钟）                                       | ***Settings → VM Manager → VM Shutdown (Advanced)*** |
-| Docker container stop timeout | 10秒     | 30–60秒                                           | ***设置 → Docker（高级）***                                |
-| 通用关机超时时间                      | 90秒     | 3 × %%VM\|vm%% timeout + Docker timeout + 15–30s | ***Settings → Disk Settings → Shutdown time-out***   |
+| 设置              | 默认值 | 推荐最小值                                  | 配置位置                         |
+| --------------- | --- | -------------------------------------- | ---------------------------- |
+| %%VM\|vm%% 关机超时 | 60秒 | 300秒（5 分钟）                             | ***设置 → 虚拟机管理 → 虚拟机关机（高级）*** |
+| Docker 容器停止超时时间 | 10秒 | 30–60秒                                 | ***设置 → Docker（高级）***        |
+| 通用关机超时时间        | 90秒 | 3 × %%VM\|vm%% 超时 + Docker 超时 + 15–30秒 | ***设置 → 磁盘设置 → 关机超时***       |
 
-### Virtual machines timeout
+### 虚拟机超时时间
 
 <details>
   <summary><strong>点击展开/折叠</strong></summary>
@@ -71,19 +71,19 @@ Properly configuring shutdown timeouts is essential to ensure your Unraid server
 
   <h4>设置位置</h4>
 
-  - ***Settings → VM Manager → VM Shutdown*** (enable Advanced view)
+  - ***设置 → 虚拟机管理 → 虚拟机关机（高级）***
 
   <h4>考虑</h4>
 
-  - Windows %%VMs|vm%% may take longer to shut down, especially if updates are pending or the %%VM|vm%% is in sleep/hibernation.
-  - If the timeout is too short, %%VMs|vm%% will be force-stopped, risking data loss or corruption.
+  - Windows %%虚拟机|vm%% 可能需要更长时间关机，尤其是如果更新待处理或虚拟机处于睡眠/休眠中。
+  - 如果超时时间过短，%%虚拟机|vm%% 将被强制停止，有可能导致数据丢失或损坏。
 
   <h4>最佳做法</h4>
 
   将超时设置为至少 300 秒（5 分钟），用于 Windows %%VMs|vm%%。计划更新在启动时运行，而不是在关闭时运行，以避免延迟。
 </details>
 
-### Docker containers timeout
+### “Docker 容器超时时间”
 
 <details>
   <summary><strong>点击展开/折叠</strong></summary>
@@ -92,19 +92,19 @@ Properly configuring shutdown timeouts is essential to ensure your Unraid server
 
   <h4>设置位置</h4>
 
-  - ***Settings → Docker*** (enable Advanced view)
+  - ***设置 → Docker*** （启用高级视图）
 
   <h4>考虑</h4>
 
-  - Containers are stopped in parallel.
-  - Complex containers, or those with large databases, may need more than the default 10 seconds to shut down safely.
-  - If the timer expires, containers are force-stopped.
+  - 容器是并行停止的。
+  - 复杂容器，或具有大型数据库的容器，可能需要超过默认的 10 秒时间进行安全关闭。
+  - 如果定时器到期，容器将被强制停止。
 
   <h4>最佳做法</h4>
   如果运行需要额外关闭时间的 Docker 容器，请将超时增加到 30–60 秒。
 </details>
 
-### General shutdown timer
+### 通用关机计时器
 
 <details>
   <summary><strong>点击展开/折叠</strong></summary>
@@ -113,19 +113,19 @@ Properly configuring shutdown timeouts is essential to ensure your Unraid server
 
   <h4>设置位置</h4>
 
-  - ***Settings → Disk Settings → Shutdown time-out***
+  - ***设置 → 磁盘设置 → 关机超时***
 
   <h4>如何计算</h4>
 
   加上 %%虚拟机|vm%% 和 Docker 超时时间，然后加上 15–30 秒用于磁盘卸载和其他进程。
 
-  - Example: `3 × ***VM Shutdown timeout*** + ***Docker stop timeout*** + 15–30 seconds`
+  - 示例：`3 × ***虚拟机关机超时*** + ***Docker 停止超时*** + 15–30 秒`
 
   <h4>最佳实践</h4>
   设置这个计时器高于您最慢的关机场景，尤其当您有许多驱动器或大型 %%array|array%% 时。
 </details>
 
-### UPS battery life
+### UPS电池寿命
 
 <details>
   <summary><strong>点击展开/折叠</strong></summary>
@@ -134,12 +134,12 @@ Properly configuring shutdown timeouts is essential to ensure your Unraid server
 
   <h4>设置位置</h4>
 
-  - ***Settings → UPS Settings*** (see **Runtime left** with all disks spun up)
+  - ***设置 → UPS 设置*** （查看 **剩余运行时间**，所有磁盘旋转起来）
 
   <h4>考虑</h4>
 
-  - The UPS should trigger a shutdown early enough to allow the full shutdown sequence to complete.
-  - If the battery runs out before shutdown completes, you risk an unclean shutdown and possible data loss.
+  - UPS 应该在关机序列完成前触发关闭。
+  - 如果电池在关闭完成之前耗尽，您将面临不完全关闭和可能的数据丢失的风险。
 
   <h4>最佳做法</h4>
 
