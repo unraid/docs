@@ -12,7 +12,7 @@ import TabItem from '@theme/TabItem';
 我们要感谢Ed Rawlings ([Spaceinvader One](https://www.youtube.com/c/SpaceinvaderOne)) 的专业技术和指导，本%%ZFS|zfs%%存储文档是从他的教程和见解改编而成的。他的教程帮助了无数的Unraid用户掌握了高级存储技术。我们感谢他对 Unraid 社区的持续贡献。
 :::
 
-%%ZFS|zfs%% brings advanced data integrity, flexible storage configurations, and high performance to your Unraid system. This guide explains %%ZFS|zfs%% core concepts and walks you through managing %%ZFS|zfs%% pools directly from the Unraid %%WebGUI|web-gui%%. Whether you're setting up new %%ZFS|zfs%% storage or integrating an existing pool, you’ll find the steps and context you need to get started confidently.
+%%ZFS|zfs%% 为您的 Unraid 系统提供了高级数据完整性、灵活的存储配置和高性能。本指南解释了 %%ZFS|zfs%% 的核心概念，并指导您直接从 Unraid %%WebGUI|web-gui%% 管理 %%ZFS|zfs%% 存储池。无论是设置新的 %%ZFS|zfs%% 存储还是集成现有存储池，您都能找到所需的步骤和背景信息，以自信地开始。
 
 ---
 
@@ -44,10 +44,10 @@ Unraid supports %%ZFS|zfs%% for any storage pool. You can create a new %%ZFS|zfs
 
 ### 池、vdevs 和冗余
 
-A %%ZFS|zfs%% pool (called a "zpool") is made up of one or more vdevs (virtual devices). Each vdev is a group of physical disks with its own redundancy level. %%ZFS|zfs%% writes data across vdevs, but each vdev is responsible for its fault tolerance.
+一个 %%ZFS|zfs%% 池（称为 "zpool"）由一个或多个 vdev（虚拟设备）组成。每个 vdev 是具有其自身冗余级别的物理磁盘组。%%ZFS|zfs%% 在 vdev 之间写入数据，但每个 vdev 负责其故障容忍。
 
 :::caution
-Redundancy is always per vdev. If any vdev fails, the entire pool fails, even if other vdevs are healthy. Plan your vdevs with care!
+冗余总是以 vdev 为单位的。如果任何 vdev 失败，整个池都会失败，即使其他 vdev 健康。谨慎规划您的 vdev！
 :::
 
 <div style={{ margin: 'auto', maxWidth: '600px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
@@ -178,13 +178,13 @@ Redundancy is always per vdev. If any vdev fails, the entire pool fails, even if
   ![](/img/zfs12.png)
 </div>
 
-- If you put all your disks into a large RAIDZ2 vdev, you can lose any two disks without losing data. However, expansion means adding another full vdev.
-- You'll gain better parallel performance if you split disks into multiple smaller RAIDZ1 vdevs. Be cautious; if two disks fail in the same vdev, you will lose the whole pool.
+- 如果将所有硬盘放入大型的 RAIDZ2 vdev 中，您可以在不丢失数据的情况下失去两个硬盘。然而，扩展意味着添加另一个完整的 vdev。
+- 如果将磁盘分成多个较小的 RAIDZ1 vdev，您将获得更好的并行性能。请谨慎；如果同一个 vdev 中的两个磁盘失败，您将失去整个池。
 - %%ZFS|zfs%% 将数据跨 vdev 条带化，而不是单个磁盘，因此更多的 vdev 能够提升处理很多小文件或随机 I/O 的工作负载性能。
 - 扩展一个 %%ZFS|zfs%% 容量池通常意味着添加一个新的相同布局的 vdev，而不仅仅是单个磁盘。
 
 :::tip
-Plan your pool’s layout to fit your needs and future growth. Unlike the Unraid %%array|array%%, you can’t add a single disk to an existing vdev using the %%WebGUI|web-gui%%.
+规划您的池布局以适应您的需求和未来增长。与 Unraid %%array|array%% 不同，您无法通过 %%WebGUI|web-gui%% 将单个磁盘添加到现有的 vdev。
 :::
 
 ---
@@ -307,7 +307,7 @@ Unraid 将 %%ZFS|zfs%% 支持vdevs称为子池。大多数用户**不**需要这
 扩展池的方法包括：
 
 - \*\*添加新 vdev：\*\*通过添加另一个 vdev（如新镜像或 RAIDZ 组）来扩展你的池。这增加了容量，但你必须以与 vdev 配置相匹配的集合添加磁盘。
-- **Replacing drives with larger ones:** Swap each drive in a vdev, one at a time, for a larger disk. See [drive replacement](../../using-unraid-to/manage-storage/array-configuration.mdx#replacing-faileddisabled-disks) for detailed procedures. After all drives are replaced and the pool resolves, the vdev’s capacity increases.
+- **用更大的硬盘替换驱动器：** 在 vdev 中一次交换一个驱动器，以换取更大的磁盘。详细步骤请参见[驱动器更换](../../using-unraid-to/manage-storage/array-configuration.mdx#replacing-faileddisabled-disks)。在所有驱动器被替换且池解析之后，vdev 的容量将增加。
 - **创建新池：** 启动一个新的 %%ZFS|zfs%% 池可将不同的数据类型或工作负载组织并独立管理。
 
 :::tip[Planning 前进]
@@ -331,7 +331,7 @@ Unraid 将 %%ZFS|zfs%% 支持vdevs称为子池。大多数用户**不**需要这
 
 %%ZFS|zfs%% 是一个强大的文件系统，但有几个常见的陷阱可能会阻碍其带来的好处。在配置池之前，务必记住下面几点，以便获得更顺畅的体验：
 
-- **Drive size mismatch in RAIDZ:** %%ZFS|zfs%% treats all disks in a RAIDZ vdev as the size of the smallest one. To ensure the best efficiency, always use identically sized drives within each vdev.
+- **RAIDZ 中的驱动器尺寸不匹配：** %%ZFS|zfs%% 将 RAIDZ vdev 中的所有磁盘视为最小的一个的尺寸。为了确保最佳效率，请始终在每个 vdev 中使用尺寸相同的驱动器。
 
 - \*\*通过 %%WebGUI|web-gui%% 扩展 RAIDZ vdevs：\*\*尽管 Unraid 7.1.x 及更高版本支持通过命令行扩展 RAIDZ， 但这一功能在 %%WebGUI|web-gui%% 中尚未可用。目前，请通过 CLI 扩展或通过 GUI 添加新的 vdevs。
 
