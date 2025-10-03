@@ -26,6 +26,12 @@ const colors = {
 const canonicalAdmonitionTypes = new Set(['note', 'tip', 'info', 'warning', 'caution', 'danger', 'important']);
 // Build a dynamic regex group from canonical types so we don't miss any
 const admonitionTypesGroup = Array.from(canonicalAdmonitionTypes).join('|');
+const TRANSLATION_ROOT = 'i18n';
+
+function isTranslatedFile(filePath) {
+  const relative = path.relative(TRANSLATION_ROOT, filePath);
+  return relative && !relative.startsWith('..') && !path.isAbsolute(relative);
+}
 
 const admonitionSynonyms = new Map([
   ['nota', 'note'],
@@ -499,7 +505,6 @@ function formatCrowdinSpacing() {
   // Find all .mdx files
   const patterns = [
     'docs/**/*.{md,mdx}',
-    'i18n/*/docusaurus-plugin-content-docs/**/*.{md,mdx}',
   ];
 
   const fileSet = new Set();
@@ -515,8 +520,15 @@ function formatCrowdinSpacing() {
   const files = Array.from(fileSet);
   let totalFixed = 0;
   const fixedFiles = [];
+  const skippedTranslatedFiles = [];
 
   files.forEach(file => {
+    if (isTranslatedFile(file)) {
+      const relativePath = path.relative(process.cwd(), file);
+      skippedTranslatedFiles.push(relativePath);
+      return;
+    }
+
     const originalContent = fs.readFileSync(file, 'utf8');
     const formattedContent = processContent(originalContent, file);
 
@@ -537,6 +549,10 @@ function formatCrowdinSpacing() {
     console.log(`\n${colors.blue}Run ${colors.bright}npm run lint${colors.reset}${colors.blue} to verify all issues are resolved.${colors.reset}`);
   } else {
     console.log(`${colors.green}✅ All files already have proper spacing for Crowdin compatibility!${colors.reset}`);
+  }
+
+  if (skippedTranslatedFiles.length > 0) {
+    console.log(`\n${colors.blue}Skipped formatting for ${skippedTranslatedFiles.length} translated file${skippedTranslatedFiles.length === 1 ? '' : 's'} to preserve localized content.${colors.reset}`);
   }
 
   return totalFixed;
