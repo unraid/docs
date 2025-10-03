@@ -1,6 +1,6 @@
 ---
 sidebar_position: 1
-sidebar_label: Overview & system prep
+sidebar_label: 概述和系统准备
 ---
 
 import Tabs from '@theme/Tabs';
@@ -10,18 +10,18 @@ import IommuSupport from './partials/iommu-support.mdx';
 import GpuNvidia from './partials/gpu-nvidia.mdx';
 import GpuAmd from './partials/gpu-amd.mdx';
 
-# Overview & system prep
+# 概述和系统准备
 
-Virtual machines (VMs) allow you to run full operating systems, such as Windows, macOS, or Linux, on your Unraid server, side-by-side with Docker containers.
+虚拟机 (VM) 允许您在 Unraid 服务器上运行完整的操作系统，例如 Windows、macOS 或 Linux，并与 Docker 容器并排运行。
 
-%%VMs|vm%% are ideal for:
+%%VM 是理想的：
 
-- Running applications that require a full OS or are unavailable as containers.
-- Assigning dedicated hardware to guest systems, such as GPUs or USB devices.
-- Testing, development, gaming, or running legacy software.
-- Hosting multiple isolated environments for different workloads.
+- 运行需要完整操作系统或无法作为容器使用的应用程序。
+- 将专用硬件分配给来宾系统，例如 GPUs 或 USB 设备。
+- 测试、开发、游戏或运行旧版软件。
+- 托管多个用于不同工作负载的隔离环境。
 
-For a list of operating systems tested with Unraid, see the [%%VM|vm%% Setup](./vm-setup.mdx) page.
+有关已在 Unraid 上测试的操作系统列表，请参阅 [%%VM 设置](./vm-setup.mdx) 页面。
 
 <details>
   <summary>**幕后的故事：** 展开以了解更多 Unraid 虚拟化的技术堆栈</summary>
@@ -30,67 +30,67 @@ For a list of operating systems tested with Unraid, see the [%%VM|vm%% Setup](./
 
   <h4>核心技术</h4>
 
-  | 技术                                | 功能                                                                                        | 重要性                                                                                                       |
-  | --------------------------------- | ----------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
-  | %%KVM\|kvm%%                      | 充当嵌入在Linux内核中的%%hypervisor\|hypervisor%%。                                                 | 允许 Unraid 流畅运行虚拟机，具备硬件加速功能且开销最小。                                                                          |
-  | %%QEMU\|qemu%%                    | Emulates the essential hardware (like motherboard, CPU, and controllers) for %%VMs\|vm%%. | 与%%KVM\|kvm%%协作，为客户操作系统创建完整的虚拟环境。                                                                         |
-  | %%Libvirt\|libvirt%%              | 管理%%虚拟机\|vm%%定义，以及存储和网络接口。                                                                | 将%%虚拟机\|vm%%配置存储在`libvirt.img`中，并提供一致的管理API。                                                              |
-  | %%VNC\|vnc-session%%              | 提供对%%虚拟机\|vm%%的远程图形访问。                                                                    | 允许使用浏览器或%%VNC\|vnc-session%%客户端从任何设备与%%虚拟机\|vm%%交互。                                                       |
-  | %%VirtIO\|virtio%%                | 为网络和磁盘设备提供高性能的半虚拟化驱动程序。                                                                   | Enhances %%VM\|vm%% speed and efficiency, requiring %%VirtIO\|virtio%% drivers installed in the guest OS. |
-  | %%VirtFS\|virtfs%% (`9p`)         | 在主机和基于 Linux 的来宾之间促进文件系统共享。                                                               | 适用于开发和高级文件共享需求。                                                                                           |
-  | %%HVM\|hvm%%                      | Supports hardware-assisted virtualization (%%Intel VT-x\|intel-vt-x%%, %%AMD-V\|amd-v%%). | 运行%%虚拟机\|vm%%以实现完全硬件加速的必要条件。                                                                              |
-  | %%VFIO\|vfio%% & %%IOMMU\|iommu%% | 允许直接向%%虚拟机\|vm%%传递PCI设备（如GPU和USB设备）。                                                      | 对于实现接近原生性能和维护安全隔离至关重要。                                                                                    |
+  | 技术                                | 功能                                                      | 重要性                                                     |
+  | --------------------------------- | ------------------------------------------------------- | ------------------------------------------------------- |
+  | %%KVM\|kvm%%                      | 充当嵌入在Linux内核中的%%hypervisor\|hypervisor%%。               | 允许 Unraid 流畅运行虚拟机，具备硬件加速功能且开销最小。                        |
+  | %%QEMU\|qemu%%                    | 为%%虚拟机\|vm%%模拟必要的硬件（如主板、CPU和控制器）。                       | 与%%KVM\|kvm%%协作，为客户操作系统创建完整的虚拟环境。                       |
+  | %%Libvirt\|libvirt%%              | 管理%%虚拟机\|vm%%定义，以及存储和网络接口。                              | 将%%虚拟机\|vm%%配置存储在`libvirt.img`中，并提供一致的管理API。            |
+  | %%VNC\|vnc-session%%              | 提供对%%虚拟机\|vm%%的远程图形访问。                                  | 允许使用浏览器或%%VNC\|vnc-session%%客户端从任何设备与%%虚拟机\|vm%%交互。     |
+  | %%VirtIO\|virtio%%                | 为网络和磁盘设备提供高性能的半虚拟化驱动程序。                                 | 通过在客户操作系统中安装%%VirtIO\|virtio%%驱动程序，提高%%虚拟机\|vm%%的速度和效率。 |
+  | %%VirtFS\|virtfs%% (`9p`)         | 在主机和基于 Linux 的来宾之间促进文件系统共享。                             | 适用于开发和高级文件共享需求。                                         |
+  | %%HVM\|hvm%%                      | 支持硬件辅助虚拟化（%%Intel VT-x\|intel-vt-x%%，%%AMD-V\|amd-v%%）。 | 运行%%虚拟机\|vm%%以实现完全硬件加速的必要条件。                            |
+  | %%VFIO\|vfio%% & %%IOMMU\|iommu%% | 允许直接向%%虚拟机\|vm%%传递PCI设备（如GPU和USB设备）。                    | 对于实现接近原生性能和维护安全隔离至关重要。                                  |
 
   <h4>Unraid 如何实现 %%VM|vm%% 支持</h4>
 
-  - %%KVM|kvm%%/%%QEMU|qemu%%: Unraid’s virtualization is fundamentally based on %%KVM|kvm%% and %%QEMU|qemu%%, providing robust %%VM|vm%% hosting capabilities.
-  - %%Libvirt|libvirt%%: %%VM|vm%% definitions are stored as XML files in `libvirt.img` (typically found in the `system` share).
-  - **Default shares**:
-    - `domains`: Holds %%VM|vm%% %%virtual disk images|virtual-disk-images%%.
-    - `isos`: Contains installation ISOs and driver images.
-    - `system`: Stores `libvirt.img` and other critical system files.
-    - All default to **Use %%Cache|cache%%: Prefer** for optimal performance.
-  - %%VNC|vnc-session%%: Unraid features a built-in NoVNC client for easy browser-based access to %%VMs|vm%%, with the option to use external %%VNC clients|vnc-session%% as needed.
+  - %%KVM|kvm%%/%%QEMU|qemu%%：Unraid 的虚拟化功能主要基于 %%KVM|kvm%% 和 %%QEMU|qemu%%，提供强大的 %%VM|vm%% 托管能力。
+  - %%Libvirt|libvirt%%：%%VM|vm%% 定义作为 XML 文件存储在 `libvirt.img` 中（通常在 `system` 共享中找到）。
+  - **默认共享：**
+    - `domains`：保存 %%虚拟机%% 虚拟磁盘镜像。
+    - `isos`：包含安装 ISOs 和驱动程序映像。
+    - `system`：存储 `libvirt.img` 和其他关键系统文件。
+    - 默认设置为**使用 %%Cache|cache%%: 首选**以获得最佳性能。
+  - %%VNC|vnc-session%%：Unraid 提供内置的 NoVNC 客户端，方便通过浏览器访问 %%VMs|vm%%，也可以根据需要使用外部 %%VNC 客户端|vnc-session%%。
 
   :::tip
   大多数用户不需要直接与这些技术交互，但了解 "引擎盖下" 的运作对高级故障排除和自定义设置非常有用。有关更多详细信息，请查看 [KVM](https://www.linux-kvm.org/page/Main_Page)、[QEMU](https://www.qemu.org/)、[Libvirt](https://libvirt.org/)、[VirtIO](https://www.linux-kvm.org/page/Virtio) 的官方文件。
   :::
 </details>
 
-## Requirements
+## 要求
 
-To run %%VMs|vm%% on Unraid, your system must meet the following requirements:
+要在 Unraid 上运行 %%虚拟机%%，您的系统必须满足以下要求：
 
-| 组件             | 最低要求                                                          | 推荐用于%%虚拟机\|vm%% & %%GPU直通\|gpu-passthrough%%                                   |
-| -------------- | ------------------------------------------------------------- | ------------------------------------------------------------------------------ |
-| CPU            | 64 位，4 核，2.4 GHz+（Intel/AMD）                                  | 8 个以上内核，3.0 GHz+（Intel Core i7/i9，AMD Ryzen 7/9 或更新版本）                         |
-| 虚拟化            | %%HVM\|hvm%% (%%Intel VT-x\|intel-vt-x%% or %%AMD-V\|amd-v%%) | %%HVM\|hvm%% + %%IOMMU\|iommu%% (Intel VT-d or AMD-Vi)                         |
-| RAM            | 8 GB                                                          | 16 GB 或更多（每个活动虚拟机增加 RAM）                                                       |
-| Storage        | 用于%%虚拟机\|vm%%磁盘的SSD/NVMe                                      | 高端 NVMe 以获得最佳性能                                                                |
-| 网络             | 千兆以太网（建议使用 PCIe）                                              | 2.5 G/10 G 以太网用于高需求工作负载                                                        |
-| GPU (optional) | 现代 NVIDIA RTX（推荐）或 AMD Radeon RX                              | RTX 3000/4000 series (NVIDIA recommended for better passthrough compatibility) |
+| 组件       | 最低要求                                                         | 推荐用于%%虚拟机\|vm%% & %%GPU直通\|gpu-passthrough%%           |
+| -------- | ------------------------------------------------------------ | ------------------------------------------------------ |
+| CPU      | 64 位，4 核，2.4 GHz+（Intel/AMD）                                 | 8 个以上内核，3.0 GHz+（Intel Core i7/i9，AMD Ryzen 7/9 或更新版本） |
+| 虚拟化      | %%HVM\|hvm%% （%%Intel VT-x\|intel-vt-x%% 或 %%AMD-V\|amd-v%%） | %%HVM\|hvm%% + %%IOMMU\|iommu%% (Intel VT-d or AMD-Vi) |
+| RAM      | 8 GB                                                         | 16 GB 或更多（每个活动虚拟机增加 RAM）                               |
+| 存储       | 用于%%虚拟机\|vm%%磁盘的SSD/NVMe                                     | 高端 NVMe 以获得最佳性能                                        |
+| 网络       | 千兆以太网（建议使用 PCIe）                                             | 2.5 G/10 G 以太网用于高需求工作负载                                |
+| GPU （可选） | 现代 NVIDIA RTX（推荐）或 AMD Radeon RX                             | RTX 3000/4000 系列（推荐使用 NVIDIA 以获得更好的直通兼容性）              |
 
-:::tip[GPU passthrough compatibility]
-NVIDIA GPUs are **generally recommended** for %%VM|vm%% passthrough due to better compatibility and reliability. AMD GPUs can be more challenging to pass through, and some newer models (including RX 7000/9000 series) may not work reliably or at all with %%VMs|vm%%. If you're planning to use %%GPU passthrough|gpu-passthrough%%, consider NVIDIA options for the best experience.
+:::tip[GPU 传递兼容性]
+由于更好的兼容性和可靠性，**建议使用NVIDIA GPU** 进行%%VM|vm%%直通。AMD GPU的直通可能更具挑战性，一些较新的型号（包括RX 7000/9000系列）在%%VMs|vm%%中可能不能可靠工作或根本无法工作。如果你计划使用%%GPU直通|gpu-passthrough%%，请考虑NVIDIA选项以获得最好体验。
 :::
 
 :::note
-Your motherboard BIOS must enable Hardware-assisted virtualization and %%IOMMU|iommu%% support. Look for settings labeled “%%Intel VT-x|intel-vt-x%%,” “Intel VT-d,” “%%AMD-V|amd-v%%,” or “AMD-Vi.”
+您的主板BIOS必须启用硬件辅助虚拟化和%%IOMMU|iommu%%支持。寻找标有“%%Intel VT-x|intel-vt-x%%”、“Intel VT-d”、“%%AMD-V|amd-v%%”或“AMD-Vi”的设置。
 :::
 
-### VM resources
+### 虚拟机资源
 
-| %%虚拟机\|vm%%类型            | RAM per %%VM\|vm%% | vCPUs per %%VM\|vm%% | 使用例子                                             |
-| ------------------------ | ------------------ | -------------------- | ------------------------------------------------ |
-| 虚拟服务器                    | 1-2 GB             | 1-2                  | 轻量级Linux，实用工具%%虚拟机\|vm%%                         |
-| 虚拟桌面                     | 4–8 GB             | 2–4                  | Windows 11，Ubuntu 桌面，RDP                         |
-| Hybrid/gaming %%VM\|vm%% | 8–16 GB+           | 4–8+                 | %%GPU passthrough\|gpu-passthrough%%, gaming, ML |
+| %%虚拟机\|vm%%类型    | 每个%%VM\|vm%%的RAM | 每个%%虚拟机\|vm%%的vCPUs | 使用例子                             |
+| ---------------- | ---------------- | ------------------- | -------------------------------- |
+| 虚拟服务器            | 1-2 GB           | 1-2                 | 轻量级Linux，实用工具%%虚拟机\|vm%%         |
+| 虚拟桌面             | 4–8 GB           | 2–4                 | Windows 11，Ubuntu 桌面，RDP         |
+| 混合/游戏%%虚拟机\|vm%% | 8–16 GB+         | 4–8+                | %%GPU直通\|gpu-passthrough%%，游戏，ML |
 
-- Memory and CPU are only consumed while %%VMs|vm%% are running.
-- Plan for peak usage if running multiple %%VMs|vm%% simultaneously.
-- Always allocate resources based on guest OS and workload requirements.
+- 内存和 CPU 仅在 %%虚拟机%% 运行时消耗。
+- 计划在多个 %%虚拟机%% 同时运行时实现最大使用。
+- 始终根据来宾操作系统和工作负载要求分配资源。
 
-### HVM & IOMMU: What they enable
+### HVM 和 IOMMU：它们启用的功能
 
 <Tabs>
   <TabItem value="hvm" label="HVM 支持">
@@ -102,17 +102,17 @@ Your motherboard BIOS must enable Hardware-assisted virtualization and %%IOMMU|i
   </TabItem>
 </Tabs>
 
-:::important[How to check support]
+:::important[How 检查支持]
 
-- **HVM support:** Shows if hardware virtualization is present and enabled.
+- **HVM 支持：** 显示是否存在硬件虚拟化并已启用。
 - **IOMMU 支持：** 显示是否可以使用设备直通并已启用。
   :::
 
 ---
 
-### Graphics device passthrough
+### 图形设备直通
 
-Passing a GPU to a %%VM|vm%% allows for near-native graphics performance, making it ideal for gaming, creative work, or machine learning.
+将 GPU 传递给 %%虚拟机%% 允许实现接近原生的图形性能，非常适合游戏、创意工作或机器学习。
 
 <Tabs>
   <TabItem value="nvidia" label="NVIDIA">
@@ -124,89 +124,89 @@ Passing a GPU to a %%VM|vm%% allows for near-native graphics performance, making
   </TabItem>
 </Tabs>
 
-:::tip[General tips]
+:::tip[General 提示]
 
-- Use %%OVMF|ovmf%% (%%UEFI|uefi%%) for %%VMs|vm%% with modern GPUs.
-- Always use the latest Unraid version for improved hardware support.
+- 使用 %%OVMF（%%UEFI）%% 处理使用现代 GPU 的 %%虚拟机%%。
+- 始终使用最新版本的 Unraid 以增强硬件支持。
 - 像 NVIDIA Optimus 这样的技术可能允许笔记本电脑或高级设置的 %%GPU 直通%%，但结果各异。
   :::
 
-:::info[Always changing]
-Hardware and driver compatibility changes rapidly. Before purchasing a GPU for passthrough, check the [Unraid forums](https://forums.unraid.net/) and vendor documentation for up-to-date reports and user experiences.
+:::info[Always 更改]
+硬件和驱动程序的兼容性变化迅速。在购买用于直通的GPU之前，请访问 [Unraid论坛](https://forums.unraid.net/)和厂商文档以获取最新报告和用户体验。
 :::
 
 ---
 
-## System preparation
+## 系统准备
 
-Before you create virtual machines, complete these essential setup tasks to ensure your system is ready.
+在您创建虚拟机之前，完成这些基本设置任务以确保您的系统已就绪。
 
-### Adjust BIOS settings
+### 调整 BIOS 设置
 
-To fully utilize Unraid's virtualization capabilities, your BIOS must enable hardware-assisted virtualization and I/O memory management. Look for settings labeled **Virtualization**, %%Intel VT-x|intel-vt-x%%, **Intel VT-d**, %%AMD-V|amd-v%%, or **AMD-Vi** and set them to **Enabled**.
+要充分利用 Unraid 的虚拟化功能，您的 BIOS 必须启用硬件辅助虚拟化和 I/O 存储管理。查找标记为**Virtualization**、%%Intel VT-x|intel-vt-x%%、 **Intel VT-d**、%%AMD-V|amd-v%% 或 **AMD-Vi** 的设置，并将其设置为**启用**。
 
 :::note
-BIOS interfaces vary by manufacturer. Check your motherboard manual for the exact location of these settings.
+BIOS接口因制造商而异。请查看主板手册以获得这些设置的确切位置。
 :::
 
-### Configure a network bridge
+### 配置网络桥接
 
-%%Virtual machines|vm%% can connect to your network using one of two bridge types. Choose the one that best fits your needs:
+%%虚拟机|vm%% 可以使用两种桥接类型之一连接到网络。选择最适合您需求的类型：
 
-| 桥接类型                     | 描述                                                                                                                                                                                                           | Use case                                                                                                     |
-| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------ |
-| **Private NAT (virbr0)** | Managed by %%libvirt\|libvirt%%. This option provides an internal DHCP server and an isolated subnet. %%VMs\|vm%% can access the internet and host file shares, but are isolated from other network devices. | 适合需要互联网和主机访问但无需局域网可见的孤立%%虚拟机\|vm%%。                                                                          |
-| **公共桥接 (br0)**           | 由 Unraid 管理。此选项将虚拟机直接连接到您的 LAN，由路由器分配 IP 地址。MAC 地址保持不变以确保 IP 地址的一致性。                                                                                                                                         | Best for %%VMs\|vm%% that should function as regular devices on your network, accessible from other devices. |
+| 桥接类型                | 描述                                                                                  | 使用场景                                  |
+| ------------------- | ----------------------------------------------------------------------------------- | ------------------------------------- |
+| **私人 NAT (virbr0)** | 由%%libvirt\|libvirt%%管理。此选项提供内部DHCP服务器和隔离子网。 %%VMs\|vm%% 可以访问互联网和主机文件共享，但与其他网络设备隔离。 | 适合需要互联网和主机访问但无需局域网可见的孤立%%虚拟机\|vm%%。   |
+| **公共桥接 (br0)**      | 由 Unraid 管理。此选项将虚拟机直接连接到您的 LAN，由路由器分配 IP 地址。MAC 地址保持不变以确保 IP 地址的一致性。                | 适用于应作为网络上常规设备运行的%%虚拟机\|vm%%，可被其他设备访问。 |
 
 :::important
-If your Unraid server is connected to Wi-Fi, using the **Private NAT (virbr0)** network bridge for your %%virtual machines|vm%% is recommended. This is because Wi-Fi interfaces support only a single MAC address, which restricts the use of public bridges and custom network types. By utilizing the **virbr0** bridge, your %%VMs|vm%% will have complete network access through %%NAT|nat%%, although they will not be directly accessible from other devices on your local area network (LAN). However, you can still access the %%VMs|vm%% via %%VNC|vnc-session%% through the host.
+如果您的 Unraid 服务器通过 Wi-Fi 连接，建议为您的 %%virtual machines|vm%% 使用 **Private NAT (virbr0)** 网络桥，由于 Wi-Fi 接口仅支持单个 MAC 地址，这限制了公共桥和自定义网络类型的使用。通过使用 **virbr0** 桥，您的 %%VMs|vm%% 可以通过 %%NAT|nat%% 完成网络访问，尽管它们将无法从本地局域网上的其他设备直接访问。然而，通过主机，您仍然可以通过 %%VNC|vnc-session%% 访问 %%VMs|vm%%。
 :::
 
-- Enable the public bridge in ***Network settings → Enable bridging***.
-- Set your preferred bridge as the **Default network bridge** in %%VM|vm%% settings. You may need to enable advanced view to see this option.
+- 在 ***网络设置 → 启用桥接*** 中启用公共桥接。
+- 在%%VM|vm%%设置中将您首选的桥接设置为**默认网络桥接**。您可能需要启用高级视图以看到此选项。
 
 ---
 
-### User shares for virtualization
+### 虚拟化的用户共享
 
-Unraid creates two default %%user shares|user-share%% for %%virtualization|virt%%:
+Unraid 为 %%virtualization|virt%% 创建了两个默认的 %%user shares|user-share%%：
 
-- `isos`: This share stores installation media files for your %%VMs|vm%%.
-- `domains`: This share holds %%virtual machine|vm%% %%virtual disk images|virtual-disk-images%% and configuration files.
+- `isos`：此共享存储您的 %%VMs|vm%% 的安装介质文件。
+- `domains`：此共享保存 %%虚拟机|vm%% 的 %%虚拟磁盘映像|virtual-disk-images%% 和配置文件。
 
-Consider creating a separate share for %%VM|vm%% backups to protect your data.
+考虑为 %%VM|vm%% 备份创建一个单独的共享以保护您的数据。
 
-<h4>Share configuration recommendations</h4>
+<h4>共享配置建议</h4>
 
-- Store active %%VM|vm%% %%virtual disk images|virtual-disk-images%% on a %%cache|cache%%-only share for the best performance.
-- Using SSDs in your %%cache pool|cache-pool%% significantly improves %%VM|vm%% responsiveness.
-- %%Cache|cache%% usage for the `isos` share is optional.
+- 在%%cache|cache%%-only共享中存储活动的%%VM|vm%% %%virtual disk images|virtual-disk-images%%可获得最佳性能。
+- 在你的%%cache pool|cache-pool%%中使用SSD能显着提升%%VM|vm%%的响应速度。
+- `isos` 共享中的 %%Cache|cache%% 使用是可选的。
 
 :::important
-Do not store active %%virtual machines|vm%% on a share with **Use %%cache|cache%%** set to **Yes**. This can cause %%VMs|vm%% to be moved to the %%array|array%% during the %%Mover|mover%% process, leading to degraded performance.
+不要将活动的 %%virtual machines|vm%% 存储在**使用 %%cache|cache%% 设置为**是\*\*的共享上。这可能导致在 %%Mover|mover%% 过程中将 %%VMs|vm%% 移动到 %%array|array%% ，导致性能下降。
 :::
 
-## Set up virtualization preferences
+## 设置虚拟化偏好
 
-Before you begin, ensure your system is ready for virtualization (see [System preparation](#system-preparation)). Setting your %%virtualization|virt%% preferences in Unraid helps ensure your %%virtual machines (VMs)|vm%% are configured for optimal performance and compatibility.
+在开始之前，确保您的系统已准备好进行虚拟化（参见 [系统准备](#system-preparation)）。在 Unraid 中设置您的 %%virtualization|virt%% 首选项有助于确保您的 %%virtual machines (VMs)|vm%% 优化为最佳性能和兼容性。
 
-To set your virtualization preferences:
+要设置您的虚拟化偏好：
 
-1. In the %%WebGUI|web-gui%%, go to ***Settings → VM Manager***.
-2. **For Windows VMs:**
-   - Download the latest stable %%VirtIO|virtio%% Windows drivers ISO from the [official repository](https://github.com/virtio-win/virtio-win-pkg-scripts/blob/master/README.md).
-   - Copy the %%VirtIO|virtio%% ISO file to your **isos** share.
-   - In **VM Manager**, use the file picker for **VirtIO Windows Drivers ISO** to select the ISO you just copied.
-   - (Optional) Override the default driver ISO for individual %%VMs|vm%% in **Advanced View**.
-3. **Select a default network bridge:**
-   - Choose `virbr0` for a private network bridge, or select a public bridge (e.g., `br0`) created in **Network Settings**.
-   - (Optional) Override the default network bridge for each %%VM|vm%% in **Advanced View**.
-4. **PCIe ACS override (Advanced):**
-   - Toggle **PCIe ACS Override** to **On** if you need to assign multiple PCI devices (like %%GPUs|gpu-passthrough%% or USB controllers) to different %%VMs|vm%%.
-   - This option breaks apart %%IOMMU|iommu%% groups, allowing more flexible device passthrough.
+1. 在 %%WebGUI|web-gui%% 中，进入 ***设置 → VM 管理器***。
+2. **对于 Windows VM：**
+   - 从 [官方仓库](https://github.com/virtio-win/virtio-win-pkg-scripts/blob/master/README.md) 下载最新版稳定版 %%VirtIO|virtio%% Windows 驱动程序 ISO。
+   - 将 %%VirtIO|virtio%% ISO 文件复制到您的 **isos** 共享。
+   - 在 **VM 管理器** 中，使用文件选择器为 **VirtIO Windows 驱动程序 ISO** 选择您刚复制的 ISO。
+   - （可选）在 **高级视图** 中为各个 %%VMs|vm%% 覆盖默认驱动程序 ISO。
+3. **选择一个默认网络桥：**
+   - 选择 `virbr0` 作为私人网络桥，或选择在 **网络设置** 中创建的公共桥（例如，`br0`）。
+   - （可选）在 **高级视图** 中为每个 %%VM|vm%% 覆盖默认网络桥。
+4. **PCIe ACS 覆盖（高级）：**
+   - 若需要将多个 PCI 设备（如 %%GPUs|gpu-passthrough%% 或 USB 控制器）分配给不同的 %%VMs|vm%%，请切换 **PCIe ACS 覆盖** 至 **开启**。
+   - 此选项打破 %%IOMMU|iommu%% 组，允许更灵活的设备直通。
 
 :::warning
-This setting is experimental and may affect system stability. Use with caution.
+此设置是实验性的，可能会影响系统稳定性。请谨慎使用。
 :::
 
-5. Click **Apply** to save your settings.
+5. 点击 **应用** 以保存您的设置。
