@@ -1,6 +1,6 @@
 ---
 sidebar_position: 3
-sidebar_label: Windows on a VM
+sidebar_label: Windows in einer VM
 ---
 
 import Tabs from '@theme/Tabs';
@@ -10,33 +10,33 @@ import WindowsVirtioManual from './partials/windows-virtio-manual.mdx';
 import WindowsUpgradeInPlace from './partials/windows-upgrade-in-place.mdx';
 import WindowsUpgradeCleanInstall from './partials/windows-upgrade-clean-install.mdx';
 
-# Windows on a VM
+# Windows in einer VM
 
-Windows is one of the most popular guest operating systems for Unraid users, especially for gaming, productivity, and support for legacy applications. Here are essential considerations for running Windows %%VM|vm%%.
+Windows ist eines der beliebtesten Gastbetriebssysteme für Unraid-Benutzer, insbesondere für Gaming, Produktivität und Unterstützung älterer Anwendungen. Hier sind wesentliche Überlegungen zum Betrieb von Windows-VMs.
 
-:::caution[Before you begin]
+:::caution[Before Sie beginnen]
 
-- Microsoft ended support for Windows 7 in Jan. 2020, Windows 8.1 in January 2023, and Windows 10 in October 2025. Use Windows 11 (or later) or Server 2022 (or later) for ongoing security updates.
-- Always test %%VM|vm%% stability before activating your Windows license.
+- Microsoft beendete den Support für Windows 7 im Januar 2020, Windows 8.1 im Januar 2023 und Windows 10 im Oktober 2025. Verwenden Sie Windows 11 (oder später) oder Server 2022 (oder später) für laufende Sicherheitsupdates.
+- Testen Sie immer die Stabilität von %%VM|vm%%, bevor Sie Ihre Windows-Lizenz aktivieren.
 - Für %%GPU-Passthrough|gpu-passthrough%% verwenden Sie %%OVMF|ovmf%% (%%UEFI|uefi%%) BIOS mit Windows 11 oder neuer.
   :::
 
-### Supported configurations
+### Unterstützte Konfigurationen
 
-| Windows-Ausgabe     | Empfohlenes BIOS   | Maschinentyp                    | Notes                          |
-| ------------------- | ------------------ | ------------------------------- | ------------------------------ |
-| Windows 11          | %%OVMF\|ovmf%% TPM | %%Q35\|q35%%                    | Benötigt TPM 2.0 Emulation     |
-| Windows Server 2022 | %%OVMF\|ovmf%%     | %%Q35\|q35%%                    | Ideal for enterprise workloads |
-| Windows 10          | %%OVMF\|ovmf%%     | %%Q35\|q35%%                    | Veraltet (EOL Oktober 2025)    |
-| Windows Server 2019 | %%OVMF\|ovmf%%     | %%i440fx\|i440fx%%/%%Q35\|q35%% | Compatible but not recommended |
+| Windows-Ausgabe     | Empfohlenes BIOS   | Maschinentyp                    | Anmerkungen                      |
+| ------------------- | ------------------ | ------------------------------- | -------------------------------- |
+| Windows 11          | %%OVMF\|ovmf%% TPM | %%Q35\|q35%%                    | Benötigt TPM 2.0 Emulation       |
+| Windows Server 2022 | %%OVMF\|ovmf%%     | %%Q35\|q35%%                    | Ideal für Unternehmens-Workloads |
+| Windows 10          | %%OVMF\|ovmf%%     | %%Q35\|q35%%                    | Veraltet (EOL Oktober 2025)      |
+| Windows Server 2019 | %%OVMF\|ovmf%%     | %%i440fx\|i440fx%%/%%Q35\|q35%% | Kompatibel, aber nicht empfohlen |
 
 ---
 
-### VirtIO driver management
+### VirtIO-Treiberverwaltung
 
-Windows requires paravirtualized drivers for optimal performance with Unraid’s virtualization stack.
+Windows benötigt paravirtualisierte Treiber für eine optimale Leistung mit Unraid's Virtualisierungsstack.
 
-To install or update drivers:
+Um Treiber zu installieren oder zu aktualisieren:
 
 <Tabs>
   <TabItem value="Autostart" label="Automatische Installation">
@@ -49,126 +49,126 @@ To install or update drivers:
 </Tabs>
 
 :::tip
-Using Unraid 7 or later, you can automatically inject %%VirtIO|virtio%% drivers during the Windows installation. Enable this in ***VM Settings → Advanced Options***.
+Mit Unraid 7 oder später können Sie %%VirtIO|virtio%%-Treiber während der Windows-Installation automatisch einfügen. Aktivieren Sie dies in den ***VM-Einstellungen → Erweiterte Optionen***.
 :::
 
 ---
 
-### Setting up hibernation
+### Einrichten des Ruhemodus
 
-Hibernation lets you save your entire Windows %%VM|vm%% state - including open applications and documents - to disk. This allows you to power off the %%VM|vm%% without losing any work. When you resume, Windows restores everything exactly as you left it, skipping the normal boot process. This feature is handy when you need to reboot or power down your Unraid host or want to save energy while keeping your %%VM|vm%%'s state intact.
+Der Ruhezustand ermöglicht es Ihnen, den gesamten Zustand Ihrer Windows-VM - einschließlich geöffneter Anwendungen und Dokumente - auf die Festplatte zu speichern. Dadurch können Sie die VM ausschalten, ohne Arbeit zu verlieren. Wenn Sie fortfahren, stellt Windows alles genauso wieder her, wie Sie es verlassen haben, und überspringt den normalen Startprozess. Diese Funktion ist nützlich, wenn Sie Ihren Unraid-Host neu starten oder herunterfahren müssen oder Energie sparen möchten, während der Zustand der VM erhalten bleibt.
 
-:::note[Benefits of hibernation]
+:::note[Benefits aus dem Ruhezustand]
 
-- Save energy by powering down idle %%VM|vm%% without losing progress
-- Quickly resume work after host maintenance or updates
+- Energie sparen, indem inaktive %%VM|vm%% ausgeschaltet werden, ohne Fortschritte zu verlieren
+- Arbeit schnell nach Wartung oder Updates am Host wieder aufnehmen
 - Verringern Sie den Verschleiß von SSDs im Vergleich zu häufigen vollständigen Ausschaltungen und Neustarts
   :::
 
-To use hibernation reliably, you must install the %%QEMU|qemu%% %%Guest Agent|guest-agent%% in your Windows %%VM|vm%%. This agent allows Unraid to communicate with the %%VM|vm%% for advanced operations like hibernation, shutdown, and live statistics reporting.
+Um den Ruhezustand zuverlässig zu verwenden, müssen Sie den %%QEMU|qemu%% %%Guest Agent|guest-agent%% in Ihrer Windows-VM installieren. Dieser Agent ermöglicht es Unraid, mit der VM für erweiterte Vorgänge wie Ruhezustand, Herunterfahren und Echtzeitstatistiken zu kommunizieren.
 
 <details>
   <summary><strong>Wie installiert man den %%QEMU|qemu%% %%Guest Agent|guest-agent%%</strong> – Klicken Sie hier zum Ein-/Ausklappen</summary>
 
-  1. Start your Windows %%VM|vm%% with the %%VirtIO|virtio%% drivers ISO mounted.
-  2. Open **File Explorer** and navigate to the %%VirtIO|virtio%% drivers media.
-  3. Open the `guest-agent` folder.
-  4. Run `qemu-ga-x64.msi` to install the agent. (You may briefly see a command box; no confirmation dialog will appear.)
+  1. Starten Sie Ihre Windows-%%VM|vm%% mit der eingehängten %%VirtIO|virtio%%-Treiber-ISO.
+  2. Öffnen Sie den **Datei-Explorer** und navigieren Sie zu den %%VirtIO|virtio%%-Treibern.
+  3. Öffnen Sie den Ordner `guest-agent`.
+  4. Führen Sie `qemu-ga-x64.msi` aus, um den Agenten zu installieren. (Eventuell sehen Sie kurz ein Befehlsfeld; es wird kein Bestätigungsdialog angezeigt.)
 </details>
 
 <details>
   <summary><strong>Wie aktiviert man den Ruhemodus in Windows</strong> – Klicken Sie hier zum Ein-/Ausklappen</summary>
 
-  1. Open **Control Panel** and search for **Power Options**.
-  2. Click on **Choose what the power buttons do**.
-  3. Click **Change settings that are currently unavailable** to unlock shutdown settings.
-  4. Check the **Hibernate** option.
-  5. Click **Save changes**.
+  1. Öffnen Sie die **Systemsteuerung** und suchen Sie nach **Energieoptionen**.
+  2. Klicken Sie auf **Funktion des Ein-/Ausschalters festlegen**.
+  3. Klicken Sie auf **Einstellungen ändern, die momentan nicht verfügbar sind**, um Einstellungen zum Ausschalten freizuschalten.
+  4. Markieren Sie die Option **Ruhezustand**.
+  5. Klicken Sie auf **Änderungen speichern**.
 
   Die Option **Ruhezustand** wird jetzt im Windows-Energie-Menü angezeigt.
 </details>
 
-:::important[What if hibernation fails?]
-If your %%VM|vm%% fails to hibernate or resume properly, you may lose unsaved work or face a failed restore. Always save important data before hibernating. If issues persist, ensure the %%QEMU|qemu%% %%Guest Agent|guest-agent%% is installed and updated, and check the Windows event log for errors.
+:::important[What falls der Ruhezustand fehlschlägt?]
+Wenn Ihre VM nach dem Ruhezustand oder beim Fortsetzen nicht ordnungsgemäß funktioniert, können ungespeicherte Daten verloren gehen oder eine Wiederherstellung fehlschlagen. Speichern Sie vor dem Ruhezustand immer wichtige Daten. Wenn Probleme weiterhin bestehen, stellen Sie sicher, dass der %%QEMU|qemu%% %%Guest Agent|guest-agent%% installiert und aktualisiert ist, und überprüfen Sie das Windows-Ereignisprotokoll auf Fehler.
 :::
 
 ---
 
-### Performance tuning
+### Leistungsoptimierung
 
-Optimizing your Windows %%VM|vm%% can improve responsiveness, reduce disk usage, and avoid common issues with device passthrough or shutdown. These adjustments are optional and can be applied as needed.
+Die Optimierung Ihrer Windows-VM kann die Reaktionsfähigkeit verbessern, den Speicherplatz reduzieren und häufige Probleme mit Geräteübertragung oder Herunterfahren vermeiden. Diese Anpassungen sind optional und können bei Bedarf angewendet werden.
 
-#### Disable fast startup
+#### Schnellstart deaktivieren
 
-Disabling fast startup can help prevent issues with device passthrough. It ensures your %%VM|vm%% hardware initializes correctly every time it boots. While this setting is designed for physical PCs, in a virtual environment, it can often cause more problems than benefits.
+Das Deaktivieren des Schnellstarts kann helfen, Probleme mit der Geräteübertragung zu verhindern. Es stellt sicher, dass Ihre VM-Hardware bei jedem Start korrekt initialisiert wird. Während diese Einstellung für physische PCs ausgelegt ist, kann sie in einer virtuellen Umgebung oft mehr Probleme als Vorteile verursachen.
 
 <details>
   <summary><strong>Wie man den Schnellstart deaktiviert</strong> – Klicken Sie hier zum Ein-/Ausklappen</summary>
 
-  1. Open **Control Panel** and search for **Power**.
-  2. Click on **Choose what the power buttons do**.
-  3. Click **Change settings that are currently unavailable**.
-  4. Uncheck **Turn on fast startup** under **Shutdown settings**.
-  5. Click **Save changes**.
+  1. Öffnen Sie die **Systemsteuerung** und suchen Sie nach **Energie**.
+  2. Klicken Sie auf **Funktion des Ein-/Ausschalters festlegen**.
+  3. Klicken Sie auf **Einstellungen ändern, die momentan nicht verfügbar sind**.
+  4. Deaktivieren Sie unter **Ausschaltoptionen** die Option **Schnellstart aktivieren**.
+  5. Klicken Sie auf **Änderungen speichern**.
 </details>
 
-#### Disable hiberfil.sys
+#### hiberfil.sys deaktivieren
 
-Hibernation in Windows creates a large hidden file called `hiberfil.sys`. This file can consume significant disk space and increase disk activity in your %%VM|vm%%. If you don't rely on hibernation, disabling it will free up storage and reduce unnecessary I/O activity.
+Der Ruhezustand in Windows erstellt eine große versteckte Datei namens `hiberfil.sys`. Diese Datei kann erheblichen Speicherplatz beanspruchen und die Festplattenaktivität in Ihrer VM erhöhen. Wenn Sie sich nicht auf den Ruhezustand verlassen, wird durch das Deaktivieren Speicherplatz freigegeben und unnötige I/O-Aktivitäten reduziert.
 
 <details>
   <summary><strong>Wie man den Ruhezustand deaktiviert und hiberfil.sys entfernt</strong> – Klicken Sie hier zum Ein-/Ausklappen</summary>
 
-  1. Right-click the **Start** button and select **Windows Terminal (Admin)** or **Command Prompt (Admin)**.
-  2. Type: `powercfg /h off`
-  3. Press Enter and reboot your %%VM|vm%%. The `hiberfil.sys` file will be removed from your C:\ drive.
+  1. Klicken Sie mit der rechten Maustaste auf die **Start**-Taste und wählen Sie **Windows Terminal (Admin)** oder **Eingabeaufforderung (Admin)**.
+  2. Geben Sie ein: `powercfg /h off`
+  3. Drücken Sie Enter und starten Sie Ihre VM neu. Die Datei `hiberfil.sys` wird von Ihrem C:\ Laufwerk entfernt.
 </details>
 
-#### Disable Windows indexing
+#### Windows-Indizierung deaktivieren
 
 Windows Search indexing continuously scans your %%virtual machine|vm%%'s storage to catalog files for faster search results. However, on a %%virtual machine|vm%%, this can cause unnecessary disk I/O, slow down performance, and increase wear on your physical storage, especially SSDs in your [%%cache pool|cache-pool%%](../manage-storage/cache-pools.mdx).
 
 <details>
   <summary><strong>Wie man die Windows-Indizierung deaktiviert</strong> – Klicken zum Ein-/Ausklappen</summary>
 
-  1. Press **Windows + R** to open the Run dialog, type `services.msc`, and press Enter.
-  2. In the Services window, scroll down and right-click **Windows Search**, then select **Stop**.
-  3. Double-click **Windows Search**, change **Startup type** to **Disabled**, and click **OK**.
+  1. Drücken Sie **Windows + R**, um den Ausführen-Dialog zu öffnen, geben Sie `services.msc` ein und drücken Sie Enter.
+  2. Im Dienstefenster scrollen Sie nach unten und klicken mit der rechten Maustaste auf **Windows Search**, dann wählen Sie **Beenden**.
+  3. Doppelklicken Sie auf **Windows Search**, ändern Sie den **Starttyp** auf **Deaktiviert** und klicken Sie auf **OK**.
 </details>
 
-#### Disable automatic disk defragmenting
+#### Automatische Festplattendefragmentierung deaktivieren
 
-Windows is designed to defrag physical hard drives on a regular schedule automatically. On a %%VM|vm%% - especially when using SSD storage or thin-provisioned %%vDisks|vdisk%% - automatic defragmenting is unnecessary and can also reduce disk lifespan and degrade performance.
+Windows ist darauf ausgelegt, physische Festplatten regelmäßig automatisch zu defragmentieren. Auf einer VM - insbesondere bei der Verwendung von SSD-Speichern oder dünn bereitgestellten %%vDisks|vdisk%% - ist eine automatische Defragmentierung unnötig und kann auch die Lebensdauer der Festplatte verringern und die Leistung beeinträchtigen.
 
 <details>
   <summary><strong>Wie man die automatische Festplattendefragmentierung deaktiviert</strong> – Klicken zum Ein-/Ausklappen</summary>
 
-  1. Open **File Explorer**, right-click the C: drive, and select **Properties**.
-  2. Go to the **Tools** tab and click **Optimize**.
-  3. Click **Change settings**.
-  4. Uncheck **Run on a schedule** and click **OK**.
+  1. Öffnen Sie den **Datei-Explorer**, klicken Sie mit der rechten Maustaste auf das C:-Laufwerk und wählen Sie **Eigenschaften**.
+  2. Gehen Sie auf die Registerkarte **Tools** und klicken Sie auf **Optimieren**.
+  3. Klicken Sie auf **Einstellungen ändern**.
+  4. Deaktivieren Sie **Planmäßig ausführen** und klicken Sie auf **OK**.
 </details>
 
-#### Enable high-performance power mode
+#### Hochleistungsmodus aktivieren
 
-Power management features in Windows are designed for laptops and desktops to save energy. In a %%VM|vm%% environment, these features can unnecessarily throttle performance or suspend your %%VM|vm%%, making it less responsive and harder to manage.
+Energieverwaltungsfunktionen in Windows sind für Laptops und Desktops konzipiert, um Energie zu sparen. In einer VM-Umgebung können diese Funktionen die Leistung unnötig drosseln oder Ihre VM aussetzen, was sie weniger reaktionsfähig und schwieriger zu verwalten macht.
 
-Enabling **High Performance** mode ensures your %%VM|vm%% always runs at full speed and is less likely to pause or suspend unexpectedly.
+Die Aktivierung des Modus **Hochleistung** stellt sicher, dass Ihre %%VM|vm%% jederzeit mit voller Geschwindigkeit läuft und weniger wahrscheinlich Pausen oder unerwartete Aussetzungen auftreten.
 
 <details>
   <summary><strong>Wie man den Hochleistungsmodus aktiviert</strong> – Klicken zum Ein-/Ausklappen</summary>
 
-  1. Open **Control Panel** and search for "power."
-  2. Click **Choose a power plan**.
-  3. Select **High performance** under **Preferred plans**.
+  1. Öffnen Sie die **Systemsteuerung** und suchen Sie nach "Energie".
+  2. Klicken Sie auf **Energieplan auswählen**.
+  3. Wählen Sie **Hochleistung** unter **Bevorzugte Pläne** aus.
 </details>
 
-#### Enable remote desktop access
+#### Zugriff auf Remote-Desktop aktivieren
 
-Remote desktop protocol (RDP) allows you to access your Windows %%VM|vm%% from another device. It offers better performance and compatibility compared to %%VNC|vnc-session%%. Note that RDP is supported only on Windows Professional and Enterprise editions. Also, your Windows user account **must** have a password set.
+Das Remote Desktop Protocol (RDP) ermöglicht Ihnen den Zugriff auf Ihre Windows-VM von einem anderen Gerät aus. Es bietet bessere Leistung und Kompatibilität im Vergleich zu %%VNC|vnc-session%%. Beachten Sie, dass RDP nur auf Windows Professional und Enterprise Editionen unterstützt wird. Auch muss Ihr Windows-Benutzerkonto ein Passwort haben.
 
 :::caution
-RDP is not available on Windows Home editions. Always set a secure password for your Windows user account before enabling RDP.
+RDP ist auf Windows Home Editionen nicht verfügbar. Setzen Sie immer ein sicheres Passwort für Ihr Windows-Benutzerkonto, bevor Sie RDP aktivieren.
 :::
 
 <details>
@@ -176,19 +176,19 @@ RDP is not available on Windows Home editions. Always set a secure password for 
 
   Um RDP-Zugriff zu aktivieren, folgen Sie diesen Schritten:
 
-  1. Press **Windows + I** to open Settings, then navigate to ***System → About*** and click **Advanced system settings**.
-  2. In the System Properties window, click the **Remote** tab, then select **Enable Remote Desktop**.
-  3. Click **OK** to confirm the changes.
-  4. From your client device, use a Microsoft RDP client to connect to the **IP address of the %%VM|vm%%** (not the Unraid server).
+  1. Drücken Sie **Windows + I**, um die Einstellungen zu öffnen, navigieren Sie dann zu ***System → Info*** und klicken Sie auf **Erweiterte Systemeinstellungen**.
+  2. Im Fenster Systemeigenschaften klicken Sie auf die Registerkarte **Remote**, dann wählen Sie **Remote Desktop aktivieren**.
+  3. Klicken Sie auf **OK**, um die Änderungen zu bestätigen.
+  4. Von Ihrem Client-Gerät aus verwenden Sie einen Microsoft RDP-Client, um sich mit der **IP-Adresse der %%VM|vm%%** (nicht mit dem Unraid-Server) zu verbinden.
 
   :::tip
   Offizielle Microsoft RDP-Clients sind für Windows, Mac, Android und iOS verfügbar. Stellen Sie sicher, dass Ihr %%VM|vm%% in einem Netzwerkbridge ist, das LAN-Zugriff ermöglicht.
   :::
 </details>
 
-#### Fix HDMI audio with MSI interrupts
+#### HDMI-Audio mit MSI-Interrupts beheben
 
-If you're having trouble with HDMI audio in a Windows %%VM|vm%% that uses %%GPU passthrough|gpu-passthrough%% (which often occurs with NVIDIA graphics cards), enabling Message Signaled Interrupts (MSI) might help. MSI enhances the way interrupts are managed for passed-through devices.
+Wenn Sie Probleme mit HDMI-Audio in einer Windows-%%VM|vm%% haben, die %%GPU-Passthrough|gpu-passthrough%% verwendet (was oft bei NVIDIA-Grafikkarten vorkommt), kann das Aktivieren von Message Signaled Interrupts (MSI) helfen. MSI verbessert die Verwaltung von Interrupts für durchgeschleuste Geräte.
 
 <details>
   <summary><strong>Wie aktiviert man MSI-Interrupts</strong> – Klicken zum Ein-/Ausklappen</summary>
@@ -197,40 +197,40 @@ If you're having trouble with HDMI audio in a Windows %%VM|vm%% that uses %%GPU 
   Sichern Sie Ihre %%VM|vm%%, bevor Sie Änderungen an der Registrierung vornehmen. Falsche Modifikationen können Systeminstabilität verursachen.
   :::
 
-  1. **Verify MSI capability:**
-     - Start your %%VM|vm%% with %%GPU passthrough|gpu-passthrough%% enabled.
-     - Access Unraid via [WebTerminal or SSH](../../system-administration/advanced-tools/command-line-interface.mdx).
-     - Run the command `lspci -v -s 01:00.0` (replace `01:00.0` with your GPU's PCI address).
-     - Look for the line: `Capabilities: [68] MSI: Enable+ Count=1/1 Maskable- 64bit+`.
+  1. **MSI-Fähigkeit überprüfen:**
+     - Starten Sie Ihre %%VM|vm%% mit aktiviertem %%GPU-Passthrough|gpu-passthrough%%.
+     - Zugriff auf Unraid über [WebTerminal oder SSH](../../system-administration/advanced-tools/command-line-interface.mdx).
+     - Führen Sie den Befehl `lspci -v -s 01:00.0` aus (ersetzen Sie `01:00.0` durch die PCI-Adresse Ihrer GPU).
+     - Suchen Sie nach der Zeile: `Capabilities: [68] MSI: Enable+ Count=1/1 Maskable- 64bit+`.
 
-  2. **Enable MSI in Windows:**
-     - If MSI shows `Enable-`, follow [Microsoft's guide](https://learn.microsoft.com/en-us/windows-hardware/drivers/kernel/enabling-message-signaled-interrupts-in-the-registry) or use the [MSI Mode Utility](https://forums.guru3d.com/threads/windows-line-based-vs-message-signaled-based-interrupts-msi-tool.378044/) to modify your Windows registry settings.
-     - Reboot the %%VM|vm%% after making the changes.
+  2. **MSI in Windows einschalten:**
+     - Wenn bei MSI `Enable-` angezeigt wird, folgen Sie [Microsofts Anleitung](https://learn.microsoft.com/en-us/windows-hardware/drivers/kernel/enabling-message-signaled-interrupts-in-the-registry) oder verwenden Sie das [MSI Mode Utility](https://forums.guru3d.com/threads/windows-line-based-vs-message-signaled-based-interrupts-msi-tool.378044/), um Ihre Windows-Registry-Einstellungen zu ändern.
+     - Starten Sie die %%VM|vm%% nach den Änderungen neu.
 
   Für weitere technische Details siehe [VFIO-Interrupts erklärt](https://vfio.blogspot.com/2014/09/vfio-interrupts-and-how-to-coax-windows.html).
 </details>
 
 ---
 
-### Upgrading to Windows 11
+### Upgrade zu Windows 11
 
-Windows 11 requires TPM 2.0 and Secure Boot. Unraid's **OVMF-TPM** BIOS provides the virtual TPM support needed for these requirements.
+Windows 11 erfordert TPM 2.0 und Secure Boot. Das **OVMF-TPM**-BIOS von Unraid bietet die benötigte virtuelle TPM-Unterstützung für diese Anforderungen.
 
-:::important[Before upgrading]
+:::important[Before Upgrade]
 
-- Create a complete backup of your %%VM|vm%%.
-- Ensure that Unraid is running version 6.10 or later.
+- Erstellen Sie eine vollständige Sicherung Ihrer %%VM|vm%%.
+- Stellen Sie sicher, dass Unraid Version 6.10 oder später ausgeführt wird.
 - Überprüfen Sie, ob Ihre Windows 10 %%VM|vm%% die [Systemanforderungen von Windows 11](https://www.microsoft.com/en-us/windows/windows-11-specifications) erfüllt.
   :::
 
-To add TPM support:
+Um TPM-Unterstützung hinzuzufügen:
 
-1. Shut down your Windows 10 %%VM|vm%%.
-2. Edit the %%VM|vm%% settings.
-3. Change **BIOS** from *%%OVMF|ovmf%%* to *%%OVMF|ovmf%%-TPM*.
-4. Save the changes and start the %%VM|vm%%.
+1. Fahren Sie Ihren Windows 10 %%VM|vm%% herunter.
+2. Bearbeiten Sie die %%VM|vm%%-Einstellungen.
+3. Ändern Sie das **BIOS** von *%%OVMF|ovmf%%* zu *%%OVMF|ovmf%%-TPM*.
+4. Speichern Sie die Änderungen und starten Sie die %%VM|vm%%.
 
-#### Upgrade methods
+#### Upgrade-Methoden
 
 <Tabs>
   <TabItem value="In-place-Upgrade" label="In-place-Upgrade">
@@ -242,34 +242,34 @@ To add TPM support:
   </TabItem>
 </Tabs>
 
-## Expanding Windows VM vDisk partitions
+## Erweitern von Windows-VM-vDisk-Partitionen
 
-:::caution[Data loss risk]
-Expanding or modifying %%vDisk|vdisk%% and partition layouts can lead to irreversible data loss if not done carefully. Always create a full backup or snapshot of your %%VM|vm%% before proceeding.
+:::caution[Data Verlustrisiko]
+Das Erweitern oder Ändern von %%vDisk|vdisk%% und Partitionslayouts kann zu unwiderruflichem Datenverlust führen, wenn es nicht sorgfältig durchgeführt wird. Erstellen Sie immer ein vollständiges Backup oder Snapshot Ihrer VM, bevor Sie fortfahren.
 :::
 
-After you expand your %%vDisk|vdisk%% following the steps in [Expand a vDisk](../create-virtual-machines/vm-setup.mdx#expand-a-vdisk), you may encounter an issue where Windows’ default recovery partition blocks you from easily expanding your system (C:) partition to utilize the new space. To resolve this issue, you need to delete the recovery partition and then use Windows Disk Management to expand the partition.
+Nachdem Sie Ihren %%vDisk|vdisk%% gemäß den Schritten in [vDisk erweitern](../create-virtual-machines/vm-setup.mdx#expand-a-vdisk) erweitert haben, können Sie auf ein Problem stoßen, bei dem die standardmäßige Wiederherstellungspartition von Windows Sie daran hindert, Ihre Systempartition (C:) zu erweitern, um den neuen Speicherplatz zu nutzen. Um dieses Problem zu lösen, müssen Sie die Wiederherstellungspartition löschen und dann die Windows-Datenträgerverwaltung verwenden, um die Partition zu erweitern.
 
 <div style={{ margin: 'auto', maxWidth: '600px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
   ![Resize vDisk 2](/img/Resize_vdisk_2.png)
 </div>
 
-After you complete the initial %%vDisk|vdisk%% expansion:
+Nachdem Sie die anfängliche %%vDisk|vdisk%%-Erweiterung abgeschlossen haben:
 
-1. Start your Windows VM.
-2. **Open command prompt:** Press the Windows key, type `cmd`, and hit Enter.
-3. **Launch diskpart:** Type `diskpart` and press Enter.
-4. **List disks:** Type `list disk` and press Enter.
-5. **Select the expanded disk:** Type `select disk #`, replacing `#` with the correct disk number.
-6. **List partitions:** Type `list partition` and press Enter.
-7. **Identify the recovery partition:** Look for the recovery partition that comes after your primary partition.
-8. **Select and delete the recovery partition:**
-   - Type `select partition #`, replacing `#` with the number of the recovery partition.
-   - Type `delete partition override` and press Enter.
-9. **Expand the C: partition:**
-   - Right-click the Start menu and select **Disk Management**.
-   - Right-click the partition you want to extend (usually C:) and choose **Extend Volume...**.
-   - Follow the prompts to use the unallocated space.
+1. Starten Sie Ihre Windows-VM.
+2. **Öffnen Sie die Eingabeaufforderung:** Drücken Sie die Windows-Taste, tippen Sie `cmd` ein und drücken Sie Enter.
+3. **Starten Sie diskpart:** Geben Sie `diskpart` ein und drücken Sie Enter.
+4. **Listen Sie die Datenträger auf:** Geben Sie `list disk` ein und drücken Sie Enter.
+5. **Wählen Sie den erweiterten Datenträger aus:** Geben Sie `select disk #` ein und ersetzen Sie `#` durch die richtige Datenträgernummer.
+6. **Listen Sie die Partitionen auf:** Geben Sie `list partition` ein und drücken Sie Enter.
+7. **Identifizieren Sie die Wiederherstellungspartition:** Suchen Sie nach der Wiederherstellungspartition, die nach Ihrer primären Partition kommt.
+8. **Wählen und löschen Sie die Wiederherstellungspartition:**
+   - Geben Sie `select partition #` ein und ersetzen Sie `#` durch die Nummer der Wiederherstellungspartition.
+   - Geben Sie `delete partition override` ein und drücken Sie Enter.
+9. **Erweitern Sie die C:-Partition:**
+   - Klicken Sie mit der rechten Maustaste auf das Startmenü und wählen Sie **Datenträgerverwaltung**.
+   - Klicken Sie mit der rechten Maustaste auf die Partition, die Sie erweitern möchten (normalerweise C:), und wählen Sie **Volume erweitern...**.
+   - Folgen Sie den Aufforderungen, um den nicht zugewiesenen Speicherplatz zu nutzen.
 
 <div className="flex-container" style={{ margin: 'auto', maxWidth: '800px'}}>
   <figure className="flex-figure">
@@ -282,9 +282,9 @@ After you complete the initial %%vDisk|vdisk%% expansion:
 </div>
 
 :::tip
-You only need to remove the recovery partition if it blocks access to adjacent free space. If the unallocated space is already next to your C: partition, you can extend it without deleting anything.
+Sie müssen die Wiederherstellungspartition nur entfernen, wenn sie den Zugriff auf den angrenzenden freien Speicherplatz blockiert. Wenn der nicht zugewiesene Speicherplatz bereits neben Ihrer C: Partition liegt, können Sie sie erweitern, ohne etwas zu löschen.
 :::
 
 :::warning
-Changes made to disk partitions are permanent and cannot be undone. Ensure that your data is securely backed up before deleting any partitions.
+Änderungen an Festplattenpartitionen sind dauerhaft und können nicht rückgängig gemacht werden. Stellen Sie sicher, dass Ihre Daten gesichert sind, bevor Sie Partitionen löschen.
 :::
