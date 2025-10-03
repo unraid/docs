@@ -1,6 +1,6 @@
 ---
 sidebar_position: 1
-sidebar_label: Capture diagnostics and logs
+sidebar_label: 捕获诊断和日志
 ---
 
 import Tabs from '@theme/Tabs';
@@ -12,72 +12,72 @@ import DockerLogsViaWebGUI from './partials/docker-logs/via-webgui.mdx';
 import DockerLogsCommandLine from './partials/docker-logs/command-line.mdx';
 import DockerLogsPersistent from './partials/docker-logs/persistent.mdx';
 
-# Capturing diagnostic information
+# 捕获诊断信息
 
-When you have issues with your Unraid server, gathering detailed information is crucial for effective troubleshooting. This information helps others provide accurate and timely assistance, especially when you post in forums.
+当您的 Unraid 服务器出现问题时，收集详细信息至关重要，以便进行有效的故障排除。这些信息有助于其他人提供准确和及时的帮助，特别是在论坛上发帖时。
 
-:::info[Diagnostics include...]
+:::info[Diagnostics 包括...
 
-- **System configuration**: Information about your %%array|array%%, shares, network settings, and installed plugins.
-- **System logs**: Logs from the kernel, %%WebGUI|web-gui%%, and system services, documenting events that may have led to the issue.
-- **Hardware information**: Details about connected drives, controllers, and other hardware components.
+- **系统配置**：信息关于您的%%array|array%%、共享、网络设置和已安装的插件。
+- **系统日志**：来自内核、%%WebGUI|web-gui%% 和系统服务的日志，记录可能导致问题的事件。
+- **硬件信息**：有关连接驱动器、控制器和其他硬件组件的详细信息。
 - **Docker 和 %%VM|vm%% 信息**：Docker 和虚拟机的整体配置（不包括关于您个人容器或 %%VMs|vm%% 的信息）。
   :::
 
 ---
 
-## System diagnostics
+## 系统诊断
 
-Unraid provides a **Diagnostics** tool located under ***Tools → Diagnostics*** in the %%WebGUI|web-gui%% to capture comprehensive system information for troubleshooting. This tool will generate a zip file you can download and attach to forum posts for support. All diagnostics files are text-based, and users can review them to understand what information is included.
+Unraid 在 %%WebGUI|web-gui%% 的 ***Tools → Diagnostics*** 下提供了一个用于故障排除的 **Diagnostics** 工具。 该工具将生成一个 zip 文件，您可以下载并附加到论坛帖子以获取支持。所有诊断文件都是基于文本的，用户可以查看它们以了解所包含的信息。
 
-| 场景                                      | 如何捕获                                                                                                                                 | Notes                                                                                                                      |
-| --------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------- |
-| %%WebGUI\|web-gui%% 可用                  | 在 **%%WebGUI\|web-gui%%** 中使用 ***工具 → 诊断*** 来生成并下载诊断 zip 文件。                                                                         | 诊断默认是匿名的，以保护敏感数据。                                                                                                          |
-| %%WebGUI\|web-gui%% 不可用                 | 通过 **%%SSH\|ssh%%**、telnet 或直接控制台访问以运行 `diagnostics` 命令。zip 文件保存到 `/boot/logs`。                                                      | 重启前务必捕获诊断以保持日志完整。                                                                                                          |
-| %%Array\|array%% started in normal mode | This is the preferred method for capturing diagnostics, as it provides the most complete information, especially about drive status. | If this isn't possible, see the [Persistent logs section](#persistent-logs-syslog-server) for alternative capture methods. |
+| 场景                      | 如何捕获                                                                            | 笔记                                                                              |
+| ----------------------- | ------------------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| %%WebGUI\|web-gui%% 可用  | 在 **%%WebGUI\|web-gui%%** 中使用 ***工具 → 诊断*** 来生成并下载诊断 zip 文件。                    | 诊断默认是匿名的，以保护敏感数据。                                                               |
+| %%WebGUI\|web-gui%% 不可用 | 通过 **%%SSH\|ssh%%**、telnet 或直接控制台访问以运行 `diagnostics` 命令。zip 文件保存到 `/boot/logs`。 | 重启前务必捕获诊断以保持日志完整。                                                               |
+| %%阵列\|array%% 在正常模式下启动  | 这是捕获诊断的首选方法，因为它提供了最完整的信息，尤其是关于驱动器状态的信息。                                         | 如果这不可能，请参阅 [Persistent logs section](#persistent-logs-syslog-server) 以找到替代捕获方法。 |
 
 <div style={{ margin: 'auto', maxWidth: '600px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
   ![Disk selection logic](/img/Diagnostics.jpg)
 </div>
 
 :::important
-Attach the single diagnostics zip file when posting on forums - avoid uploading the extracted files individually.
+在论坛发帖时附加单个诊断zip文件-避免单独上传提取的文件。
 :::
 
-### Anonymization of diagnostic data
+### 诊断数据的匿名化
 
 By default, diagnostics are automatically anonymized. If you enable %%Mover|mover%% logging under ***Settings → Scheduler → Mover Settings***, the %%syslog|syslog%% will include details about files the %%Mover|mover%% processes. It's best to allow %%Mover|mover%% logging only when troubleshooting specific %%Mover|mover%%-related issues, as it may reveal file paths and names.
 
-When your system shuts down gracefully, the session log is saved automatically to the flash drive. You can access it after rebooting by going to ***Tools → Syslog → syslog-previous***. This log is also included in diagnostics on the next boot. However, if the system crashes, the system log will be lost. In these cases, enabling %%syslog|syslog%% mirroring to the flash or using a remote %%syslog server|syslog-server%% is recommended to preserve logs for troubleshooting.
+当您的系统正常关闭时，会话日志会自动保存到闪存驱动器中。重新启动后，您可以通过 ***Tools → Syslog → syslog-previous*** 访问它。这个日志也会在下次启动时包含在诊断中。然而，如果系统崩溃，系统日志将丢失。在这些情况下，建议启用 %%syslog|syslog%% 镜像到闪存或使用远程 %%syslog 服务器|syslog-server%% 来保留日志以进行故障排除。
 
 ---
 
-## Testing drive read performance
+## 测试驱动器读取性能
 
-You can use built-in Linux tools to evaluate the read performance of your hard drives. This is helpful when diagnosing slow %%parity|parity%% syncs, sluggish disk responses, or mismatched speeds among drives in an %%array|array%% or %%cache|cache%%.
+您可以使用内置的 Linux 工具来评估硬盘的读取性能。这在诊断缓慢的 %%parity|parity%% 同步、缓慢的磁盘响应或 %%array|array%% 或 %%cache|cache%% 中驱动器间不匹配的速度时非常有帮助。
 
-:::important[When and why to test drive speed]
+:::important[When 以及为什么要测试驾驶速度]
 
-- Extremely slow %%parity|parity%% builds or %%parity check|parity-check%%s
-- Suspiciously slow file transfers from a specific disk
-- Drive mismatches after adding or replacing disks, particularly when mixing SSDs and HDDs
-- Reallocated sectors or %%UDMA|udma%% %%CRC errors|crc-errors%%, which may indicate failing drives
+- 极其缓慢的 %%parity|parity%% 构建或 %%parity check|parity-check%%s
+- 来自特定磁盘的文件传输速度异常慢
+- 添加或更换磁盘后，尤其是在混合使用SSD和HDD时，驱动器不匹配
+- 重新分配的扇区或%%UMDA|udma%%CRC错误，可能表明驱动器故障
 
 虽然这些测试无法提供您在现实世界中的精确文件传输速度，但它们可以指出表现不佳的磁盘和任意控制器瓶颈。
 :::
 
-### Quick test (hdparm)
+### 快速测试 (hdparm)
 
-The `hdparm` tool measures both cached and buffered read speeds of a disk.
+`hdparm`工具测量磁盘的缓存和缓冲读取速度。
 
-To run the test, replace `X` with your disk device (like `sdb` or `sdg`) and enter the following command:
+要运行测试，请将`X`替换为您的磁盘设备（如`sdb`或`sdg`），然后输入以下命令：
 
 ```
 hdparm -tT /dev/sdX
 ```
 
-- The `-T` result shows the cache read speed.
-- The `-t` result shows the buffered (sequential) disk read performance.
+- `-T`结果显示缓存读取速度。
+- `-t`结果显示缓冲（顺序）磁盘读取性能。
 
 :::tip
 Run this test multiple times to get a more reliable benchmark. For example, you can use the following one-liner to run the test 12 times:
@@ -89,60 +89,60 @@ for ((i=0;i<12;i++)); do hdparm -tT /dev/sdX; done
 :::
 
 :::note
-Make sure to replace `/dev/sdX` with a valid physical device. Avoid logical Unraid devices, such as `/dev/md1`, which include %%parity|parity%% processes that may distort the raw performance readings.
+确保替换 `/dev/sdX` 为有效的物理设备。避免选择像 `/dev/md1` 这样的逻辑 Unraid 设备，因为这些设备包含可能会扭曲原始性能读数的 %%parity|parity%% 过程。
 :::
 
-### Comprehensive test (diskspeed.sh)
+### 全面测试(diskspeed.sh)
 
-For a more detailed assessment of all attached drives, including %%parity|parity%% and data drives, consider using the community script `diskspeed.sh`.
+要更详细地评估所有连接的驱动器，包括 %%parity|parity%% 和数据驱动器，考虑使用社区脚本 `diskspeed.sh`。
 
-This script:
+该脚本：
 
-- Tests read speeds at multiple linear offsets across the disk surface
-- Generates CSV data and performance heat maps (images)
-- Can identify zones of poor performance, which might be a sign of failing hardware or problematic SMR drives
+- 在磁盘表面多个线性偏移处测试读取速度
+- 生成CSV数据和性能热图（图像）
+- 可以识别出表现不佳的区域，这可能是硬件故障或问题SMR驱动器的征兆
 
-To get started with `diskspeed.sh`:
+要开始使用`diskspeed.sh`：
 
-1. Download the script from the [Unraid forums](https://forums.unraid.net/topic/31073-disk-speed-test-graphs-disk-bottlenecks-identified-see-how-fast-your-disks-can-really-go/).
-2. Place it in a persistent path like `/boot/scripts/`.
-3. Make it executable:
+1. 从[Unraid论坛](https://forums.unraid.net/topic/31073-disk-speed-test-graphs-disk-bottlenecks-identified-see-how-fast-your-disks-can-really-go/)下载脚本。
+2. 将它放在像`/boot/scripts/`这样持久的路径中。
+3. 使其可执行：
 
 ```
 chmod +x /boot/scripts/diskspeed.sh
 ```
 
-4. Run the script:
+4. 运行脚本：
 
 ```
 bash /boot/scripts/diskspeed.sh
 ```
 
 :::note
-This script only performs read-only operations and won't modify any data on your drives. However, it's best to schedule the test during idle periods, as it may affect disk I/O and interfere with %%array|array%% performance.
+此脚本仅执行只读操作，不会修改驱动器上的任何数据。然而，最好在空闲期间安排测试，因为它可能会影响磁盘 I/O 并干扰 %%array|array%% 性能。
 :::
 
 ---
 
-## Persistent logs (syslog server)
+## 持久日志（syslog server）
 
-Persistent logs are essential for keeping a record of system events between reboots. Unlike standard logs that reset when the system restarts, persistent logs use Unraid's built-in %%syslog server|syslog-server%% to ensure you can diagnose crashes or intermittent issues that arise over time.
+持久日志对于在重启之间保留系统事件记录至关重要。与系统重启时重置的标准日志不同，持久日志使用 Unraid 的内置 %%syslog 服务器|syslog-server%% 来保障您可以诊断随时间出现的崩溃或间歇性问题。
 
-### Choosing the right logging method
+### 选择正确的日志记录方法
 
-Go to ***Settings → Syslog Server*** to set up persistent logging. Each method has advantages and disadvantages:
+前往 ***Settings → Syslog Server*** 设置持久日志记录。每种方法都有优缺点：
 
-| 方法                            | 优点                                                                             | 缺点                                        | Best for                                    |
-| ----------------------------- | ------------------------------------------------------------------------------ | ----------------------------------------- | ------------------------------------------- |
-| **镜像到闪存**                     | 捕获启动过程事件                                                                       | 可能迅速磨损闪存驱动器                               | 短期诊断（几天）                                    |
-| **Remote %%syslog\|syslog%%** | 日志存储在另一台设备上                                                                    | 需要一个独立的常开服务器                              | 长期监控（几周到几个月）                                |
-| **本地 %%syslog\|syslog%%**     | Keeps logs on the %%array\|array%% or %%cache\|cache%%, reducing wear on flash | Less accessible if there's a system crash | Continuous logging without external devices |
+| 方法                        | 优点                                                  | 缺点           | 最佳用于             |
+| ------------------------- | --------------------------------------------------- | ------------ | ---------------- |
+| **镜像到闪存**                 | 捕获启动过程事件                                            | 可能迅速磨损闪存驱动器  | 短期诊断（几天）         |
+| **远程 %%syslog\|syslog%%** | 日志存储在另一台设备上                                         | 需要一个独立的常开服务器 | 长期监控（几周到几个月）     |
+| **本地 %%syslog\|syslog%%** | 在 %%array\|array%% 或 %%cache\|cache%% 上保持日志，减少闪存磨损。 | 如果系统崩溃，则较难访问 | 无需外部设备即可进行持续日志记录 |
 
 :::tip
-For detailed configuration help, check the **Help** icon in the WebGUI toolbar.
+有关详细的配置帮助，请查看 WebGUI 工具栏中的 **帮助** 图标。
 :::
 
-### Enabling the syslog server
+### 启用syslog服务器
 
 <Tabs>
   <TabItem value="镜像" label="镜像到闪存" default>
@@ -160,11 +160,11 @@ For detailed configuration help, check the **Help** icon in the WebGUI toolbar.
 
 ---
 
-## Accessing Docker container logs
+## 访问Docker容器日志
 
-While standard diagnostics only provide limited data for Docker and %%VM|vm%%, you can access container logs directly for more detailed troubleshooting.
+虽然标准诊断仅提供有限的Docker和%%VM|vm%%数据，但您可以直接访问容器日志以获得更详细的故障排除信息。
 
-To retrieve Docker logs:
+检索Docker日志：
 
 <Tabs>
   <TabItem value="via-webgui" label="通过 WebGUI" default>
@@ -180,10 +180,10 @@ To retrieve Docker logs:
   </TabItem>
 </Tabs>
 
-### Virtual machine logs
+### 虚拟机日志
 
-%%VM|vm%% logs can be accessed through their respective hypervisors (for example, %%QEMU|qemu%% logs are located in `/var/log/libvirt/`). Check your %%VM|vm%% platform's documentation for more details.
+%%VM|vm%% 日志可以通过各自的 hypervisor 访问（例如，%%QEMU|qemu%% 日志位于 `/var/log/libvirt/` ）。查看 %%VM|vm%% 平台的文档以获取更多详细信息。
 
 :::important
-Remember to attach the relevant container or %%VM|vm%% logs separately when seeking support for application-specific issues.
+当您需要针对应用程序特定问题寻求支持时，请记住单独附上相关的容器或%%VM|vm%%日志。
 :::
