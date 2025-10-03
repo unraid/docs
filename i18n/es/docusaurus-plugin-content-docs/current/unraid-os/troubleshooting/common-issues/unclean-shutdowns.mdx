@@ -1,6 +1,6 @@
 ---
 sidebar_position: 2
-sidebar_label: Apagados no limpios
+sidebar_label: Unclean shutdowns
 ---
 
 import Tabs from '@theme/Tabs';
@@ -9,31 +9,31 @@ import UncleanShutdownsPower from './partials/unclean-shutdowns/unexpected-power
 import UncleanShutdownsFlash from './partials/unclean-shutdowns/flash-drive-failure.mdx';
 import UncleanShutdownsTerminal from './partials/unclean-shutdowns/open-terminal-sessions.mdx';
 
-# Apagados no limpios
+# Unclean shutdowns
 
 An unclean shutdown happens when Unraid detects that the %%array|array%% was not properly stopped before the system powered off. This situation can trigger an automatic %%parity check|parity-check%% during the next boot to ensure data integrity.
 
-:::important[Recommendations para prevenir apagados no limpios]
+:::important[Recommendations to prevent unclean shutdowns]
 
-- **Usa un SAI:** Mantén tu servidor conectado a un Sistema de Alimentación Ininterrumpida (SAI) y configúralo para iniciar un apagado controlado cuando la energía de la batería sea baja.
-- **Intentar un apagado ordenado:** Si su servidor no responde, presione brevemente el botón de encendido para activar un apagado seguro. No mantenga el botón presionado, ya que esto forzará un apagado duro y provocará un apagado no limpio.
-- **Habilitar registro persistente:** Vaya a ***Ajustes → Servidor de Syslog*** para activar el registro que persiste después de un reinicio. Consulte [Registros persistentes (servidor Syslog)](../diagnostics/capture-diagnostics-and-logs.mdx#persistent-logs-syslog-server) para más detalles.
+- **Use a UPS:** Keep your server connected to an Uninterruptible Power Supply (UPS) and set it up to initiate a controlled shutdown when battery power runs low.
+- **Attempt a graceful shutdown:** If your server is unresponsive, briefly press the power button to trigger a safe shutdown. Do not hold the button down, as this will force a hard power off and lead to an unclean shutdown.
+- **Enable persistent logging:** Go to ***Settings → Syslog Server*** to activate logging that persists after a reboot. See [Persistent logs (Syslog server)](../diagnostics/capture-diagnostics-and-logs.mdx#persistent-logs-syslog-server) for more details.
 - **Adjuntar diagnósticos para obtener soporte:** Si ocurre un apagado no limpio, Unraid intentará guardar diagnósticos en `/log/diagnostics.zip` en su dispositivo flash. Adjunte este archivo a las publicaciones del foro cuando busque ayuda.
   :::
 
-:::tip[UPS mejores prácticas de configuración]
+:::tip[UPS configuration best practices]
 
-- **Conecta el SAI vía USB** a tu servidor Unraid.
-- **Habilitar el soporte de SAI** en ***Configuración → Configuración de SAI***.
-- **Configurar tiempos de espera de apagado:** Configure el SAI para que desencadene un apagado controlado antes de que la batería se agote. Ajuste los umbrales de "Tiempo restante de la batería" o "Nivel de carga de la batería" para proporcionar tiempo suficiente para que Unraid [detenga el %%array|array%%](../../using-unraid-to/manage-storage/array-configuration.mdx#startstop-the-array) y se apague de forma segura.
-- **Prueba tu configuración:** Simula una pérdida de energía para asegurarte de que el SAI y Unraid respondan correctamente.
+- **Connect the UPS via USB** to your Unraid server.
+- **Enable UPS support** in ***Settings → UPS Settings***.
+- **Configure shutdown timeouts:** Set the UPS to trigger a controlled shutdown before the battery runs low. Adjust the "Battery runtime left" or "Battery charge level" thresholds to provide enough time for Unraid to [stop the %%array|array%%](../../using-unraid-to/manage-storage/array-configuration.mdx#startstop-the-array) and power down safely.
+- **Test your configuration:** Simulate a power loss to ensure the UPS and Unraid respond correctly.
 
 Examina el [plugin NUT](https://unraid.net/community/apps/c/plugins/p4?srsltid=AfmBOop675PrJQW4iqb4JBN3GyPpwDDiSmnZReq78t27XyxkFdMX8inO#:~:text=NUT%20%2D%20Network%20UPS%20Tools) para una mayor compatibilidad con modelos más avanzados de SAI o hardware no compatible.
 :::
 
-## Eventos que causan apagados no limpios
+## Events That Cause Unclean Shutdowns
 
-Comprender los principales desencadenantes de apagados no limpios le ayuda a prevenirlos. Explore las pestañas a continuación para obtener detalles sobre cada escenario.
+Understanding the main triggers for unclean shutdowns helps you prevent them. Explore the tabs below for details on each scenario.
 
 <Tabs>
   <TabItem value="energía" label="Pérdida de energía inesperada" default>
@@ -51,19 +51,19 @@ Comprender los principales desencadenantes de apagados no limpios le ayuda a pre
 
 ---
 
-## Configuración de tiempos de apagado
+## Configuring shutdown timeouts
 
-Configurar correctamente los tiempos de espera de apagado es esencial para asegurar que su servidor Unraid pueda detener efectivamente todos los servicios, previniendo apagados no limpios, especialmente durante pérdidas de energía o mantenimiento. Cada componente de su sistema - %%VM|vm%%s, contenedores de Docker, y el %%array|array%% general - tiene su propia configuración de tiempo de espera que puede ajustarse.
+Properly configuring shutdown timeouts is essential to ensure your Unraid server can stop all services effectively, preventing unclean shutdowns, particularly during power loss or maintenance. Each component of your system - %%VM|vm%%s, Docker containers, and the overall %%array|array%% - has its own timeout setting that can be adjusted.
 
-### Configuraciones recomendadas de tiempo de espera
+### Recommended timeout settings
 
-| Configuración                                   | Defecto | Recomendación mínima                                                     | Dónde configurar                                                             |
-| ----------------------------------------------- | ------- | ------------------------------------------------------------------------ | ---------------------------------------------------------------------------- |
-| Tiempo de espera para apagado de %%VM\|vm%%     | 60s     | 300s (5 min)                                                             | ***Configuración → Gestor de VM → Apagado de VM (Avanzado)***                |
-| Tiempo de espera para detener contenedor Docker | 10s     | 30–60s                                                                   | ***Configuración → Docker (Avanzado)***                                      |
-| Tiempo de espera general de apagado             | 90s     | 3 × tiempo de espera de %%VM\|vm%% + tiempo de espera de Docker + 15–30s | ***Configuración → Configuración de Disco → Tiempo de espera para apagado*** |
+| Configuración                               | Default | Recomendación mínima                             | Dónde configurar                                     |
+| ------------------------------------------- | ------- | ------------------------------------------------ | ---------------------------------------------------- |
+| Tiempo de espera para apagado de %%VM\|vm%% | 60s     | 300s (5 min)                                     | ***Settings → VM Manager → VM Shutdown (Advanced)*** |
+| Docker container stop timeout               | 10s     | 30–60s                                           | ***Configuración → Docker (Avanzado)***              |
+| Tiempo de espera general de apagado         | 90s     | 3 × %%VM\|vm%% timeout + Docker timeout + 15–30s | ***Settings → Disk Settings → Shutdown time-out***   |
 
-### Tiempo de espera para máquinas virtuales
+### Virtual machines timeout
 
 <details>
   <summary><strong>Haga clic para expandir/contraer</strong></summary>
@@ -72,19 +72,19 @@ Configurar correctamente los tiempos de espera de apagado es esencial para asegu
 
   <h4>Dónde configurarlo</h4>
 
-  - ***Configuración → Gestor de VM → Apagado de VM*** (activar vista Avanzada)
+  - ***Settings → VM Manager → VM Shutdown*** (enable Advanced view)
 
   <h4>Considerar</h4>
 
-  - Las %%VMs|vm%% de Windows pueden tardar más en apagarse, especialmente si hay actualizaciones pendientes o la %%VM|vm%% está en modo de suspensión/hibernación.
-  - Si el tiempo de espera es muy corto, las %%VMs|vm%% se detendrán a la fuerza, arriesgando pérdida o corrupción de datos.
+  - Windows %%VMs|vm%% may take longer to shut down, especially if updates are pending or the %%VM|vm%% is in sleep/hibernation.
+  - If the timeout is too short, %%VMs|vm%% will be force-stopped, risking data loss or corruption.
 
   <h4>Mejores prácticas</h4>
 
   Establezca el tiempo de espera en al menos 300 segundos (5 minutos) para las %%VMs|vm%% de Windows. Programe las actualizaciones para ejecutarse al inicio, no al apagarse, para evitar retrasos.
 </details>
 
-### Tiempo de espera para contenedores Docker
+### Docker containers timeout
 
 <details>
   <summary><strong>Haga clic para expandir/contraer</strong></summary>
@@ -93,19 +93,19 @@ Configurar correctamente los tiempos de espera de apagado es esencial para asegu
 
   <h4>Dónde configurarlo</h4>
 
-  - ***Configuración → Docker*** (activar vista Avanzada)
+  - ***Settings → Docker*** (enable Advanced view)
 
   <h4>Considerar</h4>
 
-  - Los contenedores se detienen en paralelo.
-  - Los contenedores complejos, o aquellos con grandes bases de datos, pueden necesitar más de los 10 segundos predeterminados para apagarse con seguridad.
-  - Si el temporizador expira, los contenedores se detienen forzosamente.
+  - Containers are stopped in parallel.
+  - Complex containers, or those with large databases, may need more than the default 10 seconds to shut down safely.
+  - If the timer expires, containers are force-stopped.
 
   <h4>Mejores prácticas</h4>
   Aumenta el tiempo de espera a 30–60 segundos si ejecutas contenedores Docker que requieren más tiempo de apagado.
 </details>
 
-### Temporizador general de apagado
+### General shutdown timer
 
 <details>
   <summary><strong>Haga clic para expandir/contraer</strong></summary>
@@ -114,19 +114,19 @@ Configurar correctamente los tiempos de espera de apagado es esencial para asegu
 
   <h4>Dónde configurarlo</h4>
 
-  - ***Configuración → Configuración de Disco → Tiempo de espera para apagado***
+  - ***Settings → Disk Settings → Shutdown time-out***
 
   <h4>Cómo calcular</h4>
 
   Suma tus tiempos de espera para %%VM|vm%% y Docker, luego añade 15–30 segundos para el desmontaje de disco y otros procesos.
 
-  - Ejemplo: `3 × ***Tiempo de espera para Apagado de VM*** + ***Tiempo de espera para detener Docker*** + 15–30 segundos`
+  - Example: `3 × ***VM Shutdown timeout*** + ***Docker stop timeout*** + 15–30 seconds`
 
   <h4>Mejores prácticas</h4>
   Establece este temporizador lo suficientemente alto para cubrir tu escenario de apagado más lento, especialmente si tienes muchas unidades o un gran %%array|array%%.
 </details>
 
-### Vida útil de la batería del SAI
+### UPS battery life
 
 <details>
   <summary><strong>Haga clic para expandir/contraer</strong></summary>
@@ -135,12 +135,12 @@ Configurar correctamente los tiempos de espera de apagado es esencial para asegu
 
   <h4>Dónde configurarlo</h4>
 
-  - ***Configuración → Configuración de SAI*** (ver **Tiempo de ejecución restante** con todos los discos activados)
+  - ***Settings → UPS Settings*** (see **Runtime left** with all disks spun up)
 
   <h4>Considerar</h4>
 
-  - El SAI debería activar un apagado lo suficientemente temprano para permitir que toda la secuencia de apagado se complete.
-  - Si la batería se agota antes de que el apagado se complete, existe el riesgo de un apagado no limpio y posible pérdida de datos.
+  - The UPS should trigger a shutdown early enough to allow the full shutdown sequence to complete.
+  - If the battery runs out before shutdown completes, you risk an unclean shutdown and possible data loss.
 
   <h4>Mejores prácticas</h4>
 
