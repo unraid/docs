@@ -12,7 +12,7 @@ import TabItem from '@theme/TabItem';
 我们要感谢Ed Rawlings ([Spaceinvader One](https://www.youtube.com/c/SpaceinvaderOne)) 的专业技术和指导，本%%ZFS|zfs%%存储文档是从他的教程和见解改编而成的。他的教程帮助了无数的Unraid用户掌握了高级存储技术。我们感谢他对 Unraid 社区的持续贡献。
 :::
 
-%%ZFS|zfs%% brings advanced data integrity, flexible storage configurations, and high performance to your Unraid system. This guide explains %%ZFS|zfs%% core concepts and walks you through managing %%ZFS|zfs%% pools directly from the Unraid %%WebGUI|web-gui%%. Whether you're setting up new %%ZFS|zfs%% storage or integrating an existing pool, you’ll find the steps and context you need to get started confidently.
+%%ZFS|zfs%% 为您的 Unraid 系统提供了高级数据完整性、灵活的存储配置和高性能。本指南解释了 %%ZFS|zfs%% 的核心概念，并指导您直接从 Unraid %%WebGUI|web-gui%% 管理 %%ZFS|zfs%% 存储池。无论是设置新的 %%ZFS|zfs%% 存储还是集成现有存储池，您都能找到所需的步骤和背景信息，以自信地开始。
 
 ---
 
@@ -30,10 +30,8 @@ import TabItem from '@theme/TabItem';
 
 Unraid supports %%ZFS|zfs%% for any storage pool. You can create a new %%ZFS|zfs%% pool, import one from another system, or use Unraid’s unique hybrid %%ZFS|zfs%% setup: add a %%ZFS|zfs%%-formatted disk directly to the Unraid %%array|array%% (not a pool) and combine %%ZFS|zfs%% features with Unraid’s %%parity|parity%% protection.
 
-:::info\[Example]
-
+:::info[Example]
 您可以在单个磁盘上使用 %%ZFS|zfs%% %%snapshots|snapshot%% 和复制作为备份目标，或将快速 SSD %%ZFS|zfs%% 池复制到由 Unraid %%parity|parity%% 保护的 %%ZFS|zfs%% 磁盘中的 %%array|array%%，以获得双重优势。
-
 :::
 
 <div style={{ margin: 'auto', maxWidth: '600px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
@@ -46,10 +44,10 @@ Unraid supports %%ZFS|zfs%% for any storage pool. You can create a new %%ZFS|zfs
 
 ### 池、vdevs 和冗余
 
-A %%ZFS|zfs%% pool (called a "zpool") is made up of one or more vdevs (virtual devices). Each vdev is a group of physical disks with its own redundancy level. %%ZFS|zfs%% writes data across vdevs, but each vdev is responsible for its fault tolerance.
+一个 %%ZFS|zfs%% 池（称为 "zpool"）由一个或多个 vdev（虚拟设备）组成。每个 vdev 是具有其自身冗余级别的物理磁盘组。%%ZFS|zfs%% 在 vdev 之间写入数据，但每个 vdev 负责其故障容忍。
 
 :::caution
-Redundancy is always per vdev. If any vdev fails, the entire pool fails, even if other vdevs are healthy. Plan your vdevs with care!
+冗余总是以 vdev 为单位的。如果任何 vdev 失败，整个池都会失败，即使其他 vdev 健康。谨慎规划您的 vdev！
 :::
 
 <div style={{ margin: 'auto', maxWidth: '600px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
@@ -117,12 +115,13 @@ Redundancy is always per vdev. If any vdev fails, the entire pool fails, even if
 您可以将独立的 %%ZFS|zfs%% 磁盘添加到您的 Unraid %%array|array%%（而不是 %%ZFS|zfs%% 池）中，以结合 %%ZFS|zfs%% 功能和 Unraid 的 %%parity|parity%% 保护。
 
 :::info[What 这使得]
+
 - **%%Parity Protection%%:** ZFS 磁盘由 Unraid 的 %%array|array%% %%parity|parity%% 保护，确保您的数据免受单个（或多个，取决于您的 %%parity drives|parity-drives%%）磁盘故障的影响。
 
 - **数据完整性：**%%ZFS|zfs%%提供块级别的完整性检查（校验和）。虽然单个磁盘不能自行修复位腐败，但%%ZFS|zfs%%将检测腐败并提醒你，使你能够在静默数据丢失之前从备份中恢复。
 
-- **%%ZFS|zfs%% 特性:** 您可以在此磁盘上使用 %%ZFS|zfs%% %%snapshots|snapshot%% 和复制，使其成为备份目标、特定数据集或需要将 %%ZFS|zfs%% 特性与传统 Unraid 存储结合的场景的理想选择。
-:::
+- **%%ZFS|zfs%% features:** You can utilize %%ZFS|zfs%% %%snapshots|snapshot%% and replication on this disk, making it ideal for backup targets, specific datasets, or scenarios where you want %%ZFS|zfs%% features alongside traditional Unraid storage.
+  :::
 
 将 %%ZFS|zfs%% 磁盘添加到 %%array|array%%:
 
@@ -138,7 +137,7 @@ Redundancy is always per vdev. If any vdev fails, the entire pool fails, even if
 5. 在 **文件系统** 下，选择 `zfs` 或 `zfs-encrypted`。
 
 <div style={{ margin: 'auto', maxWidth: '600px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-  ![](/img/zfs10.png)
+  ![](/img/zfs9.png)
 </div>
 
 6. 点击 **应用**。
@@ -163,10 +162,11 @@ Redundancy is always per vdev. If any vdev fails, the entire pool fails, even if
 | RAIDZ3 | 每个 vdev 3 个盘              | 与 Z2 类似，写入更多负担（最大安全性）  | 增加新的 vdev | 低    | 任务关键型，3 盘容错 |
 
 :::important[How 选择]
+
 - 选择 **镜像** 如果您想要最佳性能和易于、灵活的扩展，并且愿意使用更多磁盘空间来确保冗余。
 - 选择 **RAIDZ1/2/3** 如果您想最大化可用空间并存储大文件，但要记住扩展的灵活性较低，随机写性能较差。
-- **条带** 只适用于非关键性、临时数据 - 如果任何磁盘故障，您将失去所有数据。
-:::
+- **条纹** 仅适用于非关键的临时数据 - 如果有任意磁盘出现故障，您将失去所有数据。
+  :::
 
 ---
 
@@ -178,13 +178,13 @@ Redundancy is always per vdev. If any vdev fails, the entire pool fails, even if
   ![](/img/zfs12.png)
 </div>
 
-- If you put all your disks into a large RAIDZ2 vdev, you can lose any two disks without losing data. However, expansion means adding another full vdev.
-- You'll gain better parallel performance if you split disks into multiple smaller RAIDZ1 vdevs. Be cautious; if two disks fail in the same vdev, you will lose the whole pool.
+- 如果将所有硬盘放入大型的 RAIDZ2 vdev 中，您可以在不丢失数据的情况下失去两个硬盘。然而，扩展意味着添加另一个完整的 vdev。
+- 如果将磁盘分成多个较小的 RAIDZ1 vdev，您将获得更好的并行性能。请谨慎；如果同一个 vdev 中的两个磁盘失败，您将失去整个池。
 - %%ZFS|zfs%% 将数据跨 vdev 条带化，而不是单个磁盘，因此更多的 vdev 能够提升处理很多小文件或随机 I/O 的工作负载性能。
 - 扩展一个 %%ZFS|zfs%% 容量池通常意味着添加一个新的相同布局的 vdev，而不仅仅是单个磁盘。
 
 :::tip
-Plan your pool’s layout to fit your needs and future growth. Unlike the Unraid %%array|array%%, you can’t add a single disk to an existing vdev using the %%WebGUI|web-gui%%.
+规划您的池布局以适应您的需求和未来增长。与 Unraid %%array|array%% 不同，您无法通过 %%WebGUI|web-gui%% 将单个磁盘添加到现有的 vdev。
 :::
 
 ---
@@ -211,9 +211,9 @@ Plan your pool’s layout to fit your needs and future growth. Unlike the Unraid
 <details>
   <summary><strong>ZFS RAM 神话</strong> - 点击展开/折叠</summary>
 
-  您可能听过过时的建议：“%%ZFS|zfs%% 需要每1TB存储配备1GB内存。”这对大多数用户不再适用。%%ZFS|zfs%% 利用内存进行自适应替换缓存（ARC），从而加快频繁读取操作。
+  您可能听说过过时的建议："ZFS 需要每 TB 存储 1 GB 的 RAM。" 这对于大多数用户来说已不再适用。ZFS 利用 RAM 作为自适应替换缓存 (ARC) 以加速频繁访问的读取。
 
-  Unraid 自动限制 %%ZFS|zfs%% 使用合理部分的系统内存（通常为总内存的1/8）。这使 %%ZFS|zfs%% 的性能表现良好，而不影响 Docker 容器、%%VMs|vm%% 或 Unraid OS。
+  Unraid 自动限制 ZFS 使用系统 RAM 的合理部分（通常为总 RAM 的 1/8）。这使 ZFS 能够在不影响 Docker 容器、VM 或 Unraid OS 的情况下良好运行。
 
   <div style={{ margin: 'auto', maxWidth: '600px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
     ![](/img/zfs14.png)
@@ -242,8 +242,8 @@ Unraid 可以轻松导入其他平台上创建的 %%ZFS|zfs%% 池。
   4. **设置文件系统为 "Auto"：** 点击池名称（例如，`raptor`）并将 **文件系统** 设置为 **Auto**。
   5. **完成并启动阵列:** 点击 **完成**，然后启动 %%array|array%%。
 
-  :::info[自动检测]
-  Unraid 会自动检测和导入 %%ZFS|zfs%% 池。支持vdevs（如日志、缓存/L2ARC、特殊/去重）列在 **Subpools** 中的 %%WebGUI|web-gui%% 下。导入时无需单独添加子池。Unraid 会在所有必要的驱动器分配后自动将它们与主数据磁盘一起导入。
+  :::info[Automatic detection]
+  Unraid will automatically detect and import the %%ZFS|zfs%% pool. Support vdevs (like log, cache/L2ARC, special/dedup) are listed under **Subpools** in the %%WebGUI|web-gui%%. There is no need to add subpools separately after initiating the import. Unraid will automatically import them alongside the main data disks when all required drives are assigned.
   :::
 
   导入后，强烈建议运行 %%scrub|scrub%% 以验证数据完整性。
@@ -270,8 +270,8 @@ Unraid 将 %%ZFS|zfs%% 支持vdevs称为子池。大多数用户**不**需要这
 | -------------- | --------------------- | ----------------------------------- |
 | 特殊 vdev        | 存储元数据和小文件             | 如果丢失，池将无法读取。                        |
 | 去重 vdev        | 启用去重功能                | 需要大量RAM；大多数用户来说风险大。除非有专门需要，否则请避免使用。 |
-| 日志 vdev（SLOG）  | 提高同步写入性能              | 可选。仅对某些工作负载有益。                      |
-| 缓存 vdev（L2ARC） | 提供基于 SSD 的读取缓存        | 可选。可以提高大型工作集的读取速度。                  |
+| 日志 vdev（SLOG）  | 提高同步写入性能              | 可选。仅对某些负载有益。                        |
+| 缓存 vdev（L2ARC） | 提供基于 SSD 的读取缓存        | 可选。可提高大型工作集的读取速度。                   |
 | 备用 vdev        | Unraid（截至 7.1.2 版）不支持 |                                     |
 
 :::caution
@@ -290,7 +290,7 @@ Unraid 将 %%ZFS|zfs%% 支持vdevs称为子池。大多数用户**不**需要这
 | ---------------- | -------------- | ---------------------------------------------- |
 | 特殊 vdev 或去重 vdev | 池将无法导入或无法使用    | 这些 vdev 存储关键元数据或去重表。没有它们，%%ZFS\|zfs%% 无法安全挂载池。 |
 | 日志（SLOG）vdev     | 池导入，但同步写入性能下降。 | 池仍然可访问，但你可能会注意到依赖同步写入的工作负载的性能变慢。               |
-| 缓存（L2ARC）vdev    | 池导入，但读取缓存丢失    | 池正常工作，但失去了 L2ARC 缓存带来的性能提升。数据无丢失。              |
+| 缓存（L2ARC）vdev    | 池导入，但读取缓存丢失    | 池正常工作，但您会失去来自 L2ARC 缓存的性能提升。没有数据丢失。            |
 
 :::tip
 导入到 Unraid 时，始终分配原始 %%ZFS|zfs%% 池的每个物理驱动器，包括所有支持 vdev。这保证了顺畅的检测和集成。对于在 Unraid 中创建的新池，支持 vdevs 是可选的且通常对于大多数用户不需要。
@@ -307,7 +307,7 @@ Unraid 将 %%ZFS|zfs%% 支持vdevs称为子池。大多数用户**不**需要这
 扩展池的方法包括：
 
 - \*\*添加新 vdev：\*\*通过添加另一个 vdev（如新镜像或 RAIDZ 组）来扩展你的池。这增加了容量，但你必须以与 vdev 配置相匹配的集合添加磁盘。
-- **Replacing drives with larger ones:** Swap each drive in a vdev, one at a time, for a larger disk. See [drive replacement](../../using-unraid-to/manage-storage/array-configuration.mdx#replacing-faileddisabled-disks) for detailed procedures. After all drives are replaced and the pool resolves, the vdev’s capacity increases.
+- **用更大的硬盘替换驱动器：** 在 vdev 中一次交换一个驱动器，以换取更大的磁盘。详细步骤请参见[驱动器更换](../../using-unraid-to/manage-storage/array-configuration.mdx#replacing-faileddisabled-disks)。在所有驱动器被替换且池解析之后，vdev 的容量将增加。
 - **创建新池：** 启动一个新的 %%ZFS|zfs%% 池可将不同的数据类型或工作负载组织并独立管理。
 
 :::tip[Planning 前进]
@@ -324,14 +324,14 @@ Unraid 将 %%ZFS|zfs%% 支持vdevs称为子池。大多数用户**不**需要这
 | ------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------ |
 | 用于 appdata 和 Docker 的快速 SSD/NVMe 池         | Store the appdata share for fast, responsive containers and databases. This supports %%snapshot\|snapshot%%s for easy rollbacks and can also host %%VM\|vm%%s for high I/O. | 许多用户为此选择 2 驱动器 %%ZFS\|zfs%% 镜像。它易于扩展并提供强大的性能。          |
 | 用于重要数据的%%ZFS\|zfs%%池                       | 为不可替代的文件（如照片、税务记录和 %%user share\|user-share%% 数据）使用 %%ZFS\|zfs%% 镜像或 RAIDZ2 池。%%ZFS\|zfs%% 检查腐败并通过冗余自我修复。                                                                   | 这种设置通过自动的完整性检查和自我修复功能保护关键数据。                           |
-| 每日备份或复制目标                                  | 使用 %%ZFS\|zfs%% 磁盘（即使在 Unraid %%array\|array%% 中）作为复制目标。您可以在本地或从另一台 Unraid 服务器复制其他池。                                                                                        | 利用 `zfs send/receive` 或诸如 Syncoid 之类的工具，以实现快速可靠的备份和还原。 |
+| 每日备份或复制目标                                  | Use a %%ZFS\|zfs%% disk (even within the Unraid %%array\|array%%) as a replication target. You can replicate other pools locally or from another Unraid server.             | 利用 `zfs send/receive` 或诸如 Syncoid 之类的工具，以实现快速可靠的备份和还原。 |
 | %%Snapshot\|snapshot%%-based recovery pool | Keep point-in-time %%snapshot\|snapshot%%s of critical data or containers. %%snapshot\|snapshot%%s can be auto-scheduled and are space-efficient.                           | 此功能可以从意外删除或配置错误中快速恢复。                                  |
 
 ## 避免常见的 ZFS 错误
 
 %%ZFS|zfs%% 是一个强大的文件系统，但有几个常见的陷阱可能会阻碍其带来的好处。在配置池之前，务必记住下面几点，以便获得更顺畅的体验：
 
-- **Drive size mismatch in RAIDZ:** %%ZFS|zfs%% treats all disks in a RAIDZ vdev as the size of the smallest one. To ensure the best efficiency, always use identically sized drives within each vdev.
+- **RAIDZ 中的驱动器尺寸不匹配：** %%ZFS|zfs%% 将 RAIDZ vdev 中的所有磁盘视为最小的一个的尺寸。为了确保最佳效率，请始终在每个 vdev 中使用尺寸相同的驱动器。
 
 - \*\*通过 %%WebGUI|web-gui%% 扩展 RAIDZ vdevs：\*\*尽管 Unraid 7.1.x 及更高版本支持通过命令行扩展 RAIDZ， 但这一功能在 %%WebGUI|web-gui%% 中尚未可用。目前，请通过 CLI 扩展或通过 GUI 添加新的 vdevs。
 

@@ -14,9 +14,7 @@ import CliStorageInfo from './partials/command-line-interface/storage-info.mdx';
 Aunque la mayoría de las tareas en Unraid se pueden realizar a través del %%WebGUI|web-gui%%, ciertas operaciones, especialmente aquellas relacionadas con diagnósticos, administración de discos o creación de scripts, requieren el uso de la consola del sistema o el terminal %%SSH|ssh%%. Esta página ofrece herramientas de línea de comandos específicas de Unraid y ejemplos que se pueden usar sin necesidad de un conocimiento extenso de Linux.
 
 :::tip[Device rutas]
-
 Muchas operaciones a nivel de disco en Unraid dependen de los nombres de dispositivos de Linux, como `/dev/sdX`. Puede encontrar el identificador del dispositivo para cualquier unidad en la pestaña **Main** del %%WebGUI|web-gui%%. Busque la etiqueta de tres letras `sdX` o `nvmeX` junto a cada disco. Use el identificador apropiado en todos los comandos, reemplazando `sdX` con su disco específico.
-
 :::
 
 ## Acceder al terminal
@@ -27,13 +25,10 @@ También puede conectar su servidor Unraid externamente utilizando %%SSH|ssh%% (
 
 :::tip[When ¿debería usar el terminal?]
 
-El acceso al terminal es útil para:
-
 - Ejecutar diagnósticos y herramientas de línea de comando como `smartctl`, `xfs_repair`, `tail` o `top`
 - Ejecutar scripts de complementos o herramientas que no requieren interfaz de usuario
-- Solucionando problemas relacionados con la conectividad, servicios del sistema, o %%user shares|comparticiones de usuario%%
-
-:::
+- Solución de problemas relacionados con la conectividad, servicios del sistema o %%user shares|user-share%%
+  :::
 
 ### Usando PuTTY (solo para Windows)
 
@@ -54,9 +49,7 @@ Si está utilizando Windows, puede preferir %%PuTTY|putty%% para el acceso %%SSH
 </details>
 
 :::note
-
 Unraid configura automáticamente el servidor SSH en el primer arranque. Asegúrese de que su red funcione correctamente y que su contraseña de root esté establecida antes de intentar una conexión remota.
-
 :::
 
 ## Pruebas de discos y monitoreo
@@ -136,7 +129,7 @@ Este comando ejecuta diagnósticos %%SMART|smart%% y monitoriza la salud del dis
 Este script permite pruebas de rendimiento a nivel superficial, completas con informes visuales.
 
 <details>
-  <summary><strong>Ver uso de diskspeed.sh</strong> - Haga clic para expandir/colapsar</summary>
+  <summary><strong>Ver opciones de hdparm</strong> - Haga clic para expandir/colapsar</summary>
 
   Esto solía ser un script que descargarías desde los foros de Unraid. DiskSpeed ahora está disponible en un paquete más refinado:
 
@@ -154,7 +147,7 @@ Utilice estos comandos para vigilar la memoria, procesos y rendimiento del siste
 Este comando proporciona un monitor en tiempo real de procesos y recursos.
 
 <details>
-  <summary><strong>Ver uso de top</strong> - Haga clic para expandir/colapsar</summary>
+  <summary><strong>Ver uso de diskspeed.sh</strong> - Haga clic para expandir/colapsar</summary>
 
   ```bash
   top
@@ -192,7 +185,7 @@ Este comando muestra estadísticas de uso de memoria.
 Utilice este comando para mostrar procesos en ejecución con información detallada.
 
 <details>
-  <summary><strong>Ver opciones de ps</strong> - Haga clic para expandir/colapsar</summary>
+  <summary><strong>Ver uso de top</strong> - Haga clic para expandir/colapsar</summary>
 
   **Listar todos los procesos con detalles completos:**
 
@@ -200,7 +193,9 @@ Utilice este comando para mostrar procesos en ejecución con información detall
   ps aux
   ```
 
-  **Ordenar por uso de memoria:**
+  :::tip
+  Considera usar `htop` para una interfaz más amigable al usuario con controles mejorados.
+  :::
 
   ```bash
   ps aux --sort=-%mem | head -20
@@ -224,7 +219,7 @@ Estos comandos ayudan a verificar uso de disco, información de partición e ide
 Este comando muestra el uso de espacio en el disco del sistema de archivos.
 
 <details>
-  <summary><strong>Ver uso de df</strong> - Haga clic para expandir/colapsar</summary>
+  <summary><strong>Ver opciones de ps</strong> - Haga clic para expandir/colapsar</summary>
 
   ```bash
   df -h
@@ -252,13 +247,13 @@ Ver tablas y geometría de partición de discos.
 Lista todos los dispositivos de bloque en formato de árbol.
 
 <details>
-  <summary><strong>Ver uso de lsblk</strong> - Haga clic para expandir/colapsar</summary>
+  <summary><strong>Ver uso de df</strong> - Haga clic para expandir/colapsar</summary>
 
   ```bash
   lsblk
   ```
 
-  Este comando muestra todos los dispositivos de almacenamiento junto con sus puntos de montaje en una estructura de árbol sencilla. Es excelente para obtener una visión general de la disposición de su almacenamiento.
+  Este comando muestra el espacio usado y disponible en todos los sistemas de archivos montados. Es conveniente para verificar `/var/log` (que utiliza un registro basado en RAM) en Unraid. Para más información sobre [registro del sistema](../../troubleshooting/diagnostics/capture-diagnostics-and-logs.mdx).
 </details>
 
 ### `blockdev -getsz`
@@ -266,7 +261,7 @@ Lista todos los dispositivos de bloque en formato de árbol.
 Ayuda a determinar si un disco de reemplazo tiene suficiente espacio antes de la reconstrucción.
 
 <details>
-  <summary><strong>Ver uso de blockdev</strong> - Haga clic para expandir/colapsar</summary>
+  <summary><strong>Ver uso de fdisk</strong> - Haga clic para expandir/colapsar</summary>
 
   **Sintaxis:**
 
@@ -282,7 +277,7 @@ Ayuda a determinar si un disco de reemplazo tiene suficiente espacio antes de la
 Identificar etiquetas de sistemas de archivos.
 
 <details>
-  <summary><strong>Ver uso de blkid</strong> - Haga clic para expandir/colapsar</summary>
+  <summary><strong>Ver uso de lsblk</strong> - Haga clic para expandir/colapsar</summary>
 
   **Sintaxis:**
 
@@ -304,9 +299,9 @@ Herramientas para solucionar problemas de conectividad de red y configuración d
 Muestra estadísticas de sockets y conexiones de red. Este es el reemplazo moderno para `netstat`.
 
 <details>
-  <summary><strong>Ver opciones de ss</strong> - Haga clic para expandir/colapsar</summary>
+  <summary><strong>Ver uso de blkid</strong> - Haga clic para expandir/colapsar</summary>
 
-  **Mostrar todos los puertos en escucha:**
+  **Sintaxis:**
 
   ```bash
   ss -tuln
@@ -357,9 +352,9 @@ Configure y muestre información sobre la interfaz de red. Este es el reemplazo 
 Probar conectividad de red.
 
 <details>
-  <summary><strong>Ver uso de ping</strong> - Haga clic para expandir/colapsar</summary>
+  <summary><strong>Ver opciones de ss</strong> - Haga clic para expandir/colapsar</summary>
 
-  **Prueba de conectividad enviando un número limitado de paquetes:**
+  **Mostrar todos los puertos en escucha:**
 
   ```bash
   ping -c 4 google.com
@@ -373,9 +368,9 @@ Probar conectividad de red.
 Herramienta útil para consultar y ajustar parámetros de la tarjeta de interfaz de red (NIC), como velocidad de enlace, características de carga y estadísticas.
 
 <details>
-  <summary><strong>Ver uso de ethtool</strong> - Haga clic para expandir/colapsar</summary>
+  <summary><strong>Ver opciones de ip</strong> - Haga clic para expandir/colapsar</summary>
 
-  **Información básica de controlador y firmware:**
+  **Mostrar todas las interfaces de red:**
 
   Use este comando para obtener información sobre el controlador y firmware de su interfaz de red:
 
@@ -385,7 +380,7 @@ Herramienta útil para consultar y ajustar parámetros de la tarjeta de interfaz
 
   **Mostrar velocidad de enlace y configuraciones actuales:**
 
-  Para verificar la velocidad de enlace y configuraciones actuales de su interfaz, ejecute:
+  **Mostrar tabla de enrutamiento:**
 
   ```
   ethtool eth0
