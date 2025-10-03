@@ -1,19 +1,19 @@
 ---
 sidebar_position: 4
-sidebar_label: Sistemas de archivos
+sidebar_label: File systems
 ---
 
-# Sistemas de archivos
+# File systems
 
-### Seleccionando un tipo de sistema de archivos
+### Selecting a file system type
 
-Seleccionar el sistema de archivos correcto para su Unraid %%array|array%% o %%cache pool|cache-pool%% es crucial. Le ayuda a lograr un equilibrio entre rendimiento, protección de datos y funciones avanzadas. Unraid admite varios sistemas de archivos de Linux modernos, cada uno con sus propias fortalezas únicas y casos de uso específicos:
+Selecting the right file system for your Unraid %%array|array%% or %%cache pool|cache-pool%% is crucial. It helps you achieve a balance between performance, data protection, and advanced features. Unraid supports several modern Linux file systems, each with its own unique strengths and specific use cases:
 
-| Sistema de Archivos | Protección de Datos                                                                   | Eficiencia Espacial                    | Características Avanzadas                                                          | Mejor Caso de Uso                                                        |
-| ------------------- | ------------------------------------------------------------------------------------- | -------------------------------------- | ---------------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
-| %%XFS\|xfs%%        | Sin redundancia incorporada                                                           | 100%                                   | Robusto contra la corrupción                                                       | Predeterminado para unidades de array; alta fiabilidad                   |
-| %%ZFS\|zfs%%        | %%RAIDZ1\|raidz1%%/%%RAIDZ2\|raidz2%%/%%RAIDZ3\|raidz3%%, espejos, etc.               | Varía según el nivel de %%RAID\|raid%% | %%Checksums\|suma de verificaciones%%, %%Snapshots\|instantáneas%%, %%RAID\|raid%% | Pools de dispositivos múltiples, %%VMs\|vm%%, Docker, usuarios avanzados |
-| %%BTRFS\|btrfs%%    | %%RAID 0\|raid0%%/%%RAID 1\|raid1%%/%%10\|raid10%%/%%5\|raid5%%/%%6\|raid6%%, espejos | Varía según el nivel de %%RAID\|raid%% | %%Checksums\|suma de verificaciones%%, %%Snapshots\|instantáneas%%, %%RAID\|raid%% | Pools de dispositivos múltiples, SSD/HDD mixtos, pools flexibles         |
+| Sistema de Archivos | Data Protection                                                                       | Space Efficiency               | Características Avanzadas                                        | Mejor Caso de Uso                                                |
+| ------------------- | ------------------------------------------------------------------------------------- | ------------------------------ | ---------------------------------------------------------------- | ---------------------------------------------------------------- |
+| %%XFS\|xfs%%        | Sin redundancia incorporada                                                           | 100%                           | Robusto contra la corrupción                                     | Predeterminado para unidades de array; alta fiabilidad           |
+| %%ZFS\|zfs%%        | %%RAIDZ1\|raidz1%%/%%RAIDZ2\|raidz2%%/%%RAIDZ3\|raidz3%%, espejos, etc.               | Varies by %%RAID\|raid%% level | %%Checksums\|checksum%%, %%Snapshots\|snapshot%%, %%RAID\|raid%% | Multi-device pools, %%VMs\|vm%%, Docker, advanced users          |
+| %%BTRFS\|btrfs%%    | %%RAID 0\|raid0%%/%%RAID 1\|raid1%%/%%10\|raid10%%/%%5\|raid5%%/%%6\|raid6%%, mirrors | Varies by %%RAID\|raid%% level | %%Checksums\|checksum%%, %%Snapshots\|snapshot%%, %%RAID\|raid%% | Pools de dispositivos múltiples, SSD/HDD mixtos, pools flexibles |
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
@@ -43,197 +43,197 @@ import FsRepairCliZfs from './partials/fs-repair-cli-zfs.mdx';
   </TabItem>
 </Tabs>
 
-:::note[Additional Notas]
+:::note[Additional Notes]
 
-- Mezclar diferentes tipos de sistemas de archivos en su sistema Unraid es perfectamente aceptable; el sistema de %%parity|parity%% de Unraid funciona independientemente del sistema de archivos utilizado.
-- Siempre formatee y particione las unidades dentro de Unraid para asegurar la compatibilidad.
-- Los sistemas Linux pueden leer estos sistemas de archivos de forma nativa; sin embargo, Windows y macOS requerirán software adicional para acceder.
-- Puede <u>encriptar</u> las unidades para mejorar la seguridad, pero tenga en cuenta que las unidades encriptadas pueden plantear desafíos para la recuperación en caso de corrupción.
+- Mixing different file system types in your Unraid system is perfectly acceptable; the Unraid %%parity|parity%% system works independently of the file system used.
+- Always format and partition drives within Unraid to ensure compatibility.
+- Linux systems can read these file systems natively; however, Windows and macOS will require additional software for access.
+- You can <u>encrypt</u> drives for enhanced security, but keep in mind that encrypted drives might pose challenges for recovery if corruption occurs.
 - Para unidades de transferencia o dispositivos externos, se recomienda usar el plugin **[Unassigned Devices](#using-the-unassigned-devices-plugins)**, que admite sistemas de archivos adicionales.
   :::
 
-:::tip[Still ¿necesita ayuda eligiendo?]
+:::tip[Still need help choosing?]
 
-- **Para unidades de array:** %%XFS|xfs%% es generalmente la mejor opción para la mayoría de los usuarios.
-- **Para alto rendimiento o funciones avanzadas:** Elija %%ZFS|zfs%% o %%BTRFS|btrfs%% para %%cache pools|cache-pool%% o configuraciones de múltiples dispositivos.
-- **Para pools mixtos o en expansión:** %%BTRFS|btrfs%% es ideal si desea utilizar diferentes tamaños de unidades o añadir o quitar dispositivos fácilmente.
+- **For array drives:** %%XFS|xfs%% is generally the best choice for most users.
+- **For high-performance or advanced features:** Choose %%ZFS|zfs%% or %%BTRFS|btrfs%% for %%cache pools|cache-pool%% or multi-device setups.
+- **For mixed or expanding pools:** %%BTRFS|btrfs%% is ideal if you want to use different drive sizes or easily add or remove devices.
 
 Si no está seguro, comenzar con los valores predeterminados es un buen enfoque: use %%XFS|xfs%% para unidades del %%array|array%% y %%BTRFS|btrfs%% para %%cache pools|cache-pool%%.
 :::
 
 ---
 
-## Establecer un tipo de sistema de archivos
+## Setting a file system type
 
-Al agregar un nuevo disco a Unraid, puede seleccionar el tipo de sistema de archivos que mejor se adapte a sus necesidades. El sistema de archivos determina cómo se organiza y protege la información en el disco.
+When adding a new drive to Unraid, you can select the file system type that works best for your needs. The file system determines how data is organized and protected on the disk.
 
-Para configurar el tipo de sistema de archivos:
+To set the file system type:
 
-1. **Establezca el predeterminado globalmente**:
-   - Navegue a ***Ajustes → Configuración del Disco*** para establecer el sistema de archivos predeterminado solo para nuevas unidades de %%array|array%%.
-   - Unraid utiliza por defecto %%XFS|xfs%% para unidades de %%array|array%%.
-   - **Nota:** Actualmente no hay una configuración predeterminada global para %%cache pools|cache-pool%%. Siempre se establecerán en %%BTRFS|btrfs%% si se dejan en "auto".
+1. **Set the default globally**:
+   - Navigate to ***Settings → Disk Settings*** to set the default file system for new %%array|array%% drives only.
+   - Unraid defaults to %%XFS|xfs%% for %%array|array%% drives.
+   - **Note:** There is currently no global default setting for %%cache pools|cache-pool%%. They will always default to %%BTRFS|btrfs%% if left to "auto".
 
-2. **Establezca el sistema de archivos para una unidad individual**:
-   - Detenga el %%array|array%%.
-   - Haga clic en la unidad en la pestaña **Principal**.
-   - Elija su tipo de sistema de archivos deseado en el menú desplegable.
-   - Si selecciona **auto**, Unraid utilizará el predeterminado global.
-   - Para %%cache pools|cache-pool%% de múltiples dispositivos, solo se admiten %%BTRFS|btrfs%% o %%ZFS|zfs%%.
-
----
-
-## Crear un sistema de archivos (formateo)
-
-Antes de usar un nuevo disco en Unraid, debe formatearlo con el sistema de archivos seleccionado. **Recuerde, formatear borrará todo el contenido existente en la unidad.**
-
-Para comenzar con el formateo:
-
-1. **Inicie el %%array|array%%**.
-2. **Identifique las unidades no montables**: Las unidades no reconocidas aparecerán como **no montables**.
-3. **Verifique la selección de la unidad**: Verifique que todas las unidades no montables sean las que desea formatear.
-4. **Confirme y formatee**: Marque la casilla para confirmar, lea el cuadro de diálogo de advertencia cuidadosamente y haga clic en **Formatear**.
-5. **Monitorear el proceso**: El proceso de formateo comenzará. Para nuevos discos, Unraid reescribirá primero la tabla de particiones.
-6. **Espere la finalización**: El formateo generalmente toma unos minutos. Si no ve progreso, actualice la pestaña **Principal**.
-
-Una vez que se complete el formateo, la unidad estará lista para almacenar archivos.
+2. **Set the file system for an individual drive**:
+   - Stop the %%array|array%%.
+   - Click on the drive in the **Main** tab.
+   - Choose your desired file system type from the drop-down menu.
+   - If you select **auto**, Unraid will use the global default.
+   - For multi-device %%cache pools|cache-pool%%, only %%BTRFS|btrfs%% or %%ZFS|zfs%% are supported.
 
 ---
 
-## Cambiar un tipo de sistema de archivos
+## Creating a file system (formatting)
 
-Es posible que desee cambiar el tipo de sistema de archivos en una unidad específica para aprovechar las nuevas características o asegurar la compatibilidad con tus otras unidades.
+Before using a new disk in Unraid, you must format it with the selected file system. **Remember, formatting will erase all existing content on the drive.**
+
+To begin with formatting:
+
+1. **Start the %%array|array%%**.
+2. **Identify unmountable drives**: Drives that are not recognized will appear as **unmountable**.
+3. **Verify drive selection**: Verify that all unmountable drives are the ones you want to format.
+4. **Confirm and format**: Check the box to confirm, read the warning dialog carefully, and click **Format**.
+5. **Monitor the process**: The format process will begin. For new disks, Unraid will first rewrite the partition table.
+6. **Wait for completion**: Formatting usually takes a few minutes. If you don't see progress, refresh the **Main** tab.
+
+Once formatting is complete, the drive is ready to store files.
+
+---
+
+## Changing a file system type
+
+You may want to change the file system type on a specific drive to take advantage of new features or to ensure compatibility with your other drives.
 
 :::warning
-Cambiar el tipo de sistema de archivos **borrará todos los datos existentes** en la unidad. Siempre realice una copia de seguridad de los archivos importantes antes de continuar.
+Changing the file system type will **erase all existing data** on the drive. Always back up any important files before proceeding.
 :::
 
-Para cambiar el tipo de sistema de archivos en una unidad particular:
+To change the file system type on a particular drive:
 
-1. **Detenga el array**: Comience deteniendo su %%array|array%% para asegurarse de que no haya operaciones durante el cambio.
-2. **Seleccione la unidad**: En la pestaña **Principal**, haga clic en la unidad para la que desea cambiar el formato.
-3. **Elija el nuevo sistema de archivos**: En el menú desplegable, seleccione el formato de sistema de archivos deseado. Si tiene varias unidades para cambiar, repita este paso para cada una.
-4. **Inicie el array**: Una vez que haya seleccionado los nuevos sistemas de archivos, inicie su %%array|array%% de nuevo.
-5. **Formatear unidades no montables**: La pestaña **Principal** mostrará una opción para formatear unidades no montables. Tómese un momento para revisar la lista y asegúrese de que solo estén incluidas las unidades que desea cambiar.
-6. **Confirme y formatee**: Marque la casilla de confirmación para reconocer el cambio, luego haga clic en el botón **Formatear** para proceder.
-7. **Espere a que el proceso termine**: El formateo generalmente toma solo unos minutos. Si nota que el estado no se actualiza, puede actualizar la pestaña **Principal** para verificar el progreso.
+1. **Stop the array**: Begin by stopping your %%array|array%% to ensure no operations are occurring during the change.
+2. **Select the drive**: In the **Main** tab, click on the drive that you want to change the format for.
+3. **Choose the new file system**: From the drop-down menu, select the desired file system format. If you have multiple drives to change, repeat this step for each one.
+4. **Start the array**: Once you have selected the new file systems, start your %%array|array%% again.
+5. **Format unmountable drives**: The **Main** tab will display an option to format unmountable drives. Take a moment to check the list and ensure that only the drives you intend to change are included.
+6. **Confirm and format**: Check the confirmation box to acknowledge the change, then click the **Format** button to proceed.
+7. **Wait for the process to finish**: Formatting usually takes just a few minutes. If you notice that the status isn't updating, you can refresh the **Main** tab to check the progress.
 
-Si encuentra algún problema, visite los [foros de Unraid](https://forums.unraid.net/). Adjunte su archivo de diagnóstico del sistema zip (encontrado bajo ***Tools → Diagnostics***) para obtener asistencia.
+If you encounter any issues, feel free to visit the [Unraid forums](https://forums.unraid.net/). Attach your system diagnostics zip file (found under ***Tools → Diagnostics***) for assistance.
 
 ---
 
-## Convirtiendo a un nuevo tipo de sistema de archivos
+## Converting to a new file system type
 
 :::important
 Starting with Unraid 7.2, the ***Main*** page will warn if any array or pool drives are formatted in legacy filesystems:
 
-- Cualquier disco formateado en ReiserFS necesita ser migrado a otro sistema de archivos lo antes posible, ya que no será utilizable en una futura versión de Unraid (probablemente Unraid 7.3).
+- Any drives formatted in ReiserFS need to be migrated to another filesystem ASAP as they will not be usable in a future release of Unraid (likely Unraid 7.3).
 - Cualquier disco formateado en una versión anterior de XFS necesita ser migrado antes de 2030.
   :::
 
-Para cambiar el tipo de sistema de archivos de una unidad pero conservar sus datos, debe migrar el contenido antes de reformatear. Este proceso es especialmente común para usuarios que se alejan del ReiserFS obsoleto (utilizado en versiones antiguas de Unraid) hacia %%XFS|xfs%% o %%BTRFS|btrfs%%, pero se aplica a cualquier conversión de sistema de archivos.
+To change the file system type on a drive but keep its data, you must migrate the contents before reformatting. This process is especially common for users moving away from the deprecated ReiserFS (used in older Unraid versions) to %%XFS|xfs%% or %%BTRFS|btrfs%%, but it applies to any file system conversion.
 
 :::important
-Este proceso requiere mover temporalmente sus datos a otra ubicación. Asegúrese de tener suficiente espacio libre en otro lugar de su %%array|array%% o en un dispositivo externo antes de comenzar.
+This process requires temporarily moving your data to another location. Make sure you have enough free space elsewhere in your %%array|array%% or on an external device before you begin.
 :::
 
-Para convertirse de manera segura a un nuevo tipo de sistema de archivos:
+To safely convert to a new file system type:
 
-1. **Copie todos los datos de la unidad**: Mueva sus archivos a otra ubicación. Esto podría ser otra unidad en su %%array|array%%, un %%cache pool|cache-pool%% o una copia de seguridad externa.
-   - Antes de Unraid 7.0, necesitarás mover los archivos manualmente
-   - A partir de Unraid 7.0, puedes mover archivos [usando 'mover' para vaciar un disco de la matriz](../../release-notes/7.0.0.md#using-mover-to-empty-an-array-disk) a otros discos de la matriz a través de la línea de comandos
-   - A partir de Unraid 7.2, puedes vaciar un disco de la matriz a otros discos de la matriz a través de la WebGUI:
-     - Navega a ***Main → Array Operation*** y detiene la matriz
-     - Navega a ***Settings → Global Share Settings***. En el área de **Vaciado de disco(s)**, selecciona el/los discos a vaciar y **Aplica**. Nota: este estado se eliminará automáticamente cuando se detenga la matriz.
-     - Navega a ***Main → Array Operation*** y inicia la matriz
-     - En ***Main → Array Operation*** haz clic en **Mover** (o espera hasta que el mover se ejecute según su horario normal)
-     - Mover vaciará el disco de acuerdo con tus configuraciones de Compartir. Nota que los archivos en la raíz del disco están fuera de cualquier Compartir y no serán movidos.
-     - Revisa ***Tools → System Log*** para ver mensajes sobre archivos que no se pudieron mover debido a su uso o falta de espacio libre
-   - Navega a ***Main → Array Devices*** y explora el disco para confirmar que está vacío. Procede solo cuando estés seguro de que el disco está vacío.
-2. **Cambie el tipo de sistema de archivos**: Siga el procedimiento para [cambiar un tipo de sistema de archivos](#changing-a-file-system-type). Esto formateará la unidad y borrará todo el contenido, dejándolo con una unidad en blanco en el nuevo formato.
-3. **Copia tus datos de vuelta**: (Opcional) Dependiendo de dónde moviste los archivos, puede que desees moverlos de vuelta al disco recién formateado.
-4. **Repita según sea necesario**: Si tiene más de una unidad para convertir, repita estos pasos para cada unidad, transfiriendo datos según sea necesario.
+1. **Copy all data off the drive**: Move your files to another location. This could be another drive in your %%array|array%%, a %%cache pool|cache-pool%%, or an external backup.
+   - Prior to Unraid 7.0, you will need to move the files manually
+   - Starting with Unraid 7.0, you can move files [use 'mover' to empty an array disk](../../release-notes/7.0.0.md#using-mover-to-empty-an-array-disk) to other array drives via the command line
+   - Starting with Unraid 7.2, you can empty an array drive to other array drives via the webGUI:
+     - Navigate to ***Main → Array Operation*** and stop the array
+     - Navigate to ***Settings → Global Share Settings***. In the **Emptying disk(s)** area, select the disk(s) to empty and **Apply**. Note: this status will automatically be removed when the array is stopped.
+     - Navigate to ***Main → Array Operation*** and start the array
+     - On ***Main → Array Operation*** click **Move** (or wait until mover runs via its normal schedule)
+     - Mover will empty the disk according to your Share settings. Note that files at the root of the drive are outside of any Shares and will not be moved.
+     - Check ***Tools → System Log*** for messages about any files that could not be moved due to being in use or a lack of free space
+   - Navigate to ***Main → Array Devices*** and browse the disk to confirm it is empty. Proceed only when you are certain the disk is empty.
+2. **Change the file system type**: Follow the procedure for [changing a file system type](#changing-a-file-system-type). This will format the drive and erase all content, leaving you with a blank drive in the new format.
+3. **Copy your data back**: (Optional) Depending on where you moved the files, you may want to move them back to the newly formatted drive.
+4. **Repeat as needed**: If you have more than one drive to convert, repeat these steps for each drive, transferring data as needed.
 
 :::note[Timing]
-El proceso puede tardar varias horas, dependiendo de la cantidad de datos y la velocidad de sus unidades. La mayor parte del tiempo se invierte en copiar archivos, lo cual puede ejecutarse sin supervisión.
+The process can take several hours, depending on the amount of data and the speed of your drives. Most of the time is spent copying files, which can run unattended.
 :::
 
 ---
 
-## Reformateando una unidad
+## Reformatting a drive
 
-Reformatear una unidad en Unraid borrará todos sus datos y creará un nuevo y vacío sistema de archivos. Este proceso es útil para resolver errores persistentes del sistema de archivos o empezar de nuevo con un nuevo formato.
+Reformatting a drive in Unraid will erase all of your data and create a new, empty file system. This process is useful for resolving persistent file system errors or starting fresh with a new format.
 
 :::warning
-Reformatear borrará permanentemente todos los datos en la unidad. Siempre haga una copia de seguridad de los archivos importantes antes de comenzar.
+Reformatting will permanently erase all data on the drive. Always back up any important files before you begin.
 :::
 
-Para **reformatear de manera segura** su unidad:
+To **safely** reformat your drive:
 
-1. **Detén el array**.
-2. **Cambie el tipo de sistema de archivos**:
-   - Vaya a la pestaña **Principal** y haga clic en la unidad que desea reformatear.
-   - Seleccione un tipo diferente de sistema de archivos (por ejemplo, cambie de %%XFS|xfs%% a %%BTRFS|btrfs%%).
-   - Inicie el %%array|array%%, y la unidad se mostrará como **no montable**.
-   - Cuando se le indique, formatee la unidad.
-3. **(Opcional) Cambie nuevamente a su tipo de sistema de archivos original**:
-   - Detenga el %%array|array%% nuevamente.
-   - Cambie el sistema de archivos de nuevo a su tipo preferido.
-   - Inicie el %%array|array%% y formatee la unidad una vez más.
+1. **Stop the array**.
+2. **Change the file system type**:
+   - Go to the **Main** tab and click on the drive you want to reformat.
+   - Select a different file system type (for example, change from %%XFS|xfs%% to %%BTRFS|btrfs%%).
+   - Start the %%array|array%%, and the drive will show as **unmountable**.
+   - When prompted, format the drive.
+3. **(Optional) Change back to your original file system type**:
+   - Stop the %%array|array%% again.
+   - Change the file system back to your preferred type.
+   - Start the %%array|array%% and format the drive once more.
 
-Este sencillo proceso asegura que la unidad esté completamente borrada y formateada como desee. El proceso de formateo generalmente toma solo unos minutos.
+This simple process ensures that the drive is fully wiped and formatted as you desire. The formatting process usually takes just a few minutes.
 
-### Reformatear una unidad de cache
+### Reformatting a cache drive
 
-A veces, necesitará reformatear una unidad de %%cache|cache%% por las siguientes razones:
+Sometimes, you'll need to reformat a %%cache|cache%% drive for the following reasons:
 
-- Para cambiar el tipo de sistema de archivos (por ejemplo, de %%BTRFS|btrfs%% a %%XFS|xfs%% o viceversa)
-- Para corregir errores persistentes del sistema de archivos
-- Para comenzar de cero para nuevas cargas de trabajo
+- To change the file system type (for example, from %%BTRFS|btrfs%% to %%XFS|xfs%% or vice versa)
+- To fix persistent file system errors
+- To start fresh for new workloads
 
-<h4>Procedimiento recomendado para reformatear una unidad de cache</h4>
+<h4>Recommended procedure for reformatting a cache drive</h4>
 
-1. **Detén el array**.
-2. **Deshabilite los servicios de Docker y %%VM|vm%%** bajo **Ajustes**.
-3. **Inicie el array** (esto evitará que aparezcan las pestañas de Docker y %%VM|vm%%).
+1. **Stop the array**.
+2. **Disable Docker and %%VM|vm%% services** under **Settings**.
+3. **Start the array** (this will prevent the Docker and %%VM|vm%% tabs from appearing).
 
-Para mover datos fuera del cache:
+To move data off the cache:
 
-4. **Establezca el almacenamiento compartido y la acción del Mover (cache → array)**: Para cada compartición que tenga archivos en el %%cache|cache%%, establezca **Almacenamiento Primario** en el pool del %%cache|cache%% de origen y **Almacenamiento Secundario** en el %%array|array%%. Establezca la **acción del Mover** en **cache → array**.
-   - Anota cualquier acción de acciones que cambies y sus configuraciones originales.
-5. **Ejecute %%Mover|mover%%**: Ejecute %%Mover|mover%% desde la pestaña **Principal**. Espere a que termine y asegúrese de que el %%cache|cache%% esté vacío.
-   - Si quedan archivos, detente y verifica en los foros para obtener ayuda.
+4. **Set share storage and Mover action (cache → array)**: For each share that has files in the %%cache|cache%%, set **Primary storage** to the source %%cache|cache%% pool and **Secondary storage** to the %%array|array%%. Set **Mover action** to **cache → array**.
+   - Note down any shares you change and their original settings.
+5. **Run %%Mover|mover%%**: Run %%Mover|mover%% from the **Main** tab. Wait for it to finish and ensure that the %%cache|cache%% is empty.
+   - If any files remain, stop and check the forums for help.
 
-Para reformatear la unidad de caché:
+To reformat the cache drive:
 
-6. **Detén el array**.
-7. **Establece el formato de la unidad de caché** (elige entre %%XFS|xfs%% o %%BTRFS|btrfs%%).
-   - Para una única unidad de %%cache|cache%%, %%XFS|xfs%% es la opción recomendada.
-   - Ten en cuenta que %%XFS|xfs%% sólo está disponible si tienes un espacio de %%cache|cache%%.
-8. **Inicia el array**.
-9. **Formatea la unidad de caché**:
-   - Confirma que sólo la unidad %%cache|cache%% aparece como no montable.
-   - Procede a formatear la unidad.
+6. **Stop the array**.
+7. **Set the cache drive format** (choose between %%XFS|xfs%% or %%BTRFS|btrfs%%).
+   - For a single-drive %%cache|cache%%, %%XFS|xfs%% is the recommended option.
+   - Note that %%XFS|xfs%% is only available if you have one %%cache|cache%% slot.
+8. **Start the array**.
+9. **Format the cache drive**:
+   - Confirm that only the %%cache|cache%% drive is listed as unmountable.
+   - Proceed to format the drive.
 
-Para restaurar datos y configuraciones:
+To restore data and settings:
 
-10. **Restaura configuraciones de compartición**: Para cada compartición que cambiaste, configura **Almacenamiento primario** y **Almacenamiento secundario** a sus valores originales.
-11. **Mover los datos de vuelta (array → cache)**: Establezca **Almacenamiento Primario** en el pool de %%cache|cache%% de destino y **Almacenamiento Secundario** en el %%array|array%% para cada compartición que cambió. Establezca la **acción del Mover** en **array → cache**, luego ejecute %%Mover|mover%% nuevamente para mover sus datos de vuelta al %%cache|cache%%.
-12. **Detén el array**.
-13. **Vuelva a habilitar Docker y los servicios de %%VM|vm%%.**
-14. **Inicia el array**.
+10. **Restore share settings**: For each share you changed, set **Primary storage** and **Secondary storage** back to their original values.
+11. **Move data back (array → cache)**: Set **Primary storage** to the destination %%cache|cache%% pool and **Secondary storage** to the %%array|array%% for each share you changed. Set **Mover action** to **array → cache**, then run the %%Mover|mover%% again to move your data back to the %%cache|cache%%.
+12. **Stop the array**.
+13. **Re-enable Docker and %%VM|vm%% services**.
+14. **Start the array**.
 
 :::note[Timing]
-El tiempo que lleva mover datos con el %%Mover|mover%% y formatear la unidad puede variar de varios minutos a varias horas, dependiendo de la cantidad de datos y la velocidad de la unidad.
+The time it takes to move data with the %%Mover|mover%% and format the drive can vary from several minutes to several hours, depending on the amount of data and the speed of the drive.
 :::
 
 ---
 
-## Operaciones de BTRFS
+## BTRFS operations
 
-Mantener sus pools %%BTRFS|btrfs%% en Unraid es esencial para mantenerlos funcionando bien y asegurar que sus datos estén seguros. Dos herramientas clave que querrá usar regularmente son **Balance** y **Scrub**. Estas operaciones ayudan a resolver problemas de asignación de espacio, optimizan el uso de su almacenamiento y protegen sus datos de la corrupción oculta.
+Maintaining your %%BTRFS|btrfs%% pools in Unraid is essential for keeping them running well and ensuring your data stays safe. Two key tools you’ll want to use regularly are **Balance** and **Scrub**. These operations help solve space allocation problems, optimize your storage use, and protect your data from hidden corruption.
 
-Vamos a desglosar lo que hace cada operación y cuándo usarlas:
+Let’s break down what each operation does and when to use them:
 
 <Tabs>
   <TabItem value="equilibrio" label="Equilibrio" default>
@@ -246,148 +246,148 @@ Vamos a desglosar lo que hace cada operación y cuándo usarlas:
 </Tabs>
 
 :::tip
-Tanto **Balance** como **Scrub** pueden realizarse mientras el sistema está en línea, pero tenga en cuenta que el rendimiento puede verse afectado durante estas operaciones. Puede monitorear el progreso en el %%WebGUI|web-gui%%.
+Both **Balance** and **Scrub** can be performed while the system is online, but keep in mind that performance may be affected during these operations. You can monitor the progress in the %%WebGUI|web-gui%%.
 :::
 
-Para más detalles sobre características avanzadas de %%BTRFS|btrfs%%, consulta la [documentación oficial de BTRFS](https://btrfs.readthedocs.io/en/latest/Introduction.html).
+For more details on advanced %%BTRFS|btrfs%% features, check out the [official BTRFS documentation](https://btrfs.readthedocs.io/en/latest/Introduction.html).
 
 ---
 
-## Unidades no asignadas
+## Unassigned drives
 
-Las unidades no asignadas son dispositivos de almacenamiento conectados a su servidor Unraid que no forman parte del %%array|array%% principal ni de ningún %%cache pool|cache-pool%%. Puede usar estas unidades para transferir archivos, crear copias de seguridad, o proporcionar almacenamiento rápido para %%virtual machines|vm%%.
+Unassigned drives are storage devices connected to your Unraid server that aren't part of the main %%array|array%% or any %%cache pool|cache-pool%%. You can use these drives to transfer files, create backups, or provide fast storage for %%virtual machines|vm%%.
 
 :::note
-Todas las unidades conectadas a tu servidor cuando se inicia el %%array|array%% cuentan para el límite de licencia de dispositivos adjuntos de Unraid, incluso si no están asignadas al %%array|array%% o a un pool.
+All drives connected to your server when the %%array|array%% starts count toward your Unraid Attached Devices license limit, even if they aren’t assigned to the %%array|array%% or a pool.
 :::
 
-<h4>Usos comunes para unidades no asignadas</h4>
+<h4>Common uses for unassigned drives</h4>
 
-- Conecta unidades removibles para transferencias de archivos o copias de seguridad fáciles.
-- Usa unidades dedicadas para tareas de alto rendimiento como ejecutar %%máquinas virtuales|vm%% o almacenamiento temporal de datos.
+- Connect removable drives for easy file transfers or backups.
+- Use dedicated drives for high-performance tasks like running %%virtual machines|vm%% or temporary data storage.
 
-### Uso de los plugins de dispositivos no asignados
+### Using the Unassigned Devices plugins
 
-Para aprovechar al máximo tus unidades no asignadas, considera instalar los siguientes plugins desde la pestaña **Aplicaciones**:
+To make the most of your unassigned drives, consider installing the following plugins from the **Apps** tab:
 
-- **[Unassigned Devices](https://unraid.net/community/apps?q=dlandon\&r=0#:~:text=and%20iso%20files.-,Unassigned%20Devices,-dlandon):** Este plugin te permite montar, compartir y gestionar unidades con sistemas de archivos que Unraid soporta, como %%XFS|xfs%%, %%BTRFS|btrfs%%, o NTFS.
+- **[Unassigned Devices](https://unraid.net/community/apps?q=dlandon\&r=0#:~:text=and%20iso%20files.-,Unassigned%20Devices,-dlandon):** This plugin allows you to mount, share, and manage drives with file systems that Unraid supports, like %%XFS|xfs%%, %%BTRFS|btrfs%%, or NTFS.
 
-- **[Unassigned Devices Plus](https://unraid.net/community/apps?q=dlandon\&r=0#:~:text=and%20iso%20files.-,Unassigned%20Devices%20Plus,-\(Addon\)):** Esta extensión amplía tus opciones al soportar sistemas de archivos adicionales, incluyendo ExFAT y HFS+.
+- **[Unassigned Devices Plus](https://unraid.net/community/apps?q=dlandon\&r=0#:~:text=and%20iso%20files.-,Unassigned%20Devices%20Plus,-\(Addon\)):** This extension broadens your options by supporting additional file systems, including ExFAT and HFS+.
 
-Estos plugins permiten:
+These plugins enable:
 
-- Montar y desmontar unidades fácilmente desde la interfaz web de Unraid.
-- Compartir tus unidades no asignadas por medio de la red.
-- Automatizar el proceso de montaje cuando el servidor se inicia.
-- Formatear o borrar unidades para uso futuro.
-- Desconectar de manera segura unidades USB o externas sin complicaciones.
+- Easily mounting and unmounting drives from the Unraid web interface.
+- Sharing your unassigned drives over the network.
+- Automating the mounting process when the server boots up.
+- Formatting or erasing drives for future use.
+- Safely disconnecting USB or external drives without hassle.
 
-Para más detalles sobre la instalación y gestión de plugins, consulta [Plugins](../customize-your-experience/plugins.mdx).
+For more details on installing and managing plugins, check out [Plugins](../customize-your-experience/plugins.mdx).
 
 ---
 
 ## Solución de problemas
 
-### La unidad se muestra como no montable
+### Drive shows as unmountable
 
-Si ves que una unidad en Unraid es **no montable**, podría deberse a una de dos razones principales:
+If you see that a drive in Unraid is **unmountable**, it could be due to one of two main reasons:
 
-1. **Nueva unidad añadida**: Si acaba de añadir una nueva unidad a su configuración, se mostrará como no montable hasta que la formatee. El formateo crea un sistema de archivos que permite a la unidad almacenar archivos. Puede encontrar los pasos para formatear una unidad [aquí](#creating-a-file-system-formatting).
+1. **New drive added**: If you just added a new drive to your setup, it will show as unmountable until you format it. Formatting creates a file system that allows the drive to store files. You can find the steps to format a drive [here](#creating-a-file-system-formatting).
 
-2. **Problemas del sistema de archivos**: Si una unidad que funcionaba previamente de repente muestra como no montable, probablemente tenga un problema del sistema de archivos. Esto puede ocurrir debido a apagados inesperados, problemas al escribir datos, o si la unidad ha sido marcada como deshabilitada (lo que aparece como una 'x' roja en el %%WebGUI|web-gui%%).
+2. **File system problems**: If a drive that was previously working suddenly shows as unmountable, it likely has a file system issue. This can happen due to unexpected shutdowns, problems while writing data, or if the drive has been marked as disabled (which appears as a red 'x' in the %%WebGUI|web-gui%%).
 
 :::important
-No formatee una unidad no montable a menos que esté bien con perder todos los datos en ella. Formatear borrará todo y actualizará la información de %%parity|parity%%, haciendo que la recuperación sea imposible. Siempre intente primero reparar el sistema de archivos.
+Do not format an unmountable drive unless you are okay with losing all the data on it. Formatting will erase everything and update the %%parity|parity%% information, making recovery impossible. Always try to fix the file system first.
 :::
 
-Si tu unidad es no montable:
+If your drive is unmountable:
 
-1. **Identifica la situación**: Determina si es una nueva unidad o una unidad que funcionaba previamente.
-2. **Para unidades nuevas**: Formatea la unidad para crear un nuevo sistema de archivos (revisa los [pasos de formateo](#creating-a-file-system-formatting)).
-3. **Para unidades previamente funcionales**: Realice una verificación o reparación del sistema de archivos (vea [Verificando un sistema de archivos](#checking-a-file-system)). Evite formatear si desea conservar los datos.
+1. **Identify the situation**: Determine if it's a new drive or a previously working drive.
+2. **For new drives**: Format the drive to create a new file system (check the [formatting steps](#creating-a-file-system-formatting)).
+3. **For previously working drives**: Perform a file system check or repair (see [Checking a file system](#checking-a-file-system)). Avoid formatting if you want to keep the data.
 
 :::note
-Si una unidad está tanto no montable como deshabilitada (x roja), primero ejecute la verificación/reparación en la unidad **emulada**. Si la unidad emulada también es no montable y intenta reconstruirla, la nueva unidad también será no montable.
+If a drive is both unmountable and disabled (red 'x'), first run the file system check/repair on the **emulated** drive. If the emulated drive is also unmountable and you attempt to rebuild it, the new drive will also be unmountable.
 :::
 
-Corregir el sistema de archivos generalmente toma menos tiempo que reconstruir la unidad, permitiéndole acceder a sus datos sin perder nada. Recuerde, reconstruir una unidad no **repara** problemas del sistema de archivos; simplemente asegura que la unidad física coincida con la emulada, llevando consigo cualquier problema existente.
+Fixing the file system typically takes less time than rebuilding the drive, allowing you to access your data without losing anything. Remember, rebuilding a drive does **not** fix file system issues; it merely ensures that the physical drive matches the emulated one, carrying over any existing problems.
 
-:::important[Why ¿la paridad no es suficiente?]
+:::important[Why is parity not enough?]
 
-Si no estás seguro:
+If you’re unsure:
 
-- Descarga tus registros del sistema navegando a ***Herramientas → Diagnósticos***.
+- Download your system logs by navigating to ***Tools → Diagnostics***.
 - Para ayuda de expertos, publique su problema junto con los diagnósticos en los [foros de Unraid](https://forums.unraid.net/).
   :::
 
-:::note[Just para reiterar]
+:::note[Just to reiterate]
 
-- Solo formatea unidades no montables si son completamente nuevas o si quieres borrar todos los datos.
-- Usa la comprobación/reparación del sistema de archivos para corregir archivos corruptos; no relies en %%parity|parity%% para resolver estos problemas.
-- Para %%cache pools|cache-pool%% con múltiples unidades, considera usar ya sea %%BTRFS|btrfs%% o %%ZFS|zfs%%.
+- Only format unmountable drives if they are brand new or if you want to erase all data.
+- Use the file system check/repair for fixing corrupt files; don’t rely on %%parity|parity%% to solve these issues.
+- For %%cache pools|cache-pool%% with multiple drives, consider using either %%BTRFS|btrfs%% or %%ZFS|zfs%%.
 - Siempre verifique dos veces antes de formatear o reparar unidades para evitar la pérdida accidental de datos.
   :::
 
 ---
 
-### Comprobación de un sistema de archivos
+### Checking a file system
 
-Si un disco que anteriormente se montaba sin problemas ahora se muestra como **no montable**, generalmente indica corrupción del sistema de archivos. Esto puede resultar de un apagado no limpio, una fallida operación de escritura, o el disco siendo marcado como deshabilitado en el %%WebGUI|web-gui%%. Revisar y reparar el sistema de archivos es generalmente más rápido y seguro que realizar una reconstrucción, por lo que se recomienda intentarlo antes de formatear o reconstruir el disco.
+If a disk that previously mounted without issues now shows as **unmountable**, it typically indicates file system corruption. This may result from an unclean shutdown, a failed write operation, or the disk being marked as disabled in the %%WebGUI|web-gui%%. Checking and repairing the file system is generally quicker and safer than performing a rebuild, so it's advisable to try this before formatting or rebuilding the disk.
 
 :::important
-Si el %%WebGUI|web-gui%% sugiere formatear una unidad no montable, <strong>no la formatee</strong> a menos que desee borrar todos los datos. Formatear destruirá el contenido de la unidad y actualizará la %%parity|parity%%, haciendo que la recuperación sea imposible.
+If the %%WebGUI|web-gui%% suggests formatting an unmountable drive, <strong>do not format</strong> unless you intend to erase all data. Formatting will destroy the contents of the drive and update %%parity|parity%%, making recovery impossible.
 :::
 
-<h4>Preparándose para comprobar o reparar</h4>
+<h4>Preparing to check or repair</h4>
 
-1. **Identifica el tipo de sistema de archivos**:
-   - Navega a la pestaña **Principal** y selecciona tu disco (e.g., Disco 3, Caché).
-   - Encuentra el **tipo de sistema de archivos** (debería ser %%XFS|xfs%%, %%BTRFS|btrfs%%, o %%ZFS|zfs%%).
+1. **Identify the file system type**:
+   - Navigate to the **Main** tab and select your disk (e.g., Disk 3, Cache).
+   - Find the **File system type** (should be %%XFS|xfs%%, %%BTRFS|btrfs%%, or %%ZFS|zfs%%).
 
-2. **Inicie el array en el modo correcto**:
-   - Para **%%XFS|xfs%%**, inicia el %%array|array%% en **%%Modo de Mantenimiento|maintenance-mode%%**.
-   - Para **%%BTRFS|btrfs%%**, inicie el %%array|array%% en **modo Normal** para un %%scrub|scrub%% o **%%modo de Mantenimiento|maintenance-mode%%** para una reparación.
-   - Para **%%ZFS|zfs%%**, consulta la sección de %%ZFS|zfs%% a continuación.
+2. **Start the array in the correct mode**:
+   - For **%%XFS|xfs%%**, start the %%array|array%% in **%%Maintenance Mode|maintenance-mode%%**.
+   - For **%%BTRFS|btrfs%%**, start the %%array|array%% in **Normal mode** for a %%scrub|scrub%% or **%%Maintenance Mode|maintenance-mode%%** for a repair.
+   - For **%%ZFS|zfs%%**, refer to the %%ZFS|zfs%% section below.
 
-3. **Manejar discos emulados**: Si el disco está deshabilitado y siendo emulado, ejecute la verificación/reparación en el %%emulated disk|emulated-disk%% antes de intentar una reconstrucción. Si el %%emulated disk|emulated-disk%% es no montable, el disco reconstruido también será no montable.
+3. **Handle emulated disks**: If the disk is disabled and being emulated, run the check/repair on the %%emulated disk|emulated-disk%% before attempting a rebuild. If the %%emulated disk|emulated-disk%% is unmountable, the rebuilt disk will also be unmountable.
 
-<h4>Mensajes de error comunes</h4>
+<h4>Common error messages</h4>
 
-| Mensaje                                                                  | Significado / Acción                                                               |
-| ------------------------------------------------------------------------ | ---------------------------------------------------------------------------------- |
-| **El superbloque tiene un número mágico malo**                           | Corrupción severa; intenta una reparación del sistema de archivos.                 |
-| **El sistema de archivos está sucio**                                    | Apagado no limpio; ejecuta una comprobación del sistema de archivos.               |
-| **Detectada corrupción de metadatos**                                    | Las estructuras del sistema de archivos están dañadas; inicia una reparación.      |
-| **No se encontró una %%BTRFS\|btrfs%% válida**                           | El disco puede no pertenecer a un pool válido; verifica las asignaciones del pool. |
-| **Montar: tipo de sistema de archivos erróneo, opción incorrecta, etc.** | Selección incorrecta del sistema de archivos o disco sin formatear.                |
-| **No se puede montar /dev/mdX: la estructura necesita limpieza**         | El sistema de archivos está corrompido; realiza una reparación.                    |
+| Mensaje                                                                  | Significado / Acción                                                          |
+| ------------------------------------------------------------------------ | ----------------------------------------------------------------------------- |
+| **El superbloque tiene un número mágico malo**                           | Corrupción severa; intenta una reparación del sistema de archivos.            |
+| **El sistema de archivos está sucio**                                    | Apagado no limpio; ejecuta una comprobación del sistema de archivos.          |
+| **Detectada corrupción de metadatos**                                    | Las estructuras del sistema de archivos están dañadas; inicia una reparación. |
+| **No se encontró una %%BTRFS\|btrfs%% válida**                           | Disk may not belong to a valid pool; check pool assignments.                  |
+| **Montar: tipo de sistema de archivos erróneo, opción incorrecta, etc.** | Selección incorrecta del sistema de archivos o disco sin formatear.           |
+| **Cannot mount /dev/mdX: Structure needs cleaning**                      | El sistema de archivos está corrompido; realiza una reparación.               |
 
-#### A través del WebGUI
+#### Via the WebGUI
 
-1. **Inicia el array**: Inicia el %%array|array%% en el modo correcto (consulta los pasos anteriores).
-2. **Selecciona el disco**: Ve a la pestaña **Principal** y selecciona el disco que deseas comprobar.
-3. **Accede a las opciones de comprobación**: Desplázate a **Estado del Sistema de Archivos**.
-4. **Para XFS (Unraid 7.0+)**: Verá un botón **CHECK** sin opciones para ingresar. El sistema determina automáticamente las acciones necesarias basadas en los resultados de la verificación.
-5. **Para otros sistemas de archivos**: Ingresa cualquier opción necesaria (para obtener detalles, consulta **Ayuda** en la esquina superior derecha).
-6. **Inicia la comprobación**: Haz clic en **Comprobar** para iniciar el proceso.
-7. **Monitorear progreso**: Monitoree el progreso en el cuadro de salida. Use **Actualizar** si es necesario.
-8. **Revisar resultados**: Revise los resultados. Si no está seguro, copie la salida y publicar en los [foros](https://forums.unraid.net/) para obtener asesoramiento.
+1. **Start the array**: Start the %%array|array%% in the correct mode (refer to the steps above).
+2. **Select the disk**: Go to the **Main** tab and select the disk you wish to check.
+3. **Access check options**: Scroll to **Check Filesystem Status**.
+4. **For XFS (Unraid 7.0+)**: You will see a **CHECK** button without any options to enter. The system automatically determines the necessary actions based on the check results.
+5. **For other file systems**: Enter any necessary options (for details, see **Help** in the upper right).
+6. **Start the check**: Click **Check** to initiate the process.
+7. **Monitor progress**: Monitor the progress in the output box. Use **Refresh** if required.
+8. **Review results**: Review the results. If uncertain, copy the output and post it on the [forums](https://forums.unraid.net/) for advice.
 
-#### Flujo de trabajo automático de reparación de XFS (Unraid 7.0+)
+#### XFS Automatic Repair Workflow (Unraid 7.0+)
 
-A partir de Unraid 7.0, la reparación del sistema de archivos XFS ahora está completamente automatizada a través del WebGUI:
+Starting with Unraid 7.0, XFS file system repair is now fully automated through the WebGUI:
 
-1. **Verificación inicial**: Haga clic en el botón **CHECK** (sin opciones para ingresar)
-2. **Resultados de la verificación**:
-   - **No se detectó corrupción**: Muestra "no se detectó corrupción del sistema de archivos" y el botón **CHECK** permanece
-   - **Se detectó corrupción**: Muestra "se detectó corrupción del sistema de archivos" y aparece un botón **FIX**
-3. **Proceso de reparación**: Haga clic en **FIX** para reparar automáticamente el sistema de archivos
-4. **Acciones adicionales**: Si es necesario, puede aparecer un botón **ZERO LOG**
-5. **Finalización**: Muestra "sistema de archivos reparado" cuando el proceso ha terminado
+1. **Initial Check**: Click the **CHECK** button (no options to enter)
+2. **Check Results**:
+   - **No corruption detected**: Shows "no filesystem corruption detected" and the **CHECK** button remains
+   - **Corruption detected**: Shows "filesystem corruption detected" and a **FIX** button appears
+3. **Repair Process**: Click **FIX** to automatically repair the file system
+4. **Additional Actions**: If needed, a **ZERO LOG** button may appear
+5. **Completion**: Shows "filesystem repaired" when the process is complete
 
-Este sistema automatizado elimina la necesidad de que los usuarios ingresen manualmente las opciones de reparación y asegura que se siga la secuencia de reparación correcta.
+This automated system eliminates the need for users to manually enter repair options and ensures the correct repair sequence is followed.
 
-#### A través de la línea de comandos
+#### Via the command line
 
 <Tabs>
   <TabItem value="xfs" label="XFS">
@@ -405,50 +405,50 @@ Este sistema automatizado elimina la necesidad de que los usuarios ingresen manu
 
 :::tip
 
-- Las reparaciones de sistemas de archivos generalmente son más rápidas que una reconstrucción completa y pueden restaurar el acceso sin pérdida de datos.
-- Reconstruir un disco **no** resuelve la corrupción del sistema de archivos; siempre ejecute una verificación o reparación primero.
+- File system repairs are generally faster than a complete rebuild and can restore access without data loss.
+- Rebuilding a disk does **not** resolve file system corruption; always run a check or repair first.
 - Si tiene dudas, publique sus diagnósticos y mensajes de error en los [foros de Unraid](https://forums.unraid.net/) para obtener asistencia experta.
   :::
 
 ---
 
-### Reparación de un sistema de archivos
+### Repairing a file system
 
-Si un chequeo de su sistema de archivos encuentra errores, es posible que deba ejecutar una reparación para volver a tener acceso a sus datos. Las reparaciones generalmente toman menos tiempo que una reconstrucción total, pero es importante leer la salida con cuidado y buscar ayuda en los [foros](https://forums.unraid.net/) si no está seguro de algo.
+If a check of your file system finds errors, you might need to run a repair to get access to your data again. Repairs typically take less time than a full rebuild, but it's important to read the output carefully and reach out for help on the [forums](https://forums.unraid.net/) if you're unsure about anything.
 
 :::note[Timing]
-Las reparaciones pueden tardar desde varios minutos hasta varias horas, especialmente para sistemas de archivos más grandes o muy corruptos. El progreso puede parecer lento, pero puede verificar la actividad mirando las estadísticas de lectura/escritura en la Página Principal.
+Repairs can take anywhere from several minutes to several hours, especially for larger or heavily corrupted file systems. Progress might seem slow, but you can check on the activity by looking at the read/write statistics on the Main page.
 :::
 
-<h4>Preparación para reparar</h4>
+<h4>Preparing to repair</h4>
 
-1. **Identifique el tipo de sistema de archivos**: Vaya a la pestaña **Principal**, haga clic en el disco y averigüe qué tipo de sistema de archivos es (%%XFS|xfs%%, %%BTRFS|btrfs%% o %%ZFS|zfs%%).
+1. **Identify the file system type**: Go to the **Main** tab, click on the disk, and find out what type of file system it is (%%XFS|xfs%%, %%BTRFS|btrfs%%, or %%ZFS|zfs%%).
 
-2. **Inicie el array en el modo correcto**:
+2. **Start the array in the correct mode**:
 
-   - **Para %%XFS|xfs%%:** Use **Modo de Mantenimiento**.
-   - **Para %%BTRFS|btrfs%%:** Use **Modo Normal** para un %%scrub|fregado%%; use **Modo de Mantenimiento** para una reparación.
-   - **Para %%ZFS|zfs%%:** Use **modo Normal** y ejecute un %%scrub|scrub%% para verificar errores. Consulte la [página de ZFS storage](../../advanced-configurations/optimize-storage/zfs-storage.mdx) para obtener orientación sobre los procedimientos de mantenimiento y reparación del pool %%ZFS|zfs%%.
+   - **For %%XFS|xfs%%:** Use **%%Maintenance Mode|maintenance-mode%%**.
+   - **For %%BTRFS|btrfs%%:** Use **Normal mode** for a %%scrub|scrub%%; use **%%Maintenance Mode|maintenance-mode%%** for a repair.
+   - **For %%ZFS|zfs%%:** Use **Normal mode** and run a %%scrub|scrub%% to check for errors.  See the [ZFS storage page](../../advanced-configurations/optimize-storage/zfs-storage.mdx) for guidance on %%ZFS|zfs%% pool maintenance and repair procedures.
 
-3. **Manejar discos emulados**: Si el disco está deshabilitado y siendo emulado, ejecute la reparación en el %%emulated disk|emulated-disk%% antes de intentar una reconstrucción.
+3. **Handle emulated disks**: If the disk is disabled and being emulated, run the repair on the %%emulated disk|emulated-disk%% before trying to do a rebuild.
 
-#### A través del WebGUI
+#### Via the WebGUI
 
-1. **Inicie el array**: Inicie el %%array|array%% en el modo correcto (consulte la sección anterior).
-2. **Seleccione el disco**: Vaya a la pestaña **Principal** y haga clic en el disco que desea reparar.
-3. **Acceda a las opciones de reparación**: Desplácese hacia abajo hasta **Verificar estado del sistema de archivos**.
-4. **Para XFS (Unraid 7.0+)**: El proceso de reparación está completamente automatizado. Haga clic en **CHECK**, luego **FIX** si se detecta corrupción, y **ZERO LOG** si se lo solicita.
-5. **Para otros sistemas de archivos**: Retire cualquier opción que ejecutaría el proceso en modo de solo verificación (como `--readonly` para %%BTRFS|btrfs%%).
-6. **Agregue las opciones sugeridas**: Si se le solicita, agregue las opciones sugeridas como se indica en la salida de la verificación.
-7. **Inicie la reparación**: Haga clic en **Check** para comenzar la reparación.
-8. **Monitorear progreso**: Mantenga un ojo en el progreso en el cuadro de salida. Use **Actualizar** si es necesario.
-9. **Verificar archivos perdidos**: Si observa una carpeta `lost+found` después de la reparación, puede contener archivos o carpetas que no se pudieron recuperar completamente. Use copias de seguridad o el comando `file` de Linux para identificar el contenido si es necesario.
+1. **Start the array**: Start the %%array|array%% in the correct mode (refer to the section above).
+2. **Select the disk**: Go to the **Main** tab and click on the disk you want to repair.
+3. **Access repair options**: Scroll down to **Check Filesystem Status**.
+4. **For XFS (Unraid 7.0+)**: The repair process is fully automated. Click **CHECK**, then **FIX** if corruption is detected, and **ZERO LOG** if prompted.
+5. **For other file systems**: Remove any options that would run the process in check-only mode (like `--readonly` for %%BTRFS|btrfs%%).
+6. **Add suggested options**: If prompted, add the suggested options as indicated in the check output.
+7. **Start the repair**: Click on **Check** to begin the repair.
+8. **Monitor progress**: Keep an eye on the progress in the output box. Use **Refresh** if needed.
+9. **Check for lost files**: If you notice a `lost+found` folder after the repair, it may contain files or folders that couldn't be fully recovered. Use backups or the Linux `file` command to identify the contents if necessary.
 
 :::info
-Si no está seguro acerca de la salida, cópiela y compártala en los [foros de Unraid](https://forums.unraid.net/) para obtener ayuda de expertos. Use la opción de formato de código para mantenerlo legible.
+If you're uncertain about the output, copy and share it on the [Unraid forums](https://forums.unraid.net/) for expert help. Use the code formatting option to keep it readable.
 :::
 
-#### A través de la línea de comandos
+#### Via the command line
 
 <Tabs>
   <TabItem value="xfs" label="XFS">
@@ -464,11 +464,11 @@ Si no está seguro acerca de la salida, cópiela y compártala en los [foros de 
   </TabItem>
 </Tabs>
 
-:::info[After la reparación]
+:::info[After the repair]
 
-- Detenga y reinicie el %%array|array%% en **Modo Normal**.
-- La unidad ahora debería montar y ser accesible.
+- Stop and restart the %%array|array%% in **Normal mode**.
+- The drive should now mount and be accessible.
 - Si ve una carpeta `lost+found`, verifique su contenido por si hay archivos importantes.
   :::
 
-Si no entiende la salida de la reparación o si el proceso falla, comparta sus diagnósticos y el registro de reparación en los [foros de Unraid](https://forums.unraid.net/) para obtener más ayuda.
+If you don't understand the repair output or if the process fails, share your diagnostics and repair log on the [Unraid forums](https://forums.unraid.net/) for further assistance.
