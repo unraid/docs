@@ -12,276 +12,294 @@ import WindowsUpgradeCleanInstall from './partials/windows-upgrade-clean-install
 
 # VM中的Windows
 
-Windows is one of the most popular guest operating systems for Unraid users, especially for gaming, productivity, and support for legacy applications. Here are essential considerations for running Windows %%VM|vm%%.
+Windows 是 Unraid 用户中最受欢迎的客制操作系统之一，尤其适用于游戏、生产力和支持旧版应用程序。这是运行 Windows %%VM|vm%% 的一些重要注意事项。
 
 :::caution[Before 开始]
+
 - 微软已于2020年1月结束了对Windows 7的支持，于2023年1月结束了对Windows 8.1的支持，并计划于2025年10月结束对Windows 10的支持。请使用Windows 11（或更新版本）或Server 2022（或更新版本）以获得持续的安全更新。
 - 在激活 Windows 许可之前，始终测试 %%VM|vm%% 的稳定性。
-- 对于%%GPU直通|gpu-passthrough%%，使用%%OVMF|ovmf%%（%%UEFI|uefi%%）BIOS与Windows 11或更新版本。
+- For %%GPU passthrough|gpu-passthrough%%, use %%OVMF|ovmf%% (%%UEFI|uefi%%) BIOS with Windows 11 or newer.
+
 :::
 
-### 支持的配置
+### Supported configurations
 
-| Windows 版本          | 推荐的 BIOS           | 机器类型                            | 笔记                       |
-| ------------------- | ------------------ | ------------------------------- | ------------------------ |
-| Windows 11          | %%OVMF\|ovmf%% TPM | %%Q35\|q35%%                    | 需要 TPM 2.0 模拟            |
-| Windows Server 2022 | %%OVMF\|ovmf%%     | %%Q35\|q35%%                    | 适合企业负载                   |
-| Windows 10          | %%OVMF\|ovmf%%     | %%Q35\|q35%%                    | 已停用（生命周期结束于 2025 年 10 月） |
-| Windows Server 2019 | %%OVMF\|ovmf%%     | %%i440fx\|i440fx%%/%%Q35\|q35%% | 兼容但不推荐                   |
+| Windows edition     | Recommended BIOS   | Machine type                    | 笔记                             |
+| ------------------- | ------------------ | ------------------------------- | ------------------------------ |
+| Windows 11          | %%OVMF\|ovmf%% TPM | %%Q35\|q35%%                    | Requires TPM 2.0 emulation     |
+| Windows Server 2022 | %%OVMF\|ovmf%%     | %%Q35\|q35%%                    | Ideal for enterprise workloads |
+| Windows 10          | %%OVMF\|ovmf%%     | %%Q35\|q35%%                    | Deprecated (EOL Oct 2025)      |
+| Windows Server 2019 | %%OVMF\|ovmf%%     | %%i440fx\|i440fx%%/%%Q35\|q35%% | Compatible but not recommended |
 
 ---
 
-### VirtIO 驱动管理
+### VirtIO driver management
 
-Windows 需要使用准虚拟化驱动程序以在 Unraid 的虚拟化堆栈上获得最佳性能。
+Windows requires paravirtualized drivers for optimal performance with Unraid’s virtualization stack.
 
-安装或更新驱动程序：
+To install or update drivers:
 
 <Tabs>
-  <TabItem value="自动化" label="自动安装">
+  <TabItem value="Automatic" label="Automatic installation">
     <WindowsVirtioAutomatic />
   </TabItem>
 
-  <TabItem value="手动" label="手动更新">
+  <TabItem value="Manual" label="手动更新">
     <WindowsVirtioManual />
   </TabItem>
 </Tabs>
 
 :::tip
+
 Using Unraid 7 or later, you can automatically inject %%VirtIO|virtio%% drivers during the Windows installation. Enable this in ***VM Settings → Advanced Options***.
+
 :::
 
 ---
 
-### 设置休眠
+### Setting up hibernation
 
 Hibernation lets you save your entire Windows %%VM|vm%% state - including open applications and documents - to disk. This allows you to power off the %%VM|vm%% without losing any work. When you resume, Windows restores everything exactly as you left it, skipping the normal boot process. This feature is handy when you need to reboot or power down your Unraid host or want to save energy while keeping your %%VM|vm%%'s state intact.
 
-:::note[Benefits 从休眠中]
-- 关闭闲置 %%VM|vm%% 来节约能源而又不丢失进度
-- 在主机维护或更新后快速恢复工作
-- 与频繁的完全关机和重启相比，降低 SSD 磨损
+:::note[Benefits of hibernation]
+
+- Save energy by powering down idle %%VM|vm%% without losing progress
+- Quickly resume work after host maintenance or updates
+- Reduce wear on SSDs compared to frequent complete shutdowns and reboots
+
 :::
 
 To use hibernation reliably, you must install the %%QEMU|qemu%% %%Guest Agent|guest-agent%% in your Windows %%VM|vm%%. This agent allows Unraid to communicate with the %%VM|vm%% for advanced operations like hibernation, shutdown, and live statistics reporting.
 
 <details>
-  <summary><strong>如何安装 %%QEMU|qemu%% %%Guest Agent|guest-agent%%</strong> - 点击展开/收起</summary>
+  <summary><strong>How to install the %%QEMU|qemu%% %%Guest Agent|guest-agent%%</strong> - Click to expand/collapse</summary>
 
-  1. 启动带有 %%VirtIO|virtio%% 驱动程序 ISO 的 Windows %%VM|vm%%。
-  2. 打开 **文件资源管理器** 并导航到 %%VirtIO|virtio%% 驱动器媒体。
-  3. 打开 `guest-agent` 文件夹。
-  4. 运行`qemu-ga-x64.msi`来安装代理程序。（您可能会稍微看到一个命令框，但不会出现确认对话框。）
+  1. Start your Windows %%VM|vm%% with the %%VirtIO|virtio%% drivers ISO mounted.
+  2. Open **File Explorer** and navigate to the %%VirtIO|virtio%% drivers media.
+  3. Open the `guest-agent` folder.
+  4. Run `qemu-ga-x64.msi` to install the agent. (You may briefly see a command box; no confirmation dialog will appear.)
 </details>
 
 <details>
-  <summary><strong>如何在 Windows 中启用休眠</strong> - 点击展开/收起</summary>
+  <summary><strong>How to enable hibernation in Windows</strong> - Click to expand/collapse</summary>
 
-  1. 打开 **控制面板** 并搜索 **电源选项**。
-  2. 点击 **选择电源按钮的功能**。
-  3. 点击 **更改当前不可用的设置** 以解锁关机设置。
-  4. 勾选 **休眠** 选项。
-  5. 点击 **保存更改**。
+  1. Open **Control Panel** and search for **Power Options**.
+  2. Click on **Choose what the power buttons do**.
+  3. Click **Change settings that are currently unavailable** to unlock shutdown settings.
+  4. Check the **Hibernate** option.
+  5. Click **Save changes**.
 
-  Windows 电源菜单中现在会显示 **休眠** 选项。
+  The **Hibernate** option will now appear in the Windows Power menu.
 </details>
 
-:::important[What 如果休眠失败？]
-如果您的%%VM|vm%%无法正确休眠或恢复，可能会丢失未保存的工作或恢复失败。在休眠之前务必保存重要数据。如果问题持续，请确保已安装并更新了%%QEMU|qemu%% %%Guest Agent|guest-agent%%，并检查Windows事件日志以查看错误。
+:::important[What if hibernation fails?]
+
+If your %%VM|vm%% fails to hibernate or resume properly, you may lose unsaved work or face a failed restore. Always save important data before hibernating. If issues persist, ensure the %%QEMU|qemu%% %%Guest Agent|guest-agent%% is installed and updated, and check the Windows event log for errors.
+
 :::
 
 ---
 
-### 性能调优
+### Performance tuning
 
-优化您的Windows %%VM|vm%%可以提升响应速度、减少磁盘使用，并避免设备通过或关闭时的常见问题。这些调整是可选的，可以根据需要进行应用。
+Optimizing your Windows %%VM|vm%% can improve responsiveness, reduce disk usage, and avoid common issues with device passthrough or shutdown. These adjustments are optional and can be applied as needed.
 
-#### 禁用快速启动
+#### Disable fast startup
 
-禁用快速启动可以帮助防止设备通过时出现问题。它确保您的%%VM|vm%%硬件在每次启动时正确初始化。虽然此设置是为物理PC设计的，但在虚拟环境中往往会导致更多问题而非收益。
-
-<details>
-  <summary><strong>如何禁用快速启动</strong> - 点击展开/收起</summary>
-
-  1. 打开 **控制面板** 并搜索 **电源**。
-  2. 点击 **选择电源按钮的功能**。
-  3. 点击 **更改当前不可用的设置**。
-  4. 在 **关机设置** 下取消勾选 **启用快速启动**。
-  5. 点击 **保存更改**。
-</details>
-
-#### 禁用 hiberfil.sys
-
-Windows中的休眠会创建一个名为`hiberfil.sys`的大型隐藏文件。此文件可能会占用大量磁盘空间，并增加%%VM|vm%%中的磁盘活动。如果您不依赖于休眠，禁用它可以释放存储空间并减少不必要的I/O活动。
+Disabling fast startup can help prevent issues with device passthrough. It ensures your %%VM|vm%% hardware initializes correctly every time it boots. While this setting is designed for physical PCs, in a virtual environment, it can often cause more problems than benefits.
 
 <details>
-  <summary><strong>如何禁用休眠并移除 hiberfil.sys</strong> - 点击展开/收起</summary>
+  <summary><strong>How to disable Fast Startup</strong> - Click to expand/collapse</summary>
 
-  1. 右键点击 **开始** 按钮并选择 **Windows 终端（管理员）** 或 **命令提示符（管理员）**。
-  2. 输入：`powercfg /h off`
-  3. 按Enter并重新启动您的%%VM|vm%%。`hiberfil.sys`文件将从C:\驱动器中删除。
+  1. Open **Control Panel** and search for **Power**.
+  2. Click on **Choose what the power buttons do**.
+  3. Click **Change settings that are currently unavailable**.
+  4. Uncheck **Turn on fast startup** under **Shutdown settings**.
+  5. Click **Save changes**.
 </details>
 
-#### 禁用 Windows 索引
+#### Disable hiberfil.sys
+
+Hibernation in Windows creates a large hidden file called `hiberfil.sys`. This file can consume significant disk space and increase disk activity in your %%VM|vm%%. If you don't rely on hibernation, disabling it will free up storage and reduce unnecessary I/O activity.
+
+<details>
+  <summary><strong>How to disable hibernation and remove hiberfil.sys</strong> - Click to expand/collapse</summary>
+
+  1. Right-click the **Start** button and select **Windows Terminal (Admin)** or **Command Prompt (Admin)**.
+  2. Type: `powercfg /h off`
+  3. Press Enter and reboot your %%VM|vm%%. The `hiberfil.sys` file will be removed from your C:\ drive.
+</details>
+
+#### Disable Windows indexing
 
 Windows Search indexing continuously scans your %%virtual machine|vm%%'s storage to catalog files for faster search results. However, on a %%virtual machine|vm%%, this can cause unnecessary disk I/O, slow down performance, and increase wear on your physical storage, especially SSDs in your [%%cache pool|cache-pool%%](../manage-storage/cache-pools.mdx).
 
 <details>
-  <summary><strong>如何禁用 Windows 索引</strong> - 点击展开/收起</summary>
+  <summary><strong>How to disable Windows indexing</strong> - Click to expand/collapse</summary>
 
-  1. 按 **Windows + R** 打开运行对话框，输入 `services.msc`，然后按回车。
-  2. 在服务窗口中，向下滚动并右键点击 **Windows Search**，然后选择 **停止**。
-  3. 双击 **Windows Search**，更改 **启动类型** 为 **禁用**，然后点击 **确定**。
+  1. Press **Windows + R** to open the Run dialog, type `services.msc`, and press Enter.
+  2. In the Services window, scroll down and right-click **Windows Search**, then select **Stop**.
+  3. Double-click **Windows Search**, change **Startup type** to **Disabled**, and click **OK**.
 </details>
 
-#### 禁用自动磁盘碎片整理
+#### Disable automatic disk defragmenting
 
-Windows旨在自动定期对物理硬盘进行碎片整理。在%%VM|vm%%上 - 尤其是在使用SSD存储或精简配置的%%vDisks|vdisk%%时 - 自动碎片整理是没有必要的，并且还会减少磁盘寿命并降低性能。
+Windows is designed to defrag physical hard drives on a regular schedule automatically. On a %%VM|vm%% - especially when using SSD storage or thin-provisioned %%vDisks|vdisk%% - automatic defragmenting is unnecessary and can also reduce disk lifespan and degrade performance.
 
 <details>
-  <summary><strong>如何禁用自动磁盘碎片整理</strong> - 点击展开/收起</summary>
+  <summary><strong>How to disable automatic disk defragmenting</strong> - Click to expand/collapse</summary>
 
-  1. 打开 **文件资源管理器**，右键点击 C: 驱动器，然后选择 **属性**。
-  2. 转到 **工具** 标签并点击 **优化**。
-  3. 点击 **更改设置**。
-  4. 取消勾选 **按计划运行**，然后点击 **确定**。
+  1. Open **File Explorer**, right-click the C: drive, and select **Properties**.
+  2. Go to the **Tools** tab and click **Optimize**.
+  3. Click **Change settings**.
+  4. Uncheck **Run on a schedule** and click **OK**.
 </details>
 
-#### 启用高性能电源模式
+#### Enable high-performance power mode
 
-Windows中的电源管理功能专为笔记本和台式机设计，以节约能源。在%%VM|vm%%环境中，这些功能可能会不必要地限制性能，或挂起您的%%VM|vm%%，使其响应变慢并难以管理。
+Power management features in Windows are designed for laptops and desktops to save energy. In a %%VM|vm%% environment, these features can unnecessarily throttle performance or suspend your %%VM|vm%%, making it less responsive and harder to manage.
 
-启用 **高性能** 模式可以确保您的 %%VM|vm%% 始终以全速运行，并且不太可能意外暂停或挂起。
+Enabling **High Performance** mode ensures your %%VM|vm%% always runs at full speed and is less likely to pause or suspend unexpectedly.
 
 <details>
-  <summary><strong>如何启用高性能电源模式</strong> - 点击展开/收起</summary>
+  <summary><strong>How to enable high performance power mode</strong> - Click to expand/collapse</summary>
 
-  1. 打开 **控制面板** 并搜索 "电源"。
-  2. 点击 **选择电源计划**。
-  3. 在 **首选计划** 下选择 **高性能**。
+  1. Open **Control Panel** and search for "power."
+  2. Click **Choose a power plan**.
+  3. Select **High performance** under **Preferred plans**.
 </details>
 
-#### 启用远程桌面访问
+#### Enable remote desktop access
 
-远程桌面协议（RDP）允许您从其他设备访问Windows %%VM|vm%%。它提供了比%%VNC|vnc-session%%更好的性能和兼容性。请注意，RDP仅在Windows专业版和企业版上受支持。此外，您的Windows用户账户**必须**设置密码。
+Remote desktop protocol (RDP) allows you to access your Windows %%VM|vm%% from another device. It offers better performance and compatibility compared to %%VNC|vnc-session%%. Note that RDP is supported only on Windows Professional and Enterprise editions. Also, your Windows user account **must** have a password set.
 
 :::caution
-RDP不适用于Windows Home版。在启用RDP之前，请始终为您的Windows用户帐户设置安全密码。
+
+RDP is not available on Windows Home editions. Always set a secure password for your Windows user account before enabling RDP.
+
 :::
 
 <details>
-  <summary><strong>如何启用远程桌面（RDP）访问</strong> - 点击展开/收起</summary>
+  <summary><strong>How to enable remote desktop (RDP) access</strong> - Click to expand/collapse</summary>
 
-  要启用 RDP 访问，请按照以下步骤：
+  To enable RDP access, follow these steps:
 
-  1. 按 **Windows + I** 打开设置，然后导航至 ***系统 → 关于*** 并点击 **高级系统设置**。
-  2. 在系统属性窗口中，点击 **远程** 标签，然后选择 **启用远程桌面**。
-  3. 点击 **确定** 确认更改。
-  4. 从您的客户端设备，使用 Microsoft RDP 客户端连接到 **%%VM|vm%% 的 IP 地址**（而不是 Unraid 服务器）。
+  1. Press **Windows + I** to open Settings, then navigate to ***System → About*** and click **Advanced system settings**.
+  2. In the System Properties window, click the **Remote** tab, then select **Enable Remote Desktop**.
+  3. Click **OK** to confirm the changes.
+  4. From your client device, use a Microsoft RDP client to connect to the **IP address of the %%VM|vm%%** (not the Unraid server).
 
-  :::技巧
-  官方Microsoft RDP客户端适用于 Windows、Mac、Android 和 iOS。确保您的 %%VM|vm%% 处于允许局域网访问的网络桥上。
+  :::tip
+  Official Microsoft RDP clients are available for Windows, Mac, Android, and iOS. Make sure your %%VM|vm%% is on a network bridge that allows LAN access.
   :::
 </details>
 
-#### 使用 MSI 中断修复 HDMI 音频
+#### Fix HDMI audio with MSI interrupts
 
-如果您在使用%%GPU透传|gpu-passthrough%%（常见于NVIDIA显卡）时在Windows %%VM|vm%%中遇到HDMI音频问题，启用消息信号中断（MSI）可能会有所帮助。MSI改善了对透传设备的中断管理。
+If you're having trouble with HDMI audio in a Windows %%VM|vm%% that uses %%GPU passthrough|gpu-passthrough%% (which often occurs with NVIDIA graphics cards), enabling Message Signaled Interrupts (MSI) might help. MSI enhances the way interrupts are managed for passed-through devices.
 
 <details>
-  <summary><strong>如何启用 MSI 中断</strong> - 点击展开/收起</summary>
+  <summary><strong>How to enable MSI interrupts</strong> - Click to expand/collapse</summary>
 
-  :::注意
-  在进行注册表更改之前，请备份您的 %%VM|vm%%。不正确的修改可能导致系统不稳定。
+  :::caution
+  Back up your %%VM|vm%% before making any registry changes. Incorrect modifications can cause system instability.
   :::
 
-  1. **验证 MSI 功能：**
-     - 启用 %%GPU passthrough|gpu-passthrough%% 启动您的 %%VM|vm%%。
-     - 通过 [WebTerminal 或 SSH](../../system-administration/advanced-tools/command-line-interface.mdx) 访问 Unraid。
-     - 运行命令 `lspci -v -s 01:00.0`（将 `01:00.0` 替换为您的 GPU 的 PCI 地址）。
-     - 查找行：`Capabilities: [68] MSI: Enable+ Count=1/1 Maskable- 64bit+`。
+  1. **Verify MSI capability:**
+     - Start your %%VM|vm%% with %%GPU passthrough|gpu-passthrough%% enabled.
+     - Access Unraid via [WebTerminal or SSH](../../system-administration/advanced-tools/command-line-interface.mdx).
+     - Run the command `lspci -v -s 01:00.0` (replace `01:00.0` with your GPU's PCI address).
+     - Look for the line: `Capabilities: [68] MSI: Enable+ Count=1/1 Maskable- 64bit+`.
 
-  2. **在 Windows 中启用 MSI：**
-     - 如果 MSI 显示`Enable-`，请遵循 [微软指南](https://learn.microsoft.com/en-us/windows-hardware/drivers/kernel/enabling-message-signaled-interrupts-in-the-registry) 或使用 [MSI 模式工具](https://forums.guru3d.com/threads/windows-line-based-vs-message-signaled-based-interrupts-msi-tool.378044/) 修改您的 Windows 注册表设置。
-     - 在更改后重启 %%VM|vm%%。
+  2. **Enable MSI in Windows:**
+     - If MSI shows `Enable-`, follow [Microsoft's guide](https://learn.microsoft.com/en-us/windows-hardware/drivers/kernel/enabling-message-signaled-interrupts-in-the-registry) or use the [MSI Mode Utility](https://forums.guru3d.com/threads/windows-line-based-vs-message-signaled-based-interrupts-msi-tool.378044/) to modify your Windows registry settings.
+     - Reboot the %%VM|vm%% after making the changes.
 
-  获取更多技术细节，请参阅 [VFIO 中断解释](https://vfio.blogspot.com/2014/09/vfio-interrupts-and-how-to-coax-windows.html)。
+  For more technical details, see [VFIO interrupts explained](https://vfio.blogspot.com/2014/09/vfio-interrupts-and-how-to-coax-windows.html).
 </details>
 
 ---
 
-### 升级到 Windows 11
+### Upgrading to Windows 11
 
 Windows 11 requires TPM 2.0 and Secure Boot. Unraid's **OVMF-TPM** BIOS provides the virtual TPM support needed for these requirements.
 
-:::important[Before 升级]
-- 创建完整的 %%VM|vm%% 备份。
-- 确保 Unraid 运行的是版本 6.10 或更高版本。
-- 确保您的 Windows 10 %%VM|vm%% 满足 [Windows 11 的系统要求](https://www.microsoft.com/en-us/windows/windows-11-specifications)。
+:::important[Before upgrading]
+
+- Create a complete backup of your %%VM|vm%%.
+- Ensure that Unraid is running version 6.10 or later.
+- Verify that your Windows 10 %%VM|vm%% meets the [Windows 11 system requirements](https://www.microsoft.com/en-us/windows/windows-11-specifications).
+
 :::
 
-添加 TPM 支持：
+To add TPM support:
 
-1. 关闭您的Windows 10 %%VM|vm%%。
-2. 编辑%%VM|vm%%设置。
-3. 将**BIOS**从\*%%OVMF|ovmf%%*更改为*%%OVMF|ovmf%%-TPM\*。
-4. 保存更改并启动%%VM|vm%%。
+1. Shut down your Windows 10 %%VM|vm%%.
+2. Edit the %%VM|vm%% settings.
+3. Change **BIOS** from *%%OVMF|ovmf%%* to *%%OVMF|ovmf%%-TPM*.
+4. Save the changes and start the %%VM|vm%%.
 
-#### 升级方法
+#### Upgrade methods
 
 <Tabs>
-  <TabItem value="就地升级" label="就地升级">
+  <TabItem value="In-place upgrade" label="In-place upgrade">
     <WindowsUpgradeInPlace />
   </TabItem>
 
-  <TabItem value="全新安装" label="全新安装">
+  <TabItem value="Clean install" label="Clean install">
     <WindowsUpgradeCleanInstall />
   </TabItem>
 </Tabs>
 
-## 扩展Windows VM vDisk分区
+## Expanding Windows VM vDisk partitions
 
-:::caution[Data 丢失风险]
-如果不小心扩大或修改%%vDisk|vdisk%%和分区布局，可能会导致不可逆的数据丢失。进行操作前请务必创建%%VM|vm%%的完整备份或快照。
+:::caution[Data loss risk]
+
+Expanding or modifying %%vDisk|vdisk%% and partition layouts can lead to irreversible data loss if not done carefully. Always create a full backup or snapshot of your %%VM|vm%% before proceeding.
+
 :::
 
-按照[扩展vDisk](../create-virtual-machines/vm-setup.mdx#expand-a-vdisk)中的步骤扩展%%vDisk|vdisk%%后，您可能会遇到Windows默认恢复分区阻止您轻松扩展系统(C:)分区以利用新空间的问题。要解决此问题，您需要删除恢复分区，然后使用Windows磁盘管理来扩展分区。
+After you expand your %%vDisk|vdisk%% following the steps in [Expand a vDisk](../create-virtual-machines/vm-setup.mdx#expand-a-vdisk), you may encounter an issue where Windows’ default recovery partition blocks you from easily expanding your system (C:) partition to utilize the new space. To resolve this issue, you need to delete the recovery partition and then use Windows Disk Management to expand the partition.
 
 <div style={{ margin: 'auto', maxWidth: '600px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
   ![Resize vDisk 2](/img/Resize_vdisk_2.png)
 </div>
 
-完成初始%%vDisk|vdisk%%扩展后：
+After you complete the initial %%vDisk|vdisk%% expansion:
 
-1. 启动您的Windows VM。
-2. **打开命令提示符：** 按Windows键，输入`cmd`，然后按Enter。
-3. **启动diskpart：** 输入`diskpart`并按Enter。
-4. **列出磁盘：** 输入`list disk`并按Enter。
-5. **选择扩展的磁盘：** 输入`select disk #`，替换`#`为正确的磁盘编号。
-6. **列出分区：** 输入`list partition`并按Enter。
-7. **识别恢复分区：** 查找在您的主分区之后的恢复分区。
-8. **选择并删除恢复分区：**
-   - 输入`select partition #`，替换`#`为恢复分区的编号。
-   - 输入`delete partition override`并按Enter。
-9. **扩展C:分区：**
-   - 右键单击开始菜单并选择**磁盘管理**。
-   - 右键单击您想要扩展的分区（通常是C:）并选择**扩展卷...**。
-   - 按照提示使用未分配的空间。
+1. Start your Windows VM.
+2. **Open command prompt:** Press the Windows key, type `cmd`, and hit Enter.
+3. **Launch diskpart:** Type `diskpart` and press Enter.
+4. **List disks:** Type `list disk` and press Enter.
+5. **Select the expanded disk:** Type `select disk #`, replacing `#` with the correct disk number.
+6. **List partitions:** Type `list partition` and press Enter.
+7. **Identify the recovery partition:** Look for the recovery partition that comes after your primary partition.
+8. **Select and delete the recovery partition:**
+   - Type `select partition #`, replacing `#` with the number of the recovery partition.
+   - Type `delete partition override` and press Enter.
+9. **Expand the C: partition:**
+   - Right-click the Start menu and select **Disk Management**.
+   - Right-click the partition you want to extend (usually C:) and choose **Extend Volume...**.
+   - Follow the prompts to use the unallocated space.
 
-<div className="flex-容器" style={{ margin: 'auto', maxWidth: '800px'}}>
+<div className="flex-container" style={{ margin: 'auto', maxWidth: '800px'}}>
   <figure className="flex-figure">
-    <img src="/img/Resize_vdisk_3.png" alt="调整虚拟磁盘3" />
+    <img src="/img/Resize_vdisk_3.png" alt="Resize vDisk 3" />
   </figure>
 
   <figure className="flex-figure">
-    <img src="/img/Resize_vdisk_4.png" alt="调整虚拟磁盘4" />
+    <img src="/img/Resize_vdisk_4.png" alt="Resize vDisk 4" />
   </figure>
 </div>
 
 :::tip
-仅当恢复分区阻挡邻接的空闲空间时，才需要将其删除。如果未分配的空间已经与C:分区相邻，您可以在不删除任何内容的情况下扩展它。
+
+You only need to remove the recovery partition if it blocks access to adjacent free space. If the unallocated space is already next to your C: partition, you can extend it without deleting anything.
+
 :::
 
 :::warning
-对磁盘分区所做的更改是永久性的，无法撤销。在删除任何分区之前，请确保您的数据已进行安全备份。
+
+Changes made to disk partitions are permanent and cannot be undone. Ensure that your data is securely backed up before deleting any partitions.
+
 :::
