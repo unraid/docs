@@ -14,24 +14,28 @@ import CliStorageInfo from './partials/command-line-interface/storage-info.mdx';
 Aunque la mayoría de las tareas en Unraid se pueden realizar a través del %%WebGUI|web-gui%%, ciertas operaciones, especialmente aquellas relacionadas con diagnósticos, administración de discos o creación de scripts, requieren el uso de la consola del sistema o el terminal %%SSH|ssh%%. Esta página ofrece herramientas de línea de comandos específicas de Unraid y ejemplos que se pueden usar sin necesidad de un conocimiento extenso de Linux.
 
 :::tip[Device rutas]
-Muchas operaciones a nivel de disco en Unraid dependen de los nombres de dispositivos de Linux, como `/dev/sdX`. Puede encontrar el identificador del dispositivo para cualquier unidad en la pestaña **Main** del %%WebGUI|web-gui%%. Busque la etiqueta de tres letras `sdX` o `nvmeX` junto a cada disco. Use el identificador apropiado en todos los comandos, reemplazando `sdX` con su disco específico.
+
+Many disk-level Unraid operations depend on Linux device names, like `/dev/sdX`. You can find the device identifier for any drive in the **Main** tab of the %%WebGUI|web-gui%%. Look for the three-letter label `sdX` or `nvmeX` next to each disk. Use the appropriate identifier in all commands, replacing `sdX` with your specific disk.
+
 :::
 
 ## Acceder al terminal
 
-Unraid incluye un terminal web integrado al que puede acceder directamente desde el %%WebGUI|web-gui%%. Simplemente utilice el menú desplegable en la esquina superior derecha y seleccione ">\_". Esto abrirá una sesión de línea de comandos como el %%root user|root-user%%, dándole acceso administrativo completo a su sistema.
+Unraid includes a built-in web terminal that you can access directly from the %%WebGUI|web-gui%%. Simply use the top-right dropdown menu and select ">_". This opens a command-line session as the %%root user|root-user%%, giving you full administrative access to your system.
 
 También puede conectar su servidor Unraid externamente utilizando %%SSH|ssh%% (shell seguro) con un cliente como %%PuTTY|putty%%.
 
-:::tip[When ¿debería usar el terminal?]
-El acceso al terminal es útil para:
+:::tip[When should I use the terminal?]
+
+Si está utilizando Windows, puede preferir %%PuTTY|putty%% para el acceso %%SSH|ssh%% en lugar del terminal integrado. Es ligero, gratuito, y le permite guardar sesiones para un acceso fácil más adelante.
 
 - Ejecutar diagnósticos y herramientas de línea de comando como `smartctl`, `xfs_repair`, `tail` o `top`
 - Ejecutar scripts de complementos o herramientas que no requieren interfaz de usuario
 - Solucionando problemas relacionados con la conectividad, servicios del sistema, o %%user shares|comparticiones de usuario%%
+
 :::
 
-### Usando PuTTY (solo para Windows)
+### Pruebas de discos y monitoreo
 
 Si está utilizando Windows, puede preferir %%PuTTY|putty%% para el acceso %%SSH|ssh%% en lugar del terminal integrado. Es ligero, gratuito, y le permite guardar sesiones para un acceso fácil más adelante.
 
@@ -50,21 +54,23 @@ Si está utilizando Windows, puede preferir %%PuTTY|putty%% para el acceso %%SSH
 </details>
 
 :::note
+
 Unraid configura automáticamente el servidor SSH en el primer arranque. Asegúrese de que su red funcione correctamente y que su contraseña de root esté establecida antes de intentar una conexión remota.
+
 :::
 
 ## Pruebas de discos y monitoreo
 
 Estas herramientas ayudan a evaluar el rendimiento, verificar la salud de los discos y solucionar problemas de lentitud en el %%array|array%%. Todos los comandos deben ejecutarse desde la terminal o a través de %%SSH|ssh%%.
 
-### `hdparm`
+### `diskspeed.sh`
 
-Utilice este comando para probar la velocidad de lectura y mostrar las características del disco.
+Este script permite pruebas de rendimiento a nivel superficial, completas con informes visuales.
 
 <details>
-  <summary><strong>Ver opciones de hdparm</strong> - Haga clic para expandir/colapsar</summary>
+  <summary><strong>Ver uso de diskspeed.sh</strong> - Haga clic para expandir/colapsar</summary>
 
-  **Prueba de velocidad de lectura de disco:**
+  Esto solía ser un script que descargarías desde los foros de Unraid. DiskSpeed ahora está disponible en un paquete más refinado:
 
   ```bash
   hdparm -tT /dev/sdX
@@ -125,12 +131,12 @@ Este comando ejecuta diagnósticos %%SMART|smart%% y monitoriza la salud del dis
   Esto guarda el informe en su unidad USB de Unraid para su revisión o compartirlo después en los [foros](https://forums.unraid.net/).
 </details>
 
-### `diskspeed.sh`
+### `top`
 
-Este script permite pruebas de rendimiento a nivel superficial, completas con informes visuales.
+Este comando proporciona un monitor en tiempo real de procesos y recursos.
 
 <details>
-  <summary><strong>Ver uso de diskspeed.sh</strong> - Haga clic para expandir/colapsar</summary>
+  <summary><strong>Ver uso de top</strong> - Haga clic para expandir/colapsar</summary>
 
   Esto solía ser un script que descargarías desde los foros de Unraid. DiskSpeed ahora está disponible en un paquete más refinado:
 
@@ -143,12 +149,12 @@ Este script permite pruebas de rendimiento a nivel superficial, completas con in
 
 Utilice estos comandos para vigilar la memoria, procesos y rendimiento del sistema cuando el %%WebGUI|web-gui%% no esté disponible o para diagnósticos más detallados.
 
-### `top`
+### `ps`
 
-Este comando proporciona un monitor en tiempo real de procesos y recursos.
+Utilice este comando para mostrar procesos en ejecución con información detallada.
 
 <details>
-  <summary><strong>Ver uso de top</strong> - Haga clic para expandir/colapsar</summary>
+  <summary><strong>Ver opciones de ps</strong> - Haga clic para expandir/colapsar</summary>
 
   ```bash
   top
@@ -158,9 +164,7 @@ Este comando proporciona un monitor en tiempo real de procesos y recursos.
   - Presione `q` para salir.
   - Use las arrow keys para desplazarse y `k` para finalizar procesos.
 
-  :::tip
-  Considera usar `htop` para una interfaz más amigable al usuario con controles mejorados.
-  :::
+  **Ordenar por uso de memoria:**
 </details>
 
 ### `libre`
@@ -181,12 +185,12 @@ Este comando muestra estadísticas de uso de memoria.
   :::
 </details>
 
-### `ps`
+### `df`
 
-Utilice este comando para mostrar procesos en ejecución con información detallada.
+Este comando muestra el uso de espacio en el disco del sistema de archivos.
 
 <details>
-  <summary><strong>Ver opciones de ps</strong> - Haga clic para expandir/colapsar</summary>
+  <summary><strong>Ver uso de df</strong> - Haga clic para expandir/colapsar</summary>
 
   **Listar todos los procesos con detalles completos:**
 
@@ -194,7 +198,9 @@ Utilice este comando para mostrar procesos en ejecución con información detall
   ps aux
   ```
 
-  **Ordenar por uso de memoria:**
+  :::tip
+  Considera usar `htop` para una interfaz más amigable al usuario con controles mejorados.
+  :::
 
   ```bash
   ps aux --sort=-%mem | head -20
@@ -213,34 +219,6 @@ Utilice este comando para mostrar procesos en ejecución con información detall
 
 Estos comandos ayudan a verificar uso de disco, información de partición e identificar dispositivos de almacenamiento.
 
-### `df`
-
-Este comando muestra el uso de espacio en el disco del sistema de archivos.
-
-<details>
-  <summary><strong>Ver uso de df</strong> - Haga clic para expandir/colapsar</summary>
-
-  ```bash
-  df -h
-  ```
-
-  Este comando muestra el espacio usado y disponible en todos los sistemas de archivos montados. Es conveniente para verificar `/var/log` (que utiliza un registro basado en RAM) en Unraid. Para más información sobre [registro del sistema](../../troubleshooting/diagnostics/capture-diagnostics-and-logs.mdx).
-</details>
-
-### `fdisk`
-
-Ver tablas y geometría de partición de discos.
-
-<details>
-  <summary><strong>Ver uso de fdisk</strong> - Haga clic para expandir/colapsar</summary>
-
-  ```bash
-  fdisk -l /dev/sdX
-  ```
-
-  Este comando muestra el diseño de particiones, tamaños y la geometría del disco. Ayuda a solucionar problemas de tamaños de discos desajustados, especialmente al [reemplazar discos](../../using-unraid-to/manage-storage/array-configuration.mdx#replacing-disks).
-</details>
-
 ### `lsblk`
 
 Lista todos los dispositivos de bloque en formato de árbol.
@@ -249,10 +227,10 @@ Lista todos los dispositivos de bloque en formato de árbol.
   <summary><strong>Ver uso de lsblk</strong> - Haga clic para expandir/colapsar</summary>
 
   ```bash
-  lsblk
+  df -h
   ```
 
-  Este comando muestra todos los dispositivos de almacenamiento junto con sus puntos de montaje en una estructura de árbol sencilla. Es excelente para obtener una visión general de la disposición de su almacenamiento.
+  Este comando muestra el espacio usado y disponible en todos los sistemas de archivos montados. Es conveniente para verificar `/var/log` (que utiliza un registro basado en RAM) en Unraid. Para más información sobre [registro del sistema](../../troubleshooting/diagnostics/capture-diagnostics-and-logs.mdx).
 </details>
 
 ### `blockdev -getsz`
@@ -261,6 +239,34 @@ Ayuda a determinar si un disco de reemplazo tiene suficiente espacio antes de la
 
 <details>
   <summary><strong>Ver uso de blockdev</strong> - Haga clic para expandir/colapsar</summary>
+
+  ```bash
+  fdisk -l /dev/sdX
+  ```
+
+  Este comando muestra el diseño de particiones, tamaños y la geometría del disco. Ayuda a solucionar problemas de tamaños de discos desajustados, especialmente al [reemplazar discos](../../using-unraid-to/manage-storage/array-configuration.mdx#replacing-disks).
+</details>
+
+### `blkid`
+
+Identificar etiquetas de sistemas de archivos.
+
+<details>
+  <summary><strong>Ver uso de blkid</strong> - Haga clic para expandir/colapsar</summary>
+
+  ```bash
+  lsblk
+  ```
+
+  Este comando muestra el espacio usado y disponible en todos los sistemas de archivos montados. Es conveniente para verificar `/var/log` (que utiliza un registro basado en RAM) en Unraid. Para más información sobre [registro del sistema](../../troubleshooting/diagnostics/capture-diagnostics-and-logs.mdx).
+</details>
+
+### `blockdev -getsz`
+
+Ayuda a determinar si un disco de reemplazo tiene suficiente espacio antes de la reconstrucción.
+
+<details>
+  <summary><strong>Ver uso de fdisk</strong> - Haga clic para expandir/colapsar</summary>
 
   **Sintaxis:**
 
@@ -271,12 +277,12 @@ Ayuda a determinar si un disco de reemplazo tiene suficiente espacio antes de la
   Devuelve el número crudo de sectores de 512 bytes en un dispositivo - útil para confirmar que un disco de reemplazo es lo suficientemente grande antes de reconstruir.
 </details>
 
-### `blkid`
+### `ss`
 
-Identificar etiquetas de sistemas de archivos.
+Muestra estadísticas de sockets y conexiones de red. Este es el reemplazo moderno para `netstat`.
 
 <details>
-  <summary><strong>Ver uso de blkid</strong> - Haga clic para expandir/colapsar</summary>
+  <summary><strong>Ver opciones de ss</strong> - Haga clic para expandir/colapsar</summary>
 
   **Sintaxis:**
 
@@ -293,14 +299,14 @@ Identificar etiquetas de sistemas de archivos.
 
 Herramientas para solucionar problemas de conectividad de red y configuración de interfaces.
 
-### `ss`
+### `ping`
 
-Muestra estadísticas de sockets y conexiones de red. Este es el reemplazo moderno para `netstat`.
+Probar conectividad de red.
 
 <details>
-  <summary><strong>Ver opciones de ss</strong> - Haga clic para expandir/colapsar</summary>
+  <summary><strong>Ver uso de ping</strong> - Haga clic para expandir/colapsar</summary>
 
-  **Mostrar todos los puertos en escucha:**
+  **Prueba de conectividad enviando un número limitado de paquetes:**
 
   ```bash
   ss -tuln
@@ -320,14 +326,14 @@ Muestra estadísticas de sockets y conexiones de red. Este es el reemplazo moder
   Este comando muestra conexiones activas junto con información del proceso.
 </details>
 
-### `ip`
+### `ethtool`
 
-Configure y muestre información sobre la interfaz de red. Este es el reemplazo moderno para `ifconfig`.
+Herramienta útil para consultar y ajustar parámetros de la tarjeta de interfaz de red (NIC), como velocidad de enlace, características de carga y estadísticas.
 
 <details>
-  <summary><strong>Ver opciones de ip</strong> - Haga clic para expandir/colapsar</summary>
+  <summary><strong>Ver uso de ethtool</strong> - Haga clic para expandir/colapsar</summary>
 
-  **Mostrar todas las interfaces de red:**
+  **Información básica de controlador y firmware:**
 
   ```bash
   ip addr show
@@ -339,7 +345,7 @@ Configure y muestre información sobre la interfaz de red. Este es el reemplazo 
   ip -c addr show
   ```
 
-  **Mostrar tabla de enrutamiento:**
+  Para verificar la velocidad de enlace y configuraciones actuales de su interfaz, ejecute:
 
   ```bash
   ip route show
@@ -351,9 +357,9 @@ Configure y muestre información sobre la interfaz de red. Este es el reemplazo 
 Probar conectividad de red.
 
 <details>
-  <summary><strong>Ver uso de ping</strong> - Haga clic para expandir/colapsar</summary>
+  <summary><strong>Ver opciones de ss</strong> - Haga clic para expandir/colapsar</summary>
 
-  **Prueba de conectividad enviando un número limitado de paquetes:**
+  **Mostrar todos los puertos en escucha:**
 
   ```bash
   ping -c 4 google.com
@@ -367,9 +373,9 @@ Probar conectividad de red.
 Herramienta útil para consultar y ajustar parámetros de la tarjeta de interfaz de red (NIC), como velocidad de enlace, características de carga y estadísticas.
 
 <details>
-  <summary><strong>Ver uso de ethtool</strong> - Haga clic para expandir/colapsar</summary>
+  <summary><strong>Ver opciones de ip</strong> - Haga clic para expandir/colapsar</summary>
 
-  **Información básica de controlador y firmware:**
+  **Mostrar todas las interfaces de red:**
 
   Use este comando para obtener información sobre el controlador y firmware de su interfaz de red:
 
@@ -379,7 +385,7 @@ Herramienta útil para consultar y ajustar parámetros de la tarjeta de interfaz
 
   **Mostrar velocidad de enlace y configuraciones actuales:**
 
-  Para verificar la velocidad de enlace y configuraciones actuales de su interfaz, ejecute:
+  **Mostrar tabla de enrutamiento:**
 
   ```
   ethtool eth0
@@ -398,9 +404,9 @@ Herramienta útil para consultar y ajustar parámetros de la tarjeta de interfaz
 
 ---
 
-## Información del sistema
+## `tail`
 
-Obtenga información detallada sobre el hardware, kernel y configuración general del sistema.
+Monitorea archivos de registro en tiempo real.
 
 <Tabs>
   <TabItem value="CPU" label="Información de la CPU">
