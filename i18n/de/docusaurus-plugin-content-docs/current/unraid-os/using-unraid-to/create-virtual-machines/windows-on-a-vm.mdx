@@ -15,9 +15,11 @@ import WindowsUpgradeCleanInstall from './partials/windows-upgrade-clean-install
 Windows ist eines der beliebtesten Gastbetriebssysteme für Unraid-Benutzer, insbesondere für Gaming, Produktivität und Unterstützung älterer Anwendungen. Hier sind wesentliche Überlegungen zum Betrieb von Windows-VMs.
 
 :::caution[Before Sie beginnen]
+
 - Microsoft beendete den Support für Windows 7 im Januar 2020, Windows 8.1 im Januar 2023 und Windows 10 im Oktober 2025. Verwenden Sie Windows 11 (oder später) oder Server 2022 (oder später) für laufende Sicherheitsupdates.
 - Testen Sie immer die Stabilität von %%VM|vm%%, bevor Sie Ihre Windows-Lizenz aktivieren.
 - Für %%GPU-Passthrough|gpu-passthrough%% verwenden Sie %%OVMF|ovmf%% (%%UEFI|uefi%%) BIOS mit Windows 11 oder neuer.
+
 :::
 
 ### Unterstützte Konfigurationen
@@ -48,22 +50,26 @@ Um Treiber zu installieren oder zu aktualisieren:
 </Tabs>
 
 :::tip
-Mit Unraid 7 oder später können Sie %%VirtIO|virtio%%-Treiber während der Windows-Installation automatisch einfügen. Aktivieren Sie dies in den ***VM-Einstellungen → Erweiterte Optionen***.
+
+Bei Verwendung von Unraid 7 oder später können Sie %%VirtIO|virtio%%-Treiber automatisch während der Windows-Installation injizieren. Aktivieren Sie dies in ***VM-Einstellungen → Erweiterte Optionen***.
+
 :::
 
 ---
 
 ### Einrichten des Ruhemodus
 
-Der Ruhezustand ermöglicht es Ihnen, den gesamten Zustand Ihrer Windows-VM - einschließlich geöffneter Anwendungen und Dokumente - auf die Festplatte zu speichern. Dadurch können Sie die VM ausschalten, ohne Arbeit zu verlieren. Wenn Sie fortfahren, stellt Windows alles genauso wieder her, wie Sie es verlassen haben, und überspringt den normalen Startprozess. Diese Funktion ist nützlich, wenn Sie Ihren Unraid-Host neu starten oder herunterfahren müssen oder Energie sparen möchten, während der Zustand der VM erhalten bleibt.
+Der Ruhezustand ermöglicht es Ihnen, den gesamten Status Ihrer Windows-%%VM|vm%% - einschließlich geöffneter Anwendungen und Dokumente - auf die Festplatte zu speichern. Dadurch können Sie die %%VM|vm%% ausschalten, ohne Arbeit zu verlieren. Beim Fortsetzen stellt Windows alles exakt so wieder her, wie Sie es verlassen haben, und überspringt den normalen Startvorgang. Diese Funktion ist praktisch, wenn Sie neu starten oder Ihren Unraid-Host herunterfahren müssen oder Energie sparen möchten, während Sie den Zustand Ihrer %%VM|vm%% intakt halten.
 
-:::note[Benefits aus dem Ruhezustand]
+:::note[Benefits des Ruhezustands]
+
 - Energie sparen, indem inaktive %%VM|vm%% ausgeschaltet werden, ohne Fortschritte zu verlieren
 - Arbeit schnell nach Wartung oder Updates am Host wieder aufnehmen
 - Verringern Sie den Verschleiß von SSDs im Vergleich zu häufigen vollständigen Ausschaltungen und Neustarts
+
 :::
 
-Um den Ruhezustand zuverlässig zu verwenden, müssen Sie den %%QEMU|qemu%% %%Guest Agent|guest-agent%% in Ihrer Windows-VM installieren. Dieser Agent ermöglicht es Unraid, mit der VM für erweiterte Vorgänge wie Ruhezustand, Herunterfahren und Echtzeitstatistiken zu kommunizieren.
+Um den Ruhezustand zuverlässig zu nutzen, müssen Sie den %%QEMU|qemu%%-%%Guest-Agent|guest-agent%% in Ihrer Windows-%%VM|vm%% installieren. Dieser Agent ermöglicht es Unraid, mit der %%VM|vm%% für erweiterte Vorgänge wie Ruhezustand, Herunterfahren und Live-Statistikberichterstattung zu kommunizieren.
 
 <details>
   <summary><strong>Wie installiert man den %%QEMU|qemu%% %%Guest Agent|guest-agent%%</strong> – Klicken Sie hier zum Ein-/Ausklappen</summary>
@@ -71,7 +77,7 @@ Um den Ruhezustand zuverlässig zu verwenden, müssen Sie den %%QEMU|qemu%% %%Gu
   1. Starten Sie Ihre Windows-%%VM|vm%% mit der eingehängten %%VirtIO|virtio%%-Treiber-ISO.
   2. Öffnen Sie den **Datei-Explorer** und navigieren Sie zu den %%VirtIO|virtio%%-Treibern.
   3. Öffnen Sie den Ordner `guest-agent`.
-  4. Führen Sie `qemu-ga-x64.msi` aus, um den Agenten zu installieren. (Eventuell sehen Sie kurz ein Befehlsfeld; es wird kein Bestätigungsdialog angezeigt.)
+  4. Führen Sie `qemu-ga-x64.msi` aus, um den Agent zu installieren. (Möglicherweise wird kurz ein Befehlsfenster angezeigt; es erscheint kein Bestätigungsdialog.)
 </details>
 
 <details>
@@ -86,19 +92,21 @@ Um den Ruhezustand zuverlässig zu verwenden, müssen Sie den %%QEMU|qemu%% %%Gu
   Die Option **Ruhezustand** wird jetzt im Windows-Energie-Menü angezeigt.
 </details>
 
-:::important[What falls der Ruhezustand fehlschlägt?]
-Wenn Ihre VM nach dem Ruhezustand oder beim Fortsetzen nicht ordnungsgemäß funktioniert, können ungespeicherte Daten verloren gehen oder eine Wiederherstellung fehlschlagen. Speichern Sie vor dem Ruhezustand immer wichtige Daten. Wenn Probleme weiterhin bestehen, stellen Sie sicher, dass der %%QEMU|qemu%% %%Guest Agent|guest-agent%% installiert und aktualisiert ist, und überprüfen Sie das Windows-Ereignisprotokoll auf Fehler.
+:::important[What wenn der Ruhezustand fehlschlägt?]
+
+Falls Ihre %%VM|vm%% beim Ruhezustand oder beim Fortsetzen nicht ordnungsgemäß arbeitet, können ungespeicherte Arbeiten verloren gehen oder eine Wiederherstellung fehlgeschlagen sein. Speichern Sie immer wichtige Daten, bevor Sie den Ruhezustand aktivieren. Sollten die Probleme weiterhin bestehen, stellen Sie sicher, dass der %%QEMU|qemu%%-%%Guest-Agent|guest-agent%% installiert und aktualisiert ist und überprüfen Sie das Windows-Ereignisprotokoll auf Fehler.
+
 :::
 
 ---
 
 ### Leistungsoptimierung
 
-Die Optimierung Ihrer Windows-VM kann die Reaktionsfähigkeit verbessern, den Speicherplatz reduzieren und häufige Probleme mit Geräteübertragung oder Herunterfahren vermeiden. Diese Anpassungen sind optional und können bei Bedarf angewendet werden.
+Die Optimierung Ihrer Windows-%%VM|vm%% kann die Reaktionsfähigkeit verbessern, die Festplattennutzung reduzieren und häufig auftretende Probleme mit Gerätepasseinstellungen oder dem Herunterfahren vermeiden. Diese Anpassungen sind optional und können bei Bedarf vorgenommen werden.
 
 #### Schnellstart deaktivieren
 
-Das Deaktivieren des Schnellstarts kann helfen, Probleme mit der Geräteübertragung zu verhindern. Es stellt sicher, dass Ihre VM-Hardware bei jedem Start korrekt initialisiert wird. Während diese Einstellung für physische PCs ausgelegt ist, kann sie in einer virtuellen Umgebung oft mehr Probleme als Vorteile verursachen.
+Das Deaktivieren des Schnellstarts kann helfen, Probleme mit dem Gerätepasseinstellungen zu verhindern. Es stellt sicher, dass Ihre %%VM|vm%%-Hardware bei jedem Neustart korrekt initialisiert wird. Während diese Einstellung für physische PCs konzipiert ist, kann sie in einer virtuellen Umgebung häufig mehr Probleme als Vorteile verursachen.
 
 <details>
   <summary><strong>Wie man den Schnellstart deaktiviert</strong> – Klicken Sie hier zum Ein-/Ausklappen</summary>
@@ -112,14 +120,14 @@ Das Deaktivieren des Schnellstarts kann helfen, Probleme mit der Geräteübertra
 
 #### hiberfil.sys deaktivieren
 
-Der Ruhezustand in Windows erstellt eine große versteckte Datei namens `hiberfil.sys`. Diese Datei kann erheblichen Speicherplatz beanspruchen und die Festplattenaktivität in Ihrer VM erhöhen. Wenn Sie sich nicht auf den Ruhezustand verlassen, wird durch das Deaktivieren Speicherplatz freigegeben und unnötige I/O-Aktivitäten reduziert.
+Der Ruhezustand in Windows erzeugt eine große versteckte Datei namens `hiberfil.sys`. Diese Datei kann erheblichen Speicherplatz beanspruchen und die Festplattenaktivität Ihrer %%VM|vm%% erhöhen. Wenn Sie nicht auf den Ruhezustand angewiesen sind, wird dessen Deaktivierung Speicherplatz freigeben und unnötige I/O-Aktivitäten reduzieren.
 
 <details>
   <summary><strong>Wie man den Ruhezustand deaktiviert und hiberfil.sys entfernt</strong> – Klicken Sie hier zum Ein-/Ausklappen</summary>
 
   1. Klicken Sie mit der rechten Maustaste auf die **Start**-Taste und wählen Sie **Windows Terminal (Admin)** oder **Eingabeaufforderung (Admin)**.
   2. Geben Sie ein: `powercfg /h off`
-  3. Drücken Sie Enter und starten Sie Ihre VM neu. Die Datei `hiberfil.sys` wird von Ihrem C:\ Laufwerk entfernt.
+  3. Drücken Sie Enter und starten Sie Ihre %%VM|vm%% neu. Die Datei `hiberfil.sys` wird von Ihrem C:-Laufwerk entfernt.
 </details>
 
 #### Windows-Indizierung deaktivieren
@@ -136,7 +144,7 @@ Windows Search indexing continuously scans your %%virtual machine|vm%%'s storage
 
 #### Automatische Festplattendefragmentierung deaktivieren
 
-Windows ist darauf ausgelegt, physische Festplatten regelmäßig automatisch zu defragmentieren. Auf einer VM - insbesondere bei der Verwendung von SSD-Speichern oder dünn bereitgestellten %%vDisks|vdisk%% - ist eine automatische Defragmentierung unnötig und kann auch die Lebensdauer der Festplatte verringern und die Leistung beeinträchtigen.
+Windows ist so konzipiert, dass physische Festplatten regelmäßig automatisch defragmentiert werden. Auf einer %%VM|vm%% - insbesondere bei Verwendung von SSD-Speicher oder dünnprovisionierten %%vDisks|vdisk%% - ist eine automatische Defragmentierung unnötig und kann zudem die Festplattenlebensdauer verringern und die Leistung beeinträchtigen.
 
 <details>
   <summary><strong>Wie man die automatische Festplattendefragmentierung deaktiviert</strong> – Klicken zum Ein-/Ausklappen</summary>
@@ -149,7 +157,7 @@ Windows ist darauf ausgelegt, physische Festplatten regelmäßig automatisch zu 
 
 #### Hochleistungsmodus aktivieren
 
-Energieverwaltungsfunktionen in Windows sind für Laptops und Desktops konzipiert, um Energie zu sparen. In einer VM-Umgebung können diese Funktionen die Leistung unnötig drosseln oder Ihre VM aussetzen, was sie weniger reaktionsfähig und schwieriger zu verwalten macht.
+Die Energiemanagementfunktionen in Windows sind für Laptops und Desktops entwickelt, um Energie zu sparen. In einer %%VM|vm%%-Umgebung können diese Funktionen die Leistung unnötig drosseln oder Ihre %%VM|vm%% in den Ruhezustand versetzen, was sie weniger reaktionsschnell und schwerer zu verwalten macht.
 
 Die Aktivierung des Modus **Hochleistung** stellt sicher, dass Ihre %%VM|vm%% jederzeit mit voller Geschwindigkeit läuft und weniger wahrscheinlich Pausen oder unerwartete Aussetzungen auftreten.
 
@@ -163,10 +171,12 @@ Die Aktivierung des Modus **Hochleistung** stellt sicher, dass Ihre %%VM|vm%% je
 
 #### Zugriff auf Remote-Desktop aktivieren
 
-Das Remote Desktop Protocol (RDP) ermöglicht Ihnen den Zugriff auf Ihre Windows-VM von einem anderen Gerät aus. Es bietet bessere Leistung und Kompatibilität im Vergleich zu %%VNC|vnc-session%%. Beachten Sie, dass RDP nur auf Windows Professional und Enterprise Editionen unterstützt wird. Auch muss Ihr Windows-Benutzerkonto ein Passwort haben.
+Das Remote-Desktop-Protokoll (RDP) ermöglicht Ihnen den Zugriff auf Ihre Windows-%%VM|vm%% von einem anderen Gerät aus. Es bietet bessere Leistung und Kompatibilität im Vergleich zu %%VNC|vnc-sitzung%%. Beachten Sie, dass RDP nur auf Windows Professional- und Enterprise-Editionen unterstützt wird. Außerdem muss Ihr Windows-Benutzerkonto **ein Passwort** besitzen.
 
 :::caution
-RDP ist auf Windows Home Editionen nicht verfügbar. Setzen Sie immer ein sicheres Passwort für Ihr Windows-Benutzerkonto, bevor Sie RDP aktivieren.
+
+RDP ist auf den Windows Home-Editionen nicht verfügbar. Setzen Sie immer ein sicheres Passwort für Ihr Windows-Benutzerkonto, bevor Sie RDP aktivieren.
+
 :::
 
 <details>
@@ -186,7 +196,7 @@ RDP ist auf Windows Home Editionen nicht verfügbar. Setzen Sie immer ein sicher
 
 #### HDMI-Audio mit MSI-Interrupts beheben
 
-If you're having trouble with HDMI audio in a Windows %%VM|vm%% that uses %%GPU passthrough|gpu-passthrough%% (which often occurs with NVIDIA graphics cards), enabling Message Signaled Interrupts (MSI) might help. MSI enhances the way interrupts are managed for passed-through devices.
+Wenn Sie Probleme mit HDMI-Audio in einer Windows-%%VM|vm%% haben, die %%GPU Passthrough|gpu-passthrough%% verwendet (was häufig bei NVIDIA-Grafikkarten auftritt), kann die Aktivierung von Message Signaled Interrupts (MSI) hilfreich sein. MSI verbessert die Art und Weise, wie Interrupts für durchgereichte Geräte verwaltet werden.
 
 <details>
   <summary><strong>Wie aktiviert man MSI-Interrupts</strong> – Klicken zum Ein-/Ausklappen</summary>
@@ -197,12 +207,12 @@ If you're having trouble with HDMI audio in a Windows %%VM|vm%% that uses %%GPU 
 
   1. **MSI-Fähigkeit überprüfen:**
      - Starten Sie Ihre %%VM|vm%% mit aktiviertem %%GPU-Passthrough|gpu-passthrough%%.
-     - Zugriff auf Unraid über [WebTerminal oder SSH](../../system-administration/advanced-tools/command-line-interface.mdx).
+     - Greifen Sie über [Webterminal oder SSH](../../system-administration/advanced-tools/command-line-interface.mdx) auf Unraid zu.
      - Führen Sie den Befehl `lspci -v -s 01:00.0` aus (ersetzen Sie `01:00.0` durch die PCI-Adresse Ihrer GPU).
      - Suchen Sie nach der Zeile: `Capabilities: [68] MSI: Enable+ Count=1/1 Maskable- 64bit+`.
 
   2. **MSI in Windows einschalten:**
-     - Wenn bei MSI `Enable-` angezeigt wird, folgen Sie [Microsofts Anleitung](https://learn.microsoft.com/en-us/windows-hardware/drivers/kernel/enabling-message-signaled-interrupts-in-the-registry) oder verwenden Sie das [MSI Mode Utility](https://forums.guru3d.com/threads/windows-line-based-vs-message-signaled-based-interrupts-msi-tool.378044/), um Ihre Windows-Registry-Einstellungen zu ändern.
+     - Wenn MSI `Enable-` anzeigt, folgen Sie [Microsofts Anleitung](https://learn.microsoft.com/de-de/windows-hardware/drivers/kernel/enabling-message-signaled-interrupts-in-the-registry) oder nutzen Sie das [MSI Mode Utility](https://forums.guru3d.com/threads/windows-line-based-vs-message-signaled-based-interrupts-msi-tool.378044/), um die Windows-Registrierungseinstellungen zu ändern.
      - Starten Sie die %%VM|vm%% nach den Änderungen neu.
 
   Für weitere technische Details siehe [VFIO-Interrupts erklärt](https://vfio.blogspot.com/2014/09/vfio-interrupts-and-how-to-coax-windows.html).
@@ -212,12 +222,14 @@ If you're having trouble with HDMI audio in a Windows %%VM|vm%% that uses %%GPU 
 
 ### Upgrade zu Windows 11
 
-Windows 11 requires TPM 2.0 and Secure Boot. Unraid's **OVMF-TPM** BIOS provides the virtual TPM support needed for these requirements.
+Windows 11 erfordert TPM 2.0 und sicheren Start. Das **OVMF-TPM-BIOS** von Unraid bietet den virtuellen TPM-Support, der für diese Anforderungen benötigt wird.
 
-:::important[Before Upgrade]
+:::important[Before aktualisierung]
+
 - Erstellen Sie eine vollständige Sicherung Ihrer %%VM|vm%%.
 - Stellen Sie sicher, dass Unraid Version 6.10 oder später ausgeführt wird.
 - Überprüfen Sie, ob Ihre Windows 10 %%VM|vm%% die [Systemanforderungen von Windows 11](https://www.microsoft.com/en-us/windows/windows-11-specifications) erfüllt.
+
 :::
 
 Um TPM-Unterstützung hinzuzufügen:
@@ -242,10 +254,12 @@ Um TPM-Unterstützung hinzuzufügen:
 ## Erweitern von Windows-VM-vDisk-Partitionen
 
 :::caution[Data Verlustrisiko]
-Das Erweitern oder Ändern von %%vDisk|vdisk%% und Partitionslayouts kann zu unwiderruflichem Datenverlust führen, wenn es nicht sorgfältig durchgeführt wird. Erstellen Sie immer ein vollständiges Backup oder Snapshot Ihrer VM, bevor Sie fortfahren.
+
+Das Erweitern oder Ändern von %%vDisk|vdisk%%- und Partitionslayouts kann zu irreversiblen Datenverlusten führen, wenn es nicht sorgfältig durchgeführt wird. Erstellen Sie immer ein vollständiges Backup oder einen Schnappschuss Ihrer %%VM|vm%%, bevor Sie fortfahren.
+
 :::
 
-Nachdem Sie Ihren %%vDisk|vdisk%% gemäß den Schritten in [vDisk erweitern](../create-virtual-machines/vm-setup.mdx#expand-a-vdisk) erweitert haben, können Sie auf ein Problem stoßen, bei dem die standardmäßige Wiederherstellungspartition von Windows Sie daran hindert, Ihre Systempartition (C:) zu erweitern, um den neuen Speicherplatz zu nutzen. Um dieses Problem zu lösen, müssen Sie die Wiederherstellungspartition löschen und dann die Windows-Datenträgerverwaltung verwenden, um die Partition zu erweitern.
+Nachdem Sie Ihren %%vDisk|vdisk%% gemäß den oben beschriebenen Schritten unter [Erweiterung eines vDisk](../create-virtual-machines/vm-setup.mdx#expand-a-vdisk) erweitert haben, kann es vorkommen, dass die Standard-Wiederherstellungspartition von Windows Sie daran hindert, Ihre Systempartition (C:) einfach zu erweitern, um den neuen Speicherplatz zu nutzen. Um dieses Problem zu lösen, müssen Sie die Wiederherstellungspartition löschen und dann das Windows-Datenträgerverwaltungsprogramm verwenden, um die Partition zu erweitern.
 
 <div style={{ margin: 'auto', maxWidth: '600px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
   ![Resize vDisk 2](/img/Resize_vdisk_2.png)
@@ -279,9 +293,13 @@ Nachdem Sie die anfängliche %%vDisk|vdisk%%-Erweiterung abgeschlossen haben:
 </div>
 
 :::tip
-Sie müssen die Wiederherstellungspartition nur entfernen, wenn sie den Zugriff auf den angrenzenden freien Speicherplatz blockiert. Wenn der nicht zugewiesene Speicherplatz bereits neben Ihrer C: Partition liegt, können Sie sie erweitern, ohne etwas zu löschen.
+
+Sie müssen die Wiederherstellungspartition nur entfernen, wenn sie den Zugriff auf angrenzenden freien Speicherplatz blockiert. Wenn der nicht zugeordnete Speicherplatz bereits neben Ihrer C:-Partition liegt, können Sie ihn erweitern, ohne etwas zu löschen.
+
 :::
 
 :::warning
-Änderungen an Festplattenpartitionen sind dauerhaft und können nicht rückgängig gemacht werden. Stellen Sie sicher, dass Ihre Daten gesichert sind, bevor Sie Partitionen löschen.
+
+Änderungen an Festplattenpartitionen sind dauerhaft und können nicht rückgängig gemacht werden. Stellen Sie sicher, dass Ihre Daten sicher gesichert sind, bevor Sie Partitionen löschen.
+
 :::
