@@ -14,15 +14,18 @@ import UncleanShutdownsTerminal from './partials/unclean-shutdowns/open-terminal
 当 Unraid 检测到 %%array|array%% 没有在系统断电前正确停止时，就会出现不干净关机。这种情况可能会在下次启动时触发自动 %%parity check|parity-check%% 以确保数据完整性。
 
 :::important[Recommendations 防止不洁的关闭]
+
 采取一些主动的步骤可以帮助你避免或识别非正常关机：
 
 - \*\*使用不间断电源（UPS）：\*\*确保服务器连接到UPS并设置在电池电量不足时自动关闭。
 - \*\*尝试优雅关闭：\*\*如果您的服务器无响应，短按电源按钮以触发安全关闭。不要长按该按钮，因为这将强制硬关机并导致不洁关机。
 - **启用持久日志记录：**前往***设置 → 系统日志服务器***以激活在重新启动后持久存在的日志记录。详细信息请参阅[持久日志 (系统日志服务器)](../diagnostics/capture-diagnostics-and-logs.mdx#persistent-logs-syslog-server)。
 - **附加诊断信息以获得支持：** 如果发生非正常关机，Unraid 将尝试将诊断信息保存到您的闪存设备的 `/log/diagnostics.zip` 中。当您寻求帮助时，请将此文件附加到论坛帖子中。
+
 :::
 
 :::tip[UPS 配置最佳实践]
+
 配置良好的 UPS 是防止因掉电导致非正常关机的最佳防卫。
 
 - **通过 USB 连接 UPS 到 Unraid 服务器。**
@@ -31,11 +34,12 @@ import UncleanShutdownsTerminal from './partials/unclean-shutdowns/open-terminal
 - **测试配置：** 模拟掉电以确保 UPS 和 Unraid 的正确反应。
 
 了解 [NUT 插件](https://unraid.net/community/apps/c/plugins/p4?srsltid=AfmBOop675PrJQW4iqb4JBN3GyPpwDDiSmnZReq78t27XyxkFdMX8inO#:~:text=NUT%20%2D%20Network%20UPS%20Tools)，它可以更广泛地兼容更多高级 UPS 型号或未支持的硬件。
+
 :::
 
-## 导致非正常关机的事件
+## 配置关机超时
 
-了解导致不洁关机的主要触发因素有助于您防止此类事件发生。探索下方选项卡以获取每种情况的详细信息。
+Properly configuring shutdown timeouts is essential to ensure your Unraid server can stop all services effectively, preventing unclean shutdowns, particularly during power loss or maintenance. Each component of your system - %%VM|vm%%s, Docker containers, and the overall %%array|array%% - has its own timeout setting that can be adjusted.
 
 <Tabs>
   <TabItem value="电源" label="“意外的电源损失”" default>
@@ -53,11 +57,11 @@ import UncleanShutdownsTerminal from './partials/unclean-shutdowns/open-terminal
 
 ---
 
-## 配置关机超时
+## 虚拟机超时时间
 
 Properly configuring shutdown timeouts is essential to ensure your Unraid server can stop all services effectively, preventing unclean shutdowns, particularly during power loss or maintenance. Each component of your system - %%VM|vm%%s, Docker containers, and the overall %%array|array%% - has its own timeout setting that can be adjusted.
 
-### 推荐的超时设置
+### “Docker 容器超时时间”
 
 | 设置              | 默认值 | 推荐最小值                                  | 配置位置                         |
 | --------------- | --- | -------------------------------------- | ---------------------------- |
@@ -65,7 +69,7 @@ Properly configuring shutdown timeouts is essential to ensure your Unraid server
 | Docker 容器停止超时时间 | 10秒 | 30–60秒                                 | ***设置 → Docker（高级）***        |
 | 通用关机超时时间        | 90秒 | 3 × %%VM\|vm%% 超时 + Docker 超时 + 15–30秒 | ***设置 → 磁盘设置 → 关机超时***       |
 
-### 虚拟机超时时间
+### 通用关机计时器
 
 <details>
   <summary><strong>点击展开/折叠</strong></summary>
@@ -74,7 +78,7 @@ Properly configuring shutdown timeouts is essential to ensure your Unraid server
 
   <h4>设置位置</h4>
 
-  - ***设置 → 虚拟机管理 → 虚拟机关机（高级）***
+  - ***设置 → 磁盘设置 → 关机超时***
 
   <h4>考虑</h4>
 
@@ -86,7 +90,7 @@ Properly configuring shutdown timeouts is essential to ensure your Unraid server
   将超时设置为至少 300 秒（5 分钟），用于 Windows %%VMs|vm%%。计划更新在启动时运行，而不是在关闭时运行，以避免延迟。
 </details>
 
-### “Docker 容器超时时间”
+### UPS电池寿命
 
 <details>
   <summary><strong>点击展开/折叠</strong></summary>
@@ -95,16 +99,15 @@ Properly configuring shutdown timeouts is essential to ensure your Unraid server
 
   <h4>设置位置</h4>
 
-  - ***设置 → Docker*** （启用高级视图）
+  - ***设置 → UPS 设置*** （查看 **剩余运行时间**，所有磁盘旋转起来）
 
   <h4>考虑</h4>
 
-  - 容器是并行停止的。
-  - 复杂容器，或具有大型数据库的容器，可能需要超过默认的 10 秒时间进行安全关闭。
+  - UPS 应该在关机序列完成前触发关闭。
+  - 如果电池在关闭完成之前耗尽，您将面临不完全关闭和可能的数据丢失的风险。
   - 如果定时器到期，容器将被强制停止。
 
   <h4>最佳做法</h4>
-  如果运行需要额外关闭时间的 Docker 容器，请将超时增加到 30–60 秒。
 </details>
 
 ### 通用关机计时器
