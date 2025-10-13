@@ -8,287 +8,297 @@ sidebar_label: 保护您的连接
 使用%%SSL|ssl%%加密保护你的Unraid %%WebGUI|web-gui%%安全，保护敏感数据（如登录凭证和配置细节）免于在本地网络或互联网被截取或篡改。你可以使用由[Let's Encrypt](https://letsencrypt.org/)在本地及[Unraid Connect远程访问](../../../unraid-connect/remote-access.mdx)场景下获得的通配符%%SSL|ssl%%证书。
 
 :::important[The SSL 的重要性]
+
 %%SSL|ssl%% (Secure Sockets Layer) encrypts all traffic between your browser and the Unraid server, preventing eavesdropping and man-in-the-middle attacks. Without %%SSL|ssl%%, anyone with access to your network could potentially intercept sensitive data or hijack your session. Using %%SSL|ssl%% is strongly recommended for both local and remote management of your Unraid server.
+
 :::
 
 ---
 
-## SSL 参数
+## SSL parameters
 
 Several parameters in Unraid affect how %%SSL|ssl%% is configured and used. Understanding these helps you choose the right certificate and connection method for your needs.
 
-| 参数                 | 描述                                       |
-| ------------------ | ---------------------------------------- |
-| **服务器名称**          | 设置在***设置 → 识别***中。默认是`塔`.                |
-| **本地 TLD**         | 设置在***设置 → 管理访问***中。默认是`本地`.             |
-| **使用 SSL/TLS**     | 在 ***设置 → 管理访问***中设置，控制%%SSL\|ssl%%是否启用。 |
-| **HTTP 端口**        | 设置在***设置 → 管理访问***中。默认是`80`.             |
-| **HTTPS 端口**       | 设置在***设置 → 管理访问***中。默认是`443`.            |
-| **证书**             | 使用的 %%SSL\|ssl%% 证书类型（参见下文）。             |
-| **局域网 ip**         | 服务器的局域网 IP 地址，格式适用于 URL 使用。              |
-| **广域网 ip**         | 服务器的公共 IP 地址，格式适用于 URL 使用。               |
-| **%%Hash\|hash%%** | 分配给服务器证书的唯一 40 字符标识符。                    |
+| Parameter          | 描述                                                                                   |
+| ------------------ | ------------------------------------------------------------------------------------ |
+| **Server name**    | Set in ***Settings → Identification***. Default is `tower`.                          |
+| **Local TLD**      | Set in ***Settings → Management Access***. Default is `local`.                       |
+| **Use SSL/TLS**    | Set in ***Settings → Management Access***. Controls whether %%SSL\|ssl%% is enabled. |
+| **HTTP port**      | Set in ***Settings → Management Access***. Default is `80`.                          |
+| **HTTPS port**     | Set in ***Settings → Management Access***. Default is `443`.                         |
+| **Certificate**    | Type of %%SSL\|ssl%% certificate used (see below).                                   |
+| **Lan ip**         | Your server's LAN IP address, formatted for use in URLs.                             |
+| **Wan ip**         | Your server's public IP address, formatted for use in URLs.                          |
+| **%%Hash\|hash%%** | Unique 40-character identifier assigned to your server's certificate.                |
 
-### SSL 证书类型
+### SSL certificate types
 
-| 类型               | 使用时机                                                     | 优缺点                                                                                |
-| ---------------- | -------------------------------------------------------- | ---------------------------------------------------------------------------------- |
-| **自签名**          | 用于仅本地访问时不需要可信证书的情况。                                      | 容易设置，但浏览器会显示警告。接收警告后流量被加密。                                                         |
-| **Myunraid.net** | 用于安全的本地和远程访问，特别是使用 Unraid Connect 或者如果需要可信的证书。           | Trusted by browsers, no warnings. Enables secure remote access via Unraid Connect. |
-| **自定义**          | 对于需要通配符或自定义域证书的高级用户（需要 %%DNS\|dns-name-resolution%% 配置）。 | 可信、灵活，但需要额外设置。                                                                     |
+| Type             | When to use                                                                                                                | Pros/Cons                                                                                      |
+| ---------------- | -------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| **Self-signed**  | For local-only access when you don't need a trusted certificate.                                                           | Easy to set up, but browsers show warnings. Traffic is encrypted once the warning is accepted. |
+| **Myunraid.net** | For secure local and remote access, especially with Unraid Connect or if you want a trusted cert.                          | Trusted by browsers, no warnings. Enables secure remote access via Unraid Connect.             |
+| **Custom**       | For advanced users who want a wildcard or custom domain certificate (requires %%DNS\|dns-name-resolution%% configuration). | Trusted, flexible, but requires additional setup.                                              |
 
 ---
 
-## 访问您的 WebGUI 的方式
+## Ways to access your WebGUI
 
-以下是在不同 %%SSL|ssl%% 配置下访问您的 Unraid %%WebGUI|web-gui%% 的主要方式：
+Below are the main ways to access your Unraid %%WebGUI|web-gui%%, depending on your %%SSL|ssl%% configuration:
 
-#### 仅 HTTP（未加密）
+#### HTTP-only (unencrypted)
 
 <details>
-  <summary><strong>点击展开/折叠</strong></summary>
+  <summary><strong>Click to expand/collapse</strong></summary>
 
-  在仅有 HTTP 的情况下，浏览器和服务器之间的流量未加密。
+  With HTTP only, traffic between your browser and the server is not encrypted.
 
-  1. 转到***设置 → 管理访问***。
-  2. 将 **使用 SSL/TLS** 设置为*否*。
-  3. 将 **本地 TLD** 保持为 `local`，除非您拥有自己的 DNS。
-  4. 访问 URL：
-     - `http://[服务器名].[本地 TLD]` （例如：`http://tower.local`）
-     - `http://[ip 地址]` （例如：`http://192.168.100.1`）
+  1. Go to ***Settings → Management Access***.
+  2. Set **Use SSL/TLS** to *No*.
+  3. Keep **Local TLD** as `local` unless you have your own DNS.
+  4. Access URLs:
+     - `http://[server name].[local TLD]` (e.g., `http://tower.local`)
+     - `http://[ip address]` (e.g., `http://192.168.100.1`)
   5. 点击 **应用**。
 
-  :::警告
-  您网络上的任何人都可以拦截通过HTTP发送的数据。请尽可能使用HTTPS。
+  :::warning
+  Anyone on your network can intercept data sent over HTTP. Use HTTPS whenever possible.
   :::
 </details>
 
 ---
 
-#### HTTPS 配合自签名证书
+#### HTTPS with self-signed certificate
 
 <details>
-  <summary><strong>点击展开/折叠</strong></summary>
+  <summary><strong>Click to expand/collapse</strong></summary>
 
-  流量已加密，但因为证书不是由可信机构签署，浏览器会显示警告。
+  Traffic is encrypted, but browsers will display a warning because the certificate is not signed by a trusted authority.
 
-  1. 转到***设置 → 管理访问***。
-  2. 将 **使用 SSL/TLS** 设置为*是*。
-  3. 将 **本地 TLD** 保持为 `local`，除非您拥有自己的 DNS。
-  4. 访问 URL：
-     - `https://[服务器名].[本地 TLD]` （例如：`https://tower.local`）
-     - `https://[ip 地址]` （例如：`https://192.168.100.1`）
+  1. Go to ***Settings → Management Access***.
+  2. Set **Use SSL/TLS** to *Yes*.
+  3. Keep **Local TLD** as `local` unless you have your own DNS.
+  4. Access URLs:
+     - `https://[server name].[local TLD]` (e.g., `https://tower.local`)
+     - `https://[ip address]` (e.g., `https://192.168.100.1`)
   5. 点击 **应用**。
 
-  :::重要
-  浏览器将显示证书错误。接受警告后，所有流量仍然加密。
+  :::important
+  Browsers will show a certificate error. All traffic is still encrypted after you accept the warning.
   :::
 </details>
 
 ---
 
-#### 用 Myunraid.net 证书和备用 URL 的 HTTPS 访问
+#### HTTPS with Myunraid.net certificate and fallback URL
 
 <details>
-  <summary><strong>点击展开/折叠</strong></summary>
+  <summary><strong>Click to expand/collapse</strong></summary>
 
-  您可以通过使用Myunraid.net证书的 %%WebGUI|web-gui%% 安全地访问您的服务器，并在%%DNS|dns-name-resolution%% 分辨率不可用时配置备用URL。所有流量将被加密，服务器配置为当%%DNS|dns-name-resolution%% 不可用时回退到辅助方法。
+  You can access your server securely via the %%WebGUI|web-gui%% using a Myunraid.net certificate, and configure a fallback URL in case your %%DNS|dns-name-resolution%% resolution is down. All traffic will be encrypted, and the server is configured to fall back to a secondary method when %%DNS|dns-name-resolution%% is unavailable.
 
-  1. 转到***设置 → 管理访问***。
-  2. 保持 **本地 TLD** 的默认值 `local`，除非您可以提供自己的 DNS 名称解析（用于备用证书）。
-  3. 将 **使用 SSL/TLS** 设置为*否*或*是*。
-  4. 按下 **生成** 来生成 myunraid.net 证书。
+  1. Go to ***Settings → Management Access***.
+  2. Keep **Local TLD** at the default of `local` unless you can provide your own DNS name resolution (this is used for the fallback certificate).
+  3. Leave **Use SSL/TLS** set to either *No* or *Yes*.
+  4. Press **Provision** to generate the myunraid.net certificate.
 
-  **当使用 SSL/TLS 设置为*否*时的主要 URL**：
+  **Your primary URLs when Use SSL/TLS is set to *No*:**
 
-  - `http://[服务器名].[本地 TLD]` （例如：`http://tower.local`）
-  - `http://[ip 地址]` （例如：`http://192.168.100.1`）
+  - `http://[servername].[localTLD]` (example: `http://tower.local`)
+  - `http://[ipaddress]` (example: `http://192.168.100.1`)
 
-  **当使用 SSL/TLS 设置为*是*时的主要 URL（使用自签名证书）**：
+  **Your primary URLs when Use SSL/TLS is set to *Yes* (uses self-signed certificate):**
 
-  - `https://[服务器名].[本地 TLD]` （例如：`https://tower.local`）
-  - `https://[ip 地址]` （例如：`https://192.168.100.1`）
+  - `https://[servername].[localTLD]` (example: `https://tower.local`)
+  - `https://[ipaddress]` (example: `https://192.168.100.1`)
 
-  **您的替代 myunraid.net URL**：
+  **Your alternate myunraid.net URL:**
 
-  - `https://[lan-ip].[hash].myunraid.net` （例如：`https://192-168-100-1.a1b2c3d4e5.myunraid.net`）
-  - 此 URL 显示在 **访问管理** 页面的 **本地访问 URL** 字段中。
-  - 如果您安装了 [Unraid Connect 插件](../../../unraid-connect/overview-and-setup.mdx)，它也会显示在 Connect 仪表板上。
+  - `https://[lan-ip].[hash].myunraid.net` (example: `https://192-168-100-1.a1b2c3d4e5.myunraid.net`)
+  - This URL is shown in the **Local access URLs** field on the **Management Access** page.
+  - If you install the [Unraid Connect plugin](../../../unraid-connect/overview-and-setup.mdx), it will also be shown on the Connect dashboard.
 
-  :::信息
-  myunraid.net证书受浏览器信任，不显示警告。URL使用您的LAN IP地址，其中点更改为破折号，加上分配给您服务器的唯一40字符%%hash|hash%%。
+  :::info
+  The myunraid.net certificate is trusted by browsers and does not display warnings. The URL uses your LAN IP address with dots changed to dashes, plus a unique 40-character %%hash|hash%% assigned to your server.
   :::
 
-  :::提示\[后备访问]
-  如果 %%DNS|dns-name-resolution%% 分辨率不可用（例如，您的互联网断开），您可以使用本地URL与服务器名称或IP地址作为备用访问方法。
+  :::tip[Fallback access]
+  If %%DNS|dns-name-resolution%% resolution becomes unavailable (e.g., your Internet goes down), you can use the local URLs with your server name or IP address as backup access methods.
   :::
 </details>
 
-#### 用 Myunraid.net 证书且无备用 URL 的 HTTPS 访问
+#### HTTPS with Myunraid.net certificate and with no fallback URL
 
 <details>
-  <summary><strong>点击展开/折叠</strong></summary>
+  <summary><strong>Click to expand/collapse</strong></summary>
 
-  这种方法通过要求所有 %%WebGUI|web-gui%% 访问使用 Myunraid.net 证书和 URL 提供了最高级别的 %%SSL|ssl%% 执行。它适合希望最大安全性并且不需要通过本地IP或主机名访问服务器的用户，如果 %%DNS|dns-name-resolution%% 不可用。
+  This method provides the highest level of %%SSL|ssl%% enforcement by requiring all %%WebGUI|web-gui%% access to use the Myunraid.net certificate and URL. It is ideal for users who want maximum security and do not need to access their server via local IP or hostname if %%DNS|dns-name-resolution%% is unavailable.
 
-  1. 在 %%WebGUI|web-gui%% 中的 ***设置 → 访问管理***。
-  2. 保持 **本地 TLD** 设置为 `local`，除非您有自己的 %%DNS|dns-name-resolution%% 名称解析（用于备用证书，如果您稍后运行 `use_ssl` 命令）。
-  3. 点击 **生成** 来生成 Myunraid.net 证书。
-  4. 如果您的网络没有 %%DNS|dns-name-resolution%% 重新绑定问题，**使用 SSL/TLS** 的*严格*选项将可用。
-  5. 将 **使用 SSL/TLS** 设置为*严格*（或早期 Unraid 版本中的*自动*）。
-  6. 您的访问 URL 将是：\
-     `https://[lan-ip].[hash].myunraid.net` （例如：`https://192-168-100-1.a1b2c3d4e5.myunraid.net`）
+  1. Go to ***Settings → Management Access*** in the %%WebGUI|web-gui%%.
+  2. Keep **LocalTLD** set to `local` unless you have your own %%DNS|dns-name-resolution%% name resolution (this is used for the fallback certificate if you later run the `use_ssl` command).
+  3. Click **Provision** to generate a Myunraid.net certificate.
+  4. If your network does not have %%DNS|dns-name-resolution%% rebinding issues, the *Strict* option for **Use SSL/TLS** will be available.
+  5. Set **Use SSL/TLS** to *Strict* (or *Auto* in earlier Unraid versions).
+  6. Your access URL will be:
+     `https://[lan-ip].[hash].myunraid.net` (e.g., `https://192-168-100-1.a1b2c3d4e5.myunraid.net`)
 
-     如果您安装了 [Unraid Connect 插件](../../../unraid-connect/overview-and-setup.mdx)，它也会显示在 Connect 仪表板上。
+     If you install the [Unraid Connect plugin](../../../unraid-connect/overview-and-setup.mdx), it will also be shown on the Connect dashboard.
 
-  :::注意
-  如果 %%DNS|dns-name-resolution%% 分辨率不可用（例如，您的互联网连接断开），您将无法使用 Myunraid.net URL 访问 %%WebGUI|web-gui%% 。
+  :::caution
+  If %%DNS|dns-name-resolution%% resolution becomes unavailable (e.g., your Internet connection goes down), you will not be able to access the %%WebGUI|web-gui%% using the Myunraid.net URL.
 
-  重新获得访问权限的方法：
+  To regain access:
 
-  - 使用 Telnet、%%SSH|ssh%% 或本地键盘/显示器登录。
-  - 运行 `use_ssl no` 切换到 HTTP （`http://[服务器名].[本地 TLD]` 或 `http://[ip 地址]`）。
-  - 运行 `use_ssl yes` 切换到使用自签名证书的HTTPS（`https://[服务器名].[本地TLD]` 或 `https://[ip地址]`）。查看上面的[HTTPS与自签名证书](#https-with-self-signed-certificate)了解更多细节。
-  - 一旦 %%DNS|dns-name-resolution%% 恢复，将 **使用 SSL/TLS** 设置为*严格*以获得完整安全性。
+  - Use Telnet, %%SSH|ssh%%, or a local keyboard/monitor to log in.
+  - Run `use_ssl no` to switch to HTTP (`http://[servername].[localTLD]` or `http://[ipaddress]`).
+  - Run `use_ssl yes` to switch to HTTPS using a self-signed certificate (`https://[servername].[localTLD]` or `https://[ipaddress]`). See [HTTPS with a self-signed certificate](#https-with-self-signed-certificate) above for more details.
+  - Once %%DNS|dns-name-resolution%% is restored, set **Use SSL/TLS** back to *Strict* for full security.
     :::
 </details>
 
 ---
 
-## 重定向
+## Redirects
 
-当您访问 `http://[服务器名].[本地 TLD]` 时，重定向行为取决于您的 **使用 SSL/TLS** 设置：
+When you access `http://[servername].[localTLD]`, the redirect behavior depends on your **Use SSL/TLS** setting:
 
-- **严格**：您将被重定向到 `https://[lan-ip].[hash].myunraid.net`。
-  :::注意
-  如果 %%DNS|dns-name-resolution%% 不可用，这可能会使本地访问困难。请参阅 [HTTPS 使用 Myunraid.net 证书并且无备用 URL](#https-with-myunraidnet-certificate-and-with-no-fallback-url)下的注意事项。
+- **Strict**: You will be redirected to `https://[lan-ip].[hash].myunraid.net`.
+  :::note
+  This can make local access difficult if %%DNS|dns-name-resolution%% is unavailable. See the caution under [HTTPS with Myunraid.net certificate and with no fallback URL](#https-with-myunraidnet-certificate-and-with-no-fallback-url).
   :::
 
-- **是**：您将被重定向到 `https://[服务器名].[本地TLD]`。即使互联网连接断开，这仍然有效。
+- **Yes**: You will be redirected to `https://[servername].[localTLD]`. This will still work even if your internet connection is down.
 
-- **否**：HTTP URL 将直接加载，无重定向或加密。
+- **No**: The HTTP URL will load directly, with no redirect or encryption.
 
 :::tip
-重定向仅在您从 HTTP URL 开始时才有效，而不是 HTTPS URL。
+
+Redirects only work when you start from HTTP URLs, not HTTPS URLs.
+
 :::
 
 ---
 
-## 自定义证书
+## Custom certificates
 
-自定义证书允许您使用自己的 %%SSL|ssl%% 证书，如由商业证书颁发机构签发的证书或域的通配符证书来保护 Unraid %%WebGUI|web-gui%%。
+Custom certificates allow you to secure your Unraid %%WebGUI|web-gui%% with your own %%SSL|ssl%% certificate, such as one issued by a commercial certificate authority or a wildcard certificate for your domain.
 
 A custom certificate is any %%SSL|ssl%% certificate that you provide and manage yourself, rather than one generated by Unraid or Let's Encrypt. This is useful if you want to use your own domain name, a wildcard certificate, or integrate with your organization's PKI infrastructure.
 
-:::info[When 使用自定义证书，您有责任...]
-- 从可信的证书颁发机构（CA）采购证书
-- 管理所选域的 %%DNS|dns-name-resolution%% 记录
-- 根据需要上传和更新证书
-- 确保证书与服务器的域名匹配（在主题或主题备用名称字段中）
+:::info[When using a custom certificate, you are responsible for...]
+
+- Procuring the certificate from a trusted certificate authority (CA)
+- Managing %%DNS|dns-name-resolution%% records for your chosen domain
+- Uploading and renewing the certificate as needed
+- Ensuring the certificate matches your server's domain name (in the Subject or Subject Alternative Name fields)
+
 :::
 
-如果您的证书无效或与服务器的 URL 不匹配，Unraid 将删除它并恢复为默认证书。
+If your certificate is invalid or does not match the server's URL, Unraid will delete it and revert to a default certificate.
 
-### HTTPS 配合自定义证书（可选的 Unraid Connect 远程访问）
+### HTTPS with custom certificate (with optional Unraid Connect remote access)
 
 <details>
-  <summary><strong>通过 HTTPS 和自定义证书访问</strong> - 点击以展开/折叠</summary>
+  <summary><strong>Access via HTTPS with custom certificate</strong> - Click to expand/collapse</summary>
 
-  1. 转到***设置 → 管理访问***。
-  2. 将 **使用 SSL/TLS** 设置为*是*。
-  3. 将 **本地 TLD** 设置为证书主题中的域名。
-  4. 访问服务器地址为 `https://[服务器名].[本地TLD]`（例如，`https://tower.mydomain.com`）。您必须管理此URL的DNS。
-  5. 将您的证书上传到 `/boot/config/ssl/certs/[服务器名]_unraid_bundle.pem`。
-  6. 证书必须对 `[服务器名].[本地 TLD]` 或通配符 `*.[本地 TLD]` 有效（其中 `[本地 TLD]` 与您在 **本地 TLD** 字段中输入的完全相符）。
-     - 域必须出现在主题或主题备用名称字段中（Unraid 6.10.3+ 支持 SANs）。
-     - 如果证书不匹配，Unraid 将删除它。
-  7. 可选启用 [Unraid Connect 远程访问](../../../unraid-connect/remote-access.mdx) 以实现安全、浏览器受信任的远程管理。
+  1. Go to ***Settings → Management Access***.
+  2. Set **Use SSL/TLS** to *Yes*.
+  3. Set **Local TLD** to the domain name used in your certificate's Subject.
+  4. Access your server at `https://[servername].[localTLD]` (e.g., `https://tower.mydomain.com`). You must manage DNS for this URL.
+  5. Upload your certificate to `/boot/config/ssl/certs/[servername]_unraid_bundle.pem`.
+  6. The certificate must be valid for `[servername].[localTLD]` or as a wildcard `*.[localTLD]` (where `[localTLD]` matches exactly what you entered in the **Local TLD** field).
+     - The domain must appear in the Subject or Subject Alternative Name fields (Unraid 6.10.3+ supports SANs).
+     - If the certificate does not match, Unraid will delete it.
+  7. Optionally, enable [Unraid Connect remote access](../../../unraid-connect/remote-access.mdx) for secure, browser-trusted remote management.
 
-  :::提示
-  对于通配符证书，确保证书的主题备用名称或主题字段包含 `*.[localTLD]`，其中 `[localTLD]` 是您在 **管理访问** 中输入的确切值。
+  :::tip
+  For wildcard certificates, ensure the certificate's Subject Alternative Name or Subject field contains `*.[localTLD]` where `[localTLD]` is the exact value you entered in the **Local TLD** field in **Management Access**.
   :::
 </details>
 
 ---
 
-## SSL 故障排除和高级配置
+## SSL troubleshooting and advanced configuration
 
-本节介绍了一些关于使用 myunraid.net 证书的常见 SSL 相关问题和高级配置选项，无论您是否安装了 Unraid Connect。
+This section covers common SSL-related issues and advanced configuration options that apply when using myunraid.net certificates, regardless of whether you have Unraid Connect installed.
 
-### DNS 重绑定保护
+### DNS rebinding protection
 
 DNS rebinding protection is a security feature on many routers that prevents public DNS entries from resolving to local IP addresses. This helps protect your network from certain attacks, but can cause issues when trying to use %%SSL|ssl%% certificates for local access to the Unraid %%WebGUI|web-gui%%.
 
-如果在尝试提供 %%SSL|ssl%% 证书时遇到DNS重绑定错误（例如，点击 **提供** 按钮后），请考虑以下步骤：
+If you encounter a DNS rebinding error while trying to provision an %%SSL|ssl%% certificate (e.g., after clicking the **Provision** button), consider the following steps:
 
-- 在错误信息上点击 **确定**，等待2至5分钟，然后重试。
-- 如果错误仍然出现，请检查路由器设置中与“DNS重绑定保护”或类似术语相关的选项。
-- 允许对 `myunraid.net` 域进行DNS重绑定。
-- 请记住，DNS更改需要时间传播，因此在更新后可能会再次看到错误。
+- Click **OK** on the error message, wait for 2 to 5 minutes, and try again.
+- If the error continues, check your router settings for options related to "DNS rebinding protection" or similar terms.
+- Allow DNS rebinding for the `myunraid.net` domain.
+- Keep in mind that DNS changes can take time to propagate, so you may see the error again after making updates.
 
-具体步骤可能根据您的路由器型号和固件而有所不同。
+The exact steps may vary based on your router model and firmware.
 
-### 当DNS失效时访问服务器
+### Accessing your server when DNS is down
 
-当 %%SSL|ssl%% 开启并使用 myunraid.net 证书时，通常通过一个完全限定域名（FQDN）访问 Unraid 服务器，例如：
+When %%SSL|ssl%% is enabled with a myunraid.net certificate, you typically access your Unraid server using a fully qualified domain name (FQDN), such as:
 
 ```
 https://ip.yourpersonalhash.myunraid.net
 ```
 
-或者，如果您使用自定义HTTPS端口：
+Or, if you're using a custom HTTPS port:
 
 ```
 https://ip.yourpersonalhash.myunraid.net:<https_port>
 ```
 
-这确保您正在使用有效的%%SSL|ssl%%证书进行安全访问。不过，如果互联网连接中断且浏览器尚未缓存DNS条目，您可能会失去对%%WebGUI|web-gui%%的访问。
+This ensures you're using a valid %%SSL|ssl%% certificate for secure access. However, if your Internet connection goes down and your browser hasn't cached the DNS entry, you may lose access to the %%WebGUI|web-gui%%.
 
-如果您失去了DNS或互联网访问：
+If you lose DNS or Internet access:
 
-- 如果**使用SSL/TLS**设置为**是**，请尝试访问您的服务器：
+- If **Use SSL/TLS** is set to **Yes**, try accessing your server at:
   ```
   https://[servername].[localTLD]
   ```
-  或者使用自定义端口：
+  Or with a custom port:
   ```
   https://servername.[localTLD]:<https_port>
   ```
 
-- 如果这不起作用，或者 **使用SSL/TLS** 设置为 **严格**：
-  1. 使用telnet、%%SSH|ssh%% 或直接连接的键盘/显示器登录到您的服务器。
-  2. 运行命令：
+- If this doesn't work, or if **Use SSL/TLS** is set to **Strict**:
+  1. Use telnet, %%SSH|ssh%%, or a directly connected keyboard/monitor to log into your server.
+  2. Run the command:
      ```bash
      use_ssl no
      ```
-  3. 您现在可以在以下位置访问 %%WebGUI|web-gui%% ：
+  3. You can now access the %%WebGUI|web-gui%% at:
      ```
      http://<ip_address>
      ```
-     或者，如果使用自定义端口：
+     Or, if using a custom port:
      ```
      http://<server_ip>:<http_port>
      ```
-     （注意：这使用的是HTTP，而不是HTTPS。）
+     (Note: this uses HTTP, not HTTPS.)
 
-互联网访问恢复后，前往***设置→管理访问***并将 **使用SSL/TLS** 设置回 **严格** 以重新启用本地SSL。
+Once Internet access is restored, go to ***Settings → Management Access*** and set **Use SSL/TLS** back to **Strict** to re-enable local SSL.
 
-### 禁用本地访问的SSL
+### Disabling SSL for local access
 
-如果您希望在受信的家庭网络上使用简单的HTTP连接，或面临 %%SSL|ssl%% 证书提供、DNS重绑定或浏览器兼容性的问题，应禁用本地访问的 %%SSL|ssl%% 。
+You should disable %%SSL|ssl%% for local access if you prefer a simple HTTP connection on your trusted home network or if you're facing ongoing issues with %%SSL|ssl%% certificate provisioning, DNS rebinding, or browser compatibility.
 
-要禁用本地访问的 %%SSL|ssl%% ：
+To disable %%SSL|ssl%% for local access:
 
-1. 在 WebGUI 中，转到 ***Settings → Management Access***。
-2. 将 **使用SSL/TLS** 设置为 **否**。
+1. Go to ***Settings → Management Access*** in the WebGUI.
+2. Set **Use SSL/TLS** to **No**.
 3. 点击 **应用**。
 
-此更改还将禁用远程访问功能，因为 %%SSL|ssl%% 对于安全的远程连接是必要的。
+This change will also disable the Remote Access feature, as %%SSL|ssl%% is necessary for secure remote connections.
 
 :::caution
-禁用%%SSL|ssl%%意味着你的%%WebGUI|web-gui%%将通过未加密的HTTP访问。这会将你的登录凭证和会话数据暴露给任何在你本地网络上的人，除非你对你的网络安全性有信心且不需要远程访问，否则不推荐这样做。为确保最佳安全性，请尽可能保持启用%%SSL|ssl%%。
+
+Disabling %%SSL|ssl%% means your %%WebGUI|web-gui%% will be accessible over unencrypted HTTP. This exposes your login credentials and session data to anyone on your local network and is not recommended unless you are confident your network is secure and you do not need remote access. For the best security, keep %%SSL|ssl%% enabled whenever possible.
+
 :::
 
 :::note
+
 %%SSL|ssl%% management is a core feature of Unraid and does not rely on the Unraid Connect plugin. You can disable %%SSL|ssl%% without affecting other Unraid functionality.
+
 :::
