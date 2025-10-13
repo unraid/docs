@@ -35,13 +35,17 @@ Even though Unraid offers protection against various hardware failures, having r
 用户应该评估他们的风险承受能力和备份需求，但利用云集成和自动化对大多数 Unraid 用户来说是一个良好的起点。
 
 :::tip[Modern 备份策略]
-对于Unraid 7.0及以上版本，启用[Unraid Connect](../../../unraid-connect/overview-and-setup.mdx)来自动备份您的闪存设备和配置到云中。使用Duplicati、rclone或类似工具为重要文件和共享创建对本地、远程或云目标地的计划备份。始终测试您的还原过程，以确保在需要时备份能正常工作。
+
+With Unraid 7.0 and up, enable [Unraid Connect](../../../unraid-connect/overview-and-setup.mdx) for automated cloud backups of your flash device and configuration. Consider using Duplicati, rclone, or similar tools for important files and shares to create scheduled backups to local, remote, or cloud destinations. Always test your restore process to ensure your backups will work when needed.
+
 :::
 
-:::info[Proactive 监控和支持]
+:::info[Proactive monitoring and support]
+
 - **启用通知:** 在***设置 → 通知***中设置通知以接收有关系统问题的即时警报。
 - **寻求专家指导:** 如果您不确定恢复步骤，请在采取任何动作前咨询 [Unraid 论坛](https://forums.unraid.net/)。
 - **定期健康检查:** 密切关注您驱动器的 [SMART 数据](../../system-administration/monitor-performance/smart-reports-and-disk-health.mdx)，并定期执行文件系统检查。
+
 :::
 
 ---
@@ -49,10 +53,12 @@ Even though Unraid offers protection against various hardware failures, having r
 ## 修复文件系统
 
 :::caution
-严格按照这些说明用于修复文件系统损坏的数据驱动器。不要将它们应用于奇偶校验驱动器、硬件问题或缺失的驱动器。
+
+Use these instructions strictly for data drives with file system corruption. Do not apply them to the parity drive, hardware issues, or missing drives.
 
 - 文件系统修复工具仅用于修复具有文件系统或挂载错误的数据或缓存驱动器。
-- 奇偶校验驱动器**没有**文件系统。对奇偶校验驱动器运行任何修复工具会导致损坏，可能导致不可逆转的数据丢失。
+- The parity drive does **not** have a file system. Running any repair tool on the parity drive can corrupt it and may result in irreversible data loss.
+
 :::
 
 ### 设备命名：路径和符号
@@ -62,18 +68,20 @@ Even though Unraid offers protection against various hardware failures, having r
 | 标签               | 典型路径       | 用途           | %%Parity\|奇偶%% 保护是否启用？   |
 | ---------------- | ---------- | ------------ | ------------------------ |
 | 磁盘 7             | /mnt/disk7 | Unraid 挂载点   | 是 (如果是 %%array\|阵列%% 磁盘) |
-| %%Array\|阵列%% 分区 | /dev/md7p1 | Unraid 管理的设备 | 可以                       |
+| %%Array\|阵列%% 分区 | /dev/md7p1 | Unraid 管理的设备 | Yes                      |
 | 原始分区             | /dev/sdj1  | 直接设备访问       | 不可以                      |
 
 :::warning
+
 切勿在整个驱动器（如 `/dev/sdj`）上运行文件系统修复工具；要始终使用分区路径（如 `/dev/sdj1` 或 Unraid 管理的 `/dev/mdXp1`）。
 
 - 对于 %%array|array%% 驱动器，始终使用 Unraid 管理的设备（如 `/dev/md5p1`）以**保留 %%parity|parity%% 保护**。
 - 使用原始分区（例如，`/dev/sdj1`）不会更新 %%parity|parity%%，会使其无效。
+
 :::
 
 - 始终使用 `/dev/mdXp1` 对于 %%array|array%% 驱动器以保持有效的 %%parity|parity%%。
-- For non-%%array|array%% drives (like %%cache|cache%%-only devices), use the direct partition path, e.g., `/dev/sdj1`.
+- 对于非%%array|array%%驱动器（如%%cache|cache%%-only设备），请使用直接分区路径，例如`/dev/sdj1`。
 
 ### 选择正确的修复方法
 
@@ -94,7 +102,9 @@ Even though Unraid offers protection against various hardware failures, having r
   - **BTRFS:** `btrfs scrub`
 
 :::caution[Know 您的文件系统]
+
 使用错误的修复工具可能会造成进一步的损害。在开始修复前，验证您的磁盘是否格式化为\*\*%%XFS|xfs%%**、**%%BTRFS|btrfs%%\*\*或其他受支持的文件系统类型。
+
 :::
 
 ---
@@ -107,7 +117,7 @@ This section covers how to diagnose and repair file system corruption on data dr
 
 | 文件系统             | 启动模式 | 需要维护模式？ | 笔记                                       |
 | ---------------- | ---- | ------- | ---------------------------------------- |
-| %%XFS\|xfs%%     | 维护模式 | 可以      | %%阵列\|array%%必须在维护模式下启动（驱动器未挂载）以进行检查/修复。 |
+| %%XFS\|xfs%%     | 维护模式 | Yes     | %%阵列\|array%%必须在维护模式下启动（驱动器未挂载）以进行检查/修复。 |
 | %%BTRFS\|btrfs%% | 正常模式 | 不可以     | 请正常启动 %%array\|阵列%%，而非维护模式，以便进行擦除/检查。    |
 
 - 为目标驱动器确定文件系统： **主** 选项卡 → 点击驱动器名称 → 检查 **文件系统类型**。
@@ -137,9 +147,11 @@ This section covers how to diagnose and repair file system corruption on data dr
 如果您使用了 %%维护模式|maintenance-mode%%，请停止阵列并重新启动至正常模式以恢复操作。
 
 :::tip[What 修复后的期望]
+
 - 修复和检查操作可能需要长达半小时或更长时间，具体取决于您文件系统的大小和状态。
 - 严重的损坏可能会产生一个`lost+found`文件夹，其中包含恢复的文件和文件夹碎片。根据需要检查并恢复这些碎片；完成后删除。
-- 这类似于在Windows上运行chkdsk或scandisk，并处理重命名为`File0000.chk`等的文件。在查看`lost+found`内容时要花些时间。
+- This is similar to running chkdsk or scandisk on Windows and working with files renamed as `File0000.chk`, etc. Take your time when reviewing `lost+found` content.
+
 :::
 
 ---
@@ -163,7 +175,9 @@ This section covers how to diagnose and repair file system corruption on data dr
 如果一个以前功能正常的磁盘无法挂载，通常表明文件系统损坏，通常是由于非清洁关机或写入故障引起的。
 
 :::danger[Critical 行动]
+
 切勿通过 %%WebGUI|web-gui%% 格式化无法挂载的磁盘！格式化会擦除所有数据并更新 %%parity|parity%%，使恢复变得不可能。
+
 :::
 
 ### 恢复程序
@@ -197,7 +211,9 @@ Instead, your first step should be to attempt a file system repair. Unraid provi
    ```
 
 :::danger
+
 `--repair` 选项极其危险，可能导致进一步的数据丢失。在开始操作前，一定要先备份或克隆磁盘。查看 [相关文档](https://btrfs.readthedocs.io/en/latest/btrfs-check.html)，如果您不确定，建议寻求额外的建议。
+
 :::
 
 If these repair attempts do not resolve the issue or if you encounter errors you don’t understand, it’s best to pause and ask for help on the Unraid forums. Many experienced users and moderators are available to help guide you through the next steps, and getting a second opinion before proceeding further is always safer.
@@ -210,8 +226,8 @@ Losing your %%array|array%% configuration can be stressful, but it doesn't mean 
 
 如果您发现自己处于这种情况，请按以下步骤操作：
 
-1. In the %%WebGUI|web-gui%%, assign all available drives as data drives. Don't assign any as %%parity|parity%% yet.
-2. Start the %%array|array%%. Drives previously used for %%parity|parity%% will appear as *unmountable* because they don't contain a file system.
+1. 在%%WebGUI|web-gui%%中，将所有可用驱动器分配为数据驱动器。暂时不要分配任何驱动器为%%parity|parity%%。
+2. 启动%%array|array%%。以前用作%%parity|parity%%的驱动器将显示为*无法挂载*，因为它们不包含文件系统。
 3. 记下或对这些无法挂载的驱动器拍摄其序列号截图——这些是您的 %%parity|parity%% 驱动器。
 4. 停止%%array|array%%。
 5. 转到***工具 → 新配置*** 然后选择保留当前分配的选项。
@@ -226,7 +242,9 @@ Losing your %%array|array%% configuration can be stressful, but it doesn't mean 
 当标准 Unraid 恢复方法（如 [更换磁盘](../../using-unraid-to/manage-storage/array-configuration.mdx#replacing-disks) 过程）由于多个磁盘故障或 %%parity|parity%% 无效不可行时，像 **ddrescue** 这样的专业工具可以帮助您从失败的驱动器中拯救尽可能多的数据。
 
 :::note[Best 数据恢复实践]
+
 在开始之前，记住数据恢复是一个微妙的过程。尽可能从故障磁盘的副本工作，避免将新数据写入源磁盘。如果您的数据不可替代，请在尝试高级恢复之前考虑专业恢复服务。记录您的操作并花时间——仓促处理增加了永久性数据丢失的风险。
+
 :::
 
 推荐通过 **[Nerd Tools](https://unraid.net/community/apps?q=nerd+tools#r)** 插件安装ddrescue（该插件在2022年取代了已弃用的NerdPack）。
@@ -259,7 +277,9 @@ ddrescue -f /dev/sdX1 /dev/md\# /boot/ddrescue.log
 - 替换 **#** 为你的目标磁盘编号。
 
 :::caution
+
 在运行ddrescue前请始终验证设备分配。使用错误的目标可能导致该磁盘上的数据完全丢失。
+
 :::
 
 ### 翻译 ddrescue 输出
@@ -280,12 +300,14 @@ Copying non-tried blocks... Pass 1 (forwards)
 ```
 
 :::note[What 这是什么意思？]
+
 - **ipos/opos**：源和目标磁盘上的当前读写位置。
 - **rescued**：成功复制的数据量。
 - **坏区域/读取错误**：遇到的问题区域和读取错误的数量。
 - **恢复百分比**：到目前为止恢复的磁盘百分比。
 - **剩余时间**：估计完成时间。
 - **正在复制未尝试的块...**： ddrescue 正在首次尝试读取所有扇区。
+
 :::
 
 在初始复制后，ddrescue将通过多次传递和有时以两种方向读取块来恢复坏扇区中的数据。这一阶段可能需要更长的时间，尤其是在磁盘严重损坏的情况下。
@@ -304,15 +326,17 @@ Scraping failed blocks... (forwards)
 ```
 
 :::note[What's 正在发生？]
+
 - **刮取失败的块...**： ddrescue正在重复尝试恢复不可读的扇区。
 - **坏区域/读取错误**：随着 ddrescue 发现更多损坏，这些数字可能会增加，但目标是尽量减少无法恢复的数据。
+
 :::
 
 ### 挂载和检查已恢复的磁盘
 
 ddrescue完成后，您可以尝试挂载目标磁盘。使用[**未分配的设备**插件](https://unraid.net/community/apps?q=unassigned+devices#r:~:text=don%27t%20be%20carefull!!!-,Unassigned%20Devices,-dlandon)在%%WebGUI|web-gui%%中轻松挂载。如果磁盘无法挂载，请运行适当的文件系统修复工具，如`xfs_repair`或`btrfs check`。即使磁盘挂载了，运行文件系统检查以确保完整性也是一个好主意。
 
-Once you have recovered the files, copy them to a safe location on your %%array|array%%. Be mindful that some files may be corrupt, especially if the disk had many unreadable sectors. Using %%checksums|checksum%% (or %%BTRFS|btrfs%% with built-in checksumming) can help you identify damaged files.
+一旦恢复了文件，将它们复制到您的%%array|array%%上的安全位置。请注意，如果磁盘存在许多不可读的扇区，某些文件可能会损坏。使用%%checksums|checksum%%（或内置校验的%%BTRFS|btrfs%%）可以帮助您识别损坏的文件。
 
 ### 没有校验和识别损坏文件
 
