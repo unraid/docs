@@ -11,27 +11,31 @@ import CliStorageInfo from './partials/command-line-interface/storage-info.mdx';
 
 # Befehlszeilenschnittstelle
 
-While most tasks in Unraid can be performed through the %%WebGUI|web-gui%%, certain operations - especially those related to diagnostics, drive management, or scripting - require using the system console or %%SSH|ssh%% terminal. This page offers Unraid-specific command-line tools and examples that can be used without needing extensive Linux knowledge.
+Während die meisten Aufgaben in Unraid über die %%WebGUI|web-gui%% ausgeführt werden können, erfordern bestimmte Operationen - insbesondere solche, die mit der Diagnose, der Laufwerksverwaltung oder dem Scripting in Zusammenhang stehen - die Verwendung der Systemkonsole oder des %%SSH|ssh%% Terminals. Diese Seite bietet Unraid-spezifische Befehlszeilen-Tools und Beispiele, die ohne umfangreiche Linux-Kenntnisse verwendet werden können.
 
 :::tip[Device Wege]
-Viele Unraid-Operationen auf Festplattenebene hängen von den Linux-Gerätenamen ab, wie z.B. `/dev/sdX`. Den Gerätebezeichner für ein Laufwerk finden Sie im Tab **Main** des %%WebGUI|web-gui%%. Suchen Sie nach den dreibuchstabigen Labels `sdX` oder `nvmeX` neben jedem Datenträger. Verwenden Sie den entsprechenden Bezeichner in allen Kommandos, und ersetzen Sie `sdX` durch Ihr spezifisches Laufwerk.
+
+Viele Festplattenoperationen auf Unraid basieren auf Linux-Gerätenamen wie `/dev/sdX`. Sie können die Gerätekennung für jedes Laufwerk im **Main**-Tab der %%WebGUI|web-gui%% finden. Suchen Sie nach dem dreibuchstabigen Label `sdX` oder `nvmeX` neben jeder Festplatte. Verwenden Sie den entsprechenden Bezeichner in allen Befehlen, indem Sie `sdX` durch Ihre spezifische Festplatte ersetzen.
+
 :::
 
 ## Zugriff auf das Terminal
 
-Unraid beinhaltet ein integriertes Web-Terminal, auf das Sie direkt über das %%WebGUI|web-gui%% zugreifen können. Verwenden Sie einfach das Dropdown-Menü oben rechts und wählen Sie ">\_". Damit wird eine Befehlszeilensitzung als %%root-user|root-user%% geöffnet, die Ihnen vollen administrativen Zugriff auf Ihr System gibt.
+Unraid enthält ein integriertes Web-Terminal, auf das Sie direkt über die %%WebGUI|web-gui%% zugreifen können. Verwenden Sie einfach das Dropdown-Menü oben rechts und wählen Sie ">_". Dies öffnet eine Befehlszeilensitzung als %%root user|root-user%%, die Ihnen vollständigen administrativen Zugriff auf Ihr System gewährt.
 
 Sie können auch extern über %%SSH|ssh%% (Secure Shell) mit einem Client wie %%PuTTY|putty%% auf Ihren Unraid-Server zugreifen.
 
-:::tip[When Sollte ich das Terminal benutzen?]
-Der Zugriff auf das Terminal ist nützlich für:
+:::tip[When Sollte ich das Terminal verwenden?
+
+If you're using Windows, you might prefer %%PuTTY|putty%% for %%SSH|ssh%% access instead of the built-in terminal. It's lightweight, free, and allows you to save sessions for easy access later.
 
 - Ausführen von Diagnosen und Befehlszeilentools wie `smartctl`, `xfs_repair`, `tail` oder `top`.
 - Ausführen von Plugin-Skripten oder Tools, die keine Benutzeroberfläche erfordern.
 - Fehlerbehebung bei Problemen mit der Konnektivität, Systemdiensten oder %%user shares|user-share%%.
+
 :::
 
-### Verwendung von PuTTY (nur Windows)
+### Laufwerktests und Überwachung
 
 If you're using Windows, you might prefer %%PuTTY|putty%% for %%SSH|ssh%% access instead of the built-in terminal. It's lightweight, free, and allows you to save sessions for easy access later.
 
@@ -50,21 +54,23 @@ If you're using Windows, you might prefer %%PuTTY|putty%% for %%SSH|ssh%% access
 </details>
 
 :::note
+
 Unraid konfiguriert den SSH-Server automatisch beim ersten Start. Stellen Sie sicher, dass Ihre Netzwerkverbindung ordnungsgemäß funktioniert und dass Ihr Root-Passwort gesetzt ist, bevor Sie eine Remoteverbindung herstellen.
+
 :::
 
 ## Laufwerktests und Überwachung
 
-These tools assist with evaluating performance, checking drive health, and troubleshooting %%array|array%% slowness. All commands should be executed from the terminal or via %%SSH|ssh%%.
+Diese Tools helfen dabei, die Leistung zu bewerten, den Zustand der Laufwerke zu überprüfen und die Langsamkeit des %%arrays|array%% zu beheben. Alle Befehle sollten vom Terminal oder über %%SSH|ssh%% ausgeführt werden.
 
-### `hdparm`
+### `diskspeed.sh`
 
-Verwenden Sie diesen Befehl, um die Lesegeschwindigkeit zu testen und Laufwerkseigenschaften anzuzeigen.
+Dieses Skript ermöglicht umfassende Oberflächen-Leistungsprüfungen mit visuellen Berichten.
 
 <details>
-  <summary><strong>Hdparm-Optionen anzeigen</strong> - Klicken Sie, um ausklappen/einklappen</summary>
+  <summary><strong>Diskspeed.sh-Nutzung anzeigen</strong> - Klicken Sie, um ausklappen/einklappen</summary>
 
-  **Testen Sie die Laufwerkslesegeschwindigkeit:**
+  Früher war dies ein Skript, das Sie aus den Unraid-Foren heruntergeladen haben. DiskSpeed ist jetzt in einem verfeinerten Paket erhältlich:
 
   ```bash
   hdparm -tT /dev/sdX
@@ -89,7 +95,7 @@ Verwenden Sie diesen Befehl, um die Lesegeschwindigkeit zu testen und Laufwerkse
 
 ### `smartctl`
 
-This command runs %%SMART|smart%% diagnostics and monitors drive health.
+Dieser Befehl führt %%SMART|smart%% Diagnosen durch und überwacht die Gesundheit der Laufwerke.
 
 <details>
   <summary><strong>Smartctl-Optionen anzeigen</strong> - Klicken Sie, um ausklappen/einklappen</summary>
@@ -125,12 +131,12 @@ This command runs %%SMART|smart%% diagnostics and monitors drive health.
   Dies speichert den Bericht auf Ihrem Unraid-Flash-Laufwerk zur späteren Überprüfung oder zum Teilen im [Forum](https://forums.unraid.net/).
 </details>
 
-### `diskspeed.sh`
+### `top`
 
-Dieses Skript ermöglicht umfassende Oberflächen-Leistungsprüfungen mit visuellen Berichten.
+Dieser Befehl bietet eine Echtzeitüberwachung von Prozessen und Ressourcen.
 
 <details>
-  <summary><strong>Diskspeed.sh-Nutzung anzeigen</strong> - Klicken Sie, um ausklappen/einklappen</summary>
+  <summary><strong>Top-Nutzung anzeigen</strong> - Klicken Sie, um ausklappen/einklappen</summary>
 
   Früher war dies ein Skript, das Sie aus den Unraid-Foren heruntergeladen haben. DiskSpeed ist jetzt in einem verfeinerten Paket erhältlich:
 
@@ -143,12 +149,12 @@ Dieses Skript ermöglicht umfassende Oberflächen-Leistungsprüfungen mit visuel
 
 Verwenden Sie diese Befehle, um Speicher, Prozesse und Systemleistung zu überwachen, wenn der %%WebGUI|web-gui%% nicht verfügbar ist oder für detailliertere Diagnosen.
 
-### `top`
+### `ps`
 
-Dieser Befehl bietet eine Echtzeitüberwachung von Prozessen und Ressourcen.
+Verwenden Sie diesen Befehl, um laufende Prozesse mit detaillierten Informationen anzuzeigen.
 
 <details>
-  <summary><strong>Top-Nutzung anzeigen</strong> - Klicken Sie, um ausklappen/einklappen</summary>
+  <summary><strong>Ps-Optionen anzeigen</strong> - Klicken Sie, um ausklappen/einklappen</summary>
 
   ```bash
   top
@@ -158,9 +164,7 @@ Dieser Befehl bietet eine Echtzeitüberwachung von Prozessen und Ressourcen.
   - Drücken Sie `q`, um den Vorgang zu beenden.
   - Verwenden Sie die Pfeiltasten zum Scrollen und `k`, um Prozesse zu beenden.
 
-  :::tip
-  Erwägen Sie die Verwendung von `htop` für eine benutzerfreundlichere Schnittstelle mit erweiterten Steuerungen.
-  :::
+  **Nach Speicherverbrauch sortieren:**
 </details>
 
 ### `frei`
@@ -181,12 +185,12 @@ Dieser Befehl zeigt Speicherverbrauchsstatistiken an.
   :::
 </details>
 
-### `ps`
+### `df`
 
-Verwenden Sie diesen Befehl, um laufende Prozesse mit detaillierten Informationen anzuzeigen.
+Dieser Befehl zeigt die Nutzung des Dateisystem-Speicherplatzes an.
 
 <details>
-  <summary><strong>Ps-Optionen anzeigen</strong> - Klicken Sie, um ausklappen/einklappen</summary>
+  <summary><strong>Df-Nutzung anzeigen</strong> - Klicken Sie, um ausklappen/einklappen</summary>
 
   **Alle Prozesse mit vollständigen Details auflisten:**
 
@@ -194,7 +198,9 @@ Verwenden Sie diesen Befehl, um laufende Prozesse mit detaillierten Informatione
   ps aux
   ```
 
-  **Nach Speicherverbrauch sortieren:**
+  :::tip
+  Erwägen Sie die Verwendung von `htop` für eine benutzerfreundlichere Schnittstelle mit erweiterten Steuerungen.
+  :::
 
   ```bash
   ps aux --sort=-%mem | head -20
@@ -213,34 +219,6 @@ Verwenden Sie diesen Befehl, um laufende Prozesse mit detaillierten Informatione
 
 Diese Befehle helfen, den Speicherplatzverbrauch, Partitionsinformationen zu überprüfen und Speichereinheiten zu identifizieren.
 
-### `df`
-
-Dieser Befehl zeigt die Nutzung des Dateisystem-Speicherplatzes an.
-
-<details>
-  <summary><strong>Df-Nutzung anzeigen</strong> - Klicken Sie, um ausklappen/einklappen</summary>
-
-  ```bash
-  df -h
-  ```
-
-  Dieser Befehl zeigt den verwendeten und verfügbaren Speicherplatz auf allen eingebundenen Dateisystemen an. Er ist praktisch zum Überprüfen von `/var/log` (das RAM-basiertes Logging nutzt) in Unraid. Für weitere Informationen zum [System Logging](../../troubleshooting/diagnostics/capture-diagnostics-and-logs.mdx).
-</details>
-
-### `fdisk`
-
-Anzeigen von Partitionslayouts und Geometrie des Laufwerks.
-
-<details>
-  <summary><strong>Fdisk-Nutzung anzeigen</strong> - Klicken Sie, um ausklappen/einklappen</summary>
-
-  ```bash
-  fdisk -l /dev/sdX
-  ```
-
-  Dieser Befehl zeigt das Partitionslayout, die Größen und die Plattenspeicherung an. Er hilft beim Beheben von Problemen mit unpassenden Plattengrößen, besonders beim [Ersetzen von Platten](../../using-unraid-to/manage-storage/array-configuration.mdx#replacing-disks).
-</details>
-
 ### `lsblk`
 
 Listet alle Blockgeräte in Baumstruktur auf.
@@ -249,10 +227,10 @@ Listet alle Blockgeräte in Baumstruktur auf.
   <summary><strong>Lsblk-Nutzung anzeigen</strong> - Klicken Sie, um ausklappen/einklappen</summary>
 
   ```bash
-  lsblk
+  df -h
   ```
 
-  Dieser Befehl zeigt alle Speichergeräte zusammen mit ihren Einbindungspunkten in einer klaren Baumstruktur an. Es ist ideal, um einen Überblick über Ihr Speicherlayout zu bekommen.
+  Dieser Befehl zeigt den verwendeten und verfügbaren Speicherplatz auf allen eingebundenen Dateisystemen an. Er ist praktisch zum Überprüfen von `/var/log` (das RAM-basiertes Logging nutzt) in Unraid. Für weitere Informationen zum [System Logging](../../troubleshooting/diagnostics/capture-diagnostics-and-logs.mdx).
 </details>
 
 ### `blockdev -getsz`
@@ -261,6 +239,34 @@ Hilft zu bestimmen, ob ein Ersatzlaufwerk ausreichend Speicherplatz für den Wie
 
 <details>
   <summary><strong>Blockdev-Nutzung anzeigen</strong> - Klicken Sie, um ausklappen/einklappen</summary>
+
+  ```bash
+  fdisk -l /dev/sdX
+  ```
+
+  Dieser Befehl zeigt das Partitionslayout, die Größen und die Plattenspeicherung an. Er hilft beim Beheben von Problemen mit unpassenden Plattengrößen, besonders beim [Ersetzen von Platten](../../using-unraid-to/manage-storage/array-configuration.mdx#replacing-disks).
+</details>
+
+### `blkid`
+
+Dateisystembeschriftungen identifizieren.
+
+<details>
+  <summary><strong>Blkid-Nutzung anzeigen</strong> - Klicken Sie, um ausklappen/einklappen</summary>
+
+  ```bash
+  lsblk
+  ```
+
+  Dieser Befehl zeigt den verwendeten und verfügbaren Speicherplatz auf allen eingebundenen Dateisystemen an. Er ist praktisch zum Überprüfen von `/var/log` (das RAM-basiertes Logging nutzt) in Unraid. Für weitere Informationen zum [System Logging](../../troubleshooting/diagnostics/capture-diagnostics-and-logs.mdx).
+</details>
+
+### `blockdev -getsz`
+
+Hilft zu bestimmen, ob ein Ersatzlaufwerk ausreichend Speicherplatz für den Wiederaufbau hat.
+
+<details>
+  <summary><strong>Fdisk-Nutzung anzeigen</strong> - Klicken Sie, um ausklappen/einklappen</summary>
 
   **Syntax:**
 
@@ -271,12 +277,12 @@ Hilft zu bestimmen, ob ein Ersatzlaufwerk ausreichend Speicherplatz für den Wie
   Gibt die rohen Anzahl der 512-Byte-Sektoren eines Geräts zurück - praktisch, um zu bestätigen, dass ein Ersatzlaufwerk groß genug ist, bevor der Wiederaufbau beginnt.
 </details>
 
-### `blkid`
+### `ss`
 
-Dateisystembeschriftungen identifizieren.
+Socket-Statistiken und Netzwerkverbindungen anzeigen. Dies ist der moderne Ersatz für `netstat`.
 
 <details>
-  <summary><strong>Blkid-Nutzung anzeigen</strong> - Klicken Sie, um ausklappen/einklappen</summary>
+  <summary><strong>Ss-Optionen anzeigen</strong> - Klicken Sie, um ausklappen/einklappen</summary>
 
   **Syntax:**
 
@@ -293,14 +299,14 @@ Dateisystembeschriftungen identifizieren.
 
 Werkzeuge zur Fehlerbehebung bei Netzwerkverbindungen und Interface-Konfiguration.
 
-### `ss`
+### `ping`
 
-Socket-Statistiken und Netzwerkverbindungen anzeigen. Dies ist der moderne Ersatz für `netstat`.
+Netzwerkkonnektivität testen.
 
 <details>
-  <summary><strong>Ss-Optionen anzeigen</strong> - Klicken Sie, um ausklappen/einklappen</summary>
+  <summary><strong>Ping-Nutzung anzeigen</strong> - Klicken Sie, um ausklappen/einklappen</summary>
 
-  **Alle offenen Ports anzeigen:**
+  **Konnektivität testen, indem eine begrenzte Anzahl von Paketen gesendet wird:**
 
   ```bash
   ss -tuln
@@ -320,14 +326,14 @@ Socket-Statistiken und Netzwerkverbindungen anzeigen. Dies ist der moderne Ersat
   Dieser Befehl zeigt aktive Verbindungen zusammen mit Prozessinformationen an.
 </details>
 
-### `ip`
+### `ethtool`
 
-Konfigurieren und Anzeigen von Netzwerkinterface-Informationen. Dies ist der moderne Ersatz für `ifconfig`.
+Ein praktisches Werkzeug zum Abfragen und Anpassen von Parametern der Netzwerkschnittstellenkarte (NIC), wie Link-Geschwindigkeit, Offload-Funktionen und Statistik.
 
 <details>
-  <summary><strong>IP-Optionen anzeigen</strong> - Klicken Sie, um ausklappen/einklappen</summary>
+  <summary><strong>Ethtool-Nutzung anzeigen</strong> - Klicken Sie, um ausklappen/einklappen</summary>
 
-  **Alle Netzwerkschnittstellen anzeigen:**
+  **Grundlegende Treiber- und Firmware-Informationen:**
 
   ```bash
   ip addr show
@@ -339,7 +345,7 @@ Konfigurieren und Anzeigen von Netzwerkinterface-Informationen. Dies ist der mod
   ip -c addr show
   ```
 
-  **Routing-Tabelle anzeigen:**
+  Um die aktuelle Link-Geschwindigkeit und Einstellungen Ihrer Schnittstelle zu prüfen, führen Sie aus:
 
   ```bash
   ip route show
@@ -351,9 +357,9 @@ Konfigurieren und Anzeigen von Netzwerkinterface-Informationen. Dies ist der mod
 Netzwerkkonnektivität testen.
 
 <details>
-  <summary><strong>Ping-Nutzung anzeigen</strong> - Klicken Sie, um ausklappen/einklappen</summary>
+  <summary><strong>Ss-Optionen anzeigen</strong> - Klicken Sie, um ausklappen/einklappen</summary>
 
-  **Konnektivität testen, indem eine begrenzte Anzahl von Paketen gesendet wird:**
+  **Alle offenen Ports anzeigen:**
 
   ```bash
   ping -c 4 google.com
@@ -367,9 +373,9 @@ Netzwerkkonnektivität testen.
 Ein praktisches Werkzeug zum Abfragen und Anpassen von Parametern der Netzwerkschnittstellenkarte (NIC), wie Link-Geschwindigkeit, Offload-Funktionen und Statistik.
 
 <details>
-  <summary><strong>Ethtool-Nutzung anzeigen</strong> - Klicken Sie, um ausklappen/einklappen</summary>
+  <summary><strong>IP-Optionen anzeigen</strong> - Klicken Sie, um ausklappen/einklappen</summary>
 
-  **Grundlegende Treiber- und Firmware-Informationen:**
+  **Alle Netzwerkschnittstellen anzeigen:**
 
   Verwenden Sie diesen Befehl, um Informationen über den Treiber und die Firmware Ihrer Netzwerkschnittstelle zu erhalten:
 
@@ -379,7 +385,7 @@ Ein praktisches Werkzeug zum Abfragen und Anpassen von Parametern der Netzwerksc
 
   **Aktuelle Link-Geschwindigkeit und Einstellungen anzeigen:**
 
-  Um die aktuelle Link-Geschwindigkeit und Einstellungen Ihrer Schnittstelle zu prüfen, führen Sie aus:
+  **Routing-Tabelle anzeigen:**
 
   ```
   ethtool eth0
@@ -398,9 +404,9 @@ Ein praktisches Werkzeug zum Abfragen und Anpassen von Parametern der Netzwerksc
 
 ---
 
-## Systeminformationen
+## `tail`
 
-Detaillierte Informationen über Hardware, Kernel und die allgemeine Systemkonfiguration erhalten.
+Protokolldateien in Echtzeit überwachen.
 
 <Tabs>
   <TabItem value="cpu" label="CPU-Info">
