@@ -28,7 +28,9 @@ Avant d'ajouter Unraid, considérez :
 - Activer les [certificats HTTPS](https://tailscale.com/kb/1153/enabling-https) pour un accès sécurisé et de confiance.
 
 :::note
-Les noms de machines dans les certificats HTTPS sont publics. Utilisez des noms que vous êtes à l'aise de partager.
+
+Les noms de machine dans les certificats HTTPS sont publics. Utilisez des noms que vous êtes à l'aise de partager.
+
 :::
 
 ### Ajouter Tailscale à Unraid
@@ -37,10 +39,10 @@ Les étapes suivantes sont actuelles et exactes pour Unraid 7 et plus :
 
 1. Passez en revue les paramètres de votre compte Tailscale comme décrit ci-dessus.
 2. Dans Unraid, recherchez l'onglet [**Applications Communautaires**](../../using-unraid-to/run-docker-containers/community-applications.mdx) pour le plugin %%Tailscale|tailscale%% officiel et installez-le.
-3. Ouvrez ***Paramètres → Tailscale*** et cliquez sur Réauthentifier. Connectez-vous avec votre compte %%Tailscale|tailscale%%.
+3. Ouvrez ***Paramètres → Tailscale*** et cliquez sur Ré-authentifier. Connectez-vous avec votre compte %%Tailscale|tailscale%%.
 4. Cliquez sur **Connecter** pour ajouter votre serveur Unraid à votre %%Tailnet|tailnet%%.
 5. Visitez ***Paramètres → Gestion de l'accès*** pour voir vos URL %%Tailscale|tailscale%% pour le %%WebGUI|web-gui%%.
-6. Dans ***Paramètres → Tailscale***, trouvez le nom et l'IP de votre serveur %%Tailnet|tailnet%%. Utilisez-les pour accéder aux partages SMB/NFS, conteneurs Docker, et plus depuis n'importe quel appareil sur votre %%Tailnet|tailnet%%.
+6. Dans ***Paramètres → Tailscale***, trouvez le nom et l'adresse IP de votre %%Tailnet|tailnet%% serveur. Utilisez-les pour accéder aux partages SMB/NFS, aux conteneurs Docker et plus depuis n'importe quel appareil sur votre %%Tailnet|tailnet%%.
 
 ### Routage de sous-réseau (optionnel)
 
@@ -59,7 +61,7 @@ Pour accéder à votre serveur Unraid par son IP LAN principal (ou pour atteindr
 
 ## Ajouter Tailscale aux conteneurs Docker
 
-Unraid rend facile la connexion des [conteneurs Docker](../../using-unraid-to/run-docker-containers/overview.mdx) à votre %%Tailnet|tailnet%%, en donnant à chaque conteneur une identité d'appareil unique pour un accès distant sécurisé et flexible. Avec cette intégration, vous pouvez partager l'accès à des conteneurs individuels - sans exposer votre serveur entier - et profiter de fonctionnalités avancées comme les nœuds de sortie, Serve et Funnel sur une base par conteneur. Le processus est entièrement automatisé, permettant aux utilisateurs de tous niveaux de bénéficier d'une sécurité améliorée et d'un réseau simplifié.
+Unraid facilite la connexion des [conteneurs Docker](../../using-unraid-to/run-docker-containers/overview.mdx) à votre %%Tailnet|tailnet%%, donnant à chaque conteneur une identité d'appareil unique pour un accès distant sécurisé et flexible. Grâce à cette intégration, vous pouvez partager l'accès à des conteneurs individuels - sans exposer votre serveur entier - et profiter de fonctionnalités avancées comme les nœuds de sortie, Serve et Funnel sur une base par conteneur. La configuration est entièrement automatisée, donc les utilisateurs de tous niveaux peuvent bénéficier d'une sécurité améliorée et d'une mise en réseau simplifiée.
 
 <details>
   <summary><strong>Comment fonctionne l'intégration Tailscale-Docker</strong> - Cliquez pour développer/réduire</summary>
@@ -76,13 +78,15 @@ Unraid rend facile la connexion des [conteneurs Docker](../../using-unraid-to/ru
 </details>
 
 :::warning[Container compatibilité]
-L'intégration de Tailscale ne fonctionne pas avec tous les conteneurs. Certains conteneurs peuvent ne pas fonctionner du tout si Tailscale est activé, en particulier ceux avec :
+
+L'intégration Tailscale ne fonctionne pas avec tous les conteneurs. Certains conteneurs peuvent ne pas fonctionner du tout si Tailscale est activé, en particulier ceux avec :
 
 - Exigences réseau personnalisées
 - Besoins spécifiques d'isolation réseau
 - Applications en conflit avec les modifications réseau de Tailscale
 
 Testez l'intégration Tailscale sur des conteneurs non critiques d'abord, et préparez-vous à la désactiver si le conteneur ne fonctionne pas correctement.
+
 :::
 
 :::note\[Prerequisites]
@@ -100,7 +104,9 @@ Pour ajouter %%Tailscale|tailscale%% à un conteneur Docker :
 4. Entrez un **nom d'hôte Tailscale** pour le conteneur (doit être unique sur votre Tailnet).
 
 :::warning
+
 Un certificat HTTPS sera généré pour ce nom d'hôte et publié dans un registre public de certificats. Choisissez un nom que vous êtes à l'aise de partager publiquement. Consultez les [docs HTTPS de Tailscale](https://tailscale.com/kb/1153/enabling-https) pour plus de détails.
+
 :::
 
 5. Décidez si ce conteneur doit être un nœud de sortie (utile pour les conteneurs VPN).
@@ -110,21 +116,25 @@ Un certificat HTTPS sera généré pour ce nom d'hôte et publié dans un regist
 9. Décidez d'activer ou non **%%Tailscale|tailscale%% %%SSH|ssh%%** (accès sécurisé à shell authentifié via %%Tailscale|tailscale%%).
 
 :::info[Serve vs. Tunnel]
+
 - **Serve** : Vous permet d'accéder au site web ou au service web d'un conteneur de manière sécurisée depuis votre Tailnet en utilisant une URL HTTPS conviviale. Aucun transfert de port n'est nécessaire et seuls les appareils Tailnet peuvent se connecter.
-- **Funnel** : Publie le site web du conteneur sur internet via une URL HTTPS unique. Quiconque possède le lien peut y accéder, même s'il ne fait pas partie de votre Tailnet. Utilisez ceci avec prudence, car cela expose votre service à l'internet plus large.
+- **Funnel** : Publie le site web du conteneur sur Internet via une URL HTTPS unique. Quiconque possède le lien peut y accéder, même s'il n'est pas sur votre Tailnet. Utilisez ceci avec prudence, car cela expose votre service à l'Internet large.
+
 :::
 
 10. Activez **Serve** pour faire un proxy inverse de l'interface web du conteneur vers votre Tailnet, ou **Funnel** pour le rendre accessible depuis internet. Unraid détectera automatiquement le port à utiliser en fonction des paramètres WebUI du conteneur. Si nécessaire, des options avancées sont également disponibles.
 
 :::warning
+
 Lors de l'utilisation de Serve ou Funnel, il n'y a pas de couche d'authentification supplémentaire - votre conteneur est responsable de la gestion de l'accès des utilisateurs. Sécurisez vos applications web en conséquence.
+
 :::
 
 11. **Appliquez** vos modifications et vérifiez le **journal du conteneur** pour les messages Tailscale. Cliquez sur le lien "Pour authentifier, visitez" pour approuver le conteneur sur votre Tailnet.
 
 :::caution\[Troubleshooting]
 
-**Erreur d'état persistant** - Si vous voyez "*ERREUR : Impossible de détecter le répertoire Docker persistant pour .tailscale\_state*":
+**Erreur d'état persistant** - Si vous voyez "*ERREUR : Impossible de détecter le répertoire Docker persistant pour .tailscale_state*":
 
 - Modifiez le conteneur et identifiez un chemin mappé pour stocker les données d'état Tailscale (par ex., `/container-path/`).
 - Activez les **Affichage des paramètres avancés** Tailscale et définissez le **Répertoire d'état** Tailscale à `/container-path/.tailscale_state`.
@@ -160,8 +170,10 @@ Pour mettre à jour %%Tailscale|tailscale%% :
 - **Désactivé :** Le conteneur a un accès %%Tailnet|tailnet%% complet et peut utiliser le DNS %%Tailscale|tailscale%%. Il peut communiquer avec d'autres appareils %%Tailnet|tailnet%%, mais l'URL WebUI d'origine peut ne pas être disponible.
 
 :::info[Feature exigences]
+
 - Les conteneurs définis comme **Nœuds de sortie** ont toujours le réseau en espace utilisateur activé.
 - Les conteneurs qui **Utilisent un Nœud de Sortie** ont toujours le réseau en espace utilisateur désactivé.
+
 :::
 
 ### Compatibilité des types de réseau
@@ -176,8 +188,10 @@ Le comportement de l'intégration Tailscale et du réseau d'espace utilisateur d
 | `conteneur`/`wg0`    | Désactivé (non testé)                    | Oui                | Inconnu                                | Inconnu                         | À utiliser avec prudence ; pas complètement testé                                       |
 
 :::info[Keep à l'esprit]
+
 - Les URL de l’interface Web de %%Tailscale|tailscale%% ne sont accessibles que depuis des appareils avec %%Tailscale|tailscale%% installé et rejoint à votre %%Tailnet|tailnet%%, ou avec le partage explicite activé.
 - Pour la plupart des utilisateurs, les paramètres par défaut offrent un accès sécurisé et fiable. Des options avancées sont disponibles pour des besoins de mise en réseau spécialisés.
+
 :::
 
 \* *"%%WireGuard|wireguard%%" et le logo "%%WireGuard|wireguard%%" sont des marques déposées de Jason A. Donenfeld.*
