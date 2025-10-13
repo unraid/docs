@@ -44,19 +44,23 @@ import FsRepairCliZfs from './partials/fs-repair-cli-zfs.mdx';
 </Tabs>
 
 :::note[Additional Notes]
+
 - Mixing different file system types in your Unraid system is perfectly acceptable; the Unraid %%parity|parity%% system works independently of the file system used.
 - Always format and partition drives within Unraid to ensure compatibility.
 - Linux systems can read these file systems natively; however, Windows and macOS will require additional software for access.
 - You can <u>encrypt</u> drives for enhanced security, but keep in mind that encrypted drives might pose challenges for recovery if corruption occurs.
 - For transfer drives or external devices, it's recommended to use the **[Unassigned Devices](#using-the-unassigned-devices-plugins)** plugin, which supports additional file systems.
+
 :::
 
 :::tip[Still need help choosing?]
+
 - **For array drives:** %%XFS|xfs%% is generally the best choice for most users.
 - **For high-performance or advanced features:** Choose %%ZFS|zfs%% or %%BTRFS|btrfs%% for %%cache pools|cache-pool%% or multi-device setups.
 - **For mixed or expanding pools:** %%BTRFS|btrfs%% is ideal if you want to use different drive sizes or easily add or remove devices.
 
 If you're uncertain, starting with the defaults is a good approach: use %%XFS|xfs%% for %%array|array%% drives and %%BTRFS|btrfs%% for %%cache pools|cache-pool%%.
+
 :::
 
 ---
@@ -103,7 +107,9 @@ Once formatting is complete, the drive is ready to store files.
 You may want to change the file system type on a specific drive to take advantage of new features or to ensure compatibility with your other drives.
 
 :::warning
+
 Changing the file system type will **erase all existing data** on the drive. Always back up any important files before proceeding.
+
 :::
 
 To change the file system type on a particular drive:
@@ -123,16 +129,20 @@ If you encounter any issues, feel free to visit the [Unraid forums](https://foru
 ## Converting to a new file system type
 
 :::important
+
 Starting with Unraid 7.2, the ***Main*** page will warn if any array or pool drives are formatted in legacy filesystems:
 
 - Any drives formatted in ReiserFS need to be migrated to another filesystem ASAP as they will not be usable in a future release of Unraid (likely Unraid 7.3).
 - Any drives formatted in an older version of XFS need to be migrated before 2030.
+
 :::
 
 To change the file system type on a drive but keep its data, you must migrate the contents before reformatting. This process is especially common for users moving away from the deprecated ReiserFS (used in older Unraid versions) to %%XFS|xfs%% or %%BTRFS|btrfs%%, but it applies to any file system conversion.
 
 :::important
+
 This process requires temporarily moving your data to another location. Make sure you have enough free space elsewhere in your %%array|array%% or on an external device before you begin.
+
 :::
 
 To safely convert to a new file system type:
@@ -153,7 +163,9 @@ To safely convert to a new file system type:
 4. **Repeat as needed**: If you have more than one drive to convert, repeat these steps for each drive, transferring data as needed.
 
 :::note[Timing]
+
 The process can take several hours, depending on the amount of data and the speed of your drives. Most of the time is spent copying files, which can run unattended.
+
 :::
 
 ---
@@ -163,7 +175,9 @@ The process can take several hours, depending on the amount of data and the spee
 Reformatting a drive in Unraid will erase all of your data and create a new, empty file system. This process is useful for resolving persistent file system errors or starting fresh with a new format.
 
 :::warning
+
 Reformatting will permanently erase all data on the drive. Always back up any important files before you begin.
+
 :::
 
 To **safely** reformat your drive:
@@ -222,7 +236,9 @@ To restore data and settings:
 14. **Start the array**.
 
 :::note[Timing]
+
 The time it takes to move data with the %%Mover|mover%% and format the drive can vary from several minutes to several hours, depending on the amount of data and the speed of the drive.
+
 :::
 
 ---
@@ -244,7 +260,9 @@ Let’s break down what each operation does and when to use them:
 </Tabs>
 
 :::tip
+
 Both **Balance** and **Scrub** can be performed while the system is online, but keep in mind that performance may be affected during these operations. You can monitor the progress in the %%WebGUI|web-gui%%.
+
 :::
 
 For more details on advanced %%BTRFS|btrfs%% features, check out the [official BTRFS documentation](https://btrfs.readthedocs.io/en/latest/Introduction.html).
@@ -256,7 +274,9 @@ For more details on advanced %%BTRFS|btrfs%% features, check out the [official B
 Unassigned drives are storage devices connected to your Unraid server that aren't part of the main %%array|array%% or any %%cache pool|cache-pool%%. You can use these drives to transfer files, create backups, or provide fast storage for %%virtual machines|vm%%.
 
 :::note
+
 All drives connected to your server when the %%array|array%% starts count toward your Unraid Attached Devices license limit, even if they aren’t assigned to the %%array|array%% or a pool.
+
 :::
 
 <h4>Common uses for unassigned drives</h4>
@@ -295,7 +315,9 @@ If you see that a drive in Unraid is **unmountable**, it could be due to one of 
 2. **File system problems**: If a drive that was previously working suddenly shows as unmountable, it likely has a file system issue. This can happen due to unexpected shutdowns, problems while writing data, or if the drive has been marked as disabled (which appears as a red 'x' in the %%WebGUI|web-gui%%).
 
 :::important
+
 Do not format an unmountable drive unless you are okay with losing all the data on it. Formatting will erase everything and update the %%parity|parity%% information, making recovery impossible. Always try to fix the file system first.
+
 :::
 
 If your drive is unmountable:
@@ -305,25 +327,31 @@ If your drive is unmountable:
 3. **For previously working drives**: Perform a file system check or repair (see [Checking a file system](#checking-a-file-system)). Avoid formatting if you want to keep the data.
 
 :::note
+
 If a drive is both unmountable and disabled (red 'x'), first run the file system check/repair on the **emulated** drive. If the emulated drive is also unmountable and you attempt to rebuild it, the new drive will also be unmountable.
+
 :::
 
 Fixing the file system typically takes less time than rebuilding the drive, allowing you to access your data without losing anything. Remember, rebuilding a drive does **not** fix file system issues; it merely ensures that the physical drive matches the emulated one, carrying over any existing problems.
 
 :::important[Why is parity not enough?]
+
 While %%parity|parity%% helps recover a failed drive, it cannot fix file system problems. If the file system is corrupted, %%parity|parity%% will simply replicate that corruption to the new drive.
 
 If you’re unsure:
 
 - Download your system logs by navigating to ***Tools → Diagnostics***.
 - For expert help, post your issue along with the diagnostics on the [Unraid forums](https://forums.unraid.net/).
+
 :::
 
 :::note[Just to reiterate]
+
 - Only format unmountable drives if they are brand new or if you want to erase all data.
 - Use the file system check/repair for fixing corrupt files; don’t rely on %%parity|parity%% to solve these issues.
 - For %%cache pools|cache-pool%% with multiple drives, consider using either %%BTRFS|btrfs%% or %%ZFS|zfs%%.
 - Always double-check before formatting or repairing drives to avoid accidental loss of data.
+
 :::
 
 ---
@@ -333,7 +361,9 @@ If you’re unsure:
 If a disk that previously mounted without issues now shows as **unmountable**, it typically indicates file system corruption. This may result from an unclean shutdown, a failed write operation, or the disk being marked as disabled in the %%WebGUI|web-gui%%. Checking and repairing the file system is generally quicker and safer than performing a rebuild, so it's advisable to try this before formatting or rebuilding the disk.
 
 :::important
+
 If the %%WebGUI|web-gui%% suggests formatting an unmountable drive, <strong>do not format</strong> unless you intend to erase all data. Formatting will destroy the contents of the drive and update %%parity|parity%%, making recovery impossible.
+
 :::
 
 <h4>Preparing to check or repair</h4>
@@ -402,9 +432,11 @@ This automated system eliminates the need for users to manually enter repair opt
 </Tabs>
 
 :::tip
+
 - File system repairs are generally faster than a complete rebuild and can restore access without data loss.
 - Rebuilding a disk does **not** resolve file system corruption; always run a check or repair first.
 - If you have doubts, post your diagnostics and error messages on the Unraid [forums](https://forums.unraid.net/) for expert assistance.
+
 :::
 
 ---
@@ -414,7 +446,9 @@ This automated system eliminates the need for users to manually enter repair opt
 If a check of your file system finds errors, you might need to run a repair to get access to your data again. Repairs typically take less time than a full rebuild, but it's important to read the output carefully and reach out for help on the [forums](https://forums.unraid.net/) if you're unsure about anything.
 
 :::note[Timing]
+
 Repairs can take anywhere from several minutes to several hours, especially for larger or heavily corrupted file systems. Progress might seem slow, but you can check on the activity by looking at the read/write statistics on the Main page.
+
 :::
 
 <h4>Preparing to repair</h4>
@@ -442,7 +476,9 @@ Repairs can take anywhere from several minutes to several hours, especially for 
 9. **Check for lost files**: If you notice a `lost+found` folder after the repair, it may contain files or folders that couldn't be fully recovered. Use backups or the Linux `file` command to identify the contents if necessary.
 
 :::info
+
 If you're uncertain about the output, copy and share it on the [Unraid forums](https://forums.unraid.net/) for expert help. Use the code formatting option to keep it readable.
+
 :::
 
 #### Via the command line
@@ -462,9 +498,11 @@ If you're uncertain about the output, copy and share it on the [Unraid forums](h
 </Tabs>
 
 :::info[After the repair]
+
 - Stop and restart the %%array|array%% in **Normal mode**.
 - The drive should now mount and be accessible.
 - If you see a `lost+found` folder, check its contents for any important files.
+
 :::
 
 If you don't understand the repair output or if the process fails, share your diagnostics and repair log on the [Unraid forums](https://forums.unraid.net/) for further assistance.

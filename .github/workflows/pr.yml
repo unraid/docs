@@ -14,10 +14,16 @@ concurrency:
 
 jobs:
   lint:
+    if: ${{ github.event.action != 'closed' }}
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Checkout
         uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+          ref: ${{ github.head_ref }}
 
       - name: Setup Node.js
         uses: actions/setup-node@v5
@@ -28,8 +34,38 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Run formatter autofix
+        run: npm run format
+
       - name: Run linter
         run: npm run lint -- --frail
+
+      - name: Check for lint changes
+        id: lint_changes
+        run: |
+          if [[ -n "$(git status --porcelain)" ]]; then
+            echo "has_changes=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_changes=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Notify forked PRs
+        if: steps.lint_changes.outputs.has_changes == 'true' && github.repository != github.event.pull_request.head.repo.full_name
+        run: |
+          echo "::warning::Format fixes were generated but cannot be pushed automatically for pull requests from forks. Please run 'npm run format' locally and push the changes."
+
+      - name: Commit lint fixes
+        if: steps.lint_changes.outputs.has_changes == 'true' && github.repository == github.event.pull_request.head.repo.full_name
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "chore: apply lint and format fixes"
+
+      - name: Push lint fixes
+        if: steps.lint_changes.outputs.has_changes == 'true' && github.repository == github.event.pull_request.head.repo.full_name
+        run: |
+          git push origin HEAD:${{ github.head_ref }} || echo "Unable to push lint fixes (likely due to branch permissions)."
 
   deploy-preview:
     runs-on: ubuntu-latest

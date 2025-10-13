@@ -28,7 +28,9 @@ Before adding Unraid, consider:
 - Enabling [HTTPS certificates](https://tailscale.com/kb/1153/enabling-https) for secure, trusted access.
 
 :::note
+
 Machine names in HTTPS certificates are public. Use names you’re comfortable sharing.
+
 :::
 
 ### Adding Tailscale to Unraid
@@ -73,9 +75,11 @@ Unraid makes it easy to connect [Docker containers](../../using-unraid-to/run-do
   5. **Normal Startup:** The script then starts the container’s original Entrypoint and CMD, so your application runs as usual - with Tailscale networking layered in automatically.
 
   Once enabled, the container appears as its own device on your Tailnet, ready for secure access and advanced Tailscale features, without any need for manual network configuration or port forwarding.
+
 </details>
 
 :::warning[Container compatibility]
+
 Tailscale integration does not work with all containers. Some containers may not function at all if Tailscale is enabled, particularly those with:
 
 - Custom networking requirements
@@ -83,11 +87,14 @@ Tailscale integration does not work with all containers. Some containers may not
 - Applications that conflict with Tailscale's network modifications
 
 Test Tailscale integration on non-critical containers first, and be prepared to disable it if the container stops working properly.
+
 :::
 
 :::note[Prerequisites]
+
 - First, install %%Tailscale|tailscale%% on any computer that will access your Docker containers.
 - While the Unraid Tailscale plugin isn’t strictly required for Docker integration, it’s strongly recommended to install it and sign in on your Unraid server for the best experience.
+
 :::
 
 To add %%Tailscale|tailscale%% to a Docker container:
@@ -98,7 +105,9 @@ To add %%Tailscale|tailscale%% to a Docker container:
 4. Enter a **Tailscale hostname** for the container (must be unique on your Tailnet).
 
 :::warning
+
 An HTTPS certificate will be generated for this hostname and published in a public certificate ledger. Choose a name you’re comfortable sharing publicly. See the [Tailscale HTTPS docs](https://tailscale.com/kb/1153/enabling-https) for details.
+
 :::
 
 5. Decide whether this container should be an exit node (useful for VPN containers).
@@ -108,25 +117,31 @@ An HTTPS certificate will be generated for this hostname and published in a publ
 9. Decide whether to enable **%%Tailscale|tailscale%% %%SSH|ssh%%** (secure shell access authenticated via %%Tailscale|tailscale%%).
 
 :::info[Serve vs. Funnel]
+
 - **Serve**: Lets you access a container’s website or web service securely from your Tailnet using a friendly HTTPS URL. No port forwarding is needed, and only Tailnet devices can connect.
 - **Funnel**: Publishes the container’s website to the public internet via a unique HTTPS URL. Anyone with the link can access it, even if they’re not on your Tailnet. Use this with caution, as it exposes your service to the wider internet.
+
 :::
 
 10. Enable **Serve** to reverse proxy the container’s web interface to your Tailnet, or **Funnel** to make it accessible from the public internet. Unraid will auto-detect the port to use based on the container’s WebUI settings. If needed, advanced options are also available.
 
 :::warning
+
 When using Serve or Funnel, there’s no extra authentication layer - your container is responsible for managing user access. Secure your web apps accordingly.
+
 :::
 
 11. **Apply** your changes and check the **Container log** for Tailscale messages. Click the "To authenticate, visit" link to approve the container on your Tailnet.
 
 :::caution[Troubleshooting]
+
 **Persistent state error** - If you see "*ERROR: Couldn't detect persistent Docker directory for .tailscale\_state*":
 
 - Edit the container and identify a mapped path to store Tailscale state data (e.g., `/container-path/`).
 - Enable Tailscale **Show advanced settings** and set the Tailscale **State directory** to `/container-path/.tailscale_state`.
 - Restart the container.
 - Docker XML authors can simplify this by adding `<TailscaleStateDir>/container-path/.tailscale_state</TailscaleStateDir>` to the container’s XML file.
+
 :::
 
 ---
@@ -156,8 +171,10 @@ To update %%Tailscale|tailscale%%:
 - **Disabled:** The container has full %%Tailnet|tailnet%% access and can use %%Tailscale|tailscale%% DNS. It can communicate with other %%Tailnet|tailnet%% devices, but the original WebUI URL may not be available.
 
 :::info[Feature requirements]
+
 - Containers set as **Exit Nodes** always have userspace networking enabled.
 - Containers that **Use an Exit Node** always have userspace networking disabled.
+
 :::
 
 ### Network type compatibility
@@ -172,8 +189,10 @@ The behavior of Tailscale integration and userspace networking depends on the co
 | `container`/`wg0`    | Disabled (untested)          | Yes             | Unknown                                 | Unknown                        | Use with caution; not fully tested                                            |
 
 :::info[Keep in mind]
+
 - %%Tailscale|tailscale%% WebUI URLs are only accessible from devices with %%Tailscale|tailscale%% installed and joined to your %%Tailnet|tailnet%%, or with explicit sharing enabled.
 - For most users, default settings provide secure and reliable access. Advanced options are available for specialized networking needs.
+
 :::
 
 \* *"%%WireGuard|wireguard%%" and the "%%WireGuard|wireguard%%" logo are registered trademarks of Jason A. Donenfeld.*

@@ -35,13 +35,17 @@ Even though Unraid offers protection against various hardware failures, having r
 Users should assess their risk tolerance and backup needs, but utilizing cloud integration and automation is a good starting point for most Unraid users.
 
 :::tip[Modern backup strategy]
+
 With Unraid 7.0 and up, enable [Unraid Connect](../../../unraid-connect/overview-and-setup.mdx) for automated cloud backups of your flash device and configuration. Consider using Duplicati, rclone, or similar tools for important files and shares to create scheduled backups to local, remote, or cloud destinations. Always test your restore process to ensure your backups will work when needed.
+
 :::
 
 :::info[Proactive monitoring and support]
+
 - **Enable notifications:** Set up notifications in ***Settings → Notifications*** to receive immediate alerts about system issues.
 - **Seek expert guidance:** If you're unsure about recovery steps, consult the [Unraid forums](https://forums.unraid.net/) before taking any action.
 - **Regular health checks:** Keep an eye on your drive’s [SMART data](../../system-administration/monitor-performance/smart-reports-and-disk-health.mdx) and perform periodic file system checks.
+
 :::
 
 ---
@@ -49,10 +53,12 @@ With Unraid 7.0 and up, enable [Unraid Connect](../../../unraid-connect/overview
 ## Repair file systems
 
 :::caution
+
 Use these instructions strictly for data drives with file system corruption. Do not apply them to the parity drive, hardware issues, or missing drives.
 
 - File system repair tools are intended only for fixing data or cache drives that have file system or mount errors.
 - The parity drive does **not** have a file system. Running any repair tool on the parity drive can corrupt it and may result in irreversible data loss.
+
 :::
 
 ### Device naming: paths and symbols
@@ -66,10 +72,12 @@ When using the **%%WebGUI|web-gui%%**, device paths are managed automatically. I
 | Raw partition              | /dev/sdj1    | Direct device access  | No                             |
 
 :::warning
+
 Never run file system repair tools on entire drives (like `/dev/sdj`); always use partition paths (like `/dev/sdj1` or Unraid-managed `/dev/mdXp1`).
 
 - For %%array|array%% drives, always use the Unraid-managed device (such as `/dev/md5p1`) to **preserve %%parity|parity%% protection**.
 - Using the raw partition (for example, `/dev/sdj1`) will not update %%parity|parity%%, leaving it invalid.
+
 :::
 
 - Always use `/dev/mdXp1` for %%array|array%% drives to maintain valid %%parity|parity%%.
@@ -94,7 +102,9 @@ If you prefer using the command line, always:
   - **BTRFS:** `btrfs scrub`
 
 :::caution[Know your file system]
+
 Using the wrong repair tool can cause further damage. Verify that your disk is formatted as **%%XFS|xfs%%**, **%%BTRFS|btrfs%%**, or another supported file system type before initiating repairs.
+
 :::
 
 ---
@@ -137,9 +147,11 @@ This section covers how to diagnose and repair file system corruption on data dr
 If you used %%Maintenance Mode|maintenance-mode%%, stop the array and restart it in normal mode to resume operations.
 
 :::tip[What to expect after repair]
+
 - Repair and check operations may take up to a half hour or more, depending on the size and status of your file system.
 - Extensive corruption may create a `lost+found` folder containing recovered file and folder fragments. Examine and restore these as needed; delete when finished.
 - This is similar to running chkdsk or scandisk on Windows and working with files renamed as `File0000.chk`, etc. Take your time when reviewing `lost+found` content.
+
 :::
 
 ---
@@ -163,7 +175,9 @@ If you used %%Maintenance Mode|maintenance-mode%%, stop the array and restart it
 If a previously functional disk becomes unmountable, this usually indicates file system corruption, often caused by an unclean shutdown or write failure.
 
 :::danger[Critical action]
+
 Never format an unmountable disk through the %%WebGUI|web-gui%%! Formatting erases all data and updates %%parity|parity%%, making recovery impossible.
+
 :::
 
 ### Recovery procedure
@@ -197,7 +211,9 @@ Here’s how to proceed:
    ```
 
 :::danger
+
 The `--repair` option is extremely dangerous and can cause further data loss. Always backup or image the disk first. Review [the documentation](https://btrfs.readthedocs.io/en/latest/btrfs-check.html) and consider seeking additional advice if you’re unsure.
+
 :::
 
 If these repair attempts do not resolve the issue or if you encounter errors you don’t understand, it’s best to pause and ask for help on the Unraid forums. Many experienced users and moderators are available to help guide you through the next steps, and getting a second opinion before proceeding further is always safer.
@@ -226,7 +242,9 @@ Here’s what to do if you find yourself in this situation:
 When standard Unraid recovery methods, such as the [replacing disks](../../using-unraid-to/manage-storage/array-configuration.mdx#replacing-disks) procedure, aren't feasible due to multiple disk failures or invalid %%parity|parity%%, specialized tools like **ddrescue** can help you salvage as much data as possible from a failing drive.
 
 :::note[Best practices for data recovery]
+
 Before you begin, remember that data recovery is a delicate process. Always work from a copy of your failing disk when possible, and avoid writing new data to the source disk. If your data is irreplaceable, consider professional recovery services before attempting advanced recovery yourself. Document your actions and take time—rushing increases the risk of permanent data loss.
+
 :::
 
 The recommended method to install ddrescue is through the **[Nerd Tools](https://unraid.net/community/apps?q=nerd+tools#r)** plugin (which replaced the deprecated NerdPack in 2022).
@@ -259,7 +277,9 @@ ddrescue -f /dev/sdX1 /dev/md\# /boot/ddrescue.log
 - Replace **#** with the number of your destination disk.
 
 :::caution
+
 Always verify device assignments before running ddrescue. Using the wrong destination could lead to total data loss on that disk.
+
 :::
 
 ### Translating ddrescue output
@@ -280,12 +300,14 @@ Copying non-tried blocks... Pass 1 (forwards)
 ```
 
 :::note[What does this mean?]
+
 - **ipos/opos**: Current read/write positions on the source and destination disks.
 - **rescued**: Amount of data successfully copied.
 - **bad areas/read errors**: Number of problematic regions and read errors encountered.
 - **pct rescued**: Percentage of the disk recovered so far.
 - **remaining time**: Estimated time to completion.
 - **Copying non-tried blocks...**: ddrescue is making its first attempt to read all sectors.
+
 :::
 
 After the initial copy, ddrescue will work on recovering data from bad sectors by making multiple passes and sometimes reading blocks in both directions. This phase can take much longer, especially if the disk is seriously damaged.
@@ -304,8 +326,10 @@ Scraping failed blocks... (forwards)
 ```
 
 :::note[What's happening now?]
+
 - **Scraping failed blocks...**: ddrescue is making repeated attempts to recover unreadable sectors.
 - **bad areas/read errors**: These numbers may increase as ddrescue finds more damage, but the goal is to minimize unrecoverable data.
+
 :::
 
 ### Mounting and checking the recovered disk
