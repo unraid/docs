@@ -15,7 +15,9 @@ Wenn Ihr Unraid-Server nicht korrekt startet, kann es schwierig sein, die Ursach
 Dieses Thema wird ausführlich im Abschnitt [USB-Gerät vorbereiten](../../getting-started/set-up-unraid/create-your-bootable-media.mdx#prepare-your-usb-device) behandelt.
 
 :::caution
+
 Sichern Sie immer [Ihren Flash-Laufwerk](../../system-administration/maintain-and-update/changing-the-flash-device.mdx#backing-up-your-flash-device), bevor Sie Änderungen vornehmen. Alle benutzerspezifischen Einstellungen, einschließlich Ihres Lizenzschlüssels, befinden sich im `config`-Ordner. Das Wiederherstellen dieses Ordners nach der Neuformatierung Ihres Flash-Geräts hilft, Ihre aktuelle Konfiguration beizubehalten.
+
 :::
 
 ## UEFI-Boot aktivieren
@@ -35,33 +37,11 @@ So konfigurieren Sie den %%UEFI|uefi%% Boot in Ihrem System-BIOS/%%UEFI|uefi%%-E
 Die Unraid-Boot-Sequenz umfasst mehrere Phasen:
 
 <details>
-  <summary><strong>1. BIOS Boot</strong> - Zum Erweitern/Kollabieren klicken</summary>
-
-  Die BIOS/UEFI-Firmware initialisiert die Hardware und findet das bootfähige Gerät. Dies ist das Fundament des gesamten Boot-Prozesses.
-
-  - Das Motherboard-BIOS erkennt das Unraid-Boot-Flash-Gerät.
-  - Das Festlegen des Flash-Geräts als Standard-Boot-Gerät variiert je nach BIOS - überprüfen Sie das Handbuch Ihrer Hauptplatine für Anleitung.
-  - Das Flash-Gerät unterstützt sowohl **Legacy (CSM)** als auch **%%UEFI|uefi%%** Boot-Modi.
-  - Um den %%UEFI|uefi%%-Boot zu aktivieren, stellen Sie sicher, dass der `EFI`-Ordner auf dem Flash-Gerät kein nachfolgendes Minuszeichen (`-`) hat.
-</details>
-
-<details>
-  <summary><strong>2. Syslinux Loader</strong> - Zum Erweitern/Kollabieren klicken</summary>
-
-  Der Bootloader bietet Startoptionen und lädt den Linux-Kernel in den Arbeitsspeicher. Diese Phase bestimmt, welches Betriebssystem oder Diagnosetool ausgeführt werden soll.
-
-  - Die Bootmenüeinträge sind in der Datei `syslinux/syslinux.cfg` auf dem Flash-Gerät definiert.
-  - Sie können diese Datei über die %%WebGUI|web-gui%% unter ***Main → Syslinux-Konfiguration*** bearbeiten.
-  - **Memtest86+**, das mit aktuellen Unraid-Versionen ausgeliefert wird, funktioniert sowohl im Legacy- als auch im %%UEFI|uefi%%-Modus. Für ältere Unraid-Versionen erhalten Sie eine kompatible Version von [der offiziellen Memtest-Seite](https://www.memtest86.com/) für %%UEFI|uefi%%.
-  - Wenn keine Option ausgewählt wird, startet das Standardprogramm nach einer Verzögerung, was für den kopflosen Betrieb nützlich ist.
-</details>
-
-<details>
   <summary><strong>3. Linux-Kern</strong> - Zum Erweitern/Kollabieren klicken</summary>
 
   Der Linux-Kernel initialisiert und beginnt mit der Hardwareerkennung. Hier übernimmt das Betriebssystem die Kontrolle vom Bootloader.
 
-  - **Syslinux** lädt den Linux-Kern vom Flash-Gerät in den RAM.
+  - Das Motherboard-BIOS erkennt das Unraid-Boot-Flash-Gerät.
   - Sie sehen Konsolennachrichten, die die bz\* Dateien laden.
   - Fehler in dieser Phase deuten oft auf Probleme mit dem Flash-Gerät hin.
   - Linux erkennt Hardware während des Startvorgangs.
@@ -73,12 +53,9 @@ Die Unraid-Boot-Sequenz umfasst mehrere Phasen:
   Das Flash-Gerät wird zugänglich und essentielle Dienste beginnen zu laden. Diese Phase ist entscheidend für die Konfiguration und den Netzwerkzugang.
 
   - Das Flash-Gerät wird unter `/boot` eingehängt.
-  - Wenn es nicht eingehängt wird, können Sie möglicherweise immer noch eine Anmeldeaufforderung sehen, aber das deutet auf einen unvollständigen Start hin.
-  - Verwenden Sie den `df`-Befehl, um zu überprüfen, ob `/boot` eingehängt ist.
+  - Sie können diese Datei über die %%WebGUI|web-gui%% unter ***Main → Syslinux-Konfiguration*** bearbeiten.
+  - **Memtest86+**, das mit aktuellen Unraid-Versionen ausgeliefert wird, funktioniert sowohl im Legacy- als auch im %%UEFI|uefi%%-Modus. Für ältere Unraid-Versionen erhalten Sie eine kompatible Version von [der offiziellen Memtest-Seite](https://www.memtest86.com/) für %%UEFI|uefi%%.
   - Das Flash-Gerät muss mit **UNRAID** (alles in Großbuchstaben) gekennzeichnet sein, um korrekt eingehängt zu werden.
-  - Zusätzliche Treiber und Firmware werden in dieser Phase verfügbar.
-  - Die Konfiguration wird in den RAM geladen.
-  - Standard-Linux-Dienste, einschließlich Netzwerken und %%WireGuard|wireguard%%-VPN (wenn aktiviert), starten hier.
 </details>
 
 <details>
@@ -88,6 +65,31 @@ Die Unraid-Boot-Sequenz umfasst mehrere Phasen:
 
   - Installierte Plugins werden in diesem Schritt geladen.
   - **Sicherer Start**-Optionen können die Plugin-Ladung nach Bedarf unterdrücken.
+  - Fehler in dieser Phase deuten oft auf Probleme mit dem Flash-Gerät hin.
+  - Linux erkennt Hardware während des Startvorgangs.
+</details>
+
+<details>
+  <summary><strong>6. WebGUI</strong> - Zum Erweitern/Kollabieren klicken</summary>
+
+  Die webbasiertem Verwaltungsoberfläche wird verfügbar und ermöglicht die Fernadministration und -konfiguration Ihres Servers.
+
+  - Die %%WebGUI|web-gui%% startet an diesem Punkt.
+  - Die Datei `config/go` auf dem Flash-Gerät kann Benutzerbefehle vor oder nach dem Start der %%WebGUI|web-gui%% ausführen.
+  - Verwenden Sie den `df`-Befehl, um zu überprüfen, ob `/boot` eingehängt ist.
+  - Das Flash-Gerät muss mit **UNRAID** (alles in Großbuchstaben) gekennzeichnet sein, um korrekt eingehängt zu werden.
+  - Zusätzliche Treiber und Firmware werden in dieser Phase verfügbar.
+  - Die Konfiguration wird in den RAM geladen.
+  - Standard-Linux-Dienste, einschließlich Netzwerken und %%WireGuard|wireguard%%-VPN (wenn aktiviert), starten hier.
+</details>
+
+<details>
+  <summary><strong>7. Array</strong> - Zum Erweitern/Kollabieren klicken</summary>
+
+  Speichergeräte werden eingehängt und verfügbar gemacht, was den Bootvorgang abschließt. Hier werden Ihre Daten zugänglich.
+
+  - Wenn Autostart aktiviert ist, beginnt das %%array|array%% hier; andernfalls ist ein manueller Start erforderlich.
+  - Laufwerke werden als `/dev/diskX` und `/mnt/cache` (falls vorhanden) eingehängt.
 </details>
 
 <details>
@@ -133,13 +135,15 @@ Wenn Ihr Server nicht startet, hilft systematisches Troubleshooting dabei, die U
 ## Wiederherstellung von einem verlorenen Boot-Laufwerk und unbekannten Parität-Laufwerken
 
 :::important
-Dieser Wiederherstellungsprozess birgt das Risiko eines Datenverlustes, falls Laufwerke falsch zugewiesen werden. Bevor Sie fortfahren:
+
+Wenn Ihr Unraid-Bootlaufwerk ausfällt und Sie keinen aktuellen Backup oder kein Wissen darüber haben, welche Laufwerke Parität sind, können Sie Ihr System wiederherstellen, indem Sie Unraids Fähigkeit nutzen, Datenträger anhand ihrer Dateisysteme zu erkennen. %%Paritätslaufwerke|parity-drives%% haben kein gültiges Dateisystem, was sie unterscheidbar macht.
 
 1. **Starten Sie das Array nicht**, bis Sie sich über die Laufwerkszuordnungen sicher sind.
 2. **Dokumentieren** Sie, welche Laufwerke zuvor Paritäts- vs. Datenträger waren
 3. **Erwägen Sie Rat**, wenn Sie sich unsicher sind, in den [Unraid-Foren](https://forums.unraid.net/) einzuholen
 
 Wenn Sie über aktuelle Backups oder Dokumentationen Ihrer Array-Konfiguration verfügen, überprüfen Sie diese zuerst.
+
 :::
 
 Wenn Ihr Unraid-Bootlaufwerk ausfällt und Sie keinen aktuellen Backup oder kein Wissen darüber haben, welche Laufwerke Parität sind, können Sie Ihr System wiederherstellen, indem Sie Unraids Fähigkeit nutzen, Datenträger anhand ihrer Dateisysteme zu erkennen. %%Paritätslaufwerke|parity-drives%% haben kein gültiges Dateisystem, was sie unterscheidbar macht.
@@ -160,7 +164,9 @@ Dieses Verfahren hilft Ihnen, Ihre Array-Konfiguration wiederherzustellen, wenn 
 8. If the %%parity|parity%% is valid, check the box for ***Parity is Already Valid***. If not, allow the %%parity|parity%% to rebuild.
 
 :::warning[Multiple Paritätslaufwerke]
+
 If you have multiple %%parity drives|parity-drives%% and had to identify them based on which drives were unmountable, **do not** use the **Parity is Already Valid** option. There's a 50:50 chance of getting the assignments wrong, and if you do, your %%array|array%% may appear protected but actually isn't. Always allow parity to rebuild in this scenario to ensure proper protection.
+
 :::
 
 9. Prüfen und passen Sie alle Benutzerfreigaben ein/einschließen/auszuschließen basierend auf den neuen Zuweisungen an.
