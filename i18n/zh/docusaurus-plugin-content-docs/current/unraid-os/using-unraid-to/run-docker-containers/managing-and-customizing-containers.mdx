@@ -26,209 +26,223 @@ This page is written to help users of all skill levels make the most out of Dock
 Before customizing a Docker container in Unraid, it’s helpful to understand the basic configuration options. Each [container template](./community-applications.mdx) provides a user-friendly interface for setting up networking, storage, and environment variables, allowing you to tailor the container's behavior to your needs without using complex command-line tools.
 
 <Tabs>
-  <TabItem value="网络类型" label="网络类型" default>
+  <TabItem value="network-type" label="网络类型" default>
     <DockerNetworkType />
   </TabItem>
 
-  <TabItem value="卷映射" label="卷映射">
+  <TabItem value="volume-mappings" label="Volume mappings">
     <DockerVolumeMappings />
   </TabItem>
 
-  <TabItem value="端口映射" label="端口映射">
+  <TabItem value="port-mappings" label="Port mappings">
     <DockerPortMappings />
   </TabItem>
 
-  <TabItem value="环境变量" label="环境变量">
+  <TabItem value="environment-variables" label="Environment variables">
     <DockerEnvironmentVariables />
   </TabItem>
 </Tabs>
 
-## 创建和启动容器
+## Creating and starting containers
 
-配置完容器的网络、卷映射、端口映射和环境变量后，您就可以创建并启动Docker容器。本节将指导您完成创建过程，解释如何管理启动顺序和依赖关系，并提供高级启动自定义的提示。
+Once you've configured your container’s network, volume mappings, port mappings, and environment variables, you're ready to create and launch your Docker container. This section will guide you through the creation process, explain how to manage startup order and dependencies, and provide tips for advanced startup customization.
 
-### 创建一个容器
+### Creating a container
 
-查看容器模板中的配置设置后：
+After reviewing your configuration settings in the container template:
 
-1. 单击 **创建** 开始下载并设置容器。
-   - 在过程完成前请避免关闭浏览器窗口或导航到其他页面。
-   - 新存储库的首次下载可能比后续下载耗时更长。
-2. 完成后，单击 **完成** 返回 Docker 页面，您可以管理或添加更多容器。
+1. Click **Create** to begin downloading and setting up the container.
+   - Avoid closing your browser window or navigating away until the process completes.
+   - The initial download for a new repository may take longer than subsequent downloads.
+2. Once the process is finished, click **Done** to return to the Docker page, where you can manage or add more containers.
 
-### 规划启动顺序
+### Planning your startup sequence
 
-某些容器需要依赖其他容器才能正常运行。例如，一个应用程序可能需要一个先运行的数据库容器，或者一个服务可能需要一个[%%VPN|vpn-tunnel%%容器](../../system-administration/secure-your-server/tailscale.mdx)在之前激活。
+Some containers depend on others to function correctly. For example, an application might need a database container running first, or a service might require a [%%VPN|vpn-tunnel%% container](../../system-administration/secure-your-server/tailscale.mdx) to be active before it starts.
 
-:::important[Plan 你的启动]
-- 识别提供核心服务的容器（如数据库、%%VPNs|vpn-tunnel%% 或存储网关）。
-- 确保依赖容器仅在其前提条件启动并准备好后才启动。
-- 查看每个容器的文档以了解特定的启动要求。
+:::important[Plan your startup]
+
+- Identify containers that provide core services (like databases, %%VPNs|vpn-tunnel%%, or storage gateways).
+- Ensure dependent containers are started only after their prerequisites are running and ready.
+- Review documentation for each container to understand any specific startup requirements.
+
 :::
 
 ---
 
-## 高级容器启动
+## Advanced container startup
 
 Unraid gives you flexible control over which containers start automatically and in what order. This is especially useful if you have containers that depend on others (such as a database or %%VPN|vpn-tunnel%% service).
 
-确保在 %%array|array%% 启动时自动启动容器：
+To ensure a container starts automatically when the %%array|array%% starts:
 
-1. 在 %%WebGUI|web-gui%% 的 **Docker** 选项卡上，
-2. 切换 **自动启动** 开关到 **开** 为每个您希望自动启动的容器。
+1. Go to the **Docker** tab in the %%WebGUI|web-gui%%.
+2. Toggle the **Auto-Start** switch to **ON** for each container you want to launch automatically.
 
-### 自定义启动顺序和延迟
+### Customize startup order and delays
 
 By default, Unraid starts all auto-start containers as quickly as possible, in the order they appear on the Docker tab. You can customize this order and add wait times between container startups:
 
-1. 在 **Docker** 选项卡上，使用挂锁图标解锁容器列表。
-2. 通过拖放容器来重新排列其顺序。
-3. 使用顶部右侧的切换按钮切换到 **高级视图**。
-4. 在 **AutoStart** 列中，为任何需要额外时间的容器在 **wait** 字段输入等待时间（以秒为单位），以便下一个容器启动。
-   - 使用试错为您的设置确定最佳的等待时间。
+1. On the **Docker** tab, unlock the container list using the padlock icon.
+2. Drag and drop containers to rearrange their order.
+3. Switch to **Advanced View** using the toggle at the top right.
+4. In the **AutoStart** column, enter a wait time (in seconds) in the **wait** field for any container that needs extra time before the next one starts.
+   - Use trial and error to determine the best wait times for your setup.
 
 :::tip
-设置正确的顺序和等待时间对于依赖其他服务的容器尤其重要（例如，在启动使用它的应用之前启动数据库，或在依赖应用之前启动 %%VPN|vpn-tunnel%%）。
+
+Setting the correct order and wait times is especially important for containers that depend on services provided by others (for example, starting a database before an app that uses it, or a %%VPN|vpn-tunnel%% before dependent apps).
+
 :::
 
-### 测试启动顺序
+### Testing your startup sequence
 
-虽然 Unraid 没有专门的“测试启动序列”功能，但您可以模拟并验证您的启动顺序：
+While Unraid does not have a dedicated "test startup sequence" feature, you can simulate and verify your startup order:
 
-1. 在 **Docker** 选项卡上停止所有容器。
-2. 以您计划的顺序手动启动每个容器，使用 **启动** 按钮。
-3. 监测容器日志和应用程序行为以确保满足依赖性并按预期初始化服务。
-4. 根据需要调整启动顺序或等待时间。
+1. Stop all containers from the **Docker** tab.
+2. Start each container manually, in your planned order, using the **Start** button.
+3. Monitor container logs and application behavior to ensure dependencies are met and services initialize as expected.
+4. Adjust the startup order or wait times as needed.
 
 :::important
-在更改容器依赖关系或添加新服务后测试启动顺序，尤其是在设置依赖于特定启动时序时。
+
+Test your startup sequence after changing container dependencies or adding new services, especially if your setup relies on specific startup timing.
+
 :::
 
 ---
 
-## 控制您的容器
+## Controlling your containers
 
-一旦您创建并启动了Docker容器，就可以通过%%WebGUI|web-gui%%轻松管理它。本指南将引导您使用上下文菜单，了解容器健康指标，以及访问容器内的卷映射。
+Once you've created and started your Docker container, managing it is easy through the %%WebGUI|web-gui%%. This guide will walk you through using the context menu, understanding container health indicators, and accessing volume mappings within your container.
 
-要访问容器的上下文菜单，请进入**Docker**或**Dashboard**选项卡，然后点击您想管理的容器图标。此菜单提供了对常见操作的简单访问：
+To access the container's context menu, go to the **Docker** or **Dashboard** tab and click on the container icon you want to manage. This menu offers straightforward access to common actions:
 
 <div style={{ margin: 'auto', maxWidth: '286px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
   ![Docker Guide - Controlling](/img/Dockerguide-controlling.png)
 </div>
 
-| 选项        | 描述                         |
-| --------- | -------------------------- |
-| **WebUI** | 在新的浏览器标签页中打开容器的网页界面（如果可用）。 |
-| **控制台**   | 打开命令行界面直接与容器交互。            |
-| **停止**    | 停止正在运行的容器。                 |
-| **暂停**    | 暂停容器，临时中止所有进程。             |
-| **重启**    | 重启容器，应用任何配置更改。             |
-| **日志**    | 显示容器的日志输出以进行故障排除。          |
-| **编辑**    | 更改容器设置，例如端口或卷映射。保存后更改立即生效。 |
-| **移除**    | 删除容器。您可以选择仅删除容器或者同时删除其镜像。  |
-| **项目页面**  | 打开容器的项目页面以获取文档和支持。         |
-| **支持**    | 提供对容器的支持资源和帮助。             |
-| **更多信息**  | 显示有关容器及其配置的更多信息。           |
+| Option           | 描述                                                                                                  |
+| ---------------- | --------------------------------------------------------------------------------------------------- |
+| **WebUI**        | Opens the container's web interface in a new browser tab (if available).                            |
+| **Console**      | Opens a command-line interface to interact with the container directly.                             |
+| **Stop**         | Stops the running container.                                                                        |
+| **Pause**        | Pauses the container, temporarily halting all processes.                                            |
+| **Restart**      | Restarts the container, applying any configuration changes.                                         |
+| **Logs**         | Shows the container's log output for troubleshooting.                                               |
+| **Edit**         | Change container settings, such as port or volume mappings. Changes apply immediately after saving. |
+| **Remove**       | Deletes the container. You can choose to remove just the container or also delete its image.        |
+| **Project Page** | Opens the container's project page for documentation and support.                                   |
+| **Support**      | Provides access to support resources and help for the container.                                    |
+| **More Info**    | Displays additional information about the container and its configuration.                          |
 
-### 健康指示器
+### Health indicator
 
-您将在每个容器的图标旁找到一个彩色健康指示器：
+You will find a colored health indicator next to each container’s icon:
 
-- 🟢 **健康**: 表示容器正在运行并按预期响应。
-- 🟡 **不健康**：容器正在运行，但未通过健康检查。查看日志或容器设置以获取更多信息。
-- ⚪ **无健康检查**：表示未为容器配置健康检查。这对许多应用程序来说是常见的，并不一定是个问题。
+- 🟢 **Healthy**: Indicates that the container is running and responding as expected.
+- 🟡 **Unhealthy**: The container is running but has failed its health check. Investigate the logs or container settings for more information.
+- ⚪ **No health check**: This means no health check is configured for the container. It's common for many apps, and not necessarily a problem.
 
 :::note
-健康检查由容器作者定义，可能不适用于所有镜像。
+
+Health checks are defined by the container author and may not be present for all images.
+
 :::
 
 ---
 
-## 容器内的卷映射
+## Volume mappings inside a container
 
-通过 Web 界面配置应用程序时，引用在配置期间设置的**容器路径** -
+When configuring your application through its web interface, reference the **container path** you set up during configuration - not the host path.
 
-例如，如果您将主机上的 `/mnt/user/media` 映射到容器中的 `/unraid_media`，您应该在应用程序的设置中使用 `/unraid_media`。
+For instance, if you mapped `/mnt/user/media` on the host to `/unraid_media` in the container, you should use `/unraid_media` in the application’s settings.
 
-<h3>示例场景</h3>
+<h3>Example scenarios</h3>
 
 Here are some examples showing common path mapping configurations that users frequently need when setting up Docker containers. They demonstrate how to translate between Unraid's host file system paths and the container's internal paths, helping you configure applications correctly.
 
-- **媒体服务器：**
-  主机路径：`/mnt/user/media`\
-  容器路径：`/unraid_media`
+- **Media server:**
+  Host path: `/mnt/user/media`\
+  Container path: `/unraid_media`
 
-  在应用中，将您的媒体库位置设置为`/unraid_media`。
+  In the app, set your media library location to `/unraid_media`.
 
-- **Appdata 存储：**
-  主机路径：`/mnt/user/appdata/myapp`\
-  容器路径：`/config`
+- **Appdata storage:**
+  Host path: `/mnt/user/appdata/myapp`\
+  Container path: `/config`
 
-  在应用中，使用`/config`进行配置存储。
+  In the app, use `/config` for configuration storage.
 
 - **Multiple %%user shares|user-share%%:**
   Host path: `/mnt/user/media` → Container path: `/media`\
   Host path: `/mnt/user/data` → Container path: `/data`
 
-  根据需要在应用程序中引用`/media`或`/data`。
+  Reference `/media` or `/data` in the application as needed.
 
 :::important[Best 实践]
-始终使用允许容器正常工作的最严格[访问模式](../manage-storage/shares.mdx)（只读或读/写）。
+
+Always use the most restrictive [access mode](../manage-storage/shares.mdx) (read-only or read/write) that allows your container to function properly.
+
 :::
 
 ---
 
-## 调度启动和停止
+## Scheduling start and stop
 
 Unraid does not natively support scheduled start or stop actions for **Docker containers**, but you can easily automate this process using the [**User Scripts plugin**](../customize-your-experience/plugins.mdx). This powerful tool allows you to run custom scripts on a schedule, enabling automatic control of your containers.
 
-### 用户脚本插件
+### User Scripts plugin
 
-**用户脚本插件**允许您直接从%%WebGUI|web-gui%%创建、管理和调度自定义shell脚本。您可以将其用于各种自动化任务，如启动或停止容器、备份数据或执行维护例程。
+The **User Scripts plugin** allows you to create, manage, and schedule custom shell scripts directly from the %%WebGUI|web-gui%%. You can use it for various automation tasks, such as starting or stopping containers, backing up data, or running maintenance routines.
 
-- 如果尚未安装插件，请从**应用**选项卡安装。
-- 通过 **设置 → 用户脚本** 访问它来创建和管理您的脚本。
+- Install the plugin from the **Apps** tab if you haven’t done so already.
+- Access it via ***Settings → User Scripts*** to create and manage your scripts.
 
-要了解更多关于插件的信息，请查看[插件](../customize-your-experience/plugins.mdx)。
+To learn more about plugins, check out [Plugins](../customize-your-experience/plugins.mdx).
 
-### 计划容器操作
+### Scheduling container actions
 
-要按计划自动启动或停止您的容器：
+To automate the start or stop of your containers on a schedule:
 
-1. 从 **应用程序** 标签安装 **用户脚本插件**。
-2. 导航至 ***设置→用户脚本***。
-3. 为每个唯一的调度创建一个新脚本。如果多个容器共享同一调度，您可以在一个脚本中包含这些指令。
-4. 使用下拉菜单设置计划，或使用自定义 `cron` 表达式以获取更高级的定时选项。
-5. 点击 **应用** 保存并激活您的脚本。
+1. Install the **User Scripts plugin** from the **Apps** tab.
+2. Navigate to ***Settings → User Scripts***.
+3. Create a new script for each unique schedule. You can include commands for multiple containers in a single script if they share the same schedule.
+4. Set the schedule using the dropdown menu or use a custom `cron` expression for more advanced timing options.
+5. Click **Apply** to save and activate your script.
 
 :::tip
-Cron表达式使得调度远远超出内置选项的灵活性。例如，`0 3 * * 1`将在每周一凌晨3点运行您的脚本。
+
+Cron expressions enable flexible scheduling beyond the built-in options. For example, `0 3 * * 1` runs your script at 3:00 AM every Monday.
+
 :::
 
-### 命令示例
+### Command examples
 
 <Tabs>
-  <TabItem value="启动" label="启动容器" default>
+  <TabItem value="start" label="Start container" default>
     <DockerCommandStart />
   </TabItem>
 
-  <TabItem value="停止" label="停止容器">
+  <TabItem value="stop" label="Stop container">
     <DockerCommandStop />
   </TabItem>
 
-  <TabItem value="重启" label="重启容器">
+  <TabItem value="restart" label="Restart container">
     <DockerCommandRestart />
   </TabItem>
 
-  <TabItem value="状态" label="检测容器状态">
+  <TabItem value="status" label="Check container status">
     <DockerCommandStatus />
   </TabItem>
 
-  <TabItem value="日志" label="查看容器日志">
+  <TabItem value="logs" label="Show container logs">
     <DockerCommandLogs />
   </TabItem>
 </Tabs>
 
 :::tip
-您可以在 Docker 标签中或通过查看容器的配置屏幕中的 `docker run` 命令找到容器名称。
+
+You can find the container name on the Docker tab or by viewing the `docker run` command in the container's configuration screen.
+
 :::
