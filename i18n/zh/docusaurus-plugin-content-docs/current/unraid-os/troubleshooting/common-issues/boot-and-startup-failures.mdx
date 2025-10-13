@@ -15,7 +15,9 @@ When your Unraid server fails to start correctly, it can be challenging to ident
 本主题在[准备你的USB设备](../../getting-started/set-up-unraid/create-your-bootable-media.mdx#prepare-your-usb-device)部分有详细介绍。
 
 :::caution
+
 在进行更改之前，请始终[备份您的闪存驱动器](../../system-administration/maintain-and-update/changing-the-flash-device.mdx#backing-up-your-flash-device)。所有用户特定的设置，包括您的许可证密钥，均存储在 `config` 文件夹中。重新准备闪存设备后恢复此文件夹将帮助保留您当前的配置。
+
 :::
 
 ## 启用UEFI引导
@@ -35,33 +37,11 @@ When your Unraid server fails to start correctly, it can be challenging to ident
 Unraid 启动序列有多个阶段：
 
 <details>
-  <summary><strong>1. BIOS 启动</strong> - 点击展开/折叠</summary>
-
-  BIOS/UEFI 固件初始化硬件并定位可启动设备。这是整个启动过程的基础。
-
-  - 主板 BIOS 识别出 Unraid 可启动的闪存设备。
-  - 将闪存设备设置为默认引导设备因BIOS而异；请查阅主板手册以获得指导。
-  - 闪存设备支持\*\*传统(CSM)**和**%%UEFI|uefi%%\*\*引导模式。
-  - 对于%%UEFI|uefi%%引导，请确保闪存设备上的`EFI`文件夹末尾没有连字符（`-`）。
-</details>
-
-<details>
-  <summary><strong>2. Syslinux 启动加载程序</strong> - 点击展开/折叠</summary>
-
-  引导加载程序呈现启动选项并将 Linux 内核加载到内存中。此阶段决定运行哪个操作系统或诊断工具。
-
-  - 启动菜单条目定义在闪存设备上的`syslinux/syslinux.cfg`文件中。
-  - 你可以通过%%WebGUI|web-gui%%下的***主 → Syslinux配置***编辑此文件。
-  - **Memtest86+** 随同当前版本的 Unraid 提供，可在传统和 %%UEFI|uefi%% 模式下运行。对于旧版本的 Unraid，请从 [官方 Memtest 网站](https://www.memtest86.com/) 获取与 %%UEFI|uefi%% 兼容的版本。
-  - 如果没有选择选项，默认将在超时后引导，这对于无头操作很有用。
-</details>
-
-<details>
   <summary><strong>3. Linux 核心</strong> - 点击展开/折叠</summary>
 
   Linux 内核初始化并开始硬件检测。在此阶段，操作系统从引导加载程序中接管控制。
 
-  - **Syslinux**从闪存设备将Linux核心加载到RAM中。
+  - 主板 BIOS 识别出 Unraid 可启动的闪存设备。
   - 您会看到控制台消息显示bz\*文件正在加载。
   - 这一阶段的错误通常表示闪存设备问题。
   - Linux在启动期间检测硬件。
@@ -73,12 +53,9 @@ Unraid 启动序列有多个阶段：
   闪存设备变得可访问并开始加载基本服务。此阶段对于配置和网络访问至关重要。
 
   - 闪存设备在`/boot`上挂载。
-  - 如果挂载失败，你可能还会看到登录提示，但这表示引导不完全。
-  - 使用`df`命令检查`/boot`是否已挂载。
+  - 你可以通过%%WebGUI|web-gui%%下的***主 → Syslinux配置***编辑此文件。
+  - **Memtest86+** 随同当前版本的 Unraid 提供，可在传统和 %%UEFI|uefi%% 模式下运行。对于旧版本的 Unraid，请从 [官方 Memtest 网站](https://www.memtest86.com/) 获取与 %%UEFI|uefi%% 兼容的版本。
   - 闪存设备必须标记为**UNRAID**（全部大写）以进行正确挂载。
-  - 此阶段将提供额外的驱动程序和固件。
-  - 配置被加载到RAM中。
-  - 标准Linux服务，包括网络和%%WireGuard|wireguard%% VPN（如果启用），在此阶段启动。
 </details>
 
 <details>
@@ -88,6 +65,31 @@ Unraid 启动序列有多个阶段：
 
   - 安装的插件在此步骤加载。
   - 如果需要，**安全引导**选项可以抑制插件加载。
+  - 这一阶段的错误通常表示闪存设备问题。
+  - Linux在启动期间检测硬件。
+</details>
+
+<details>
+  <summary><strong>6. WebGUI</strong> - 点击展开/折叠</summary>
+
+  基于web的管理接口变得可用，允许远程管理和配置你的服务器。
+
+  - %%WebGUI|web-gui%%在此点启动。
+  - 闪存设备上的`config/go`文件可以在%%WebGUI|web-gui%%启动之前或之后运行用户命令。
+  - 使用`df`命令检查`/boot`是否已挂载。
+  - 闪存设备必须标记为**UNRAID**（全部大写）以进行正确挂载。
+  - 此阶段将提供额外的驱动程序和固件。
+  - 配置被加载到RAM中。
+  - 标准Linux服务，包括网络和%%WireGuard|wireguard%% VPN（如果启用），在此阶段启动。
+</details>
+
+<details>
+  <summary><strong>7. 阵列</strong> - 点击展开/折叠</summary>
+
+  存储设备已挂载并可用，完成启动过程。这是您的数据变得可访问的地方。
+
+  - 如果启用了自动启动，则在此处启动%%array|array%%；否则，手动启动将是必需的。
+  - 驱动器将被挂载为`/dev/diskX`和`/mnt/cache`（如果存在）。
 </details>
 
 <details>
@@ -133,13 +135,15 @@ Unraid 启动序列有多个阶段：
 ## 从丢失的引导驱动器和未知的奇偶校验驱动器恢复
 
 :::important
-如果驱动器分配不正确，此恢复过程涉及数据丢失风险。继续之前：
+
+If your Unraid boot drive fails and you don’t have a recent backup or knowledge of which drives are parity, you can recover your system by using Unraid’s ability to recognize data drives by their file systems. %%Parity drives|parity-drives%% do not have a valid file system, which helps differentiate them.
 
 1. **不要启动阵列** 除非你对驱动分配很有信心
 2. **记录** 曾是什么驱动器是奇偶校验与数据驱动器
 3. **考虑寻求帮助** 如果你不确定，请访问[Unraid论坛](https://forums.unraid.net/)
 
 如果你最近有阵列配置的备份或文档，先查看这些。
+
 :::
 
 If your Unraid boot drive fails and you don’t have a recent backup or knowledge of which drives are parity, you can recover your system by using Unraid’s ability to recognize data drives by their file systems. %%Parity drives|parity-drives%% do not have a valid file system, which helps differentiate them.
@@ -160,7 +164,9 @@ Unraid identifies data drives by detecting existing valid file systems. %%Parity
 8. 如果%%parity|parity%%有效，勾选***奇偶校验已有效***框。如果无效，允许%%parity|parity%%重建。
 
 :::warning[Multiple 校验驱动器]
+
 如果您有多个%%parity drives|parity-drives%%并且需要根据哪些驱动无法挂载来识别它们，**千万不要**使用**Parity is Already Valid**选项。分配错误的机会是50:50，如果您弄错了，您的%%array|array%%可能看似受保护但实际上并不是。在这种情况下，总是让校验重新建立以确保适当的保护。
+
 :::
 
 9. 根据新分配审阅和调整任何用户共享的包含/排除。
