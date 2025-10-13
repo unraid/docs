@@ -43,14 +43,14 @@ import GpuAmd from './partials/gpu-amd.mdx';
 
   <h4>Unraid 如何实现 %%VM|vm%% 支持</h4>
 
-  - %%KVM|kvm%%/%%QEMU|qemu%%: Unraid’s virtualization is fundamentally based on %%KVM|kvm%% and %%QEMU|qemu%%, providing robust %%VM|vm%% hosting capabilities.
+  - %%KVM|kvm%%/%%QEMU|qemu%%：Unraid 的虚拟化功能主要基于 %%KVM|kvm%% 和 %%QEMU|qemu%%，提供强大的 %%VM|vm%% 托管能力。
   - %%Libvirt|libvirt%%：%%VM|vm%% 定义作为 XML 文件存储在 `libvirt.img` 中（通常在 `system` 共享中找到）。
   - **默认共享：**
     - `domains`：保存 %%虚拟机%% 虚拟磁盘镜像。
     - `isos`：包含安装 ISOs 和驱动程序映像。
     - `system`：存储 `libvirt.img` 和其他关键系统文件。
     - 默认设置为**使用 %%Cache|cache%%: 首选**以获得最佳性能。
-  - %%VNC|vnc-session%%: Unraid features a built-in NoVNC client for easy browser-based access to %%VMs|vm%%, with the option to use external %%VNC clients|vnc-session%% as needed.
+  - %%VNC|vnc-session%%：Unraid 提供内置的 NoVNC 客户端，方便通过浏览器访问 %%VMs|vm%%，也可以根据需要使用外部 %%VNC 客户端|vnc-session%%。
 
   :::tip
   大多数用户不需要直接与这些技术交互，但了解 "引擎盖下" 的运作对高级故障排除和自定义设置非常有用。有关更多详细信息，请查看 [KVM](https://www.linux-kvm.org/page/Main_Page)、[QEMU](https://www.qemu.org/)、[Libvirt](https://libvirt.org/)、[VirtIO](https://www.linux-kvm.org/page/Virtio) 的官方文件。
@@ -71,20 +71,24 @@ import GpuAmd from './partials/gpu-amd.mdx';
 | GPU （可选） | 现代 NVIDIA RTX（推荐）或 AMD Radeon RX                             | RTX 3000/4000 系列（推荐使用 NVIDIA 以获得更好的直通兼容性）              |
 
 :::tip[GPU 传递兼容性]
-由于更好的兼容性和可靠性，**建议使用NVIDIA GPU** 进行%%VM|vm%%直通。AMD GPU的直通可能更具挑战性，一些较新的型号（包括RX 7000/9000系列）在%%VMs|vm%%中可能不能可靠工作或根本无法工作。如果你计划使用%%GPU直通|gpu-passthrough%%，请考虑NVIDIA选项以获得最好体验。
+
+由于更好的兼容性和可靠性，**通常推荐** NVIDIA GPU 用于 %%VM|vm%% 直通。AMD GPU 在直通时可能更具挑战性，并且某些较新的型号（包括 RX 7000/9000 系列）可能无法可靠运行或完全无法在 %%VMs|vm%% 中使用。 如果您计划使用 %%GPU passthrough|gpu-passthrough%%，请选择 NVIDIA 作为不错的选择。
+
 :::
 
 :::note
-您的主板BIOS必须启用硬件辅助虚拟化和%%IOMMU|iommu%%支持。寻找标有“%%Intel VT-x|intel-vt-x%%”、“Intel VT-d”、“%%AMD-V|amd-v%%”或“AMD-Vi”的设置。
+
+您的主板 BIOS 必须启用硬件辅助虚拟化和 %%IOMMU|iommu%% 支持。 请查找标记为“%%Intel VT-x|intel-vt-x%%”、“Intel VT-d”、“%%AMD-V|amd-v%%”或“AMD-Vi”的设置。
+
 :::
 
 ### 虚拟机资源
 
-| %%虚拟机\|vm%%类型    | 每个%%VM\|vm%%的RAM | 每个%%虚拟机\|vm%%的vCPUs | 使用例子                             |
-| ---------------- | ---------------- | ------------------- | -------------------------------- |
-| 虚拟服务器            | 1-2 GB           | 1-2                 | 轻量级Linux，实用工具%%虚拟机\|vm%%         |
-| 虚拟桌面             | 4–8 GB           | 2–4                 | Windows 11，Ubuntu 桌面，RDP         |
-| 混合/游戏%%虚拟机\|vm%% | 8–16 GB+         | 4–8+                | %%GPU直通\|gpu-passthrough%%，游戏，ML |
+| %%虚拟机\|vm%%类型    | 每个 %%VM\|vm%% 的 RAM | 每个%%虚拟机\|vm%%的vCPUs | 使用例子                             |
+| ---------------- | ------------------- | ------------------- | -------------------------------- |
+| 虚拟服务器            | 1-2 GB              | 1-2                 | 轻量级Linux，实用工具%%虚拟机\|vm%%         |
+| 虚拟桌面             | 4–8 GB              | 2–4                 | Windows 11，Ubuntu 桌面，RDP         |
+| 混合/游戏%%虚拟机\|vm%% | 8–16 GB+            | 4–8+                | %%GPU直通\|gpu-passthrough%%，游戏，ML |
 
 - 内存和 CPU 仅在 %%虚拟机%% 运行时消耗。
 - 计划在多个 %%虚拟机%% 同时运行时实现最大使用。
@@ -103,10 +107,12 @@ import GpuAmd from './partials/gpu-amd.mdx';
 </Tabs>
 
 :::important[How 检查支持]
+
 在 %%WebGUI|web-gui%% 中，点击顶部菜单中的 **信息**。
 
 - **HVM 支持：** 显示是否存在硬件虚拟化并已启用。
 - **IOMMU 支持：** 显示是否可以使用设备直通并已启用。
+
 :::
 
 ---
@@ -126,13 +132,17 @@ import GpuAmd from './partials/gpu-amd.mdx';
 </Tabs>
 
 :::tip[General 提示]
+
 - 使用 %%OVMF（%%UEFI）%% 处理使用现代 GPU 的 %%虚拟机%%。
 - 始终使用最新版本的 Unraid 以增强硬件支持。
 - 像 NVIDIA Optimus 这样的技术可能允许笔记本电脑或高级设置的 %%GPU 直通%%，但结果各异。
+
 :::
 
 :::info[Always 更改]
+
 硬件和驱动程序的兼容性变化迅速。在购买用于直通的GPU之前，请访问 [Unraid论坛](https://forums.unraid.net/)和厂商文档以获取最新报告和用户体验。
+
 :::
 
 ---
@@ -143,10 +153,12 @@ import GpuAmd from './partials/gpu-amd.mdx';
 
 ### 调整 BIOS 设置
 
-To fully utilize Unraid's virtualization capabilities, your BIOS must enable hardware-assisted virtualization and I/O memory management. Look for settings labeled **Virtualization**, %%Intel VT-x|intel-vt-x%%, **Intel VT-d**, %%AMD-V|amd-v%%, or **AMD-Vi** and set them to **Enabled**.
+要充分利用 Unraid 的虚拟化功能，您的 BIOS 必须启用硬件辅助虚拟化和 I/O 存储管理。查找标记为**Virtualization**、%%Intel VT-x|intel-vt-x%%、 **Intel VT-d**、%%AMD-V|amd-v%% 或 **AMD-Vi** 的设置，并将其设置为**启用**。
 
 :::note
+
 BIOS接口因制造商而异。请查看主板手册以获得这些设置的确切位置。
+
 :::
 
 ### 配置网络桥接
@@ -159,7 +171,9 @@ BIOS接口因制造商而异。请查看主板手册以获得这些设置的确�
 | **公共桥接 (br0)**      | 由 Unraid 管理。此选项将虚拟机直接连接到您的 LAN，由路由器分配 IP 地址。MAC 地址保持不变以确保 IP 地址的一致性。                | 适用于应作为网络上常规设备运行的%%虚拟机\|vm%%，可被其他设备访问。 |
 
 :::important
-If your Unraid server is connected to Wi-Fi, using the **Private NAT (virbr0)** network bridge for your %%virtual machines|vm%% is recommended. This is because Wi-Fi interfaces support only a single MAC address, which restricts the use of public bridges and custom network types. By utilizing the **virbr0** bridge, your %%VMs|vm%% will have complete network access through %%NAT|nat%%, although they will not be directly accessible from other devices on your local area network (LAN). However, you can still access the %%VMs|vm%% via %%VNC|vnc-session%% through the host.
+
+如果您的 Unraid 服务器通过 Wi-Fi 连接，建议为您的 %%virtual machines|vm%% 使用 **Private NAT (virbr0)** 网络桥，由于 Wi-Fi 接口仅支持单个 MAC 地址，这限制了公共桥和自定义网络类型的使用。通过使用 **virbr0** 桥，您的 %%VMs|vm%% 可以通过 %%NAT|nat%% 完成网络访问，尽管它们将无法从本地局域网上的其他设备直接访问。然而，通过主机，您仍然可以通过 %%VNC|vnc-session%% 访问 %%VMs|vm%%。
+
 :::
 
 - 在 ***网络设置 → 启用桥接*** 中启用公共桥接。
@@ -183,12 +197,14 @@ Unraid 为 %%virtualization|virt%% 创建了两个默认的 %%user shares|user-s
 - `isos` 共享中的 %%Cache|cache%% 使用是可选的。
 
 :::important
-Do not store active %%virtual machines|vm%% on a share with **Use %%cache|cache%%** set to **Yes**. This can cause %%VMs|vm%% to be moved to the %%array|array%% during the %%Mover|mover%% process, leading to degraded performance.
+
+不要将活动的 %%virtual machines|vm%% 存储在**使用 %%cache|cache%% 设置为**是\*\*的共享上。这可能导致在 %%Mover|mover%% 过程中将 %%VMs|vm%% 移动到 %%array|array%% ，导致性能下降。
+
 :::
 
 ## 设置虚拟化偏好
 
-Before you begin, ensure your system is ready for virtualization (see [System preparation](#system-preparation)). Setting your %%virtualization|virt%% preferences in Unraid helps ensure your %%virtual machines (VMs)|vm%% are configured for optimal performance and compatibility.
+在开始之前，确保您的系统已准备好进行虚拟化（参见 [系统准备](#system-preparation)）。在 Unraid 中设置您的 %%virtualization|virt%% 首选项有助于确保您的 %%virtual machines (VMs)|vm%% 优化为最佳性能和兼容性。
 
 要设置您的虚拟化偏好：
 
@@ -206,7 +222,9 @@ Before you begin, ensure your system is ready for virtualization (see [System pr
    - 此选项打破 %%IOMMU|iommu%% 组，允许更灵活的设备直通。
 
 :::warning
+
 此设置是实验性的，可能会影响系统稳定性。请谨慎使用。
+
 :::
 
 5. 点击 **应用** 以保存您的设置。
