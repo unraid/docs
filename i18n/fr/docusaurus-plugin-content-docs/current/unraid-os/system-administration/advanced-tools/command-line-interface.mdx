@@ -14,24 +14,28 @@ import CliStorageInfo from './partials/command-line-interface/storage-info.mdx';
 Bien que la plupart des tâches dans Unraid puissent être exécutées à travers le %%WebGUI|web-gui%%, certaines opérations - particulièrement celles liées au diagnostic, à la gestion des disques ou au scripting - nécessitent l'utilisation de la console système ou du terminal %%SSH|ssh%%. Cette page propose des outils de ligne de commande spécifiques à Unraid et des exemples pouvant être utilisés sans nécessiter une connaissance approfondie de Linux.
 
 :::tip[Device chemins]
-De nombreuses opérations à l'échelle du disque dans Unraid dépendent des noms de périphériques Linux, tels que `/dev/sdX`. Vous pouvez trouver l'identifiant du périphérique pour n'importe quel lecteur dans l'onglet **Principal** du %%WebGUI|web-gui%%. Recherchez le label de trois lettres `sdX` ou `nvmeX` à côté de chaque disque. Utilisez l'identifiant approprié dans toutes les commandes, en remplaçant `sdX` par votre disque spécifique.
+
+Many disk-level Unraid operations depend on Linux device names, like `/dev/sdX`. You can find the device identifier for any drive in the **Main** tab of the %%WebGUI|web-gui%%. Look for the three-letter label `sdX` or `nvmeX` next to each disk. Use the appropriate identifier in all commands, replacing `sdX` with your specific disk.
+
 :::
 
 ## Accéder au terminal
 
-Unraid inclut un terminal web intégré que vous pouvez accéder directement depuis le %%WebGUI|web-gui%%. Il suffit d'utiliser le menu déroulant en haut à droite et de sélectionner ">\_". Cela ouvre une session en ligne de commande en tant qu'utilisateur %%root|root-user%%, vous donnant un accès administratif complet à votre système.
+Unraid includes a built-in web terminal that you can access directly from the %%WebGUI|web-gui%%. Simply use the top-right dropdown menu and select ">_". This opens a command-line session as the %%root user|root-user%%, giving you full administrative access to your system.
 
 Vous pouvez également vous connecter à votre serveur Unraid depuis l'extérieur en utilisant %%SSH|ssh%% (shell sécurisé) avec un client comme %%PuTTY|putty%%.
 
-:::tip[When devrais-je utiliser le terminal ?]
-L'accès au terminal est utile pour :
+:::tip[When should I use the terminal?]
+
+Si vous utilisez Windows, vous pourriez préférer %%PuTTY|putty%% pour l'accès %%SSH|ssh%% au lieu du terminal intégré. Il est léger, gratuit, et vous permet d'enregistrer des sessions pour un accès facile ultérieur.
 
 - Lancer des diagnostics et des outils en ligne de commande comme `smartctl`, `xfs_repair`, `tail` ou `top`
 - Exécuter des scripts ou des outils de plug-ins qui ne nécessitent pas d'interface utilisateur.
 - Résoudre des problèmes liés à la connectivité, aux services système, ou aux %%user shares|user-share%%
+
 :::
 
-### Utilisation de PuTTY (Windows uniquement)
+### Test et surveillance des disques
 
 Si vous utilisez Windows, vous pourriez préférer %%PuTTY|putty%% pour l'accès %%SSH|ssh%% au lieu du terminal intégré. Il est léger, gratuit, et vous permet d'enregistrer des sessions pour un accès facile ultérieur.
 
@@ -50,21 +54,23 @@ Si vous utilisez Windows, vous pourriez préférer %%PuTTY|putty%% pour l'accès
 </details>
 
 :::note
+
 Unraid configure automatiquement le serveur SSH lors du premier démarrage. Assurez-vous que votre réseau fonctionne correctement et que votre mot de passe root est défini avant de tenter une connexion à distance.
+
 :::
 
 ## Test et surveillance des disques
 
 Ces outils aident à évaluer la performance, vérifier la santé des disques, et diagnostiquer la lenteur de l'%%array|array%%. Toutes les commandes doivent être exécutées depuis le terminal ou via %%SSH|ssh%%.
 
-### `hdparm`
+### `diskspeed.sh`
 
-Utilisez cette commande pour tester la vitesse de lecture et afficher les caractéristiques du disque.
+Ce script permet des tests de performance de surface complets avec des rapports visuels.
 
 <details>
-  <summary><strong>Voir les options hdparm</strong> - Cliquer pour développer/réduire</summary>
+  <summary><strong>Voir l'utilisation de diskspeed.sh</strong> - Cliquer pour développer/réduire</summary>
 
-  **Tester la vitesse de lecture du disque :**
+  Cela a été un script que vous téléchargiez depuis les forums Unraid. DiskSpeed est maintenant disponible dans un package plus raffiné :
 
   ```bash
   hdparm -tT /dev/sdX
@@ -125,12 +131,12 @@ Cette commande exécute des diagnostics %%SMART|smart%% et surveille la santé d
   Cela enregistre le rapport sur votre clé USB Unraid pour révision ou partage ultérieur sur le [forum](https://forums.unraid.net/).
 </details>
 
-### `diskspeed.sh`
+### `top`
 
-Ce script permet des tests de performance de surface complets avec des rapports visuels.
+Cette commande fournit un moniteur de processus et de ressources en temps réel.
 
 <details>
-  <summary><strong>Voir l'utilisation de diskspeed.sh</strong> - Cliquer pour développer/réduire</summary>
+  <summary><strong>Voir l'utilisation de top</strong> - Cliquer pour développer/réduire</summary>
 
   Cela a été un script que vous téléchargiez depuis les forums Unraid. DiskSpeed est maintenant disponible dans un package plus raffiné :
 
@@ -143,12 +149,12 @@ Ce script permet des tests de performance de surface complets avec des rapports 
 
 Utilisez ces commandes pour surveiller la mémoire, les processus et les performances du système lorsque le %%WebGUI|web-gui%% n'est pas disponible ou pour des diagnostics plus détaillés.
 
-### `top`
+### `ps`
 
-Cette commande fournit un moniteur de processus et de ressources en temps réel.
+Utilisez cette commande pour afficher les processus en cours avec des informations détaillées.
 
 <details>
-  <summary><strong>Voir l'utilisation de top</strong> - Cliquer pour développer/réduire</summary>
+  <summary><strong>Voir les options ps</strong> - Cliquer pour développer/réduire</summary>
 
   ```bash
   top
@@ -158,9 +164,7 @@ Cette commande fournit un moniteur de processus et de ressources en temps réel.
   - Appuyez sur `q` pour quitter.
   - Utilisez les flèches pour faire défiler et `k` pour terminer les processus.
 
-  :::tip
-  Pensez à utiliser `htop` pour une interface plus conviviale avec des commandes améliorées.
-  :::
+  **Trier par utilisation de la mémoire :**
 </details>
 
 ### `free`
@@ -181,12 +185,12 @@ Cette commande affiche les statistiques d'utilisation de la mémoire.
   :::
 </details>
 
-### `ps`
+### `df`
 
-Utilisez cette commande pour afficher les processus en cours avec des informations détaillées.
+Cette commande affiche l'utilisation de l'espace disque des systèmes de fichiers.
 
 <details>
-  <summary><strong>Voir les options ps</strong> - Cliquer pour développer/réduire</summary>
+  <summary><strong>Voir utilisation de df</strong> - Cliquer pour développer/réduire</summary>
 
   **Lister tous les processus avec tous les détails :**
 
@@ -194,7 +198,9 @@ Utilisez cette commande pour afficher les processus en cours avec des informatio
   ps aux
   ```
 
-  **Trier par utilisation de la mémoire :**
+  :::tip
+  Pensez à utiliser `htop` pour une interface plus conviviale avec des commandes améliorées.
+  :::
 
   ```bash
   ps aux --sort=-%mem | head -20
@@ -213,34 +219,6 @@ Utilisez cette commande pour afficher les processus en cours avec des informatio
 
 Ces commandes aident à vérifier l'utilisation des disques, les informations des partitions et à identifier les périphériques de stockage.
 
-### `df`
-
-Cette commande affiche l'utilisation de l'espace disque des systèmes de fichiers.
-
-<details>
-  <summary><strong>Voir utilisation de df</strong> - Cliquer pour développer/réduire</summary>
-
-  ```bash
-  df -h
-  ```
-
-  Cette commande affiche l'espace utilisé et disponible sur tous les systèmes de fichiers montés. C'est pratique pour vérifier `/var/log` (qui utilise la journalisation basée sur la RAM) dans Unraid. Pour plus d'informations sur [la journalisation système](../../troubleshooting/diagnostics/capture-diagnostics-and-logs.mdx).
-</details>
-
-### `fdisk`
-
-Voir les tables de partition de disque et la géométrie.
-
-<details>
-  <summary><strong>Voir l'utilisation de fdisk</strong> - Cliquer pour développer/réduire</summary>
-
-  ```bash
-  fdisk -l /dev/sdX
-  ```
-
-  Cette commande affiche la disposition des partitions, les tailles et la géométrie du disque. Elle aide à résoudre les problèmes de tailles de disque incompatibles, en particulier lors du [remplacement de disques](../../using-unraid-to/manage-storage/array-configuration.mdx#replacing-disks).
-</details>
-
 ### `lsblk`
 
 Liste tous les périphériques blocs en format arborescent.
@@ -249,10 +227,10 @@ Liste tous les périphériques blocs en format arborescent.
   <summary><strong>Voir l'utilisation de lsblk</strong> - Cliquer pour développer/réduire</summary>
 
   ```bash
-  lsblk
+  df -h
   ```
 
-  Cette commande affiche tous les appareils de stockage, ainsi que leurs points de montage, dans une structure arborescente simple. C'est excellent pour obtenir une vue d'ensemble de votre disposition de stockage.
+  Cette commande affiche l'espace utilisé et disponible sur tous les systèmes de fichiers montés. C'est pratique pour vérifier `/var/log` (qui utilise la journalisation basée sur la RAM) dans Unraid. Pour plus d'informations sur [la journalisation système](../../troubleshooting/diagnostics/capture-diagnostics-and-logs.mdx).
 </details>
 
 ### `blockdev -getsz`
@@ -261,6 +239,34 @@ Aide à déterminer si un disque de remplacement a suffisamment d'espace avant l
 
 <details>
   <summary><strong>Voir l'utilisation de blockdev</strong> - Cliquer pour développer/réduire</summary>
+
+  ```bash
+  fdisk -l /dev/sdX
+  ```
+
+  Cette commande affiche la disposition des partitions, les tailles et la géométrie du disque. Elle aide à résoudre les problèmes de tailles de disque incompatibles, en particulier lors du [remplacement de disques](../../using-unraid-to/manage-storage/array-configuration.mdx#replacing-disks).
+</details>
+
+### `blkid`
+
+Identifier les labels de systèmes de fichiers.
+
+<details>
+  <summary><strong>Voir l'utilisation de blkid</strong> - Cliquer pour développer/réduire</summary>
+
+  ```bash
+  lsblk
+  ```
+
+  Cette commande affiche l'espace utilisé et disponible sur tous les systèmes de fichiers montés. C'est pratique pour vérifier `/var/log` (qui utilise la journalisation basée sur la RAM) dans Unraid. Pour plus d'informations sur [la journalisation système](../../troubleshooting/diagnostics/capture-diagnostics-and-logs.mdx).
+</details>
+
+### `blockdev -getsz`
+
+Aide à déterminer si un disque de remplacement a suffisamment d'espace avant la reconstruction.
+
+<details>
+  <summary><strong>Voir l'utilisation de fdisk</strong> - Cliquer pour développer/réduire</summary>
 
   **Syntaxe :**
 
@@ -271,12 +277,12 @@ Aide à déterminer si un disque de remplacement a suffisamment d'espace avant l
   Retourne le nombre brut de secteurs de 512 octets sur un périphérique - pratique pour confirmer qu'un disque de remplacement est suffisamment grand avant la reconstruction.
 </details>
 
-### `blkid`
+### `ss`
 
-Identifier les labels de systèmes de fichiers.
+Affiche les statistiques de socket et les connexions réseau. C'est le remplacement moderne de `netstat`.
 
 <details>
-  <summary><strong>Voir l'utilisation de blkid</strong> - Cliquer pour développer/réduire</summary>
+  <summary><strong>Voir les options ss</strong> - Cliquer pour développer/réduire</summary>
 
   **Syntaxe :**
 
@@ -293,14 +299,14 @@ Identifier les labels de systèmes de fichiers.
 
 Outils pour dépanner la connectivité réseau et la configuration des interfaces.
 
-### `ss`
+### `ping`
 
-Affiche les statistiques de socket et les connexions réseau. C'est le remplacement moderne de `netstat`.
+Tester la connectivité réseau.
 
 <details>
-  <summary><strong>Voir les options ss</strong> - Cliquer pour développer/réduire</summary>
+  <summary><strong>Voir l'utilisation de ping</strong> - Cliquer pour développer/réduire</summary>
 
-  **Afficher tous les ports à l'écoute :**
+  **Tester la connectivité en envoyant un nombre limité de paquets :**
 
   ```bash
   ss -tuln
@@ -320,14 +326,14 @@ Affiche les statistiques de socket et les connexions réseau. C'est le remplacem
   Cette commande affiche les connexions actives avec les informations de process.
 </details>
 
-### `ip`
+### `ethtool`
 
-Configurer et afficher les informations sur l'interface réseau. C'est le remplacement moderne de `ifconfig`.
+Outil pratique pour interroger et ajuster les paramètres des cartes réseau (NIC), tels que la vitesse de lien, les fonctionnalités de déchargement et les statistiques.
 
 <details>
-  <summary><strong>Voir les options ip</strong> - Cliquer pour développer/réduire</summary>
+  <summary><strong>Voir l'utilisation d'ethtool</strong> - Cliquer pour développer/réduire</summary>
 
-  **Afficher toutes les interfaces réseau :**
+  **Informations basiques sur le pilote et le firmware :**
 
   ```bash
   ip addr show
@@ -339,7 +345,7 @@ Configurer et afficher les informations sur l'interface réseau. C'est le rempla
   ip -c addr show
   ```
 
-  **Afficher la table de routage :**
+  Pour vérifier la vitesse et les paramètres de lien actuels de votre interface, exécutez :
 
   ```bash
   ip route show
@@ -351,9 +357,9 @@ Configurer et afficher les informations sur l'interface réseau. C'est le rempla
 Tester la connectivité réseau.
 
 <details>
-  <summary><strong>Voir l'utilisation de ping</strong> - Cliquer pour développer/réduire</summary>
+  <summary><strong>Voir les options ss</strong> - Cliquer pour développer/réduire</summary>
 
-  **Tester la connectivité en envoyant un nombre limité de paquets :**
+  **Afficher tous les ports à l'écoute :**
 
   ```bash
   ping -c 4 google.com
@@ -367,9 +373,9 @@ Tester la connectivité réseau.
 Outil pratique pour interroger et ajuster les paramètres des cartes réseau (NIC), tels que la vitesse de lien, les fonctionnalités de déchargement et les statistiques.
 
 <details>
-  <summary><strong>Voir l'utilisation d'ethtool</strong> - Cliquer pour développer/réduire</summary>
+  <summary><strong>Voir les options ip</strong> - Cliquer pour développer/réduire</summary>
 
-  **Informations basiques sur le pilote et le firmware :**
+  **Afficher toutes les interfaces réseau :**
 
   Utilisez cette commande pour obtenir des informations sur le pilote et le firmware de votre interface réseau :
 
@@ -379,7 +385,7 @@ Outil pratique pour interroger et ajuster les paramètres des cartes réseau (NI
 
   **Afficher la vitesse de lien actuelle et les paramètres :**
 
-  Pour vérifier la vitesse et les paramètres de lien actuels de votre interface, exécutez :
+  **Afficher la table de routage :**
 
   ```
   ethtool eth0
@@ -398,9 +404,9 @@ Outil pratique pour interroger et ajuster les paramètres des cartes réseau (NI
 
 ---
 
-## Informations système
+## `tail`
 
-Obtenez des informations détaillées sur le matériel, le noyau, et la configuration globale du système.
+Surveiller les fichiers journaux en temps réel.
 
 <Tabs>
   <TabItem value="processeur" label="Infos CPU">
