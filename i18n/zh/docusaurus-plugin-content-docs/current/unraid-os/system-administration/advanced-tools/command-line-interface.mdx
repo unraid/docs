@@ -14,24 +14,28 @@ import CliStorageInfo from './partials/command-line-interface/storage-info.mdx';
 While most tasks in Unraid can be performed through the %%WebGUI|web-gui%%, certain operations - especially those related to diagnostics, drive management, or scripting - require using the system console or %%SSH|ssh%% terminal. This page offers Unraid-specific command-line tools and examples that can be used without needing extensive Linux knowledge.
 
 :::tip[Device 路径]
+
 Many disk-level Unraid operations depend on Linux device names, like `/dev/sdX`. You can find the device identifier for any drive in the **Main** tab of the %%WebGUI|web-gui%%. Look for the three-letter label `sdX` or `nvmeX` next to each disk. Use the appropriate identifier in all commands, replacing `sdX` with your specific disk.
+
 :::
 
 ## 访问终端
 
-Unraid includes a built-in web terminal that you can access directly from the %%WebGUI|web-gui%%. Simply use the top-right dropdown menu and select ">\_". This opens a command-line session as the %%root user|root-user%%, giving you full administrative access to your system.
+Unraid includes a built-in web terminal that you can access directly from the %%WebGUI|web-gui%%. Simply use the top-right dropdown menu and select ">_". This opens a command-line session as the %%root user|root-user%%, giving you full administrative access to your system.
 
 您也可以使用 %SSH|ssh%（安全壳）与 %%PuTTY|putty%% 等客户端外部连接到 Unraid 服务器。
 
 :::tip[When 我应该使用终端吗？]
-终端访问对于以下情况很有用：
+
+如果您使用的是Windows，可能更喜欢使用%%PuTTY|putty%%进行%%SSH|ssh%%访问，而不是内置终端。这个软件轻量级、免费，并允许您保存会话以便日后轻松访问。
 
 - 运行例如 `smartctl`、`xfs_repair`、`tail` 或 `top` 等诊断和命令行工具
 - 执行不需要用户界面的插件脚本或工具
 - Troubleshooting issues related to connectivity, system services, or %%user shares|user-share%%
+
 :::
 
-### 使用 PuTTY（仅限 Windows）
+### 驱动器测试和监控
 
 如果您使用的是Windows，可能更喜欢使用%%PuTTY|putty%%进行%%SSH|ssh%%访问，而不是内置终端。这个软件轻量级、免费，并允许您保存会话以便日后轻松访问。
 
@@ -50,21 +54,23 @@ Unraid includes a built-in web terminal that you can access directly from the %%
 </details>
 
 :::note
+
 Unraid automatically configures the SSH server on the first boot. Ensure your networking is working properly and that your root password is set before attempting a remote connection.
+
 :::
 
 ## 驱动器测试和监控
 
-These tools assist with evaluating performance, checking drive health, and troubleshooting %%array|array%% slowness. All commands should be executed from the terminal or via %%SSH|ssh%%.
+这些工具有助于评估性能、检查驱动器健康情况以及解决%%array|array%%速度慢的问题。所有命令都应从终端或通过%%SSH|ssh%%执行。
 
-### `hdparm`
+### `diskspeed.sh`
 
-使用此命令测试读取速度并显示驱动器特性。
+此脚本允许进行全面的表面性能测试，并生成可视化报告。
 
 <details>
-  <summary><strong>查看 hdparm 选项</strong> - 单击以展开/折叠</summary>
+  <summary><strong>查看 diskspeed.sh 用法</strong> - 单击以展开/折叠</summary>
 
-  **测试驱动器读取速度：**
+  以前这脚本需要从 Unraid 论坛下载。DiskSpeed 现在提供了一个更完善的软件包：
 
   ```bash
   hdparm -tT /dev/sdX
@@ -125,12 +131,12 @@ These tools assist with evaluating performance, checking drive health, and troub
   这会将报告保存到您的 Unraid 闪存驱动器，以便稍后查看或在 [论坛](https://forums.unraid.net/) 上共享。
 </details>
 
-### `diskspeed.sh`
+### `top`
 
-此脚本允许进行全面的表面性能测试，并生成可视化报告。
+此命令提供实时的进程和资源监控。
 
 <details>
-  <summary><strong>查看 diskspeed.sh 用法</strong> - 单击以展开/折叠</summary>
+  <summary><strong>查看 top 用法</strong> - 单击以展开/折叠</summary>
 
   以前这脚本需要从 Unraid 论坛下载。DiskSpeed 现在提供了一个更完善的软件包：
 
@@ -143,12 +149,12 @@ These tools assist with evaluating performance, checking drive health, and troub
 
 在 %%WebGUI|web-gui%% 不可用或需要更详细诊断时，使用这些命令监控内存、进程和系统性能。
 
-### `top`
+### `ps`
 
-此命令提供实时的进程和资源监控。
+使用此命令显示正在运行的进程及其详细信息。
 
 <details>
-  <summary><strong>查看 top 用法</strong> - 单击以展开/折叠</summary>
+  <summary><strong>查看 ps 选项</strong> - 单击以展开/折叠</summary>
 
   ```bash
   top
@@ -158,9 +164,7 @@ These tools assist with evaluating performance, checking drive health, and troub
   - 按 `q` 退出。
   - 使用方向键滚动，按 `k` 终止进程。
 
-  :::tip
-  考虑使用 `htop` 获取更友好的界面和增强的控制。
-  :::
+  **按内存使用排序：**
 </details>
 
 ### `free`
@@ -181,12 +185,12 @@ These tools assist with evaluating performance, checking drive health, and troub
   :::
 </details>
 
-### `ps`
+### `df`
 
-使用此命令显示正在运行的进程及其详细信息。
+此命令显示文件系统磁盘空间使用情况。
 
 <details>
-  <summary><strong>查看 ps 选项</strong> - 单击以展开/折叠</summary>
+  <summary><strong>查看 df 用法</strong> - 单击以展开/折叠</summary>
 
   **列出所有进程的详细信息：**
 
@@ -194,7 +198,9 @@ These tools assist with evaluating performance, checking drive health, and troub
   ps aux
   ```
 
-  **按内存使用排序：**
+  :::tip
+  考虑使用 `htop` 获取更友好的界面和增强的控制。
+  :::
 
   ```bash
   ps aux --sort=-%mem | head -20
@@ -213,34 +219,6 @@ These tools assist with evaluating performance, checking drive health, and troub
 
 这些命令有助于检查磁盘使用情况、分区信息和识别存储设备。
 
-### `df`
-
-此命令显示文件系统磁盘空间使用情况。
-
-<details>
-  <summary><strong>查看 df 用法</strong> - 单击以展开/折叠</summary>
-
-  ```bash
-  df -h
-  ```
-
-  此命令显示所有已挂载文件系统的已用和可用空间。它便于检查 Unraid 中的 `/var/log`（使用基于 RAM 的日志记录）。更多关于[系统日志记录](../../troubleshooting/diagnostics/capture-diagnostics-and-logs.mdx)的信息。
-</details>
-
-### `fdisk`
-
-查看磁盘分区表和几何布局。
-
-<details>
-  <summary><strong>查看 fdisk 用法</strong> - 单击以展开/折叠</summary>
-
-  ```bash
-  fdisk -l /dev/sdX
-  ```
-
-  此命令显示分区布局、大小和磁盘几何结构。它有助于解决磁盘大小不匹配的问题，特别是在[替换磁盘](../../using-unraid-to/manage-storage/array-configuration.mdx#replacing-disks)时。
-</details>
-
 ### `lsblk`
 
 以树形格式列出所有块设备。
@@ -249,10 +227,10 @@ These tools assist with evaluating performance, checking drive health, and troub
   <summary><strong>查看 lsblk 用法</strong> - 单击以展开/折叠</summary>
 
   ```bash
-  lsblk
+  df -h
   ```
 
-  此命令以简单的树形结构显示所有存储设备及其挂载点。非常适合对存储布局进行概览。
+  此命令显示所有已挂载文件系统的已用和可用空间。它便于检查 Unraid 中的 `/var/log`（使用基于 RAM 的日志记录）。更多关于[系统日志记录](../../troubleshooting/diagnostics/capture-diagnostics-and-logs.mdx)的信息。
 </details>
 
 ### `blockdev -getsz`
@@ -261,6 +239,34 @@ These tools assist with evaluating performance, checking drive health, and troub
 
 <details>
   <summary><strong>查看 blockdev 用法</strong> - 单击以展开/折叠</summary>
+
+  ```bash
+  fdisk -l /dev/sdX
+  ```
+
+  此命令显示分区布局、大小和磁盘几何结构。它有助于解决磁盘大小不匹配的问题，特别是在[替换磁盘](../../using-unraid-to/manage-storage/array-configuration.mdx#replacing-disks)时。
+</details>
+
+### `blkid`
+
+识别文件系统标签。
+
+<details>
+  <summary><strong>查看 blkid 用法</strong> - 单击以展开/折叠</summary>
+
+  ```bash
+  lsblk
+  ```
+
+  此命令显示所有已挂载文件系统的已用和可用空间。它便于检查 Unraid 中的 `/var/log`（使用基于 RAM 的日志记录）。更多关于[系统日志记录](../../troubleshooting/diagnostics/capture-diagnostics-and-logs.mdx)的信息。
+</details>
+
+### `blockdev -getsz`
+
+帮助确定替换驱动器在重建前是否有足够的空间。
+
+<details>
+  <summary><strong>查看 fdisk 用法</strong> - 单击以展开/折叠</summary>
 
   **语法：**
 
@@ -271,12 +277,12 @@ These tools assist with evaluating performance, checking drive health, and troub
   返回设备上 512 byte 扇区的原始数量 - 方便在重建前确认替换驱动器的大小。
 </details>
 
-### `blkid`
+### `ss`
 
-识别文件系统标签。
+显示套接字统计和网络连接。这是`netstat`的现代替代品。
 
 <details>
-  <summary><strong>查看 blkid 用法</strong> - 单击以展开/折叠</summary>
+  <summary><strong>查看 ss 选项</strong> - 单击以展开/折叠</summary>
 
   **语法：**
 
@@ -293,14 +299,14 @@ These tools assist with evaluating performance, checking drive health, and troub
 
 用于排除网络连接和接口配置问题的工具。
 
-### `ss`
+### `ping`
 
-显示套接字统计和网络连接。这是`netstat`的现代替代品。
+测试网络连接。
 
 <details>
-  <summary><strong>查看 ss 选项</strong> - 单击以展开/折叠</summary>
+  <summary><strong>查看 ping 用法</strong> - 单击以展开/折叠</summary>
 
-  **显示所有监听端口：**
+  **通过发送有限数量的包来测试连接：**
 
   ```bash
   ss -tuln
@@ -320,14 +326,14 @@ These tools assist with evaluating performance, checking drive health, and troub
   此命令显示活动连接及其过程信息。
 </details>
 
-### `ip`
+### `ethtool`
 
-配置和显示网络接口信息。这是`ifconfig`的现代替代品。
+用于查询和调整网络接口卡 (NIC) 参数的实用工具，例如链接速度、卸载功能和统计数据。
 
 <details>
-  <summary><strong>查看 ip 选项</strong> - 单击以展开/折叠</summary>
+  <summary><strong>查看 ethtool 用法</strong> - 单击以展开/折叠</summary>
 
-  **显示所有网络接口：**
+  **基本驱动程序和固件信息：**
 
   ```bash
   ip addr show
@@ -339,7 +345,7 @@ These tools assist with evaluating performance, checking drive health, and troub
   ip -c addr show
   ```
 
-  **显示路由表：**
+  要检查接口的当前链接速度和设置，请运行：
 
   ```bash
   ip route show
@@ -351,9 +357,9 @@ These tools assist with evaluating performance, checking drive health, and troub
 测试网络连接。
 
 <details>
-  <summary><strong>查看 ping 用法</strong> - 单击以展开/折叠</summary>
+  <summary><strong>查看 ss 选项</strong> - 单击以展开/折叠</summary>
 
-  **通过发送有限数量的包来测试连接：**
+  **显示所有监听端口：**
 
   ```bash
   ping -c 4 google.com
@@ -367,9 +373,9 @@ These tools assist with evaluating performance, checking drive health, and troub
 用于查询和调整网络接口卡 (NIC) 参数的实用工具，例如链接速度、卸载功能和统计数据。
 
 <details>
-  <summary><strong>查看 ethtool 用法</strong> - 单击以展开/折叠</summary>
+  <summary><strong>查看 ip 选项</strong> - 单击以展开/折叠</summary>
 
-  **基本驱动程序和固件信息：**
+  **显示所有网络接口：**
 
   使用此命令获取网络接口驱动程序和固件信息：
 
@@ -379,7 +385,7 @@ These tools assist with evaluating performance, checking drive health, and troub
 
   **显示当前链接速度和设置：**
 
-  要检查接口的当前链接速度和设置，请运行：
+  **显示路由表：**
 
   ```
   ethtool eth0
@@ -398,9 +404,9 @@ These tools assist with evaluating performance, checking drive health, and troub
 
 ---
 
-## 系统信息
+## `尾`
 
-获取关于硬件、内核和整体系统配置的详细信息。
+实时监控日志文件。
 
 <Tabs>
   <TabItem value="cpu" label="CPU 信息">
