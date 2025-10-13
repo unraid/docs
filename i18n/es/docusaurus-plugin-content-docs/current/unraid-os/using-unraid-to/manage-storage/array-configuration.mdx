@@ -66,32 +66,38 @@ A continuación se presentan algunos principios importantes para la configuraci�
 </details>
 
 :::info[Disk Reconocimiento y Flexibilidad de Puerto]
-Unraid identifica los discos según sus números de serie y tamaños, no los puertos SATA específicos a los que están conectados. Esto significa que puede cambiar los discos entre diferentes puertos SATA sin afectar sus asignaciones en Unraid. Esta característica es particularmente útil para resolver problemas de hardware, como encontrar un puerto defectuoso o reemplazar cables de alimentación o SATA poco confiables.
+
+Unraid identifies disks based on their serial numbers and sizes, not the specific SATA ports they're connected to. This means you can switch drives between different SATA ports without affecting their assignments in Unraid. This feature is particularly useful for troubleshooting hardware problems, like finding a faulty port or replacing unreliable power or SATA cables.
+
 :::
 
 :::caution
+
 Tu matriz no iniciará si asignas o conectas más dispositivos de los que permite tu clave de licencia.
+
 :::
 
 ## Iniciar/detener la matriz
 
-Cuando su sistema se inicia, generalmente enciende automáticamente el conjunto de discos. Sin embargo, si ha cambiado recientemente la configuración de discos, como agregar un nuevo disco, el conjunto permanecerá apagado para permitirle verificar su configuración.
+When your system starts up, it usually powers up the array of disks automatically. However, if you've recently changed the disk setup, such as adding a new disk, the array will remain off to allow you to check your configuration.
 
 :::caution
-Tenga en cuenta que deberá detener primero el conjunto para hacer cualquier ajuste. Detenerlo apagará completamente todos los contenedores de Docker y comparticiones de red, apagará o hibernará las VM, y sus dispositivos de almacenamiento se desmontarán, haciendo que sus datos y aplicaciones no sean accesibles hasta que reinicie el conjunto.
+
+Keep in mind that you'll need to stop the array first to make any adjustments. Stopping it will fully stop all Docker containers and network shares, shut down or hibernate VMs, and your storage devices will be unmounted, making your data and applications inaccessible until you restart the array.
+
 :::
 
 Para iniciar o detener la matriz:
 
 1. Haga clic en la pestaña **Principal**.
 2. Navega a la sección **Operación de la matriz**.
-3. Haga clic en **Iniciar** o **Detener**. Es posible que deba marcar la casilla que dice "Sí, quiero hacer esto" antes de continuar.
+3. Click **Start** or **Stop**. You may need to check the box that says "Yes, I want to do this" before proceeding.
 
 ---
 
 ## Operaciones de la matriz
 
-Unraid proporciona varias opciones de mantenimiento y configuración para su conjunto de almacenamiento. Las operaciones clave incluyen:
+Unraid provides several maintenance and configuration options for your storage array. Key operations include:
 
 import DocCardList from '@theme/DocCardList';
 
@@ -114,21 +120,23 @@ import DocCardList from '@theme/DocCardList';
 
 1. Ve a ***Principal → Dispositivos de la matriz*** en la interfaz.
 2. Selecciona el espacio donde deseas agregar el disco y selecciona el disco de la lista desplegable.
-3. Por defecto, los nuevos discos del conjunto se formatearán con %%XFS|xfs%%. Si desea usar %%ZFS|zfs%% o %%BTRFS|btrfs%% en su lugar, seleccione su sistema de archivos preferido del menú desplegable.
+3. By default, new array drives will be formatted with %%XFS|xfs%%. If you want to use %%ZFS|zfs%% or %%BTRFS|btrfs%% instead, select your preferred file system from the drop-down menu.
 
-:::tip[Hot-Swap Característica]
-Si está utilizando hardware moderno compatible con Unraid, puede cambiar discos sin apagar su servidor. Esta función, conocida como intercambio en caliente, ha estado disponible en los servidores LimeTech desde el principio.
+:::tip[Hot-Swap Feature]
+
+If you're using modern Unraid-compatible hardware, you can change disks without shutting down your server. This feature, known as hot-swap, has been available in LimeTech servers since the beginning.
+
 :::
 
 #### Despejar vs. Pre-despejar
 
-Unraid requiere que los discos estén en un estado limpiado - completamente llenos de ceros y marcados con una firma especial - antes de agregarlos a un conjunto protegido por paridad. Este proceso asegura la integridad de la paridad y mantiene el conjunto en línea durante la preparación del disco.
+Unraid requires disks to be in a cleared state - completely filled with zeros and marked with a special signature - before adding them to a parity-protected array. This process ensures parity integrity and keeps the array online during disk preparation.
 
 Clearance is mandatory when adding a data disk to a %%parity|parity%%-protected array. If you are adding a %%parity disk|parity-drives%% or working with an array that does not use %%parity|parity%%, clearance is not required.
 
-La operación de limpiar incorporada escribe ceros en el disco en segundo plano, permitiendo que el conjunto permanezca disponible. Una vez que el proceso está completo, el disco debe formatearse antes de su uso. Este método es eficiente, no requiere herramientas de terceros y es ideal para expansiones rápidas.
+The built-in clear operation writes zeros to the disk in the background, allowing the array to remain available. Once the process is complete, the disk must be formatted before use. This method is efficient, requires no third-party tools, and is ideal for quick expansions.
 
-Para un enfoque más exhaustivo, la operación de pre-limpieza – disponible a través de complementos como [Pre-limpieza de Dispositivos No Asignados](https://unraid.net/community/apps?q=unassigned+devices#r:~:text=enable%20destructive%20mode.-,Unassigned%20Devices%20Preclear,-dlandon) – realiza una lectura previa para verificar sectores defectuosos, llena el disco con ceros y luego verifica la integridad con una lectura posterior. Este paso adicional ayuda a detectar fallos tempranos del disco, pero toma significativamente más tiempo y requiere la instalación manual del complemento.
+For a more thorough approach, the pre-clear operation – available through plugins like [Unassigned Devices Preclear](https://unraid.net/community/apps?q=unassigned+devices#r:~:text=enable%20destructive%20mode.-,Unassigned%20Devices%20Preclear,-dlandon) – performs a pre-read to check for bad sectors, zeros the disk, and then verifies integrity with a post-read. This extra step helps detect early drive failures but takes significantly longer and requires manual plugin installation.
 
 **Regla general:** Usa la operación de despeje integrada para adiciones rápidas a tu matriz o elige pre-despeje si deseas un testeo extenso de la salud del disco antes de ponerlo en servicio.
 
@@ -148,15 +156,19 @@ Para un enfoque más exhaustivo, la operación de pre-limpieza – disponible a 
 **Pre-despejar** toma más tiempo pero proporciona un test exhaustivo, asegurando que un disco nuevo es confiable antes de que se incorpore a tu matriz.
 
 :::caution[Critical Note]
+
 Evita formatear un disco pre-despejado antes de incluirlo en la matriz, ya que esto elimina la firma de despeje.
+
 :::
 
 #### Agregar discos de datos
 
-Agregar discos de datos es una excelente manera de aumentar el espacio de almacenamiento de su conjunto Unraid. Al agregar más discos, puede mantener más archivos, aplicaciones y copias de seguridad, mientras sigue protegiendo sus datos.
+Adding data disks is a great way to increase your Unraid array's storage space. By adding more disks, you can keep more files, applications, and backups, while still protecting your data.
 
 :::important[Important Note:]
+
 When adding a new data disk, it must be the same size or smaller than your current %%parity disks|parity-drives%%. If you want to use a larger disk, you'll need to replace the %%parity disks|parity-drives%% first with the larger one, then use the old %%parity disks|parity-drives%% as a data disk.
+
 :::
 
 <details>
@@ -190,12 +202,12 @@ When adding a new data disk, it must be the same size or smaller than your curre
 Agregar un %%parity disk|disco de paridad%% es similar a agregar un disco de datos, pero hay un paso importante a tener en cuenta:
 
 1. Después de seleccionar el %%parity disk|disco de paridad%% y de iniciar tu matriz de almacenamiento, comienza un proceso llamado **cálculo de paridad**.
-2. Mientras este proceso se ejecuta, aún puede acceder a sus archivos. Sin embargo, el sistema puede funcionar un poco más lento debido a que está trabajando para calcular la paridad.
+2. While this process runs, you can still access your files. However, the system might run a bit slower because it's working to calculate the parity.
 
 <details>
-  <summary><strong>En profundidad: ¿Qué es la paridad y por qué es importante?</strong> - Haz clic para expandir/colapsar</summary>
+  <summary><strong>In-depth: What is parity and why does it matter?</strong> - Click to expand/collapse</summary>
 
-  La %%Parity|parity%% en Unraid protege sus datos asegurando que pueda recuperarse de una falla de disco. Con el uso de un %%parity disk|parity-drives%%, cualquiera disco faltante se puede reconstruir combinando la información de todos los demás discos de datos junto con los datos de %%parity|parity%%.
+  %%Parity|parity%% in Unraid protects your data by ensuring that you can recover from a drive failure. With the use of a %%parity disk|parity-drives%%, any single missing disk can be reconstructed by combining the information from all other data drives along with the %%parity|parity%% data.
 
   Unraid confía en esta paridad en tiempo real para dos propósitos principales:
 
@@ -206,61 +218,61 @@ Agregar un %%parity disk|disco de paridad%% es similar a agregar un disco de dat
 </details>
 
 <details>
-  <summary><strong>En profundidad: ¿Cómo funciona la paridad en Unraid?</strong> - Haz clic para expandir/colapsar</summary>
+  <summary><strong>In-depth: How does Unraid parity work?</strong> - Click to expand/collapse</summary>
 
-  Unraid trabaja con un bit especial llamado *bit de paridad*, que se almacena para cada posición de bit en todos los discos de datos y es administrado por un %%parity disk|parity-drives%% dedicado. La %%parity|parity%% se calcula de forma que el número total de bits en cada posición en todos los discos (incluido el %%parity disk|parity-drives%%) sea siempre un número par, un proceso conocido como paridad par.
+  Unraid works with a special bit called the *parity bit*, which is stored for each bit position across all data disks and is managed by a dedicated %%parity disk|parity-drives%%. The %%parity|parity%% is calculated such that the total number of bits in each position across all disks (including the %%parity disk|parity-drives%%) is always an even number, a process known as even parity.
 
-  Así es como se desglosa:
+  Unraid confía en esta paridad en tiempo real para dos propósitos principales:
 
   - Unraid utiliza la operación XOR (OR exclusivo) para este cálculo.
   - Por ejemplo, si tienes cuatro discos y sus 57ª bits son 1, 1, 1, 1, el bit de paridad para esa posición será 0 (porque 1 + 1 + 1 + 1 + 0 = par).
   - Sin embargo, si los 57ª bits son 1, 0, 0, 0, la %%paridad|parity%% de esa posición será 1 (para asegurar que el total siga siendo par).
 
-  Al agregar un nuevo disco, Unraid primero lo limpia escribiendo ceros en todos los bits. Esto permite una inclusión rápida en el array protegido ya que escribir ceros no interfiere con los cálculos de paridad actuales.
+  When adding a new drive, Unraid first clears it by writing zeros to all bits. This allows for quick inclusion into the protected array since writing zeros does not interfere with the current parity calculations.
 </details>
 
 <details>
-  <summary><strong>En profundidad: ¿Cómo se reconstruyen los datos usando la paridad?</strong> - Haz clic para expandir/colapsar</summary>
+  <summary><strong>En profundidad: ¿Cómo funciona la paridad en Unraid?</strong> - Haz clic para expandir/colapsar</summary>
 
-  Unraid puede reconstruir un disco perdido o reparar un sector defectuoso utilizando los siguientes pasos:
+  Unraid trabaja con un bit especial llamado *bit de paridad*, que se almacena para cada posición de bit en todos los discos de datos y es administrado por un %%parity disk|parity-drives%% dedicado. La %%parity|parity%% se calcula de forma que el número total de bits en cada posición en todos los discos (incluido el %%parity disk|parity-drives%%) sea siempre un número par, un proceso conocido como paridad par.
 
   - Lee todas las unidades restantes, incluido el %%parity disk|parity-drives%%.
   - Aplica la %%paridad|parity%% par para resolver los datos faltantes.
 
   Por ejemplo, si el disco 2 falla:
 
-  - Si los bits relacionados son 1, 1, 1 (además de la %%paridad|parity%%), Unraid calcula: 1 + x + 1 + 1 + 0 = par. Aquí, x debe ser 1 para mantener un total par.
+  - If the related bits are 1, 1, 1 (in addition to the %%parity|parity%%), Unraid calculates: 1 + x + 1 + 1 + 0 = even. Here, x must be 1 to maintain an even total.
   - Si los bits muestran 1, x, 0, 0, 1 = par, entonces x será igual a 0.
 
-  Esta función de %%parity|parity%% permite que Unraid "simule" el disco faltante. Puede seguir usando el array como si el disco todavía estuviera funcional. Una vez que instale un nuevo disco en la ranura fallida, Unraid recreará todos los datos faltantes basándose en el estado actual de la %%parity|parity%% y los otros discos.
+  This %%parity|parity%% feature allows Unraid to "simulate" the missing disk. You can continue using the array as if the drive were still functional. Once you install a new drive in the failed slot, Unraid will recreate all the missing data based on the current state of %%parity|parity%% and the other disks.
 
   Para asegurar una protección continua y una recuperación efectiva, es importante realizar revisiones regulares de %%paridad|parity-check%%.
 </details>
 
 <details>
-  <summary><strong>¿Qué tamaño necesita tener mi disco de paridad?</strong> - Haz clic para expandir/colapsar</summary>
+  <summary><strong>En profundidad: ¿Cómo se reconstruyen los datos usando la paridad?</strong> - Haz clic para expandir/colapsar</summary>
 
-  Su %%parity disk|parity-drives%% debe ser **igual o mayor que su disco de datos más grande**. Por ejemplo:
+  Your %%parity disk|parity-drives%% must be **equal to or larger than your largest data disk**. For instance:
 
   - Si tu disco de datos más grande es de 10TB, tu %%parity disk|parity-drives%% debe tener al menos 10TB.
   - Puedes usar varios tamaños de discos de datos de manera libre, siempre que ninguno supere el tamaño del %%parity disk|parity-drives%%.
 </details>
 
 <details>
-  <summary><strong>En profundidad: ¿Cómo afecta la paridad al rendimiento de escritura?</strong> - Haz clic para expandir/colapsar</summary>
+  <summary><strong>¿Qué tamaño necesita tener mi disco de paridad?</strong> - Haz clic para expandir/colapsar</summary>
 
   Writing to a %%parity|parity%%-protected array involves four disk operations for each write: reading data, reading %%parity|parity%%, writing data, and writing %%parity|parity%%. This process requires a full rotation from each affected drive, so the overall write speed is limited by the slowest drive involved in the operation.
 
-  Agregar un %%parity disk|parity-drives%% más rápido no necesariamente mejorará las velocidades de escritura a menos que esté escribiendo en varios discos de datos lentos simultáneamente, permitiendo que el %%parity disk|parity-drives%% maneje la carga. Típicamente, la velocidad de escritura está limitada por el disco de datos más lento al que se está escribiendo.
+  Adding a faster %%parity disk|parity-drives%% won't necessarily improve write speeds unless you're writing to multiple slow data disks simultaneously, allowing the %%parity disk|parity-drives%% to handle the load. Typically, the write speed is constrained by the slowest data drive being written to.
 </details>
 
 <details>
-  <summary><strong>En profundidad: ¿Cómo funciona la Doble Paridad?</strong> - Haz clic para expandir/colapsar</summary>
+  <summary><strong>En profundidad: ¿Cómo afecta la paridad al rendimiento de escritura?</strong> - Haz clic para expandir/colapsar</summary>
 
-  La doble %%parity|parity%% permite la recuperación de **dos fallas de disco simultáneas**. En Unraid, el segundo %%parity disk|parity-drives%% no simplemente replica el primero. En su lugar:
+  Dual %%parity|parity%% enables recovery from **two simultaneous disk failures**. In Unraid, the second %%parity disk|parity-drives%% doesn't simply mirror the first. Instead:
 
   - **Paridad 1:** Emplea cálculos de %%paridad|parity%% estándar XOR (par).
-  - **Paridad 2:** Utiliza un algoritmo más complejo (campo de Galois, en lugar de Reed-Solomon como en %%RAID 6|raid6%% tradicional), permitiendo a Unraid reconstruir a partir de cualquier dos discos faltantes al mismo tiempo. Esta característica es significativa para conjuntos más grandes, donde el riesgo de múltiples fallos aumenta. La Doble %%paridad|parity%% mejora significativamente la resistencia sin la sobrecarga adicional de la redundancia reflejada.
+  - **Parity 2:** Utilizes a more complex algorithm (Galois field, rather than Reed-Solomon as in traditional %%RAID 6|raid6%%), allowing Unraid to rebuild from any two missing disks at the same time. This feature is significant for larger arrays, where the risk of multiple failures increases. Dual %%parity|parity%% significantly boosts resilience without the added overhead of mirrored redundancy.
 </details>
 
 :::caution\[Remember]
@@ -276,10 +288,12 @@ Once your %%parity disk|parity-drives%% is added, remember that any new disk you
 Puedes actualizar tu(s) dispositivo(s) %%parity disk|parity-drives%% a uno(s) más grande(s) para usar discos de mayor tamaño en el array o agregar un %%parity disk|parity-drives%% adicional.
 
 :::caution
+
 Si planea seguir los siguientes pasos y solo tiene un %%parity disk|parity-drives%%, tenga en cuenta estos puntos:
 
 - Sus datos estarán desprotegidos hasta que la reconstrucción de la %%paridad|parity%% se complete. Si un disco de datos falla durante este tiempo, podría perder la información en ese disco.
-- Si ya tiene un disco de datos que ha fallado, seguir estos pasos le impedirá poder reconstruir ese disco. En este caso, debería seguir el procedimiento **Paridad de Intercambio** en su lugar.
+- If you already have a data drive that has failed, proceeding with these steps will prevent you from being able to rebuild that drive. In this case, you should follow the **Parity Swap** procedure instead.
+
 :::
 
 Para eliminar un disco de paridad:
@@ -287,7 +301,9 @@ Para eliminar un disco de paridad:
 1. **Detener el arreglo:** Usa el %%WebGUI|web-gui%% para detener el arreglo.
 
 :::tip
+
 Si su servidor admite intercambio en caliente, no necesita apagarlo para cambiar discos. Puede omitir de forma segura los pasos 2 y 4.
+
 :::
 
 2. **Apaga el servidor:** Apaga tu servidor para realizar cambios de hardware de manera segura.
@@ -299,11 +315,13 @@ Si su servidor admite intercambio en caliente, no necesita apagarlo para cambiar
 Una vez que el arreglo esté de nuevo en línea, Unraid comenzará a construir la %%parity|parity%% en el disco nuevo. Puedes seguir accediendo a tus datos durante este tiempo, pero ten en cuenta que podría ser un poco más lento hasta que el proceso termine. ¡Una vez que la construcción de la %%parity|parity%% esté completa, tus datos estarán protegidos de nuevo!
 
 :::important[Important Consejos]
+
 - **Conserva el disco antiguo:** No retires el antiguo %%parity disk|parity-drives%% hasta que la nueva construcción de %%parity|parity%% finalice. Si un disco de datos falla durante la actualización, tener el disco antiguo puede ayudarte a recuperar tus datos.
 
 - **Usuarios de doble paridad:** Si tienes dos %%parity disks|parity-drives%%, actualiza uno a la vez para mayor seguridad.
 
 - **Reutiliza el disco antiguo:** Después de la actualización, puedes usar el viejo %%parity disk|parity-drives%% como disco de datos si aún satisface tus necesidades de almacenamiento.
+
 :::
 
 ---
@@ -330,7 +348,9 @@ Al actualizar tu disco de datos a uno más grande, ten en cuenta estos puntos:
 - **Copia de seguridad del disco antiguo:** Mantén el disco original intacto hasta que se confirme que la actualización ha sido exitosa. Esto proporciona una opción de respaldo si algo sale mal.
 
 :::warning
+
 Reemplazar unidades siempre implica un riesgo. Si otra unidad falla durante la actualización, especialmente con solo una paridad, puede experimentar pérdida de datos. Siempre verifique la salud de sus unidades antes de comenzar el proceso y asegúrese de mantener la antigua unidad intacta hasta que la actualización esté completa y sus datos estén confirmados como seguros.
+
 :::
 
 Para actualizar un disco de datos existente:
@@ -346,7 +366,9 @@ Para actualizar un disco de datos existente:
    - **Normal Mode:** If you need read/write access to the %%emulated disk|emulated-disk%%, select this option.
 
 :::note
+
 Iniciar el arreglo en Modo Normal en este punto es opcional. Puedes utilizarlo para verificar que el disco emulado se monte y que los datos se vean correctos antes de proceder, pero no es necesario para el proceso de actualización.
+
 :::
 
 5. **Detener el arreglo nuevamente:** El arreglo ahora debería mostrar que el disco no asignado ha fallado. Detén el arreglo una vez más.
@@ -388,9 +410,10 @@ Iniciar el arreglo en Modo Normal en este punto es opcional. Puedes utilizarlo p
     \| **2 Fallas de Disco** | Datos Perdidos | Datos Perdidos    | Reconstruible |
 
     :::tip[Consejos para Reconstrucciones Seguras]
+
     - **Para Paridad Simple:** Solo puede reemplazar un disco a la vez. Si otro disco falla durante la reconstrucción, podría perder datos.
     - **Para Doble Paridad:** Puede reemplazar uno o dos discos al mismo tiempo, pero sea cauteloso si más de dos discos fallan.
-    :::
+      :::
 
     :::important
     Si experimenta una situación en la que **más discos fallan de los que su paridad puede proteger:**
@@ -398,7 +421,7 @@ Iniciar el arreglo en Modo Normal en este punto es opcional. Puedes utilizarlo p
     1. **Detenga inmediatamente todas las operaciones de escritura** para prevenir una mayor pérdida de datos.
     2. Busque ayuda publicando su problema en los [foros de Unraid](https://forums.unraid.net/) junto con diagnósticos.
     3. **No intente una reconstrucción** hasta haber recibido asesoramiento - concéntrese primero en salvar sus datos.
-    :::
+       :::
   </details>
 </details>
 
@@ -427,9 +450,9 @@ Iniciar el arreglo en Modo Normal en este punto es opcional. Puedes utilizarlo p
 </details>
 
 <details>
-  <summary><strong>Preparándose para el reemplazo de disco</strong></summary>
+  <summary><strong>¿Qué es un disco fallido/deshabilitado?</strong></summary>
 
-  Cuando necesite reemplazar un disco, asegúrese de que el nuevo disco sea al menos tan grande como el disco fallido, pero no más grande que su disco de paridad más pequeño. Si debe usar un disco más grande, siga el procedimiento de **Intercambio de Paridad**.
+  Un disco fallido o deshabilitado es aquel que Unraid ha dejado de utilizar para escribir datos, generalmente porque encontró un error de escritura. Tenga en cuenta que esto no siempre significa que el disco en sí esté roto; a veces, puede deberse a malas conexiones, problemas de energía o simplemente un fallo temporal.
 
   Mientras no es obligatorio, muchos usuarios eligen pre-limpiar los nuevos discos para probarlos y ayudar a prevenir fallas tempranas. Puede hacer esto con el complemento Preclear, una prueba extendida %%SMART|smart%% o herramientas del fabricante.
 
@@ -438,10 +461,12 @@ Iniciar el arreglo en Modo Normal en este punto es opcional. Puedes utilizarlo p
   :::
 </details>
 
-If a disk in your Unraid system has failed or is disabled, don't worry! You can replace it and recover your data. Just follow these simple steps. Remember, you need a new disk that is the same size or larger than the one you're replacing, but it can't be larger than your smallest %%parity disk|parity-drives%%.
+Si un disco en su sistema Unraid ha fallado o está desactivado, ¡no se preocupe! Puede reemplazarlo y recuperar sus datos. Simplemente siga estos sencillos pasos. Recuerde, necesita un nuevo disco que sea del mismo tamaño o más grande que el que está reemplazando, pero no puede ser más grande que su disco de %%paridad más pequeño|parity-drives%%.
 
 :::important
+
 Antes de comenzar, asegúrese de verificar si hay errores o advertencias en el disco. Unraid debe poder leer todos los discos restantes sin ningún problema para que la reconstrucción funcione correctamente. Si otro disco está fallando, podría provocar pérdida de datos.
+
 :::
 
 Para reemplazar y reconstruir un disco:
@@ -452,7 +477,9 @@ Para reemplazar y reconstruir un disco:
    - Encuentra la opción para detener el arreglo. Esto es necesario antes de que puedas cambiar cualquier disco.
 
 :::tip
+
 Si tu servidor soporta hot-swap, puedes omitir el siguiente paso y simplemente detener el array.
+
 :::
 
 2. **Apague su servidor** (solo si **no** está usando intercambio en caliente):
@@ -481,7 +508,9 @@ Si tu servidor soporta hot-swap, puedes omitir el siguiente paso y simplemente d
    - Si tu nuevo disco es más grande, Unraid gestionará el espacio adicional por ti.
 
 :::warning
+
 Si Unraid le solicita formatear el nuevo disco durante la reconstrucción, **no lo haga**. Formatear borrará todos los datos y hará imposible la recuperación.
+
 :::
 
 <h4>Qué esperar durante la reconstrucción</h4>
@@ -492,8 +521,10 @@ Si Unraid le solicita formatear el nuevo disco durante la reconstrucción, **no 
 - Si el disco viejo era no montable debido a problemas del sistema de archivos, el nuevo disco tampoco será montable. Por favor, solucione cualquier problema del sistema de archivos antes de iniciar la reconstrucción.
 
 :::note[Additional notas]
+
 - El proceso de reconstrucción no cambiará el formato de archivo del disco; simplemente restaurará su forma anterior.
 - Siempre verifique la salud de cada disco antes de comenzar una reconstrucción para evitar problemas potenciales.
+
 :::
 
 #### Intercambio de Paridad
@@ -527,7 +558,7 @@ Si Unraid le solicita formatear el nuevo disco durante la reconstrucción, **no 
 
 - Antes de comenzar, asegúrese de que el disco de datos que desea reemplazar esté deshabilitado. Si el disco ha fallado (muestra un indicador rojo), ya está deshabilitado. Si el disco está saludable pero desea reemplazarlo, desasigne el disco y comience el arreglo una vez sin él para forzar a Unraid a marcarlo como deshabilitado.
 - Si su disco de datos de reemplazo no es más grande que su disco de paridad, use el procedimiento estándar de [Reemplazo de un Disco de Datos](#replacing-faileddisabled-disks) en su lugar.
-- Este procedimiento solo es necesario para reemplazar discos de datos en un arreglo Unraid con un disco más grande que el disco de paridad actual. Si solo necesita actualizar su disco de paridad, simplemente retire el disco de paridad antiguo, agregue el nuevo y comience el arreglo. La paridad se reconstruirá automáticamente.
+- This procedure is only needed for replacing data drives in an Unraid array with a disk larger than the current parity drive. If you only need to upgrade your parity drive, simply remove the old parity drive, add the new one, and start the array. Parity will rebuild automatically.
 
 :::
 
@@ -535,14 +566,16 @@ Si Unraid le solicita formatear el nuevo disco durante la reconstrucción, **no 
 
 - Always verify the health of all drives using %%SMART reports|smart-report%% before starting a %%parity swap|parity-swap%%. Attempting this procedure with another failing or unhealthy disk increases the risk of data loss.
 - Si es posible, pre-limpie el nuevo disco. Aunque no es necesario, pre-limpiar comprueba la resistencia del disco y reduce el riesgo de fallo temprano.
-- Identifique correctamente todas las unidades antes de comenzar. Anote los números de modelo y los últimos cuatro caracteres de cada número de serie para evitar errores durante la asignación.
+- Correctly identify all drives before beginning. Note the model numbers and last four characters of each serial number to avoid mistakes during assignment.
 
 :::
 
 Para realizar un intercambio de paridad:
 
 :::note
+
 Si el disco a ser reemplazado ya está deshabilitado (fallido), es posible que no necesite realizar los pasos 1-4. Si ya ha instalado la nueva unidad de reemplazo (por ejemplo, después de pre-limpiarla), puede omitir los pasos 5-8.
+
 :::
 
 1. **Detener el array** si está en funcionamiento.
@@ -575,7 +608,9 @@ Si el disco a ser reemplazado ya está deshabilitado (fallido), es posible que n
     - El proceso de reconstrucción también tomará varias horas.
 
 :::warning
+
 Nunca formatee un disco durante este proceso. Formatear borrará todos los datos y actualizará la paridad, haciendo imposible la recuperación.
+
 :::
 
 After completion, you will have a larger parity disk and a replaced data disk. Many users run a %%parity check|parity-check%% afterward for extra confidence, though this is optional.
@@ -588,19 +623,21 @@ Es posible que llegue un momento en que desee eliminar un disco de su arreglo Un
 
 #### Removiendo discos de paridad
 
-If you find that you no longer need the level of %%parity|parity%% protection in your setup, you can remove a %%parity disk|parity-drives%% whenever you want.
+Si encuentra que ya no necesita el nivel de protección de %%paridad|parity%% en su configuración, puede eliminar un disco de %%paridad|parity-drives%% cuando desee.
 
-To remove a %%parity drives|parity-drives%%:
+Para eliminar un disco de %%paridad|parity-drives%%:
 
 1. **Detenga el array:** Comience accediendo al %%WebGUI|web-gui%% y deteniendo el array.
-2. **Unassign the %%parity drives|parity-drives%%:** Locate the %%parity drives|parity-drives%% slot and set it to "Unassigned."
-3. **Start the array:** Finally, restart the array to commit the changes and successfully remove the %%parity drives|parity-drives%% from the configuration.
+2. **Desasigne los discos de %%paridad|parity-drives%%:** Ubique la ranura de los discos de %%paridad|parity-drives%% y configúrela como "No asignado".
+3. **Inicie la matriz:** Finalmente, reinicie la matriz para aplicar los cambios y eliminar con éxito los discos de %%paridad|parity-drives%% de la configuración.
 
 :::warning
+
 Antes de realizar cualquier cambio, tenga en cuenta lo siguiente: Si ya tiene algún disco de datos fallido en su matriz, eliminar un %%parity disk|parity-drives%% puede disminuir el número de fallos que Unraid puede manejar sin arriesgar pérdida de datos.
 
 - Con dual paridad, puedes recuperar de una sola unidad fallida, pero ten en cuenta que no podrás sobrevivir a otra falla durante el proceso de reconstrucción.
 - Con una sola paridad, pierdes toda la redundancia, lo que significa que cualquier falla adicional en las unidades podría resultar en pérdida de datos.
+
 :::
 
 #### Eliminar discos de datos
@@ -686,7 +723,9 @@ Recuerda que si un disco está siendo accedido (por ejemplo, si estás abriendo 
 Cuando un disco está desactivado, su temperatura no se mostrará en el %%WebGUI|web-gui%%. Sin embargo, una vez que cualquier aplicación o usuario acceda a él, se activará automáticamente.
 
 :::tip
+
 Use los controles de activación para ahorrar energía y reducir el desgaste de sus discos. Recuerde que los discos que se están utilizando activamente permanecerán encendidos hasta que todas las tareas estén terminadas.
+
 :::
 
 ---
@@ -716,15 +755,19 @@ Para restablecer la configuración de tu arreglo:
 6. Inicia el arreglo en Modo Normal o %%Maintenance Mode|maintenance-mode%% para finalizar tus actualizaciones.
 
 :::important
+
 - **Preservación de datos:** Unraid intentará reconocer discos previamente usados y preservar datos donde sea posible.
 - **Impacto en la paridad:** Retirar un disco de datos siempre invalidará la paridad a menos que ese disco haya sido borrado antes de ser retirado.
 - **Reordenamiento de discos:** Cambiar el orden de los discos no afectará la paridad1, pero *puede* invalidar la paridad2.
+
 :::
 
 :::caution
-Cuando vea el botón **Iniciar**, hay una casilla de verificación etiquetada **La Paridad es Válida**. Solo marque esta casilla si está seguro de que es correcta o si un usuario experimentado de Unraid le ha aconsejado hacerlo durante la recuperación. Marcar incorrectamente esta opción puede llevar a la pérdida de datos.
 
-No use **Nueva Configuración** si su objetivo es reconstruir un disco. Realizar una Nueva Configuración borra el historial del arreglo necesario para una reconstrucción, y Unraid no ofrecerá reconstruir el disco después. Siga en su lugar el procedimiento de reconstrucción de discos.
+When you see the **Start** button, there is a checkbox labeled **Parity is Valid**. Only check this box if you are certain it is correct or if an experienced Unraid user has advised you to do so during recovery. Incorrectly checking this option can lead to data loss.
+
+Do not use **New Config** if your goal is to rebuild a disk. Performing a New Config clears the array history required for a rebuild, and Unraid will not offer to rebuild the disk afterward. Follow the disk rebuild procedure instead.
+
 :::
 
 #### Deshacer un restablecimiento
@@ -747,7 +790,9 @@ Unraid proporciona informes de estado que le ayudan a mantenerse al tanto de la 
 - **Sin datos históricos:** Si deseas ver qué ha ocurrido antes de un reinicio, tendrás que buscar en otro lugar, ya que estos informes no guardan estados pasados.
 
 :::important
+
 Recuerde que los informes de estado no incluyen datos %%SMART|smart%%. Los informes %%SMART|smart-report%% le ofrecen una vista más detallada sobre la salud individual de los discos. Así que, incluso si su informe de estado muestra que todo está bien, revisar los informes %%SMART|smart-report%% regularmente sigue siendo una buena idea para detectar cualquier problema potencial a tiempo.
+
 :::
 
 ---
@@ -838,7 +883,7 @@ Unraid proporciona diversos modos de escritura para gestionar las operaciones de
   :::
 </details>
 
-:::info\[Automated Soluciones
+:::info[Automated Soluciones
 
 - El modo **Auto** (una característica futura) activará la turbo escritura solo cuando todas las unidades ya estén girando.
 - Los plugins de la comunidad (busca "Turbo Write" en la pestaña de Apps) pueden ofrecer opciones mejoradas de automatización o programación.
@@ -848,14 +893,14 @@ Unraid proporciona diversos modos de escritura para gestionar las operaciones de
 Para cambiar el Modo de Escritura:
 
 1. Navega a ***Configuraciones → Configuraciones de Disco***.
-2. Ubica **Tunable (md\_write\_method)**.
+2. Ubica **Tunable (md_write_method)**.
 3. Elige tu modo preferido:
    - **Leer/Modificar/Escribir** (predeterminado)
    - **Reconstruct Write** (Turbo Write)
    - **Auto** (característica futura)
 4. Haz clic en **Aplicar** para confirmar tu elección.
 
-:::important\[Quick recapitulación
+:::important[Quick recapitulación
 
 - Usa **Turbo Write** cuando necesites velocidad, pero ten en cuenta el aumento del consumo de energía y la activación de las unidades.
 - Utiliza **Escritura en Caché** para un rendimiento óptimo, especialmente con unidades SSD o NVMe.
@@ -873,9 +918,9 @@ Cuando uses Unraid, la velocidad a la que puedes leer archivos está determinada
 
 - **HDD único típico:** 70–250 MB/s (depende del modelo de la unidad, la edad y la ubicación de los datos)
 - **SSD SATA típico:** 400–550 MB/s
-- **NVMe SSD (en un pool):** 250–7,000 MB/s (se aplican limitaciones de generación PCIe y red/PCIe; por ejemplo, red 10GbE se limita a \~1,100 MB/s)
+- **NVMe SSD (en un pool):** 250–7,000 MB/s (se aplican limitaciones de generación PCIe y red/PCIe; por ejemplo, red 10GbE se limita a ~1,100 MB/s)
 
-:::note\[Special casos
+:::note[Special casos
 
 - Si un disco está deshabilitado y sus datos están siendo reconstruidos, Unraid usará las unidades restantes junto con la información de paridad para recrear los datos. Durante este proceso, la velocidad de lectura puede reducirse a 30–60 MB/s o incluso menos, dependiendo del disco más lento en tu sistema.
 - Any ongoing operations in the array, such as a %%parity check|parity-check%% or rebuilding a drive, can also affect read performance. This is due to increased movement of the drive heads and overall contention for resources.
@@ -899,7 +944,7 @@ Los %%Cache pools|cache-pool%% en Unraid proporcionan ventajas significativas, p
 | **Complejidad en la recuperación** | Mayor riesgo de pérdida de datos; se necesitan herramientas %%BTRFS\|btrfs%%                                      | Mayor riesgo de pérdida de datos; se requieren herramientas %%ZFS\|zfs%%                                                                                               | Reconstrucciones más fáciles basadas en paridad             |
 | **Mejor para**                     | Aplicaciones, máquinas virtuales, escrituras frecuentes                                                           | Aplicaciones, máquinas virtuales, escrituras frecuentes, cargas de trabajo empresariales                                                                               | Almacenamiento a granel, bibliotecas de medios              |
 
-\**Las velocidades reales de NVMe dependen de la generación PCIe, el enfriamiento, y el ancho de banda de la red (p.ej., 10GbE se limita a \~1,100 MB/s).*
+\**Las velocidades reales de NVMe dependen de la generación PCIe, el enfriamiento, y el ancho de banda de la red (p.ej., 10GbE se limita a ~1,100 MB/s).*
 
 <h4>Pros de los pools de caché</h4>
 
@@ -959,7 +1004,7 @@ Si un disco falla durante la reconstrucción de otro, la reconstrucción se dete
 
 <h4>Disco de %%paridad dual|parity-drives%%</h4>
 
-If you have two %%parity drives|parity-drives%%, you have more options:
+Si tiene dos discos de %%paridad|parity-drives%%, tiene más opciones:
 
 - Puedes esperar a que la primera reconstrucción termine y luego ocuparte del segundo disco fallido.
 - O puedes detener la reconstrucción actual, reemplazar el segundo disco fallido y luego iniciar el arreglo para reconstruir ambos discos al mismo tiempo.
@@ -967,9 +1012,13 @@ If you have two %%parity drives|parity-drives%%, you have more options:
 Si la primera reconstrucción está casi terminada, generalmente es mejor dejar que termine. Si recién comenzó, podría ser más rápido reconstruir ambos juntos.
 
 :::warning
+
 Reconstruir discos pone mucha tensión en todas las unidades, lo que aumenta la probabilidad de nuevas fallas. Siempre verifica la salud del disco usando informes %%SMART|smart-report%% antes de comenzar una reconstrucción.
+
 :::
 
 :::info[Rebuild Tiempo]
+
 Prepárate para que el proceso de reconstrucción tome varias horas. El tiempo puede variar según el tamaño del disco y qué tan ocupado esté tu sistema. Los discos más grandes y los sistemas ocupados pueden tardar más.
+
 :::
