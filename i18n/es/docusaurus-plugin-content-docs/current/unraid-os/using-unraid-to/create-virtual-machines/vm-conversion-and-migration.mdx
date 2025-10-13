@@ -21,12 +21,12 @@ Al consolidar hardware, preservar sistemas heredados, o probar actualizaciones e
 
 ## Requisitos de hardware
 
-| Componente          | Requisito mínimo                                                                      | Recomendado para el mejor rendimiento                            |
-| ------------------- | ------------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
-| **CPU**             | 64 bits con virtualización por hardware (%%Intel VT-X\|intel-vt-x%%/%%AMD-V\|amd-v%%) | CPU multicore con VT-d/AMD-Vi para passthrough                   |
-| **RAM**             | 8 GB                                                                                  | 16 GB o más                                                      |
-| **Almacenamiento**  | SSD o NVMe %%cache pool\|cache-pool%% con espacio suficiente                          | Dedicated NVMe %%cache pool\|cache-pool%% for %%VM\|vm%% storage |
-| **Placa Base/BIOS** | %%UEFI\|uefi%% con virtualización habilitada                                          | %%UEFI\|uefi%% con %%IOMMU\|iommu%%/VT-d/AMD-Vi habilitado       |
+| Componente          | Requisito mínimo                                                                      | Recomendado para el mejor rendimiento                                                    |
+| ------------------- | ------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| **CPU**             | 64 bits con virtualización por hardware (%%Intel VT-X\|intel-vt-x%%/%%AMD-V\|amd-v%%) | CPU multicore con VT-d/AMD-Vi para passthrough                                           |
+| **RAM**             | 8 GB                                                                                  | 16 GB o más                                                                              |
+| **Almacenamiento**  | SSD o NVMe %%cache pool\|cache-pool%% con espacio suficiente                          | Pool dedicado de caché NVMe %%cache pool\|cache-pool%% para almacenamiento de %%VM\|vm%% |
+| **Placa Base/BIOS** | %%UEFI\|uefi%% con virtualización habilitada                                          | %%UEFI\|uefi%% con %%IOMMU\|iommu%%/VT-d/AMD-Vi habilitado                               |
 
 ---
 
@@ -45,14 +45,14 @@ Para convertir un disco físico a una %%VM|vm%%:
     3. Haga clic en la pestaña **Principal**.
     4. Inicie el **%%array|array%%** si no está ya en funcionamiento.
     5. Busque su disco bajo **Dispositivos no asignados**.
-    6. Tome nota de la letra del dispositivo (por ejemplo, `sdb`, `sdc`) y el tamaño del disco. Necesitará al menos este espacio libre en su **%%array|array%%** o **%%cache pool|cache-pool%%** para el nuevo %%virtual disk|vdisk%%.
+    6. Tome nota de la letra del dispositivo (por ejemplo, `sdb`, `sdc`) y el tamaño del disco. Necesitarás al menos este espacio libre en tu **%%array|array%%** o **%%cache pool|cache-pool%%** para el nuevo %%virtual disk|vdisk%%.
 
     <h4>Paso 2: Cree una nueva máquina virtual</h4>
 
     Consulte la guía de [Creación de sus propias máquinas virtuales](../create-virtual-machines/vm-setup.mdx#creating-your-own-virtual-machines), con las siguientes excepciones:
 
     - Configure el **BIOS** a **OVMF**.
-      Asegúrese de especificar el **ISO de los Controladores VirtIO** para [rendimiento óptimo](./overview-and-system-prep.mdx#set-up-virtualization-preferences).
+      Asegúrese de especificar el **ISO de los controladores VirtIO** para [rendimiento óptimo](./overview-and-system-prep.mdx#set-up-virtualization-preferences).
     - Guarde las imágenes %%VM|vm%% en un **%%cache pool|cache-pool%%** en lugar de un %%array|array%% para el [mejor rendimiento](./overview-and-system-prep.mdx#user-shares-for-virtualization).
 
     <h4>Paso 3: Convierta el disco físico a una imagen de %%disco virtual|vdisk%%</h4>
@@ -66,7 +66,7 @@ Para convertir un disco físico a una %%VM|vm%%:
     ```
 
     - **/dev/sdX**: Reemplace con la letra del dispositivo desde el paso 1 (por ejemplo, `/dev/sdb`)
-    - **\[vdisk\_share]**: El directorio compartido donde guardas tus imágenes de %%VM|vm%%.
+    - **\[vdisk\_share]**: El recurso compartido donde guardas tus imágenes de %%VM|vm%%
     - **\[vmname]**: El nombre que desea para su %%VM|vm%%
 
     **Desglose del comando:**
@@ -77,7 +77,7 @@ Para convertir un disco físico a una %%VM|vm%%:
     - `/dev/sdX`: La fuente es su disco físico.
     - `/mnt/user/[vdisk_share]/[vmname]/vdisk1.img`: Destino para la imagen del %%disco virtual|vdisk%%.
 
-    Espere a que la operación se complete. El archivo `.img` resultante será el disco principal para su %%VM|vm%%.
+    Espere a que se complete la operación. El archivo `.img` resultante será el disco principal para su %%VM|vm%%.
   </TabItem>
 
   <TabItem value="Windows" label="Windows">
@@ -85,7 +85,7 @@ Para convertir un disco físico a una %%VM|vm%%:
 
     - En la pestaña de %%VMs|vm%%, haga clic en el ícono de %%VM|vm%% y seleccione **Editar XML** desde el menú contextual.
 
-    - A continuación, desplácese hacia abajo en el XML y encuentre la etiqueta `<target>` para el `<disk>` que tiene un archivo `<source>` establecido en `vdisk1.img`. Debería verse así:
+    - A continuación, desplácese en el XML y busque la etiqueta `<target>` para el `<disk>` que tiene un archivo `<source>` establecido en `vdisk1.img`. Debería verse así:
 
       ```xml
 
@@ -125,7 +125,7 @@ Para convertir un disco físico a una %%VM|vm%%:
       - Navegue a la carpeta **Balloon**.
       - Dentro de esa carpeta, encuentre la subcarpeta para su **versión del sistema operativo Windows** (por ejemplo, `w8.1`).
       - Vaya a la subcarpeta **amd64**.
-      - Haz clic derecho en el archivo **balloon.inf** y selecciona **Instalar** desde el menú contextual. (Necesitas habilitar la visibilidad de la extensión de archivo para hacer esto.)
+      - Haga clic derecho en el archivo **balloon.inf** y seleccione **Instalar** en el menú contextual. (Necesita habilitar la visibilidad de la extensión de archivos para hacer esto.)
     - Repita estos pasos para cada una de las siguientes carpetas:
       - **NetKVM**
       - **vioserial**
@@ -133,11 +133,11 @@ Para convertir un disco físico a una %%VM|vm%%:
     - Después de haber instalado los controladores, navegue de regreso al CD-ROM virtual y abra la carpeta **guest-agent**.
     - Haga doble clic en **qemu-ga-x64.msi** para instalar el agente huésped %%QEMU|qemu%%/%%KVM|kvm%%.
 
-    <h4>Paso 3: Convertir el bus del disco de vuelta a VirtIO</h4>
+    <h4>Paso 3: Convertir el bus del disco de nuevo a VirtIO</h4>
 
     - Si su %%VM|vm%% está en funcionamiento, apáguelo.
-    - En la pestaña **VMs**, haga clic en el icono %%VM|vm%% y seleccione **Editar XML** del menú contextual.
-    - Ubique la sección `<disk>` para `vdisk1.img` y cambie `bus='ide'` de vuelta a `bus='virtio'` en la etiqueta `<target>`.
+    - En la pestaña **VMs**, haga clic en el icono de %%VM|vm%% y seleccione **Editar XML** en el menú contextual.
+    - Ubique la sección `<disk>` para `vdisk1.img` y cambie `bus='ide'` de nuevo a `bus='virtio'` en la etiqueta `<target>`.
     - Haga clic en **Actualizar** para guardar los cambios en la %%VM|vm%%.
     - ¡Ahora puede iniciar su %%máquina virtual|vm%% convertida!
   </TabItem>
@@ -147,8 +147,8 @@ Para convertir un disco físico a una %%VM|vm%%:
 
 ## Migración de un disco físico a una VM
 
-Puedes ejecutar una instalación de Windows directamente desde un disco físico en una máquina virtual (VM) de Unraid. Este método ayuda a migrar un sistema Windows existente sin convertirlo en una imagen de disco virtual. Para un recorrido visual, consulta el tutorial de Spaceinvader One:\
-[How to pass through hard drives, convert disks, and test performance in Unraid VMs (YouTube)](https://www.youtube.com/watch?v=QaB9HhpbDAI).
+Puede ejecutar una instalación de Windows directamente desde un disco físico en una máquina virtual Unraid (VM). Este método ayuda a migrar un sistema Windows existente sin convertirlo a una imagen de disco virtual. Para una guía visual, consulte el tutorial de Spaceinvader One:\
+[Cómo pasar a través de discos duros, convertir discos y probar el rendimiento en VMs de Unraid (YouTube)](https://www.youtube.com/watch?v=QaB9HhpbDAI).
 
 :::important[Choosing tu enfoque de migración]
 Hay dos maneras comunes de migrar una instalación de Windows a una %%VM|vm%% en Unraid:
@@ -163,7 +163,7 @@ Hay dos maneras comunes de migrar una instalación de Windows a una %%VM|vm%% en
 - Ventajas: Más flexibilidad, permite usar el disco como una compartición de Unraid o para instantáneas.
 - Desventajas: Requiere tiempo y espacio libre para el proceso de conversión.
 
-Elige el paso directo si deseas una migración simple o planeas arrancar el disco en modo dual. Opta por la conversión de imagen para una mejor portabilidad y opciones de respaldo.
+Elija la opción de paso directo si desea una migración simple o planea un arranque dual del disco. Opte por la conversión de imagen para una mejor portabilidad y opciones de copia de seguridad.
 :::
 
 :::note\[Prerequisites]
@@ -338,17 +338,17 @@ Para convertir una VM de Windows de %%Xen|xen-hvm%% a %%KVM|kvm%%, sigue estos p
 </details>
 
 <details>
-  <summary><strong>Paso 3: Desinstale los controladores GPLPV</strong> – Haga clic para expandir/colapsar</summary>
+  <summary><strong>Paso 1: Determine si su máquina virtual utiliza los controladores GPLPV de Xen</strong> – Haga clic para expandir/colapsar</summary>
 
   Después del reinicio, elimine todos los controladores GPLPV de %%Xen|xen-hvm%% de su sistema usando el proceso de eliminación manual completo documentado en el [Wiki del Proyecto Xen](https://wiki.xenproject.org/wiki/Xen_Windows_GPLPV).
 
-  :::caution
-  La eliminación de GPLPV requiere una edición extensa del registro y una eliminación manual de archivos. Siga las instrucciones de la Wiki del Proyecto Xen **exactamente** como están escritas, ya que los errores pueden causar inestabilidad en el sistema o fallos al iniciar.
+  :::tip
+  Si no estás usando controladores GPLPV, puedes omitir los siguientes pasos y continuar desde la sección de reinicio en modo %%KVM|kvm%%.
   :::
 </details>
 
 <details>
-  <summary><strong>Paso 4: Cree una nueva máquina virtual KVM</strong> – Haga clic para expandir/colapsar</summary>
+  <summary><strong>Paso 2: Prepare Windows para la eliminación de controladores GPLPV</strong> – Haga clic para expandir/colapsar</summary>
 
   1. Asegúrese de que el **administrador de VM** esté habilitado:
      - Vaya a ***Configuración → Administrador de VM***.
@@ -413,7 +413,7 @@ Para convertir una VM de Windows de %%Xen|xen-hvm%% a %%KVM|kvm%%, sigue estos p
 </details>
 
 <details>
-  <summary><strong>Paso 6: Finalice la configuración de la VM</strong> – Haga clic para expandir/collapsar</summary>
+  <summary><strong>Paso 4: Cree una nueva máquina virtual KVM</strong> – Haga clic para expandir/colapsar</summary>
 
   1. Edite la VM:
      - Elimine el %%disco virtual secundario temporal|vdisk%% haciendo clic en el icono rojo menos.
@@ -429,11 +429,12 @@ Para convertir una VM de Windows de %%Xen|xen-hvm%% a %%KVM|kvm%%, sigue estos p
      - Cambie el `bus` del disco principal de `ide` a `virtio`.
      - Haga clic en **Actualizar** y reinicie la VM.
 
-  :::tip[Solución de problemas del controlador]
-  Si nota errores en los dispositivos después de la migración:
+  :::tip[¿Por qué el disco temporal?]
+  El disco temporal de 1MB fuerza a que Unraid asigne el disco principal como `hda` (IDE) en lugar de `vda` (%%VirtIO|virtio%%), permitiendo que Windows arranque sin controladores %%VirtIO|virtio%% inicialmente. Este disco temporal se eliminará después de la instalación del controlador.
+  :::
 
   1. Reinstale los controladores %%VirtIO|virtio%% desde el ISO.
   2. Busque actualizaciones de Windows, que pueden proporcionar controladores más recientes.
   3. Visite la página de [Controladores VirtIO de Red Hat](https://docs.fedoraproject.org/en-US/quick-docs/creating-windows-virtual-machines-using-virtio-drivers/) para obtener las versiones más recientes.
-  :::
+     :::
 </details>

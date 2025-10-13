@@ -35,7 +35,7 @@ Auch wenn Unraid Schutz gegen verschiedene Hardwareausfälle bietet, sind zuverl
 Benutzer sollten ihre Risikotoleranz und Backup-Anforderungen bewerten, aber die Nutzung von Cloud-Integration und Automatisierung ist ein guter Ausgangspunkt für die meisten Unraid-Benutzer.
 
 :::tip[Modern Backup-Strategie]
-Mit Unraid 7.0 und höher, aktivieren Sie [Unraid Connect](../../../unraid-connect/overview-and-setup.mdx) für automatische Cloud-Backups Ihres Flash-Geräts und Ihrer Konfiguration. Erwägen Sie die Verwendung von Duplicati, rclone oder ähnlichen Tools für wichtige Dateien und Freigaben, um geplante Backups auf lokale, entfernte oder Cloud-Ziele zu erstellen. Testen Sie immer Ihren Wiederherstellungsprozess, um sicherzustellen, dass Ihre Backups im Bedarfsfall funktionieren.
+Mit Unraid 7.0 und höher aktivieren Sie [Unraid Connect](../../../unraid-connect/overview-and-setup.mdx) für automatisierte Cloud-Backups Ihres Flash-Geräts und Ihrer Konfiguration. Erwägen Sie die Nutzung von Duplicati, rclone oder ähnlichen Tools für wichtige Dateien und Freigaben, um geplante Backups an lokalen, entfernt zugänglichen oder Cloud-Zielen zu erstellen. Testen Sie immer Ihren Wiederherstellungsprozess, um sicherzustellen, dass Ihre Backups im Bedarfsfall funktionieren.
 :::
 
 :::info[Proactive Überwachung und Unterstützung]
@@ -49,7 +49,7 @@ Mit Unraid 7.0 und höher, aktivieren Sie [Unraid Connect](../../../unraid-conne
 ## Dateisysteme reparieren
 
 :::caution
-Verwenden Sie diese Anweisungen streng für Datenlaufwerke mit Dateisystemkorruption. Wenden Sie sie nicht auf das Paritätslaufwerk, Hardwareprobleme oder fehlende Laufwerke an.
+Verwenden Sie diese Anweisungen ausschließlich für Datenlaufwerke mit Dateisystembeschädigung. Wenden Sie sie nicht auf das Paritätslaufwerk, Hardwareprobleme oder fehlende Laufwerke an.
 
 - Dateisystem-Reparatur-Tools sind nur für die Behebung von Daten- oder Cache-Laufwerken vorgesehen, die Dateisystem- oder Mount-Fehler aufweisen.
 - Das Paritätslaufwerk hat **kein** Dateisystem. Das Ausführen eines Reparaturtools auf dem Paritätslaufwerk kann es beschädigen und zu irreversiblen Datenverlusten führen.
@@ -68,11 +68,11 @@ Bei der Verwendung des **%%WebGUI|web-gui%%** werden Gerätepfade automatisch ve
 :::warning
 Führen Sie niemals Dateisystem-Reparaturtools auf ganzen Laufwerken (wie `/dev/sdj`) aus; verwenden Sie immer Partition-Pfade (wie `/dev/sdj1` oder von Unraid verwaltete `/dev/mdXp1`).
 
-- For %%array|array%% drives, always use the Unraid-managed device (such as `/dev/md5p1`) to **preserve %%parity|parity%% protection**.
+- Für %%array|array%% Laufwerke, verwenden Sie immer das von Unraid verwaltete Gerät (z. B. `/dev/md5p1`), um den **%%parity|Paritätsschutz%% zu gewährleisten**.
 - Wenn Sie die rohe Partition verwenden (zum Beispiel `/dev/sdj1`), wird %%parity|parity%% nicht aktualisiert, was sie ungültig macht.
 :::
 
-- Always use `/dev/mdXp1` for %%array|array%% drives to maintain valid %%parity|parity%%.
+- Verwenden Sie immer `/dev/mdXp1` für %%array|array%% Laufwerke, um die gültige %%parity|Parität%% zu erhalten.
 - For non-%%array|array%% drives (like %%cache|cache%%-only devices), use the direct partition path, e.g., `/dev/sdj1`.
 
 ### Die richtige Reparaturmethode wählen
@@ -88,7 +88,7 @@ Für die meisten Benutzer ist die empfohlene Methode:
 
 Wenn Sie die Befehlszeile verwenden möchten, immer:
 
-- Identify the correct Unraid-managed partition (`/dev/mdXp1`) for %%array|array%% drives.
+- Identifizieren Sie die korrekte, von Unraid verwaltete Partition (`/dev/mdXp1`) für %%array|array%% Laufwerke.
 - Verwenden Sie die geeigneten Reparatur-Tools für Ihr Dateisystem:
   - **XFS:** `xfs_repair`
   - **BTRFS:** `btrfs scrub`
@@ -101,7 +101,7 @@ Die falsche Verwendung eines Reparaturtools kann weiteren Schaden verursachen. S
 
 ## Checken und Reparieren von Laufwerken im WebGUI
 
-This section covers how to diagnose and repair file system corruption on data drives using Unraid's built-in tools. File system issues can occur after unclean shutdowns, power failures, or hardware problems, but Unraid provides safe repair methods that maintain your %%parity|parity%% protection while fixing the underlying problems.
+Dieser Abschnitt erläutert, wie Sie Dateisystembeschädigungen auf Datenlaufwerken mit den integrierten Tools von Unraid diagnostizieren und reparieren können. Dateisystemprobleme können nach unsauberen Abschaltungen, Stromausfällen oder Hardwareproblemen auftreten, aber Unraid bietet sichere Reparaturmethoden, die Ihren %%parity|Paritätsschutz%% bewahren, während die zugrunde liegenden Probleme behoben werden.
 
 ### Vorbereiten des Tests
 
@@ -210,8 +210,8 @@ Losing your %%array|array%% configuration can be stressful, but it doesn't mean 
 
 Folgendes sollten Sie tun, wenn Sie sich in dieser Situation befinden:
 
-1. In the %%WebGUI|web-gui%%, assign all available drives as data drives. Don't assign any as %%parity|parity%% yet.
-2. Start the %%array|array%%. Drives previously used for %%parity|parity%% will appear as *unmountable* because they don't contain a file system.
+1. Weisen Sie im %%WebGUI|Web-GUI%% alle verfügbaren Laufwerke als Datenlaufwerke zu. Weisen Sie zunächst keine als %%parity|Parität%% zu.
+2. Starten Sie das %%array|array%%. Laufwerke, die zuvor für die %%parity|Parität%% verwendet wurden, erscheinen als *nicht mountierbar*, da sie kein Dateisystem enthalten.
 3. Write down or take a screenshot of the serial numbers for these unmountable drives - these are your %%parity|parity%% drives.
 4. Stoppen Sie das %%array|array%%.
 5. Gehen Sie zu ***Tools → Neue Konfiguration*** und wählen Sie die Option, aktuelle Zuordnungen beizubehalten.

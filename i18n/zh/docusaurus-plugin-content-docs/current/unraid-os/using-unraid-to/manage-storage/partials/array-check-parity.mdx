@@ -1,32 +1,32 @@
-A %%parity check|parity-check%% is essential when your array includes at least one assigned parity device. During this process, all data disks are read simultaneously. The system recalculates the parity and compares it to the information stored on your %%parity disk(s)|parity-drives%%.
+当您的阵列中至少包含一个指定的奇偶校验设备时，进行 %%parity check|奇偶校验检查%% 是必不可少的。在此过程中，所有数据磁盘同时被读取。系统重新计算奇偶校验并将其与存储在您的 %%parity disk(s)|奇偶校验磁盘%% 上的信息进行比较。
 
 <details>
   <summary><strong>深入：奇偶校验同步与奇偶校验检查 - 有何区别？</strong> - 点击展开/折叠</summary>
 
-  A %%parity|parity%% sync reads all data disks and creates %%parity|parity%% from scratch, saving the results on the %%parity drives|parity-drives%%. This process typically happens when you add or replace a %%parity drives|parity-drives%% or after significant configuration changes.
+  %%parity|奇偶校验%% 同步会读取所有数据磁盘并从零开始创建 %%parity|奇偶校验%% ，将结果保存到 %%parity drives|奇偶校验磁盘%% 上。通常在您添加或更换 %%parity drives|奇偶校验磁盘%% 或进行重大配置更改后，此过程会发生。
 
-  A %%parity check|parity-check%% reads all data disks along with the %%parity drives|parity-drives%%. It recalculates the %%parity|parity%% values and compares them to the stored values. There are two modes for running a %%parity check|parity-check%%:
+  %%parity check|奇偶校验检查%% 会读取所有数据磁盘以及 %%parity drives|奇偶校验磁盘%% 。它重新计算 %%parity|奇偶校验%% 值并与存储值进行比较。有两种模式来运行 %%parity check|奇偶校验检查%%：
 
-  - **Correcting (CORRECT):** If it finds a mismatch, it updates the %%parity disk|parity-drives%% and logs the event.
+  - **修正 (CORRECT)：** 如果发现不匹配，它会更新 %%parity disk|奇偶校验磁盘%% 并记录事件。
   - **非校正（NOCORRECT）：** 仅记录发现的错误而不更新校验。
 
-  To avoid excessive logging, only the first 100 addresses with errors are reported during a %%parity check|parity-check%%. These mismatches are referred to as **sync errors** and indicate where the parity does not align with the data, typically due to issues such as sudden power losses or hardware problems. Each sync error is counted in 4KiB blocks - this is the system's I/O unit size (known as the Linux page size).
+  为避免过多日志记录，在 %%parity check|奇偶校验检查%% 过程中仅报告前 100 个错误地址。这些不匹配被称为 **同步错误** ，表明奇偶校验与数据不一致，通常由于如突然断电或硬件问题所致。每个同步错误按 4KiB 块计数 - 这是系统的 I/O 单元大小（称为 Linux 页大小）。
 </details>
 
 <details>
   <summary><strong>深入：奇偶校验和阵列磁盘中的“有效”是什么意思？</strong> - 点击展开/折叠</summary>
 
-  A **valid %%parity disk|parity-drives%%** indicates that after the last successful %%parity|parity%% sync, Unraid recognized the %%parity|parity%% as "good," meaning it's suitable for data recovery if a disk fails. The "valid" status applies to every disk in the array, not just the %%parity|parity%% one. If all disks except one are valid, Unraid can reconstruct the missing or failed disk's data using %%parity|parity%%.
+  **有效的 %%parity disk|奇偶校验磁盘%%** 表示在最后一次成功 %%parity|奇偶校验%% 同步后，Unraid 认定该 %%parity|奇偶校验%% 是 "好" 的，意味着如果磁盘出现故障，它适合数据恢复。"有效" 状态适用于阵列中的每个磁盘，而不仅仅是 %%parity|奇偶校验%% 。如果除一个之外的所有磁盘都是有效的，Unraid 可以使用 %%parity|奇偶校验%% 重建丢失或故障磁盘的数据。
 
-  Unraid maintains the %%parity disk|parity-drives%%'s "valid" status even when some sync errors occur following a non-correcting check. This ensures that you can still recover a failed disk. If the %%parity|parity%% were marked as invalid, you would risk having two invalid disks after just one additional failure, leading to potential data loss.
+  即使在非修正检查后发生一些同步错误，Unraid 仍保持 %%parity disk|奇偶校验磁盘%% 的 "有效" 状态。这样您仍然可以恢复故障磁盘。如果 %%parity|奇偶校验%% 被标记为无效，您将在仅发生一次额外故障后面临两个无效磁盘的风险，从而导致潜在数据丢失。
 </details>
 
-While a %%parity check|parity-check%% is in progress, you can still use the array. However, be aware that performance may slow down due to drive contention, as both file operations and the check will compete for resources.
+在 %%parity check|奇偶校验检查%% 进行时，您仍然可以使用阵列。然而，请注意由于磁盘争用，性能可能会变慢，因为文件操作和检查都在争夺资源。
 
-Normally, if the %%parity check|parity-check%% identifies errors, Unraid will update the %%parity disk|parity-drives%% to align with the computed data and increment the Sync Errors counter.
+通常，如果 %%parity check|奇偶校验检查%% 识别到错误，Unraid 将更新 %%parity disk|奇偶校验磁盘%% 以与计算数据对齐并增加同步错误计数器。
 
 :::tip
-如果您希望在不进行修正的情况下运行检查，只需在开始前取消选中**写入对奇偶校验的修正**即可。这样，错误将被报告但不会被修正。
+如果您希望在不进行更正的情况下运行检查，只需在开始前取消勾选**将更正写入校验**，这样错误会被报告，但不会被修复。
 :::
 
 :::important
@@ -48,8 +48,8 @@ When %%parity|parity%% errors occur, either the %%parity drives|parity-drives%% 
 
 If your %%parity check|parity-check%% reveals errors:
 
-1. **Investigate the problem:** Start by checking %%SMART reports|smart-report%%, which provide detailed information about your drives' health. Look for any signs of disk or connection problems.
-2. **Seek help from our forums:** If you cannot resolve the issue on your own, consider reaching out for advice on the Unraid forums. The community can offer valuable insights and suggestions based on their experiences.
+1. **调查问题：** 首先检查%%SMART报告|smart-report%%，它提供了关于您驱动器健康的详细信息。寻找任何磁盘或连接问题的迹象。
+2. **从我们的论坛寻求帮助：** 如果您无法自行解决问题，请考虑在 Unraid 论坛上寻求建议。社区可以根据他们的经验提供宝贵的见解和建议。
 3. **Run another check:** After you've addressed any hardware issues, running another %%parity check|parity-check%% is a good idea to ensure everything is back in order.
 
 :::info[Rebuild 时间]

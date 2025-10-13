@@ -11,7 +11,7 @@ Sélectionner le bon système de fichiers pour votre %%array|array%% Unraid ou %
 
 | Système de fichiers | Protection des données                                                                | Efficacité de l'espace                  | Fonctionnalités avancées                                         | Meilleur cas d'utilisation                                       |
 | ------------------- | ------------------------------------------------------------------------------------- | --------------------------------------- | ---------------------------------------------------------------- | ---------------------------------------------------------------- |
-| %%XFS\|xfs%%        | Aucune redondance intégrée                                                            | 100%                                    | Résistant à la corruption                                        | Par défaut pour les disques d'une baie ; haute fiabilité         |
+| %%XFS\|xfs%%        | Aucune redondance intégrée                                                            | 100 %                                   | Résistant à la corruption                                        | Par défaut pour les disques d'une baie ; haute fiabilité         |
 | %%ZFS\|zfs%%        | %%RAIDZ1\|raidz1%%/%%RAIDZ2\|raidz2%%/%%RAIDZ3\|raidz3%%, miroirs, etc.               | Varie selon le niveau de %%RAID\|raid%% | %%Checksums\|checksum%%, %%Snapshots\|snapshot%%, %%RAID\|raid%% | Baies multi-appareils, %%VMs\|vm%%, Docker, utilisateurs avancés |
 | %%BTRFS\|btrfs%%    | %%RAID 0\|raid0%%/%%RAID 1\|raid1%%/%%10\|raid10%%/%%5\|raid5%%/%%6\|raid6%%, miroirs | Varie selon le niveau de %%RAID\|raid%% | %%Checksums\|checksum%%, %%Snapshots\|snapshot%%, %%RAID\|raid%% | Baies multi-appareils, mélange SSD/HDD, baies flexibles          |
 
@@ -51,39 +51,41 @@ import FsRepairCliZfs from './partials/fs-repair-cli-zfs.mdx';
 - Pour les disques de transfert ou les appareils externes, il est recommandé d'utiliser le plugin **[Unassigned Devices](#using-the-unassigned-devices-plugins)**, qui prend en charge des systèmes de fichiers supplémentaires.
 :::
 
-:::tip[Still besoin d'aide pour choisir?]
+:::tip\[Still besoin d'aide pour choisir?
+
 - **Pour les disques de baie :** %%XFS|xfs%% est généralement le meilleur choix pour la plupart des utilisateurs.
 - **Pour des performances élevées ou des fonctionnalités avancées :** Choisissez %%ZFS|zfs%% ou %%BTRFS|btrfs%% pour %%cache pools|cache-pool%% ou des configurations multi-appareils.
 - **Pour les baies mixtes ou en expansion :** %%BTRFS|btrfs%% est idéal si vous voulez utiliser différentes tailles de disques ou ajouter ou retirer facilement des appareils.
 
 Si vous êtes incertain, commencer avec les paramètres par défaut est une bonne approche : utilisez %%XFS|xfs%% pour les disques %%array|array%% et %%BTRFS|btrfs%% pour les %%cache pools|cache-pool%%.
+
 :::
 
 ---
 
 ## Définir un type de système de fichiers
 
-Lorsque vous ajoutez un nouveau lecteur à Unraid, vous pouvez sélectionner le type de système de fichiers qui répond le mieux à vos besoins. Le système de fichiers détermine comment les données sont organisées et protégées sur le disque.
+Lors de l'ajout d'un nouveau disque à Unraid, vous pouvez sélectionner le type de système de fichiers qui correspond le mieux à vos besoins. Le système de fichiers détermine comment les données sont organisées et protégées sur le disque.
 
 Pour définir le type de système de fichiers :
 
 1. **Définir le paramètre par défaut globalement** :
    - Accédez à ***Settings → Disk Settings*** pour définir le système de fichiers par défaut pour les nouveaux disques %%array|array%% uniquement.
    - Unraid utilise par défaut %%XFS|xfs%% pour les disques %%array|array%%.
-   - **Note :** Il n'y a actuellement pas de paramètre par défaut global pour %%cache pools|cache-pool%%. Ils par défautraient toujours à %%BTRFS|btrfs%% si laissés en "auto".
+   - **Remarque :** Il n'y a actuellement aucun paramètre par défaut global pour les %%cache pools|cache-pool%%. Ils seront toujours par défaut sur %%BTRFS|btrfs%% si laissés sur « auto ».
 
 2. **Définir le système de fichiers pour un disque individuel** :
    - Arrêtez le %%array|array%%.
    - Cliquez sur le lecteur dans l'onglet **Principal**.
-   - Choisissez votre type de système de fichiers souhaité dans le menu déroulant.
+   - Choisissez le type de système de fichiers souhaité dans le menu déroulant.
    - Si vous sélectionnez **auto**, Unraid utilisera le paramètre par défaut global.
    - Pour les %%cache pools|cache-pool%% multi-appareils, seuls %%BTRFS|btrfs%% ou %%ZFS|zfs%% sont pris en charge.
 
 ---
 
-## Créer un système de fichiers (formatter)
+## Création d'un système de fichiers (formatage)
 
-Avant d'utiliser un nouveau disque dans Unraid, vous devez le formater avec le système de fichiers sélectionné. **Rappelez-vous, le formatage effacera tout le contenu existant sur le lecteur.**
+Avant d'utiliser un nouveau disque dans Unraid, vous devez le formater avec le système de fichiers choisi. **Souvenez-vous, le formatage effacera tout le contenu existant sur le disque.**
 
 Pour commencer avec le formatage :
 
@@ -91,8 +93,8 @@ Pour commencer avec le formatage :
 2. **Identifier les disques non montables** : Les disques qui ne sont pas reconnus apparaîtront comme **non montables**.
 3. **Vérifiez la sélection des disques** : Vérifiez que tous les disques non montables sont ceux que vous souhaitez formater.
 4. **Confirmez et formatez** : Cochez la case pour confirmer, lisez attentivement la boîte de dialogue d'avertissement, et cliquez sur **Formater**.
-5. **Surveillez le processus :** Le processus de formatage commencera. Pour les nouveaux disques, Unraid réécrira d'abord la table des partitions.
-6. **Attendez la fin :** Le formatage prend généralement quelques minutes. Si vous ne voyez pas de progrès, rafraîchissez l'onglet **Principal**.
+5. **Surveillez le processus** : Le processus de formatage va démarrer. Pour les nouveaux disques, Unraid réécrira d'abord la table de partition.
+6. **Attendez la fin** : Le formatage prend généralement quelques minutes. Si vous ne voyez pas de progression, rafraîchissez l'onglet **Principal**.
 
 Une fois le formatage terminé, le disque est prêt à stocker des fichiers.
 
@@ -103,30 +105,30 @@ Une fois le formatage terminé, le disque est prêt à stocker des fichiers.
 Vous pourriez vouloir changer le type de système de fichiers sur un disque spécifique pour profiter de nouvelles fonctionnalités ou pour assurer la compatibilité avec vos autres disques.
 
 :::warning
-Changer le type de système de fichiers **effacera toutes les données existantes** sur le lecteur. Sauvegardez toujours les fichiers importants avant de commencer.
+Changer le type de système de fichiers **effacera toutes les données existantes** sur le disque. Pensez toujours à sauvegarder les fichiers importants avant de commencer.
 :::
 
 Pour changer le type de système de fichiers sur un disque particulier :
 
 1. **Arrêtez la baie** : Commencez par arrêter votre %%array|array%% pour vous assurer qu'aucune opération n'est en cours pendant le changement.
 2. **Sélectionnez le disque** : Dans l'onglet **Principal**, cliquez sur le disque pour lequel vous voulez changer le format.
-3. **Choisissez le nouveau système de fichiers :** Dans le menu déroulant, sélectionnez le format de système de fichiers souhaité. Si vous avez plusieurs lecteurs à changer, répétez cette étape pour chacun.
+3. **Choisissez le nouveau système de fichiers** : Dans le menu déroulant, sélectionnez le format de système de fichiers souhaité. Si vous avez plusieurs disques à modifier, répétez cette étape pour chacun.
 4. **Démarrez la baie** : Une fois que vous avez sélectionné les nouveaux systèmes de fichiers, redémarrez votre %%array|array%%.
-5. **Formatez les lecteurs non montables :** L'onglet **Principal** affichera une option pour formater les lecteurs non montables. Prenez un moment pour vérifier la liste et assurez-vous que seuls les lecteurs que vous souhaitez changer y figurent.
+5. **Formater les disques non montables** : L'onglet **Principal** affichera une option pour formater les disques non montables. Prenez un moment pour vérifier la liste et assurez-vous que seuls les disques que vous souhaitez modifier sont inclus.
 6. **Confirmez et formatez** : Cochez la case pour confirmer le changement, puis cliquez sur le bouton **Formater** pour continuer.
-7. **Attendez que le processus se termine :** Le formatage prend généralement seulement quelques minutes. Si vous remarquez que le statut ne se met pas à jour, rafraîchissez l'onglet **Principal** pour vérifier l'avancement.
+7. **Attendez la fin du processus** : Le formatage prend généralement juste quelques minutes. Si vous constatez que le statut ne se met pas à jour, vous pouvez rafraîchir l'onglet **Principal** pour vérifier la progression.
 
-Si vous rencontrez des problèmes, n'hésitez pas à visiter les [forums Unraid](https://forums.unraid.net/). Joignez votre fichier zip de diagnostics système (trouvé sous ***Outils → Diagnostics***) pour obtenir de l'aide.
+Si vous rencontrez des problèmes, n'hésitez pas à visiter les [forums Unraid](https://forums.unraid.net/). Joignez votre fichier de diagnostic système zip (trouvé sous ***Outils → Diagnostics***) pour obtenir de l'aide.
 
 ---
 
 ## Conversion vers un nouveau type de système de fichiers
 
 :::important
-À partir d'Unraid 7.2, la page ***Principale*** avertira si des disques de l'array ou du pool sont formatés avec des systèmes de fichiers hérités.
+À partir d'Unraid 7.2, la page ***Principale*** avertira si des disques de l'array ou du pool sont formatés dans des systèmes de fichiers obsolètes :
 
 - Tous les disques formatés en ReiserFS doivent être migrés vers un autre système de fichiers dès que possible, car ils ne seront plus utilisables dans une future version d'Unraid (probablement Unraid 7.3).
-- Tous les disques formatés dans une version antérieure de XFS doivent être migrés avant 2030.
+- Tous les disques formatés dans une ancienne version de XFS doivent être migrés avant 2030.
 :::
 
 Ce processus est particulièrement courant pour les utilisateurs passant du ReiserFS obsolète (utilisé dans les anciennes versions d'Unraid) au %%XFS|xfs%% ou au %%BTRFS|btrfs%%, mais il s'applique à toute conversion de système de fichiers.
@@ -315,7 +317,7 @@ Si un lecteur est à la fois non montable et désactivé ('x' rouge), exécutez 
 Réparer le système de fichiers prend généralement moins de temps que de reconstruire le lecteur, vous permettant d'accéder à vos données sans rien perdre. Rappelez-vous, reconstruire un lecteur ne résout **pas** les problèmes de système de fichiers ; il assure simplement que le lecteur physique correspond à celui émulé, en conservant les problèmes existants.
 
 :::important[Why la parité n'est-elle pas suffisante?]
-Bien que la %%parité|parity%% aide à récupérer un lecteur défaillant, elle ne peut pas résoudre les problèmes de système de fichiers. Si le système de fichiers est corrompu, la %%parité|parity%% ne fera que répliquer cette corruption sur le nouveau lecteur.
+Bien que la %%parité|parity%% aide à récupérer un disque défectueux, elle ne peut pas résoudre les problèmes de système de fichiers. Si le système de fichiers est corrompu, la %%parité|parity%% ne fera que reproduire cette corruption sur le nouveau disque.
 
 Si vous n'êtes pas sûr :
 
