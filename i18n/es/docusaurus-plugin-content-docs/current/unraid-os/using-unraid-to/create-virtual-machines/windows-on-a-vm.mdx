@@ -15,9 +15,11 @@ import WindowsUpgradeCleanInstall from './partials/windows-upgrade-clean-install
 Windows es uno de los sistemas operativos invitados más populares para los usuarios de Unraid, especialmente para juegos, productividad y soporte de aplicaciones heredadas. Aquí están las consideraciones esenciales para ejecutar Windows %%VM|vm%%.
 
 :::caution[Before comienza]
+
 - Microsoft terminó el soporte para Windows 7 en enero de 2020, Windows 8.1 en enero de 2023 y Windows 10 en octubre de 2025. Use Windows 11 (o posterior) o Server 2022 (o posterior) para recibir actualizaciones de seguridad continuas.
 - Siempre pruebe la estabilidad del %%VM|vm%% antes de activar su licencia de Windows.
 - For %%GPU passthrough|gpu-passthrough%%, use %%OVMF|ovmf%% (%%UEFI|uefi%%) BIOS with Windows 11 or newer.
+
 :::
 
 ### Configuraciones compatibles
@@ -48,19 +50,23 @@ Para instalar o actualizar controladores:
 </Tabs>
 
 :::tip
-Usando Unraid 7 o posterior, puede inyectar automáticamente controladores %%VirtIO|virtio%% durante la instalación de Windows. Habilite esto en ***Configuración de VM → Opciones Avanzadas***.
+
+Using Unraid 7 or later, you can automatically inject %%VirtIO|virtio%% drivers during the Windows installation. Enable this in ***VM Settings → Advanced Options***.
+
 :::
 
 ---
 
 ### Configuración de hibernación
 
-La hibernación le permite guardar todo el estado de su %%VM|vm%% de Windows, incluidas las aplicaciones y documentos abiertos, en el disco. Esto le permite apagar el %%VM|vm%% sin perder ningún trabajo. Cuando reanuda, Windows restablece todo exactamente como lo dejó, omitiendo el proceso de arranque normal. Esta función es útil cuando necesita reiniciar o apagar su host de Unraid o desea ahorrar energía mientras mantiene intacto el estado de su %%VM|vm%%.
+Hibernation lets you save your entire Windows %%VM|vm%% state - including open applications and documents - to disk. This allows you to power off the %%VM|vm%% without losing any work. When you resume, Windows restores everything exactly as you left it, skipping the normal boot process. This feature is handy when you need to reboot or power down your Unraid host or want to save energy while keeping your %%VM|vm%%'s state intact.
 
-:::note[Benefits de la hibernación]
+:::note[Benefits of hibernation]
+
 - Ahorre energía apagando un %%VM|vm%% inactivo sin perder progreso
 - Reanude el trabajo rápidamente después del mantenimiento del host o de las actualizaciones
 - Reduzca el desgaste de los SSD en comparación con los apagados y reinicios completos frecuentes
+
 :::
 
 To use hibernation reliably, you must install the %%QEMU|qemu%% %%Guest Agent|guest-agent%% in your Windows %%VM|vm%%. This agent allows Unraid to communicate with the %%VM|vm%% for advanced operations like hibernation, shutdown, and live statistics reporting.
@@ -71,7 +77,7 @@ To use hibernation reliably, you must install the %%QEMU|qemu%% %%Guest Agent|gu
   1. Inicie su %%VM|vm%% de Windows con el ISO de controladores %%VirtIO|virtio%% montado.
   2. Abra el **Explorador de archivos** y navegue a los medios de controladores %%VirtIO|virtio%%.
   3. Abra la carpeta `guest-agent`.
-  4. Ejecute `qemu-ga-x64.msi` para instalar el agente. (Puede que vea brevemente un cuadro de comando; no aparecerá un cuadro de diálogo de confirmación.)
+  4. Run `qemu-ga-x64.msi` to install the agent. (You may briefly see a command box; no confirmation dialog will appear.)
 </details>
 
 <details>
@@ -86,19 +92,21 @@ To use hibernation reliably, you must install the %%QEMU|qemu%% %%Guest Agent|gu
   La opción **Hibernar** ahora aparecerá en el menú de energía de Windows.
 </details>
 
-:::important[What ¿si falla la hibernación?]
+:::important[What if hibernation fails?]
+
 If your %%VM|vm%% fails to hibernate or resume properly, you may lose unsaved work or face a failed restore. Always save important data before hibernating. If issues persist, ensure the %%QEMU|qemu%% %%Guest Agent|guest-agent%% is installed and updated, and check the Windows event log for errors.
+
 :::
 
 ---
 
 ### Ajuste de rendimiento
 
-Optimizar su %%VM|vm%% de Windows puede mejorar la capacidad de respuesta, reducir el uso del disco y evitar problemas comunes con el passthrough de dispositivos o el apagado. Estos ajustes son opcionales y se pueden aplicar según sea necesario.
+Optimizing your Windows %%VM|vm%% can improve responsiveness, reduce disk usage, and avoid common issues with device passthrough or shutdown. These adjustments are optional and can be applied as needed.
 
 #### Desactivar inicio rápido
 
-Desactivar el inicio rápido puede ayudar a prevenir problemas con el passthrough de dispositivos. Asegura que el hardware de su %%VM|vm%% se inicialice correctamente cada vez que se inicia. Aunque esta configuración está diseñada para PCs físicas, en un entorno virtual, a menudo puede causar más problemas que beneficios.
+Disabling fast startup can help prevent issues with device passthrough. It ensures your %%VM|vm%% hardware initializes correctly every time it boots. While this setting is designed for physical PCs, in a virtual environment, it can often cause more problems than benefits.
 
 <details>
   <summary><strong>Cómo desactivar el inicio rápido</strong> - Haz clic para expandir/colapsar</summary>
@@ -112,14 +120,14 @@ Desactivar el inicio rápido puede ayudar a prevenir problemas con el passthroug
 
 #### Desactivar hiberfil.sys
 
-La hibernación en Windows crea un gran archivo oculto llamado `hiberfil.sys`. Este archivo puede consumir un espacio significativo en el disco e incrementar la actividad del disco en su %%VM|vm%%. Si no depende de la hibernación, desactivarla liberará espacio en almacenamiento y reducirá la actividad de E/S innecesaria.
+Hibernation in Windows creates a large hidden file called `hiberfil.sys`. This file can consume significant disk space and increase disk activity in your %%VM|vm%%. If you don't rely on hibernation, disabling it will free up storage and reduce unnecessary I/O activity.
 
 <details>
   <summary><strong>Cómo desactivar la hibernación y eliminar hiberfil.sys</strong> - Haz clic para expandir/colapsar</summary>
 
   1. Haga clic derecho en el botón **Inicio** y seleccione **Terminal de Windows (Admin)** o **Símbolo del sistema (Admin)**.
   2. Escriba: `powercfg /h off`
-  3. Presione Enter y reinicie su %%VM|vm%%. El archivo `hiberfil.sys` se eliminará de su unidad C:.
+  3. Press Enter and reboot your %%VM|vm%%. The `hiberfil.sys` file will be removed from your C:\ drive.
 </details>
 
 #### Desactivar la indexación de Windows
@@ -136,7 +144,7 @@ Windows Search indexing continuously scans your %%virtual machine|vm%%'s storage
 
 #### Desactivar desfragmentación automática del disco
 
-Windows está diseñado para desfragmentar automáticamente los discos duros físicos según un programa regular. En un %%VM|vm%% - especialmente cuando se utiliza almacenamiento SSD o %%vDiscos|vdisk%% provisionados de forma delgada - la desfragmentación automática es innecesaria y también puede reducir la vida útil del disco y degradar el rendimiento.
+Windows is designed to defrag physical hard drives on a regular schedule automatically. On a %%VM|vm%% - especially when using SSD storage or thin-provisioned %%vDisks|vdisk%% - automatic defragmenting is unnecessary and can also reduce disk lifespan and degrade performance.
 
 <details>
   <summary><strong>Cómo desactivar la desfragmentación automática del disco</strong> - Haz clic para expandir/colapsar</summary>
@@ -149,7 +157,7 @@ Windows está diseñado para desfragmentar automáticamente los discos duros fí
 
 #### Habilitar modo de energía de alto rendimiento
 
-Las funciones de administración de energía en Windows están diseñadas para laptops y desktops para ahorrar energía. En un entorno %%VM|vm%%, estas funciones pueden reducir innecesariamente el rendimiento o suspender su %%VM|vm%%, haciéndolo menos receptivo y difícil de gestionar.
+Power management features in Windows are designed for laptops and desktops to save energy. In a %%VM|vm%% environment, these features can unnecessarily throttle performance or suspend your %%VM|vm%%, making it less responsive and harder to manage.
 
 Habilitar el modo **Alto rendimiento** asegura que su %%VM|vm%% siempre funcione a toda velocidad y es menos probable que se pause o se suspenda inesperadamente.
 
@@ -163,10 +171,12 @@ Habilitar el modo **Alto rendimiento** asegura que su %%VM|vm%% siempre funcione
 
 #### Habilitar acceso remoto de escritorio
 
-El protocolo de escritorio remoto (RDP) le permite acceder a su %%VM|vm%% de Windows desde otro dispositivo. Ofrece mejor rendimiento y compatibilidad en comparación con %%VNC|vnc-session%%. Tenga en cuenta que RDP es compatible solo con las ediciones Professional y Enterprise de Windows. Además, su cuenta de usuario de Windows **debe** tener configurada una contraseña.
+Remote desktop protocol (RDP) allows you to access your Windows %%VM|vm%% from another device. It offers better performance and compatibility compared to %%VNC|vnc-session%%. Note that RDP is supported only on Windows Professional and Enterprise editions. Also, your Windows user account **must** have a password set.
 
 :::caution
-RDP no está disponible en las ediciones Home de Windows. Siempre configure una contraseña segura para su cuenta de usuario de Windows antes de habilitar RDP.
+
+RDP is not available on Windows Home editions. Always set a secure password for your Windows user account before enabling RDP.
+
 :::
 
 <details>
@@ -212,12 +222,14 @@ If you're having trouble with HDMI audio in a Windows %%VM|vm%% that uses %%GPU 
 
 ### Actualización a Windows 11
 
-Windows 11 requiere TPM 2.0 y Arranque Seguro. El BIOS **OVMF-TPM** de Unraid proporciona el soporte TPM virtual necesario para estos requisitos.
+Windows 11 requires TPM 2.0 and Secure Boot. Unraid's **OVMF-TPM** BIOS provides the virtual TPM support needed for these requirements.
 
-:::important[Before actualización]
+:::important[Before actualizando]
+
 - Cree una copia de seguridad completa de su %%VM|vm%%.
 - Asegúrese de que Unraid esté ejecutando la versión 6.10 o posterior.
 - Verifique que su %%VM|vm%% de Windows 10 cumpla con los [requisitos del sistema de Windows 11](https://www.microsoft.com/en-us/windows/windows-11-specifications).
+
 :::
 
 Para agregar soporte TPM:
@@ -241,11 +253,13 @@ Para agregar soporte TPM:
 
 ## Ampliación de particiones vDisk de Windows VM
 
-:::caution[Data riesgo de pérdida]
-Expandir o modificar el diseño de particiones y %%vDisco|vdisk%% puede llevar a una pérdida irreversible de datos si no se realiza con cuidado. Siempre cree una copia de seguridad completa o instantánea de su %%VM|vm%% antes de proceder.
+:::caution[Data loss risk]
+
+Expanding or modifying %%vDisk|vdisk%% and partition layouts can lead to irreversible data loss if not done carefully. Always create a full backup or snapshot of your %%VM|vm%% before proceeding.
+
 :::
 
-Después de expandir su %%vDisco|vdisk%% siguiendo los pasos en [Expandir un vDisco](../create-virtual-machines/vm-setup.mdx#expand-a-vdisk), puede encontrar un problema donde la partición de recuperación predeterminada de Windows le impida expandir fácilmente su partición del sistema (C:) para utilizar el nuevo espacio. Para resolver este problema, necesita eliminar la partición de recuperación y luego usar el Administrador de discos de Windows para expandir la partición.
+After you expand your %%vDisk|vdisk%% following the steps in [Expand a vDisk](../create-virtual-machines/vm-setup.mdx#expand-a-vdisk), you may encounter an issue where Windows’ default recovery partition blocks you from easily expanding your system (C:) partition to utilize the new space. To resolve this issue, you need to delete the recovery partition and then use Windows Disk Management to expand the partition.
 
 <div style={{ margen: 'auto', maxAnchura: '600px', display: 'flex', flexDirection: 'columna', alignItems: 'centro' }}>
   ![Redimensionar vDisk 2](/img/Resize_vdisk_2.png)
@@ -279,9 +293,13 @@ Después de completar la expansión inicial de %%vDisk|vdisk%%:
 </div>
 
 :::tip
-Solo necesita eliminar la partición de recuperación si bloquea el acceso al espacio libre adyacente. Si el espacio no asignado ya está junto a su partición C:, puede extenderla sin eliminar nada.
+
+You only need to remove the recovery partition if it blocks access to adjacent free space. If the unallocated space is already next to your C: partition, you can extend it without deleting anything.
+
 :::
 
 :::warning
-Los cambios realizados a las particiones de disco son permanentes y no se pueden deshacer. Asegúrese de que sus datos estén respaldados de forma segura antes de eliminar cualquier partición.
+
+Changes made to disk partitions are permanent and cannot be undone. Ensure that your data is securely backed up before deleting any partitions.
+
 :::
