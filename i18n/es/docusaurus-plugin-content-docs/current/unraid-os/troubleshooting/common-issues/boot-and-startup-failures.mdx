@@ -15,7 +15,9 @@ Cuando su servidor Unraid no arranca correctamente, puede ser un desafío identi
 Este tema está detallado en la sección [Preparar tu dispositivo USB](../../getting-started/set-up-unraid/create-your-bootable-media.mdx#prepare-your-usb-device).
 
 :::caution
+
 Siempre [respalda tu unidad flash](../../system-administration/maintain-and-update/changing-the-flash-device.mdx#backing-up-your-flash-device) antes de hacer cambios. Todos los ajustes específicos del usuario, incluida tu clave de licencia, se almacenan en la carpeta `config`. Restaurar esta carpeta después de reconfigurar tu dispositivo flash ayudará a preservar tu configuración actual.
+
 :::
 
 ## Habilitando el arranque UEFI
@@ -35,33 +37,11 @@ Para configurar el arranque UEFI en el BIOS de tu sistema/configuración UEFI:
 La secuencia de inicio de Unraid tiene varias etapas:
 
 <details>
-  <summary><strong>1. Arranque BIOS</strong> - Haga clic para expandir/contraer</summary>
-
-  El firmware BIOS/UEFI inicializa el hardware y localiza el dispositivo de arranque. Esta es la base de todo el proceso de arranque.
-
-  - El BIOS de la placa base reconoce el dispositivo flash de arranque de Unraid.
-  - Configurar el dispositivo flash como el dispositivo de arranque predeterminado varía según tu BIOS; revisa el manual de tu placa base para obtener orientación.
-  - El dispositivo flash admite modos de arranque **legado (CSM)** y **UEFI**.
-  - Para el arranque UEFI, asegúrate de que la carpeta `EFI` en el dispositivo flash no tenga un guion al final (`-`).
-</details>
-
-<details>
-  <summary><strong>2. Cargador Syslinux</strong> - Haga clic para expandir/contraer</summary>
-
-  El cargador de arranque presenta las opciones de inicio y carga el núcleo de Linux en la memoria. Esta etapa determina qué sistema operativo o herramienta de diagnóstico se ejecutará.
-
-  - Las entradas del menú de arranque están definidas en el archivo `syslinux/syslinux.cfg` en el dispositivo flash.
-  - Puedes editar este archivo a través del WebGUI bajo ***Principal → Configuración Syslinux***.
-  - **Memtest86+**, que se incluye con las compilaciones actuales de Unraid, funciona tanto en modos heredado como %%UEFI|uefi%%. Para versiones anteriores de Unraid, obtén una versión compatible del [sitio oficial de Memtest](https://www.memtest86.com/) para %%UEFI|uefi%%.
-  - Si no se selecciona ninguna opción, el arranque predeterminado se ejecuta tras un tiempo de espera, lo cual es útil para operaciones sin cabeza.
-</details>
-
-<details>
   <summary><strong>3. Núcleo de Linux</strong> - Haga clic para expandir/contraer</summary>
 
   El núcleo de Linux se inicializa y comienza la detección de hardware. Aquí es donde el sistema operativo toma el control del cargador de arranque.
 
-  - **Syslinux** carga el núcleo de Linux desde el dispositivo flash en la RAM.
+  - El BIOS de la placa base reconoce el dispositivo flash de arranque de Unraid.
   - Verás mensajes de consola mostrando los archivos bz\* cargándose.
   - Los errores en esta etapa a menudo indican problemas con el dispositivo flash.
   - Linux detecta el hardware durante el inicio.
@@ -73,12 +53,9 @@ La secuencia de inicio de Unraid tiene varias etapas:
   El dispositivo flash se vuelve accesible y los servicios esenciales comienzan a cargarse. Esta etapa es crítica para la configuración y el acceso a la red.
 
   - El dispositivo flash se monta en `/boot`.
-  - Si falla al montar, aún puedes ver un indicador de inicio de sesión, pero esto indica un inicio incompleto.
-  - Usa el comando `df` para comprobar si `/boot` está montado.
+  - Puedes editar este archivo a través del WebGUI bajo ***Principal → Configuración Syslinux***.
+  - **Memtest86+**, que se incluye con las compilaciones actuales de Unraid, funciona tanto en modos heredado como %%UEFI|uefi%%. Para versiones anteriores de Unraid, obtén una versión compatible del [sitio oficial de Memtest](https://www.memtest86.com/) para %%UEFI|uefi%%.
   - El dispositivo flash debe estar etiquetado como **UNRAID** (todo en mayúsculas) para un montaje adecuado.
-  - Controladores y firmware adicionales estarán disponibles en esta etapa.
-  - La configuración se carga en la RAM.
-  - Los servicios estándar de Linux, incluyendo la red y el VPN de %%WireGuard|wireguard%% (si está habilitado), comienzan aquí.
 </details>
 
 <details>
@@ -88,6 +65,31 @@ La secuencia de inicio de Unraid tiene varias etapas:
 
   - Los plugins instalados se cargan durante este paso.
   - Opciones de **Arranque seguro** pueden suprimir la carga de plugins si es necesario.
+  - Los errores en esta etapa a menudo indican problemas con el dispositivo flash.
+  - Linux detecta el hardware durante el inicio.
+</details>
+
+<details>
+  <summary><strong>6. WebGUI</strong> - Haga clic para expandir/contraer</summary>
+
+  La interfaz de administración basada en la web se vuelve disponible, permitiendo la administración remota y configuración de tu servidor.
+
+  - El WebGUI comienza en este punto.
+  - El archivo `config/go` en el dispositivo flash puede ejecutar comandos de usuario antes o después de que el WebGUI comience.
+  - Usa el comando `df` para comprobar si `/boot` está montado.
+  - El dispositivo flash debe estar etiquetado como **UNRAID** (todo en mayúsculas) para un montaje adecuado.
+  - Controladores y firmware adicionales estarán disponibles en esta etapa.
+  - La configuración se carga en la RAM.
+  - Los servicios estándar de Linux, incluyendo la red y el VPN de %%WireGuard|wireguard%% (si está habilitado), comienzan aquí.
+</details>
+
+<details>
+  <summary><strong>7. Conjunto</strong> - Haga clic para expandir/contraer</summary>
+
+  Los dispositivos de almacenamiento se montan y hacen disponibles, completando el proceso de arranque. Aquí es donde tus datos se vuelven accesibles.
+
+  - Si el auto-arranque está habilitado, el %%array|array%% comienza aquí; de lo contrario, se requerirá un inicio manual.
+  - Las unidades se montarán como `/dev/diskX` y `/mnt/cache` (si está presente).
 </details>
 
 <details>
@@ -133,13 +135,15 @@ Cuando tu servidor no arranca, la solución de problemas sistemática ayuda a id
 ## Recuperando de una pérdida del disco de arranque y unidades de paridad desconocidas
 
 :::important
-Este proceso de recuperación implica riesgo de pérdida de datos si los discos se asignan incorrectamente. Antes de proceder:
+
+Si su unidad de arranque de Unraid falla y no tiene una copia de seguridad reciente o no sabe qué unidades son de paridad, puede recuperar su sistema utilizando la capacidad de Unraid para reconocer unidades de datos por sus sistemas de archivos. Las %%parity drives|parity-drives%% no tienen un sistema de archivos válido, lo que ayuda a diferenciarlas.
 
 1. **No inicie el %%array|array%%** hasta que estés seguro sobre la asignación de las unidades
 2. **Documentar** cuáles discos eran anteriormente de paridad vs. discos de datos
 3. **Considera buscar ayuda** en los [foros de Unraid](https://forums.unraid.net/) si no estás seguro
 
 Si tienes copias de seguridad recientes o documentación de la configuración de tu array, revísalos primero.
+
 :::
 
 Si su unidad de arranque de Unraid falla y no tiene una copia de seguridad reciente o no sabe qué unidades son de paridad, puede recuperar su sistema utilizando la capacidad de Unraid para reconocer unidades de datos por sus sistemas de archivos. Las %%parity drives|parity-drives%% no tienen un sistema de archivos válido, lo que ayuda a diferenciarlas.
@@ -160,7 +164,9 @@ Este procedimiento le ayuda a restaurar la configuración de su array cuando ha 
 8. Si la %%parity|parity%% es válida, marque la casilla de ***Parity is Already Valid***. Si no, permita que la %%parity|parity%% se reconstruya.
 
 :::warning[Multiple unidades de paridad]
+
 Si tiene múltiples %%parity drives|parity-drives%% y tuvo que identificarlas basándose en qué unidades eran no montables, **no** use la opción **Parity is Already Valid**. Hay un 50:50 de probabilidad de asignarlas incorrectamente, y si lo hace, su %%array|array%% puede parecer protegido pero en realidad no lo está. Siempre permita que la paridad se reconstruya en este escenario para asegurar una protección adecuada.
+
 :::
 
 9. Revisa y ajusta cualquier inclusión/exclusión de usuario para compartir con base en las nuevas indicaciones.
@@ -201,4 +207,4 @@ Para más información, ve el [hilo del plugin Dispositivos no asignados](https:
 
 ---
 
-\* *"%%WireGuard|wireguard%%" y el logotipo de "%%WireGuard|wireguard%%" son marcas registradas de Jason A. Donenfeld.*
+\* *"%%WireGuard|wireguard%%" y el logo "%%WireGuard|wireguard%%" son marcas registradas de Jason A. Donenfeld.*
