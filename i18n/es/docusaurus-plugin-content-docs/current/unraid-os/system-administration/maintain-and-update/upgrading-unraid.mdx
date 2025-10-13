@@ -16,17 +16,19 @@ Actualizar el sistema operativo Unraid garantiza que dispongas de las caracterí
 
 :::note\[Prerequisites]
 
-Antes de comenzar la actualización, asegúrate de crear una copia de seguridad completa de tu dispositivo USB. Para más detalles, consulta [Respaldar tu dispositivo flash](../maintain-and-update/changing-the-flash-device.mdx#backing-up-your-flash-device).
+Before you start upgrading, make sure to create a complete backup of your USB flash device. For more details, refer to [Backing up your flash device](../maintain-and-update/changing-the-flash-device.mdx#backing-up-your-flash-device).
 
 :::
 
-:::tip[Best prácticas antes de la actualización]
+:::tip[Best practices before upgrading]
+
 1. **Hacer una copia de seguridad** de su unidad flash y cualquier dato importante.
 2. **Lea las notas de la versión** para la versión que planea instalar.
 3. **Actualice todos los complementos** a sus versiones más recientes.
 4. **Opcionalmente, detenga el array** antes de proceder.
 5. **Actualice Unraid OS** utilizando la página ***Herramientas → Actualizar OS***.
 6. **Reinicie** su servidor para completar la actualización.
+
 :::
 
 ## Proceso de actualización estándar
@@ -41,12 +43,14 @@ Antes de comenzar la actualización, asegúrate de crear una copia de seguridad 
   </TabItem>
 </Tabs>
 
-:::caution[ZFS advertencias de actualización de pool]
-Al actualizar a Unraid 7.x, puede ver advertencias sobre actualizaciones de características del pool [%%ZFS|zfs%%](../../advanced-configurations/optimize-storage/zfs-storage.mdx) durante el arranque o en el %%WebGUI|web-gui%%. Estas advertencias no son un signo de un problema; simplemente indican que su pool de %%ZFS|zfs%% está utilizando características de una versión anterior de ZFS.
+:::caution[ZFS pool upgrade warnings]
+
+When upgrading to Unraid 7.x, you may see warnings about [%%ZFS|zfs%%](../../advanced-configurations/optimize-storage/zfs-storage.mdx) pool feature upgrades during boot or in the %%WebGUI|web-gui%%. These warnings are not a sign of a problem; they simply indicate that your %%ZFS|zfs%% pool is using features from an older version of ZFS.
 
 No es urgente actualizar tu grupo, pero si decides hacerlo, ten en cuenta que podría no funcionar con versiones anteriores de Unraid. Esto significa que es posible que no puedas volver a una versión anterior de Unraid después de actualizar.
 
-Como siempre, recuerde hacer una copia de seguridad de sus datos antes de actualizar sus pools %%ZFS|zfs%%.
+As always, remember to back up your data before upgrading your %%ZFS|zfs%% pools.
+
 :::
 
 ---
@@ -73,9 +77,9 @@ Si encuentra problemas después de la actualización, consulte la sección relev
 </details>
 
 <details>
-  <summary><strong>Las VMs muestran "no se puede obtener la interfaz MTU" o errores de red</strong> - Haga clic para expandir/colapsar</summary>
+  <summary><strong>El array o los contenedores Docker son lentos al arrancar después de la actualización</strong> - Haga clic para expandir/colapsar</summary>
 
-  Si ha utilizado un nombre de puente personalizado para la red %%VM|vm%%, actualice todas las %%VMs|vm%% para usar el puente predeterminado `br0` siguiendo estos pasos:
+  Podría ser necesaria una migración única para los contenedores de Docker después de ciertas actualizaciones. Este proceso puede llevar tiempo, especialmente si tienes muchas imágenes. Sé paciente durante este proceso; el rendimiento debería normalizarse después del inicio inicial.
 
   1. Vaya a la pestaña **VMs** y edite cada %%VM|vm%% (asegúrese de habilitar **Vista avanzada**).
   2. Configure el puente de red en `br0` y haga clic en **Aplicar**.
@@ -83,9 +87,9 @@ Si encuentra problemas después de la actualización, consulte la sección relev
 </details>
 
 <details>
-  <summary><strong>El acceso VNC a las VMs no funciona o es lento</strong> - Haga clic para expandir/colapsar</summary>
+  <summary><strong>Los contenedores Docker no funcionan correctamente después de la actualización</strong> - Haga clic para expandir/colapsar</summary>
 
-  Para las %%VMs|vm%% viejas, es posible que deba actualizar el controlador de video %%VNC|vnc-session%%:
+  Si encuentras errores como *"las capas del manifiesto no coinciden con la configuración de la imagen",* es posible que necesites reconstruir tu archivo de imagen de Docker. Aquí te explicamos cómo:
 
   1. Edite la %%VM|vm%% desde la pestaña **VMs** (seleccione **Vista avanzada**).
   2. Establece el controlador de vídeo **%%VNC|vnc-session%%** en **QXL** (recomendado). Prueba con **Cirrus** o **vmvga** si tienes éxito limitado con QXL.
@@ -93,7 +97,7 @@ Si encuentra problemas después de la actualización, consulte la sección relev
 </details>
 
 <details>
-  <summary><strong>La VM no arranca (aparece shell EFI)</strong> - Haga clic para expandir/colapsar</summary>
+  <summary><strong>Las VMs muestran "no se puede obtener la interfaz MTU" o errores de red</strong> - Haga clic para expandir/colapsar</summary>
 
   Si tienes %%OVMF|ovmf%%-basados %%VMs|vm%% creados en versiones anteriores de Unraid, podrías encontrar un shell EFI. Puedes arrancar el %%VM|vm%% introduciendo los siguientes comandos:
 
@@ -105,15 +109,15 @@ Si encuentra problemas después de la actualización, consulte la sección relev
 </details>
 
 <details>
-  <summary><strong>Intentar iniciar mi VM da un error de "Tipo de máquina inválido"</strong> - Haga clic para expandir/colapsar</summary>
+  <summary><strong>El acceso VNC a las VMs no funciona o es lento</strong> - Haga clic para expandir/colapsar</summary>
 
   Para resolver esto, edita el %%VM|vm%% en la %%WebGUI|web-gui%% y haz clic en **Aplicar** sin realizar cambios. Esta acción actualizará el tipo de máquina a la última versión compatible.
 </details>
 
 <details>
-  <summary><strong>Pobre rendimiento de VM después de la actualización</strong> - Haga clic para expandir/colapsar</summary>
+  <summary><strong>La VM no arranca (aparece shell EFI)</strong> - Haga clic para expandir/colapsar</summary>
 
-  Si tu %%VM|vm%% está lento después de una actualización, ve a la configuración del %%VM|vm%% (en **Vista Avanzada**) y actualiza la versión del tipo de **Máquina** a la última revisión (por ejemplo: cambia de `i440fx-2.5` a `i440fx-2.7`). Asegúrate de no cambiar el prefijo (por ejemplo, no cambies de `i440fx` a `Q35`).
+  Si tienes %%OVMF|ovmf%%-basados %%VMs|vm%% creados en versiones anteriores de Unraid, podrías encontrar un shell EFI. Puedes arrancar el %%VM|vm%% introduciendo los siguientes comandos:
 </details>
 
 ---
@@ -133,7 +137,9 @@ Si puede acceder al WebGUI:
 5. Reinicie su servidor cuando se le indique.
 
 :::caution
+
 Ten en cuenta que bajar de versión puede generar problemas de compatibilidad con complementos o contenedores de Docker. Siempre respalda tu dispositivo USB y cualquier dato importante de antemano.
+
 :::
 
 ### Metodos manuales (si el WebGUI es inaccesible)
