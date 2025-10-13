@@ -10,7 +10,7 @@ A %%parity check|parity-check%% is essential when your array includes at least o
   - **Correctif (CORRECT) :** S'il trouve un décalage, il met à jour le disque de %%parité|parity-drives%% et journalise l'événement.
   - **Non-correctif (NOCORRECT) :** Journalise uniquement les erreurs trouvées sans mettre à jour la parité.
 
-  To avoid excessive logging, only the first 100 addresses with errors are reported during a %%parity check|parity-check%%. These mismatches are referred to as **sync errors** and indicate where the parity does not align with the data, typically due to issues such as sudden power losses or hardware problems. Each sync error is counted in 4KiB blocks - this is the system's I/O unit size (known as the Linux page size).
+  Pour éviter une journalisation excessive, seules les 100 premières adresses avec erreurs sont signalées lors d'un contrôle de %%parité|parité%%. Ces décalages sont appelés **erreurs de synchronisation** et indiquent où la parité ne correspond pas aux données, généralement en raison de problèmes tels que des coupures de courant soudaines ou des problèmes matériels. Chaque erreur de synchronisation est comptée en blocs de 4Ko - c'est la taille de l'unité d'E/S du système (connue sous le nom de taille de page Linux).
 </details>
 
 <details>
@@ -21,38 +21,42 @@ A %%parity check|parity-check%% is essential when your array includes at least o
   Unraid maintains the %%parity disk|parity-drives%%'s "valid" status even when some sync errors occur following a non-correcting check. This ensures that you can still recover a failed disk. If the %%parity|parity%% were marked as invalid, you would risk having two invalid disks after just one additional failure, leading to potential data loss.
 </details>
 
-While a %%parity check|parity-check%% is in progress, you can still use the array. However, be aware that performance may slow down due to drive contention, as both file operations and the check will compete for resources.
+Tant qu'un contrôle de %%parité|parité%% est en cours, vous pouvez toujours utiliser l'ensemble. Cependant, soyez conscient que les performances peuvent ralentir en raison de la concurrence des disques, car à la fois les opérations de fichier et le contrôle se disputent les ressources.
 
 Normalement, si la %%parity check|parity-check%% identifie des erreurs, Unraid mettra à jour le disque de %%parité|parity-drives%% pour s'aligner avec les données calculées et incrémentera le compteur d'erreurs de synchronisation.
 
 :::tip
-Si vous préférez effectuer un contrôle sans apporter de corrections, décochez simplement **Écrire des corrections sur la parité** avant de commencer. De cette manière, les erreurs seront signalées mais non corrigées.
+
+If you prefer to run a check without making corrections, simply uncheck **Write corrections to parity** before starting. This way, errors will be reported but not fixed.
+
 :::
 
 :::important
-Après un "Arrêt non sécurisé"—lorsque l'array est redémarré sans être correctement arrêté—Unraid lance automatiquement une vérification de la %%parité|parity-check%% en utilisant le mode configuré dans **Paramètres → Planificateur → Vérification de parité** (non-correctif par défaut). Pour changer la façon dont la vérification automatique s'exécute, ouvrez **Paramètres → Planificateur → Vérification de parité** et ajustez les options là-bas. Une perte de puissance inattendue est le déclencheur le plus courant pour un arrêt non sécurisé, il est donc fortement recommandé d'utiliser une alimentation sans coupure (UPS) pour protéger vos données.
+
+After an "Unsafe Shutdown"—when the array is restarted without being properly stopped—Unraid automatically initiates a %%parity check|parity-check%% using the mode configured under **Settings → Scheduler → Parity Check** (non-correcting by default). To change how the automatic check runs, open **Settings → Scheduler → Parity Check** and adjust the options there. Unexpected power loss is the most common trigger for an unsafe shutdown, so using an uninterruptible power supply (UPS) is strongly recommended to protect your data.
+
 :::
 
-<h4>Que sont les erreurs de parité ?</h4>
+<h4>What are parity errors?</h4>
 
 %%Parity|parity%% errors happen when the %%parity|parity%% information your system calculates doesn't match what's stored on your %%parity drives|parity-drives%%. This mismatch can arise from several issues, including:
 
-- Pertes de puissance soudaines ou arrêts non sécurisés
-- Lecteurs défaillants ou erreurs de disque
-- Problèmes de câbles ou de connexions
-- Arrêts non propres ou plantages système inattendus
+- Sudden power loss or unsafe shutdowns
+- Failing drives or disk errors
+- Problems with cables or connections
+- Unclean shutdowns or unexpected system crashes
 
 When %%parity|parity%% errors occur, either the %%parity drives|parity-drives%% or the data disks could be out of sync. Ideally, a %%parity check|parity-check%% should report zero errors so everything functions correctly.
 
-<h4>Que faire si vous rencontrez des erreurs de %%parité|parity%%</h4>
+<h4>What to do if you encounter %%parity|parity%% errors</h4>
 
-Si votre %%parity check|parity-check%% révèle des erreurs :
+If your %%parity check|parity-check%% reveals errors:
 
 1. **Investigate the problem:** Start by checking %%SMART reports|smart-report%%, which provide detailed information about your drives' health. Look for any signs of disk or connection problems.
-2. **Recherchez de l'aide sur nos forums :** Si vous ne parvenez pas à résoudre le problème par vous-même, envisagez de demander conseil sur les forums Unraid. La communauté peut offrir des informations précieuses et des suggestions basées sur leurs expériences.
-3. **Effectuez une autre vérification :** Après avoir résolu tout problème matériel, effectuer un autre %%parity check|parity-check%% est une bonne idée pour s'assurer que tout est redevenu normal.
+2. **Seek help from our forums:** If you cannot resolve the issue on your own, consider reaching out for advice on the Unraid forums. The community can offer valuable insights and suggestions based on their experiences.
+3. **Run another check:** After you've addressed any hardware issues, running another %%parity check|parity-check%% is a good idea to ensure everything is back in order.
 
-:::info\[Rebuild Temps
+:::info[Rebuild Temps
 
 Remember that %%parity checks|parity-check%% can take several hours, depending on the size of your disks and the activity level of your system. For the best results, schedule these checks during times of low system usage.
 
