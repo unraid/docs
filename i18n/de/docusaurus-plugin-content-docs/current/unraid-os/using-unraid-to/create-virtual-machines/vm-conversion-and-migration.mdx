@@ -41,7 +41,7 @@ So konvertieren Sie eine physische Festplatte in eine %%VM|vm%%:
     <h4>Schritt 1: Bereiten Sie die physische Festplatte vor</h4>
 
     1. Verbinden Sie die Quellfestplatte mit Ihrem Unraid-Server (über SATA oder USB).
-    2. Melden Sie sich bei der %%WebGUI|web-gui%% (`http://tower` oder `http://tower.local`) an.
+    2. Gehen Sie zum **%%VMs|vm%%**-Tab im %%WebGUI|web-gui%%. Falls der Tab fehlt, überprüfen Sie, ob die Virtualisierung aktiviert wurde und die Hardwareanforderungen erfüllt sind.
     3. Klicken Sie auf die Registerkarte **Haupt**.
     4. Starten Sie das **%%array|array%%**, falls es noch nicht läuft.
     5. Finden Sie Ihre Festplatte unter **Nicht zugewiesene Geräte**.
@@ -66,8 +66,8 @@ So konvertieren Sie eine physische Festplatte in eine %%VM|vm%%:
     ```
 
     - **/dev/sdX**: Ersetzen Sie durch den Gerätebuchstaben aus Schritt 1 (z. B. `/dev/sdb`)
-    - **\[vdisk\_share]**: Die Freigabe, in der Sie Ihre %%VM|vm%%-Images speichern
-    - **\[vmname]**: Der Name, den Sie für Ihre %%VM|vm%% möchten
+    - **[vdisk_share]**: Die Freigabe, in der Sie Ihre %%VM|vm%%-Images speichern
+    - **[vmname]**: Der Name, den Sie für Ihre %%VM|vm%% möchten
 
     **Befehlsübersicht:**
 
@@ -151,6 +151,7 @@ Sie können eine Windows-Installation direkt von einer physischen Festplatte in 
 [Wie man Festplatten durchreicht, Disketten konvertiert und die Leistung in Unraid VMs testet (YouTube)](https://www.youtube.com/watch?v=QaB9HhpbDAI).
 
 :::important[Choosing Ihr Migrationsansatz]
+
 Es gibt zwei gängige Methoden, um eine Windows-Installation in eine %%VM|vm%% in Unraid zu migrieren:
 
 **Physikalischer Festplattendurchlauf:** Verwendet die Originalfestplatte direkt in der %%VM|vm%%.
@@ -164,6 +165,7 @@ Es gibt zwei gängige Methoden, um eine Windows-Installation in eine %%VM|vm%% i
 - Nachteile: Erfordert Zeit und freien Speicherplatz für den Konvertierungsprozess.
 
 Wählen Sie Passthrough, wenn Sie eine einfache Migration wünschen oder planen, die Platte dual zu booten. Entscheiden Sie sich für Image-Konvertierung für bessere Portabilität und Backup-Optionen.
+
 :::
 
 :::note\[Prerequisites]
@@ -179,16 +181,16 @@ Wählen Sie Passthrough, wenn Sie eine einfache Migration wünschen oder planen,
 
 <h4>Schritt 1: Bereiten Sie die Windows-Festplatte für die Migration vor</h4>
 
-Das Verschieben einer Windows-Installation auf neue Hardware, sei es physisch oder virtuell, kann aufgrund von Hardwareunterschieden zu Startfehlern führen. Befolgen Sie eine der folgenden Methoden, um Ihr Windows-System vorzubereiten:
+Sysprep ist in Windows integriert und eliminiert eindeutige Systeminformationen, um Windows für unterschiedliche Hardware vorzubereiten.
 
 <h5>Option A: Microsoft Sysprep (empfohlen - kostenlos)</h5>
 
 Sysprep ist in Windows integriert und eliminiert eindeutige Systeminformationen, um Windows für unterschiedliche Hardware vorzubereiten.
 
-:::note\[Before \[Sysprep ausführen]
+:::note[Before [Sysprep ausführen]
 
-- Deaktivieren Sie temporär jegliche Antivirensoftware.
-- Bereinigen Sie unnötige Benutzerprofile und temporäre Dateien.
+- **Sysprep ausführen:**
+- **Installieren Sie die Festplatte in Ihrem Unraid-Server** nach dem Herunterfahren.
 - Beheben Sie problematische Microsoft Store-Anwendungen oder entfernen Sie diese, die verhindern könnten, dass Sysprep ausgeführt wird.
 
 :::
@@ -212,23 +214,23 @@ Sysprep ist in Windows integriert und eliminiert eindeutige Systeminformationen,
 
 Acronis True Image 2025 bietet Universal Restore, das bei der Hardware-Migration hilft.
 
-1. Laden Sie [Acronis True Image 2025](https://www.acronis.com/en-us/products/true-image/) herunter und installieren Sie es.
-2. Erstellen Sie bootfähige Wiederherstellungsmedien mit den enthaltenen Tools:
+1. Melden Sie sich bei der %%WebGUI|web-gui%% (`http://tower` oder `http://tower.local`) an.
+2. Gehen Sie zur Registerkarte **Haupt**.
    - Wählen Sie die Windows-ähnliche Benutzeroberfläche aus.
    - Wählen Sie die Architektur, die zu Ihrem Windows passt (32-Bit oder 64-Bit).
-3. Booten Sie Ihr Windows-System von den Acronis-Wiederherstellungsmedien.
-4. Befolgen Sie die Anweisungen auf dem Bildschirm, um Universal Restore auf Ihrer Windows-Festplatte anzuwenden. Dadurch werden Treiber und das HAL aktualisiert, um die Kompatibilität mit virtualisierter Hardware zu verbessern.
+3. Start the %%array|array%% if it’s not already running.
+4. Finden Sie Ihr Laufwerk unter **Nicht zugewiesene Geräte**.
 5. Fahren Sie das System herunter und installieren Sie die Festplatte in Ihrem Unraid-Server.
 
 <h4>Schritt 2: Identifizieren Sie die physische Festplatte in Unraid</h4>
 
-1. Melden Sie sich bei der %%WebGUI|web-gui%% (`http://tower` oder `http://tower.local`) an.
-2. Gehen Sie zur Registerkarte **Haupt**.
+1. Gehen Sie zum **%%VMs|vm%%**-Tab im %%WebGUI|web-gui%%. Falls der Tab fehlt, überprüfen Sie, ob die Virtualisierung aktiviert wurde und die Hardwareanforderungen erfüllt sind.
+2. Klicken Sie auf **VM hinzufügen**.
 3. Start the %%array|array%% if it’s not already running.
 4. Finden Sie Ihr Laufwerk unter **Nicht zugewiesene Geräte**.
 5. Notieren Sie sich den Gerätebuchstaben (zum Beispiel `sdb`, `sdc`) für die Einstellung der %%VM|vm%%.
 
-<h4>Schritt 3: Erstellen Sie eine neue virtuelle Maschine</h4>
+<h4>Schritt 4: Bearbeiten Sie das XML für Ihre virtuelle Maschine</h4>
 
 1. Gehen Sie zum **%%VMs|vm%%**-Tab im %%WebGUI|web-gui%%. Falls der Tab fehlt, überprüfen Sie, ob die Virtualisierung aktiviert wurde und die Hardwareanforderungen erfüllt sind.
 2. Klicken Sie auf **VM hinzufügen**.
@@ -243,7 +245,7 @@ Acronis True Image 2025 bietet Universal Restore, das bei der Hardware-Migration
 
 Sie müssen die XML-Konfiguration des %%VM|vm%% ändern, um Ihre physische Festplatte mit der %%virtuellen Maschine|vm%% zu verbinden.
 
-1. Gehen Sie zum Tab **VMs**, klicken Sie auf das %%VM|vm%%-Symbol und wählen Sie **XML bearbeiten** aus dem Kontextmenü.
+1. Starten Sie Ihre %%VM|vm%%.
 
 2. Scrollen Sie im XML-Dokument nach unten und finden Sie den bestehenden `<disk>` Eintrag für Ihre primäre %%virtuelle Festplatte|vdisk%%. Dieser verweist normalerweise auf eine `.img` Datei und sieht ungefähr so aus:
 
@@ -260,7 +262,7 @@ Sie müssen die XML-Konfiguration des %%VM|vm%% ändern, um Ihre physische Festp
    </disk>
    ```
 
-   Ersetzen Sie diesen Block durch den folgenden, wobei `sdX` der Geräteschreibbuchstabe ist, oder verwenden Sie besser `/dev/disk/by-id/[Ihre-Platten-ID]` für eine zuverlässigere Gerätzuordnung (siehe \[Unraid-Dokumente: Verwendung einer physikalischen Platte in einer VM]):
+   Ersetzen Sie diesen Block durch den folgenden, wobei `sdX` der Geräteschreibbuchstabe ist, oder verwenden Sie besser `/dev/disk/by-id/[Ihre-Platten-ID]` für eine zuverlässigere Gerätzuordnung (siehe [Unraid-Dokumente: Verwendung einer physikalischen Platte in einer VM]):
 
    ```xml
 
@@ -275,7 +277,7 @@ Sie müssen die XML-Konfiguration des %%VM|vm%% ändern, um Ihre physische Festp
 
    Die Verwendung von `/dev/disk/by-id/` wird gegenüber `/dev/sdX` bevorzugt, um sicherzustellen, dass die Festplattenzuweisung nach Neustarts oder Hardwareänderungen konsistent bleibt.
 
-3. Klicken Sie auf **Aktualisieren**, um Ihre XML-Änderungen zu speichern.
+3. Suchen Sie nach Geräten, die mit einem gelben Ausrufezeichen gekennzeichnet sind (fehlende Treiber). Klicken Sie mit der rechten Maustaste auf jedes und wählen Sie **Treiber aktualisieren**.
 
 <h4>Schritt 5: Treiber installieren</h4>
 
@@ -290,14 +292,16 @@ Sie müssen die XML-Konfiguration des %%VM|vm%% ändern, um Ihre physische Festp
 Denken Sie daran, diese Anwendungen nach der Migration neu zu installieren, falls Sie Software verwenden, die eigene Treiber installiert (wie Antivirus-Programme).
 
 :::tip
+
 Wenn Sie bei %%SeaBIOS|seabios%% mit der Nachricht „Booting from Hard Disk“ hängen bleiben, liegt es wahrscheinlich daran, dass Ihr Windows-Betriebssystem mit %%UEFI|uefi%% anstelle des traditionellen BIOS installiert wurde. In diesem Fall erstellen Sie die %%VM|vm%% mit %%OVMF|ovmf%% als BIOS-Typ anstelle von %%SeaBIOS|seabios%% neu. Die meisten modernen Windows-Installationen (Windows 8.1, 10 und 11) unterstützen %%UEFI|uefi%% und benötigen möglicherweise %%OVMF|ovmf%% zum Starten. Der Rest des Konvertierungsprozesses bleibt gleich.
+
 :::
 
 ---
 
 ## Xen zu KVM Migration
 
-:::info\[Historical \[Kontext]
+:::info[Historical [Kontext]
 
 Unraid unterstützte %%Xen|xen-hvm%% von den frühen 6.x-Versionen bis es in Version 6.2 (September 2016) veraltet wurde und später vollständig entfernt wurde. Dieser Migrationsleitfaden ist relevant für Benutzer, die von sehr alten Unraid-Installationen (vor 2017) auf moderne Versionen aktualisieren.
 
@@ -309,7 +313,7 @@ Der Prozess der Migration einer %%VM|vm%% von %%Xen|xen-hvm%% zu %%KVM|kvm%% var
 
 Always create a backup of your %%Xen|xen-hvm%% virtual disk before starting this process. And test your migration on the backup to prevent data loss.
 
-:::info\[Why \[Migrieren?]
+:::info[Why [Migrieren?]
 
 Unraid unterstützt %%Xen|xen-hvm%% ab Version 6.2 nicht mehr. %%KVM|kvm%% ist jetzt zur Verwaltung von %%virtuellen Maschinen|vm%%, Hardware-Passthrough und laufenden Updates verpflichtend. Die Migration gewährleistet, dass Ihre %%virtuellen Maschinen|vm%% sicher und mit neuen Funktionen kompatibel bleiben.
 
@@ -320,10 +324,10 @@ Unraid unterstützt %%Xen|xen-hvm%% ab Version 6.2 nicht mehr. %%KVM|kvm%% ist j
 To convert a Windows VM from %%Xen|xen-hvm%% to %%KVM|kvm%%, follow these steps. Remember to **remove any PCI device passthrough from your %%Xen|xen-hvm%% domain configuration** before you begin. These devices can be added back after the migration is complete.
 
 <details>
-  <summary><strong>Schritt 1: Bestimmen Sie, ob Ihre VM Xens GPLPV-Treiber verwendet</strong> - Klicken um zu erweitern/einzuklappen</summary>
+  <summary><strong>Schritt 5: Installieren Sie die VirtIO-Treiber</strong> - Klicken um zu erweitern/einzuklappen</summary>
 
   1. Öffnen Sie innerhalb Ihrer %%Xen|Xen-HVM%% VM den **Windows-Geräte-Manager** (drücken Sie *Windows-Taste + X*, dann **Geräte-Manager** auswählen).
-  2. Erweitern Sie **Netzwerkadapter** und überprüfen Sie den Gerätenamen.
+  2. Verbinden Sie sich über %%VNC|vnc-session%%, indem Sie auf das VM-Symbol klicken und **Start mit Konsole (VNC)** auswählen.
      - Wenn der Name "Xen" enthält, verwenden Sie GPLPV-Treiber.
      - Wenn nicht, fahren Sie mit dem Schritt zum Neustart im %%KVM|kvm%%-Modus fort.
 
@@ -333,14 +337,14 @@ To convert a Windows VM from %%Xen|xen-hvm%% to %%KVM|kvm%%, follow these steps.
 </details>
 
 <details>
-  <summary><strong>Schritt 2: Bereiten Sie Windows für die Entfernung der GPLPV-Treiber vor</strong> - Klicken um zu erweitern/einzuklappen</summary>
+  <summary><strong>Schritt 6: Finalisieren Sie die VM-Konfiguration</strong> - Klicken um zu erweitern/einzuklappen</summary>
 
-  1. Öffnen Sie eine Eingabeaufforderung als Administrator (**Startmenü** → geben Sie `cmd` ein → rechtsklicken Sie auf **Eingabeaufforderung** → wählen Sie **Als Administrator ausführen**).
-  2. Geben Sie den folgenden Befehl ein:
+  1. Bearbeiten Sie die VM:
+  2. Aktualisieren Sie die VM:
      ```
      bcdedit -set loadoptions nogplpv
      ```
-  3. Starten Sie Ihre VM neu.
+  3. Starten Sie die VM normal.
 </details>
 
 <details>
@@ -441,5 +445,5 @@ To convert a Windows VM from %%Xen|xen-hvm%% to %%KVM|kvm%%, follow these steps.
   1. Installieren Sie die %%VirtIO|virtio%%-Treiber von der ISO erneut.
   2. Überprüfen Sie Windows-Updates, die möglicherweise neuere Treiber bereitstellen.
   3. Besuchen Sie die [Red Hat VirtIO Drivers](https://docs.fedoraproject.org/en-US/quick-docs/creating-windows-virtual-machines-using-virtio-drivers/) Seite für die neuesten Versionen.
-  :::
+     :::
 </details>
