@@ -19,33 +19,33 @@ import DockerCommandLogs from './partials/managing-and-customizing-containers/co
 
 :::caution\[Disclaimer]
 
-Cette page est écrite pour aider les utilisateurs de tous niveaux à tirer le meilleur parti des conteneurs Docker sur Unraid OS. Les conseils et les meilleures pratiques proviennent de l'équipe d'Unraid, qui veille à ce qu'ils soient adaptés aux besoins des utilisateurs. Cependant, gardez à l'esprit que Docker évolue constamment, donc pour les fonctionnalités les plus récentes, les configurations avancées ou les problèmes de dépannage qui vont au-delà de ce que couvre Unraid, il est toujours bon de consulter la [documentation officielle de Docker](https://docs.docker.com/).
+This page is written to help users of all skill levels make the most out of Docker containers on Unraid OS. The tips and best practices come from the Unraid team, who ensure they are tailored to most users' needs. However, keep in mind that Docker is constantly evolving, so for the most up-to-date features, advanced configurations, or troubleshooting issues that go beyond what Unraid covers, it's always a good idea to check the [official Docker documentation](https://docs.docker.com/).
 
 :::
 
-Avant de personnaliser un conteneur Docker dans Unraid, il est utile de comprendre les options de configuration de base. Chaque [modèle de conteneur](./community-applications.mdx) offre une interface conviviale pour configurer le réseau, le stockage et les variables d'environnement, vous permettant d'adapter le comportement du conteneur à vos besoins sans utiliser d'outils en ligne de commande complexes.
+Before customizing a Docker container in Unraid, it’s helpful to understand the basic configuration options. Each [container template](./community-applications.mdx) provides a user-friendly interface for setting up networking, storage, and environment variables, allowing you to tailor the container's behavior to your needs without using complex command-line tools.
 
 <Tabs>
-  <TabItem value="type-de-réseau" label="Type de réseau" default>
+  <TabItem value="network-type" label="Type de réseau" default>
     <DockerNetworkType />
   </TabItem>
 
-  <TabItem value="mappages-de-volume" label="Mappages de volume">
+  <TabItem value="volume-mappings" label="Mappages de volume">
     <DockerVolumeMappings />
   </TabItem>
 
-  <TabItem value="mappages-de-port" label="Mappages de port">
+  <TabItem value="port-mappings" label="Mappages de port">
     <DockerPortMappings />
   </TabItem>
 
-  <TabItem value="variables-d'environnement" label="Variables d'environnement">
+  <TabItem value="environment-variables" label="Variables d'environnement">
     <DockerEnvironmentVariables />
   </TabItem>
 </Tabs>
 
 ## Création et démarrage des conteneurs
 
-Une fois que vous avez configuré le réseau de votre conteneur, les mappages de volumes, les mappages de ports et les variables d'environnement, vous êtes prêt à créer et lancer votre conteneur Docker. Cette section vous guidera à travers le processus de création, expliquera comment gérer l'ordre de démarrage et les dépendances, et fournira des conseils pour une personnalisation avancée du démarrage.
+Once you've configured your container’s network, volume mappings, port mappings, and environment variables, you're ready to create and launch your Docker container. This section will guide you through the creation process, explain how to manage startup order and dependencies, and provide tips for advanced startup customization.
 
 ### Création d'un conteneur
 
@@ -58,19 +58,21 @@ Après avoir examiné vos paramètres de configuration dans le modèle de conten
 
 ### Planification de votre séquence de démarrage
 
-Certains conteneurs dépendent d'autres pour fonctionner correctement. Par exemple, une application peut avoir besoin d'un conteneur de base de données en premier, ou un service peut nécessiter un conteneur [%%VPN|vpn-tunnel%%](../../system-administration/secure-your-server/tailscale.mdx) actif avant de démarrer.
+Some containers depend on others to function correctly. For example, an application might need a database container running first, or a service might require a [%%VPN|vpn-tunnel%% container](../../system-administration/secure-your-server/tailscale.mdx) to be active before it starts.
 
-:::important[Plan votre démarrage]
+:::important[Plan your startup]
+
 - Identifiez les conteneurs qui fournissent des services essentiels (comme les bases de données, les %%VPNs|vpn-tunnel%% ou les passerelles de stockage).
 - Assurez-vous que les conteneurs dépendants ne sont démarrés qu'après que leurs prérequis aient été lancés et prêts.
 - Consultez la documentation pour chaque conteneur afin de comprendre les exigences spécifiques de démarrage.
+
 :::
 
 ---
 
 ## Démarrage avancé des conteneurs
 
-Unraid vous offre un contrôle flexible sur les conteneurs qui démarrent automatiquement et dans quel ordre. Ceci est particulièrement utile si vous avez des conteneurs qui dépendent d'autres (comme un service de base de données ou un service %%VPN|vpn-tunnel%%).
+Unraid gives you flexible control over which containers start automatically and in what order. This is especially useful if you have containers that depend on others (such as a database or %%VPN|vpn-tunnel%% service).
 
 Pour garantir qu'un conteneur démarre automatiquement au démarrage de l'%%array|array%% :
 
@@ -79,7 +81,7 @@ Pour garantir qu'un conteneur démarre automatiquement au démarrage de l'%%arra
 
 ### Personnaliser l'ordre et les délais de démarrage
 
-Par défaut, Unraid démarre tous les conteneurs en démarrage automatique le plus rapidement possible, dans l'ordre où ils apparaissent dans l'onglet Docker. Vous pouvez personnaliser cet ordre et ajouter des temps d'attente entre les démarrages des conteneurs :
+By default, Unraid starts all auto-start containers as quickly as possible, in the order they appear on the Docker tab. You can customize this order and add wait times between container startups:
 
 1. Sur l'onglet **Docker**, déverrouillez la liste des conteneurs en utilisant l'icône de cadenas.
 2. Faites glisser et déposez les conteneurs pour réorganiser leur ordre.
@@ -88,7 +90,9 @@ Par défaut, Unraid démarre tous les conteneurs en démarrage automatique le pl
    - Utilisez l'essai et l'erreur pour déterminer les meilleurs temps d'attente pour votre configuration.
 
 :::tip
+
 Définir l'ordre correct et les temps d'attente est particulièrement important pour les conteneurs qui dépendent de services fournis par d'autres (par exemple, démarrer une base de données avant une application qui l'utilise, ou un %%VPN|vpn-tunnel%% avant des applications dépendantes).
+
 :::
 
 ### Tester votre séquence de démarrage
@@ -101,45 +105,49 @@ Bien qu'Unraid ne possède pas de fonctionnalité dédiée de "test de séquence
 4. Ajustez l'ordre de démarrage ou les temps d'attente si nécessaire.
 
 :::important
+
 Testez votre séquence de démarrage après avoir modifié les dépendances de conteneurs ou ajouté de nouveaux services, surtout si votre configuration repose sur un timing de démarrage spécifique.
+
 :::
 
 ---
 
 ## Contrôler vos conteneurs
 
-Une fois que vous avez créé et démarré votre conteneur Docker, sa gestion est facile via le %%WebGUI|web-gui%%. Ce guide vous expliquera comment utiliser le menu contextuel, comprendre les indicateurs de santé du conteneur et accéder aux mappages de volumes dans votre conteneur.
+Once you've created and started your Docker container, managing it is easy through the %%WebGUI|web-gui%%. This guide will walk you through using the context menu, understanding container health indicators, and accessing volume mappings within your container.
 
-Pour accéder au menu contextuel du conteneur, allez dans l'onglet **Docker** ou **Dashboard** et cliquez sur l'icône du conteneur que vous souhaitez gérer. Ce menu offre un accès simple aux actions courantes :
+To access the container's context menu, go to the **Docker** or **Dashboard** tab and click on the container icon you want to manage. This menu offers straightforward access to common actions:
 
 <div style={{ margin: 'auto', maxWidth: '286px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
   ![Docker Guide - Controlling](/img/Dockerguide-controlling.png)
 </div>
 
-| Option             | Description                                                                                                                                          |
-| ------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **WebUI**          | Ouvre l'interface web du conteneur dans un nouvel onglet du navigateur (si disponible).                                                              |
-| **Console**        | Ouvre une interface en ligne de commande pour interagir directement avec le conteneur.                                                               |
-| **Arrêter**        | Arrête le conteneur en cours d'exécution.                                                                                                            |
-| **Pause**          | Met en pause le conteneur, arrêtant temporairement tous les processus.                                                                               |
-| **Redémarrer**     | Redémarre le conteneur, appliquant tout changement de configuration.                                                                                 |
-| **Journaux**       | Affiche la sortie des journaux du conteneur pour le dépannage.                                                                                       |
-| **Modifier**       | Modifiez les paramètres du conteneur, tels que les mappages de ports ou de volumes. Les changements s'appliquent immédiatement après enregistrement. |
-| **Supprimer**      | Supprime le conteneur. Vous pouvez choisir de retirer seulement le conteneur ou également supprimer son image.                                       |
-| **Page du projet** | Ouvre la page de projet du conteneur pour la documentation et le support.                                                                            |
-| **Support**        | Fournit l'accès aux ressources de support et d'aide pour le conteneur.                                                                               |
-| **Plus d'infos**   | Affiche des informations supplémentaires sur le conteneur et sa configuration.                                                                       |
+| Option             | Description                                                                                         |
+| ------------------ | --------------------------------------------------------------------------------------------------- |
+| **WebUI**          | Opens the container's web interface in a new browser tab (if available).                            |
+| **Console**        | Opens a command-line interface to interact with the container directly.                             |
+| **Stop**           | Stops the running container.                                                                        |
+| **Pause**          | Pauses the container, temporarily halting all processes.                                            |
+| **Restart**        | Restarts the container, applying any configuration changes.                                         |
+| **Journaux**       | Shows the container's log output for troubleshooting.                                               |
+| **Modifier**       | Change container settings, such as port or volume mappings. Changes apply immediately after saving. |
+| **Supprimer**      | Deletes the container. You can choose to remove just the container or also delete its image.        |
+| **Page du projet** | Opens the container's project page for documentation and support.                                   |
+| **Support**        | Provides access to support resources and help for the container.                                    |
+| **More Info**      | Displays additional information about the container and its configuration.                          |
 
 ### Indicateur de santé
 
 Vous trouverez un indicateur de santé coloré à côté de l'icône de chaque conteneur :
 
 - 🟢 **Sain** : Indique que le conteneur fonctionne et répond comme prévu.
-- 🟡 **Unhealthy** : Le conteneur fonctionne mais a échoué à son contrôle de santé. Consultez les journaux ou les paramètres du conteneur pour plus d'informations.
-- ⚪ **No health check** : Cela signifie qu'aucun contrôle de santé n'est configuré pour le conteneur. C'est courant pour de nombreuses applications, et pas nécessairement un problème.
+- 🟡 **Unhealthy**: The container is running but has failed its health check. Investigate the logs or container settings for more information.
+- ⚪ **No health check**: This means no health check is configured for the container. It's common for many apps, and not necessarily a problem.
 
 :::note
+
 Les contrôles de santé sont définis par l'auteur du conteneur et peuvent ne pas être présents pour toutes les images.
+
 :::
 
 ---
@@ -152,39 +160,41 @@ Par exemple, si vous avez mappé `/mnt/user/media` sur l'hôte à `/unraid_media
 
 <h3>Scénarios d'exemple</h3>
 
-Voici quelques exemples montrant les configurations courantes de mappages de chemin que les utilisateurs ont fréquemment besoin lors de la configuration de conteneurs Docker. Ils démontrent comment traduire entre les chemins du système de fichiers hôte d'Unraid et les chemins internes du conteneur, vous aidant à configurer correctement les applications.
+Here are some examples showing common path mapping configurations that users frequently need when setting up Docker containers. They demonstrate how to translate between Unraid's host file system paths and the container's internal paths, helping you configure applications correctly.
 
-- **Serveur multimédia :**
-  Chemin hôte : `/mnt/user/media`\
-  Chemin du conteneur : `/unraid_media`
+- **Media server:**
+  Host path: `/mnt/user/media`\
+  Container path: `/unraid_media`
 
-  Dans l'application, définissez l'emplacement de votre bibliothèque multimédia sur `/unraid_media`.
+  In the app, set your media library location to `/unraid_media`.
 
-- **Stockage d'appdata :**
-  Chemin hôte : `/mnt/user/appdata/myapp`\
-  Chemin du conteneur : `/config`
+- **Appdata storage:**
+  Host path: `/mnt/user/appdata/myapp`\
+  Container path: `/config`
 
-  Dans l'application, utilisez `/config` pour le stockage de la configuration.
+  In the app, use `/config` for configuration storage.
 
 - **Multiple %%user shares|user-share%%:**
   Host path: `/mnt/user/media` → Container path: `/media`\
   Host path: `/mnt/user/data` → Container path: `/data`
 
-  Référencez `/media` ou `/data` dans l'application selon les besoins.
+  Reference `/media` or `/data` in the application as needed.
 
 :::important[Best pratique]
+
 Utilisez toujours le [mode d'accès](../manage-storage/shares.mdx) le plus restrictif (lecture seule ou lecture/écriture) qui permet à votre conteneur de fonctionner correctement.
+
 :::
 
 ---
 
 ## Planifier le démarrage et l'arrêt
 
-Unraid ne prend pas en charge nativement les actions de démarrage ou d'arrêt planifiées pour les **conteneurs Docker**, mais vous pouvez facilement automatiser ce processus en utilisant le [plugin **User Scripts**](../customize-your-experience/plugins.mdx). Cet outil puissant vous permet d'exécuter des scripts personnalisés à intervalles réguliers, permettant un contrôle automatique de vos conteneurs.
+Unraid does not natively support scheduled start or stop actions for **Docker containers**, but you can easily automate this process using the [**User Scripts plugin**](../customize-your-experience/plugins.mdx). This powerful tool allows you to run custom scripts on a schedule, enabling automatic control of your containers.
 
 ### Plugin User Scripts
 
-Le plugin **User Scripts** vous permet de créer, gérer et programmer des scripts shell personnalisés directement depuis le %%WebGUI|web-gui%%. Vous pouvez l'utiliser pour diverses tâches d'automatisation, telles que le démarrage ou l'arrêt des conteneurs, la sauvegarde des données ou l'exécution de routines de maintenance.
+The **User Scripts plugin** allows you to create, manage, and schedule custom shell scripts directly from the %%WebGUI|web-gui%%. You can use it for various automation tasks, such as starting or stopping containers, backing up data, or running maintenance routines.
 
 - Installez le plugin depuis l'onglet **Apps** si vous ne l'avez pas encore fait.
 - Accédez-y via ***Paramètres → User Scripts*** pour créer et gérer vos scripts.
@@ -197,12 +207,14 @@ Pour automatiser le démarrage ou l'arrêt de vos conteneurs selon un planning :
 
 1. Installez le **plugin User Scripts** depuis l'onglet **Apps**.
 2. Accédez à ***Paramètres → User Scripts***.
-3. Créez un nouveau script pour chaque planification unique. Vous pouvez inclure des commandes pour plusieurs conteneurs dans un seul script s'ils partagent le même programme.
+3. Create a new script for each unique schedule. You can include commands for multiple containers in a single script if they share the same schedule.
 4. Définissez le planning à l'aide du menu déroulant ou utilisez une expression `cron` personnalisée pour des options de chronométrage plus avancées.
 5. Cliquez sur **Appliquer** pour enregistrer et activer votre script.
 
 :::tip
-Les expressions Cron permettent une planification flexible au-delà des options intégrées. Par exemple, `0 3 * * 1` exécute votre script à 3h00 chaque lundi matin.
+
+Cron expressions enable flexible scheduling beyond the built-in options. For example, `0 3 * * 1` runs your script at 3:00 AM every Monday.
+
 :::
 
 ### Exemples de commandes
@@ -230,5 +242,7 @@ Les expressions Cron permettent une planification flexible au-delà des options 
 </Tabs>
 
 :::tip
+
 Vous pouvez trouver le nom du conteneur dans l'onglet Docker ou en visualisant la commande `docker run` sur l'écran de configuration du conteneur.
+
 :::
