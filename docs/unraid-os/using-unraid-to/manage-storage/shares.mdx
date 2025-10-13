@@ -30,7 +30,9 @@ It's important to remember that both share types present different views of the 
 When you start services like Docker or VM Manager, Unraid automatically creates a [set of default user shares](#default-shares) designed to support common plugins, Docker containers, and **virtual machines (VMs)**. You can conveniently create additional shares for your personal data as needed.
 
 :::note
+
 To manage your shares, simply navigate to the **Shares** tab in the WebGUI. Here, you can easily enable or disable shares through ***Settings → Global Share Settings***. By default, %%user shares|user-share%% are enabled, providing a straightforward starting point for your file organization.
+
 :::
 
 ---
@@ -54,7 +56,9 @@ Any top-level folder that is manually created on a drive is automatically recogn
 At the Linux level, %%User shares|user-share%% are accessible under `/mnt/user`, which combines files from both the %%array|array%% and %%pools|cache-pool%%. This logical view overlays the physical file system, meaning files are also visible through **Disk Shares** at the drive level.
 
 :::warning
+
 The deprecated `/mnt/user0` mount point (which excludes %%pool|cache-pool%% files) may be removed in future Unraid releases.
+
 :::
 
 ### Storage allocation
@@ -62,11 +66,13 @@ The deprecated `/mnt/user0` mount point (which excludes %%pool|cache-pool%% file
 The physical drive that stores a file is determined by share settings such as **%%Allocation Method|allocation-method%%**, **%%Included/Excluded Disks|included-or-excluded-disks%%**, and **%%Split Level|split-level%%**. Changes to these settings will affect only new files; existing files will remain untouched unless moved manually.
 
 :::caution[Critical]
+
 **Do not mix User Shares and Disk Shares**
 
 Never copy or move files directly between a **user share** and a **disk share** (for example, between `/mnt/user/share` and `/mnt/disk1/share`) - especially if the folder names are the same. This can cause file corruption or permanent data loss.
 
 For safe file management practices and more details, see the [Disk share guidelines](#disk-share-guidelines) below.
+
 :::
 
 ### Add a share
@@ -80,7 +86,9 @@ To add a share:
 2. **Choose a share name:** Pick a unique name for your share, like `Media` or `Documents`.
 
 :::important[Share names]
+
 Even though network shares (%%SMB|samba%%) don’t care about capitalization (e.g., `MEDIA` is the same as `media`), Linux file systems do. Avoid using names that are identical but only differ in case to prevent issues.
+
 :::
 
 3. **Optional settings:**
@@ -106,7 +114,9 @@ Even though network shares (%%SMB|samba%%) don’t care about capitalization (e.
    (For more details, see [Included or excluded disks](#included-or-excluded-disks).)
 
 :::tip
+
 You can configure either **Included** or **Excluded Disks**, but not both at the same time.
+
 :::
 
 7. **Mover Settings (if needed)**
@@ -118,13 +128,17 @@ You can configure either **Included** or **Excluded Disks**, but not both at the
 8. **Complete the process:** Click **Add Share** to finish setting up your new share.
 
 :::important
+
 By default, a new share will not be shared over the network. You must configure [network access](../../system-administration/secure-your-server/security-fundamentals.mdx#managing-network-visibility-of-shares) after the share is created.
+
 :::
 
 ### Delete a share
 
 :::important
+
 To prevent any potential data loss, shares that contain data cannot be deleted. Therefore, you should either delete or relocate all contents within the share first. Always double-check to confirm that the share is empty before proceeding with its removal for a secure process.
+
 :::
 
 **Shares containing data**
@@ -154,13 +168,16 @@ For shares containing data:
   - The `rm -rf` command will permanently delete files. Double-check before using it.
   - Make sure no Docker or VM services are using the share before you delete it.
   :::
+
 </details>
 
 :::note[Alternative Method]
+
 If you can access the share over the network:
 
 - Use **Windows Explorer** (%%SMB|samba%%) or **macOS Finder** (%%AFP|AFP%%/%%SMB|samba%%) to connect to the share.
 - Manually delete the files, then remove the share through the **WebGUI**.
+
 :::
 
 2. **Delete the share:**
@@ -188,6 +205,7 @@ The **Minimum Free Space** setting works in conjunction with the **%%allocation 
   <summary><strong>How it works</strong> - Click to expand/collapse</summary>
 
   When transferring a file (e.g., `file.eg`), Unraid selects a disk based on available settings but cannot predict the final size of the file. If the chosen disk runs out of space during the transfer, the operation will fail with a "disk full" error. To prevent this, set the **Minimum Free Space** to a value that is larger than your largest file. This ensures that Unraid avoids disks that cannot accommodate the entire file.
+
 </details>
 
 <h4>Recommendation</h4>
@@ -204,11 +222,15 @@ This buffer accounts for variations in file sizes and helps prevent transfer fai
 - New %%user shares|user-share%% default to 10% of the disk’s total capacity.
 
 :::warning
+
 Always configure **Minimum Free Space** when using the *fill-up* %%allocation method|allocation-method%%. If you do not set it, you may encounter "disk full" errors during write operations.
+
 :::
 
 :::caution
+
 There is a separate **Minimum Free Space** setting for **%%cache pools|cache-pool%%**. You can access this by going to the **Main** tab and clicking on a %%pool|cache-pool%%. Make sure to set this value higher than your largest file to avoid overfilling, especially for shares configured with *Yes* or *Prefer* cache modes.
+
 :::
 
 <h4>Limitations</h4>
@@ -241,7 +263,9 @@ Unraid’s storage management lets you control where new files are written and h
 Unraid provides a straightforward way to manage file placement between **%%cache pools|cache-pool%%** and the **%%array|array%%**, allowing you to optimize performance and manage your data effectively. The key is to set up your share settings based on your preferred data flow and let the **%%Mover|mover%%** handle file transfers automatically according to its schedule.
 
 :::tip[Scheduling the Mover]
+
 You can configure the [**%%Mover|mover%%** schedule](../../getting-started/set-up-unraid/customize-unraid-settings.mdx#scheduler) by going to **Settings → Scheduler → Mover Settings**. Running it automatically during off-peak hours helps move files between the %%cache|cache%% and %%array|array%% without requiring manual action.
+
 :::
 
 #### Cache to array
@@ -273,13 +297,17 @@ You can configure the [**%%Mover|mover%%** schedule](../../getting-started/set-u
 </Tabs>
 
 :::tip[Enabling Mover logging for troubleshooting]
+
 If you run into issues with file movement, you can enable **Mover logging** through the ***Settings → Scheduler → Mover Settings*** page. This logs every file moved and can be viewed in ***Tools → System Log***.
+
 :::
 
 :::caution[Critical steps for both directions]
+
 - Make sure your %%parity|parity%% is valid before moving files from the %%array|array%% to the %%cache|cache%%.
 - If dealing with large datasets, keep an eye on %%Mover|mover%% activity via the logs.
 - If files appear to be "stuck," consider temporarily disabling Docker and the VM Manager, then running the %%Mover|mover%% manually via ***Main → Array Operation → Move***.
+
 :::
 
 ---
@@ -311,6 +339,7 @@ There are three straightforward options you can select for how the system alloca
     :::note
     High-water is the default method and works well for most users. It reduces drive thrashing compared to "Most-free."
     :::
+
   </TabItem>
 
   <TabItem value="most-free" label="Most-Free">
@@ -332,6 +361,7 @@ There are three straightforward options you can select for how the system alloca
     :::tip
     Combine with **%%split level|split-level%%** settings to group related files despite frequent disk switching.
     :::
+
   </TabItem>
 
   <TabItem value="fill-up" label="Fill-Up">
@@ -353,6 +383,7 @@ There are three straightforward options you can select for how the system alloca
     :::caution
     Without **Minimum Free Space** configured, "disk full" errors will occur when a drive nears capacity.
     :::
+
   </TabItem>
 </Tabs>
 
@@ -371,6 +402,7 @@ The **Split Level** setting in Unraid helps manage how files and folders are org
     <h4>Use Case</h4>
 
     Best for general data shares where folder structure is not critical, such as downloads or mixed media libraries. Allows maximum flexibility for file placement and disk utilization.
+
   </TabItem>
 
   <TabItem value="auto-top" label="Automatically Split Only Top Level">
@@ -381,6 +413,7 @@ The **Split Level** setting in Unraid helps manage how files and folders are org
     <h4>Use Case</h4>
 
     Ideal for media libraries (e.g., Movies/Title) where you want all files for a specific subfolder (like a movie or TV show) to remain together on the same disk.
+
   </TabItem>
 
   <TabItem value="auto-n" label="Automatically Split Top 'N' Levels">
@@ -391,6 +424,7 @@ The **Split Level** setting in Unraid helps manage how files and folders are org
     <h4>Use Case</h4>
 
     Useful for complex folder structures, such as nested project directories, where you want to keep related content grouped together beyond just the top level.
+
   </TabItem>
 
   <TabItem value="manual" label="Manual (No Automatic Splitting)">
@@ -401,11 +435,14 @@ The **Split Level** setting in Unraid helps manage how files and folders are org
     <h4>Use Case</h4>
 
     Best for advanced users who want full manual control over file placement, or for archival data where folder structure must remain fixed.
+
   </TabItem>
 </Tabs>
 
 :::important
+
 If there are conflicts between **Minimum Free Space**, **Split Level**, and **%%Allocation Method|allocation-method%%**, the **Split Level** setting takes priority. This may result in "out of space" errors, even if other drives have available space.
+
 :::
 
 ---
@@ -421,7 +458,9 @@ Unraid first checks any included disks, then looks at excluded disks to determin
 </div>
 
 :::important
+
 The settings for %%included and excluded disks|included-or-excluded-disks%% only affect where new files can be saved. Any existing files in folders that match your share name will still be accessible for reading, even if they’re on a different disk.
+
 :::
 
 <Tabs>
@@ -433,6 +472,7 @@ The settings for %%included and excluded disks|included-or-excluded-disks%% only
     <h4>Use Case</h4>
 
     Use this setting if you want to restrict a share to certain disks, such as keeping important documents on newer or higher-capacity drives, or isolating a media library to specific disks for performance or organizational reasons.
+
   </TabItem>
 
   <TabItem value="exclude" label="Excluded Disks">
@@ -443,6 +483,7 @@ The settings for %%included and excluded disks|included-or-excluded-disks%% only
     <h4>Use Case</h4>
 
     Use this setting to prevent a share from using certain disks, such as excluding older drives, slower disks, or drives reserved for other data types.
+
   </TabItem>
 </Tabs>
 
@@ -453,7 +494,9 @@ The settings for %%included and excluded disks|included-or-excluded-disks%% only
 When you use Unraid with **Docker** or **Virtual Machines (VMs)**, it automatically creates some default shares.
 
 :::important
+
 These shares are only created after you start their respective services (Docker or VM Manager). If you don't see these shares, make sure Docker and/or VM Manager are enabled and running.
+
 :::
 
 You don’t have to use these shares if you don’t want to, and you can remove them if you prefer, but we usually recommend keeping them for convenience. These shares help keep things organized and make it easier for everyone to get support if they run into issues.
@@ -466,7 +509,9 @@ Here’s a quick overview of what each default share is for:
 - `isos`: This is where you can save CD ISO images that you want to use with your VMs.
 
 :::important
+
 It’s best not to change the permissions on most of these default shares because doing so might cause issues with how Docker containers and VMs work. The only share where changing permissions is recommended is the `isos` share, as this one can be accessed over the network for adding new ISO files for virtual machines.
+
 :::
 
 ---
@@ -489,15 +534,19 @@ Once you enable them, you'll notice disk shares in the Unraid GUI under a sectio
 - **Pools of drives:** If you have multiple drives grouped together, they will show up as `/mnt/pool-name`. The most common %%pools|cache-pool%% is called `cache`, but you can name your %%pools|cache-pool%% however you like.
 
 :::important
+
 The Unraid flash device, which stores your Unraid settings, is not treated as a disk share. If you want it to be accessible over the network, you can set it up as a share named 'flash'. This device is mounted at `/boot` in Linux.
 
 For security, it's best to keep your shares in *Private* mode and only grant access to trusted users.
+
 :::
 
 ### Disk share guidelines
 
 :::danger[Important Reminder]
+
 **Never copy files directly between a user share and a disk share** if their folder names are the same. This could lead to files being corrupted or deleted, resulting in permanent data loss.
+
 :::
 
 **User shares** and **disk shares** may look different in the interface but can point to the same files on the disk. Linux commands like `cp` or `rsync` cannot always tell the difference, which can accidentally lead to overwriting or deleting files.
@@ -564,7 +613,9 @@ If you prefer a graphical user interface, you can use Docker containers like [Kr
 3. **Connect to remote shares** within Krusader, and use drag-and-drop or copy-paste to transfer files between the network share and your Unraid %%array|array%%.
 
 :::info
+
 Other popular file manager containers include [**Double Commander**](https://unraid.net/community/apps?q=double+commander#r:~:text=of%201%20App-,doublecommander,-Tools%20/%20Utilities%2C) and [**CloudCommander**](https://unraid.net/community/apps?q=cloudcommander#r:~:text=of%201%20App-,CloudCommander,-Tools%20/%20Utilities%2C), both available through Community Applications.
+
 :::
 
 ### Command-line methods
@@ -602,10 +653,13 @@ For advanced users or those using automation, you can also utilize command-line 
      umount /work
      rmdir /work
      ```
+
 </details>
 
 :::caution
+
 When transferring files with special or international characters, always mount the share with the `iocharset=utf8` option. Failing to do so may result in incorrect filenames or unreadable files on other platforms.
 
 Also, if you copy files as `root` via terminal, they may have restrictive permissions. If this occurs, use the **New Permissions** tool from the **Tools** menu in the WebGUI or the **Docker Safe New Perms** if you're dealing with Docker-involved shares to reset permissions, ensuring all users have network access.
+
 :::
