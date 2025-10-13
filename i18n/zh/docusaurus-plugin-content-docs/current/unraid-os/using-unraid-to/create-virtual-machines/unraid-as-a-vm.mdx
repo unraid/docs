@@ -15,35 +15,37 @@ import TabItem from '@theme/TabItem';
 - 创建隔离环境以进行故障排除或培训。
 
 :::caution[Important 注意事项]
+
 - Lime Technology 不正式支持用于生产数据的此配置。
 - 虚拟化引入了一些开销；相比直接在硬件上运行，性能会降低。
-- 您需要为虚拟机准备一个单独的、有效的许可证密钥。
+- You need a separate, valid license key for the %%VM|vm%%.
+
 :::
 
 :::note\[Prerequisites]
 
-- 为虚拟机准备有效的 Unraid 许可证密钥
-- 专用 USB 闪存驱动器（使用与主机引导驱动器不同的制造商）
-- 虚拟机需要 Unraid 版本 6.4.0 或更高版本（旧版本需要手动设置）
+- A valid Unraid license key for the %%VM|vm%%
+- A dedicated USB flash drive (use a different manufacturer than your host's boot drive)
+- Unraid version 6.4.0 or higher for the %%VM|vm%% (older versions require manual setup)
 
 :::
 
-要启动 Unraid 作为虚拟机：
+To get Unraid up and running as a %%VM|vm%%:
 
 <details>
-  <summary><strong>1. 准备虚拟机的闪存驱动器</strong> - 点击展开/折叠</summary>
+  <summary><strong>1. Prepare the flash drive for the VM</strong> - Click to expand/collapse</summary>
 
-  准备好您的闪存驱动器对于无缝和可靠的%%VM|虚拟机%%启动过程至关重要。以下是如何通过独特和正确配置的启动设备来设置您的%%VM|虚拟机%%环境。
+  Getting your flash drive ready is crucial for a seamless and dependable %%VM|vm%% boot process. Here's how to set up your %%VM|vm%% environment with a unique and properly configured boot device.
 
-  1. 在您的桌面上使用 [Unraid USB Creator](https://unraid.net/download) 工具准备闪存驱动器：
-     - 选择 **允许 EFI 启动**。
-     - 设置唯一的服务器名称（例如，如果您的主机是 `Tower`，则设置 `TowerVM`）。
-     - 将映像写入闪存驱动器。
+  1. Use the [Unraid USB Creator](https://unraid.net/download) tool on your desktop to prepare the flash drive:
+     - Select **Allow EFI boot**.
+     - Set a unique server name (like `TowerVM` if your host is `Tower`).
+     - Write the image to the flash drive.
 
-  2. 修改配置文件：
-     - 将闪存驱动器标签从 `UNRAID` 重命名为唯一名称（例如，`UNRAID-VM`）。
+  2. Modify configuration files:
+     - Rename the flash drive label from `UNRAID` to a unique name (e.g., `UNRAID-VM`).
 
-     - 编辑闪存驱动器上的 `syslinux/syslinux.cfg` 文件：
+     - Edit the `syslinux/syslinux.cfg` file on the flash drive:
 
        ```
        label Unraid OS
@@ -52,89 +54,89 @@ import TabItem from '@theme/TabItem';
          append unraidlabel=UNRAID-VM initrd=/bzroot
        ```
 
-     - 在文件的所有启动模式（GUI/安全模式）下进行此更改。
+     - Make this change in all boot modes (GUI/Safe Mode) within the file.
 
-     - 将更新后的 `syslinux.cfg` 文件复制到 `EFI/boot/syslinux.cfg`
+     - Copy the updated `syslinux.cfg` file to `EFI/boot/syslinux.cfg`
 
-  3. 在闪存驱动器的根目录中创建一个名为 `startup.nsh` 的文件，其中包含以下内容：
+  3. Create a file named `startup.nsh` in the root of the flash drive with this content:
 
      ```
      \EFI\boot\bootx64.efi
      ```
 
-  4. 请注意闪存驱动器的制造商（稍后在虚拟机设置中需要）。
+  4. Note the manufacturer of the flash drive (you'll need this for %%VM|vm%% setup later).
 </details>
 
 <details>
-  <summary><strong>2. 在主机上设置虚拟机</strong> - 点击展开/折叠</summary>
+  <summary><strong>2. Set up the VM on the host</strong> - Click to expand/collapse</summary>
 
-  配置 Unraid 虚拟机需要一些特定设置以确保正常运行。
+  Configuring the Unraid %%VM|vm%% requires some specific settings to ensure proper operation.
 
-  创建虚拟机模板：
+  To create the %%VM|vm%% template:
 
-  1. 在主机 Unraid 服务器上，转到 ***设置 → 虚拟机管理***，确保虚拟机已启用。
+  1. On the host Unraid server, go to ***Settings → VM Manager*** and ensure that %%VM|vm%% are enabled.
   2. 导航至 **VMs** 标签并点击 **添加 VM**。
-  3. 选择 **Slackware** 模板，因为它与 Unraid 最为接近。
-  4. （可选）如果有可用的替换选项，将 Slackware 图标替换为 Unraid 图标。
-  5. 命名虚拟机（例如，`UNRAID-VM`）。
-  6. （可选）添加描述，如\*“Unraid 测试环境 - vX.XX.X。”\*
-  7. 分配资源：
-     - 处理器：2-4 核心
-     - RAM：4-8 GB（设置初始值和最大值相同）
-  8. 将 **机器类型** 设置为 **Q35（最新）**。
-  9. 将 **BIOS** 设置为 **OVMF** 和 **USB 控制器** 设置为 **3.0（QEMU XHCI）**。
-  10. 配置虚拟磁盘：
-      - 为缓存/数据添加 %%vDisks|vdisk%%，使用 **RAW** 格式和 **SATA** 总线。
-      - 以不同的大小设置磁盘以便于识别（例如，%%parity|parity%% > 数据 > %%cache|cache%%）。
-  11. 保留图形、声音和网络的默认设置。
-  12. 在 **USB 设备** 下，根据 **制造商** 而不是标签选择闪存驱动器。
+  3. Select the **Slackware** template, as it's the closest match to Unraid.
+  4. (Optional) If available, replace the Slackware icon with the Unraid icon.
+  5. Name the %%VM|vm%% (e.g., `UNRAID-VM`).
+  6. (Optional) Add a description, such as *"Unraid test environment - vX.XX.X."*
+  7. Assign resources:
+     - CPUs: 2-4 cores
+     - RAM: 4-8 GB (set Initial and Max to the same value)
+  8. Set **Machine type** to **Q35 (latest)**.
+  9. Set **BIOS** to **OVMF** and **USB controller** to **3.0 (QEMU XHCI)**.
+  10. Configure virtual disks:
+      - Add %%vDisks|vdisk%% for cache/data using **RAW** format and **SATA** bus.
+      - Size disks differently for easy identification (e.g., %%parity|parity%% > data > %%cache|cache%%).
+  11. Leave graphics, sound, and network at their default settings.
+  12. Under **USB devices**, select the flash drive by **manufacturer**, not label.
 
   :::important
-  %%VM|虚拟机%%的闪存驱动器必须与主机的启动驱动器来自不同的制造商。如果它们相同，%%VM|虚拟机%%驱动器将不可见。
+  The %%VM|vm%%'s flash drive must be from a different manufacturer than the host's boot drive. If they match, the %%VM|vm%% drive won't be visible.
   :::
 </details>
 
 <details>
-  <summary><strong>3. 创建并启动虚拟机</strong> - 点击展开/折叠</summary>
+  <summary><strong>3. Create and start the VM</strong> - Click to expand/collapse</summary>
 
-  在配置后启动虚拟机：
+  To launch the %%VM|vm%% after configuration:
 
-  1. 取消选中 **创建后启动虚拟机** 如果您希望手动控制。
-  2. 点击 **创建**。
-  3. 在 **虚拟机** 选项卡中，点击 Unraid 虚拟机图标并选择 **从控制台开始（%%VNC|vnc-session%%）**。
-  4. 在 %%VNC|vnc-session%% 控制台中观看启动过程，并在登录前注意显示的虚拟机 IP 地址。
+  1. Uncheck **Start VM after creation** if you want manual control.
+  2. Click **Create**.
+  3. On the **VMs** tab, click the Unraid %%VM|vm%% icon and select **Start with console (%%VNC|vnc-session%%)**.
+  4. Watch the boot process in the %%VNC|vnc-session%% console and note the %%VM|vm%%'s IP address displayed before login.
 </details>
 
 <details>
-  <summary><strong>4. 配置虚拟机</strong> - 点击展开/折叠</summary>
+  <summary><strong>4. Configure the VM</strong> - Click to expand/collapse</summary>
 
-  虚拟机运行后，与物理 Unraid 服务器一样进行设置：
+  Once the %%VM|vm%% is running, set it up like a physical Unraid server:
 
-  1. 访问虚拟机的 **WebGUI**，地址为 `http://[VM-IP]`。
-  2. 转到 ***设置 → 标识***：
-     - 设置唯一的 **服务器名称**（例如，`Unraid-VM`）。
-     - 添加描述如“开发实例”。
-  3. （可选）转到 ***设置 → 显示设置*** 并选择另一种配色主题以区别于主机。
-  4. 进入 ***设置 → %%SMB|samba%% 设置 → 工作组设置*** 并将 **本地主机** 设置为 *否* 以避免冲突。
-  5. 对于 UPS 直通（如果主机有 UPS）：
-     - 在虚拟机上进入 ***设置 → UPS***。
-     - 将 **UPS 电缆** 设置为 *Ether*。
-     - 将 **UPS 类型** 设置为 *net*。
-     - 在 **设备** 中输入主机的 IP。
-     - 配置 **运行时间** 以在主机之前关闭虚拟机。
-  6. 使用配置好的设备启动 %%array|array%%。
-  7. 安装 [**社区应用程序**](https://unraid.net/community/apps) 进行插件/Docker 测试。
-  8. 通过 ***工具 → 更新操作系统*** 更新虚拟机，就像物理服务器一样。
+  1. Access the %%VM|vm%%'s **%%WebGUI|web-gui%%** at `http://[VM-IP]`.
+  2. Go to ***Settings → Identification***:
+     - Set a unique **Server name** (e.g., `Unraid-VM`).
+     - Add a description like "Development instance."
+  3. (Optional) Go to ***Settings → Display settings*** and choose a different color theme to distinguish it from the host.
+  4. Go to ***Settings → %%SMB|samba%% settings → Workgroup settings*** and set **Local master** to *No* to avoid conflicts.
+  5. For UPS passthrough (if the host has UPS):
+     - Go to ***Settings → UPS*** on the %%VM|vm%%.
+     - Set **UPS cable** to *Ether*.
+     - Set **UPS type** to *net*.
+     - Enter the host's IP in **Device**.
+     - Configure **Runtime** to shut down the %%VM|vm%% before the host.
+  6. Start the %%array|array%% with your configured devices.
+  7. Install [**Community Applications**](https://unraid.net/community/apps) for plugin/Docker testing.
+  8. Update the %%VM|vm%% via ***Tools → Update OS***, just like a physical server.
 </details>
 
 ### 故障排除
 
-如果您在修改虚拟机设置后遇到与 USB 闪存设备相关的*执行错误*：
+If you encounter an *Execution Error* related to the USB flash device after editing %%VM|vm%% settings:
 
-1. 编辑虚拟机并切换到 **XML 视图**。
-2. 找到定义闪存设备的 `<hostdev>` 节点（通常靠近末尾）。
-3. 删除整个 `<hostdev>...</hostdev>` 块。
+1. Edit the %%VM|vm%% and switch to **XML view**.
+2. Locate the `<hostdev>` node that defines the flash device (usually near the end).
+3. Delete the entire `<hostdev>...</hostdev>` block.
 4. 点击 **Update**。
-5. 在 **表单视图** 中重新编辑虚拟机。
-6. 在 **USB 设备** 下重新选择闪存驱动器。
-7. 再次点击**更新**。%%VM|虚拟机%% 现在应该正常启动。
+5. Re-edit the %%VM|vm%% in **Form view**.
+6. Re-select the flash drive under **USB devices**.
+7. Click **Update** again. The %%VM|vm%% should now start normally.
