@@ -8,82 +8,82 @@ import TabItem from '@theme/TabItem';
 
 # VM 转换与迁移
 
-When consolidating hardware, preserving legacy systems, or testing upgrades in a virtual environment, you may need to convert a physical disk or migrate an existing system into a %%virtual machine|vm%% on Unraid. This process applies to both Linux and Windows systems, enabling you to run your installation as a %%VM|vm%% within your Unraid server.
+在合并硬件、保留遗留系统或在虚拟环境中进行升级测试时，您可能需要将物理磁盘转换或将现有系统迁移到 Unraid 上的%%虚拟机|vm%%。这个过程适用于Linux和Windows系统，使您可以在Unraid服务器中作为%%VM|vm%%运行您的安装。
 
 :::note\[Prerequisites]
 
 - 您的 Unraid 服务器应满足[虚拟化的最低硬件要求](./overview-and-system-prep.mdx#requirements)（见下表）。
 - 源磁盘必须通过 SATA、USB 或作为未分配设备连接到您的 Unraid 服务器。
 - 确保您的 **%%array|array%%** 或 **%%cache pool|cache-pool%%** 有足够的可用空间来容纳新的虚拟磁盘映像。
-- 在开始转换或迁移过程之前，备份任何重要数据。
+- Backup any critical data before starting the conversion or migration process.
 
 :::
 
-## 硬件要求
+## Hardware requirements
 
-| 组件          | 最低要求                                                     | 建议以获得最佳性能                                           |
-| ----------- | -------------------------------------------------------- | --------------------------------------------------- |
-| **CPU**     | 启用硬件虚拟化的64位（%%Intel VT-X\|intel-vt-x%%/%%AMD-V\|amd-v%%） | 具有 VT-d/AMD-Vi 直通功能的多核 CPU                          |
-| **内存**      | 8 GB                                                     | 16 GB 或更多                                           |
-| **存储**      | SSD 或 NVMe %%cache pool\|cache-pool%% 需要足够的空间            | 用于 %%VM\|vm%% 存储的专用 NVMe %%cache pool\|cache-pool%% |
-| **主板/BIOS** | 启用虚拟化的%%UEFI\|uefi%%                                     | 启用%%IOMMU\|iommu%%/VT-d/AMD-Vi的%%UEFI\|uefi%%       |
+| 组件                   | 最低要求                                                                              | Recommended for best performance                                 |
+| -------------------- | --------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
+| **CPU**              | 64-bit with hardware virtualization (%%Intel VT-X\|intel-vt-x%%/%%AMD-V\|amd-v%%) | Multi-core CPU with VT-d/AMD-Vi for passthrough                  |
+| **RAM**              | 8 GB                                                                              | 16 GB or more                                                    |
+| **Storage**          | SSD or NVMe %%cache pool\|cache-pool%% with sufficient space                      | Dedicated NVMe %%cache pool\|cache-pool%% for %%VM\|vm%% storage |
+| **Motherboard/BIOS** | %%UEFI\|uefi%% with virtualization enabled                                        | %%UEFI\|uefi%% with %%IOMMU\|iommu%%/VT-d/AMD-Vi enabled         |
 
 ---
 
-## 将物理磁盘转换为 VM
+## Convert a physical disk to a VM
 
-将现有的 Linux 或 Windows 系统迁移到 Unraid 服务器中的 %%虚拟机|vm%%，可以节省硬件空间，保持旧系统运行或安全地测试新升级。
+Migrating an existing Linux or Windows system into a %%virtual machine|vm%% on your Unraid server can be a great way to save hardware space, keep legacy systems running, or test new upgrades safely.
 
-将物理磁盘转换为 %%VM|vm%%：
+To convert a physical disk to a %%VM|vm%%:
 
 <Tabs>
   <TabItem value="Linux" label="Linux" default>
-    <h4>步骤 1: 准备物理磁盘</h4>
+    <h4>Step 1: Prepare the physical disk</h4>
 
-    1. 通过 SATA 或 USB 将源磁盘连接到您的 Unraid 服务器。
+    1. Connect the source disk to your Unraid server (using SATA or USB).
     2. 登录 %%WebGUI|web-gui%% (`http://tower` 或 `http://tower.local`)。
-    3. 点击**主界面**选项卡。
-    4. 启动 **%%array|array%%** 如果尚未运行。
-    5. 在 **未分配设备** 中找到您的磁盘。
-    6. 请注意设备字母（例如，`sdb`，`sdc`）和磁盘大小。您需要在您的 **%%array|array%%** 或 **%%cache pool|cache-pool%%** 上至少拥有此可用空间以创建新的 %%virtual disk|vdisk%%。
+    3. Click on the **Main** tab.
+    4. Start the **%%array|array%%** if it isn’t already running.
+    5. Find your disk under **Unassigned Devices**.
+    6. Take note of the device letter (e.g., `sdb`, `sdc`) and disk size. You’ll need at least this free space on your **%%array|array%%** or **%%cache pool|cache-pool%%** for the new %%virtual disk|vdisk%%.
 
-    <h4>步骤 2: 创建新的虚拟机</h4>
+    <h4>Step 2: Create a new virtual machine</h4>
 
-    参考[创建您的虚拟机](../create-virtual-machines/vm-setup.mdx#creating-your-own-virtual-machines)指南，但有以下例外：
+    Refer to the [Creating your own virtual machines](../create-virtual-machines/vm-setup.mdx#creating-your-own-virtual-machines) guide, with the following exceptions:
 
-    - 设置 **BIOS** 为 **OVMF**。
-      请确保指定 **VirtIO Drivers ISO** 以获得[最佳性能](./overview-and-system-prep.mdx#set-up-virtualization-preferences)。
-    - 将 %%VM|vm%% 映像存储在 **%%cache pool|cache-pool%%** 上，而不是 %%array|array%%，以获得 [最佳性能](./overview-and-system-prep.mdx#user-shares-for-virtualization)。
+    - Set the **BIOS** to **OVMF**.
+      Make sure to specify the **VirtIO Drivers ISO** for [optimal performance](./overview-and-system-prep.mdx#set-up-virtualization-preferences).
+    - Store %%VM|vm%% images on a **%%cache pool|cache-pool%%** instead of an %%array|array%% for the [best performance](./overview-and-system-prep.mdx#user-shares-for-virtualization).
 
-    <h4>步骤 3: 将物理磁盘转换为 %%虚拟磁盘|vdisk%% 映像</h4>
+    <h4>Step 3: Convert the physical disk to a %%virtual disk|vdisk%% image</h4>
 
-    打开终端 (使用 [%%SSH|ssh%%](../../system-administration/advanced-tools/command-line-interface.mdx) 或本地控制台) 并以 `root` 身份登录。
+    Open a terminal ([%%SSH|ssh%%](../../system-administration/advanced-tools/command-line-interface.mdx) or local console) and log in as `root`.
 
-    使用以下命令将物理磁盘转换为 %%虚拟磁盘|vdisk%% 映像：
+    Use the following command to convert the physical disk into a %%virtual disk|vdisk%% image:
 
     ```
     qemu-img convert -p -O raw /dev/sdX /mnt/user/[vdisk_share]/[vmname]/vdisk1.img
     ```
 
-    - **/dev/sdX**: 替换为步骤 1 中的设备字母 (例如 `/dev/sdb`)
-    - **\[vdisk\_share]**: 保存您 %%VM|vm%% 映像的共享位置
-    - **\[vmname]**: 您为您的 %%VM|vm%% 所选择的名称
+    - **/dev/sdX**: Replace with the device letter from step 1 (e.g., `/dev/sdb`)
+    - **[vdisk_share]**: The share where you save your %%VM|vm%% images
+    - **[vmname]**: The name you want for your %%VM|vm%%
 
-    **命令分解：**
+    **Command breakdown:**
 
-    - `qemu-img convert`: 此工具用于磁盘映像转换。
-    - `-p`: 显示百分比进度。
-    - `-O raw`: 输出格式设置为 raw (Unraid 默认)。
-    - `/dev/sdX`: 源是您的物理磁盘。
-    - `/mnt/user/[vdisk_share]/[vmname]/vdisk1.img`: 目标是 %%虚拟磁盘|vdisk%% 映像。
+    - `qemu-img convert`: This tool is used for disk image conversion.
+    - `-p`: Shows progress as a percentage.
+    - `-O raw`: Sets the output format to raw (Unraid's default).
+    - `/dev/sdX`: Source is your physical disk.
+    - `/mnt/user/[vdisk_share]/[vmname]/vdisk1.img`: Destination for the %%virtual disk|vdisk%% image.
 
-    等待操作完成。生成的 `.img` 文件将是您 %%VM|vm%% 的主磁盘。
+    Wait for the operation to complete. The resulting `.img` file will be the primary disk for your %%VM|vm%%.
   </TabItem>
 
   <TabItem value="Windows" label="Windows">
-    <h4>步骤 1: 编辑您的虚拟机的 XML</h4>
+    <h4>Step 1: Edit the XML for your virtual machine</h4>
 
-    - 在 %%VMs|vm%% 选项卡中，点击 %%VM|vm%% 图标并从上下文菜单中选择 **编辑 XML**。
+    - In the %%VMs|vm%% tab, click the %%VM|vm%% icon and select **Edit XML** from the context menu.
 
     - Next, scroll down the XML and find the `<target>` tag for the `<disk>` that has a `<source>` file set to `vdisk1.img`. It should look like this:
 
@@ -100,11 +100,11 @@ When consolidating hardware, preserving legacy systems, or testing upgrades in a
       </disk>
       ```
 
-    - 更改 `<target>` 标签中 **bus** 属性，从 `virtio` 改为 `ide`。
+    - To modify it, change the **bus** attribute in the `<target>` tag from `virtio` to `ide`.
 
     - Then, remove the entire `<address>` line for that `<disk>`.
 
-    - 更新后的 XML 应如下所示：
+    - Your updated XML should look like this:
 
       ```xml
 
@@ -117,41 +117,42 @@ When consolidating hardware, preserving legacy systems, or testing upgrades in a
       </disk>
       ```
 
-    - 最后，点击 **更新** 保存您对 %%虚拟机|vm%% XML 的更改。
+    - Finally, click **Update** to save your changes to the %%virtual machine|vm%%'s XML.
 
-    <h4>步骤 2: 从虚拟机内部安装 VirtIO 驱动程序（仅适用于 Windows 客户端）</h4>
+    <h4>Step 2: Install the VirtIO drivers from inside the VM (Windows guests only)</h4>
 
-    - 打开 **Windows 资源管理器**，访问 %%VirtIO|virtio%% 虚拟 CD-ROM，查看其内容。
-      - 进入 **Balloon** 文件夹。
-      - 在该文件夹中，找到适合您的 **Windows 操作系统版本** 的子文件夹（例如，`w8.1`）。
-      - 进入 **amd64** 子文件夹。
-      - 右键单击 **balloon.inf** 文件，从上下文菜单中选择 **安装**。（此操作需要启用文件扩展名可见性。）
-    - 为每个以下文件夹重复这些步骤：
+    - Open **Windows File Explorer** and go to the %%VirtIO|virtio%% virtual CD-ROM to explore its contents.
+      - Navigate to the **Balloon** folder.
+      - Inside that folder, find the subfolder for your **Windows OS version** (for example, `w8.1`).
+      - Go to the **amd64** subfolder.
+      - Right-click on the **balloon.inf** file and select **Install** from the context menu. (You need to enable file extension visibility to do this.)
+    - Repeat these steps for each of the following folders:
       - **NetKVM**
       - **vioserial**
       - **viostor**
-    - 安装完驱动程序后，重新进入虚拟 CD-ROM，打开 **guest-agent** 文件夹。
-    - 双击 **qemu-ga-x64.msi** 以安装 %%QEMU|qemu%%/%%KVM|kvm%% 客户代理。
+    - After you've installed the drivers, navigate back into the virtual CD-ROM and open the **guest-agent** folder.
+    - Double-click on **qemu-ga-x64.msi** to install the %%QEMU|qemu%%/%%KVM|kvm%% guest agent.
 
-    <h4>步骤 3：将磁盘总线转换回 VirtIO</h4>
+    <h4>Step 3: Convert the disk bus back to VirtIO</h4>
 
-    - 如果您的 %%VM|vm%% 正在运行，请继续**关闭它**。
-    - 在 **VMs** 选项卡中，单击 %%VM|vm%% 图标，从上下文菜单中选择 **编辑 XML**。
-    - 找到 `vdisk1.img` 的 `<disk>` 部分，并在 `<target>` 标签中将 `bus='ide'` 更改回 `bus='virtio'`。
-    - 点击 **更新** 保存您对 %%VM|vm%% 的更改。
-    - 现在您可以启动转换后的 %%虚拟机|vm%%！
+    - If your %%VM|vm%% is running, go ahead and **shut it down**.
+    - In the **VMs** tab, click the %%VM|vm%% icon and select **Edit XML** from the context menu.
+    - Locate the `<disk>` section for `vdisk1.img` and change `bus='ide'` back to `bus='virtio'` in the `<target>` tag.
+    - Click **Update** to save your changes to the %%VM|vm%%.
+    - Now you can start your converted %%virtual machine|vm%%!
   </TabItem>
 </Tabs>
 
 ---
 
-## 将物理磁盘迁移到 VM
+## Migrating a physical disk to a VM
 
 You can run a Windows installation directly from a physical disk in an Unraid virtual machine (VM). This method helps migrate an existing Windows system without converting it to a virtual disk image. For a visual walkthrough, check out Spaceinvader One’s tutorial:\
 [How to pass through hard drives, convert disks, and test performance in Unraid VMs (YouTube)](https://www.youtube.com/watch?v=QaB9HhpbDAI).
 
-:::important[Choosing 您的迁移方法]
-有两种常见方式可以将 Windows 安装迁移到 Unraid 中的 %%VM|vm%%：
+:::important[Choosing your migration approach]
+
+There are two common ways to migrate a Windows installation to a %%VM|vm%% in Unraid:
 
 **物理磁盘直通：** 这直接在 %%VM|vm%% 中使用原始磁盘。
 
@@ -163,7 +164,8 @@ You can run a Windows installation directly from a physical disk in an Unraid vi
 - 优点：更灵活，允许将磁盘用作 Unraid 共享或用于快照。
 - 缺点：需时，还需转换过程的可用空间。
 
-如果您想进行简单的迁移或计划双启动磁盘，请选择直通。如果需要更好的便携性和备份选项，请选择镜像转换。
+Choose passthrough if you want a simple migration or plan to dual-boot the disk. Opt for image conversion for better portability and backup options.
+
 :::
 
 :::note\[Prerequisites]
@@ -173,7 +175,7 @@ You can run a Windows installation directly from a physical disk in an Unraid vi
 - 选择一个硬件准备工具，以通过修改驱动程序和硬件抽象层（HAL）来启用在虚拟化硬件上的 Windows 启动：
   - **Microsoft Sysprep**（免费并内置于 Windows 8.1 及更高版本）
   - **Acronis True Image 2025**（具有高级迁移功能的商用解决方案）
-- 确保您的 Unraid 服务器有一个空闲的 SATA 或 NVMe 端口用于物理磁盘。
+- Ensure your Unraid server has a free SATA or NVMe port for the physical disk.
 
 :::
 
@@ -186,9 +188,11 @@ You can run a Windows installation directly from a physical disk in an Unraid vi
 Sysprep 内置于 Windows 中，消除了独特的系统信息，准备在不同硬件上使用 Windows。
 
 :::note[Before 运行 sysprep]
+
 - 暂时禁用任何杀毒软件。
 - 清理不必要的用户配置文件和临时文件。
-- 修复或删除可能阻止 sysprep 运行的任何问题 Microsoft Store 应用程序。
+- Fix or remove any problematic Microsoft Store apps that may block sysprep from running.
+
 :::
 
 1. **运行 sysprep：**
@@ -258,7 +262,7 @@ Acronis True Image 2025 带有通用恢复功能，可协助硬件迁移。
    </disk>
    ```
 
-   将此块替换为以下内容，其中 `sdX` 为设备字母，或者更好的使用 `/dev/disk/by-id/[your-disk-id]` 以便更可靠的设备分配（参考 \[Unraid Docs：在 VM 中使用物理磁盘]）：
+   将此块替换为以下内容，其中 `sdX` 为设备字母，或者更好的使用 `/dev/disk/by-id/[your-disk-id]` 以便更可靠的设备分配（参考 [Unraid Docs：在 VM 中使用物理磁盘]）：
 
    ```xml
 
@@ -288,7 +292,9 @@ Acronis True Image 2025 带有通用恢复功能，可协助硬件迁移。
 如果您使用安装自己驱动程序的软件（例如杀毒程序），请记住在迁移后重新安装这些应用程序。
 
 :::tip
+
 如果您停留在%%SeaBIOS|seabios%%并显示"从硬盘启动"的消息，这可能是因为您的Windows操作系统使用了%%UEFI|uefi%%而不是传统BIOS进行安装。在这种情况下，应使用%%OVMF|ovmf%%而不是%%SeaBIOS|seabios%%作为BIOS类型重新创建VM。大多数现代Windows系统（Windows 8.1、10 和 11）支持%%UEFI|uefi%%，可能需要%%OVMF|ovmf%%才能成功启动。其余的转换过程保持不变。
+
 :::
 
 ---
@@ -296,17 +302,21 @@ Acronis True Image 2025 带有通用恢复功能，可协助硬件迁移。
 ## 从 Xen 到 KVM 的迁移
 
 :::info[Historical 上下文]
-Unraid supported %%Xen|xen-hvm%% from early 6.x versions until it was deprecated in 6.2 (September 2016) and later removed entirely. This migration guide is relevant for users upgrading from very old Unraid installations (pre-2017) to modern versions.
+
+Unraid 从早期的 6.x 版本开始支持 %%Xen|xen-hvm%%，但在 6.2 版本（2016 年 9 月）后弃用并最终完全移除。本迁移指南适用于从非常旧的 Unraid 安装（2017 年之前）升级到现代版本的用户。
+
 :::
 
-A %%Xen|xen-hvm%% hypervisor is a virtualization platform that allows multiple operating systems to run on the same hardware. In Unraid, %%Xen|xen-hvm%% was historically used for %%virtual machines|vm%%, but %%KVM|kvm%% is now the standard. Migrating from %%Xen|xen-hvm%% to %%KVM|kvm%% is essential for utilizing modern Unraid features, enabling hardware passthrough, and ensuring compatibility with current releases.
+%%Xen|xen-hvm%% 虚拟机管理程序是一个虚拟化平台，允许多个操作系统在相同硬件上运行。在 Unraid 中，%%Xen|xen-hvm%% 历史上用于%%虚拟机|vm%%，但现在%%KVM|kvm%%是标准。迁移从%%Xen|xen-hvm%%到%%KVM|kvm%%是利用现代Unraid功能、实现硬件直通和确保与当前版本兼容的必要步骤。
 
 将%%VM|vm%%从%%Xen|xen-hvm%%迁移到%%KVM|kvm%%的过程根据%%VM|vm%%是否设置为半虚拟化（PV）或硬件虚拟化（%%HVM|hvm%%）客户机而有所不同。本指南专门针对使用Xen的GPLPV驱动程序的Windows %%VM|vm%%进行转换，因为它们需要特殊处理。
 
 在开始此过程之前，请始终备份您的%%Xen|xen-hvm%%虚拟磁盘。并在备份上测试您的迁移以防止数据丢失。
 
 :::info[Why 迁移？]
-Unraid no longer supports %%Xen|xen-hvm%% from version 6.2 onward. %%KVM|kvm%% is now mandatory for VM management, hardware passthrough, and ongoing updates. Migrating ensures your VMs remain secure and compatible with new features.
+
+Unraid 从版本 6.2 开始不再支持 %%Xen|xen-hvm%%。现在，%%KVM|kvm%% 对于 VM 管理、硬件直通和持续更新是必需的。迁移确保您的虚拟机保持安全并与新功能兼容。
+
 :::
 
 ### Windows 转换步骤
@@ -337,16 +347,16 @@ Unraid no longer supports %%Xen|xen-hvm%% from version 6.2 onward. %%KVM|kvm%% i
 </details>
 
 <details>
-  <summary><strong>步骤 3：卸载 GPLPV 驱动程序</strong> - 点击展开/折叠</summary>
+  <summary><strong>步骤 1：确定您的 VM 是否使用 Xen 的 GPLPV 驱动程序</strong> -，点击展开/折叠</summary>
 
   重启后，使用 [Xen Project Wiki](https://wiki.xenproject.org/wiki/Xen_Windows_GPLPV) 中的全面手动移除过程从系统中完全清除所有 %%Xen|xen-hvm%% GPLPV 驱动程序。
 
-  :::注意
-  删除 GPLPV 需要进行大量注册表编辑和手动文件删除。完全按照 Xen Project Wiki 上的指示操作，因为错误可能导致系统不稳定或启动失败。  :::
+  :::提示
+  如果您不使用 GPLPV 驱动程序，可以跳过接下来的几个步骤，并从进入 %%KVM|kvm%% 模式部分继续。  :::
 </details>
 
 <details>
-  <summary><strong>步骤 4：创建新 KVM 虚拟机</strong> - 点击展开/折叠</summary>
+  <summary><strong>步骤 2：为 GPLPV 驱动程序移除准备 Windows</strong> - 点击展开/折叠</summary>
 
   1. 确保启用了 **VM 管理器**：
      - 前往 **设置 → VM 管理器**。
@@ -384,7 +394,7 @@ Unraid no longer supports %%Xen|xen-hvm%% from version 6.2 onward. %%KVM|kvm%% i
       - 在 `<target>` 标签中将 `bus='virtio'` 修改为 `bus='ide'`。
       - 点击 **Update**。
 
-  :::提示\[为何使用临时磁盘？]
+  :::提示[为何使用临时磁盘？]
   1MB 的临时磁盘强制 Unraid 将主磁盘分配为 `hda` (IDE) 而不是 `vda` (%%VirtIO|virtio%%)，这使 Windows 可以在没有 %%VirtIO|virtio%% 驱动程序的情况下启动。该临时磁盘将在驱动程序安装后移除。  :::
 </details>
 
@@ -410,7 +420,7 @@ Unraid no longer supports %%Xen|xen-hvm%% from version 6.2 onward. %%KVM|kvm%% i
 </details>
 
 <details>
-  <summary><strong>步骤 6：最终配置 VM</strong> - 点击展开/折叠</summary>
+  <summary><strong>步骤 4：创建新 KVM 虚拟机</strong> - 点击展开/折叠</summary>
 
   1. 编辑 VM：
      - 通过点击红色减号图标移除临时的第二个 %%vDisk|vdisk%%。
@@ -426,8 +436,8 @@ Unraid no longer supports %%Xen|xen-hvm%% from version 6.2 onward. %%KVM|kvm%% i
      - 将主磁盘的 `bus` 从 `ide` 改为 `virtio`。
      - 点击 **Update** 并重启 VM。
 
-  :::提示\[驱动程序故障排除]
-  如果您注意到迁移后设备上出现错误：
+  :::提示[为何使用临时磁盘？]
+  1MB 的临时磁盘强制 Unraid 将主磁盘分配为 `hda` (IDE) 而不是 `vda` (%%VirtIO|virtio%%)，这使 Windows 可以在没有 %%VirtIO|virtio%% 驱动程序的情况下启动。该临时磁盘将在驱动程序安装后移除。  :::
 
   1. 从 ISO 重新安装 %%VirtIO|virtio%% 驱动程序。
   2. 检查 Windows 更新，可能会提供更新的驱动程序。
