@@ -12,12 +12,14 @@ import WindowsUpgradeCleanInstall from './partials/windows-upgrade-clean-install
 
 # VM中的Windows
 
-Windows is one of the most popular guest operating systems for Unraid users, especially for gaming, productivity, and support for legacy applications. Here are essential considerations for running Windows %%VM|vm%%.
+Windows 是 Unraid 用户中最受欢迎的客制操作系统之一，尤其适用于游戏、生产力和支持旧版应用程序。这是运行 Windows %%VM|vm%% 的一些重要注意事项。
 
 :::caution[Before 开始]
+
 - 微软已于2020年1月结束了对Windows 7的支持，于2023年1月结束了对Windows 8.1的支持，并计划于2025年10月结束对Windows 10的支持。请使用Windows 11（或更新版本）或Server 2022（或更新版本）以获得持续的安全更新。
 - 在激活 Windows 许可之前，始终测试 %%VM|vm%% 的稳定性。
 - 对于%%GPU直通|gpu-passthrough%%，使用%%OVMF|ovmf%%（%%UEFI|uefi%%）BIOS与Windows 11或更新版本。
+
 :::
 
 ### 支持的配置
@@ -48,22 +50,26 @@ Windows 需要使用准虚拟化驱动程序以在 Unraid 的虚拟化堆栈上�
 </Tabs>
 
 :::tip
-Using Unraid 7 or later, you can automatically inject %%VirtIO|virtio%% drivers during the Windows installation. Enable this in ***VM Settings → Advanced Options***.
+
+使用 Unraid 7 或更高版本，您可以在 Windows 安装期间自动注入 %%VirtIO|virtio%% 驱动程序。在 ***VM 设置 → 高级选项*** 中启用此功能。
+
 :::
 
 ---
 
 ### 设置休眠
 
-Hibernation lets you save your entire Windows %%VM|vm%% state - including open applications and documents - to disk. This allows you to power off the %%VM|vm%% without losing any work. When you resume, Windows restores everything exactly as you left it, skipping the normal boot process. This feature is handy when you need to reboot or power down your Unraid host or want to save energy while keeping your %%VM|vm%%'s state intact.
+休眠功能让您可以将整个 Windows %%VM|vm%% 状态（包括打开的应用程序和文档）保存到磁盘。这使您可以在不丢失任何工作的情况下关闭 %%VM|vm%%。当您恢复时，Windows 会精确地恢复所有内容，跳过正常的启动过程。当您需要重启或关闭 Unraid 主机，或者希望在保留 %%VM|vm%% 状态完整的同时节省能源时，此功能非常方便。
 
-:::note[Benefits 从休眠中]
+:::note[Benefits 休眠]
+
 - 关闭闲置 %%VM|vm%% 来节约能源而又不丢失进度
 - 在主机维护或更新后快速恢复工作
 - 与频繁的完全关机和重启相比，降低 SSD 磨损
+
 :::
 
-To use hibernation reliably, you must install the %%QEMU|qemu%% %%Guest Agent|guest-agent%% in your Windows %%VM|vm%%. This agent allows Unraid to communicate with the %%VM|vm%% for advanced operations like hibernation, shutdown, and live statistics reporting.
+要可靠地使用休眠功能，您必须在 Windows %%VM|vm%% 中安装 %%QEMU|qemu%% %%Guest Agent|guest-agent%%。该代理允许 Unraid 与 %%VM|vm%% 进行通信，以进行诸如休眠、关机和实时统计报告等高级操作。
 
 <details>
   <summary><strong>如何安装 %%QEMU|qemu%% %%Guest Agent|guest-agent%%</strong> - 点击展开/收起</summary>
@@ -71,7 +77,7 @@ To use hibernation reliably, you must install the %%QEMU|qemu%% %%Guest Agent|gu
   1. 启动带有 %%VirtIO|virtio%% 驱动程序 ISO 的 Windows %%VM|vm%%。
   2. 打开 **文件资源管理器** 并导航到 %%VirtIO|virtio%% 驱动器媒体。
   3. 打开 `guest-agent` 文件夹。
-  4. 运行`qemu-ga-x64.msi`来安装代理程序。（您可能会稍微看到一个命令框，但不会出现确认对话框。）
+  4. 运行 `qemu-ga-x64.msi` 以安装代理。（您可能会短暂看到一个命令框；不会显示确认对话框。）
 </details>
 
 <details>
@@ -87,18 +93,20 @@ To use hibernation reliably, you must install the %%QEMU|qemu%% %%Guest Agent|gu
 </details>
 
 :::important[What 如果休眠失败？]
-如果您的%%VM|vm%%无法正确休眠或恢复，可能会丢失未保存的工作或恢复失败。在休眠之前务必保存重要数据。如果问题持续，请确保已安装并更新了%%QEMU|qemu%% %%Guest Agent|guest-agent%%，并检查Windows事件日志以查看错误。
+
+如果您的 %%VM|vm%% 无法正常休眠或恢复，可能会丢失未保存的工作或面临恢复失败的情况。休眠之前请务必保存重要数据。如果问题持续存在，请确保安装并更新 %%QEMU|qemu%% %%Guest Agent|guest-agent%%，并检查 Windows 事件日志中的错误。
+
 :::
 
 ---
 
 ### 性能调优
 
-优化您的Windows %%VM|vm%%可以提升响应速度、减少磁盘使用，并避免设备通过或关闭时的常见问题。这些调整是可选的，可以根据需要进行应用。
+优化您的 Windows %%VM|vm%% 可以提高响应速度、减少磁盘使用并避免设备直通或关机时出现的常见问题。这些调整是可选的，可以根据需要进行应用。
 
 #### 禁用快速启动
 
-禁用快速启动可以帮助防止设备通过时出现问题。它确保您的%%VM|vm%%硬件在每次启动时正确初始化。虽然此设置是为物理PC设计的，但在虚拟环境中往往会导致更多问题而非收益。
+禁用快速启动可以帮助避免设备直通问题。它确保您的 %%VM|vm%% 硬件在每次启动时正确初始化。虽然该设置是为物理 PC 设计的，在虚拟环境中，它通常会引发比带来好处更多的问题。
 
 <details>
   <summary><strong>如何禁用快速启动</strong> - 点击展开/收起</summary>
@@ -112,19 +120,19 @@ To use hibernation reliably, you must install the %%QEMU|qemu%% %%Guest Agent|gu
 
 #### 禁用 hiberfil.sys
 
-Windows中的休眠会创建一个名为`hiberfil.sys`的大型隐藏文件。此文件可能会占用大量磁盘空间，并增加%%VM|vm%%中的磁盘活动。如果您不依赖于休眠，禁用它可以释放存储空间并减少不必要的I/O活动。
+Windows 的休眠功能会创建一个名为 `hiberfil.sys` 的大型隐藏文件。该文件可能会占用大量磁盘空间并增加 %%VM|vm%% 的磁盘活动。如果您不依赖休眠功能，禁用它将释放存储空间并减少不必要的 I/O 活动。
 
 <details>
   <summary><strong>如何禁用休眠并移除 hiberfil.sys</strong> - 点击展开/收起</summary>
 
   1. 右键点击 **开始** 按钮并选择 **Windows 终端（管理员）** 或 **命令提示符（管理员）**。
   2. 输入：`powercfg /h off`
-  3. 按Enter并重新启动您的%%VM|vm%%。`hiberfil.sys`文件将从C:\驱动器中删除。
+  3. 按 Enter 键并重新启动您的 %%VM|vm%%。`hiberfil.sys` 文件将从您的 C:\ 驱动器中删除。
 </details>
 
 #### 禁用 Windows 索引
 
-Windows Search indexing continuously scans your %%virtual machine|vm%%'s storage to catalog files for faster search results. However, on a %%virtual machine|vm%%, this can cause unnecessary disk I/O, slow down performance, and increase wear on your physical storage, especially SSDs in your [%%cache pool|cache-pool%%](../manage-storage/cache-pools.mdx).
+Windows 搜索索引会持续扫描您的 %%virtual machine|vm%% 的存储以对文件进行编目，以便更快的搜索结果。然而，在 %%virtual machine|vm%% 上，这可能导致不必要的磁盘 I/O，降低性能，并增加对物理存储的磨损，特别是您 [%%cache pool|cache-pool%%](../manage-storage/cache-pools.mdx) 中的 SSD。
 
 <details>
   <summary><strong>如何禁用 Windows 索引</strong> - 点击展开/收起</summary>
@@ -136,7 +144,7 @@ Windows Search indexing continuously scans your %%virtual machine|vm%%'s storage
 
 #### 禁用自动磁盘碎片整理
 
-Windows旨在自动定期对物理硬盘进行碎片整理。在%%VM|vm%%上 - 尤其是在使用SSD存储或精简配置的%%vDisks|vdisk%%时 - 自动碎片整理是没有必要的，并且还会减少磁盘寿命并降低性能。
+Windows 设计为定期自动碎片整理物理硬盘。在 %%VM|vm%% 上—尤其是使用 SSD 存储或精简配置的 %%vDisks|vdisk%% 时—自动碎片整理是多余的，还可能会降低磁盘寿命并降低性能。
 
 <details>
   <summary><strong>如何禁用自动磁盘碎片整理</strong> - 点击展开/收起</summary>
@@ -149,7 +157,7 @@ Windows旨在自动定期对物理硬盘进行碎片整理。在%%VM|vm%%上 - �
 
 #### 启用高性能电源模式
 
-Windows中的电源管理功能专为笔记本和台式机设计，以节约能源。在%%VM|vm%%环境中，这些功能可能会不必要地限制性能，或挂起您的%%VM|vm%%，使其响应变慢并难以管理。
+Windows 的电源管理功能专为笔记本电脑和台式机设计，以节省能源。在 %%VM|vm%% 环境中，这些功能可能会不必要地限制性能或挂起您的 %%VM|vm%%，使其响应速度变慢且更难管理。
 
 启用 **高性能** 模式可以确保您的 %%VM|vm%% 始终以全速运行，并且不太可能意外暂停或挂起。
 
@@ -163,10 +171,12 @@ Windows中的电源管理功能专为笔记本和台式机设计，以节约能�
 
 #### 启用远程桌面访问
 
-远程桌面协议（RDP）允许您从其他设备访问Windows %%VM|vm%%。它提供了比%%VNC|vnc-session%%更好的性能和兼容性。请注意，RDP仅在Windows专业版和企业版上受支持。此外，您的Windows用户账户**必须**设置密码。
+远程桌面协议 (RDP) 允许您从其他设备访问您的 Windows %%VM|vm%%。与 %%VNC|vnc-session%% 相比，它提供了更好的性能和兼容性。请注意，RDP 仅支持在 Windows 专业版和企业版上。此外，您的 Windows 用户帐户**必须**设置密码。
 
 :::caution
-RDP不适用于Windows Home版。在启用RDP之前，请始终为您的Windows用户帐户设置安全密码。
+
+RDP 在 Windows 家庭版上不可用。在启用 RDP 之前，请务必为您的 Windows 用户帐户设置一个安全的密码。
+
 :::
 
 <details>
@@ -186,7 +196,7 @@ RDP不适用于Windows Home版。在启用RDP之前，请始终为您的Windows�
 
 #### 使用 MSI 中断修复 HDMI 音频
 
-如果您在使用%%GPU透传|gpu-passthrough%%（常见于NVIDIA显卡）时在Windows %%VM|vm%%中遇到HDMI音频问题，启用消息信号中断（MSI）可能会有所帮助。MSI改善了对透传设备的中断管理。
+如果您在使用 %%GPU passthrough|gpu-passthrough%%（通常发生在 NVIDIA 显卡上）时的 Windows %%VM|vm%% 出现 HDMI 音频问题，启用消息信号中断（MSI）可能会有所帮助。MSI 改善了传递设备的中断管理方式。
 
 <details>
   <summary><strong>如何启用 MSI 中断</strong> - 点击展开/收起</summary>
@@ -212,12 +222,14 @@ RDP不适用于Windows Home版。在启用RDP之前，请始终为您的Windows�
 
 ### 升级到 Windows 11
 
-Windows 11 requires TPM 2.0 and Secure Boot. Unraid's **OVMF-TPM** BIOS provides the virtual TPM support needed for these requirements.
+Windows 11 需要 TPM 2.0 和安全启动支持。Unraid 的 **OVMF-TPM** BIOS 提供了所需的虚拟 TPM 支持。
 
 :::important[Before 升级]
+
 - 创建完整的 %%VM|vm%% 备份。
 - 确保 Unraid 运行的是版本 6.10 或更高版本。
 - 确保您的 Windows 10 %%VM|vm%% 满足 [Windows 11 的系统要求](https://www.microsoft.com/en-us/windows/windows-11-specifications)。
+
 :::
 
 添加 TPM 支持：
@@ -241,11 +253,13 @@ Windows 11 requires TPM 2.0 and Secure Boot. Unraid's **OVMF-TPM** BIOS provides
 
 ## 扩展Windows VM vDisk分区
 
-:::caution[Data 丢失风险]
-如果不小心扩大或修改%%vDisk|vdisk%%和分区布局，可能会导致不可逆的数据丢失。进行操作前请务必创建%%VM|vm%%的完整备份或快照。
+:::caution[Data 数据丢失风险]
+
+扩展或修改 %%vDisk|vdisk%% 和分区布局，如果操作不当，可能导致不可逆的数据丢失。在进行操作之前务必创建 %%VM|vm%% 的完整备份或快照。
+
 :::
 
-按照[扩展vDisk](../create-virtual-machines/vm-setup.mdx#expand-a-vdisk)中的步骤扩展%%vDisk|vdisk%%后，您可能会遇到Windows默认恢复分区阻止您轻松扩展系统(C:)分区以利用新空间的问题。要解决此问题，您需要删除恢复分区，然后使用Windows磁盘管理来扩展分区。
+在按照[扩展 vDisk](../create-virtual-machines/vm-setup.mdx#expand-a-vdisk) 中的步骤扩展 %%vDisk|vdisk%% 之后，您可能会遇到一个问题，即 Windows 的默认恢复分区会阻止您轻松扩展系统 (C:) 分区以利用新增的空间。要解决此问题，您需要删除恢复分区，然后使用 Windows 磁盘管理来扩展分区。
 
 <div style={{ margin: 'auto', maxWidth: '600px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
   ![Resize vDisk 2](/img/Resize_vdisk_2.png)
@@ -269,19 +283,23 @@ Windows 11 requires TPM 2.0 and Secure Boot. Unraid's **OVMF-TPM** BIOS provides
    - 按照提示使用未分配的空间。
 
 <div className="flex-容器" style={{ margin: 'auto', maxWidth: '800px'}}>
-  <figure className="flex-figure">
+  <figure className="弹性图形">
     <img src="/img/Resize_vdisk_3.png" alt="调整虚拟磁盘3" />
   </figure>
 
-  <figure className="flex-figure">
+  <figure className="弹性图形">
     <img src="/img/Resize_vdisk_4.png" alt="调整虚拟磁盘4" />
   </figure>
 </div>
 
 :::tip
-仅当恢复分区阻挡邻接的空闲空间时，才需要将其删除。如果未分配的空间已经与C:分区相邻，您可以在不删除任何内容的情况下扩展它。
+
+只有在恢复分区阻挡邻近空闲空间时，才需要将其移除。如果未分配的空间已经在您的 C: 分区旁边，您可以直接扩展而无需删除任何内容。
+
 :::
 
 :::warning
-对磁盘分区所做的更改是永久性的，无法撤销。在删除任何分区之前，请确保您的数据已进行安全备份。
+
+对磁盘分区所做的更改是永久性的，无法撤消。在删除任何分区之前，请确保您的数据已安全备份。
+
 :::
