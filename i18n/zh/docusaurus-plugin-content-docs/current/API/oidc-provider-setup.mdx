@@ -6,7 +6,7 @@ sidebar_position: 3
 
 # OIDC提供商设置
 
-:::info\[What 什么是OIDC？
+:::info[What 什么是OIDC？
 
 OpenID Connect (OIDC) 是一种认证协议，允许用户使用现有账户（如Google、Microsoft或公司身份提供商）登录。它为无缝和安全登录提供了单点登录(SSO)支持。
 
@@ -197,7 +197,7 @@ This guide walks you through configuring OIDC (OpenID Connect) providers for SSO
 
 ### 重定向URI是必须的
 
-:::caution\[Important 配置
+:::caution[Important 配置
 
 所有提供商必须使用此精确重定向URI格式进行配置：
 
@@ -208,12 +208,14 @@ http://YOUR_UNRAID_IP/graphql/api/auth/oidc/callback
 ```
 
 :::tip
+
 将`YOUR_UNRAID_IP`替换为您实际的服务器IP地址（例如，`192.168.1.100`或`tower.local`）。
+
 :::
 
 ### 发布者URL格式
 
-**发布者URL**字段接受这两种格式，但**强烈推荐基础URL**以保障安全：
+**⚠️ 安全注意**：始终尽量使用基本URL格式。系统会自动附加`/.well-known/openid-configuration`以便进行OIDC发现。直接使用完整发现URL会禁用重要的发行者验证检查，OpenID Connect规范不推荐这样做。
 
 - **基础URL**（推荐）: `https://accounts.google.com`
 - **完整发现URL**: `https://accounts.google.com/.well-known/openid-configuration`
@@ -238,31 +240,31 @@ http://YOUR_UNRAID_IP/graphql/api/auth/oidc/callback
 4. 您的配置提供商按钮应出现
 5. 单击以测试登录流程
 
-## 🔧 故障排除
+## “找不到提供商”错误
 
 ### 常见问题
-
-#### “找不到提供商”错误
-
-- 确保发布者URL正确
-- 检查提供商是否支持OIDC发现（/.well-known/openid-configuration）
 
 #### “认证失败”
 
 - 在简单模式中：检查电子邮件域是否正确输入（不带@）
 - 在高级模式中：
-  - 验证声明名称是否与提供商发送的完全匹配
-  - 检查授权规则模式是否设置正确（OR vs AND）
-  - 确保令牌中存在所有必需的声明
-- 启用调试日志以查看实际声明和规则评估
 
 #### “无效重定向URI”
 
 - 确保您的提供商中的重定向URI完全匹配
 - 如果使用非标准配置，请包括正确的端口
+  - 验证声明名称是否与提供商发送的完全匹配
+  - 检查授权规则模式是否设置正确（OR vs AND）
+  - 确保令牌中存在所有必需的声明
 - 验证重定向URI协议是否与服务器配置匹配（HTTP或HTTPS）
 
 #### 无法看到登录按钮
+
+- 检查至少配置了一条授权规则
+- 验证提供者已启用/保存
+- 验证重定向URI协议是否与服务器配置匹配（HTTP或HTTPS）
+
+#### 调试模式
 
 - 检查至少配置了一条授权规则
 - 验证提供者已启用/保存
@@ -271,7 +273,7 @@ http://YOUR_UNRAID_IP/graphql/api/auth/oidc/callback
 
 要排除故障：
 
-1. 启用调试日志：
+1. 检查日志：
 
 ```bash
 LOG_LEVEL=debug unraid-api start --debug
@@ -279,18 +281,18 @@ LOG_LEVEL=debug unraid-api start --debug
 
 2. 检查日志：
 
-- 从提供商接收到的声明
-- 授权规则评估
-- 令牌验证错误
-
-## 🔐 安全最佳实践
-
-1. **使用简单模式进行授权** - 防止过于宽松的配置并减少错误配置风险
-2. **授权时要具体** - 不要使用过于宽泛的规则
-3. **定期旋转密钥** - 定期更新客户端密钥
-4. **全面测试** - 验证仅预定用户可以访问
+- **使用简单模式进行授权** - 防止过于宽松的配置并减少错误配置风险
+- **授权时要具体** - 不要使用过于宽泛的规则
+- **定期旋转密钥** - 定期更新客户端密钥
 
 ## 💡 需要帮助吗？
+
+1. 检查提供商的OIDC文档
+2. 查看 Unraid API 日志以获取详细的错误信息
+3. 确保您的提供商支持标准的 OIDC 发现
+4. 验证 Unraid 和提供商之间的网络连接
+
+## 🏢 提供者特定设置
 
 - 检查提供商的OIDC文档
 - 查看 Unraid API 日志以获取详细的错误信息
@@ -310,7 +312,9 @@ Unraid.net 提供商是内置且预配置的。您只需在界面中配置授权
 - **重定向 URI**: `http://YOUR_UNRAID_IP/graphql/api/auth/oidc/callback`
 
 :::tip[Redirect URI 协议]
+
 **匹配协议至您的服务器设置：** 如果在没有 SSL/TLS 的情况下访问您的 Unraid 服务器（通常用于本地网络访问），请使用 `http://`。如果您在服务器上配置了 SSL/TLS，请使用 `https://`。某些 OIDC 提供商（如 Google）要求 HTTPS，不会接受 HTTP 重定向 URI。
+
 :::
 
 使用简单模式（允许的电子邮件域/地址）或高级模式来配置授权规则，以满足复杂的需求。
@@ -337,13 +341,15 @@ Unraid.net 提供商是内置且预配置的。您只需在界面中配置授权
 - **重定向 URI**: `http://YOUR_UNRAID_IP/graphql/api/auth/oidc/callback`
 
 :::warning[Google 域名要求]
-\*\*Google 要求 OAuth 重定向 URI 的有效域名。\*\*本地 IP 地址和 `.local` 域不被接受。要在 Unraid 服务器上使用 Google OAuth，您需要：
+
+在 Authelia `configuration.yml` 中配置 OIDC 客户端，使用客户端 ID `unraid-api` 并使用 Authelia hash-password 命令生成一个哈希密钥。
 
 - **选项 1: 反向代理** - 设置一个反向代理（如 NGINX 代理管理器或 Traefik），使用有效域名指向您的 Unraid API
 - **选项 2: Tailscale** - 使用 Tailscale 获取 Google 可接受的有效 `*.ts.net` 域
 - **选项 3: 动态 DNS** - 使用 DDNS 服务为您的服务器获取公共域名
 
 请记得在 Google Cloud 控制台和 Unraid OIDC 配置中更新您的重定向 URI 以使用有效的域名。
+
 :::
 
 对于 Google Workspace 域，使用高级模式和 `hd` 声明来限制对您组织域的访问。
@@ -364,7 +370,7 @@ Unraid.net 提供商是内置且预配置的。您只需在界面中配置授权
 
 ### Microsoft/Azure AD
 
-在 [Azure Portal](https://portal.azure.com/) 中，Azure Active Directory → 应用注册项下注册一个新应用。记录应用 ID，创建客户端密钥，并记录您的租户 ID。
+**配置：**
 
 **配置：**
 
@@ -378,7 +384,7 @@ Unraid.net 提供商是内置且预配置的。您只需在界面中配置授权
 
 ### Keycloak
 
-在 Keycloak 管理控制台中创建一个新的保密客户端，使用 `openid-connect` 协议，并从凭据选项卡复制客户端密钥。
+**配置：**
 
 **配置：**
 
@@ -392,7 +398,7 @@ Unraid.net 提供商是内置且预配置的。您只需在界面中配置授权
 
 ### Authentik
 
-在 Authentik 中创建一个新的 OAuth2/OpenID 提供者，然后创建一个应用程序并将其链接到提供者。
+**配置：**
 
 **配置：**
 
