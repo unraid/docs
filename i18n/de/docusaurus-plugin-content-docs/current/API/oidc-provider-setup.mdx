@@ -7,7 +7,9 @@ sidebar_position: 3
 # OIDC-Anbieter-Einrichtung
 
 :::info[What Was ist OIDC?]
-OpenID Connect (OIDC) ist ein Authentifizierungsprotokoll, das Nutzern ermöglicht, sich mit ihren bestehenden Konten von Anbietern wie Google, Microsoft oder Ihrem Unternehmensidentitätsanbieter anzumelden. Es aktiviert das Single Sign-On (SSO) für nahtlose und sichere Authentifizierung.
+
+OpenID Connect (OIDC) ist ein Authentifizierungsprotokoll, das es Benutzern ermöglicht, sich mit ihren bestehenden Konten von Anbietern wie Google, Microsoft oder Ihrem Unternehmensidentitätsanbieter anzumelden. Es ermöglicht Single Sign-On (SSO) für eine nahtlose und sichere Authentifizierung.
+
 :::
 
 Diese Anleitung führt Sie durch die Konfiguration von OIDC (OpenID Connect)-Anbietern für die SSO-Authentifizierung in der Unraid-API über die Weboberfläche.
@@ -29,7 +31,7 @@ Diese Anleitung führt Sie durch die Konfiguration von OIDC (OpenID Connect)-Anb
 
 Die Oberfläche umfasst:
 
-- **Anbieter-Tabs**: Jeder konfigurierte Anbieter (Unraid.net, Google, etc.) erscheint als Tab
+- **Anbieter-Registerkarten**: Jeder konfigurierte Anbieter (Unraid.net, Google usw.) erscheint als Registerkarte.
 - **Anbieter hinzufügen Schaltfläche**: Klicken Sie auf die **+** Schaltfläche, um neue Anbieter hinzuzufügen
 - **Autorisierungsmodus Dropdown**: Umschalten zwischen "einfachen" und "erweiterten" Modi
 - **Einfache Autorisierungssektion**: Konfigurieren Sie erlaubte E-Mail-Domains und spezifische Adressen
@@ -41,7 +43,7 @@ Die Oberfläche bietet zwei Autorisierungsmodi:
 
 ### Einfacher Modus (Empfohlen)
 
-Der Simple-Modus ist der einfachste Weg, um die Autorisierung zu konfigurieren. Sie können:
+Der einfache Modus ist der einfachste Weg, die Autorisierung zu konfigurieren. Sie können:
 
 - Spezielle E-Mail-Domains zulassen (z.B. @company.com)
 - Spezielle E-Mail-Adressen zulassen
@@ -196,7 +198,9 @@ Im einfachen Autorisierungsmodus:
 ### Erforderliche Redirect-URI
 
 :::caution[Important Konfiguration]
+
 Alle Anbieter müssen mit diesem genauen Redirect-URI-Format konfiguriert werden:
+
 :::
 
 ```bash
@@ -204,7 +208,9 @@ http://YOUR_UNRAID_IP/graphql/api/auth/oidc/callback
 ```
 
 :::tip
+
 Ersetzen Sie `YOUR_UNRAID_IP` durch Ihre tatsächliche Server-IP-Adresse (z.B. `192.168.1.100` oder `tower.local`).
+
 :::
 
 ### Format der Herausgeber-URL
@@ -214,7 +220,7 @@ Das Feld **Herausgeber-URL** akzeptiert beide Formate, aber **Basis-URL wird fü
 - **Basis-URL** (empfohlen): `https://accounts.google.com`
 - **Volle Entdeckungs-URL**: `https://accounts.google.com/.well-known/openid-configuration`
 
-**⚠️ Sicherheits-Hinweis**: Verwenden Sie immer das Basis-URL-Format, wenn möglich. Das System fügt automatisch `/.well-known/openid-configuration` für die OIDC-Erkennung hinzu. Die direkte Verwendung der vollständigen Erkennungs-URL deaktiviert wichtige Überprüfungen der Aussteller-Validierung und wird von der OpenID Connect-Spezifikation nicht empfohlen.
+**⚠️ Sicherheitshinweis**: Verwenden Sie immer das Basis-URL-Format, wenn möglich. Das System fügt automatisch `/.well-known/openid-configuration` zur OIDC-Erkennung hinzu. Die direkte Verwendung der vollständigen Erkennungs-URL deaktiviert wichtige Überprüfungen des Ausstellungsortes und wird von der OpenID Connect-Spezifikation nicht empfohlen.
 
 **Beispiele für korrekte Basis-URLs:**
 
@@ -297,7 +303,7 @@ LOG_LEVEL=debug unraid-api start --debug
 
 ### Unraid.net Anbieter
 
-Der Anbieter Unraid.net ist eingebaut und vorkonfiguriert. Sie müssen nur Autorisierungsregeln in der Oberfläche konfigurieren.
+Der Unraid.net-Anbieter ist vorinstalliert und vorkonfiguriert. Sie müssen nur Autorisierungsregeln in der Oberfläche konfigurieren.
 
 **Konfiguration:**
 
@@ -306,7 +312,9 @@ Der Anbieter Unraid.net ist eingebaut und vorkonfiguriert. Sie müssen nur Autor
 - **Redirect-URI**: `http://YOUR_UNRAID_IP/graphql/api/auth/oidc/callback`
 
 :::tip[Redirect URI-Protokoll]
-**Passen Sie das Protokoll an Ihre Server-Konfiguration an:** Verwenden Sie `http://`, wenn Sie auf Ihren Unraid-Server ohne SSL/TLS zugreifen (typisch für den lokalen Netzwerkzugriff). Verwenden Sie `https://`, wenn Sie SSL/TLS auf Ihrem Server konfiguriert haben. Einige OIDC-Anbieter (wie Google) erfordern HTTPS und akzeptieren keine HTTP-Umleitungs-URIs.
+
+**Passen Sie das Protokoll an Ihre Serverkonfiguration an:** Verwenden Sie `http://`, wenn Sie auf Ihren Unraid-Server ohne SSL/TLS zugreifen (typisch für den Zugriff im lokalen Netzwerk). Verwenden Sie `https://`, wenn Sie SSL/TLS auf Ihrem Server konfiguriert haben. Einige OIDC-Anbieter (wie Google) erfordern HTTPS und akzeptieren keine HTTP-Redirect-URIs.
+
 :::
 
 Konfigurieren Sie Berechtigungsrichtlinien mit einfacher Methode (erlaubte E-Mail-Domains/Adressen) oder erweiterter Methode für komplexe Anforderungen.
@@ -333,13 +341,15 @@ Konfigurieren Sie Berechtigungsrichtlinien mit einfacher Methode (erlaubte E-Mai
 - **Redirect-URI**: `http://YOUR_UNRAID_IP/graphql/api/auth/oidc/callback`
 
 :::warning[Google Domain-Anforderungen]
-**Google erfordert gültige Domainnamen für OAuth-Umleitungs-URIs.** Lokale IP-Adressen und `.local` Domains werden nicht akzeptiert. Um Google OAuth mit Ihrem Unraid-Server zu verwenden, benötigen Sie:
+
+**Google erfordert gültige Domainnamen für OAuth Redirect-URIs.** Lokale IP-Adressen und `.local` Domains werden nicht akzeptiert. Um Google OAuth mit Ihrem Unraid-Server zu verwenden, benötigen Sie:
 
 - **Option 1: Reverse Proxy** - Richten Sie einen Reverse Proxy (wie NGINX Proxy Manager oder Traefik) mit einem gültigen Domainnamen ein, der auf Ihre Unraid-API zeigt
 - **Option 2: Tailscale** - Verwenden Sie Tailscale, um eine gültige `*.ts.net` Domain zu erhalten, die Google akzeptiert
 - **Option 3: Dynamisches DNS** - Verwenden Sie einen DDNS-Dienst, um einen öffentlichen Domainnamen für Ihren Server zu erhalten
 
 Vergessen Sie nicht, Ihre Redirect-URI sowohl in der Google Cloud Console als auch in Ihrer Unraid OIDC-Konfiguration zu aktualisieren, um die gültige Domain zu verwenden.
+
 :::
 
 Für Google Workspace-Domains verwenden Sie die erweiterte Methode mit dem `hd`-Anspruch, um den Zugang auf die Domain Ihrer Organisation zu beschränken.
