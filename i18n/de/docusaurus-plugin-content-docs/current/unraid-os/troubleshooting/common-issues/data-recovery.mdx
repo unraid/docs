@@ -35,29 +35,35 @@ Auch wenn Unraid Schutz gegen verschiedene Hardwareausfälle bietet, sind zuverl
 Benutzer sollten ihre Risikotoleranz und Backup-Anforderungen bewerten, aber die Nutzung von Cloud-Integration und Automatisierung ist ein guter Ausgangspunkt für die meisten Unraid-Benutzer.
 
 :::tip[Modern Backup-Strategie]
+
 Mit Unraid 7.0 und höher aktivieren Sie [Unraid Connect](../../../unraid-connect/overview-and-setup.mdx) für automatisierte Cloud-Backups Ihres Flash-Geräts und Ihrer Konfiguration. Erwägen Sie die Nutzung von Duplicati, rclone oder ähnlichen Tools für wichtige Dateien und Freigaben, um geplante Backups an lokalen, entfernt zugänglichen oder Cloud-Zielen zu erstellen. Testen Sie immer Ihren Wiederherstellungsprozess, um sicherzustellen, dass Ihre Backups im Bedarfsfall funktionieren.
+
 :::
 
 :::info[Proactive Überwachung und Unterstützung]
+
 - **Benachrichtigungen aktivieren:** Richten Sie Benachrichtigungen in ***Einstellungen → Benachrichtigungen*** ein, um sofort Benachrichtigungen über Systemprobleme zu erhalten.
 - **Suchen Sie Expertenunterstützung:** Wenn Sie unsicher über Wiederherstellungsschritte sind, konsultieren Sie die [Unraid-Foren](https://forums.unraid.net/), bevor Sie Maßnahmen ergreifen.
 - **Regelmäßige Gesundheitsprüfungen:** Behalten Sie die [SMART-Daten](../../system-administration/monitor-performance/smart-reports-and-disk-health.mdx) Ihrer Laufwerke im Auge und führen Sie regelmäßige Dateisystemüberprüfungen durch.
+
 :::
 
 ---
 
-## Dateisysteme reparieren
+## Gerätenamensgebung: Pfade und Symbole
 
 :::caution
+
 Verwenden Sie diese Anweisungen ausschließlich für Datenlaufwerke mit Dateisystembeschädigung. Wenden Sie sie nicht auf das Paritätslaufwerk, Hardwareprobleme oder fehlende Laufwerke an.
 
 - Dateisystem-Reparatur-Tools sind nur für die Behebung von Daten- oder Cache-Laufwerken vorgesehen, die Dateisystem- oder Mount-Fehler aufweisen.
 - Das Paritätslaufwerk hat **kein** Dateisystem. Das Ausführen eines Reparaturtools auf dem Paritätslaufwerk kann es beschädigen und zu irreversiblen Datenverlusten führen.
+
 :::
 
-### Gerätenamensgebung: Pfade und Symbole
+### Die richtige Reparaturmethode wählen
 
-Bei der Verwendung des **%%WebGUI|web-gui%%** werden Gerätepfade automatisch verwaltet. Wenn Sie sich für die Reparatur über die Befehlszeile entscheiden, stellen Sie stets sicher, dass Sie den richtigen **Partitionspfad** verwenden:
+Alle Unraid-Versionen seit **v6.0.0** unterstützen Dateisystemreparaturen über das %%WebGUI|web-gui%% für %%XFS|xfs%% und %%BTRFS|btrfs%%.
 
 | Bezeichnung                | Typischer Pfad | Verwendung               | Ist %%Parity\|parity%% geschützt?      |
 | -------------------------- | -------------- | ------------------------ | -------------------------------------- |
@@ -66,22 +72,24 @@ Bei der Verwendung des **%%WebGUI|web-gui%%** werden Gerätepfade automatisch ve
 | Rohpartition               | /dev/sdj1      | Direkter Gerätezugriff   | Nein                                   |
 
 :::warning
+
 Führen Sie niemals Dateisystem-Reparaturtools auf ganzen Laufwerken (wie `/dev/sdj`) aus; verwenden Sie immer Partition-Pfade (wie `/dev/sdj1` oder von Unraid verwaltete `/dev/mdXp1`).
 
 - Für %%array|array%% Laufwerke, verwenden Sie immer das von Unraid verwaltete Gerät (z. B. `/dev/md5p1`), um den **%%parity|Paritätsschutz%% zu gewährleisten**.
 - Wenn Sie die rohe Partition verwenden (zum Beispiel `/dev/sdj1`), wird %%parity|parity%% nicht aktualisiert, was sie ungültig macht.
+
 :::
 
 - Verwenden Sie immer `/dev/mdXp1` für %%array|array%% Laufwerke, um die gültige %%parity|Parität%% zu erhalten.
 - For non-%%array|array%% drives (like %%cache|cache%%-only devices), use the direct partition path, e.g., `/dev/sdj1`.
 
-### Die richtige Reparaturmethode wählen
+### Checken und Reparieren von Laufwerken im WebGUI
 
-Alle Unraid-Versionen seit **v6.0.0** unterstützen Dateisystemreparaturen über das %%WebGUI|web-gui%% für %%XFS|xfs%% und %%BTRFS|btrfs%%.
+Alle Unraid-Versionen seit **v6.0.0** unterstützen Dateisystemreparaturen über das %%WebGUI&#124;web-gui%% für %%XFS&#124;xfs%% und %%BTRFS&#124;btrfs%%.
 
 Für die meisten Benutzer ist die empfohlene Methode:
 
-1. Öffnen Sie das %%WebGUI|web-gui%%.
+1. Öffnen Sie das %%WebGUI&#124;web-gui%%.
 2. Navigieren Sie zum **Main**-Tab.
 3. Klicken Sie auf das entsprechende %%array|array%% oder %%cache|cache%% Gerät.
 4. Befolgen Sie die Aufforderungen, um die integrierte Dateisystemprüfung und -reparatur durchzuführen.
@@ -94,7 +102,9 @@ Wenn Sie die Befehlszeile verwenden möchten, immer:
   - **BTRFS:** `btrfs scrub`
 
 :::caution[Know Ihr Dateisystem]
+
 Die falsche Verwendung eines Reparaturtools kann weiteren Schaden verursachen. Stellen Sie sicher, dass Ihre Festplatte als **%%XFS|xfs%%**, **%%BTRFS|btrfs%%** oder ein anderer unterstützter Dateisystemtyp formatiert ist, bevor Sie mit der Reparatur beginnen.
+
 :::
 
 ---
@@ -116,11 +126,11 @@ Dieser Abschnitt erläutert, wie Sie Dateisystembeschädigungen auf Datenlaufwer
 ### Den Test ausführen
 
 1. Der Standard für die meisten Dateisysteme (wie %%XFS|xfs%%) ist eine Nur-Lese-Prüfung (keine Änderungen), normalerweise mit der `-n`-Option (nicht verändern). (Für detailliertere Ausgaben mit %%XFS|xfs%%, fügen Sie die `-v`-Option (ausführlich) hinzu, was zu `-nv` führt.)
-2. Für %%BTRFS|btrfs%% verwenden Sie den Befehl `scrub` anstelle der Balance-Operation.
+2. Für %%BTRFS&#124;btrfs%% verwenden Sie den Befehl `scrub` anstelle der Balance-Operation.
 3. Klicken Sie auf **Prüfen**, um zu starten; verwenden Sie die **Aktualisieren**-Schaltfläche, um den Fortschritt bei Bedarf zu überwachen.
 4. Wenn keine Schäden gefunden wurden, fahren Sie mit [**Nach dem Test und der Reparatur**](#after-the-test-and-repair) fort.
 
-### Die Reparatur ausführen
+### Nicht einhängbare(s) Laufwerk(e)
 
 <Tabs>
   <TabItem value="xfs-laufwerke" label="Für XFS-Laufwerke" default>
@@ -137,9 +147,11 @@ Dieser Abschnitt erläutert, wie Sie Dateisystembeschädigungen auf Datenlaufwer
 Wenn Sie %%wartungsmodus#124;maintenance-mode%% verwendet haben, stoppen Sie das Array und starten Sie es im Normalmodus, um den Betrieb fortzusetzen.
 
 :::tip[What was nach der Reparatur zu erwarten ist]
+
 - Reparatur- und Kontrolloperationen können bis zu einer halben Stunde oder mehr dauern, abhängig von der Größe und dem Zustand Ihres Dateisystems.
 - Bei umfangreicher Korruption kann ein `lost+found`-Ordner erstellt werden, der wiederhergestellte Datei- und Ordnerfragmente enthält. Überprüfen und stellen Sie diese bei Bedarf wieder her; löschen Sie sie, wenn Sie fertig sind.
 - Dies ist vergleichbar mit dem Ausführen von chkdsk oder scandisk auf Windows und Arbeiten mit Dateien, die als `File0000.chk` umbenannt wurden. Nehmen Sie sich Zeit, wenn Sie den Inhalt von `lost+found` überprüfen.
+
 :::
 
 ---
@@ -158,12 +170,14 @@ Wenn Sie %%wartungsmodus#124;maintenance-mode%% verwendet haben, stoppen Sie das
 
 ---
 
-## Nicht einhängbare(s) Laufwerk(e)
+## Verlorene Array-Konfiguration
 
-Wenn ein zuvor funktionierendes Laufwerk nicht einhängbar wird, weist dies gewöhnlich auf Dateisystemkorruption hin, oft verursacht durch unsauberes Herunterfahren oder Schreibfehler.
+Losing your %%array|array%% configuration can be stressful, but it doesn't mean your data is gone. The %%array|array%% configuration file (located at `config/super.dat` on your flash device) tells Unraid how your drives are assigned and which ones serve as %%parity|parity%%. If you've lost your flash drive or don’t have a recent backup, you can recover your %%array|array%% by carefully reassigning the drives.
 
 :::danger[Critical aktion]
+
 Formatieren Sie niemals eine unmontierbare Festplatte über das %%WebGUI|web-gui%%! Das Formatieren löscht alle Daten und aktualisiert %%parity|parity%%, was eine Wiederherstellung unmöglich macht.
+
 :::
 
 ### Wiederherstellungsverfahren
@@ -172,7 +186,7 @@ Wenn eine Festplatte, die vorher einwandfrei funktionierte, plötzlich nicht meh
 
 Tatsächlich sollte Ihr erster Schritt der Versuch einer Dateisystemreparatur sein. Unraid bietet dafür eigene Tools, und das Befolgen des korrekten Verfahrens kann oft den Zugriff auf Ihre Daten mit minimalem Risiko wiederherstellen.
 
-So gehen Sie vor:
+Die empfohlene Methode zur Installation von ddrescue erfolgt über das **[Nerd Tools](https://unraid.net/community/apps?q=nerd+tools#r)** Plugin (das 2022 das veraltete NerdPack ersetzt hat).
 
 1. Sehen Sie sich den [Abschnitt zur Dateisystemreparatur](#repair-file-systems) an. Diese Anleitung führt Sie durch den Vorgang für Ihr spezifisches Dateisystem.
 
@@ -197,7 +211,9 @@ So gehen Sie vor:
    ```
 
 :::danger
+
 Die `--repair` Option ist extrem gefährlich und kann zu weiterem Datenverlust führen. Sichern oder erstellen Sie immer ein Abbild der Festplatte zuerst. Überprüfen Sie die [Dokumentation](https://btrfs.readthedocs.io/en/latest/btrfs-check.html) und ziehen Sie zusätzliche Beratung in Betracht, wenn Sie unsicher sind.
+
 :::
 
 Wenn diese Reparaturversuche das Problem nicht beheben oder Sie auf Fehler stoßen, die Sie nicht verstehen, ist es am besten, eine Pause einzulegen und um Hilfe in den Unraid-Foren zu bitten. Viele erfahrene Benutzer und Moderatoren stehen bereit, um Sie durch die nächsten Schritte zu führen, und eine zweite Meinung einzuholen ist immer sicherer, bevor Sie weiter fortfahren.
@@ -221,17 +237,19 @@ Folgendes sollten Sie tun, wenn Sie sich in dieser Situation befinden:
 
 ---
 
-## Datenwiederherstellung mit ddrescue
+## Übersetzen der ddrescue-Ausgabe
 
 Wenn Standard-Unraid-Wiederherstellungsmethoden, wie das [Ersetzen der Laufwerke](../../using-unraid-to/manage-storage/array-configuration.mdx#replacing-disks) Verfahren, aufgrund mehrerer Plattenausfälle oder ungültiger %%parity|parity%% nicht durchführbar sind, können spezialisierte Tools wie **ddrescue** Ihnen helfen, so viele Daten wie möglich von einer fehlerhaften Festplatte zu retten.
 
 :::note[Best Methoden zur Datenwiederherstellung]
+
 Bevor Sie beginnen, denken Sie daran, dass die Datenwiederherstellung ein empfindlicher Prozess ist. Arbeiten Sie immer nach Möglichkeit mit einer Kopie Ihrer fehlerhaften Festplatte und vermeiden Sie das Schreiben neuer Daten auf die Quellfestplatte. Wenn Ihre Daten unersetzlich sind, sollten Sie professionelle Wiederherstellungsdienste in Betracht ziehen, bevor Sie fortgeschrittene Wiederherstellungsmaßnahmen selbst versuchen. Dokumentieren Sie Ihre Maßnahmen und nehmen Sie sich Zeit - Eile erhöht das Risiko des dauerhaften Datenverlusts.
+
 :::
 
 Die empfohlene Methode zur Installation von ddrescue erfolgt über das **[Nerd Tools](https://unraid.net/community/apps?q=nerd+tools#r)** Plugin (das 2022 das veraltete NerdPack ersetzt hat).
 
-Um ddrescue zu aktivieren:
+Nach der Erstkopie wird ddrescue an der Wiederherstellung von Daten aus fehlerhaften Sektoren arbeiten, indem es mehrere Durchgänge macht und manchmal Blöcke in beide Richtungen liest. Diese Phase kann viel länger dauern, insbesondere wenn die Festplatte ernsthaft beschädigt ist.
 
 1. Installieren Sie [Nerd Tools](https://unraid-production-481d40bf.preview.craft.cloud/community/apps?q=nerd+tools#r:~:text=of%201%20App-,Nerd%20Tools,-unRaid.es) aus dem **Apps**-Tab in der Unraid %%WebGUI|web-gui%%.
 2. Öffnen Sie ***Einstellungen → Nerd Tools*** und aktivieren Sie **ddrescue**.
@@ -259,7 +277,9 @@ ddrescue -f /dev/sdX1 /dev/md\# /boot/ddrescue.log
 - Ersetzen Sie **#** mit der Nummer Ihrer Zielfestplatte.
 
 :::caution
+
 Überprüfen Sie immer die Gerätezuweisungen, bevor Sie ddrescue ausführen. Die Verwendung des falschen Ziels könnte zu einem vollständigen Datenverlust auf diesem Laufwerk führen.
+
 :::
 
 ### Übersetzen der ddrescue-Ausgabe
@@ -280,12 +300,14 @@ Copying non-tried blocks... Pass 1 (forwards)
 ```
 
 :::note[What Was bedeutet das?]
+
 - **ipos/opos**: Aktuelle Lese-/Schreibpositionen auf den Quell- und Zielfestplatten.
 - **gerettet**: Menge der erfolgreich kopierten Daten.
 - **schlechte Bereiche/Lesefehler**: Anzahl der problematischen Regionen und der aufgetretenen Lesefehler.
 - **pct gerettet**: Prozentsatz der bisher wiederhergestellten Festplatte.
 - **verbleibende Zeit**: Geschätzte Zeit bis zur Fertigstellung.
 - **Kopieren nicht-versuchter Blöcke...**: ddrescue versucht zum ersten Mal, alle Sektoren zu lesen.
+
 :::
 
 Nach der Erstkopie wird ddrescue an der Wiederherstellung von Daten aus fehlerhaften Sektoren arbeiten, indem es mehrere Durchgänge macht und manchmal Blöcke in beide Richtungen liest. Diese Phase kann viel länger dauern, insbesondere wenn die Festplatte ernsthaft beschädigt ist.
@@ -304,8 +326,10 @@ Scraping failed blocks... (forwards)
 ```
 
 :::note[What's geschieht gerade?]
+
 - **Ausschaben fehlgeschlagener Blöcke...**: ddrescue unternimmt wiederholte Versuche, unlesbare Sektoren wiederherzustellen.
 - **schlechte Bereiche/Lesefehler**: Diese Zahlen können steigen, während ddrescue mehr Schäden findet, aber das Ziel ist es, nicht wiederherstellbare Daten zu minimieren.
+
 :::
 
 ### Einhängen und Überprüfen der wiederhergestellten Festplatte
