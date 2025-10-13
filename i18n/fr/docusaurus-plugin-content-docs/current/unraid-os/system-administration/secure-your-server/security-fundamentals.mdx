@@ -6,7 +6,9 @@ sidebar_label: Fondamentaux de la sécurité
 # Fondamentaux de la sécurité
 
 :::note[Principle de moindre privilège]
+
 Le principe du moindre privilège signifie accorder aux utilisateurs et aux dispositifs uniquement le minimum d'accès nécessaire pour accomplir leurs tâches, jamais plus. Cette approche limite les dommages potentiels dus à des comptes compromis ou à des actions accidentelles et est un concept fondamental dans la sécurité moderne, y compris les modèles de zéro confiance. Appliquez ce principe tout au long de votre configuration Unraid, surtout en créant des utilisateurs de partage et en attribuant des permissions.
+
 :::
 
 ## Contrôle de l'accès aux dossiers partagés
@@ -22,7 +24,9 @@ Lorsque vous partagez des fichiers avec votre serveur Unraid sur votre réseau d
 | %%FTP\|ftp%% (Protocole de transfert de fichiers) | Compatibilité multiplateforme    | Support client universel ; configuration simple ; transferts de fichiers par lots                            | Protocole en texte brut sans chiffrement ; identifiants envoyés non chiffrés ; sécurité obsolète       | Uniquement pour les transferts non sensibles ou anciens ; utilisez FTPS (FTP sur TLS) ou SFTP (FTP sur SSH) pour un transfert de fichiers sécurisé |
 
 :::important
+
 À partir de la version Unraid 6.9, le support pour **%%AFP|AFP%% (Apple Filing Protocol)** a été supprimé. Pour s'assurer que vos ordinateurs Mac fonctionnent bien avec votre serveur Unraid, y compris des fonctionnalités telles que les sauvegardes Time Machine, allez dans ***Paramètres → SMB*** et activez l'**interopérabilité macOS améliorée**.
+
 :::
 
 Le choix du protocole à utiliser dépend des types d'appareils que vous avez et de ce que vous devez faire avec vos fichiers. Par défaut, Unraid active %%SMB|samba%% car il est largement pris en charge par les systèmes modernes Windows et macOS. %%NFS|nfs%% et %%FTP|ftp%% sont désactivés, mais peuvent être activés si nécessaire.
@@ -53,7 +57,7 @@ En modifiant ces options, vous pouvez gérer qui peut voir et accéder à chaque
 
 ### Configuration des autorisations utilisateur pour les partages
 
-Le contrôle de sécurité du partage détermine comment les utilisateurs accèdent aux fichiers partagés sur votre système. Vous pouvez configurer un partage pour qu'il nécessite un nom d'utilisateur et un mot de passe pour accéder aux fichiers, limiter l'accès en lecture seule ou le rendre complètement public sans nécessiter de connexions.
+Lorsque vous allez dans l'onglet **Partages** et sélectionnez un partage, vous verrez ses paramètres, y compris une section de sécurité où vous pouvez gérer les [autorisations d'accès](#managing-network-visibility-of-shares) en fonction des protocoles que vous avez activés. De cette manière, vous pouvez personnaliser qui a accès à vos fichiers selon leurs besoins.
 
 :::note\[Example]
 
@@ -61,9 +65,9 @@ Si vous créez un partage `movies` sur votre serveur Unraid, vous pouvez choisir
 
 :::
 
-Lorsque vous allez dans l'onglet **Partages** et sélectionnez un partage, vous verrez ses paramètres, y compris une section de sécurité où vous pouvez gérer les [autorisations d'accès](#managing-network-visibility-of-shares) en fonction des protocoles que vous avez activés. De cette manière, vous pouvez personnaliser qui a accès à vos fichiers selon leurs besoins.
+**Meilleure pratique :** Configurez des comptes utilisateurs et des mots de passe pour vos partages Unraid et connectez-vous en utilisant ces identifiants pour un accès fiable depuis Windows.
 
-Le paramètre **Sécurité** propose les options suivantes :
+**Limitation des informations d'identification :** Windows ne permet qu'un seul ensemble de informations d'identification de connexion par serveur à la fois. Si vous essayez de vous connecter à différents partages sur le même serveur avec différentes informations d'identification, la connexion échouera.
 
 | Type         | Explication                                                                              | Cas d'utilisation courant                                                                              |
 | ------------ | ---------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
@@ -72,15 +76,17 @@ Le paramètre **Sécurité** propose les options suivantes :
 | **Privé**    | Accès restreint : seuls des utilisateurs spécifiques peuvent lire ou écrire.             | Idéal pour les informations sensibles, telles que les dossiers financiers ou les documents personnels. |
 
 :::caution[Windows Accès SMB]
+
 Les versions modernes de Windows (Windows 10 1709+, Windows 11, Server 2019+) bloquent par défaut l'accès aux partages **Public** (invité/anonyme) %%SMB|samba%%, en raison de politiques de sécurité plus strictes. Tenter de se connecter à un partage public échouera généralement à moins que vous n'activiez manuellement les ouvertures de session invitées non sécurisées dans les paramètres de Windows - ce qui n'est pas recommandé pour des raisons de sécurité.
 
 **Meilleure pratique :** Configurez des comptes utilisateurs et des mots de passe pour vos partages Unraid et connectez-vous en utilisant ces identifiants pour un accès fiable depuis Windows.
 
 **Limitation des informations d'identification :** Windows ne permet qu'un seul ensemble de informations d'identification de connexion par serveur à la fois. Si vous essayez de vous connecter à différents partages sur le même serveur avec différentes informations d'identification, la connexion échouera.
 
-**Solution de contournement :** Si vous rencontrez des problèmes d'informations d'identification, essayez de vous connecter à un partage en utilisant le nom du serveur et à un autre en utilisant son adresse IP. Windows les traite comme des serveurs distincts.
+Lorsque vous accédez pour la première fois au %%WebGUI|web-gui%% après l'installation, vous êtes tenu de définir un mot de passe pour le %%utilisateur root|root-user%%. Cependant, Unraid n'impose pas d'exigences de complexité de mot de passe - c'est à vous, en tant qu'utilisateur, de définir le niveau de sécurité du mot de passe pour votre serveur.
 
 Pour plus de détails, voir [la documentation de Microsoft sur l'accès invité SMB](https://learn.microsoft.com/en-us/windows-server/storage/file-server/enable-insecure-guest-logons-smb2-and-smb3).
+
 :::
 
 ---
@@ -95,7 +101,7 @@ Lorsque vous accédez pour la première fois au %%WebGUI|web-gui%% après l'inst
 - Envisagez d'utiliser le plugin **Dynamix Password Validator** de [Community Apps](../../using-unraid-to/run-docker-containers/community-applications.mdx) pour un retour d'information en temps réel sur la solidité.
 - Pour des conseils supplémentaires, consultez l'[outil d'évaluation de la solidité des mots de passe Bitwarden](https://bitwarden.com/) en ligne fourni.
 
-### Examinez et réduisez le plus possible la redirection de port
+### Sécurité d'accès aux partages
 
 Acheminer des ports de votre routeur vers votre serveur Unraid peut être nécessaire pour l'accès à distance aux services, mais cela expose votre réseau à des risques significatifs. Ne dirigez que les ports que vous comprenez complètement et dont vous avez besoin.
 
@@ -108,18 +114,22 @@ Acheminer des ports de votre routeur vers votre serveur Unraid peut être néces
 | 57xx       | %%VNC\|vnc-session%% pour %%VMs\|vm%% | Expose les consoles %%VM\|vm%% ; risque d'accès à distance non autorisé                                          | Utilisez Unraid Connect ou un VPN                                                                                                                                   |
 
 :::tip
+
 Si vous voyez une règle de transfert de port que vous ne comprenez pas, supprimez-la et surveillez les problèmes. Vous pouvez toujours la rajouter si nécessaire.
+
 :::
 
 :::caution
+
 Ne placez jamais votre serveur dans le DMZ de votre réseau. Mettre votre serveur Unraid dans le DMZ expose tous les ports à Internet, augmentant considérablement le risque de compromission. Même avec des mots de passe forts, cela n'est jamais recommandé.
+
 :::
 
 ---
 
 ## Sécurité d'accès aux partages
 
-### Contrôlez la visibilité et les autorisations des partages
+### Gardez votre serveur à jour
 
 - Utilisez l'onglet **Partages** dans le WebGUI pour définir les paramètres d'exportation et de sécurité de chaque partage.
 - Privilégiez les partages privés ou sécurisés pour les données sensibles. Les partages publics sont accessibles par toute personne sur le réseau et sont bloqués par défaut dans les versions modernes de Windows pour des raisons de sécurité.
