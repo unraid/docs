@@ -1,0 +1,210 @@
+---
+title: Référence CLI
+description: Référence complète pour toutes les commandes CLI de l'API Unraid
+sidebar_position: 4
+---
+
+# Commandes CLI
+
+:::info[Command Structure]
+Toutes les commandes suivent le modèle : `unraid-api <command> [options]`
+:::
+
+## 🚀 Gestion des services
+
+### Démarrer
+
+```bash
+unraid-api start [--log-level <level>]
+```
+
+Démarre le service API Unraid.
+
+Options :
+
+- `--log-level` : Définir le niveau de journalisation (trace|debug|info|warn|error|fatal)
+
+Alternative : vous pouvez également définir le niveau du journal à l'aide de la variable d'environnement `LOG_LEVEL` :
+
+```bash
+LOG_LEVEL=trace unraid-api start
+```
+
+### Arrêter
+
+```bash
+unraid-api stop [--delete]
+```
+
+Arrête le service API Unraid.
+
+- `--delete`: Optionnel. `--Supprimer le répertoire de base PM2`
+
+### Redémarrer
+
+```bash
+unraid-api restart [--log-level <level>]
+```
+
+Redémarre le service API Unraid.
+
+Options :
+
+- `--log-level` : Définir le niveau de journalisation (trace|debug|info|warn|error|fatal)
+
+Alternative : vous pouvez également définir le niveau du journal à l'aide de la variable d'environnement `LOG_LEVEL` :
+
+```bash
+LOG_LEVEL=trace unraid-api restart
+```
+
+### Journaux
+
+```bash
+unraid-api logs [-l <lines>]
+```
+
+Afficher les journaux de l'API.
+
+- `-l, --lines`: Optionnel. `-Nombre de lignes à afficher (défaut : 100)`
+
+## ⚙️ Commandes de configuration
+
+### Configuration
+
+```bash
+unraid-api config
+```
+
+Affiche les valeurs de configuration actuelles.
+
+### Changer d'environnement
+
+```bash
+unraid-api switch-env [-e <environment>]
+```
+
+Bascule entre les environnements de production et de staging.
+
+- `-e, --environment`: Optionnel. Environnement cible (production|staging)
+
+### Mode développeur
+
+:::tip[Web Gestion Web GUI]
+Vous pouvez également gérer les options de développeur via l'interface Web à **Paramètres** → **Accès à la gestion** → **Options du développeur**
+:::
+
+```bash
+unraid-api developer                       # Interactive prompt for tools
+unraid-api developer --sandbox true        # Enable GraphQL sandbox
+unraid-api developer --sandbox false       # Disable GraphQL sandbox
+unraid-api developer --enable-modal        # Enable modal testing tool
+unraid-api developer --disable-modal       # Disable modal testing tool
+```
+
+Configurer les fonctionnalités développeur pour l'API :
+
+- **Bac à sable GraphQL** : Activer/désactiver le bac à sable Apollo GraphQL sur `/graphql`
+- **Outil de test modal** : Activer/désactiver le test modal de l'UI dans le menu Unraid
+
+## Gestion des clés API
+
+:::tip[Web Gestion Web GUI]
+Vous pouvez également gérer les clés API via l'interface Web à **Paramètres** → **Accès à la gestion** → **Clés API**
+:::
+
+### Commandes des clés API
+
+```bash
+unraid-api apikey [options]
+```
+
+Créer et gérer les clés API via CLI.
+
+Options :
+
+- `--name <name>` : Nom de la clé
+- `--create` : Créer une nouvelle clé
+- `-r, --roles <roles>` : Liste des rôles séparés par des virgules
+- `-p, --permissions <permissions>` : Liste des permissions séparées par des virgules
+- `-d, --description <description>` : Description de la clé
+
+## Gestion du SSO (Single Sign-On)
+
+:::info[OIDC Configuration]
+Pour la configuration du fournisseur OIDC/SSO, voir l'interface Web à **Paramètres** → **Accès à la gestion** → **API** → **OIDC** ou se référer au guide [Installation du fournisseur OIDC](./oidc-provider-setup.mdx).
+:::
+
+### Commande de base SSO
+
+```bash
+unraid-api sso
+```
+
+#### Ajouter un utilisateur SSO
+
+```bash
+unraid-api sso add-user
+# or
+unraid-api sso add
+# or
+unraid-api sso a
+```
+
+Ajouter un nouvel utilisateur pour l'authentification SSO.
+
+#### Supprimer un utilisateur SSO
+
+```bash
+unraid-api sso remove-user
+# or
+unraid-api sso remove
+# or
+unraid-api sso r
+```
+
+Supprimez un utilisateur (ou tous les utilisateurs) du SSO.
+
+#### Lister les utilisateurs SSO
+
+```bash
+unraid-api sso list-users
+# or
+unraid-api sso list
+# or
+unraid-api sso l
+```
+
+Lister tous les utilisateurs SSO configurés.
+
+#### Valider le jeton SSO
+
+```bash
+unraid-api sso validate-token <token>
+# or
+unraid-api sso validate
+# or
+unraid-api sso v
+```
+
+Validez un jeton SSO et renvoyez son statut.
+
+## Génération de rapport
+
+### Générer un rapport
+
+```bash
+unraid-api report [-r] [-j]
+```
+
+Générer un rapport système.
+
+- `-r, --raw` : Afficher la sortie de commande brute
+- `-j, --json` : Afficher la sortie au format JSON
+
+## Notes
+
+1. La plupart des commandes nécessitent des autorisations appropriées pour modifier l'état du système
+2. Certaines commandes nécessitent que l'API soit en cours d'exécution ou arrêtée
+3. Les clés API doivent être stockées en toute sécurité car elles permettent l'accès au système
+4. Les modifications de configuration SSO peuvent nécessiter un redémarrage du service

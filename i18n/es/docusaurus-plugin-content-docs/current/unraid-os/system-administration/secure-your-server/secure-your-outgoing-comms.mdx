@@ -1,0 +1,187 @@
+---
+sidebar_position: 8
+sidebar_label: Asegura tus comunicaciones salientes
+---
+
+# Asegura tus comunicaciones salientes
+
+El administrador de proxy saliente y los nodos de salida de %%Tailscale|tailscale%% proporcionan una manera de enrutar las comunicaciones salientes de Unraid a través de canales seguros. Estas herramientas son útiles para evitar cortafuegos restrictivos, cumplir con políticas de red o proteger tu tráfico saliente. Si bien estas soluciones se centran principalmente en el tráfico del sistema de Unraid, existen opciones de configuración para ampliar su cobertura a tu red más amplia.
+
+Hay tres métodos principales para asegurar tus comunicaciones salientes:
+
+1. [**Administrador de Proxy Saliente**](#setting-up-a-proxy-server) - Esta herramienta enruta el tráfico HTTP a través de un servidor proxy, permitiéndote gestionar y dirigir tus solicitudes web de manera segura.
+2. [**Nodos de salida de %%Tailscale|tailscale%%**](#tailscale-exit-nodes) - Con los nodos de salida de %%Tailscale|tailscale%%, todo tu tráfico puede ser enrutado a través de la red mesh de %%Tailscale|tailscale%%, asegurando una conexión segura entre tus dispositivos.
+3. [**%%WireGuard|wireguard%% %%VPN|vpn-tunnel%%**](#outgoing-vpn-connections) - También puedes usar %%WireGuard|wireguard%% %%VPN|vpn-tunnel%% para enrutar tu tráfico a través de proveedores comerciales de %%VPN|vpn-tunnel%%, añadiendo una capa adicional de privacidad y seguridad.
+
+### Administrador de Proxy Saliente vs. Tailscale/WireGuard/VPN
+
+| Caso de uso                                                | Herramienta recomendada                      | Por qué                                                                                                                                                        |
+| ---------------------------------------------------------- | -------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Eludir el firewall para actualizaciones del sistema Unraid | Administrador de Proxy Saliente              | Enruta solo el tráfico del sistema de Unraid a través de un proxy; configuración simple y mínima.                                                              |
+| Asegura todo el tráfico saliente con networking mesh       | Nodos de salida de %%Tailscale\|tailscale%%  | Encripta el tráfico a través de la red de malla de %%Tailscale\|tailscale%%; configuración fácil con la infraestructura existente de %%Tailscale\|tailscale%%. |
+| Asegura todo el tráfico saliente (a nivel del sistema)     | %%WireGuard\|wireguard%% %%VPN\|vpn-tunnel%% | Cifra y tuneliza todo el tráfico desde Unraid (incluyendo Docker/VMs) hacia proveedores comerciales de %%VPN\|vpn-tunnel%%.                                    |
+| Aislar el tráfico de Docker o VM                           | %%VPN\|vpn-tunnel%% o proxy de contenedor    | Configura %%VPN\|vpn-tunnel%% a nivel de contenedor/VM para un control granular.                                                                               |
+| Acceder a la red doméstica desde cualquier lugar           | Nodos de salida de %%Tailscale\|tailscale%%  | Enruta el tráfico a través de tu red doméstica para un IP y geolocalización consistentes.                                                                      |
+
+Para la mayoría de los usuarios, soluciones como [%%Tailscale|tailscale%%](./tailscale.mdx) o [%%WireGuard|wireguard%%](./wireguard.mdx) son preferidas para seguridad y privacidad de todo el sistema. Usa el Administrador de Proxy Saliente cuando solo necesites proxy para las propias solicitudes HTTP de Unraid.
+
+### Configurando un servidor proxy
+
+Para configurar un servidor proxy:
+
+1. Dirígete a ***Ajustes → Administrador de Proxy Saliente*** en el %%WebGUI|web-gui%%.
+
+<div style={{ margen: 'auto', maxAnchura: '600px', display: 'flex', flexDirection: 'columna', alignItems: 'centro' }}>
+  ![Administrador de Proxy Saliente](/img/outgoing-proxy-manager.png)
+</div>
+
+2. Agrega el nombre de tu proxy, URL, y (si es necesario) nombre de usuario/contraseña.
+3. Haga clic en **Aplicar**.
+4. Selecciona tu nuevo proxy de la lista y haz clic en **Aplicar** nuevamente.
+
+El %%WebGUI|web-gui%% usará automáticamente el proxy seleccionado para el tráfico del sistema saliente. Si tienes terminales web abiertos o sesiones de %%SSH|ssh%%, ciérralos y ábrelos nuevamente para aplicar los nuevos ajustes del proxy. Este uso es transparente: monitorea los registros del servidor proxy para verificar la actividad.
+
+### Elegir un servidor proxy HTTP
+
+- **Si tu organización proporciona un proxy:** Usa la dirección y credenciales proporcionadas por tu administrador de red.
+- **Si necesitas configurar el tuyo propio:**
+  - El [contenedor Docker del servidor proxy por @ich777](https://forums.unraid.net/profile/72388-ich777/) está probado y funciona bien con Unraid.
+  - Puedes configurar este contenedor para enrutar tráfico a través de un %%VPN|vpn-tunnel%% comercial usando el [%%WireGuard|wireguard%% %%VPN|vpn-tunnel%%](wireguard.mdx) de Unraid o conectarlo a otro servicio de %%VPN|vpn-tunnel%% basado en Docker.
+  - Para mayor fiabilidad, hospeda el servidor proxy en un sistema separado de Unraid para asegurar la disponibilidad de la red al arrancar.
+
+Para monitorizar el tráfico del proxy, ve a la pestaña **Docker** en el sistema host del proxy, selecciona el contenedor **Proxy Server** y visualiza los **Registros**.
+
+### Importación automática y compatibilidad de complementos
+
+- Si anteriormente usaste el complemento **Proxy Editor**, será eliminado automáticamente al actualizar a Unraid 7.0+ con soporte de proxy integrado.
+- Los ajustes de proxy antiguos en tu script `config/go` o en `community.applications/proxy.cfg` serán importados automáticamente, y los archivos antiguos serán renombrados por seguridad.
+
+### Compatibilidad con complementos
+
+- Los complementos que utilizan la función `curl_init()` de PHP usarán automáticamente el proxy saliente.
+- Los complementos que utilizan `file_get_contents()` deben migrar a `curl_init()` para compatibilidad con proxy.
+- Para procesos de línea de comandos, prefiere `curl` sobre `wget` para compatibilidad con proxy.
+
+Para obtener información adicional sobre el desarrollo de complementos y su compatibilidad, visita la [sección de Complementos de la documentación](../../using-unraid-to/customize-your-experience/plugins.mdx).
+
+## Nodos de salida de Tailscale
+
+%%Tailscale|tailscale%% exit nodes offer a secure and modern way to route your Unraid server's outgoing traffic through another device on your %%Tailnet|tailnet%%. This setup provides the security of a %%VPN|vpn-tunnel%% while leveraging %%Tailscale|tailscale%%'s easy-to-use mesh networking, making it ideal for users who want encrypted outgoing traffic without the complexity of traditional %%VPN|vpn-tunnel%%s.
+
+:::tip[When para usar nodos de salida de Tailscale]
+Considera usar nodos de salida de %%Tailscale|tailscale%% para:
+
+- Asegurar el tráfico saliente desde tu red doméstica mientras viajas
+- Mantener direcciones IP consistentes para servicios que bloquean el tráfico de VPN
+- Integrarse de manera fluida con la infraestructura %%Tailscale|tailscale%% existente
+:::
+
+### Configurando nodos de salida de Tailscale
+
+Para configurar un nodo de salida de %%Tailscale|tailscale%% para el tráfico saliente de tu servidor:
+
+1. **Instala el [plugin Tailscale](https://unraid.net/community/apps/c/plugins?q=tailscale#r:~:text=Plugins-,Tailscale%20\(Plugin\),-Derek%20Kaser)** de Community Applications si aún no está instalado.
+2. **Configura un nodo de salida** en tu %%Tailnet|tailnet%%. \*\*Esto puede ser otro servidor Unraid, un contenedor Docker o cualquier dispositivo que ejecute %%Tailscale|tailscale%%.
+3. **Configura tu servidor Unraid** para usar el nodo de salida:
+   - Dirígete a ***Ajustes → Tailscale***.
+   - En el campo **Usar Nodo de Salida**, selecciona el nodo de salida disponible.
+   - Haga clic en **Aplicar**.
+
+### Integración con Mullvad
+
+Tailscale se ha asociado con Mullvad VPN para proporcionar nodos de salida comerciales. Puedes comprar [Mullvad VPN a través de Tailscale](https://tailscale.com/mullvad) y obtener acceso a su red global de servidores como nodos de salida. Esta combinación ofrece la conectividad en red mesh de Tailscale junto con la infraestructura centrada en la privacidad de Mullvad.
+
+### Nodos de salida de contenedor Docker
+
+También puedes configurar un contenedor Docker para funcionar como un nodo de salida de %%Tailscale|tailscale%% en tu servidor Unraid.
+
+1. **Despliega un contenedor de %%Tailscale|tailscale%%** usando la [imagen Docker oficial de %%Tailscale|tailscale%%](https://hub.docker.com/r/tailscale/tailscale).
+2. **Configura el contenedor** añadiendo el flag `--advertise-exit-node`.
+3. **Aprueba el nodo de salida** en tu consola de administración de %%Tailscale|tailscale%%.
+4. **Selecciona el contenedor** como nodo de salida para tus otros dispositivos en el %%Tailnet|tailnet%%.
+
+## Conexiones salientes de VPN
+
+Unraid admite conexiones VPN salientes con WireGuard a proveedores comerciales, permitiéndote enrutar contenedores Docker o el tráfico completo de tu servidor a través de un túnel seguro. Esto es útil para la privacidad, evitar restricciones geográficas o asegurar datos salientes. Para información y soluciones de la comunidad, consulta el [hilo del foro sobre acceso tunelizado de WireGuard VPN](https://forums.unraid.net/topic/84316-wireguard-vpn-tunneled-access/).
+
+### Elegir un proveedor de VPN
+
+Seleccionar el proveedor de %%VPN|vpn-tunnel%% adecuado depende de tus prioridades: velocidad, privacidad, facilidad de uso y soporte. Los siguientes proveedores son bien soportados por Unraid y ofrecen una integración fuerte con %%WireGuard|wireguard%%:
+
+| Proveedor                                                                                                | Mejor para                         | Características clave                                     | Soporte en Unraid | Notas                                      |
+| -------------------------------------------------------------------------------------------------------- | ---------------------------------- | --------------------------------------------------------- | ----------------- | ------------------------------------------ |
+| [NordVPN](https://nordvpn.com/)                                                                          | Velocidad, privacidad, valor       | Doble NAT, sin registros, red global                      | Excelente         | Protocolo NordLynx, rápido                 |
+| [Surfshark](https://surfshark.com/)                                                                      | Económico, dispositivos ilimitados | Sin registros, conexiones ilimitadas, velocidades rápidas | Excelente         | Gran valor, fácil configuración            |
+| [ProtonVPN](https://protonvpn.com/)                                                                      | Privacidad, código abierto         | Doble NAT, Secure Core, sin registros                     | Excelente         | Código abierto, fuerte privacidad          |
+| [Mullvad](https://mullvad.net/en)                                                                        | Anonimato, simplicidad             | Sin información personal, precio plano, código abierto    | Excelente         | Pagar con efectivo, sin correo electrónico |
+| [PureVPN](https://www.purevpn.com/)                                                                      | Streaming, flexibilidad            | Gran red, fácil integración con Unraid                    | Buena             | Buen soporte, velocidades rápidas          |
+| [CyberGhost](https://www.cyberghostvpn.com/)                                                             | Streaming, facilidad de uso        | Servidores optimizados, velocidades rápidas               | Buena             | Aplicaciones fáciles de usar               |
+| [IVPN](https://www.ivpn.net/en/), [OVPN](https://www.ovpn.com/en), [Windscribe](https://windscribe.com/) | Necesidades específicas            | Privacidad avanzada, opciones regionales                  | Buena             | Soportado por la comunidad                 |
+
+:::tip
+Elige un proveedor con soporte nativo para %%WireGuard|wireguard%% y políticas de privacidad sólidas. Evita proveedores que requieran clientes personalizados o protocolos propietarios.
+:::
+
+### Configurando acceso tunelizado de VPN para Docker
+
+Puedes enrutar contenedores Docker específicos a través de un túnel %%VPN|vpn-tunnel%% comercial - sin cambios en el router requeridos.
+
+1. Descarga el archivo de configuración de %%WireGuard|wireguard%% de tu proveedor elegido.
+2. En ***Ajustes → Administrador de VPN***, selecciona **Importar Configuración** y carga el archivo. Esto crea un nuevo túnel.
+3. El **Tipo de acceso de par** predeterminado es *Acceso tunelizado de VPN para Docker*. Opcionalmente, dale un nombre local.
+4. Haga clic en **Aplicar**.
+5. Establece el interruptor del túnel a **Activo**.
+
+:::tip
+Anota el nombre del túnel (p. ej., `wg0`, `wg1`, `wg2`). Lo necesitarás al configurar contenedores Docker.\
+Si tu proveedor especifica un servidor DNS en su configuración, anótalo para usarlo después. Si no, usa un DNS público como `8.8.8.8`.
+:::
+
+### Prueba del túnel de Docker
+
+Para verificar que tu túnel de Docker está funcionando y no está filtrando información de DNS o IP:
+
+1. Instala un contenedor Docker de [Firefox](https://unraid.net/community/apps?q=Firefox) a través de Community Applications.
+2. Establece su **Tipo de Red** en **Personalizado: wgX** (reemplaza X con el nombre de tu túnel).
+3. Cambia a la vista **Avanzado** y añade tu proveedor de DNS a **Parámetros Extra** (p.ej., `--dns=8.8.8.8`).
+4. Aplica los cambios y arranca el contenedor.
+5. Inicia Firefox y visita [whatismyipaddress.com](https://whatismyipaddress.com/) para verificar que tu dirección IP coincide con el país del servidor de VPN.
+6. Visita [dnsleaktest.com](https://www.dnsleaktest.com/) y confirma que solo se detectan los servidores DNS de tu VPN.
+
+Puedes asignar contenedores adicionales a este túnel o crear múltiples túneles.
+
+### Configurando acceso tunelizado de VPN para el sistema
+
+Para enrutar todo el tráfico de Unraid a través de un VPN comercial:
+
+1. Descarga el config de %%WireGuard|wireguard%% de tu proveedor.
+2. En ***Ajustes → Administrador de VPN***, selecciona **Importar Configuración** y carga el archivo.
+3. Opcionalmente, renombra el túnel.
+4. Haga clic en **Aplicar**.
+5. Establece el interruptor del túnel a **Activo**.
+
+:::note
+- Es posible que necesites desactivar el túnel temporalmente para actualizaciones de Unraid o instalaciones de complementos.
+- Solo un túnel del sistema puede estar activo a la vez.
+- Unraid ignora las configuraciones de DNS del archivo importado. Establece el DNS de Unraid en un servidor público confiable (p. ej., `8.8.8.8`, `8.8.4.4`).
+:::
+
+### Prueba del túnel del sistema
+
+1. Instala el contenedor Docker de [Firefox](https://unraid.net/community/apps?q=Firefox).
+2. Acepta todos los valores predeterminados.
+3. Inicia Firefox y visita [whatismyipaddress.com](https://whatismyipaddress.com/). Tu dirección IP debería coincidir con la ubicación de tu proveedor de VPN.
+
+---
+
+### Soporte y Recursos Comunitarios
+
+Para obtener la guía más actualizada, asistencia para la resolución de problemas y consejos de la comunidad, visita los siguientes recursos en los [foros de Unraid](https://forums.unraid.net/):
+
+- **[WireGuard VPN Tunneled Access](https://forums.unraid.net/topic/84316-wireguard-vpn-tunneled-access/)** - Esta discusión comunitaria se centra en enrutar contenedores Docker o tráfico del sistema a través de proveedores comerciales de VPN WireGuard. Incluye ejemplos de configuración en el mundo real, consejos para probar filtraciones de DNS y recomendaciones para solucionar problemas de túneles salientes.
+
+- **[Hilo de Plug-in de WireGuard de Dynamix](https://forums.unraid.net/topic/84229-dynamix-wireguard-vpn/)** - Este es el hilo oficial para el plugin de WireGuard de Dynamix. Cubre actualizaciones del plugin, solicitudes de funciones, informes de errores y preguntas y respuestas generales relacionadas con el soporte integrado de WireGuard en Unraid.
+
+- **[Inicio Rápido de WireGuard](https://forums.unraid.net/topic/84226-wireguard-quickstart/)** - Una guía paso a paso para configurar conexiones VPN WireGuard entrantes en Unraid. Este recurso incluye explicaciones de configuración, instrucciones para configurar pares y consejos para el acceso remoto.
+
+\* *"WireGuard" y el logotipo de "WireGuard" son marcas registradas de Jason A. Donenfeld.*

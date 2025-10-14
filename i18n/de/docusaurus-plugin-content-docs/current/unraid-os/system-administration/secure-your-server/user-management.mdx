@@ -1,0 +1,137 @@
+---
+sidebar_position: 3
+sidebar_label: Benutzerverwaltung
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import ResetPasswordBasic from './partials/reset-password-basic.mdx';
+import ResetPasswordAdvanced from './partials/reset-password-advanced.mdx';
+
+# Benutzerverwaltung
+
+Unraid vereinfacht die Verwaltung von Benutzern auf Ihrem NAS und bietet eine einfache und sichere Verwaltung für Anfänger bis hin zu erfahrenen Benutzern. Der optimierte Ansatz hilft Verwirrung zu reduzieren, während die Sicherheit und Zugriffskontrolle stark bleiben.
+
+:::note[Simplified Ansatz]
+Anders als traditionelle Linux-Systeme bietet Unraid ein unkompliziertes Benutzermodell:
+
+- **Einzelner Administrator (%%root|root-user%%)**: Es gibt nur einen Hauptbenutzer, was Berechtigungen vereinfacht und die Sicherheit erhöht.
+- **Share-zentrierter Zugriff**: Der Fokus liegt auf der gemeinsamen Nutzung von Daten, was es weniger kompliziert für Benutzer macht, die nicht die Komplexität von mehreren Benutzerumgebungen benötigen.
+
+So können Sie, selbst wenn Sie mit Linux nicht vertraut sind, Ihr NAS einfach und sicher verwalten.
+:::
+
+## Übersicht
+
+### Root-Benutzer
+
+Unraid arbeitet mit einem einzigen Superuser, bekannt als %%root|root-user%%, der vollständige Kontrolle über alles hat.
+
+%%Root-Benutzer|root-user%%...
+
+- Haben vollen Zugriff auf die %%WebGUI|web-gui%%, %%SSH|ssh%% und Telnet-Oberflächen.
+- Sind verantwortlich für das Verwalten aller Benutzerkonten und Einstellungen.
+- Können aus Sicherheitsgründen nicht direkt auf Dateifreigaben über **%%SMB|samba%%**, **%%NFS|nfs%%** oder **%%FTP|ftp%%** zugreifen.
+- Ermöglichen Sie [%%SSH|ssh%% schlüsselbasierte Authentifizierung](../../system-administration/advanced-tools/command-line-interface.mdx#accessing-the-terminal) zum Anmelden ohne Passwort.
+
+<div style={{ margin: 'auto', maxWidth: '359px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+  ![Root-Benutzer](/img/rootuser.png)
+</div>
+
+:::important
+Der %%Root-Benutzer|root-user%% ist entscheidend für die Aufrechterhaltung der Sicherheit. Stellen Sie immer sicher, dass ein [starkes Passwort](./security-fundamentals.mdx#set-a-strong-root-password) gesetzt ist und begrenzen Sie den %%SSH|-Zugriff ssh%%, um Ihr System zu schützen.
+:::
+
+### Freigabebenutzer
+
+Diese Konten sind darauf ausgelegt, auf bestimmte Freigaben zuzugreifen, ohne jegliche Systemsteuerungen auf Systemebene.
+
+Freigabebenutzer...
+
+- Können nur vom %%Root-Benutzer|root-user%% erstellt und verwaltet werden.
+- Können auf Freigaben über **%%SMB|samba%%**, **%%NFS|nfs%%** oder **%%FTP|ftp%%** (sofern aktiviert) zugreifen.
+- Haben keinen Zugriff auf die **%%WebGUI|web-gui%%**, **%%SSH|ssh%%** oder **Telnet**.
+
+<div style={{ margin: 'auto', maxWidth: '359px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+  ![Root-Benutzer](/img/shareusers.png)
+</div>
+
+---
+
+## Benutzer hinzufügen
+
+Um von einem anderen Gerät auf freigegebene Dateien auf Unraid zuzugreifen, benötigen Sie einen Benutzernamen und ein Passwort. Diese Anmeldeinformationen sind von denen getrennt, die Sie möglicherweise für bestimmte Anwendungen verwenden, die in Containern ausgeführt werden und über eigene Login-Informationen verfügen.
+
+Einen Benutzer hinzufügen:
+
+1. **Benutzerverwaltung aufrufen**
+   - Gehen Sie zu ***Benutzer → Freigabezutritt*** (oder ***Einstellungen → Benutzer → Freigabezutritt***).
+   - Klicken Sie auf **Benutzer hinzufügen**.
+
+2. **Benutzeranmeldeinformationen festlegen**
+   - **Benutzername**: Wählen Sie einen eindeutigen Namen (wie `john_media`). Verwenden Sie nur Kleinbuchstaben, um Konflikte zu vermeiden, und halten Sie ihn unter 30 Zeichen, um die Windows-Grenzen einzuhalten.
+
+   - **Passwort**: Erstellen Sie ein starkes Passwort mit einer Mischung aus Buchstaben, Zahlen und Symbolen. Folgen Sie dem Passwortstärke-Messer für Anleitungen.
+
+:::note\[Optionally]
+
+- **Eine Beschreibung hinzufügen**: Schreiben Sie eine Notiz wie "Zugang zur Medienbibliothek."
+- **Benutzerdefiniertes Bild**: Laden Sie ein PNG-Bild (wie ein Benutzeravatar) zur visuellen Identifikation hoch.
+
+:::
+
+<div style={{ margin: 'auto', maxWidth: '359px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+  ![Root-Benutzer](/img/adduser.png)
+</div>
+
+3. Wählen Sie **Hinzufügen**, um den Benutzer zu erstellen.
+
+---
+
+## Benutzer löschen
+
+Sie können ein Benutzerkonto in Unraid ganz einfach entfernen, wenn es nicht mehr benötigt wird.
+
+:::caution
+Das Entfernen eines Benutzerkontos ist dauerhaft und entzieht sofort den Zugriff auf Freigaben und freigegebene Ressourcen.
+:::
+
+Um einen Benutzer zu entfernen:
+
+1. Gehen Sie zum **Benutzer**-Menü und klicken Sie auf den Namen des Benutzerkontos, das Sie löschen möchten.
+2. Aktivieren Sie das Kästchen mit der Bezeichnung **Löschen**. Die **Übernehmen**-Schaltfläche wird zu einer **Löschen**-Schaltfläche.
+3. Klicken Sie auf **Löschen**, um den Benutzer zu entfernen. Eine Bestätigungsmeldung erscheint, um die Löschung zu bestätigen.
+4. Wählen Sie **Fertig**.
+
+---
+
+## Benutzer ändern
+
+Sie können ein Benutzerkonto in Unraid ändern, wenn der Benutzer sein Passwort vergessen hat oder einen anderen Zugriff auf die freigegebenen Ordner benötigt.
+
+Um ein Benutzerkonto zu ändern:
+
+1. Gehen Sie zu ***Benutzer → Freigabezutritt*** (oder ***Einstellungen → Benutzer → Freigabezutritt***) und klicken Sie auf das Benutzerkonto, das Sie ändern möchten.
+2. *(Optional)* Auf dem Bildschirm **Benutzer bearbeiten** können Sie alle Informationen außer dem **Benutzernamen** aktualisieren. Um ein neues **Passwort** festzulegen, geben Sie es einfach ein und bestätigen Sie es, indem Sie es erneut eingeben.
+3. *(Optional)* Unten sehen Sie eine Liste von Ordnern (Freigaben), auf die der Benutzer zugreifen kann. Sie können deren Zugriffseinstellungen für diese Freigaben anpassen, aber keine neuen hinzufügen.
+4. Klicken Sie auf **Anwenden**, um Ihre Änderungen zu speichern.
+
+---
+
+## Passwort zurücksetzen
+
+Wenn Sie Ihr %%Root|root-user%%-Passwort vergessen haben, keine Sorge! Hier sind zwei einfache Methoden, um den Zugang zu Ihrem Unraid-Server wiederzuerlangen. Sie benötigen physischen Zugang zu Ihrem **[USB-Flash-Gerät](../../system-administration/maintain-and-update/changing-the-flash-device.mdx)** und einen weiteren Computer.
+
+<Tabs>
+  <TabItem value="grundlegend" label="Grundlegend" default>
+    <ResetPasswordBasic />
+  </TabItem>
+
+  <TabItem value="erweitert" label="Erweitert">
+    <ResetPasswordAdvanced />
+  </TabItem>
+</Tabs>
+
+:::tip[Be bewusst]
+Jeder mit physischem Zugang zu Ihrem USB kann diese Methoden verwenden, um Ihr %%Root|root-user%%-Passwort zurückzusetzen und vollen Verwaltungszugang zu erlangen. Bewahren Sie Ihren USB immer sicher auf!
+:::

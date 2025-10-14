@@ -17,35 +17,29 @@ Selecting the right file system for your Unraid %%array|array%% or %%cache pool|
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
+import FileSystemXfs from './partials/file-system-xfs.mdx';
+import FileSystemZfs from './partials/file-system-zfs.mdx';
+import FileSystemBtrfs from './partials/file-system-btrfs.mdx';
+import BtrfsBalance from './partials/btrfs-balance.mdx';
+import BtrfsScrub from './partials/btrfs-scrub.mdx';
+import FsCheckCliXfs from './partials/fs-check-cli-xfs.mdx';
+import FsCheckCliBtrfs from './partials/fs-check-cli-btrfs.mdx';
+import FsCheckCliZfs from './partials/fs-check-cli-zfs.mdx';
+import FsRepairCliXfs from './partials/fs-repair-cli-xfs.mdx';
+import FsRepairCliBtrfs from './partials/fs-repair-cli-btrfs.mdx';
+import FsRepairCliZfs from './partials/fs-repair-cli-zfs.mdx';
 
 <Tabs>
   <TabItem value="xfs" label="XFS" default>
-    **%%XFS|xfs%%** is the default file system for %%array|array%% drives in Unraid. It’s known for its robustness and ability to recover from corruption after unexpected shutdowns or crashes. Each drive formatted with %%XFS|xfs%% acts as a self-contained file system, making data recovery straightforward on any Linux system.
-
-    - **Data protection:** No built-in redundancy; relies on Unraid's %%parity|parity%% for protection.
-    - **Performance:** Consistent and reliable.
-    - **Best for:** %%Array|array%% drives, especially when stability and ease of data recovery are priorities.
-
+    <FileSystemXfs />
   </TabItem>
 
   <TabItem value="zfs" label="ZFS">
-    %%ZFS|zfs%% is a modern file system that comes with advanced features such as %%checksums|checksum%% to detect %%bit rot|bit-rot%%, %%snapshots|snapshot%% for backups, and native %%RAID|raid%% support options like %%RAIDZ1|raidz1%%/%%RAIDZ2|raidz2%%/%%RAIDZ3|raidz3%% and mirrors. %%ZFS|zfs%% can be utilized for both single-device and multi-device pools in Unraid 6.12 and later.
-
-    - **Data protection:** Supports various %%RAID|raid%% levels for redundancy.
-    - **Performance:** Excellent, particularly for multi-device pools.
-    - **Best for:** High-performance environments, %%virtual machines|vm%%, Docker, or when advanced features like %%snapshots|snapshot%% are required.
-
-    For a deep dive into %%ZFS|zfs%% features, configuration, and best practices, check out our dedicated section on [ZFS storage](../../advanced-configurations/optimize-storage/zfs-storage.mdx).
-
+    <FileSystemZfs />
   </TabItem>
 
   <TabItem value="btrfs" label="BTRFS">
-    %%BTRFS|btrfs%% provides flexible %%RAID|raid%% support, %%checksums|checksum%% for data integrity, and efficient management of mixed-size drives in pools. It serves as the default file system for %%cache pools|cache-pool%% and supports both single-device and multi-device configurations.
-
-    - **Data protection:** Supports %%RAID 0|raid0%%/%%1|raid1%%/%%10|raid10%%/%%5|raid5%%/%%6|raid6%% (note that %%RAID 5|raid5%%/%%6|raid6%% are still experimental).
-    - **Performance:** Good, with flexibility for expansion and contraction.
-    - **Best for:** %%Cache pools|cache-pool%%, especially if you plan to mix SSDs and HDDs or need an easy way to expand.
-
+    <FileSystemBtrfs />
   </TabItem>
 </Tabs>
 
@@ -257,55 +251,11 @@ Let’s break down what each operation does and when to use them:
 
 <Tabs>
   <TabItem value="balance" label="Balance" default>
-
-    The **Balance** operation redistributes data and metadata chunks across your %%BTRFS|btrfs%% pool. This process helps free up space, resolves allocation issues, and can fix “no space left on device” errors even when space seems available.
-
-    <h4>When to run Balance</h4>
-
-    - When you encounter “no space left on device” errors but have free space.
-    - After adding or removing drives in a pool.
-    - To optimize space usage and improve performance.
-
-    <h4>How to run Balance</h4>
-
-    1. **Access the pool**: In the %%WebGUI|web-gui%%, click on the pool in the **Main** tab and select **Balance**.
-    2. **Add parameters (optional)**: Optionally, add parameters for advanced use (refer to Unraid Help for details).
-    3. **Start the process**: Click **Start** to begin the process.
-
-    :::note[Timing]
-
-    Balance operations can take a few minutes to several hours, depending on the pool size and amount of data.
-
-    :::
-
+    <BtrfsBalance />
   </TabItem>
 
   <TabItem value="scrub" label="Scrub">
-
-    The **Scrub** operation reads all data and metadata, checks the integrity of checksums, and repairs any corrupt blocks using available redundant copies. Scrubbing helps identify and fix silent data corruption, known as “bit rot,” before it becomes a significant issue.
-
-    <h4>When to run Scrub</h4>
-
-    - As part of routine maintenance (see recommended schedule below).
-    - After unclean shutdowns or if you suspect corruption.
-    - More frequently on high-usage pools.
-
-    <h4>Recommended schedule</h4>
-
-    - High-usage pools: **Once a week**
-    - All other pools: **Once a month**
-
-    <h4>How to run Scrub</h4>
-
-    1. **Access the pool**: In the %%WebGUI|web-gui%%, click on the pool in the **Main** tab and select **Scrub**.
-    2. **Start the process**: Click **Start** to initiate the process.
-
-    :::note[Timing]
-
-    Scrub operations are usually quicker than a full disk scan because they only check allocated data. Based on pool size and usage, expect this to take anywhere from a few minutes to a few hours.
-
-    :::
-
+    <BtrfsScrub />
   </TabItem>
 </Tabs>
 
@@ -469,70 +419,15 @@ This automated system eliminates the need for users to manually enter repair opt
 
 <Tabs>
   <TabItem value="xfs" label="XFS">
-
-    To check an %%XFS|xfs%% file system via command line:
-
-    - Start the %%array|array%% in **%%Maintenance Mode|maintenance-mode%%**.
-    - Run the following command: `xfs_repair -v /dev/mdXp1`
-    - Replace `X` with the disk number (e.g., `/dev/md1p1`).
-    - For encrypted %%XFS|xfs%%, use `/dev/mapper/mdXp1`.
-    - For drives not in the %%array|array%%: `xfs_repair -v /dev/sdX1`
-    - Ensure you are using the correct device identifier.
-
-    :::warning
-
-    Running this command on an %%array|array%% disk outside of **%%Maintenance Mode|maintenance-mode%%** will invalidate %%parity|parity%%.
-
-    :::
-
+    <FsCheckCliXfs />
   </TabItem>
 
   <TabItem value="btrfs" label="BTRFS">
-
-    To check a %%BTRFS|btrfs%% file system via command line:
-
-    - To perform a %%scrub|scrub%% (which checks and repairs many errors automatically), start the %%array|array%% in **Normal mode** and run: `btrfs scrub start /mnt/diskX`
-    - For a read-only check, start the %%array|array%% in **%%Maintenance Mode|maintenance-mode%%** and run: `btrfs check --readonly /dev/mdXp1`
-    - Replace `X` with the disk number.
-    - For drives not in the %%array|array%%: `btrfs check --readonly /dev/sdX1`
-
-    :::warning
-
-    Running this command on an %%array|array%% disk outside of **%%Maintenance Mode|maintenance-mode%%** will invalidate %%parity|parity%%.
-
-    :::
-
+    <FsCheckCliBtrfs />
   </TabItem>
 
   <TabItem value="zfs" label="ZFS">
-
-    To check a %%ZFS|zfs%% file system via the command line:
-
-    <h4>Recommended method</h4>
-
-    %%ZFS|zfs%% uses **scrubbing** instead of traditional filesystem checks like `fsck`. A %%scrub|scrub%% examines all data in the pool to verify checksums and automatically repairs any corruption found on redundant configurations.
-
-    - Start the %%array|array%% in **Normal mode** and run: `zpool scrub poolname`
-      - Replace `poolname` with your actual %%ZFS|zfs%% pool name.
-
-    <h4>Check pool status</h4>
-    To view the current health and any ongoing %%scrub|scrub%% progress, use the command: `zpool status -v poolname`
-
-    This command shows detailed information about pool health, any errors, and %%scrub|scrub%% progress.
-
-    <h4>Additional %%ZFS|zfs%% commands</h4>
-
-    - To pause a %%scrub|scrub%%: `zpool scrub -p poolname`
-    - To stop a %%scrub|scrub%%: `zpool scrub -s poolname`
-    - To list all pools: `zpool list`
-
-    :::info
-
-    %%ZFS|zfs%% does not require or support traditional `fsck` utilities. The transactional nature of %%ZFS|zfs%% means it moves atomically from one consistent state to another, making scrubbing the preferred method for integrity checking.
-
-    :::
-    For comprehensive guidance on %%ZFS|zfs%% file systems, check out the dedicated [ZFS storage section](../../advanced-configurations/optimize-storage/zfs-storage.mdx).
-
+    <FsCheckCliZfs />
   </TabItem>
 </Tabs>
 
@@ -590,62 +485,15 @@ If you're uncertain about the output, copy and share it on the [Unraid forums](h
 
 <Tabs>
   <TabItem value="xfs" label="XFS">
-
-    - Start the %%array|array%% in **%%Maintenance Mode|maintenance-mode%%**.
-    - Run the following command: `xfs_repair /dev/mdXp1`. Replace `X` with the disk number (e.g., `/dev/md1p1`).
-    - For encrypted %%XFS|xfs%%, use: `/dev/mapper/mdXp1`.
-    - If you're prompted to use `-L`, re-run the command like this: `xfs_repair -L /dev/mdXp1`. This is usually safe and necessary to complete the repair.
-    - For drives that are not part of the %%array|array%%: `xfs_repair /dev/sdX1`.
-
-    :::caution
-
-    Running this command on an %%array|array%% disk outside of **%%Maintenance Mode|maintenance-mode%%** will invalidate parity.
-
-    :::
-
+    <FsRepairCliXfs />
   </TabItem>
 
   <TabItem value="btrfs" label="BTRFS">
-
-    - To perform a %%scrub|scrub%% (which detects and repairs many errors automatically), start the %%array|array%% in **Normal mode** and run: `btrfs scrub start /mnt/diskX`.
-    - For a full repair, start the %%array|array%% in **%%Maintenance Mode|maintenance-mode%%** and run: `btrfs check --repair /dev/mdXp1`. Only use `--repair` if advised by the [forums](https://forums.unraid.net/) or documentation, as it can sometimes lead to further issues.
-
-    :::caution[Use `--repair` with caution]
-
-    The `--repair` option can sometimes cause data loss or make corruption worse if used incorrectly. Only use it when:
-
-    - You've consulted the [Unraid forums](https://forums.unraid.net/) for your specific error
-    - You have a recent backup of your data
-    - You understand the risks involved
-
-    For most %%BTRFS|btrfs%% issues, try running a `scrub` first (which is safer) or seek expert advice before attempting repairs.
-
-    :::
-
+    <FsRepairCliBtrfs />
   </TabItem>
 
   <TabItem value="zfs" label="ZFS">
-    %%ZFS|zfs%% pools offer built-in integrity checking and self-healing capabilities, which often eliminate the need for traditional file system repairs.
-
-    <h4>For %%ZFS|zfs%% pools</h4>
-
-    - **Check pool health:** Use the command `zpool status poolname` to see the status of your pool.
-    - **Run a scrub:** Execute `zpool scrub poolname`. This command detects and repairs any corruption automatically.
-    - **Clear errors:** After addressing any underlying issues, run `zpool clear poolname` to clear the error state.
-
-    <h4>For %%ZFS|zfs%% disks in the array</h4>
-
-    - **Check dataset health:** Use `zfs list -o name,health` to check the health of your datasets.
-    - **Run a scrub:** You can also run `zpool scrub poolname` for any disks belonging to a specific pool.
-
-    %%ZFS|zfs%% automatically identifies and fixes data corruption when redundancy is available, such as in mirrors or %%RAIDZ1|raidz1%%/%%RAIDZ2|raidz2%%/%%RAIDZ3|raidz3%% configurations. Unlike traditional file systems, %%ZFS|zfs%% typically does not require manual repair commands because it continuously monitors data integrity with checksums.
-
-    :::tip
-
-    For a comprehensive understanding of %%ZFS|zfs%% management, troubleshooting, and advanced repair scenarios, refer to the dedicated [ZFS storage page](../../advanced-configurations/optimize-storage/zfs-storage.mdx) for detailed guides and best practices.
-
-    :::
-
+    <FsRepairCliZfs />
   </TabItem>
 </Tabs>
 

@@ -3,6 +3,17 @@ sidebar_position: 3
 sidebar_label: Cache pools
 ---
 
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import RemoveDiskGui from './partials/remove-disk-gui.mdx';
+import RemoveDiskCommandLine from './partials/remove-disk-command-line.mdx';
+import PoolSingleDeviceMode from './partials/pool-single-device-mode.mdx';
+import PoolMultiDeviceMode from './partials/pool-multi-device-mode.mdx';
+import MovePoolToArray from './partials/move-pool-to-array.mdx';
+import MoveArrayToPool from './partials/move-array-to-pool.mdx';
+import MoveBetweenPoolsUsingMover from './partials/move-between-pools-using-mover.mdx';
+import MoveBetweenPoolsManual from './partials/move-between-pools-manual.mdx';
+
 # Cache pools
 
 In Unraid, a %%cache pool|cache-pool%% is a collection of one or more drives, typically SSDs or high-speed HDDs. These drives temporarily store data before it's moved to your main [%%array|array%%](./array-configuration.mdx). Using %%cache pools|cache-pool%% can significantly enhance write speeds, protect your data, and provide dedicated storage for specific tasks like running Docker containers or [%%virtual machines|vm%%](../create-virtual-machines/overview-and-system-prep.mdx).
@@ -34,34 +45,13 @@ In Unraid, a %%cache pool|cache-pool%% is a collection of one or more drives, ty
 
 Unraid %%cache pools|cache-pool%% can operate in two main modes: **single device mode** and **multi-device mode**. Knowing the difference between these modes will help you find the right balance between performance, flexibility, and data protection for your needs.
 
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
-
 <Tabs>
   <TabItem value="single-device" label="Single device mode" default>
-
-    In **single device mode**, your %%cache pool|cache-pool%% consists of only one device. This means:
-
-    - **No redundancy:** If the device fails, any data stored on it that hasn't been transferred to your %%array|array%% will be lost.
-    - **File system options:** You can use file systems other than %%BTRFS|btrfs%%, like %%XFS|xfs%% or %%ZFS|zfs%%.
-
-    :::important
-
-    If you choose a non-%%BTRFS|btrfs%% or non-%%ZFS|zfs%% file system in single device mode and later decide to add more devices to the pool, you will need to reformat the device as %%BTRFS|btrfs%% or %%ZFS|zfs%% first. That's why %%BTRFS|btrfs%% is the default file system for %%cache pools|cache-pool%%, even when using just one device. Both %%BTRFS|btrfs%% and %%ZFS|zfs%% support adding devices later to create mirrored pools. For more information on file system selection and compatibility, see [File systems](./file-systems.mdx).
-
-    :::
-    Single device mode is straightforward. You can easily add or remove the device, but you won't have options for advanced features like redundancy or expansion.
-
+    <PoolSingleDeviceMode />
   </TabItem>
 
   <TabItem value="multi-device" label="Multi-device mode">
-
-    When you set up a %%cache pool|cache-pool%% with more than one device, it enters **multi-device mode**. Here's what you should know:
-
-    - **Data protection:** This mode uses %%BTRFS|btrfs%% or %%ZFS|zfs%% to mirror data across devices, helping protect your cached data from drive failure. You can lose one device without losing any data.
-    - **Mix and match:** You can add or remove devices of different sizes and types, including mixing SSDs and HDDs.
-    - **Capacity management:** Use the [BTRFS disk usage calculator](http://carfax.org.uk/btrfs-usage/) to estimate how much space you'll have based on the %%RAID|raid%% level and sizes of the devices you're using. For %%ZFS|zfs%% pools, use the [ZFS storage guide](../../advanced-configurations/optimize-storage/zfs-storage.mdx) for configuration details.
-
+    <PoolMultiDeviceMode />
   </TabItem>
 </Tabs>
 
@@ -193,83 +183,11 @@ Removing a disk from a %%BTRFS|btrfs%% or %%ZFS|zfs%% multi-device %%cache pool|
 
 <Tabs>
   <TabItem value="gui" label="Using the WebGUI" default>
-    :::note[Before you start]
-
-    - You can only remove one drive at a time using the GUI.
-    - Make sure your pool is using a redundant %%RAID|raid%% profile (like %%RAID 1|raid1%% for both data and metadata).
-    - To check your pool's %%RAID|raid%% level, navigate to the Main tab and click on the pool. Scroll down to the Balance Status section (for %%BTRFS|btrfs%%) or ZFS pool status (for %%ZFS|zfs%%).
-
-    :::
-    To remove a disk using the %%WebGUI|web-gui%%:
-
-    1. **Stop the %%array|array%%**: Go to the **Main** tab and look for the option to stop your %%array|array%%.
-    2. **Unassign the pool drive**: Find the drive you want to remove and unassign it in the **Main** tab.
-    3. **Start the %%array|array%%**: Restart the %%array|array%% to apply the changes.
-    4. **Verify removal**: Click on the first pool device in the **Main** tab, then check **Balance Status** (for %%BTRFS|btrfs%%) or **zpool status** (for %%ZFS|zfs%%) to confirm the device was correctly removed.
-
-    :::note[Timing]
-
-    Keep in mind that removing a drive and rebalancing the pool may take several hours, depending on how much data you have and your device speeds.
-
-    :::
-
+    <RemoveDiskGui />
   </TabItem>
 
   <TabItem value="commandline" label="Using the Command Line (Advanced)">
-
-    If you're comfortable with the command line, this method gives you more control and can be useful if the %%WebGUI|web-gui%% option isn't available. For more information on using the command line interface, see [Command line interface](../../system-administration/advanced-tools/command-line-interface.mdx).
-
-    :::note[Before you start]
-
-    - Ensure that your pool's %%RAID|raid%% profile allows device removal; you can't remove a device from a 2-device %%RAID 1|raid1%% pool without changing it to a single profile first.
-    - Check that remaining devices will have enough space for your data.
-
-    :::
-    To remove a disk using the command line:
-
-    1. **Open a terminal session**: Make sure the %%array|array%% is running and open your command line interface.
-
-    2. **Remove the device**: Type the command below, replacing `X` with the letter corresponding to the drive you want to remove (as shown in the Main tab):
-
-       ```bash
-       btrfs device remove /dev/sdX1 /mnt/cache
-       ```
-
-       - For encrypted devices, use: `/dev/mapper/sdX1`.
-       - For NVMe devices, use: `nvmeXn1p1`.
-
-    3. **Wait for completion**: The device will be removed once you see the cursor return.
-
-    4. **Make Unraid "forget" the deleted member**:
-       - Stop the %%array|array%%.
-       - Unassign all pool devices.
-       - Start the %%array|array%% (Unraid will clear the pool configuration).
-       - If any Docker/%%VM|vm%% services use this pool, disable them before starting the %%array|array%% to prevent Unraid from recreating images elsewhere.
-
-    5. **Reassign devices**: Stop the %%array|array%% again, reassign all remaining pool members except the removed device, and then start the %%array|array%%.
-
-    **To remove multiple devices**:
-
-    You can do so in one command:
-
-    ```bash
-    btrfs device remove /dev/sdX1 /dev/sdY1 /mnt/cache
-    ```
-
-    However, keep in mind that the removal will still occur one at a time.
-
-    :::note[Timing]
-
-    Similar to the %%WebGUI|web-gui%% method, removing devices and rebalancing may take several hours depending on data volume and device speed.
-
-    :::
-
-    :::important
-
-    If you have only one device left in the pool, you will need to convert the %%RAID|raid%% profile to **single** to ensure everything functions correctly. For further instructions, refer to the section on [Switching the Pool RAID Level to Single](#switching-the-pool-raid-level-to-single).
-
-    :::
-
+    <RemoveDiskCommandLine />
   </TabItem>
 </Tabs>
 
@@ -411,36 +329,11 @@ Always disable Docker and %%VM|vm%% services before moving files with the %%Move
 
 <Tabs>
   <TabItem value="pool-to-array" label="Pool to array" default>
-    :::info[Common use case]
-
-    Moving files off the %%cache pool|cache-pool%% to the %%array|array%% before performing maintenance or upgrades to ensure your data is safe.
-
-    :::
-    To move files from your pool to the %%array|array%%:
-
-    1. **Disable Docker and %%VM|vm%% services**: Go to **Settings** and turn off Docker and %%VM|vm%% Manager. This prevents any files from being held open, allowing the %%Mover|mover%% to transfer everything smoothly.
-    2. **Set share storage and Mover action (cache → array)**: In the **Shares** tab, for each share you want to move (like `appdata` or `system`), set **Primary storage** to the source %%cache pool|cache-pool%% and **Secondary storage** to the %%array|array%%. Set **Mover action** to **cache → array**.
-    3. **Run %%Mover|mover%%**: Go to the **Main** tab and click **Move Now** to transfer files from the %%cache pool|cache-pool%% to the %%array|array%%.
-    4. **Verify the move**: After the %%Mover|mover%% finishes, check that the files have been moved by clicking the folder icon next to the cache entry on the **Main** tab.
-    5. **Re-enable Docker and %%VM|vm%% services**: Once all files are on the %%array|array%%, you can safely turn these services back on.
-
+    <MovePoolToArray />
   </TabItem>
 
   <TabItem value="array-to-pool" label="Array to pool">
-    :::info[Common use case]
-
-    Moving files back to the %%cache pool|cache-pool%% after maintenance or when you've added a new cache device to improve performance.
-
-    :::
-    To move files from the %%array|array%% to a pool:
-
-    1. **Disable Docker and %%VM|vm%% services**: Go to **Settings** and turn off Docker and %%VM|vm%% Manager to prevent any open files from interfering.
-    2. **Set share storage and Mover action (array → cache)**: In the **Shares** tab, for each share you want to move (like `appdata` or `system`), set **Primary storage** to the destination %%cache pool|cache-pool%% and **Secondary storage** to the %%array|array%%. Set **Mover action** to **array → cache**.
-    3. **Run the %%Mover|mover%%**: Go to the **Main** tab and click **Move Now** to start moving files from the %%array|array%% to the %%cache pool|cache-pool%%.
-    4. **Verify the move**: After the %%Mover|mover%% finishes, check that the files are now on the %%cache pool|cache-pool%%.
-    5. **Re-enable Docker and %%VM|vm%% services**: Once the move is complete, turn Docker and %%VM|vm%% Manager back on in **Settings**.
-    6. **(Optional) Set share to use %%cache pool|cache-pool%% exclusively**: If you want all files for a share to remain on the %%cache pool|cache-pool%%, set the **Primary storage** to your %%cache pool|cache-pool%% and **Secondary storage** to **None** for that share.
-
+    <MoveArrayToPool />
   </TabItem>
 </Tabs>
 
@@ -508,39 +401,11 @@ If any of the files belong to a Docker container and/or %%VM|vm%%, the services 
 
 <Tabs>
   <TabItem value="using-mover" label="Using Mover" default>
-
-    1. **Disable Docker and %%VM|vm%% services**: Go to **Settings** and turn off Docker and %%VM|vm%% Manager to prevent open files.
-    2. **Move files from pool1 to the %%array|array%% (cache → array)**:
-       - Go to the **Shares** tab. For each share that currently resides on pool1, set **Primary storage** to pool1 and **Secondary storage** to the %%array|array%%.
-       - Set **Mover action** to **cache → array**.
-       - In the **Main** tab, click **Move Now** to run %%Mover|mover%%. Wait for it to finish.
-    3. **Move files from the %%array|array%% to pool2 (array → cache)**:
-       - In the **Shares** tab, set **Primary storage** to pool2 and **Secondary storage** to the %%array|array%% for each share.
-       - Set **Mover action** to **array → cache**.
-       - In the **Main** tab, click **Move Now** again. Files will move from the %%array|array%% to pool2.
-    4. **Re-enable Docker and %%VM|vm%% services** (if needed).
-
-    :::note[Timing]
-
-    Moving large data sets can take hours, depending on file size and device speeds.
-
-    :::
-
+    <MoveBetweenPoolsUsingMover />
   </TabItem>
 
   <TabItem value="manual-transfer" label="Manual file transfer (Advanced)">
-
-    1. **Disable Docker and %%VM|vm%% services** as described above.
-    2. Use `rsync` or `mv` commands to transfer files between mount points (e.g., `/mnt/pool1/share` to `/mnt/pool2/share`).
-    3. Verify the files before deleting them from the original pool.
-    4. Re-enable Docker and %%VM|vm%% services.
-
-    :::caution
-
-    Always check your file paths and use the correct share names to prevent data loss.
-
-    :::
-
+    <MoveBetweenPoolsManual />
   </TabItem>
 </Tabs>
 

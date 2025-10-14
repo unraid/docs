@@ -1,0 +1,234 @@
+---
+sidebar_position: 3
+sidebar_label: 管理和自定义容器
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import DockerNetworkType from './partials/managing-and-customizing-containers/network-type.mdx';
+import DockerVolumeMappings from './partials/managing-and-customizing-containers/volume-mappings.mdx';
+import DockerPortMappings from './partials/managing-and-customizing-containers/port-mappings.mdx';
+import DockerEnvironmentVariables from './partials/managing-and-customizing-containers/environment-variables.mdx';
+import DockerCommandStart from './partials/managing-and-customizing-containers/command-start.mdx';
+import DockerCommandStop from './partials/managing-and-customizing-containers/command-stop.mdx';
+import DockerCommandRestart from './partials/managing-and-customizing-containers/command-restart.mdx';
+import DockerCommandStatus from './partials/managing-and-customizing-containers/command-status.mdx';
+import DockerCommandLogs from './partials/managing-and-customizing-containers/command-logs.mdx';
+
+# 管理和自定义容器
+
+:::caution\[Disclaimer]
+
+本页旨在帮助各个技能水平的用户充分利用在 Unraid OS 上的 Docker 容器。这些提示和最佳实践来自 Unraid 团队，确保符合大多数用户的需求。然而，请记住，Docker 在不断发展，因此对于最新功能、高级配置或超出 Unraid 覆盖范围的问题排查，通常建议查阅[官方 Docker 文档](https://docs.docker.com/)。
+
+:::
+
+在 Unraid 中自定义 Docker 容器之前，了解基本的配置选项是很有帮助的。每个[容器模板](./community-applications.mdx)提供了一个用户友好的界面，用于设置网络、存储和环境变量，让您无需使用复杂的命令行工具即可定制容器的行为，以满足您的需求。
+
+<Tabs>
+  <TabItem value="网络类型" label="网络类型" default>
+    <DockerNetworkType />
+  </TabItem>
+
+  <TabItem value="卷映射" label="卷映射">
+    <DockerVolumeMappings />
+  </TabItem>
+
+  <TabItem value="端口映射" label="端口映射">
+    <DockerPortMappings />
+  </TabItem>
+
+  <TabItem value="环境变量" label="环境变量">
+    <DockerEnvironmentVariables />
+  </TabItem>
+</Tabs>
+
+## 创建和启动容器
+
+一旦配置了容器的网络、卷映射、端口映射和环境变量，您就可以创建并启动 Docker 容器了。本节将指导您完成创建过程，解释如何管理启动顺序和依赖关系，并提供先进的启动定制化技巧。
+
+### 创建一个容器
+
+查看容器模板中的配置设置后：
+
+1. 单击 **创建** 开始下载并设置容器。
+   - 在过程完成前请避免关闭浏览器窗口或导航到其他页面。
+   - 新存储库的首次下载可能比后续下载耗时更长。
+2. 完成后，单击 **完成** 返回 Docker 页面，您可以管理或添加更多容器。
+
+### 规划启动顺序
+
+某些容器依赖于其他容器才能正确运行。例如，一个应用程序可能需要首先运行一个数据库容器，或某个服务可能需要在启动之前激活一个[%%VPN|vpn-tunnel%% 容器](../../system-administration/secure-your-server/tailscale.mdx)。
+
+:::important[Plan 您的启动]
+- 识别提供核心服务的容器（如数据库、%%VPNs|vpn-tunnel%% 或存储网关）。
+- 确保依赖容器仅在其前提条件启动并准备好后才启动。
+- 查看每个容器的文档以了解特定的启动要求。
+:::
+
+---
+
+## 高级容器启动
+
+Unraid 为您提供灵活的控制，允许您选择哪些容器自动启动及启动的顺序。这对于有依赖于其他容器的情况尤其有用（例如一个数据库或 %%VPN|vpn-tunnel%% 服务）。
+
+确保在 %%array|array%% 启动时自动启动容器：
+
+1. 在 %%WebGUI|web-gui%% 的 **Docker** 选项卡上，
+2. 切换 **自动启动** 开关到 **开** 为每个您希望自动启动的容器。
+
+### 自定义启动顺序和延迟
+
+默认情况下，Unraid 会尽可能快地按 Docker 选项卡上的顺序启动所有自动启动容器。您可以自定义此顺序并在容器启动之间添加等待时间：
+
+1. 在 **Docker** 选项卡上，使用挂锁图标解锁容器列表。
+2. 通过拖放容器来重新排列其顺序。
+3. 使用顶部右侧的切换按钮切换到 **高级视图**。
+4. 在 **AutoStart** 列中，为任何需要额外时间的容器在 **wait** 字段输入等待时间（以秒为单位），以便下一个容器启动。
+   - 使用试错为您的设置确定最佳的等待时间。
+
+:::tip
+设置正确的顺序和等待时间对于依赖其他服务的容器尤其重要（例如，在启动使用它的应用之前启动数据库，或在依赖应用之前启动 %%VPN|vpn-tunnel%%）。
+:::
+
+### 测试启动顺序
+
+虽然 Unraid 没有专门的“测试启动序列”功能，但您可以模拟并验证您的启动顺序：
+
+1. 在 **Docker** 选项卡上停止所有容器。
+2. 以您计划的顺序手动启动每个容器，使用 **启动** 按钮。
+3. 监测容器日志和应用程序行为以确保满足依赖性并按预期初始化服务。
+4. 根据需要调整启动顺序或等待时间。
+
+:::important
+在更改容器依赖关系或添加新服务后测试启动顺序，尤其是在设置依赖于特定启动时序时。
+:::
+
+---
+
+## 控制您的容器
+
+一旦您创建并启动了 Docker 容器，通过 %%WebGUI|web-gui%% 管理它非常简单。本指南将指导您使用上下文菜单，了解容器健康指示器，并在容器内访问卷映射。
+
+要访问容器的上下文菜单，请转到 **Docker** 或 **仪表板**选项卡，然后单击要管理的容器图标。此菜单提供快速访问常见操作的方法：
+
+<div style={{ margin: 'auto', maxWidth: '286px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+  ![Docker Guide - Controlling](/img/Dockerguide-controlling.png)
+</div>
+
+| 选项        | 描述                         |
+| --------- | -------------------------- |
+| **WebUI** | 在新的浏览器选项卡中打开容器的网页界面（如有）。   |
+| **控制台**   | 打开一个命令行界面以直接与容器交互。         |
+| **停止**    | 停止正在运行的容器。                 |
+| **暂停**    | 暂停容器，临时停止所有进程。             |
+| **重启**    | 重启容器，应用任何配置更改。             |
+| **日志**    | 显示容器的日志输出以进行故障排查。          |
+| **编辑**    | 更改容器设置，如端口或卷映射。更改在保存后立即生效。 |
+| **移除**    | 删除容器。您可以选择仅删除容器或同时删除其镜像。   |
+| **项目页面**  | 打开容器的项目页面以获取文档和支持。         |
+| **支持**    | 提供对容器支持资源和的帮助访问。           |
+| **更多信息**  | 显示关于容器及其配置的更多信息。           |
+
+### 健康指示器
+
+您将在每个容器的图标旁找到一个彩色健康指示器：
+
+- 🟢 **健康**: 表示容器正在运行并按预期响应。
+- 🟡 **不健康**：容器正在运行但未通过健康检查。检查日志或容器设置以获取更多信息。
+- ⚪ **无健康检查**：这意味着没有为容器配置健康检查。对于许多应用程序来说，这很常见，并不一定是个问题。
+
+:::note
+健康检查由容器作者定义，可能不适用于所有镜像。
+:::
+
+---
+
+## 容器内的卷映射
+
+通过 Web 界面配置应用程序时，引用在配置期间设置的**容器路径** -
+
+例如，如果您将主机上的 `/mnt/user/media` 映射到容器中的 `/unraid_media`，您应该在应用程序的设置中使用 `/unraid_media`。
+
+<h3>示例场景</h3>
+
+以下是一些展示常见路径映射配置的示例，是用户在设置 Docker 容器时经常需要的。它们展示了如何在 Unraid 的主机文件系统路径与容器的内部路径之间进行转换，帮助您正确配置应用程序。
+
+- **媒体服务器：**
+  主机路径：`/mnt/user/media`\
+  容器路径：`/unraid_media`
+
+  在应用程序中，将您的媒体库位置设置为 `/unraid_media`。
+
+- **Appdata 存储：**
+  主机路径：`/mnt/user/appdata/myapp`\
+  容器路径：`/config`
+
+  在应用程序中，使用 `/config` 作为配置存储。
+
+- **Multiple %%user shares|user-share%%:**
+  Host path: `/mnt/user/media` → Container path: `/media`\
+  Host path: `/mnt/user/data` → Container path: `/data`
+
+  在应用程序中根据需要参考 `/media` 或 `/data`。
+
+:::important[Best 实践]
+始终使用允许容器正常工作的最严格[访问模式](../manage-storage/shares.mdx)（只读或读/写）。
+:::
+
+---
+
+## 调度启动和停止
+
+Unraid 不原生支持 **Docker 容器**的计划启动或停止操作，但您可以使用[**用户脚本插件**](../customize-your-experience/plugins.mdx)轻松自动化此过程。这个强大的工具允许您按计划运行自定义脚本，从而实现对容器的自动控制。
+
+### 用户脚本插件
+
+**用户脚本插件**允许您直接从 %%WebGUI|web-gui%% 创建、管理、和安排自定义 shell 脚本。您可以将其用于各种自动化任务，如启动或停止容器、备份数据或运行维护例程。
+
+- 如果尚未安装插件，请从**应用**选项卡安装。
+- 通过 **设置 → 用户脚本** 访问它来创建和管理您的脚本。
+
+要了解更多关于插件的信息，请查看[插件](../customize-your-experience/plugins.mdx)。
+
+### 计划容器操作
+
+要按计划自动启动或停止您的容器：
+
+1. 从 **应用程序** 标签安装 **用户脚本插件**。
+2. 导航至 ***设置→用户脚本***。
+3. 为每个独特的计划创建一个新脚本。如果多个容器共享相同的计划，您可以在单个脚本中包含它们的命令。
+4. 使用下拉菜单设置计划，或使用自定义 `cron` 表达式以获取更高级的定时选项。
+5. 点击 **应用** 保存并激活您的脚本。
+
+:::tip
+Cron 表达式使得计划安排更加灵活，超越内置选项。例如，`0 3 * * 1` 会在每周一凌晨 3:00 运行您的脚本。
+:::
+
+### 命令示例
+
+<Tabs>
+  <TabItem value="启动" label="启动容器" default>
+    <DockerCommandStart />
+  </TabItem>
+
+  <TabItem value="停止" label="停止容器">
+    <DockerCommandStop />
+  </TabItem>
+
+  <TabItem value="重启" label="重启容器">
+    <DockerCommandRestart />
+  </TabItem>
+
+  <TabItem value="状态" label="检测容器状态">
+    <DockerCommandStatus />
+  </TabItem>
+
+  <TabItem value="日志" label="查看容器日志">
+    <DockerCommandLogs />
+  </TabItem>
+</Tabs>
+
+:::tip
+您可以在 Docker 标签中或通过查看容器的配置屏幕中的 `docker run` 命令找到容器名称。
+:::

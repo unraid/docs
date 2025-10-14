@@ -1,0 +1,27 @@
+:::caution
+
+This method should only be used if you are comfortable with the Linux command line, as mistakes might make your system unbootable.
+
+:::
+
+1. Copy the URL of the desired Unraid version ZIP file from the [Version History](../../../download_list.mdx).
+2. Log in via %%SSH|ssh%% or console.
+3. Execute the following commands *one at a time* (replace `<URL>` with the copied link):
+
+   ```bash
+   cd /tmp
+   rm -f unraid.zip
+   rm -rf unraid_install
+   wget -O unraid.zip <URL>
+   [[ -s unraid.zip ]] && echo "OK to continue" || echo "STOP: the file was not downloaded"
+   unzip -d unraid_install unraid.zip
+   [[ -s unraid_install/bzroot ]] && echo "OK to continue" || echo "STOP: the file was not extracted properly"
+   [[ ! -d /boot/previous ]] && mkdir /boot/previous
+   mv /boot/bz* /boot/previous
+   mv /boot/changes.txt /boot/previous
+   cp unraid_install/bz* /boot
+   cp unraid_install/changes.txt /boot
+   sync -f /boot
+   sleep 5
+   reboot
+   ```

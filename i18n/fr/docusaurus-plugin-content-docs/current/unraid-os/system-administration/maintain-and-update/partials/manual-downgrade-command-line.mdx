@@ -1,0 +1,25 @@
+:::caution
+Cette méthode ne doit être utilisée que si vous êtes à l'aise avec la ligne de commande Linux, car des erreurs pourraient rendre votre système non démarrable.
+:::
+
+1. Copiez l'URL du fichier ZIP de la version d'Unraid souhaitée depuis [Historique des versions](../../../download_list.mdx).
+2. Connectez-vous via %%SSH|ssh%% ou console.
+3. Exécutez les commandes suivantes *une par une* (remplacez `<URL>` par le lien copié) :
+
+   ```bash
+   cd /tmp
+   rm -f unraid.zip
+   rm -rf unraid_install
+   wget -O unraid.zip <URL>
+   [[ -s unraid.zip ]] && echo "OK to continue" || echo "STOP: the file was not downloaded"
+   unzip -d unraid_install unraid.zip
+   [[ -s unraid_install/bzroot ]] && echo "OK to continue" || echo "STOP: the file was not extracted properly"
+   [[ ! -d /boot/previous ]] && mkdir /boot/previous
+   mv /boot/bz* /boot/previous
+   mv /boot/changes.txt /boot/previous
+   cp unraid_install/bz* /boot
+   cp unraid_install/changes.txt /boot
+   sync -f /boot
+   sleep 5
+   reboot
+   ```

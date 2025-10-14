@@ -1,0 +1,100 @@
+# API-Schlüssel-Autorisierungsprozess
+
+Dieses Dokument beschreibt den selbstverwalteten Prozess zur Erstellung von API-Schlüsseln für Drittanbieteranwendungen.
+
+## Übersicht
+
+Anwendungen können API-Zugriff auf einen Unraid-Server anfordern, indem sie Benutzer auf eine spezielle Autorisierungsseite umleiten, wo Benutzer die angeforderten Berechtigungen überprüfen und mit einem Klick einen API-Schlüssel erstellen können.
+
+## Prozess
+
+1. **Anwendung fordert an**: Die App leitet den Nutzer um zu:
+
+   ```
+   https://[unraid-server]/ApiKeyAuthorize?name=MyApp&scopes=docker:read,vm:*&redirect_uri=https://myapp.com/callback&state=abc123
+   ```
+
+2. **Benutzerauthentifizierung**: Falls nicht bereits angemeldet, wird der Benutzer zuerst zur Anmeldung weitergeleitet (Standard-Unraid-Authentifizierung)
+
+3. **Zustimmungsbildschirm**: Nutzer sieht:
+   - Anwendungsname und Beschreibung
+   - Angeforderte Berechtigungen (mit Checkboxen zur Genehmigung/Ablehnung spezifischer Bereiche)
+   - API-Schlüsselname-Feld (vorausgefüllt)
+   - Autorisieren & Abbrechen Schaltflächen
+
+4. **API-Schlüsselerstellung**: Nach der Autorisierung:
+   - API-Schlüssel wird mit genehmigten Bereichen erstellt
+   - Schlüssel wird dem Benutzer angezeigt
+   - Wenn `redirect_uri` angegeben ist, wird der Benutzer mit dem Schlüssel zurückgeleitet
+
+5. **Rückruf**: App erhält den API-Schlüssel:
+   ```
+   https://myapp.com/callback?api_key=xxx&state=abc123
+   ```
+
+## Abfrageparameter
+
+- `name` (erforderlich): Name der anfordernden Anwendung
+- `description` (optional): Beschreibung der Anwendung
+- `scopes` (erforderlich): Kommagetrennte Liste der angeforderten Bereiche
+- `redirect_uri` (optional): URL, zu der nach der Autorisierung weitergeleitet werden soll
+- `state` (optional): Undurchsichtiger Wert zur Aufrechterhaltung des Status
+
+## Bereichsformat
+
+Bereiche folgen dem Muster: `resource:action`
+
+### **DD-WRT:** Wenn Sie "dnsmasq" mit aktiviertem DNS-Rebinding-Schutz verwenden, können Sie diese Zeile Ihrer Router
+
+- `docker:read` - Lesezugriff auf Docker
+- `vm:*` - Vollzugriff auf VMs
+- `system:update` - Update-Zugriff auf das System
+- `role:viewer` - Zugriffsrolle Betrachter
+- `role:admin` - Zugriffsrolle Administrator
+
+### Verfügbare Ressourcen:
+
+- `docker`, `vm`, `system`, `share`, `user`, `network`, `disk`, etc.
+
+### Verfügbare Aktionen:
+
+- `create`, `read`, `update`, `delete` oder `*` für alle
+
+## Sicherheitsaspekte
+
+1. **HTTPS erforderlich**: Umleitungs-URIs müssen HTTPS verwenden (außer localhost für die Entwicklung)
+2. **Benutzereinwilligung**: Benutzer genehmigen explizit jede Berechtigung
+3. **Sitzungsbasiert**: Verwendet bestehende Unraid-Authentifizierungssitzung
+4. **Einmalige Anzeige**: API-Schlüssel werden einmal gezeigt und müssen sicher gespeichert werden
+
+## Beispielintegration
+
+```javascript
+// JavaScript example
+const unraidServer = 'tower.local';
+const appName = 'My Docker Manager';
+const scopes = 'docker:*,system:read';
+const redirectUri = 'https://myapp.com/unraid/callback';
+const state = generateRandomState();
+
+// Store state for verification
+sessionStorage.setItem('oauth_state', state);
+
+// Redirect user to authorization page
+window.location.href =
+    `https://${unraidServer}/ApiKeyAuthorize?` +
+    `name=${encodeURIComponent(appName)}&` +
+    `scopes=${encodeURIComponent(scopes)}&` +
+    `redirect_uri=${encodeURIComponent(redirectUri)}&` +
+    `state=${encodeURIComponent(state)}`;
+
+// Handle callback
+const urlParams = new URLSearchParams(window.location.search);
+const apiKey = urlParams.get('api_key');
+const returnedState = urlParams.get('state');
+
+if (returnedState === sessionStorage.getItem('oauth_state')) {
+    // Save API key securely
+    saveApiKey(apiKey);
+}
+```

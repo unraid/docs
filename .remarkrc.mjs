@@ -2,6 +2,7 @@
 import remarkFrontmatter from 'remark-frontmatter'
 import remarkGfm from 'remark-gfm'
 import remarkMdx from 'remark-mdx'
+import remarkDirective from 'remark-directive'
 import remarkPresetLintRecommended from 'remark-preset-lint-recommended'
 import remarkLintListItemIndent from 'remark-lint-list-item-indent'
 import remarkLintOrderedListMarkerStyle from 'remark-lint-ordered-list-marker-style'
@@ -23,6 +24,8 @@ import jsxContentSpacing from './remark-jsx-spacing.js'
 const plugins = [
     // MDX support
     remarkMdx,
+    remarkDirective,
+    directiveColonSafe,
     remarkFrontmatter,
     remarkGfm,
 
@@ -79,3 +82,58 @@ const remarkConfig = {
 };
 
 export default remarkConfig
+
+function directiveColonSafe() {
+  const data = this.data()
+  const extensions = data.toMarkdownExtensions || (data.toMarkdownExtensions = [])
+
+  for (const extension of extensions) {
+    if (
+      extension &&
+      typeof extension === 'object' &&
+      'handlers' in extension &&
+      extension.handlers &&
+      'containerDirective' in extension.handlers &&
+      Array.isArray(extension.unsafe)
+    ) {
+      extension.unsafe = extension.unsafe.filter(
+        (rule) => rule.character !== ':'
+      )
+
+      wrapContainerDirectiveHandler(extension)
+    }
+  }
+
+  data.toMarkdownExtensions = extensions
+}
+
+function wrapContainerDirectiveHandler(extension) {
+  const {containerDirective} = extension.handlers
+
+  if (typeof containerDirective !== 'function') {
+    return
+  }
+
+  extension.handlers.containerDirective = function wrappedContainerDirective(
+    node,
+    parent,
+    state,
+    info
+  ) {
+    const previous = state.bulletLastUsed
+    state.bulletLastUsed = undefined
+
+    try {
+      const output = containerDirective(node, parent, state, info)
+      return collapseDirectivePadding(output)
+    } finally {
+      state.bulletLastUsed = previous
+    }
+  }
+}
+
+function collapseDirectivePadding(value) {
+  return value
+    .replace(/(^|\n)([ \t]*:::[^\n]*?)\n\n/g, '$1$2\n')
+    .replace(/\n\n([ \t]*:::)/g, '\n$1')
+}
