@@ -43,19 +43,43 @@ The following steps are current and accurate for Unraid 7 and later:
 4. Click **Connect** to add your Unraid server to your %%Tailnet|tailnet%%.
 5. Visit ***Settings → Management Access*** to see your %%Tailscale|tailscale%% URLs for the %%WebGUI|web-gui%%.
 6. In ***Settings → Tailscale***, find your server's %%Tailnet|tailnet%% name and IP. Use these to access SMB/NFS shares, Docker containers, and more from any device on your %%Tailnet|tailnet%%.
+7. (Optional) Enable **Include Tailscale peers in /etc/hosts** to automatically add Tailscale devices to your server's hostname resolution, making it easier to access other devices on your %%Tailnet|tailnet%%.
 
 ### Subnet routing (optional)
 
 To access your Unraid server by its main LAN IP (or to reach Docker containers with their own IPs):
 
-1. Go to ***Settings → Tailscale***, click Viewing, and Sign In.
-2. Click **Subnet router** and add:
-   - Your Unraid server’s IP (e.g., `192.168.0.12/32`), or
-   - Your whole network’s subnet (e.g., `192.168.0.0/24`).
-3. Click **Advertise routes**.
-4. Approve the pending route in your Tailscale admin console.
-5. Once approved, devices on your %%Tailnet|tailnet%% can access your Unraid server and/or LAN devices by their usual IP addresses.
-6. For advanced details, see the [%%Tailscale|tailscale%% %%subnet routing|subnet-routing%% documentation](https://tailscale.com/kb/1019/subnets).
+1. Go to ***Settings → Tailscale***, click **Reauthenticate**, and sign in with your Tailscale account.
+2. In the Tailscale settings, locate the **Advertise Routes** section and add:
+   - Your Unraid server's IP (e.g., `192.168.0.12/32`), or
+   - Your whole network's subnet (e.g., `192.168.0.0/24`).
+3. Click **Apply** to save the changes.
+4. Log in to your [Tailscale admin console](https://login.tailscale.com/admin) and navigate to the **Machines** page.
+5. Locate your Unraid server and approve the pending route for the advertised subnet.
+6. Once approved, devices on your %%Tailnet|tailnet%% can access your Unraid server and/or LAN devices by their usual IP addresses.
+
+:::note
+
+For advanced details, see the [%%Tailscale|tailscale%% subnet routing documentation](https://tailscale.com/kb/1019/subnets).
+
+:::
+
+### Enhanced hostname resolution
+
+The Tailscale plugin includes an option to automatically add Tailscale peers to your server's `/etc/hosts` file. This feature simplifies device access by enabling hostname-based connections to other devices on your %%Tailnet|tailnet%%.
+
+Benefits include:
+
+- Accessing other Tailscale devices using friendly hostnames instead of IP addresses
+- Automatic updates when devices join or leave your %%Tailnet|tailnet%%
+- Improved compatibility with applications that rely on hostname resolution
+
+To enable this feature:
+1. Go to ***Settings → Tailscale*** in the %%WebGUI|web-gui%%.
+2. Enable the **Include Tailscale peers in /etc/hosts** option.
+3. Click **Apply** to save the changes.
+
+Once enabled, you can access other devices on your %%Tailnet|tailnet%% using their Tailscale hostnames from your Unraid server, making it easier to configure services, access shared resources, and manage your network.
 
 ---
 
@@ -131,7 +155,7 @@ When using Serve or Funnel, there’s no extra authentication layer - your conta
 
 :::
 
-11. **Apply** your changes and check the **Container log** for Tailscale messages. Click the "To authenticate, visit" link to approve the container on your Tailnet.
+11. **Apply** your changes and check the **Enhanced Log** or **Log Viewer** for Tailscale messages. Click the **To authenticate, visit...** link to approve the container on your Tailnet.
 
 :::caution[Troubleshooting]
 
@@ -150,15 +174,18 @@ When using Serve or Funnel, there’s no extra authentication layer - your conta
 
 %%Tailscale|tailscale%% is updated frequently to deliver new features and security improvements. To keep your Unraid system secure and compatible, make sure both the Unraid %%Tailscale|tailscale%% plugin and any Docker containers using %%Tailscale|tailscale%% are up to date.
 
-To update %%Tailscale|tailscale%%:
+### Updating the Tailscale Plugin
 
-- **Update the Unraid %%Tailscale|tailscale%% plugin:** When a new version is available, update the plugin through the Unraid Apps tab just like any other plugin. You can always review the latest changes in the [%%Tailscale|tailscale%% changelog](https://tailscale.com/changelog).
+When a new version is available, update the plugin through the Unraid Apps tab just like any other plugin. The plugin is actively maintained and regularly updated with the latest Tailscale features. You can always review the latest Tailscale changes in the [%%Tailscale|tailscale%% changelog](https://tailscale.com/changelog) and the [plugin release notes](https://github.com/unraid/unraid-tailscale/releases).
 
-- **Update %%Tailscale|tailscale%% in Docker containers:**
-  1. On the Docker page, hover over the %%Tailscale|tailscale%% icon for any container. If an update is available, you'll see a notification.
-  2. Update the container by either:
-     - Switching to **Advanced View** (upper right corner), then clicking **Force update**.
-     - Editing the container, making a minor change (like toggling a setting), and clicking **Apply**.
+### Updating Tailscale in Docker Containers
+
+To update %%Tailscale|tailscale%% in Docker containers:
+
+1. On the Docker page, hover over the %%Tailscale|tailscale%% icon for any container. If an update is available, you'll see a notification.
+2. Update the container by either:
+   - Switching to **Advanced View** (upper right corner), then clicking **Force update**.
+   - Editing the container, making a minor change (like toggling a setting), and clicking **Apply**.
 
 ---
 
