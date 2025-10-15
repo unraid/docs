@@ -186,12 +186,12 @@ For a more thorough approach, the pre-clear operation – available through plug
     alignItems: "center",
   }}
 >
-  | | Clear | Pre-Clear | | ---------------- | --------------------------- |
-  --------------------------------------- | | **Purpose** | Ensures basic
-  compatibility | Tests the drive and prepares it for use | | **Speed** | Works
-  quickly | Much slower process | | **Array Impact** | Runs in the background |
-  Needs the disk to be removed from use | | **Best For** | Ideal for quick
-  expansions | Great for checking new drives |
+|                | Clear                         | Pre-Clear                                   |
+|----------------|-------------------------------|----------------------------------------------|
+| **Purpose**    | Ensures basic compatibility   | Tests the drive and prepares it for use      |
+| **Speed**      | Works quickly                 | Much slower process                          |
+| **Array Impact** | Runs in the background     | Requires the disk to be out of the array     |
+| **Best for**   | Ideal for quick expansions    | Great for checking new drives                |
 </div>
 
 **Clear** quickly prepares a disk for use, making it compatible with your system and allowing you to add storage in just a few hours.
@@ -321,7 +321,7 @@ Adding a faster %%parity disk|parity-drives%% won't necessarily improve write sp
 Dual %%parity|parity%% enables recovery from **two simultaneous disk failures**. In Unraid, the second %%parity disk|parity-drives%% doesn't simply mirror the first. Instead:
 
 - **Parity 1:** Employs standard XOR (even) %%parity|parity%% calculations.
-- **Parity 2:** Utilizes a more complex algorithm (Galois field, rather than Reed-Solomon as in traditional %%RAID 6|raid6%%), allowing Unraid to rebuild from any two missing disks at the same time. This feature is significant for larger arrays, where the risk of multiple failures increases. Dual %%parity|parity%% significantly boosts resilience without the added overhead of mirrored redundancy.
+- **Parity 2:** Implements Q-parity using Galois-field syndrome calculations (Reed-Solomon–style), comparable to %%RAID 6|raid6%%. This Galois-field implementation allows Unraid to rebuild from any two simultaneous disk failures. This feature is significant for larger arrays, where the risk of multiple failures increases. Dual %%parity|parity%% significantly boosts resilience without the added overhead of mirrored redundancy.
 
 </details>
 
@@ -346,7 +346,7 @@ If you're planning to take the following steps and only have one %%parity disk|p
 
 :::
 
-To remove a parity drive:
+To upgrade a parity drive:
 
 1. **Stop the array:** Use the %%WebGUI|web-gui%% to stop the array.
 
@@ -600,7 +600,7 @@ Only use this procedure when:
 - If you are rebuilding a data drive, make sure that the %%emulated disk|emulated-disk%% shows the right content before you proceed. The rebuild process will ensure that the physical drive matches the emulated one exactly.
 - The %%emulated disk|emulated-disk%% may show as 'unmountable' in some cases. Some users assume that a rebuild will automatically fix an unmountable emulated disk, but it's important to verify the situation first. If the emulated disk shows 'unmountable' or the content doesn't look right, ask for help in the [Unraid forums](https://forums.unraid.net/) before proceeding with the rebuild.
 - Always run a [%%SMART|smart%% extended test](../../system-administration/advanced-tools/command-line-interface.mdx#smartctl) on the disabled drive to double-check that it's healthy before starting this process.
-- If the %%emulated disk|emulated-disk%% shows any file system issues, use the [automated XFS repair feature](../../troubleshooting/common-issues/data-recovery.mdx#running-the-repair) for XFS formatted disks, or the respective file system repair options for other file systems in the %%WebGUI|web-gui%% before beginning the rebuild.
+- If the %%emulated disk|emulated-disk%% shows any file system issues, use the [automated XFS repair feature](../../troubleshooting/common-issues/data-recovery.mdx#running-the-repair) for XFS‑formatted disks, or the respective file system repair options for other file systems in the %%WebGUI|web-gui%% before beginning the rebuild.
 - While the rebuild process should preserve your data, it's a good idea to back up important files if you can.
 
 :::
@@ -619,14 +619,14 @@ To re-enable a disabled disk by rebuilding it onto itself:
 
 5. **Verify emulated content (for data drives only)**: Check that the %%emulated disk|emulated-disk%% shows the content you expect.
 
-6. **Stop the array again:** Stop the array again to prepare for the next steps.
+6. **Stop the array:** Stop the array to prepare for the next steps.
 
 7. **Reassign the disabled disk:** Assign the same disk back to its original slot.
 
 8. **(Optional) Choose [%%Maintenance Mode|maintenance-mode%%](../../troubleshooting/common-issues/data-recovery.mdx#maintenance-mode):**
-   - Selecting %%Maintenance Mode|maintenance-mode%% can speed up the rebuild process.
-   - When in %%Maintenance Mode|maintenance-mode%%, you won't be able to use the array during the rebuild.
-   - If you choose %%Maintenance Mode|maintenance-mode%%, click **Sync** to start the rebuild.
+   - Selecting %%Maintenance Mode|maintenance-mode%% can speed up the rebuild process by preventing array access during the rebuild.
+   - When in %%Maintenance Mode|maintenance-mode%%, you won't be able to use the array until the rebuild completes.
+   - %%Maintenance Mode|maintenance-mode%% does not change how the rebuild is started—you'll still click **Start** in the next step.
 
 9. **Start the rebuild:** Click **Start** to begin the rebuild process. Unraid will take the contents from the %%emulated disk|emulated-disk%% and reconstruct them onto the physical drive.
 
