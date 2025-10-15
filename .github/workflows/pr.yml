@@ -7,14 +7,20 @@ on:
       - reopened
       - synchronize
       - closed
+  pull_request_target:
+    types:
+      - opened
+      - reopened
+      - synchronize
+      - closed
 
 concurrency:
-  group: pr-preview-${{ github.event.number }}
+  group: pr-preview-${{ github.event.number }}-${{ github.event_name }}
   cancel-in-progress: true
 
 jobs:
   lint:
-    if: ${{ github.event.action != 'closed' }}
+    if: ${{ github.event_name == 'pull_request' && github.event.action != 'closed' }}
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -68,6 +74,7 @@ jobs:
           git push origin HEAD:${{ github.head_ref }} || echo "Unable to push lint fixes (likely due to branch permissions)."
 
   deploy-preview:
+    if: ${{ github.event_name == 'pull_request_target' }}
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -75,22 +82,34 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v5
-      
+        if: ${{ github.event.action != 'closed' }}
+        with:
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+
       - name: Setup Node.js
         uses: actions/setup-node@v5
+        if: ${{ github.event.action != 'closed' }}
         with:
           node-version-file: '.nvmrc'
           cache: npm
-      
+
       - name: Install dependencies
+        if: ${{ github.event.action != 'closed' }}
         run: npm ci
 
       - name: Build documentation
+        if: ${{ github.event.action != 'closed' }}
         run: npm run build
         env:
           BASE_URL: /docs/pr-preview/pr-${{ github.event.number }}/
-          GITHUB_BRANCH: ${{ github.head_ref }}
-      
+          GITHUB_BRANCH: ${{ github.event.pull_request.head.ref }}
+
+      - name: Ensure build directory exists for cleanup
+        if: ${{ github.event.action == 'closed' }}
+        run: mkdir -p build
+
       - name: Deploy PR Preview
         uses: rossjrw/pr-preview-action@v1
         with:
