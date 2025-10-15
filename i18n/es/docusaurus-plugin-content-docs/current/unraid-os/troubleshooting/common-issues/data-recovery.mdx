@@ -46,7 +46,7 @@ Con Unraid 7.0 y versiones superiores, habilita [Unraid Connect](../../../unraid
 
 ---
 
-## Reparar sistemas de archivos
+## Nomenclatura de dispositivos: rutas y símbolos
 
 :::caution
 Usa estas instrucciones estrictamente para discos de datos con corrupción en el sistema de archivos. No las apliques al disco de paridad, problemas de hardware, o discos faltantes.
@@ -55,9 +55,9 @@ Usa estas instrucciones estrictamente para discos de datos con corrupción en el
 - La unidad de paridad **no** tiene un sistema de archivos. Ejecutar cualquier herramienta de reparación en la unidad de paridad puede corromperla y resultar en pérdida de datos irreversible.
 :::
 
-### Nomenclatura de dispositivos: rutas y símbolos
+### Eligiendo el método de reparación adecuado
 
-Cuando se usa el **%%WebGUI|web-gui%%**, las rutas de los dispositivos se gestionan automáticamente. Si eliges reparar a través de la línea de comandos, asegúrate siempre de estar utilizando la **ruta de partición** correcta:
+Todas las versiones de Unraid desde **v6.0.0** soportan reparaciones de sistema de archivos a través del %%WebGUI|web-gui%% para %%XFS|xfs%% y %%BTRFS|btrfs%%.
 
 | Etiqueta                       | Ruta típica | Uso                               | ¿Protección por %%parity\|paridad%%?  |
 | ------------------------------ | ----------- | --------------------------------- | ------------------------------------- |
@@ -75,7 +75,7 @@ Nunca ejecute herramientas de reparación de sistemas de archivos en discos comp
 - Siempre use `/dev/mdXp1` para discos %%array|array%% para mantener la %%paridad|parity%% válida.
 - For non-%%array|array%% drives (like %%cache|cache%%-only devices), use the direct partition path, e.g., `/dev/sdj1`.
 
-### Eligiendo el método de reparación adecuado
+### Verificar y reparar discos en el WebGUI
 
 Todas las versiones de Unraid desde **v6.0.0** soportan reparaciones de sistema de archivos a través del %%WebGUI|web-gui%% para %%XFS|xfs%% y %%BTRFS|btrfs%%.
 
@@ -120,7 +120,7 @@ Esta sección cubre cómo diagnosticar y reparar la corrupción del sistema de a
 3. Haga clic en **Verificar** para comenzar; use el botón **Actualizar** para monitorear el progreso si es necesario.
 4. Si no se encuentran corrupciones, proceda a [**Después de la prueba y reparación**](#after-the-test-and-repair).
 
-### Ejecutando la Reparación
+### Disco(s) no montable(s)
 
 <Tabs>
   <TabItem value="unidades-xfs" label="Para unidades XFS" default>
@@ -158,9 +158,9 @@ Si usó el %%Modo de Mantenimiento|maintenance-mode%%, detenga el array y reinic
 
 ---
 
-## Disco(s) no montable(s)
+## Configuración de la matriz perdida
 
-Si un disco previamente funcional se vuelve no montable, por lo general indica corrupción del sistema de archivos, a menudo causada por un apagado inadecuado o error de escritura.
+Perder tu configuración %%array|array%% puede ser estresante, pero no significa que tus datos hayan desaparecido. El archivo de configuración de %%array|array%% (ubicado en `config/super.dat` en tu dispositivo flash) le dice a Unraid cómo están asignados tus discos y cuáles sirven como %%parity|parity%%. Si perdiste tu unidad flash o no tienes una copia de seguridad reciente, puedes recuperar tu %%array|array%% reasignando cuidadosamente los discos.
 
 :::danger[Critical acción]
 ¡Nunca formatees un disco no montable a través de la %%WebGUI|interfaz web%%! Formatear borra todos los datos y actualiza la %%paridad|paridad%%, haciendo que la recuperación sea imposible.
@@ -172,7 +172,7 @@ Cuando un disco que funcionaba correctamente de repente se vuelve no montable, e
 
 En cambio, tu primer paso debe ser intentar una reparación del sistema de archivos. Unraid proporciona herramientas incorporadas para esto, y siguiendo el procedimiento correcto, a menudo puedes restaurar el acceso a tus datos con mínimo riesgo.
 
-Así es como proceder:
+El método recomendado para instalar ddrescue es a través del plugin **[Nerd Tools](https://unraid.net/community/apps?q=nerd+tools#r)** (que reemplazó al NerdPack obsoleto en 2022).
 
 1. Revisa la [sección de reparación del sistema de archivos](#repair-file-systems). Esta guía te lleva a través del proceso para tu sistema de archivos específico.
 
@@ -221,7 +221,7 @@ Esto es lo que debe hacer si se encuentra en esta situación:
 
 ---
 
-## Recuperar datos usando ddrescue
+## Traduciendo la salida de ddrescue
 
 Cuando los métodos de recuperación estándar de Unraid, como el procedimiento de [reemplazo de discos](../../using-unraid-to/manage-storage/array-configuration.mdx#replacing-disks), no son viables debido a múltiples fallas de discos o %%parity|paridad%% inválida, herramientas especializadas como **ddrescue** pueden ayudarlo a rescatar la mayor cantidad de datos posibles de un disco en falla.
 
@@ -231,7 +231,7 @@ Antes de comenzar, recuerda que la recuperación de datos es un proceso delicado
 
 El método recomendado para instalar ddrescue es a través del plugin **[Nerd Tools](https://unraid.net/community/apps?q=nerd+tools#r)** (que reemplazó al NerdPack obsoleto en 2022).
 
-Para habilitar ddrescue:
+Después de la copia inicial, ddrescue trabajará en recuperar datos de sectores defectuosos haciendo múltiples pasadas y, a veces, leyendo bloques en ambas direcciones. Esta fase puede tardar mucho más, especialmente si el disco está gravemente dañado.
 
 1. Instale [Nerd Tools](https://unraid-production-481d40bf.preview.craft.cloud/community/apps?q=nerd+tools#r:~:text=of%201%20App-,Nerd%20Tools,-unRaid.es) desde la pestaña **Aplicaciones** en el %%WebGUI|web-gui%% de Unraid.
 2. Abra ***Configuración → Nerd Tools*** y habilite **ddrescue**.

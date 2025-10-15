@@ -51,6 +51,8 @@ import FsRepairCliZfs from './partials/fs-repair-cli-zfs.mdx';
 - Para unidades de transferencia o dispositivos externos, se recomienda usar el plugin **[Unassigned Devices](#using-the-unassigned-devices-plugins)**, que admite sistemas de archivos adicionales.
 :::
 
+:::
+
 :::tip\[Still ¿necesitas ayuda eligiendo?
 
 - **Para unidades de array:** %%XFS|xfs%% es generalmente la mejor opción para la mayoría de los usuarios.
@@ -128,7 +130,7 @@ Si encuentras algún problema, no dudes en visitar los [foros de Unraid](https:/
 A partir de Unraid 7.2, la página de ***Main*** advertirá si alguna unidad de array o pool está formateada en sistemas de archivos heredados:
 
 - Cualquier disco formateado en ReiserFS necesita ser migrado a otro sistema de archivos lo antes posible, ya que no será utilizable en una futura versión de Unraid (probablemente Unraid 7.3).
-- Cualquier disco formateado en una versión anterior de XFS necesita ser migrado antes de 2030.
+- **Cambie el tipo de sistema de archivos**: Siga el procedimiento para [cambiar un tipo de sistema de archivos](#changing-a-file-system-type). Esto formateará la unidad y borrará todo el contenido, dejándolo con una unidad en blanco en el nuevo formato.
 :::
 
 Para cambiar el tipo de sistema de archivos de una unidad pero conservar sus datos, debe migrar el contenido antes de reformatear. Este proceso es especialmente común para usuarios que se alejan del ReiserFS obsoleto (utilizado en versiones antiguas de Unraid) hacia %%XFS|xfs%% o %%BTRFS|btrfs%%, pero se aplica a cualquier conversión de sistema de archivos.
@@ -137,7 +139,7 @@ Para cambiar el tipo de sistema de archivos de una unidad pero conservar sus dat
 Este proceso requiere mover temporalmente sus datos a otra ubicación. Asegúrese de tener suficiente espacio libre en otro lugar de su %%array|array%% o en un dispositivo externo antes de comenzar.
 :::
 
-Para convertirse de manera segura a un nuevo tipo de sistema de archivos:
+Reformatear una unidad en Unraid borrará todos sus datos y creará un nuevo y vacío sistema de archivos. Este proceso es útil para resolver errores persistentes del sistema de archivos o empezar de nuevo con un nuevo formato.
 
 1. **Copie todos los datos de la unidad**: Mueva sus archivos a otra ubicación. Esto podría ser otra unidad en su %%array|array%%, un %%cache pool|cache-pool%% o una copia de seguridad externa.
    - Antes de Unraid 7.0, necesitarás mover los archivos manualmente
@@ -206,7 +208,7 @@ Para mover datos fuera del cache:
 5. **Ejecute %%Mover|mover%%**: Ejecute %%Mover|mover%% desde la pestaña **Principal**. Espere a que termine y asegúrese de que el %%cache|cache%% esté vacío.
    - Si quedan archivos, detente y verifica en los foros para obtener ayuda.
 
-Para reformatear la unidad de caché:
+Mantener sus pools %%BTRFS|btrfs%% en Unraid es esencial para mantenerlos funcionando bien y asegurar que sus datos estén seguros. Dos herramientas clave que querrá usar regularmente son **Balance** y **Scrub**. Estas operaciones ayudan a resolver problemas de asignación de espacio, optimizan el uso de su almacenamiento y protegen sus datos de la corrupción oculta.
 
 6. **Detén el array**.
 7. **Establece el formato de la unidad de caché** (elige entre %%XFS|xfs%% o %%BTRFS|btrfs%%).
@@ -314,7 +316,7 @@ Si tu unidad es no montable:
 Si una unidad está tanto no montable como deshabilitada (x roja), primero ejecute la verificación/reparación en la unidad **emulada**. Si la unidad emulada también es no montable y intenta reconstruirla, la nueva unidad también será no montable.
 :::
 
-Corregir el sistema de archivos generalmente toma menos tiempo que reconstruir la unidad, permitiéndole acceder a sus datos sin perder nada. Recuerde, reconstruir una unidad no **repara** problemas del sistema de archivos; simplemente asegura que la unidad física coincida con la emulada, llevando consigo cualquier problema existente.
+A partir de Unraid 7.0, la reparación del sistema de archivos XFS ahora está completamente automatizada a través del WebGUI:
 
 :::important[Why ¿la paridad no es suficiente?]
 Aunque %%parity|parity%% ayuda a recuperar una unidad fallida, no puede corregir problemas del sistema de archivos. Si el sistema de archivos está dañado, %%parity|parity%% simplemente replicará ese daño en la nueva unidad.
@@ -344,11 +346,11 @@ Si el %%WebGUI|web-gui%% sugiere formatear una unidad no montable, <strong>no la
 
 <h4>Preparándose para comprobar o reparar</h4>
 
-1. **Identifica el tipo de sistema de archivos**:
+1. **Inicie el array**: Inicie el %%array|array%% en el modo correcto (consulte la sección anterior).
    - Navega a la pestaña **Principal** y selecciona tu disco (e.g., Disco 3, Caché).
    - Encuentra el **tipo de sistema de archivos** (debería ser %%XFS|xfs%%, %%BTRFS|btrfs%%, o %%ZFS|zfs%%).
 
-2. **Inicie el array en el modo correcto**:
+2. **Seleccione el disco**: Vaya a la pestaña **Principal** y haga clic en el disco que desea reparar.
    - Para **%%XFS|xfs%%**, inicia el %%array|array%% en **%%Modo de Mantenimiento|maintenance-mode%%**.
    - Para **%%BTRFS|btrfs%%**, inicie el %%array|array%% en **modo Normal** para un %%scrub|scrub%% o **%%modo de Mantenimiento|maintenance-mode%%** para una reparación.
    - Para **%%ZFS|zfs%%**, consulta la sección de %%ZFS|zfs%% a continuación.
@@ -429,7 +431,7 @@ Las reparaciones pueden tardar desde varios minutos hasta varias horas, especial
 
 1. **Identifique el tipo de sistema de archivos**: Vaya a la pestaña **Principal**, haga clic en el disco y averigüe qué tipo de sistema de archivos es (%%XFS|xfs%%, %%BTRFS|btrfs%% o %%ZFS|zfs%%).
 
-2. **Inicie el array en el modo correcto**:
+2. **Seleccione el disco**: Vaya a la pestaña **Principal** y haga clic en el disco que desea reparar.
 
    - **Para %%XFS|xfs%%:** Use **Modo de Mantenimiento**.
    - **Para %%BTRFS|btrfs%%:** Use **Modo Normal** para un %%scrub|fregado%%; use **Modo de Mantenimiento** para una reparación.

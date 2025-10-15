@@ -66,6 +66,8 @@ Certains conteneurs dépendent d'autres pour fonctionner correctement. Par exemp
 - Consultez la documentation pour chaque conteneur afin de comprendre les exigences spécifiques de démarrage.
 :::
 
+:::
+
 ---
 
 ## Démarrage avancé des conteneurs
@@ -88,7 +90,7 @@ Par défaut, Unraid démarre tous les conteneurs à démarrage automatique aussi
    - Utilisez l'essai et l'erreur pour déterminer les meilleurs temps d'attente pour votre configuration.
 
 :::tip
-Définir l'ordre correct et les temps d'attente est particulièrement important pour les conteneurs qui dépendent de services fournis par d'autres (par exemple, démarrer une base de données avant une application qui l'utilise, ou un %%VPN|vpn-tunnel%% avant des applications dépendantes).
+Bien qu'Unraid ne possède pas de fonctionnalité dédiée de "test de séquence de démarrage", vous pouvez simuler et vérifier votre ordre de démarrage :
 :::
 
 ### Tester votre séquence de démarrage
@@ -101,12 +103,12 @@ Bien qu'Unraid ne possède pas de fonctionnalité dédiée de "test de séquence
 4. Ajustez l'ordre de démarrage ou les temps d'attente si nécessaire.
 
 :::important
-Testez votre séquence de démarrage après avoir modifié les dépendances de conteneurs ou ajouté de nouveaux services, surtout si votre configuration repose sur un timing de démarrage spécifique.
+Pour accéder au menu contextuel du conteneur, allez dans l'onglet **Docker** ou **Tableau de Bord** et cliquez sur l'icône du conteneur que vous souhaitez gérer. Ce menu offre un accès direct aux actions courantes :
 :::
 
 ---
 
-## Contrôler vos conteneurs
+## Indicateur de santé
 
 Une fois que vous avez créé et démarré votre conteneur Docker, sa gestion est facile grâce au %%WebGUI|web-gui%%. Ce guide vous expliquera comment utiliser le menu contextuel, comprendre les indicateurs de santé du conteneur et accéder aux mappages de volumes à l'intérieur de votre conteneur.
 
@@ -130,16 +132,16 @@ Pour accéder au menu contextuel du conteneur, allez dans l'onglet **Docker** ou
 | **Support**        | Fournit l'accès aux ressources de support et à l'aide pour le conteneur.                                                                            |
 | **Plus d'info**    | Affiche des informations supplémentaires sur le conteneur et sa configuration.                                                                      |
 
-### Indicateur de santé
+### Mappages de volumes à l'intérieur d'un conteneur
 
-Vous trouverez un indicateur de santé coloré à côté de l'icône de chaque conteneur :
+Lors de la configuration de votre application via son interface web, référencez le **chemin du conteneur** que vous avez configuré lors de la configuration - pas le chemin hôte.
 
 - 🟢 **Sain** : Indique que le conteneur fonctionne et répond comme prévu.
 - 🟡 **Non sain** : Le conteneur est en cours d'exécution mais a échoué à son contrôle de santé. Consultez les journaux ou les paramètres du conteneur pour plus d'informations.
 - ⚪ **Pas de contrôle de santé** : Cela signifie qu'aucun contrôle de santé n'est configuré pour le conteneur. C'est fréquent pour de nombreuses applications, et pas forcément un problème.
 
 :::note
-Les contrôles de santé sont définis par l'auteur du conteneur et peuvent ne pas être présents pour toutes les images.
+Voici des exemples montrant des configurations de mappages de chemins couramment nécessaires lors de la configuration de conteneurs Docker. Ils démontrent comment traduire entre les chemins du système de fichiers hôte d'Unraid et les chemins internes du conteneur, vous aidant à configurer correctement les applications.
 :::
 
 ---
@@ -148,7 +150,7 @@ Les contrôles de santé sont définis par l'auteur du conteneur et peuvent ne p
 
 Lors de la configuration de votre application via son interface web, référencez le **chemin du conteneur** que vous avez configuré lors de la configuration - pas le chemin hôte.
 
-Par exemple, si vous avez mappé `/mnt/user/media` sur l'hôte à `/unraid_media` dans le conteneur, vous devez utiliser `/unraid_media` dans les paramètres de l'application.
+Unraid ne supporte pas nativement les actions planifiées de démarrage ou d'arrêt pour les **conteneurs Docker**, mais vous pouvez facilement automatiser ce processus en utilisant le [plugin **User Scripts**](../customize-your-experience/plugins.mdx). Cet outil puissant vous permet d'exécuter des scripts personnalisés selon un planning, permettant un contrôle automatique de vos conteneurs.
 
 <h3>Scénarios d'exemple</h3>
 
@@ -158,7 +160,7 @@ Voici des exemples montrant des configurations de mappages de chemins couramment
 
   Dans l'application, définissez l'emplacement de votre bibliothèque multimédia sur `/unraid_media`.
 
-- **Stockage d'appdata :**\n  Chemin de l'hôte : `/mnt/user/appdata/myapp`\nChemin du conteneur : `/config`
+- Accédez-y via ***Paramètres → User Scripts*** pour créer et gérer vos scripts.
 
   Dans l'application, utilisez `/config` pour le stockage des configurations.
 

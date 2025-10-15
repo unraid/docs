@@ -78,7 +78,7 @@ Unraid identifies disks based on their serial numbers and sizes, not the specifi
 当系统启动时，通常会自动启动磁盘阵列。然而，如果您最近更改了磁盘设置，例如添加了新的磁盘，阵列将保持关闭以便让您检查配置。
 
 :::caution
-请记住，您需要先停止阵列才能进行任何调整。暂停操作将完全停止所有Docker容器和网络共享，关闭或休眠虚拟机，并卸载存储设备，使数据和应用程序在您重新启动阵列前无法访问。
+Unraid provides several maintenance and configuration options for your storage array. Key operations include:
 :::
 
 要启动或停止阵列：
@@ -89,7 +89,7 @@ Unraid identifies disks based on their serial numbers and sizes, not the specifi
 
 ---
 
-## 阵列操作
+## 设置新磁盘
 
 Unraid provides several maintenance and configuration options for your storage array. Key operations include:
 
@@ -143,7 +143,7 @@ Clearance is mandatory when adding a data disk to a %%parity|parity%%-protected 
   | **最佳用途** | 非常适合快速扩展 | 适合检查新驱动器    |
 </div>
 
-**清除**快速准备磁盘使用，使其与系统兼容，并允许您在短短几小时内扩展存储。
+%%Parity disks|parity-drives%%是有用的特性，为您的数据提供额外的保护层。如果硬盘出故障，它们允许您的存储系统恢复信息。虽然使用%%parity disks|parity-drives%%是可选的，但强烈建议使用以保障数据安全。
 
 **预清除**耗时较长，但提供全面测试，以确保新磁盘在成为阵列一部分之前是可靠的。
 
@@ -160,7 +160,7 @@ Adding data disks is a great way to increase your Unraid array's storage space. 
 :::
 
 <details>
-  <summary><strong>如何添加数据盘</strong></summary>
+  <summary><strong>我的校验磁盘需要多大？</strong> - 点击展开/折叠</summary>
 
   ```mdx-code-block
 
@@ -271,7 +271,7 @@ Adding data disks is a great way to increase your Unraid array's storage space. 
 
 :::
 
-#### 升级奇偶校验磁盘
+#### 更换磁盘
 
 您可以将%%parity disk|parity-drives%%设备升级到更大以便在阵列中使用更大尺寸的磁盘或添加额外的%%parity disk|parity-drives%%。
 
@@ -349,9 +349,9 @@ Adding data disks is a great way to increase your Unraid array's storage space. 
 在此时以正常模式启动阵列是可选的。您可以用它来验证是否可以挂载模拟磁盘且数据看起来正确，然后继续，但这不是升级过程所必需的。
 :::
 
-5. **再次停止阵列：** 阵列现在应该显示未分配的磁盘已经失败。再次停止阵列。
+5. 在开始之前，请确保要替换的数据驱动器已被禁用。若驱动器故障（显示红色指示器），则已禁用。如果驱动器健康但您想替换它，请取消分配该驱动器并在没有它的情况下启动阵列一次，以迫使 Unraid 将其标记为已禁用。
 
-6. **分配替换的磁盘：** 将新的更大磁盘插入阵列中的空余插槽。
+6. 如果您的更换数据磁盘不大于您的校验盘，请使用标准的[更换数据磁盘](#replacing-faileddisabled-disks)程序。
 
 7. **启动阵列以重建：** 最后，再次启动阵列。Unraid 现在会将 %%emulated disk|模拟磁盘%% 的内容重建到新磁盘上。文件系统将自动调整以充分利用更大磁盘的容量。
 
@@ -446,13 +446,13 @@ Adding data disks is a great way to increase your Unraid array's storage space. 
 
 替换和重建磁盘：
 
-1. **停止阵列：**
+1. **启动阵列以开始数据重建。**
 
    - 登录 Unraid WebGUI（网页界面）。
-   - 找选项停止阵列，这是更换任何磁盘之前的必要步骤。
+   - 您可以在重建期间使用阵列，但为获得最佳性能，请限制使用。
 
 :::tip
-如果您的服务器支持热插入，您可以跳过下一步，只需停止阵列。
+完成后，您将拥有一个更大的校验盘和一个更换的数据盘。许多用户在此之后会执行一个 %%parity check|校验检查%% 以获得额外的信心，但这是可选的。
 :::
 
 2. **关闭服务器电源**（仅在**不**使用热插拔时）：
@@ -486,14 +486,16 @@ Adding data disks is a great way to increase your Unraid array's storage space. 
 
 <h4>重建期间的期望</h4>
 
-- 在重建过程中（除非您处于 %%Maintenance Mode|维护模式%%），此阵列仍可用，但它可能会运行得更慢。
-- 重建可能需要几个小时，具体取决于您的磁盘大小和系统使用情况。
-- 新磁盘将具有与原始磁盘相同的文件系统。
+- \*\*停止阵列：\*\*开始通过访问%%WebGUI|web-gui%%并停止阵列。
+- **取消分配 %%parity drives|校验盘%%：** 找到 %%parity drives|校验盘%% 槽位并将其设置为“未分配”。
+- **启动阵列：** 最后，重启阵列以提交更改，并成功地从配置中移除 %%parity drives|校验盘%%。
 - 如果旧磁盘由于文件系统问题而无法挂载，新的磁盘也将无法挂载。请在开始重建之前修复任何文件系统问题。
 
 :::note[Additional 笔记]
-- 重建过程不会改变磁盘的文件格式；它只是恢复其先前的形式。
-- 在开始重建之前，始终检查每个磁盘的健康状况，以避免任何潜在问题。
+- 使用双重校验可以从单个失效驱动器中恢复，但请注意，在重建过程中，您将无法承受另一次故障。
+- 使用单校验，您将失去所有冗余，这意味着任何额外的驱动器故障都可能导致数据丢失。
+:::
+
 :::
 
 #### 校验交换
@@ -635,7 +637,7 @@ Before you make any changes, please keep this in mind: If you already have any f
   ![检查按钮可让您进行校验和读取检查](/img/Check_button.PNG)
 </div>
 
-为方便起见，您可以通过导航至***设置→计划程序***按适合您的间隔自动安排这些检查。建议每月或每季度执行自动、非校正检查，以确保数据的持续健康。
+Unraid 提供状态报告，帮助您跟踪存储阵列的健康状况。这些报告是快速检查任何磁盘是否禁用或在读取或写入数据时出现问题的快捷方式。
 
 #### 奇偶校验 & 读取检查
 
@@ -656,7 +658,7 @@ Before you make any changes, please keep this in mind: If you already have any f
 
 每当系统执行 %%parity check|校验检查%% 或 %%read check|读检查%% 时，它会记录所发生的情况。您可以通过点击界面的 ***阵列操作*** 下的 **历史** 按钮轻松查看这些详细信息。
 
-如果想深入挖掘，所有这些记录都保存在您的 Unraid USB 闪存设备的 `config` 目录下的文本文件中。
+Unraid 提供多种写入模式用于管理阵列操作，每种模式在速度、电量消耗和磁盘损耗方面各有优劣。了解这些模式的工作原理以及缓存盘或缓存池的作用，有助于根据您的需求优化服务器。
 
 ---
 
@@ -695,7 +697,7 @@ Unraid 允许您控制硬盘的电源状态。您可以轻松地 %%spin them up 
 
 重置阵列配置是一个需要谨慎对待的重要步骤。此过程通常在移除磁盘、以新阵列布局重头开始或修复磁盘分配问题时是必要的。请注意，此操作可能会影响数据保护和校验，因此请确保只有在确有必要时才继续进行。
 
-重置阵列的常见原因包括：
+使用 Unraid 时，读取文件的速度主要由存储每个文件的单独驱动器决定。与传统 %%RAID|硬盘冗余数组%% 系统不同，Unraid 是将每个文件存储在单个磁盘上。这意味着读取速度不会由于组合多个驱动器的速度而提高。
 
 - \*\*删除或替换磁盘：\*\*如果您需要移除或更换阵列中的任何磁盘。
 - \*\*重新开始：\*\*当您希望为阵列创建全新的布局时。
@@ -708,8 +710,9 @@ Unraid 允许您控制硬盘的电源状态。您可以轻松地 %%spin them up 
 
 要重置阵列配置：
 
-1. 转到**工具**页面并点击**新配置**。
-2. 如果您只希望进行一些小的调整，可以保留一些现有的磁盘分配。这可以节省时间并将错误的几率减小。
+1. 如果磁盘被禁用且其数据正在重建，Unraid 将使用剩余的磁盘和校验信息重建数据。此过程中，读取速度可能会变慢到 30–60 MB/s 甚至更低，具体取决于系统中最慢的驱动器。
+2. Any ongoing operations in the array, such as a %%parity check|parity-check%% or rebuilding a drive, can also affect read performance. This is due to increased movement of the drive heads and overall contention for resources.
+   :::
 3. 通过勾选框确认您的选择，然后点击**应用**。
 4. 应用更改后，您的配置将被重置。
 5. 通过适当地分配或取消分配磁盘做出任何必要的配置更改。
@@ -731,9 +734,9 @@ Do not use **New Config** if your goal is to rebuild a disk. Performing a New Co
 
 如果您需要撤销重置：
 
-1. 通过网络 (SMB) 访问您的闪存设备。
-2. 找到并打开 `config` 文件夹。
-3. 将文件 `super.old` 重命名为 `super.dat`。
+1. \*\*无奇偶校验保护：\*\*在移动到数组之前，数据未受保护。
+2. **恢复风险：** %%BTRFS|btrfs%% %%RAID 5|raid5%%/%%RAID 6|raid6%%不稳定；单驱动器池缺乏冗余。
+3. **ZFS考虑因素：**%%ZFS|zfs%%需要更多的RAM，并且硬件要求比%%BTRFS|btrfs%%更严格。
 4. 重启您的服务器，之前的阵列配置应得到恢复。
 
 ---

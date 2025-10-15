@@ -51,6 +51,8 @@ import FsRepairCliZfs from './partials/fs-repair-cli-zfs.mdx';
 - 对于传输驱动器或外部设备，建议使用支持额外文件系统的 **[Unassigned Devices](#using-the-unassigned-devices-plugins)** 插件。
 :::
 
+:::
+
 :::tip[Still 需要帮助选择吗？]
 - **对于数组驱动器：** %%XFS|xfs%%通常是大多数用户的最佳选择。
 - **对于高性能或高级功能：** 选择%%ZFS|zfs%%或%%BTRFS|btrfs%%用于%%cache pools|cache-pool%%或多设备设置。
@@ -85,7 +87,7 @@ import FsRepairCliZfs from './partials/fs-repair-cli-zfs.mdx';
 
 在 Unraid 中使用新磁盘之前，您必须将其格式化为所选的文件系统。**请记住，格式化将擦除驱动器上的所有现有内容。**
 
-开始格式化：
+格式化完成后，驱动器即可存储文件。
 
 1. **启动%%array|array%%**。
 2. **识别无法挂载的驱动器：**未被识别的驱动器将显示为**不可挂载的**。
@@ -100,10 +102,10 @@ import FsRepairCliZfs from './partials/fs-repair-cli-zfs.mdx';
 
 ## 更改文件系统类型
 
-你可能想更改特定设备上的文件系统类型以利用新功能或确保与其他设备兼容。
+要更改特定驱动器上的文件系统类型：
 
 :::warning
-更改文件系统类型将 **擦除驱动器上的所有现有数据**。在继续之前，请务必备份任何重要文件。
+如果您遇到任何问题，可以随时访问 [Unraid 论坛](https://forums.unraid.net/)。附上您的系统诊断 zip 文件（位于 **工具 → 诊断** 下）以获取帮助。
 :::
 
 要更改特定驱动器上的文件系统类型：
@@ -154,7 +156,7 @@ This process requires temporarily moving your data to another location. Make sur
 
 :::note\[Timing]
 
-根据数据量和驱动器的速度，整个过程可能需要几个小时。大多数时间花在复制文件上，可以无人值守运行。
+此简单过程可确保驱动器完全擦除并格式化为所需格式。格式化过程通常只需几分钟。
 
 :::
 
@@ -165,23 +167,23 @@ This process requires temporarily moving your data to another location. Make sur
 在 Unraid 中重新格式化驱动器将擦除所有数据并创建一个新的空文件系统。此过程有助于解决持久的文件系统错误或开始使用新的格式。
 
 :::warning
-重新格式化将永久擦除驱动器上的所有数据。在开始之前，务必备份任何重要文件。
+从缓存移动数据：
 :::
 
-要 **安全地** 重新格式化你的驱动器：
+重新格式化缓存驱动器：
 
 1. **停止阵列**。
-2. **更改文件系统类型：**
-   - 转到 **主** 标签并点击你想重新格式化的驱动器。
+2. **设置缓存驱动器格式**（在 %%XFS|xfs%% 或 %%BTRFS|btrfs%% 之间选择）。
+   - 对于单驱动 %%cache|cache%%，推荐选择 %%XFS|xfs%%。
    - 选择不同的文件系统类型（例如，从%%XFS|xfs%%更改为%%BTRFS|btrfs%%）。
    - 启动%%array|array%%，驱动器将显示为**不可挂载的**。
    - 在提示时，格式化驱动器。
-3. **（可选）更改回原始文件系统类型：**
+3. **启动阵列**。
    - 再次停止%%array|array%%。
    - 将文件系统改回你首选的类型。
    - 启动%%array|array%%并再次格式化驱动器。
 
-此简单过程可确保驱动器完全擦除并格式化为所需格式。格式化过程通常只需几分钟。
+还原数据和设置：
 
 ### 重新格式化缓存驱动器
 
@@ -204,7 +206,7 @@ This process requires temporarily moving your data to another location. Make sur
 5. **Run %%Mover|mover%%**: Run %%Mover|mover%% from the **Main** tab. Wait for it to finish and ensure that the %%cache|cache%% is empty.
    - 如果还有文件留存，请停止并在论坛中寻求帮助。
 
-重新格式化缓存驱动器：
+让我们来详细解释每项操作的作用以及何时使用这些操作：
 
 6. **停止阵列**。
 7. **设置缓存驱动器格式**（在 %%XFS|xfs%% 或 %%BTRFS|btrfs%% 之间选择）。
@@ -255,7 +257,7 @@ This process requires temporarily moving your data to another location. Make sur
 
 ---
 
-## 未分配的驱动器
+## 故障排除
 
 Unassigned drives are storage devices connected to your Unraid server that aren't part of the main %%array|array%% or any %%cache pool|cache-pool%%. You can use these drives to transfer files, create backups, or provide fast storage for %%virtual machines|vm%%.
 
@@ -265,21 +267,22 @@ Unassigned drives are storage devices connected to your Unraid server that aren'
 
 <h4>未分配驱动器的常见用途</h4>
 
-- 连接可移动驱动器以便于文件传输或备份。
-- 使用专用驱动器进行高性能任务，如运行 %%virtual machines|vm%% 或临时数据存储。
+- **识别情况**：确定这是新驱动器还是先前工作的驱动器。
+- **对于新驱动器**：格式化驱动器以创建一个新的文件系统（查看 [格式化步骤](#creating-a-file-system-formatting)）。
 
 ### 使用未分配设备插件
 
-要充分利用您的未分配驱动器，请考虑从**应用程序**选项卡安装以下插件：
+修复文件系统通常比重建驱动器所需时间更短，让您可以不丢失任何数据地访问它。请记住，重建驱动器**无法**修复文件系统问题；它仅确保物理驱动器与模拟驱动器相匹配，且将现有问题一同保留。
 
 - \*\*[未分配设备](https://unraid.net/community/apps?q=dlandon\&r=0#:~:text=and%20iso%20files.-,Unassigned%20Devices,-dlandon)：\*\*此插件允许您挂载、共享和管理具有 Unraid 支持的文件系统（如 %%XFS|xfs%%、%%BTRFS|btrfs%% 或 NTFS）的驱动器。
 
 - \*\*[未分配设备Plus](https://unraid.net/community/apps?q=dlandon\&r=0#:~:text=and%20iso%20files.-,Unassigned%20Devices%20Plus,-\(Addon\))：\*\*此扩展支持额外的文件系统，包括 ExFAT 和 HFS+。
 
-这些插件启用：
+如果您不确定：
 
 - 使用 Unraid 网页界面轻松挂载和卸载驱动器。
-- 通过网络共享您的未分配驱动器。
+- 如需专家帮助，请将您的问题连同诊断信息一起发布于 [Unraid 论坛](https://forums.unraid.net/)。
+  :::
 - 在服务器启动时自动挂载。
 - 格式化或擦除驱动器以备将来使用。
 - 安全地断开 USB 或外部驱动器而不产生麻烦。
@@ -290,7 +293,7 @@ Unassigned drives are storage devices connected to your Unraid server that aren'
 
 ## 故障排除
 
-### 驱动器显示为无法挂载
+### 检查文件系统
 
 如果您在 Unraid 中看到驱动器为**无法挂载**，可能是由于两个主要原因之一：
 
@@ -366,9 +369,10 @@ If the %%WebGUI|web-gui%% suggests formatting an unmountable drive, <strong>do n
 
 #### 通过 WebGUI
 
-1. **启动阵列**：以正确的模式启动 %%array|array%% （请参阅上面的步骤）。
-2. **选择磁盘**：转到 **主** 选项卡并选择您要检查的磁盘。
-3. **访问检查选项**：滚动至**检查文件系统状态**。
+1. Stop and restart the %%array|array%% in **Normal mode**.
+2. 驱动器现在应挂载并可访问。
+3. 如果您看到一个 `lost+found` 文件夹，请检查其内容是否有重要文件。
+   :::
 4. **对于 XFS（Unraid 7.0+）：** 您将看到一个没有选项可供输入的 **检查** 按钮。系统会根据检查结果自动确定必要操作。
 5. **对于其他文件系统**：输入必要的选项（详细信息请参阅右上角的**帮助**）。
 6. **启动检查**：点击 **检查** 以开始过程。

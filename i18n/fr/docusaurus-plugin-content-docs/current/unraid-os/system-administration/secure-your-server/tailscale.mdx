@@ -78,8 +78,8 @@ Unraid facilite la connexion des [conteneurs Docker](../../using-unraid-to/run-d
 :::warning[Container compatibilité]
 L'intégration Tailscale ne fonctionne pas avec tous les conteneurs. Certains conteneurs peuvent ne pas fonctionner du tout si Tailscale est activé, en particulier ceux avec :
 
-- Exigences réseau personnalisées
-- Besoins spécifiques d'isolation réseau
+- Tout d'abord, installez %%Tailscale|tailscale%% sur n'importe quel ordinateur qui accédera à vos conteneurs Docker.
+- Bien que le plugin Tailscale Unraid ne soit pas strictement nécessaire pour l'intégration Docker, il est fortement recommandé de l'installer et se connecter sur votre serveur Unraid pour une meilleure expérience.
 - Applications en conflit avec les modifications réseau de Tailscale
 
 Testez l'intégration Tailscale sur des conteneurs non critiques d'abord, et préparez-vous à la désactiver si le conteneur ne fonctionne pas correctement.
@@ -94,7 +94,7 @@ Testez l'intégration Tailscale sur des conteneurs non critiques d'abord, et pr�
 
 Pour ajouter %%Tailscale|tailscale%% à un conteneur Docker :
 
-1. Examinez les paramètres de votre compte %%Tailscale|tailscale%% comme décrit dans la [section Commencer](#getting-started-with-tailscale).
+1. **Serve** : Vous permet d'accéder au site web ou au service web d'un conteneur de manière sécurisée depuis votre Tailnet en utilisant une URL HTTPS conviviale. Aucun transfert de port n'est nécessaire et seuls les appareils Tailnet peuvent se connecter.
 2. Dans Unraid, allez à l'onglet **Docker** et [modifiez le conteneur souhaité](../../using-unraid-to/run-docker-containers/managing-and-customizing-containers.mdx).
 3. Activez l'interrupteur **Utiliser Tailscale**.
 4. Entrez un **nom d'hôte Tailscale** pour le conteneur (doit être unique sur votre Tailnet).
@@ -110,17 +110,17 @@ Un certificat HTTPS sera généré pour ce nom d'hôte et publié dans un regist
 9. Décidez d'activer ou non **%%Tailscale|tailscale%% %%SSH|ssh%%** (accès sécurisé à shell authentifié via %%Tailscale|tailscale%%).
 
 :::info[Serve vs. Tunnel]
-- **Serve** : Vous permet d'accéder au site web ou au service web d'un conteneur de manière sécurisée depuis votre Tailnet en utilisant une URL HTTPS conviviale. Aucun transfert de port n'est nécessaire et seuls les appareils Tailnet peuvent se connecter.
-- **Funnel** : Publie le site web du conteneur sur Internet via une URL HTTPS unique. Quiconque possède le lien peut y accéder, même s'il n'est pas sur votre Tailnet. Utilisez ceci avec prudence, car cela expose votre service à l'Internet large.
+- Modifiez le conteneur et identifiez un chemin mappé pour stocker les données d'état Tailscale (par ex., `/container-path/`).
+- Activez les **Affichage des paramètres avancés** Tailscale et définissez le **Répertoire d'état** Tailscale à `/container-path/.tailscale_state`.
 :::
 
 10. Activez **Serve** pour faire un proxy inverse de l'interface web du conteneur vers votre Tailnet, ou **Funnel** pour le rendre accessible depuis internet. Unraid détectera automatiquement le port à utiliser en fonction des paramètres WebUI du conteneur. Si nécessaire, des options avancées sont également disponibles.
 
 :::warning
-Lors de l'utilisation de Serve ou Funnel, il n'y a pas de couche d'authentification supplémentaire - votre conteneur est responsable de la gestion de l'accès des utilisateurs. Sécurisez vos applications web en conséquence.
+%%Tailscale|tailscale%% est fréquemment mis à jour pour offrir de nouvelles fonctionnalités et améliorer la sécurité. Pour garder votre système Unraid sécurisé et compatible, assurez-vous que le plugin Unraid %%Tailscale|tailscale%% et tous les conteneurs Docker utilisant %%Tailscale|tailscale%% sont à jour.
 :::
 
-11. **Appliquez** vos modifications et vérifiez le **journal du conteneur** pour les messages Tailscale. Cliquez sur le lien "Pour authentifier, visitez" pour approuver le conteneur sur votre Tailnet.
+11. **Mettez à jour le plugin Unraid %%Tailscale|tailscale%%:** Lorsqu'une nouvelle version est disponible, mettez à jour le plugin via l'onglet Applications Unraid comme n'importe quel autre plugin. Vous pouvez toujours consulter les dernières modifications dans le [changelog %%Tailscale|tailscale%%](https://tailscale.com/changelog).
 
 :::caution\[Troubleshooting]
 
@@ -139,7 +139,7 @@ Lors de l'utilisation de Serve ou Funnel, il n'y a pas de couche d'authentificat
 
 %%Tailscale|tailscale%% est fréquemment mis à jour pour offrir de nouvelles fonctionnalités et améliorer la sécurité. Pour garder votre système Unraid sécurisé et compatible, assurez-vous que le plugin Unraid %%Tailscale|tailscale%% et tous les conteneurs Docker utilisant %%Tailscale|tailscale%% sont à jour.
 
-Pour mettre à jour %%Tailscale|tailscale%% :
+Le comportement de l'intégration Tailscale et du réseau d'espace utilisateur dépend du type de réseau du conteneur. Utilisez le tableau ci-dessous pour comprendre les options de compatibilité et d'accès :
 
 - **Mettez à jour le plugin Unraid %%Tailscale|tailscale%%:** Lorsqu'une nouvelle version est disponible, mettez à jour le plugin via l'onglet Applications Unraid comme n'importe quel autre plugin. Vous pouvez toujours consulter les dernières modifications dans le [changelog %%Tailscale|tailscale%%](https://tailscale.com/changelog).
 
@@ -153,7 +153,7 @@ Pour mettre à jour %%Tailscale|tailscale%% :
 
 ## Réseau en espace utilisateur
 
-**Network dans l'espace utilisateur** contrôle comment un conteneur se connecte à votre %%Tailnet|tailnet%% et au reste de votre réseau. Dans la plupart des cas, vous pouvez ignorer les détails si vous accédez aux conteneurs en utilisant leurs URL WebUI et que vous avez %%Tailscale|tailscale%% installé sur tous vos systèmes clients.
+\* *"%%WireGuard|wireguard%%" et le logo "%%WireGuard|wireguard%%" sont des marques déposées de Jason A. Donenfeld.*
 
 - **Activé :** Le conteneur fonctionne dans un environnement restreint. Il ne peut pas initier de connexions à d'autres appareils %%Tailnet|tailnet%% ou utiliser le DNS %%Tailscale|tailscale%% mais reste accessible via à la fois le WebUI %%Tailscale|tailscale%% et l'URL WebUI d'origine.
 

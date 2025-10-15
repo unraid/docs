@@ -51,6 +51,8 @@ import FsRepairCliZfs from './partials/fs-repair-cli-zfs.mdx';
 - Für Übertragungslaufwerke oder externe Geräte wird empfohlen, das **[Nicht zugewiesene Geräte](#using-the-unassigned-devices-plugins)** Plugin zu verwenden, welches zusätzliche Dateisysteme unterstützt.
 :::
 
+:::
+
 :::tip[Still Brauchen Sie Hilfe bei der Auswahl?]
 - **Für Array-Laufwerke:** %%XFS|xfs%% ist in der Regel die beste Wahl für die meisten Benutzer.
 - **Für Hochleistung oder erweiterte Funktionen:** Wählen Sie %%ZFS|zfs%% oder %%BTRFS|btrfs%% für %%cache pools|cache-pool%% oder Mehrgerätelayouts.
@@ -85,7 +87,7 @@ So setzen Sie den Dateisystemtyp:
 
 Bevor Sie eine neue Festplatte in Unraid verwenden, müssen Sie sie mit dem ausgewählten Dateisystem formatieren. **Denken Sie daran, dass durch das Formatieren alle vorhandenen Inhalte auf dem Laufwerk gelöscht werden.**
 
-Um mit der Formatierung zu beginnen:
+Sobald die Formatierung abgeschlossen ist, ist das Laufwerk bereit zur Dateispeicherung.
 
 1. **Starten Sie das %%array|Array%%**.
 2. **Nicht einbindbare Laufwerke identifizieren:** Laufwerke, die nicht erkannt werden, erscheinen als **nicht einbindbar**.
@@ -100,10 +102,10 @@ Sobald die Formatierung abgeschlossen ist, ist das Laufwerk bereit zur Dateispei
 
 ## Ändern eines Dateisystemtyps
 
-Möglicherweise möchten Sie den Dateisystemtyp auf einem bestimmten Laufwerk ändern, um neue Funktionen zu nutzen oder um die Kompatibilität mit Ihren anderen Laufwerken zu gewährleisten.
+Um den Dateisystemtyp eines bestimmten Laufwerks zu ändern:
 
 :::warning
-Das Ändern des Dateisystemtyps wird **alle vorhandenen Daten** auf dem Laufwerk löschen. Sichern Sie daher immer alle wichtigen Dateien, bevor Sie fortfahren.
+Sollten Sie auf Probleme stoßen, besuchen Sie gerne die [Unraid-Foren](https://forums.unraid.net/). Fügen Sie die ZIP-Datei mit den Systemdiagnosen (zu finden unter ***Tools → Diagnosen***) zur Unterstützung bei.
 :::
 
 Um den Dateisystemtyp eines bestimmten Laufwerks zu ändern:
@@ -154,7 +156,7 @@ Um sicher in einen neuen Dateisystemtyp zu konvertieren:
 
 :::note\[Timing]
 
-Der Prozess kann je nach Datenmenge und Geschwindigkeit Ihrer Laufwerke mehrere Stunden dauern. Die meiste Zeit wird mit dem Kopieren von Dateien verbracht, was unbeaufsichtigt ablaufen kann.
+Dieser einfache Prozess stellt sicher, dass das Laufwerk vollständig gelöscht und nach Ihren Wünschen formatiert wird. Der Formatierungsprozess dauert normalerweise nur ein paar Minuten.
 
 :::
 
@@ -165,23 +167,23 @@ Der Prozess kann je nach Datenmenge und Geschwindigkeit Ihrer Laufwerke mehrere 
 Ein Laufwerk in Unraid neu zu formatieren, löscht alle Ihre Daten und erstellt ein neues leeres Dateisystem. Dieser Prozess ist nützlich, um anhaltende Dateisystemfehler zu beheben oder mit einem neuen Format von vorne zu beginnen.
 
 :::warning
-Neuverformungen löscht permanent alle Daten auf dem Laufwerk. Sichern Sie immer wichtige Dateien, bevor Sie beginnen.
+Um Daten vom Cache zu verschieben:
 :::
 
-Um Ihre Festplatte **sicher** neu zu formatieren:
+Um das Cache-Laufwerk neu zu formatieren:
 
 1. **Stoppen Sie die Array**.
-2. **Ändern Sie den Dateisystemtyp:**
-   - Gehen Sie zum **Haupt** Tab und klicken Sie auf das Laufwerk, das Sie neu formatieren möchten.
+2. **Stellen Sie das Cache-Laufwerksformat ein** (wählen Sie zwischen %%XFS|xfs%% oder %%BTRFS|btrfs%%).
+   - Für ein Einzellaufwerks-%%cache|cache%% wird %%XFS|xfs%% empfohlen.
    - Wählen Sie einen anderen Dateisystemtyp (zum Beispiel Wechsel von %%XFS|xfs%% zu %%BTRFS|btrfs%%).
    - Starten Sie das %%array|array%%, und das Laufwerk wird als **nicht einbindbar** angezeigt.
    - Wenn Sie dazu aufgefordert werden, formatieren Sie das Laufwerk.
-3. **(Optional) Wechseln Sie zurück zum ursprünglichen Dateisystemtyp:**
+3. **Starten Sie die Array**.
    - Stoppen Sie das %%array|array%% erneut.
    - Ändern Sie den Dateisystemtyp zurück zu Ihrem bevorzugten Typ.
    - Starten Sie das %%array|array%% und formatieren Sie das Laufwerk erneut.
 
-Dieser einfache Prozess stellt sicher, dass das Laufwerk vollständig gelöscht und nach Ihren Wünschen formatiert wird. Der Formatierungsprozess dauert normalerweise nur ein paar Minuten.
+Um Daten und Einstellungen wiederherzustellen:
 
 ### Neues Format eines Cache-Laufwerks
 
@@ -204,7 +206,7 @@ Um Daten vom Cache zu verschieben:
 5. **Run %%Mover|mover%%**: Run %%Mover|mover%% from the **Main** tab. Wait for it to finish and ensure that the %%cache|cache%% is empty.
    - Sollten Dateien verbleiben, stoppen Sie und prüfen Sie die Foren für Hilfe.
 
-Um das Cache-Laufwerk neu zu formatieren:
+Schauen wir uns an, was jede Operation macht und wann sie verwendet wird:
 
 6. **Stoppen Sie die Array**.
 7. **Stellen Sie das Cache-Laufwerksformat ein** (wählen Sie zwischen %%XFS|xfs%% oder %%BTRFS|btrfs%%).
@@ -255,7 +257,7 @@ For more details on advanced %%BTRFS|btrfs%% features, check out the [official B
 
 ---
 
-## Nicht zugewiesene Laufwerke
+## Fehlerbehebung
 
 Unassigned drives are storage devices connected to your Unraid server that aren't part of the main %%array|array%% or any %%cache pool|cache-pool%%. You can use these drives to transfer files, create backups, or provide fast storage for %%virtual machines|vm%%.
 
@@ -265,21 +267,22 @@ Alle Laufwerke, die mit Ihrem Server verbunden sind, wenn das %%array|array%% ge
 
 <h4>Häufige Anwendungen für nicht zugewiesene Laufwerke</h4>
 
-- Verbindungen für einfache Dateitransfers oder Backups herstellen.
-- Einsatz von dedizierten Laufwerken für leistungsintensive Aufgaben wie das Ausführen von %%virtuellen Maschinen|vm%% oder temporärer Datenspeicherung.
+- **Identifizieren Sie die Situation**: Bestimmen Sie, ob es sich um ein neues oder ein zuvor funktionierendes Laufwerk handelt.
+- **Für neue Laufwerke**: Formatieren Sie das Laufwerk, um ein neues Dateisystem zu erstellen (siehe die [Formatierungsschritte](#creating-a-file-system-formatting)).
 
 ### Verwendung der Plugins für nicht zugewiesene Geräte
 
-Um das Beste aus Ihren nicht zugewiesenen Laufwerken herauszuholen, sollten Sie die folgenden Plugins vom **Apps**-Tab installieren:
+Die Behebung des Dateisystems dauert in der Regel weniger Zeit als der Neuaufbau des Laufwerks, sodass Sie auf Ihre Daten zugreifen können, ohne etwas zu verlieren. Denken Sie daran, dass der Neuaufbau eines Laufwerks **nicht** Dateisystemprobleme behebt; er stellt lediglich sicher, dass das physische Laufwerk dem emulierten entspricht und alle bestehenden Probleme mitübernimmt.
 
 - **[Unassigned Devices](https://unraid.net/community/apps?q=dlandon\&r=0#:~:text=and%20iso%20files.-,Unassigned%20Devices,-dlandon):** Dieses Plugin ermöglicht es Ihnen, Laufwerke mit Dateisystemen, die von Unraid unterstützt werden, wie %%XFS|xfs%%, %%BTRFS|btrfs%% oder NTFS, zu mounten, freizugeben und zu verwalten.
 
 - **[Unassigned Devices Plus](https://unraid.net/community/apps?q=dlandon\&r=0#:~:text=and%20iso%20files.-,Unassigned%20Devices%20Plus,-\(Addon\)):** Diese Erweiterung bietet Unterstützung für zusätzliche Dateisysteme, einschließlich ExFAT und HFS+.
 
-Diese Plugins ermöglichen:
+Wenn Sie unsicher sind:
 
 - Einfaches Mounten und Unmounten von Laufwerken über die Unraid-Weboberfläche.
-- Teilen von nicht zugewiesenen Laufwerken über das Netzwerk.
+- Für fachkundige Hilfe posten Sie Ihr Problem zusammen mit den Diagnosen im [Unraid-Forum](https://forums.unraid.net/).
+  :::
 - Automatisierung des Mount-Vorgangs beim Serverstart.
 - Formatieren oder Löschen von Laufwerken für die zukünftige Nutzung.
 - Sicheres Entfernen von USB- oder externen Laufwerken ohne Probleme.
@@ -290,7 +293,7 @@ Für weitere Details zur Installation und Verwaltung von Plugins, schauen Sie si
 
 ## Fehlerbehebung
 
-### Laufwerk wird als nicht mountbar angezeigt
+### Überprüfen eines Dateisystems
 
 Wenn Sie sehen, dass ein Laufwerk in Unraid als **nicht mountbar** angezeigt wird, könnte dies an einem der beiden Hauptgründe liegen:
 
@@ -366,9 +369,10 @@ If the %%WebGUI|web-gui%% suggests formatting an unmountable drive, <strong>do n
 
 #### Über das WebGUI
 
-1. **Start the array**: Start the %%array|array%% in the correct mode (refer to the steps above).
-2. **Wählen Sie die Festplatte aus:** Gehen Sie zum **Haupt**-Tab und wählen Sie die Festplatte, die Sie überprüfen möchten.
-3. **Zugriff auf Prüfen-Optionen:** Scrollen Sie zu **Prüfen Sie den Status des Dateisystems**.
+1. Stop and restart the %%array|array%% in **Normal mode**.
+2. Das Laufwerk sollte jetzt gemountet und zugänglich sein.
+3. Wenn Sie einen `lost+found`-Ordner sehen, überprüfen Sie dessen Inhalt auf wichtige Dateien.
+   :::
 4. **Für XFS (Unraid 7.0+)**: Sie sehen eine **PRÜFEN**-Schaltfläche ohne Optionen zum Eingeben. Das System bestimmt automatisch die notwendigen Aktionen anhand der Prüfergebnisse.
 5. **Für andere Dateisysteme:** Geben Sie alle notwendigen Optionen ein (für Details siehe **Hilfe** oben rechts).
 6. **Starten Sie die Überprüfung:** Klicken Sie auf **Prüfen**, um den Prozess zu starten.

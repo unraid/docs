@@ -20,6 +20,8 @@ Windows es uno de los sistemas operativos invitados más populares para los usua
 - Para %%GPU passthrough|gpu-passthrough%%, use %%OVMF|ovmf%% (%%UEFI|uefi%%) BIOS con Windows 11 o más reciente.
 :::
 
+:::
+
 ### Configuraciones compatibles
 
 | Edición de Windows  | BIOS recomendado   | Tipo de máquina                 | Notas                                      |
@@ -55,7 +57,7 @@ Usando Unraid 7 o superior, puedes inyectar automáticamente los controladores %
 
 ### Configuración de hibernación
 
-La hibernación te permite guardar todo el estado de tu %%VM|vm%% de Windows, incluyendo aplicaciones abiertas y documentos, en el disco. Esto te permite apagar la %%VM|vm%% sin perder trabajo. Al resumir, Windows restaura todo exactamente como lo dejaste, omitiendo el proceso de arranque normal. Esta característica es útil cuando necesitas reiniciar o apagar tu host de Unraid o quieres ahorrar energía mientras mantienes el estado de tu %%VM|vm%% intacto.
+Para usar la hibernación de manera confiable, debes instalar el %%QEMU|qemu%% %%Guest Agent|guest-agent%% en tu %%VM|vm%% de Windows. Este agente permite que Unraid se comunique con la %%VM|vm%% para operaciones avanzadas como hibernación, apagado y reportes de estadísticas en vivo.
 
 :::note[Benefits de la hibernación]
 - Ahorre energía apagando un %%VM|vm%% inactivo sin perder progreso
@@ -96,33 +98,33 @@ Si tu %%VM|vm%% no hiberna o retoma correctamente, podrías perder trabajo no gu
 
 Optimizar tu %%VM|vm%% de Windows puede mejorar la capacidad de respuesta, reducir el uso del disco y evitar problemas comunes con el paso de dispositivos o apagado. Estas configuraciones son opcionales y pueden aplicarse según sea necesario.
 
-#### Desactivar inicio rápido
+#### Desactivar la indexación de Windows
 
-Deshabilitar el inicio rápido puede ayudar a prevenir problemas con el paso de dispositivos. Asegura que el hardware de tu %%VM|vm%% se inicialice correctamente cada vez que se inicia. Aunque esta configuración está diseñada para PCs físicas, en un entorno virtual, a menudo puede causar más problemas que beneficios.
+Windows Search indexing continuously scans your %%virtual machine|vm%%'s storage to catalog files for faster search results. However, on a %%virtual machine|vm%%, this can cause unnecessary disk I/O, slow down performance, and increase wear on your physical storage, especially SSDs in your [%%cache pool|cache-pool%%](../manage-storage/cache-pools.mdx).
 
 <details>
-  <summary><strong>Cómo desactivar el inicio rápido</strong> - Haz clic para expandir/colapsar</summary>
+  <summary><strong>Cómo desactivar la indexación de Windows</strong> - Haz clic para expandir/colapsar</summary>
 
-  1. Abra el **Panel de control** y busque **Energía**.
+  1. Presione **Windows + R** para abrir el cuadro de diálogo Ejecutar, escriba `services.msc` y presione Enter.
   2. Haga clic en **Elija qué hacen los botones de encendido**.
-  3. Haga clic en **Cambiar configuraciones que actualmente no están disponibles**.
+  3. Haga doble clic en **Windows Search**, cambie el **Tipo de inicio** a **Deshabilitado** y haga clic en **OK**.
   4. Desmarque **Activar inicio rápido** en **Configuraciones de apagado**.
   5. Haga clic en **Guardar cambios**.
 </details>
 
-#### Desactivar hiberfil.sys
+#### Desactivar desfragmentación automática del disco
 
-La hibernación en Windows crea un archivo oculto grande llamado `hiberfil.sys`. Este archivo puede consumir espacio significativo en el disco e incrementar la actividad del disco en tu %%VM|vm%%. Si no dependes de la hibernación, deshabilitarla liberará espacio de almacenamiento y reducirá la actividad de E/S innecesaria.
+Windows está diseñado para desfragmentar automáticamente discos duros físicos en un horario regular. En una %%VM|vm%% - especialmente cuando se utiliza almacenamiento SSD o %%vDisks|vdisk%% de provisión delgada - la desfragmentación automática es innecesaria y también puede reducir la vida útil del disco y degradar el rendimiento.
 
 <details>
-  <summary><strong>Cómo desactivar la hibernación y eliminar hiberfil.sys</strong> - Haz clic para expandir/colapsar</summary>
+  <summary><strong>Cómo desactivar la desfragmentación automática del disco</strong> - Haz clic para expandir/colapsar</summary>
 
-  1. Haga clic derecho en el botón **Inicio** y seleccione **Terminal de Windows (Admin)** o **Símbolo del sistema (Admin)**.
-  2. Escriba: `powercfg /h off`
-  3. Presiona Enter y reinicia tu %%VM|vm%%. El archivo `hiberfil.sys` se eliminará de tu unidad C:.
+  1. Abra el **Explorador de archivos**, haga clic derecho en la unidad C: y seleccione **Propiedades**.
+  2. Vaya a la pestaña **Herramientas** y haga clic en **Optimizar**.
+  3. Haga clic en **Cambiar configuraciones**.
 </details>
 
-#### Desactivar la indexación de Windows
+#### Habilitar modo de energía de alto rendimiento
 
 Windows Search indexing continuously scans your %%virtual machine|vm%%'s storage to catalog files for faster search results. However, on a %%virtual machine|vm%%, this can cause unnecessary disk I/O, slow down performance, and increase wear on your physical storage, especially SSDs in your [%%cache pool|cache-pool%%](../manage-storage/cache-pools.mdx).
 
@@ -166,7 +168,7 @@ Habilitar el modo **Alto rendimiento** asegura que su %%VM|vm%% siempre funcione
 El protocolo de escritorio remoto (RDP) te permite acceder a tu %%VM|vm%% de Windows desde otro dispositivo. Ofrece mejor rendimiento y compatibilidad en comparación con %%VNC|vnc-session%%. Ten en cuenta que RDP solo es compatible con las ediciones Professional y Enterprise de Windows. Además, tu cuenta de usuario de Windows **debe** tener una contraseña establecida.
 
 :::caution
-RDP no está disponible en las ediciones Home de Windows. Siempre establece una contraseña segura para tu cuenta de usuario de Windows antes de habilitar RDP.
+Windows 11 requiere TPM 2.0 y Secure Boot. El BIOS **OVMF-TPM** de Unraid proporciona el soporte TPM virtual necesario para estos requisitos.
 :::
 
 <details>
@@ -210,7 +212,7 @@ Si estás teniendo problemas con el audio HDMI en una %%VM|vm%% de Windows que u
 
 ---
 
-### Actualización a Windows 11
+### Ampliación de particiones vDisk de Windows VM
 
 Windows 11 requiere TPM 2.0 y Secure Boot. El BIOS **OVMF-TPM** de Unraid proporciona el soporte TPM virtual necesario para estos requisitos.
 

@@ -33,9 +33,9 @@ Un onduleur bien configuré est votre meilleure défense contre les arrêts impr
 Consultez le [plugin NUT](https://unraid.net/community/apps/c/plugins/p4?srsltid=AfmBOop675PrJQW4iqb4JBN3GyPpwDDiSmnZReq78t27XyxkFdMX8inO#:~:text=NUT%20%2D%20Network%20UPS%20Tools) pour une compatibilité étendue avec des modèles UPS avancés ou du matériel non pris en charge.
 :::
 
-## Événements qui causent des arrêts imprévus
+## Configurer les délais d'arrêt
 
-Comprendre les principales causes des arrêts inopinés vous aide à les prévenir. Explorez les onglets ci-dessous pour plus de détails sur chaque scénario.
+La configuration appropriée des délais d'arrêt est essentielle pour garantir que votre serveur Unraid peut arrêter tous les services efficacement, évitant ainsi les arrêts inopinés, notamment en cas de panne de courant ou de maintenance. Chaque composant de votre système - %%VM|vm%%s, conteneurs Docker, et le %%array|array%% global - a son propre paramètre de délai qui peut être ajusté.
 
 <Tabs>
   <TabItem value="puissance" label="Perte de puissance inattendue" default>
@@ -53,11 +53,11 @@ Comprendre les principales causes des arrêts inopinés vous aide à les préven
 
 ---
 
-## Configurer les délais d'arrêt
+## Délai des machines virtuelles
 
 La configuration appropriée des délais d'arrêt est essentielle pour garantir que votre serveur Unraid peut arrêter tous les services efficacement, évitant ainsi les arrêts inopinés, notamment en cas de panne de courant ou de maintenance. Chaque composant de votre système - %%VM|vm%%s, conteneurs Docker, et le %%array|array%% global - a son propre paramètre de délai qui peut être ajusté.
 
-### Paramètres de délai d'attente recommandés
+### Délai des conteneurs Docker
 
 | Paramètre                           | Par défaut | Minimum recommandé                                 | Où configurer                                             |
 | ----------------------------------- | ---------- | -------------------------------------------------- | --------------------------------------------------------- |
@@ -65,7 +65,7 @@ La configuration appropriée des délais d'arrêt est essentielle pour garantir 
 | Délai d'arrêt des conteneurs Docker | 10s        | 30–60s                                             | ***Paramètres → Docker (Avancé)***                        |
 | Délai d'arrêt général               | 90s        | 3 × délai de %%VM\|vm%% + délai de Docker + 15–30s | ***Paramètres → Paramètres disque → Délai d'arrêt***      |
 
-### Délai des machines virtuelles
+### Délai d'arrêt général
 
 <details>
   <summary><strong>Cliquer pour développer/réduire</strong></summary>
@@ -74,7 +74,7 @@ La configuration appropriée des délais d'arrêt est essentielle pour garantir 
 
   <h4>Où définir</h4>
 
-  - ***Paramètres → Gestionnaire de VM → Arrêt VM*** (vue Avancée activée)
+  - ***Paramètres → Paramètres disque → Délai d'arrêt***
 
   <h4>Considérer</h4>
 
@@ -86,7 +86,7 @@ La configuration appropriée des délais d'arrêt est essentielle pour garantir 
   Réglez le délai sur au moins 300 secondes (5 minutes) pour les %%VMs|vm%% Windows. Planifiez les mises à jour pour qu'elles s'exécutent au démarrage, et non à l'arrêt, afin d'éviter les retards.
 </details>
 
-### Délai des conteneurs Docker
+### Autonomie de la batterie UPS
 
 <details>
   <summary><strong>Cliquer pour développer/réduire</strong></summary>
@@ -95,16 +95,15 @@ La configuration appropriée des délais d'arrêt est essentielle pour garantir 
 
   <h4>Où définir</h4>
 
-  - ***Paramètres → Docker*** (vue avancée activée)
+  - ***Paramètres → Paramètres de l’onduleur*** (voir **Temps restant** avec tous les disques en rotation)
 
   <h4>Considérer</h4>
 
-  - Les conteneurs sont arrêtés en parallèle.
-  - Les conteneurs complexes, ou ceux avec de grandes bases de données, peuvent nécessiter plus de 10 secondes par défaut pour s'arrêter en toute sécurité.
+  - L'onduleur doit initier un arrêt suffisamment tôt pour permettre à la séquence d'arrêt complète de se terminer.
+  - Si la batterie se décharge avant que l'arrêt ne soit terminé, vous risquez un arrêt imprévu et une possible perte de données.
   - Si le temps imparti expire, les conteneurs sont arrêtés de force.
 
   <h4>Bonne pratique</h4>
-  Augmentez le délai à 30-60 secondes si vous exécutez des conteneurs Docker qui nécessitent un temps d'arrêt supplémentaire.
 </details>
 
 ### Délai d'arrêt général

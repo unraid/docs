@@ -51,6 +51,8 @@ import FsRepairCliZfs from './partials/fs-repair-cli-zfs.mdx';
 - Pour les disques de transfert ou les appareils externes, il est recommandé d'utiliser le plugin **[Unassigned Devices](#using-the-unassigned-devices-plugins)**, qui prend en charge des systèmes de fichiers supplémentaires.
 :::
 
+:::
+
 :::tip\[Still besoin d'aide pour choisir?
 
 - **Pour les disques de baie :** %%XFS|xfs%% est généralement le meilleur choix pour la plupart des utilisateurs.
@@ -128,7 +130,7 @@ Si vous rencontrez des problèmes, n'hésitez pas à visiter les [forums Unraid]
 À partir d'Unraid 7.2, la page ***Principale*** avertira si des disques de l'array ou du pool sont formatés dans des systèmes de fichiers obsolètes :
 
 - Tous les disques formatés en ReiserFS doivent être migrés vers un autre système de fichiers dès que possible, car ils ne seront plus utilisables dans une future version d'Unraid (probablement Unraid 7.3).
-- Tous les disques formatés dans une ancienne version de XFS doivent être migrés avant 2030.
+- **Changez le type de système de fichiers :** Suivez la procédure pour [changer un type de système de fichiers](#changing-a-file-system-type). Cela formatera le lecteur et effacera tout le contenu, vous laissant avec un lecteur vierge dans le nouveau format.
 :::
 
 Ce processus est particulièrement courant pour les utilisateurs passant du ReiserFS obsolète (utilisé dans les anciennes versions d'Unraid) au %%XFS|xfs%% ou au %%BTRFS|btrfs%%, mais il s'applique à toute conversion de système de fichiers.
@@ -137,7 +139,7 @@ Ce processus est particulièrement courant pour les utilisateurs passant du Reis
 Ce processus nécessite de déplacer temporairement vos données vers un autre emplacement. Assurez-vous d'avoir suffisamment d'espace libre ailleurs dans votre %%array|array%% ou sur un appareil externe avant de commencer.
 :::
 
-Pour convertir en toute sécurité vers un nouveau type de système de fichiers :
+Reformater un lecteur dans Unraid effacera toutes vos données et créera un nouveau système de fichiers vide. Ce processus est utile pour résoudre les erreurs de système de fichiers persistantes ou pour repartir à zéro avec un nouveau format.
 
 1. **Copiez toutes les données du lecteur :** Déplacez vos fichiers vers un autre emplacement. Cela pourrait être un autre lecteur dans votre %%array|array%%, un %%cache pool|cache-pool%%, ou une sauvegarde externe.
    - Avant Unraid 7.0, vous devrez déplacer les fichiers manuellement.
@@ -206,7 +208,7 @@ Pour déplacer les données hors du cache :
 5. **Exécutez le %%Mover|mover%% :** Exécutez le %%Mover|mover%% depuis l'onglet **Principal**. Attendez qu'il finisse et assurez-vous que le %%cache|cache%% est vide.
    - Si des fichiers restent, arrêtez et consultez les forums pour obtenir de l'aide.
 
-Pour reformater le disque cache :
+Maintenir vos pools %%BTRFS|btrfs%% dans Unraid est essentiel pour assurer leur bon fonctionnement et la sécurité de vos données. Deux outils clés que vous voudrez utiliser régulièrement sont **Balance** et **Scrub**. Ces opérations aident à résoudre les problèmes d'allocation d'espace, à optimiser l'utilisation de votre stockage, et à protéger vos données contre la corruption cachée.
 
 6. **Arrêtez la matrice**.
 7. **Définissez le format du disque de cache** (choisissez entre %%XFS|xfs%% ou %%BTRFS|btrfs%%).
@@ -314,7 +316,7 @@ Si votre disque est non montable :
 Si un lecteur est à la fois non montable et désactivé ('x' rouge), exécutez d'abord la vérification/réparation du système de fichiers sur le lecteur **émulé**. Si le lecteur émulé est également non montable et que vous tentez de le reconstruire, le nouveau lecteur sera également non montable.
 :::
 
-Réparer le système de fichiers prend généralement moins de temps que de reconstruire le lecteur, vous permettant d'accéder à vos données sans rien perdre. Rappelez-vous, reconstruire un lecteur ne résout **pas** les problèmes de système de fichiers ; il assure simplement que le lecteur physique correspond à celui émulé, en conservant les problèmes existants.
+À partir d'Unraid 7.0, la réparation du système de fichiers XFS est maintenant entièrement automatisée via le WebGUI :
 
 :::important[Why la parité n'est-elle pas suffisante?]
 Bien que la %%parité|parity%% aide à récupérer un disque défectueux, elle ne peut pas résoudre les problèmes de système de fichiers. Si le système de fichiers est corrompu, la %%parité|parity%% ne fera que reproduire cette corruption sur le nouveau disque.
@@ -344,11 +346,11 @@ Si le %%WebGUI|web-gui%% suggère de formater un lecteur non montable, <strong>n
 
 <h4>Préparation à la vérification ou à la réparation</h4>
 
-1. **Identifiez le type de système de fichiers** :
+1. **Démarrez le réseau**: Démarrez le %%array|array%% en mode correct (voir la section ci-dessus).
    - Accédez à l'onglet **Principal** et sélectionnez votre disque (ex : Disque 3, Cache).
    - Trouvez le **type de système de fichiers** (doit être %%XFS|xfs%%, %%BTRFS|btrfs%% ou %%ZFS|zfs%%).
 
-2. **Démarrez le réseau en mode correct** :
+2. **Sélectionnez le disque**: Allez à l'onglet **Principal** et cliquez sur le disque que vous souhaitez réparer.
    - Pour **%%XFS|xfs%%**, démarrez la %%array|array%% en mode **%%maintenance|maintenance-mode%%**.
    - Pour **%%BTRFS|btrfs%%**, démarrez l'%%array|array%% en **mode normal** pour un %%scrub|scrub%% ou en **mode maintenance** pour une réparation.
    - Pour **ZFS**, référez-vous à la section **ZFS** ci-dessous.
@@ -429,7 +431,7 @@ Les réparations peuvent prendre de quelques minutes à plusieurs heures, surtou
 
 1. **Identifier le type de système de fichiers** : Allez à l'onglet **Principal**, cliquez sur le disque, et découvrez de quel type de système de fichiers il s'agit (%%XFS|xfs%%, %%BTRFS|btrfs%%, ou %%ZFS|zfs%%).
 
-2. **Démarrez le réseau en mode correct** :
+2. **Sélectionnez le disque**: Allez à l'onglet **Principal** et cliquez sur le disque que vous souhaitez réparer.
 
    - **Pour %%XFS|xfs%% :** Utilisez **module de maintenance**.
    - **Pour %%BTRFS|btrfs%% :** Utilisez **mode normal** pour un %%scrub|scrub%% ; utilisez **module de maintenance** pour une réparation.

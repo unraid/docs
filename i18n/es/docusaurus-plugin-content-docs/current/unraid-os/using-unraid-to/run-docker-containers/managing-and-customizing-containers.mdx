@@ -66,6 +66,8 @@ Algunos contenedores dependen de otros para funcionar correctamente. Por ejemplo
 - Revise la documentación de cada contenedor para entender cualquier requerimiento específico de inicio.
 :::
 
+:::
+
 ---
 
 ## Inicio avanzado de contenedores
@@ -88,7 +90,7 @@ Por defecto, Unraid inicia todos los contenedores de inicio automático tan ráp
    - Use prueba y error para determinar los mejores tiempos de espera para su configuración.
 
 :::tip
-Establecer el orden correcto y los tiempos de espera es especialmente importante para contenedores que dependen de servicios proporcionados por otros (por ejemplo, iniciar una base de datos antes que una aplicación que la use, o un %%VPN|vpn-tunnel%% antes de apps dependientes).
+Aunque Unraid no tiene una función dedicada de "probar secuencia de inicio", puede simular y verificar su orden de inicio:
 :::
 
 ### Probando su secuencia de inicio
@@ -101,12 +103,12 @@ Aunque Unraid no tiene una función dedicada de "probar secuencia de inicio", pu
 4. Ajuste el orden de inicio o los tiempos de espera según sea necesario.
 
 :::important
-Pruebe su secuencia de inicio después de cambiar las dependencias de contenedores o agregar nuevos servicios, especialmente si su configuración depende de un temporizado específico de inicio.
+Para acceder al menú contextual del contenedor, dirígete a la pestaña **Docker** o **Dashboard** y haz clic en el icono del contenedor que deseas gestionar. Este menú ofrece un acceso sencillo a acciones comunes:
 :::
 
 ---
 
-## Controlando tus contenedores
+## Indicador de estado
 
 Una vez que hayas creado e iniciado tu contenedor Docker, gestionarlo es fácil a través del %%WebGUI|web-gui%%. Esta guía te guiará en el uso del menú contextual, la comprensión de los indicadores de salud del contenedor y el acceso a los mapeos de volumen dentro de tu contenedor.
 
@@ -130,16 +132,16 @@ Para acceder al menú contextual del contenedor, dirígete a la pestaña **Docke
 | **Soporte**             | Proporciona acceso a recursos y ayuda para el contenedor.                                                                          |
 | **Más Información**     | Muestra información adicional sobre el contenedor y su configuración.                                                              |
 
-### Indicador de estado
+### Asignaciones de volumen dentro de un contenedor
 
-Encontrará un indicador de estado de color junto al ícono de cada contenedor:
+Al configurar su aplicación a través de su interfaz web, haga referencia a la **ruta de contenedor** que configuró durante la configuración - no a la ruta del anfitrión.
 
 - 🟢 **Saludable**: Indica que el contenedor está funcionando y responde como se espera.
 - 🟡 **No Saludable**: El contenedor está en ejecución pero ha fallado su verificación de estado. Investiga los registros o la configuración del contenedor para más información.
 - ⚪ **Sin verificación de estado**: Esto significa que no se ha configurado una verificación de estado para el contenedor. Es común para muchas aplicaciones y no necesariamente un problema.
 
 :::note
-Las verificaciones de salud son definidas por el autor del contenedor y pueden no estar presentes para todas las imágenes.
+Aquí tienes algunos ejemplos que muestran configuraciones comunes de mapeo de rutas que los usuarios frecuentemente necesitan al configurar contenedores Docker. Demuestran cómo traducir entre las rutas del sistema de archivos del host de Unraid y las rutas internas del contenedor, ayudándote a configurar aplicaciones correctamente.
 :::
 
 ---
@@ -148,7 +150,7 @@ Las verificaciones de salud son definidas por el autor del contenedor y pueden n
 
 Al configurar su aplicación a través de su interfaz web, haga referencia a la **ruta de contenedor** que configuró durante la configuración - no a la ruta del anfitrión.
 
-Por ejemplo, si mapeó `/mnt/user/media` en el anfitrión a `/unraid_media` en el contenedor, debe usar `/unraid_media` en la configuración de la aplicación.
+Unraid no admite acciones programadas para iniciar o detener **contenedores Docker**, pero puedes automatizar fácilmente este proceso mediante el [**plugin Scripts de Usuario**](../customize-your-experience/plugins.mdx). Esta poderosa herramienta te permite ejecutar scripts personalizados en un horario, habilitando el control automático de tus contenedores.
 
 <h3>Escenarios de ejemplo</h3>
 
@@ -160,9 +162,7 @@ Aquí tienes algunos ejemplos que muestran configuraciones comunes de mapeo de r
 
   En la aplicación, establece la ubicación de tu biblioteca de medios en `/unraid_media`.
 
-- **Almacenamiento de appdata:**
-  Ruta del host: `/mnt/user/appdata/myapp`\
-  Ruta del contenedor: `/config`
+- Accédalo a través de ***Settings → User Scripts*** para crear y gestionar sus scripts.
 
   En la aplicación, usa `/config` para el almacenamiento de configuración.
 

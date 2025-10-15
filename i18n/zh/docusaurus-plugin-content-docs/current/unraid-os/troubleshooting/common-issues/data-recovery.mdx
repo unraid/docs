@@ -51,7 +51,7 @@ Even though Unraid offers protection against various hardware failures, having r
 ## 修复文件系统
 
 :::caution
-这些指令仅适用于文件系统损坏的数据驱动器。请勿将其应用于校验盘、硬件问题或缺失的驱动器。
+使用\*\*%%WebGUI|web-gui%%**时，设备路径会自动管理。如果选择通过命令行修复，始终确保使用正确的**分区路径\*\*：
 
 - 文件系统修复工具仅用于修复具有文件系统或挂载错误的数据或缓存驱动器。
 - 校验盘**没有**文件系统。对校验盘运行任何修复工具可能会损坏它，并可能导致不可逆的数据丢失。
@@ -81,7 +81,7 @@ Even though Unraid offers protection against various hardware failures, having r
 
 自 **v6.0.0** 以来的所有 Unraid 版本都支持通过 %%WebGUI|web-gui%% 对 %%XFS|xfs%% 和 %%BTRFS|btrfs%% 进行文件系统修复。
 
-对于大多数用户，推荐的方法是：
+This section covers how to diagnose and repair file system corruption on data drives using Unraid's built-in tools. File system issues can occur after unclean shutdowns, power failures, or hardware problems, but Unraid provides safe repair methods that maintain your %%parity|parity%% protection while fixing the underlying problems.
 
 1. 打开 %%WebGUI|web-gui%%。
 2. 导航到 **主** 选项卡。
@@ -91,7 +91,7 @@ Even though Unraid offers protection against various hardware failures, having r
 如果您更喜欢使用命令行，请始终：
 
 - 识别适用于 %%array|array%% 驱动器的正确 Unraid 管理分区（`/dev/mdXp1`）。
-- 使用适合您文件系统的修复工具：
+- 从主要界面，点击要测试或修复的磁盘。
   - **XFS:** `xfs_repair`
   - **BTRFS:** `btrfs scrub`
 
@@ -115,7 +115,7 @@ This section covers how to diagnose and repair file system corruption on data dr
 - 为目标驱动器确定文件系统： **主** 选项卡 → 点击驱动器名称 → 检查 **文件系统类型**。
 - 从主要界面，点击要测试或修复的磁盘。
 
-### 进行测试
+### XFS 检查和修复
 
 1. 大多数文件系统（如%%XFS|xfs%%）的默认设置是只读检查（无更改），通常使用`-n`（不修改）选项。（对于更详细的输出与%%XFS|xfs%%，增加`-v`（详细）选项，生成`-nv`。）
 2. 对 %%BTRFS|btrfs%% 使用 `scrub` 命令，而不是进行 `balance` 操作。
@@ -172,7 +172,7 @@ This section covers how to diagnose and repair file system corruption on data dr
 
 当一个以前运行正常的磁盘突然变得无法挂载时，自然会对数据感到担忧。这类问题通常是由文件系统损坏引起的，可能在非正常关机、断电或写入操作失败后发生。记住的最重要的事情是：**如果由%%WebGUI|web-gui%%提示，请不要格式化驱动器**。格式化会删除所有现有数据，并使恢复变得困难，甚至不可能。
 
-Instead, your first step should be to attempt a file system repair. Unraid provides built-in tools for this, and following the correct procedure can often restore access to your data with minimal risk.
+当标准 Unraid 恢复方法（如 [更换磁盘](../../using-unraid-to/manage-storage/array-configuration.mdx#replacing-disks) 过程）由于多个磁盘故障或 %%parity|parity%% 无效不可行时，像 **ddrescue** 这样的专业工具可以帮助您从失败的驱动器中拯救尽可能多的数据。
 
 以下是操作方法：
 
@@ -210,7 +210,7 @@ If these repair attempts do not resolve the issue or if you encounter errors you
 
 Losing your %%array|array%% configuration can be stressful, but it doesn't mean your data is gone. The %%array|array%% configuration file (located at `config/super.dat` on your flash device) tells Unraid how your drives are assigned and which ones serve as %%parity|parity%%. If you've lost your flash drive or don’t have a recent backup, you can recover your %%array|array%% by carefully reassigning the drives.
 
-如果您发现自己处于这种情况，请按以下步骤操作：
+如果您希望在保持%%parity|parity%%的同时直接克隆到%%array|array%%磁盘上，请使用`md#`设备并在维护模式下启动%%array|array%%：
 
 1. 在%%WebGUI|web-gui%%中，将所有可用驱动器分配为数据驱动器。暂时不要分配任何驱动器为%%parity|parity%%。
 2. 启动%%array|array%%。以前用作%%parity|parity%%的驱动器将显示为*无法挂载*，因为它们不包含文件系统。
@@ -228,7 +228,7 @@ Losing your %%array|array%% configuration can be stressful, but it doesn't mean 
 当标准 Unraid 恢复方法（如 [更换磁盘](../../using-unraid-to/manage-storage/array-configuration.mdx#replacing-disks) 过程）由于多个磁盘故障或 %%parity|parity%% 无效不可行时，像 **ddrescue** 这样的专业工具可以帮助您从失败的驱动器中拯救尽可能多的数据。
 
 :::note[Best 数据恢复实践]
-在开始之前，记住数据恢复是一个微妙的过程。尽可能从故障磁盘的副本工作，避免将新数据写入源磁盘。如果您的数据不可替代，请在尝试高级恢复之前考虑专业恢复服务。记录您的操作并花时间——仓促处理增加了永久性数据丢失的风险。
+以下是你可能在第一次通过时看到的示例：
 :::
 
 推荐通过 **[Nerd Tools](https://unraid.net/community/apps?q=nerd+tools#r)** 插件安装ddrescue（该插件在2022年取代了已弃用的NerdPack）。

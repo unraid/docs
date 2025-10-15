@@ -55,7 +55,7 @@ En utilisant Unraid 7 ou une version ultérieure, vous pouvez automatiquement in
 
 ### Configurer l'hibernation
 
-L'hibernation vous permet de sauvegarder l'état entier de votre %%VM|vm%% Windows - y compris les applications et documents ouverts - sur le disque. Cela vous permet d'éteindre le %%VM|vm%% sans perdre de travail. Lorsque vous reprenez, Windows restaure tout exactement comme vous l'avez laissé, sans passer par le processus de démarrage normal. Cette fonctionnalité est pratique lorsque vous devez redémarrer ou éteindre votre hôte Unraid ou que vous souhaitez économiser de l'énergie tout en gardant l'état de votre %%VM|vm%% intact.
+To use hibernation reliably, you must install the %%QEMU|qemu%% %%Guest Agent|guest-agent%% in your Windows %%VM|vm%%. This agent allows Unraid to communicate with the %%VM|vm%% for advanced operations like hibernation, shutdown, and live statistics reporting.
 
 :::note[Benefits de l'hibernation]
 - Économisez de l'énergie en éteignant les %%VM|vm%% inactives sans perdre de progression
@@ -96,33 +96,33 @@ If your %%VM|vm%% fails to hibernate or resume properly, you may lose unsaved wo
 
 Optimiser votre %%VM|vm%% Windows peut améliorer la réactivité, réduire l'utilisation du disque et éviter les problèmes courants avec le passage de périphériques ou l'arrêt. Ces ajustements sont facultatifs et peuvent être appliqués selon les besoins.
 
-#### Désactiver le démarrage rapide
+#### Désactiver l'indexation de Windows
 
-Désactiver le démarrage rapide peut aider à prévenir les problèmes de passage de périphériques. Cela garantit que votre matériel %%VM|vm%% s'initialise correctement à chaque démarrage. Bien que ce paramètre soit conçu pour des PC physiques, dans un environnement virtuel, il peut souvent causer plus de problèmes que de bénéfices.
+Windows Search indexing continuously scans your %%virtual machine|vm%%'s storage to catalog files for faster search results. However, on a %%virtual machine|vm%%, this can cause unnecessary disk I/O, slow down performance, and increase wear on your physical storage, especially SSDs in your [%%cache pool|cache-pool%%](../manage-storage/cache-pools.mdx).
 
 <details>
-  <summary><strong>Comment désactiver le démarrage rapide</strong> - Cliquez pour voir/fermer</summary>
+  <summary><strong>Comment désactiver l'indexation de Windows</strong> - Cliquez pour voir/fermer</summary>
 
-  1. Ouvrez **Panneau de Configuration** et recherchez **Alimentation**.
+  1. Appuyez sur **Windows + R** pour ouvrir le dialogue Exécuter, tapez `services.msc` et appuyez sur Entrée.
   2. Cliquez sur **Choisir ce que font les boutons d'alimentation**.
-  3. Cliquez sur **Modifier les paramètres actuellement non disponibles**.
+  3. Double-cliquez sur **Recherche Windows**, changez **Type de démarrage** à **Désactivé**, et cliquez sur **OK**.
   4. Décochez **Activer le démarrage rapide** sous **Paramètres d'arrêt**.
   5. Cliquez sur **Sauvegarder les modifications**.
 </details>
 
-#### Désactiver hiberfil.sys
+#### Désactiver la défragmentation automatique du disque
 
-L'hibernation dans Windows crée un grand fichier caché nommé `hiberfil.sys`. Ce fichier peut consommer un espace disque significatif et augmenter l'activité du disque dans votre %%VM|vm%%. Si vous ne vous appuyez pas sur l'hibernation, la désactiver libérera de l'espace de stockage et réduira l'activité I/O inutile.
+Windows est conçu pour défragmenter automatiquement les disques durs physiques à intervalles réguliers. Sur un %%VM|vm%% - en particulier lorsqu'on utilise le stockage SSD ou des %%vDisks|vdisk%% à provisionnement léger - la défragmentation automatique est inutile et peut également réduire la durée de vie du disque et dégrader les performances.
 
 <details>
-  <summary><strong>Comment désactiver l'hibernation et supprimer hiberfil.sys</strong> - Cliquez pour voir/fermer</summary>
+  <summary><strong>Comment désactiver la défragmentation automatique du disque</strong> - Cliquez pour voir/fermer</summary>
 
-  1. Cliquez droit sur le bouton **Démarrer** et sélectionnez **Terminal Windows (Admin)** ou **Invite de Commandes (Admin)**.
-  2. Tapez : `powercfg /h off`
-  3. Appuyez sur Entrée et redémarrez votre %%VM|vm%%. Le fichier `hiberfil.sys` sera supprimé de votre disque C:.
+  1. Ouvrez **l'Explorateur de fichiers**, faites un clic droit sur le lecteur C: et sélectionnez **Propriétés**.
+  2. Allez dans l'onglet **Outils** et cliquez sur **Optimiser**.
+  3. Cliquez sur **Modifier les paramètres**.
 </details>
 
-#### Désactiver l'indexation de Windows
+#### Activer le mode haute performance
 
 Windows Search indexing continuously scans your %%virtual machine|vm%%'s storage to catalog files for faster search results. However, on a %%virtual machine|vm%%, this can cause unnecessary disk I/O, slow down performance, and increase wear on your physical storage, especially SSDs in your [%%cache pool|cache-pool%%](../manage-storage/cache-pools.mdx).
 
@@ -166,7 +166,7 @@ Activer le mode **Haute Performance** garantit que votre %%VM|vm%% fonctionne to
 Le protocole de bureau à distance (RDP) vous permet d'accéder à votre %%VM|vm%% Windows depuis un autre appareil. Il offre de meilleures performances et compatibilité par rapport à %%VNC|vnc-session%%. Notez que le RDP est pris en charge uniquement sur les éditions Professionnel et Entreprise de Windows. De plus, votre compte utilisateur Windows **doit** avoir un mot de passe défini.
 
 :::caution
-RDP n'est pas disponible sur les éditions Famille de Windows. Définissez toujours un mot de passe sécurisé pour votre compte utilisateur Windows avant d'activer le RDP.
+Windows 11 exige TPM 2.0 et Démarrage Sécurisé. Le BIOS **OVMF-TPM** d'Unraid fournit le support TPM virtuel nécessaire à ces exigences.
 :::
 
 <details>
@@ -210,7 +210,7 @@ If you're having trouble with HDMI audio in a Windows %%VM|vm%% that uses %%GPU 
 
 ---
 
-### Mettre à niveau vers Windows 11
+### Étendre les partitions de vDisk VM Windows
 
 Windows 11 exige TPM 2.0 et Démarrage Sécurisé. Le BIOS **OVMF-TPM** d'Unraid fournit le support TPM virtuel nécessaire à ces exigences.
 

@@ -46,7 +46,7 @@ Mit Unraid 7.0 und höher aktivieren Sie [Unraid Connect](../../../unraid-connec
 
 ---
 
-## Dateisysteme reparieren
+## Gerätenamensgebung: Pfade und Symbole
 
 :::caution
 Verwenden Sie diese Anweisungen ausschließlich für Datenlaufwerke mit Dateisystembeschädigung. Wenden Sie sie nicht auf das Paritätslaufwerk, Hardwareprobleme oder fehlende Laufwerke an.
@@ -55,9 +55,9 @@ Verwenden Sie diese Anweisungen ausschließlich für Datenlaufwerke mit Dateisys
 - Das Paritätslaufwerk hat **kein** Dateisystem. Das Ausführen eines Reparaturtools auf dem Paritätslaufwerk kann es beschädigen und zu irreversiblen Datenverlusten führen.
 :::
 
-### Gerätenamensgebung: Pfade und Symbole
+### Die richtige Reparaturmethode wählen
 
-Bei der Verwendung des **%%WebGUI|web-gui%%** werden Gerätepfade automatisch verwaltet. Wenn Sie sich für die Reparatur über die Befehlszeile entscheiden, stellen Sie stets sicher, dass Sie den richtigen **Partitionspfad** verwenden:
+Alle Unraid-Versionen seit **v6.0.0** unterstützen Dateisystemreparaturen über das %%WebGUI|web-gui%% für %%XFS|xfs%% und %%BTRFS|btrfs%%.
 
 | Bezeichnung                | Typischer Pfad | Verwendung               | Ist %%Parity\|parity%% geschützt?      |
 | -------------------------- | -------------- | ------------------------ | -------------------------------------- |
@@ -75,7 +75,7 @@ Führen Sie niemals Dateisystem-Reparaturtools auf ganzen Laufwerken (wie `/dev/
 - Verwenden Sie immer `/dev/mdXp1` für %%array|array%% Laufwerke, um die gültige %%parity|Parität%% zu erhalten.
 - For non-%%array|array%% drives (like %%cache|cache%%-only devices), use the direct partition path, e.g., `/dev/sdj1`.
 
-### Die richtige Reparaturmethode wählen
+### Checken und Reparieren von Laufwerken im WebGUI
 
 Alle Unraid-Versionen seit **v6.0.0** unterstützen Dateisystemreparaturen über das %%WebGUI|web-gui%% für %%XFS|xfs%% und %%BTRFS|btrfs%%.
 
@@ -120,7 +120,7 @@ Dieser Abschnitt erläutert, wie Sie Dateisystembeschädigungen auf Datenlaufwer
 3. Klicken Sie auf **Prüfen**, um zu starten; verwenden Sie die **Aktualisieren**-Schaltfläche, um den Fortschritt bei Bedarf zu überwachen.
 4. Wenn keine Schäden gefunden wurden, fahren Sie mit [**Nach dem Test und der Reparatur**](#after-the-test-and-repair) fort.
 
-### Die Reparatur ausführen
+### Nicht einhängbare(s) Laufwerk(e)
 
 <Tabs>
   <TabItem value="xfs-laufwerke" label="Für XFS-Laufwerke" default>
@@ -158,9 +158,9 @@ Wenn Sie %%wartungsmodus#124;maintenance-mode%% verwendet haben, stoppen Sie das
 
 ---
 
-## Nicht einhängbare(s) Laufwerk(e)
+## Verlorene Array-Konfiguration
 
-Wenn ein zuvor funktionierendes Laufwerk nicht einhängbar wird, weist dies gewöhnlich auf Dateisystemkorruption hin, oft verursacht durch unsauberes Herunterfahren oder Schreibfehler.
+Losing your %%array|array%% configuration can be stressful, but it doesn't mean your data is gone. The %%array|array%% configuration file (located at `config/super.dat` on your flash device) tells Unraid how your drives are assigned and which ones serve as %%parity|parity%%. If you've lost your flash drive or don’t have a recent backup, you can recover your %%array|array%% by carefully reassigning the drives.
 
 :::danger[Critical aktion]
 Formatieren Sie niemals eine unmontierbare Festplatte über das %%WebGUI|web-gui%%! Das Formatieren löscht alle Daten und aktualisiert %%parity|parity%%, was eine Wiederherstellung unmöglich macht.
@@ -172,7 +172,7 @@ Wenn eine Festplatte, die vorher einwandfrei funktionierte, plötzlich nicht meh
 
 Tatsächlich sollte Ihr erster Schritt der Versuch einer Dateisystemreparatur sein. Unraid bietet dafür eigene Tools, und das Befolgen des korrekten Verfahrens kann oft den Zugriff auf Ihre Daten mit minimalem Risiko wiederherstellen.
 
-So gehen Sie vor:
+Die empfohlene Methode zur Installation von ddrescue erfolgt über das **[Nerd Tools](https://unraid.net/community/apps?q=nerd+tools#r)** Plugin (das 2022 das veraltete NerdPack ersetzt hat).
 
 1. Sehen Sie sich den [Abschnitt zur Dateisystemreparatur](#repair-file-systems) an. Diese Anleitung führt Sie durch den Vorgang für Ihr spezifisches Dateisystem.
 
@@ -221,7 +221,7 @@ Folgendes sollten Sie tun, wenn Sie sich in dieser Situation befinden:
 
 ---
 
-## Datenwiederherstellung mit ddrescue
+## Übersetzen der ddrescue-Ausgabe
 
 Wenn Standard-Unraid-Wiederherstellungsmethoden, wie das [Ersetzen der Laufwerke](../../using-unraid-to/manage-storage/array-configuration.mdx#replacing-disks) Verfahren, aufgrund mehrerer Plattenausfälle oder ungültiger %%parity|parity%% nicht durchführbar sind, können spezialisierte Tools wie **ddrescue** Ihnen helfen, so viele Daten wie möglich von einer fehlerhaften Festplatte zu retten.
 
@@ -231,7 +231,7 @@ Bevor Sie beginnen, denken Sie daran, dass die Datenwiederherstellung ein empfin
 
 Die empfohlene Methode zur Installation von ddrescue erfolgt über das **[Nerd Tools](https://unraid.net/community/apps?q=nerd+tools#r)** Plugin (das 2022 das veraltete NerdPack ersetzt hat).
 
-Um ddrescue zu aktivieren:
+Nach der Erstkopie wird ddrescue an der Wiederherstellung von Daten aus fehlerhaften Sektoren arbeiten, indem es mehrere Durchgänge macht und manchmal Blöcke in beide Richtungen liest. Diese Phase kann viel länger dauern, insbesondere wenn die Festplatte ernsthaft beschädigt ist.
 
 1. Installieren Sie [Nerd Tools](https://unraid-production-481d40bf.preview.craft.cloud/community/apps?q=nerd+tools#r:~:text=of%201%20App-,Nerd%20Tools,-unRaid.es) aus dem **Apps**-Tab in der Unraid %%WebGUI|web-gui%%.
 2. Öffnen Sie ***Einstellungen → Nerd Tools*** und aktivieren Sie **ddrescue**.
