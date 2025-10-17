@@ -220,7 +220,7 @@ const supportPolicies = {
 const upcoming = [
   {
     version: "7.2.x",
-    status: "Currently in beta. Check out the <a href='https://docs.unraid.net/unraid-os/release-notes/7.2.0/'>release notes</a> to see what's coming.",
+    status: "RC currently available. Check out the <a href='/unraid-os/release-notes/7.2.0/'>release notes</a> to see what's coming.",
     highlights: [],
   },
   // Add more upcoming versions here if needed:
@@ -667,11 +667,11 @@ function Viewer() {
             Future release information
           </summary>
           <div style={{marginTop: "1rem"}}>
-            <p>We are currently working on Unraid 7.2.x and will announce features as we get closer to a public beta, which will be announced in the <a href='https://forums.unraid.net/forum/7-announcements/'>main forum</a>.</p>
-            <p>If you are interested in running betas and RCs, check the <a href='https://forums.unraid.net/forum/7-announcements/'>main forum</a> for upgrade instructions and support. We appreciate the community's involvement in testing on a wide range of hardware and with varied use cases to help identify potential issues.</p>
+            <p>We are currently working on Unraid 7.2.0, to see what is coming check the <a href='/unraid-os/release-notes/7.2.0/'>release notes</a>.</p>
+            <p>If you are interested in running betas and RCs, check the <a href='https://forums.unraid.net/forum/7-announcements/'>announcements forum</a> for upgrade instructions. We appreciate the community's involvement in testing on a wide range of hardware and with varied use cases to help identify potential issues.</p>
             <ul>
               <li>If you find an issue in a beta or RC, please start a new thread in the <a href='https://forums.unraid.net/bug-reports/prereleases/'>prerelease forum</a>, providing as much detail as you can for us to be able to reproduce the problem. Please include your diagnostics.</li>
-              <li>For more information about pre-releases, see the <a href="/unraid-os/troubleshooting/licensing-faq/">licensing FAQ</a>.</li>
+              <li>For more information about pre-releases, see the <a href="/unraid-os/troubleshooting/licensing-faq/#pre-release-policy">licensing FAQ</a>.</li>
             </ul>
           </div>
         </details>
