@@ -1,0 +1,88 @@
+---
+title: Docker Apps
+description: Guide for creating & submitting Docker applications to the Unraid Community Applications Store
+sidebar_position: 2
+---
+
+## Creating and Submitting Docker Apps
+
+Docker apps are defined by XML template files that specify the container's configuration, such as ports, volumes, environment variables, and metadata.
+
+## Step 1: Create the Docker Template XML
+
+1. Go to the **Docker** tab and select **Add Container**.
+2. Fill in the details based on your Docker image (e.g., from Docker Hub):
+   - **Repository**: The Docker image name (e.g., `domistyle/idrac6`).
+   - **Network Type**: Typically `bridge`.
+   - **Privileged**: Set to `true` only if necessary (e.g., for hardware access).
+   - Add ports, volumes, and variables using **Add another Path, Port, Variable or Device**.
+     - **Ports**: Use container ports (e.g., 5800 for WebUI). Set **Host Port** to blank or optional.
+     - **Volumes/Paths**: Use container paths (e.g., `/config`); avoid host paths to prevent auto-creating shares.
+     - **Variables**: Define keys (e.g., `IDRAC_HOST`), defaults, and descriptions.
+   - **WebUI**: Use format like `http://[IP]:[PORT:5800]` to dynamically map host ports.
+   - **Icon**: URL to a PNG or JPG image (host on GitHub for reliability).
+   - **Overview/Description**: Provide a clear, Markdown-formatted summary (no HTML).
+   - **Category**: Select from official options (e.g., `Tools: Network:Management`).
+   - **Support**: Link to your Unraid forums support thread.
+   - **Project**: Link to the project's GitHub or webpage.
+3. Click **Save** to generate the XML. Copy it from the displayed text (in Authoring Mode).
+4. Clean the XML:
+   - Remove unnecessary tags (e.g., empty `<MyIP/>`, `<DateInstalled>`).
+   - Use `<Config>` elements for ports, volumes, and variables (v2 format preferred over legacy v1 sections like `<Data>` or `<Environment>`).
+   - Ensure no HTML tags; use Markdown for formatting.
+
+Example cleaned XML for a sample app:
+
+```xml
+<?xml version="1.0"?>
+<Container version="2">
+  <Name>idrac6</Name>
+  <Repository>domistyle/idrac6</Repository>
+  <Registry>https://hub.docker.com/r/domistyle/idrac6/</Registry>
+  <Network>bridge</Network>
+  <Privileged>false</Privileged>
+  <Support>https://github.com/DomiStyle/docker-idrac6/issues</Support>
+  <Project>https://github.com/DomiStyle/docker-idrac6/</Project>
+  <Overview>Allows access to the iDRAC 6 console without installing Java or messing with Java Web Start. Java is only run inside of the container and access is provided via web interface or directly with VNC.</Overview>
+  <Category>Tools: Network:Management</Category>
+  <WebUI>http://[IP]:[PORT:5800]</WebUI>
+  <Icon>https://raw.githubusercontent.com/user/repo/master/icon.png</Icon>
+  <ExtraParams/>
+  <PostArgs/>
+  <Config Name="idrac host" Target="IDRAC_HOST" Default="" Mode="" Description="Host for your iDRAC instance." Type="Variable" Display="always" Required="true" Mask="false"/>
+  <!-- Additional <Config> elements for other variables, ports, and paths -->
+</Container>
+```
+
+## Step 2: Test the Template
+
+- Install the container on your Unraid system using the template.
+- Verify ports, volumes, and variables work as expected.
+- Check for errors in CA's **Statistics** section (e.g., template errors or invalid templates).
+
+## Step 3: Host the Template on GitHub
+
+- Create a new GitHub repository (use "master" or "main" branch).
+- Upload the XML file (name it descriptively, e.g., `my-app.xml`).
+- Optionally, add a developer profile with `ca_profile.xml` in the repo root for enhanced visibility in CA searches.
+
+Example `ca_profile.xml`:
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<Maintainer>
+  <Icon>https://raw.githubusercontent.com/user/repo/master/avatar.jpg</Icon>
+  <Profile>Creating Docker containers with a focus on simplicity and auto-updates.</Profile>
+  <DonateLink>https://www.paypal.me/user</DonateLink>
+  <DonateText>Support my work with a donation.</DonateText>
+  <Forum>https://forums.unraid.net/topic/your-support-thread/</Forum>
+</Maintainer>
+```
+
+## Step 4: Submit to Community Applications
+
+1. Create a support thread on the Unraid forums.
+2. Fill out the online submission form: [CA Submission Form](https://form.asana.com/?k=qtIUrf5ydiXvXzPI57BiJw&d=714739274360802).
+3. Provide your GitHub repo URL, support thread link, and other details.
+4. Moderators review the submission (may request fixes). Approved templates appear in CA within ~2 hours.
+5. For updates, push changes to GitHub; CA syncs automatically every 2 hours.
