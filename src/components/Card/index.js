@@ -1,4 +1,4 @@
-import React, { CSSProperties } from 'react'; // CSSProperties allows inline styling with better type checking.
+import React from 'react';
 import clsx from 'clsx'; // clsx helps manage conditional className names in a clean and concise manner.
 import Link from '@docusaurus/Link';
 
@@ -12,27 +12,29 @@ const Card = ({
   icon, // Icon for the card header
 }) => {
   const cardShadow = shadow ? `item shadow--${shadow}` : '';
-  const cardContent = (
-    <div className={clsx('card', className, cardShadow)} style={style}>
-      {(title || icon) && (
-        <div className="card__header">
-          {icon && <span className={`icon icon-${icon}`}></span>}
-          {title}
-        </div>
-      )}
-      {children}
+  
+  const Header = (title || icon) ? (
+    <div className="card__header">
+      {icon && <span className={`icon icon-${icon}`} aria-hidden="true"></span>}
+      {title && <h3 className="card__title">{title}</h3>}
     </div>
-  );
+  ) : null;
 
   if (href) {
     return (
-      <Link to={href} className="card-link">
-        {cardContent}
+      <Link to={href} className={clsx('card', className, cardShadow)} style={style} aria-label={title}>
+        {Header}
+        {children}
       </Link>
     );
   }
 
-  return cardContent;
+  return (
+    <div className={clsx('card', className, cardShadow)} style={style}>
+      {Header}
+      {children}
+    </div>
+  );
 };
 
 export default Card;
