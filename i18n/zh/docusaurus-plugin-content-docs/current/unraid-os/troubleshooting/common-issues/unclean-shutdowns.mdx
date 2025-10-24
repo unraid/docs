@@ -3,11 +3,11 @@ sidebar_position: 2
 sidebar_label: 非正常关机
 ---
 
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
-import UncleanShutdownsPower from './partials/unclean-shutdowns/unexpected-power-loss.mdx';
-import UncleanShutdownsFlash from './partials/unclean-shutdowns/flash-drive-failure.mdx';
-import UncleanShutdownsTerminal from './partials/unclean-shutdowns/open-terminal-sessions.mdx';
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import UncleanShutdownsPower from "./partials/unclean-shutdowns/unexpected-power-loss.mdx";
+import UncleanShutdownsFlash from "./partials/unclean-shutdowns/flash-drive-failure.mdx";
+import UncleanShutdownsTerminal from "./partials/unclean-shutdowns/open-terminal-sessions.mdx";
 
 # 非正常关机
 
@@ -19,7 +19,7 @@ import UncleanShutdownsTerminal from './partials/unclean-shutdowns/open-terminal
 
 - \*\*使用不间断电源（UPS）：\*\*确保服务器连接到UPS并设置在电池电量不足时自动关闭。
 - \*\*尝试优雅关闭：\*\*如果您的服务器无响应，短按电源按钮以触发安全关闭。不要长按该按钮，因为这将强制硬关机并导致不洁关机。
-- **启用持久日志记录：**前往***设置 → 系统日志服务器***以激活在重新启动后持久存在的日志记录。详细信息请参阅[持久日志 (系统日志服务器)](../diagnostics/capture-diagnostics-and-logs.mdx#persistent-logs-syslog-server)。
+- **Enable persistent logging:** Go to ***Settings → Syslog Server*** to activate logging that persists after a reboot. See [Persistent logs (Syslog server)](../diagnostics/capture-diagnostics-and-logs.mdx#persistent-logs-syslog-server) for more details.
 - **附加诊断信息以获得支持：** 如果发生非正常关机，Unraid 将尝试将诊断信息保存到您的闪存设备的 `/log/diagnostics.zip` 中。当您寻求帮助时，请将此文件附加到论坛帖子中。
 
 :::
@@ -29,7 +29,7 @@ import UncleanShutdownsTerminal from './partials/unclean-shutdowns/open-terminal
 配置良好的 UPS 是防止因掉电导致非正常关机的最佳防卫。
 
 - **通过 USB 连接 UPS 到 Unraid 服务器。**
-- **在设置中启用 UPS 支持。**
+- **Enable UPS support** in ***Settings → UPS Settings***.
 - \*\*配置关机超时时间：\*\*设置UPS以便在电池电量不足之前触发受控关机。调整“剩余电池运行时间”或“电池充电电平”阈值，以提供足够的时间让Unraid [停止%%array|array%%](../../using-unraid-to/manage-storage/array-configuration.mdx#startstop-the-array) 并安全关机。
 - **测试配置：** 模拟掉电以确保 UPS 和 Unraid 的正确反应。
 
@@ -59,95 +59,248 @@ Properly configuring shutdown timeouts is essential to ensure your Unraid server
 
 ## 虚拟机超时时间
 
-Properly configuring shutdown timeouts is essential to ensure your Unraid server can stop all services effectively, preventing unclean shutdowns, particularly during power loss or maintenance. Each component of your system - %%VM|vm%%s, Docker containers, and the overall %%array|array%% - has its own timeout setting that can be adjusted.
+Properly configuring shutdown timeouts is essential to ensure your Unraid server can stop all services effectively. This prevents unclean shutdowns, especially during power loss or maintenance. The most important step is to configure your %%VMs|vm%% to hibernate instead of shutting down. This approach helps eliminate many timeout-related issues.
 
-### “Docker 容器超时时间”
+### VM hibernation setup
 
-| 设置              | 默认值 | 推荐最小值                                  | 配置位置                         |
-| --------------- | --- | -------------------------------------- | ---------------------------- |
-| %%VM\|vm%% 关机超时 | 60秒 | 300秒（5 分钟）                             | ***设置 → 虚拟机管理 → 虚拟机关机（高级）*** |
-| Docker 容器停止超时时间 | 10秒 | 30–60秒                                 | ***设置 → Docker（高级）***        |
-| 通用关机超时时间        | 90秒 | 3 × %%VM\|vm%% 超时 + Docker 超时 + 15–30秒 | ***设置 → 磁盘设置 → 关机超时***       |
+:::tip[Use VM hibernation]
 
-### 通用关机计时器
+For the most reliable and fastest shutdowns, configure your %%VMs|vm%% to hibernate instead of shutting down. This is especially important for Windows %%VMs|vm%% but benefits all %%VM|vm%% types.
 
-<details>
-  <summary><strong>点击展开/折叠</strong></summary>
+We recommend using hibernation because it:
 
-  在停止 Docker 容器或 %%array|array%% 自身之前，Unraid 首先关闭所有配置的虚拟机 (%%VMs|vm%%)。 虚拟机关闭超时决定了 Unraid 等待每个 %%VM|vm%% 优雅关闭的时间。
+- **Saves VM state instantly** - No waiting for the guest OS to shut down.
+- **Prevents data loss** - No risk of interrupting updates or unsaved work.
+- **Avoids timeout issues** - Hibernation is nearly instantaneous.
+- **Faster recovery** - %%VMs|vm%% resume exactly where they left off.
 
-  <h4>设置位置</h4>
+Shutdown can be problematic because:
 
-  - ***设置 → 磁盘设置 → 关机超时***
+- Windows may display dialog boxes ("Save this document?") that halt the shutdown indefinitely.
+- Windows updates can take 10+ minutes during shutdown.
+- If the timeout expires, Unraid force-kills the %%VM|vm%%, potentially corrupting in-progress Windows updates, unsaved documents, application data, and file systems in the guest OS.
 
-  <h4>考虑</h4>
+**Critical requirement:** Ensure the %%QEMU|qemu%% %%Guest Agent|guest-agent%% is installed in the %%VM|vm%% for hibernation to function correctly.
 
-  - Windows %%虚拟机|vm%% 可能需要更长时间关机，尤其是如果更新待处理或虚拟机处于睡眠/休眠中。
-  - 如果超时时间过短，%%虚拟机|vm%% 将被强制停止，有可能导致数据丢失或损坏。
+:::
 
-  <h4>最佳做法</h4>
+To enable VM hibernation:
 
-  将超时设置为至少 300 秒（5 分钟），用于 Windows %%VMs|vm%%。计划更新在启动时运行，而不是在关闭时运行，以避免延迟。
-</details>
+<Tabs>
+  <TabItem value="windows" label="Windows VMs" default>
+    1. **Download %%QEMU|qemu%% %%Guest Agent|guest-agent%%:**
+       - Go to the [VirtIO drivers download page](https://fedorapeople.org/groups/virt/virtio-win/direct-downloads/).
+       - Download the latest `virtio-win.iso` file.
 
-### UPS电池寿命
+    2. **Install in Windows %%VM|vm%%:**
+       - Mount the `virtio-win.iso` to your %%VM|vm%%.
+       - Run the installer from the mounted ISO.
+       - Install both %%VirtIO|virtio%% drivers AND %%QEMU|qemu%% %%Guest Agent|guest-agent%%.
+       - Restart the %%VM|vm%%.
 
-<details>
-  <summary><strong>点击展开/折叠</strong></summary>
+    3. **Configure in Unraid:**
+       - Go to your %%VM|vm%% settings in the ***VMs*** tab.
+       - Set **Shutdown Action** to **Hibernate**.
+       - 点击 **应用**。
+  </TabItem>
 
-  在虚拟机之后，Unraid 停止所有正在运行的 Docker 容器。容器停止超时控制 Unraid 等待每个容器干净退出的时间。
+  <TabItem value="linux" label="Linux VMs">
+    1. **Install %%QEMU|qemu%% %%Guest Agent|guest-agent%%:**
 
-  <h4>设置位置</h4>
+    ```bash
+    # Ubuntu/Debian
+    sudo apt install qemu-guest-agent
 
-  - ***设置 → UPS 设置*** （查看 **剩余运行时间**，所有磁盘旋转起来）
+    # CentOS/RHEL/Fedora
+    sudo yum install qemu-guest-agent
+    # or
+    sudo dnf install qemu-guest-agent
+    ```
 
-  <h4>考虑</h4>
+    2. **Enable the service:**
+       ```bash
+       sudo systemctl enable qemu-guest-agent
+       sudo systemctl start qemu-guest-agent
+       ```
 
-  - UPS 应该在关机序列完成前触发关闭。
-  - 如果电池在关闭完成之前耗尽，您将面临不完全关闭和可能的数据丢失的风险。
-  - 如果定时器到期，容器将被强制停止。
+    3. **Configure in Unraid:**
+       - Set **Shutdown Action** to **Hibernate** in your %%VM|vm%% settings.
+  </TabItem>
 
-  <h4>最佳做法</h4>
-</details>
+  <TabItem value="appliance" label="Appliance VMs">
+    Some %%VMs|vm%%, like Home Assistant, don't allow the installation of additional software. For these:
 
-### 通用关机计时器
+    - Keep **Shutdown Action** set to **Shutdown**.
+    - Use longer timeout values (see timeout recommendations below).
+    - Consider the risks of force-killing these %%VMs|vm%% during updates.
 
-<details>
-  <summary><strong>点击展开/折叠</strong></summary>
+    :::note[Why appliance VMs are different]
 
-  The overall Shutdown time-out is the maximum time Unraid allows for all shutdown processes - %%VM|vm%%s, Docker, and disk operations - before forcing a shutdown.
+    Appliance %%VMs|vm%% are designed to run specific software and often don't allow the installation of additional packages, such as %%QEMU|qemu%% %%Guest Agent|guest-agent%%. This means hibernation isn't available, so you'll need to rely on proper timeout configuration.
 
-  <h4>设置位置</h4>
+    :::
+  </TabItem>
+</Tabs>
 
-  - ***设置 → 磁盘设置 → 关机超时***
+Now to verify your hibernation works, start your %%VM|vm%% and open some applications. Then stop it from Unraid. When you start it again, it should resume with all applications still open.
 
-  <h4>如何计算</h4>
+:::warning[Guest Agent is critical]
 
-  加上 %%虚拟机|vm%% 和 Docker 超时时间，然后加上 15–30 秒用于磁盘卸载和其他进程。
+Without the %%QEMU|qemu%% %%Guest Agent|guest-agent%% installed, hibernation may not work properly. In that case, the %%VM|vm%% will revert to shutdown mode, consuming the full timeout period.
 
-  - 示例：`3 × ***虚拟机关机超时*** + ***Docker 停止超时*** + 15–30 秒`
+:::
 
-  <h4>最佳实践</h4>
-  设置这个计时器高于您最慢的关机场景，尤其当您有许多驱动器或大型 %%array|array%% 时。
-</details>
+### Timeout configuration
 
-### UPS电池寿命
+In this section, we’ll cover how to configure timeouts for various systems and processes. This information is important to ensure that your %%VMs|vm%% and Docker containers shut down gracefully without data loss.
 
-<details>
-  <summary><strong>点击展开/折叠</strong></summary>
+| 设置              | 默认值 | When to increase                                  | 配置位置                                                 |
+| --------------- | --- | ------------------------------------------------- | ---------------------------------------------------- |
+| %%VM\|vm%% 关机超时 | 60秒 | 300s if not using hibernation and VMs crash       | ***Settings → VM Manager → VM Shutdown (Advanced)*** |
+| Docker 容器停止超时时间 | 10秒 | 30s if any containers are crashing when stopped   | ***Settings → Docker (Advanced)***                   |
+| 通用关机超时时间        | 90秒 | 180s if you get unclean shutdowns, 300s+ with VMs | ***设置 → 磁盘设置 → 关机超时***                               |
 
-  您的 UPS 必须提供足够的运行时间，以允许所有关闭计时器在服务器失去电力前到期。
+:::tip[When to increase timeouts]
 
-  <h4>设置位置</h4>
+If you're experiencing unclean shutdowns or containers that crash during shutdown, consider increasing the general shutdown timeout to **180 seconds** (or **300+ seconds** if you have multiple %%VMs|vm%%). This gives services more time to shut down gracefully.
+:::
 
-  - ***设置 → UPS 设置*** （查看 **剩余运行时间**，所有磁盘旋转起来）
+### Shutdown sequence
 
-  <h4>考虑</h4>
+When shutting down, the process happens in the following order:
 
-  - UPS 应该在关机序列完成前触发关闭。
-  - 如果电池在关闭完成之前耗尽，您将面临不完全关闭和可能的数据丢失的风险。
+1. **%%VM|vm%% shutdown**: This involves three stages, and each one can take up to the VM timeout:
 
-  <h4>最佳做法</h4>
+   - Stage 1: Resume any paused %%VMs|vm%%
+   - Stage 2: Hibernate %%VMs|vm%% that are set up for hibernation
+   - Stage 3: Shut down any remaining %%VMs|vm%%
 
-  通过模拟断电来测试您的 UPS，并确认 Unraid 可以在时间充裕的情况下干净关闭。
-</details>
+   All %%VMs|vm%% in each stage are processed at the same time, meaning the total shutdown time can be calculated as: VM timeout × 3.
+
+2. **Docker containers stop**: All containers will stop simultaneously (total time = Docker timeout).
+
+3. **Other services**: This includes tasks like LXC containers and third-party plugins, which usually take a few seconds.
+
+4. **Array shutdown**: Drives need to be unmounted and data synced; this typically takes 15-30 seconds.
+
+:::tip[Calculate your general shutdown timeout]
+
+**Formula:** Your general shutdown timeout should be greater than:
+
+```
+(VM timeout × 3) + (Docker timeout) + (Other services) + 15-30 seconds
+```
+
+**Example:** If we follow the formula, it would look like this: `(300 × 3) + 30 + 10 + 30 = 970 seconds (over 16 minutes)`.
+
+**Recommended:** At least **180 seconds (3 minutes)** at minimum and **300+ seconds (5+ minutes)** if you have multiple %%VMs|vm%% or complex containers.
+
+:::
+
+If all your %%VMs|vm%% are set to hibernate rather than shutting down, then the VM timeout is less critical since hibernation is nearly immediate. You could use a lower VM timeout (for example, 60-120 seconds) as a backup for any %%VMs|vm%% that don’t support hibernation.
+
+### Detailed configuration guide
+
+This section provides in-depth information about configuring timeouts for different system components. Each timeout setting works together to ensure your server shuts down gracefully without data loss.
+
+<Tabs>
+  <TabItem value="vm-timeouts" label="VM Timeouts" default>
+    Where to set: ***Settings → VM Manager → VM Shutdown*** (enable Advanced view)
+
+    **原理:**
+
+    - %%VMs|vm%% go through three shutdown stages, each consuming the full VM timeout
+    - All %%VMs|vm%% in each stage are processed simultaneously
+    - Total VM shutdown time = VM timeout × 3
+
+    **Common issues:**
+
+    - **Windows update interruptions:** Updates during shutdown can be corrupted if timeout expires.
+    - **Unsaved work:** Dialog boxes asking to save documents can halt shutdown indefinitely.
+    - **Hibernation failures:** %%VMs|vm%% without %%QEMU|qemu%% %%Guest Agent|guest-agent%% may fail to hibernate and use full timeout.
+
+    :::tip[VM timeout recommendations]
+
+    - **Primary recommendation:** Configure %%VMs|vm%% to hibernate instead of shutting down (requires %%QEMU|qemu%% %%Guest Agent|guest-agent%%).
+    - **If VMs crash during shutdown:** Increase timeout to **300 seconds (5 minutes)** for Windows %%VMs|vm%%.
+    - **Windows updates:** Set Windows to install updates at startup rather than during shutdown.
+    - **Test your setup:** Manually stop your %%VMs|vm%% to confirm they shut down or hibernate within the timeout period.
+      :::
+
+    :::warning[No safe timeout without hibernation]
+    Without hibernation and %%QEMU|qemu%% %%Guest Agent|guest-agent%%, there isn't a truly safe timeout for Windows %%VMs|vm%%. Dialog boxes or ongoing update installations could render any timeout inadequate, leading to forced shutdowns and data corruption risk.
+    :::
+  </TabItem>
+
+  <TabItem value="docker-timeouts" label="Docker Timeouts">
+    Where to set: ***Settings → Docker*** (enable Advanced view)
+
+    **原理:**
+
+    - Containers are stopped in parallel, so total time equals the Docker stop timeout.
+    - Most containers stop within 10 seconds, but some may need more time.
+    - Complex containers with large databases or ongoing operations might require additional time.
+    - 如果定时器到期，容器将被强制停止。
+
+    :::tip[Docker timeout recommendations]
+
+    - The **default 10 seconds** works well for most containers.
+    - **If containers are crashing when stopped:** Increase timeout to **30 seconds**.
+    - Monitor your containers during shutdown to identify any that consistently need more time.
+      :::
+  </TabItem>
+
+  <TabItem value="general-timeouts" label="General Timeouts">
+    Where to set: ***Settings → Disk Settings → Shutdown time-out***
+
+    **UPS considerations (most critical factor):**
+
+    - Your UPS must provide enough runtime to complete the full shutdown sequence before battery runs out.
+    - For **manual shutdown**, you can set longer timeouts since you control when shutdown starts.
+    - With **power outage shutdown**, your timeout is limited by UPS battery life.
+    - **Test your UPS** by simulating a power outage to ensure your server shuts down cleanly with time to spare.
+
+    :::tip[General timeout recommendations]
+
+    - **If you get unclean shutdowns:** Increase to **180 seconds (3 minutes)** for systems without %%VMs|vm%%.
+    - **For systems with %%VMs|vm%%:** Use **300+ seconds (5+ minutes)** if not using hibernation.
+    - **If using hibernation:** **180-300 seconds** is usually sufficient.
+    - Ensure timeouts are not longer than what your UPS can support during a power outage.
+      :::
+  </TabItem>
+
+  <TabItem value="third-party" label="Third-party Services">
+    **LXC containers:**
+    The LXC plugin has its own timeout setting for stopping containers. Like Docker containers, LXC containers typically stop within a few seconds, but some may require more time. Check the LXC plugin settings for the container stop timeout and include this timeout in your general shutdown timeout calculation.
+
+    **Other services:**
+    Some plugins or custom services may have their own shutdown procedures. Refer to the plugin documentation for specific timeout settings and incorporate them into your calculations.
+
+    **Updated formula with third-party services:**
+
+    ```
+    (VM timeout × 3) + (Docker timeout) + (LXC/other timeouts) + 15-30 seconds
+    ```
+
+    **Dynamix Stop Shell plugin:**
+    If you frequently use SSH or terminal sessions, open sessions can prevent clean shutdowns because Unraid waits for them to close before proceeding.
+
+    The [Dynamix Stop Shell](https://unraid.net/community/apps/c/tools-system/p2?srsltid=AfmBOoqBXyDNfHxRDCL7Fv9Gcfz8-8CdHmiJSX16PRZpZLLzgQtw2mVk#:~:text=the%20given%20interval.-,Dynamix%20Stop%20Shell,-Dynamix%20Repository) plugin helps by automatically closing lingering bash or SSH sessions when the array is stopped, ensuring a timely shutdown.
+
+    You can install it from [Community Applications (search for "Dynamix Stop Shell")](https://unraid.net/community/apps/c/tools-system/p2?srsltid=AfmBOoqBXyDNfHxRDCL7Fv9Gcfz8-8CdHmiJSX16PRZpZLLzgQtw2mVk#:~:text=the%20given%20interval.-,Dynamix%20Stop%20Shell,-Dynamix%20Repository).
+
+    :::tip[When to use the plugin]
+
+    - If you regularly have terminal sessions open.
+    - To prevent forgotten SSH sessions from delaying shutdown.
+    - For automated cleanup during shutdown.
+      :::
+
+    :::注意
+
+    - Be cautious if you have scripts or processes running in terminal sessions.
+    - Ensure no critical write operations are in progress before shutdown.
+    - The plugin will forcefully close sessions, which could interrupt work.
+      :::
+  </TabItem>
+</Tabs>
