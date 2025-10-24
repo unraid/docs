@@ -3,8 +3,8 @@ sidebar_position: 5
 sidebar_label: Conversion et migration de VM
 ---
 
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
 
 # Conversion et migration de VM
 
@@ -91,7 +91,7 @@ Pour convertir un disque physique en %%VM|vm%% :
 
       <disk type='file' device='disk'>
       <driver name='qemu' type='raw' cache='writeback'/>
-      <source file='/mnt/cache/vdisk_share/vmname/vdisk1.img'/>
+      <source file='/mnt/user/[vdisk_share]/[vmname]/vdisk1.img'/>
       <backingStore/>
       <target dev='hda' bus='virtio'/>
       <boot order='1'/>
@@ -110,7 +110,7 @@ Pour convertir un disque physique en %%VM|vm%% :
 
       <disk type='file' device='disk'>
       <driver name='qemu' type='raw' cache='writeback'/>
-      <source file='/mnt/cache/vdisk_share/vmname/vdisk1.img'/>
+      <source file='/mnt/user/[vdisk_share]/[vmname]/vdisk1.img'/>
       <backingStore/>
       <target dev='hda' bus='ide'/>
       <boot order='1'/>
@@ -161,7 +161,7 @@ Il existe deux méthodes courantes pour migrer une installation Windows vers une
 
 **Conversion d'image de disque** : convertit le disque physique en image de %%disque virtuel|vdisk%% (`.img`) à utiliser dans la %%VM|vm%%.
 
-- Avantages : Plus de flexibilité, permet d'utiliser le disque comme partage Unraid ou pour les snapshots.
+- Pros: More flexibility, allows the disk to be used as an Unraid share or for [%%VM|vm%% snapshots](./vm-setup.mdx#vm-snapshots).
 - Inconvénients : Nécessite du temps et de l'espace libre pour le processus de conversion.
 
 Choisissez le « passthrough » si vous souhaitez une migration simple ou envisagez de démarrer en double sur le disque. Optez pour la conversion d'image pour une meilleure portabilité et des options de sauvegarde.
@@ -197,15 +197,18 @@ Sysprep est intégré à Windows et élimine les informations système uniques, 
 
 1. Téléchargez et installez [Acronis True Image 2025](https://www.acronis.com/en-us/products/true-image/).
    - Ouvrir l'Invite de commandes en tant qu'administrateur.
+
    - Accédez au répertoire sysprep :
 
      ```bash
      cd C:\Windows\System32\Sysprep
      ```
+
    - Exécutez sysprep avec généralisation :
      ```bash
      sysprep.exe /generalize /shutdown /oobe
      ```
+
    - Le système généralisera l'installation puis s'éteindra.
 
 2. **Installez le disque dans votre serveur Unraid** après l'arrêt.
@@ -253,7 +256,7 @@ Vous devez modifier la configuration XML du %%VM|vm%% pour connecter votre disqu
 
    <disk type='file' device='disk'>
    <driver name='qemu' type='raw' cache='writeback'/>
-   <source file='/mnt/cache/vdisk_share/vmname/vdisk1.img'/>
+   <source file='/mnt/user/[vdisk_share]/[vmname]/vdisk1.img'/>
    <backingStore/>
    <target dev='hda' bus='virtio'/>
    <boot order='1'/>
@@ -273,7 +276,7 @@ Vous devez modifier la configuration XML du %%VM|vm%% pour connecter votre disqu
    </disk>
    ```
 
-   Si votre disque est IDE, changez le bus de "SATA" à "IDE".
+   If your disk is IDE, change the bus from "SATA" to "IDE" and the target device from "hdd" to "hda".
 
    L'utilisation de `/dev/disk/by-id/` est préférable à `/dev/sdX` pour s'assurer que l'attribution du disque reste cohérente après les redémarrages ou les changements matériels.
 
@@ -326,13 +329,13 @@ Pour convertir une VM Windows de %%Xen|xen-hvm%% à %%KVM|kvm%%, suivez ces éta
 <details>
   <summary><strong>Étape 1 : Déterminez si votre VM utilise les pilotes GPLPV de Xen</strong> - Cliquer pour développer/réduire</summary>
 
-  1. À l'intérieur de votre VM %%Xen|xen-hvm%%, ouvrez le **Gestionnaire de périphériques Windows** (appuyez sur *Touche Windows + X*, puis sélectionnez **Device Manager**).
+  1. Inside your %%Xen|xen-hvm%% VM, open **Windows Device Manager** (press *Windows key + X*, then select **Device Manager**).
   2. Développez **Carte réseau** et vérifiez le nom de l'appareil.
      - Si le nom contient "Xen," vous utilisez des pilotes GPLPV.
      - Si ce n'est pas le cas, passez à l'étape concernant le redémarrage en mode %%KVM|kvm%%.
 
   :::tip
-  Si vous n'utilisez pas les pilotes GPLPV, vous pouvez sauter les prochaines étapes et continuer à partir de la section de redémarrage en mode %%KVM|kvm%%.
+  Si vous n'utilisez pas les pilotes GPLPV, vous pouvez ignorer les prochaines étapes et continuer à partir de la section de redémarrage en mode %%KVM|kvm%%.
   :::
 </details>
 
@@ -352,8 +355,8 @@ Pour convertir une VM Windows de %%Xen|xen-hvm%% à %%KVM|kvm%%, suivez ces éta
 
   Après le redémarrage, purgez tous les pilotes GPLPV de %%Xen|xen-hvm%% de votre système en utilisant le processus complet de suppression manuelle documenté dans le [Wiki du projet Xen](https://wiki.xenproject.org/wiki/Xen_Windows_GPLPV).
 
-  :::tip
-  Si vous n'utilisez pas les pilotes GPLPV, vous pouvez sauter les prochaines étapes et continuer à partir de la section de redémarrage en mode %%KVM|kvm%%.
+  :::caution
+  GPLPV removal requires extensive registry editing and manual file deletion. Follow the Xen Project Wiki instructions **exactly** as written, as errors can cause system instability or boot failures.
   :::
 </details>
 
@@ -361,7 +364,7 @@ Pour convertir une VM Windows de %%Xen|xen-hvm%% à %%KVM|kvm%%, suivez ces éta
   <summary><strong>Étape 2 : Préparez Windows pour la suppression des pilotes GPLPV</strong> - Cliquer pour développer/réduire</summary>
 
   1. Assurez-vous que le **gestionnaire de VM** est activé :
-     - Allez sur ***Settings → VM manager***.
+     - Go to ***Settings → VM manager***.
      - Réglez **Enable VMs** sur **Oui**.
      - Téléchargez le dernier **ISO des pilotes VirtIO** pour Windows en le sélectionnant dans le menu déroulant et en cliquant sur **Télécharger**.
 
@@ -383,8 +386,9 @@ Pour convertir une VM Windows de %%Xen|xen-hvm%% à %%KVM|kvm%%, suivez ces éta
 
   7. Laissez les autres paramètres pour les graphismes et le son à leurs valeurs par défaut, puis cliquez sur **Créer**.
 
-  8. Forcez l'arrêt immédiat de la VM :
-     - Cliquez sur l'icône de la VM et choisissez **Force stop**.
+  8. If the VM started automatically, stop it:
+     - Prefer **Stop** (avoid **Force stop** unless the VM is unresponsive).
+     - Alternatively, uncheck **Start VM after creation** when creating the VM.
 
   9. Modifiez la configuration de la VM :
      - Cliquez sur l'icône de la VM et sélectionnez **Edit**.
@@ -396,8 +400,8 @@ Pour convertir une VM Windows de %%Xen|xen-hvm%% à %%KVM|kvm%%, suivez ces éta
       - Remplacez `bus='virtio'` par `bus='ide'` dans la balise `<target>`.
       - Cliquez sur **Update**.
 
-  :::tip[Pourquoi le disque temporaire ?]
-  Le disque temporaire de 1 Mo force Unraid à assigner le disque principal comme `hda` (IDE) au lieu de `vda` (%%VirtIO|virtio%%), permettant à Windows de démarrer sans pilotes %%VirtIO|virtio%% au départ. Ce disque temporaire sera supprimé après l'installation du pilote.
+  :::tip[Why the temporary disk?]
+  The 1MB temporary disk forces Unraid to assign the primary disk as `hda` (IDE) instead of `vda` (%%VirtIO|virtio%%), allowing Windows to boot without %%VirtIO|virtio%% drivers initially. This temporary disk will be removed after the driver installation.
   :::
 </details>
 
@@ -439,12 +443,11 @@ Pour convertir une VM Windows de %%Xen|xen-hvm%% à %%KVM|kvm%%, suivez ces éta
      - Changez l'`bus` du disque principal de `ide` à `virtio`.
      - Cliquez sur **Update** et redémarrez la VM.
 
-  :::tip[Pourquoi le disque temporaire ?]
-  Le disque temporaire de 1 Mo force Unraid à assigner le disque principal comme `hda` (IDE) au lieu de `vda` (%%VirtIO|virtio%%), permettant à Windows de démarrer sans pilotes %%VirtIO|virtio%% au départ. Ce disque temporaire sera supprimé après l'installation du pilote.
-  :::
+  :::tip[Driver troubleshooting]
+  If you notice errors on devices after migration:
 
   1. Réinstallez les pilotes %%VirtIO|virtio%% depuis l'ISO.
   2. Vérifiez les mises à jour Windows, qui peuvent fournir des pilotes plus récents.
-  3. Visitez la page [Red Hat VirtIO Drivers](https://docs.fedoraproject.org/en-US/quick-docs/creating-windows-virtual-machines-using-virtio-drivers/) pour les dernières versions.
+  3. Visit the [Red Hat VirtIO Drivers](https://docs.fedoraproject.org/en-US/quick-docs/creating-windows-virtual-machines-using-virtio-drivers/) page for the latest versions.
      :::
 </details>
