@@ -166,13 +166,27 @@ Lorsque vous configurez un pool %%ZFS|zfs%%, votre profil d'allocation détermin
   ![](/img/zfs11.png)
 </div>
 
-| Profil | Redondance                    | Performance                                                                        | Extension                 | Efficacité de l'espace | Cas d'utilisation typique                                   |
-| ------ | ----------------------------- | ---------------------------------------------------------------------------------- | ------------------------- | ---------------------- | ----------------------------------------------------------- |
-| Bande  | Aucune                        | Rapide, mais risqué                                                                | Ajouter plus de disques   | 100 %                  | Stockage temporaire/d'échange                               |
-| Miroir | 1:1 (style %%RAID 1\|raid1%%) | Excellente pour les E/S aléatoires                                                 | Ajouter plus de miroirs   | 50%                    | Haute performance, extension facile                         |
-| RAIDZ1 | 1 disque par vdev             | Rapide pour les gros fichiers. Pas idéal pour les écritures petites ou aléatoires. | Ajouter de nouveaux vdevs | Élevée                 | Usage général, tolérance aux pannes de 1 disque             |
-| RAIDZ2 | 2 disques par vdev            | Comme Z1 mais écritures légèrement plus lentes (parité supplémentaire)             | Ajouter de nouveaux vdevs | Modérée                | Données importantes, tolérance aux pannes de 2 disques      |
-| RAIDZ3 | 3 disques par vdev            | Comme Z2, avec plus de surcharge d'écriture (pour une sécurité maximale)           | Ajouter de nouveaux vdevs | Inférieure             | Critique pour la mission, tolérance aux pannes de 3 disques |
+| Profil | Redondance                    | Performance                                                                        | Extension                 | Efficacité de l'espace | Cas d'utilisation typique                                   | Nombre recommandé de disques par vdev    |
+| ------ | ----------------------------- | ---------------------------------------------------------------------------------- | ------------------------- | ---------------------- | ----------------------------------------------------------- | ---------------------------------------- |
+| Bande  | Aucune                        | Rapide, mais risqué                                                                | Ajouter plus de disques   | 100 %                  | Stockage temporaire/d'échange                               | N'importe quel nombre                    |
+| Miroir | 1:1 (style %%RAID 1\|raid1%%) | Excellente pour les E/S aléatoires                                                 | Ajouter plus de miroirs   | 50%                    | Haute performance, extension facile                         | 2 disques (peut ajouter plus de miroirs) |
+| RAIDZ1 | 1 disque par vdev             | Rapide pour les gros fichiers. Pas idéal pour les écritures petites ou aléatoires. | Ajouter de nouveaux vdevs | Élevée                 | Usage général, tolérance aux pannes de 1 disque             | 3-6 disques (max 8)                      |
+| RAIDZ2 | 2 disques par vdev            | Comme Z1 mais écritures légèrement plus lentes (parité supplémentaire)             | Ajouter de nouveaux vdevs | Modérée                | Données importantes, tolérance aux pannes de 2 disques      | 6-12 disques (max 14)                    |
+| RAIDZ3 | 3 disques par vdev            | Comme Z2, avec plus de surcharge d'écriture (pour une sécurité maximale)           | Ajouter de nouveaux vdevs | Inférieure             | Critique pour la mission, tolérance aux pannes de 3 disques | 10-16 disques (max 20)                   |
+
+:::tip[Optimizing comptes de disques]
+
+Les nombres de disques recommandés dans le tableau ci-dessus conviennent à la plupart des utilisateurs. Pour une performance encore meilleure, vous pouvez optimiser dans ces plages en choisissant des configurations où le nombre de disques de données (disques totaux moins les disques de parité) est une **puissance de 2** (ex : 2, 4, 8, 16). Cela aide à aligner correctement les bandes de données, empêchant le gaspillage d'espace et des E/S inégales.
+
+**Exemples de configurations optimisées :**
+
+- **RAIDZ1** : 3, 5 ou 9 disques (disques de données = 2, 4 ou 8)
+- **RAIDZ2** : 4, 6 ou 10 disques (disques de données = 2, 4 ou 8)
+- **RAIDZ3** : 5, 9 ou 17 disques (disques de données = 2, 6 ou 14)
+
+Notez que ces optimisations sont facultatives - les recommandations ci-dessus devraient fonctionner pour la plupart des cas d'utilisation.
+
+:::
 
 :::important[How [à choisir]
 
