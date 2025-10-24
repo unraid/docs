@@ -161,7 +161,7 @@ Hay dos maneras comunes de migrar una instalación de Windows a una %%VM|vm%% en
 
 **Conversión de imagen de disco:** Esto convierte el disco físico en una imagen de %%disco virtual|vdisk%% (`.img`) para usar en la %%VM|vm%%.
 
-- Pros: More flexibility, allows the disk to be used as an Unraid share or for [%%VM|vm%% snapshots](./vm-setup.mdx#vm-snapshots).
+- Pros: Más flexibilidad, permite que el disco se utilice como un recurso compartido de Unraid o para [%%VM|vm%% instantáneas](./vm-setup.mdx#vm-snapshots).
 - Desventajas: Requiere tiempo y espacio libre para el proceso de conversión.
 
 Elija la opción de paso directo si desea una migración simple o planea un arranque dual del disco. Opte por la conversión de imagen para una mejor portabilidad y opciones de copia de seguridad.
@@ -276,7 +276,7 @@ Necesitará modificar la configuración XML del %%VM|vm%% para conectar su disco
    </disk>
    ```
 
-   If your disk is IDE, change the bus from "SATA" to "IDE" and the target device from "hdd" to "hda".
+   Si tu disco es IDE, cambia el bus de "SATA" a "IDE" y el dispositivo objetivo de "hdd" a "hda".
 
    Usar `/dev/disk/by-id/` es preferible a `/dev/sdX` para garantizar que la asignación del disco se mantenga consistente después de reinicios o cambios de hardware.
 
@@ -329,7 +329,7 @@ Para convertir una VM de Windows de %%Xen|xen-hvm%% a %%KVM|kvm%%, sigue estos p
 <details>
   <summary><strong>Paso 1: Determine si su máquina virtual utiliza los controladores GPLPV de Xen</strong> – Haga clic para expandir/colapsar</summary>
 
-  1. Inside your %%Xen|xen-hvm%% VM, open **Windows Device Manager** (press *Windows key + X*, then select **Device Manager**).
+  1. Dentro de tu %%Xen|xen-hvm%% VM, abre **Administrador de dispositivos de Windows** (presiona *tecla de Windows + X*, luego selecciona **Administrador de dispositivos**).
   2. Expanda **Adaptadores de red** y verifique el nombre del dispositivo.
      - Si el nombre contiene "Xen", está utilizando controladores GPLPV.
      - Si no es así, salte al paso sobre reiniciar en modo %%KVM|kvm%%.
@@ -356,7 +356,7 @@ Para convertir una VM de Windows de %%Xen|xen-hvm%% a %%KVM|kvm%%, sigue estos p
   Después del reinicio, elimine todos los controladores GPLPV de %%Xen|xen-hvm%% de su sistema usando el proceso de eliminación manual completo documentado en el [Wiki del Proyecto Xen](https://wiki.xenproject.org/wiki/Xen_Windows_GPLPV).
 
   :::caution
-  GPLPV removal requires extensive registry editing and manual file deletion. Follow the Xen Project Wiki instructions **exactly** as written, as errors can cause system instability or boot failures.
+  La eliminación de GPLPV requiere una extensa edición del registro y eliminación manual de archivos. Sigue las instrucciones de la Xen Project Wiki **exactamente** como están escritas, ya que los errores pueden causar inestabilidad del sistema o fallos de arranque.
   :::
 </details>
 
@@ -364,7 +364,7 @@ Para convertir una VM de Windows de %%Xen|xen-hvm%% a %%KVM|kvm%%, sigue estos p
   <summary><strong>Paso 2: Prepare Windows para la eliminación de controladores GPLPV</strong> – Haga clic para expandir/colapsar</summary>
 
   1. Asegúrese de que el **administrador de VM** esté habilitado:
-     - Go to ***Settings → VM manager***.
+     - Vaya a ***Settings → VM manager***.
      - Configure **Habilitar VMs** en **Sí**.
      - Descargue el último **VirtIO Drivers ISO** para Windows seleccionándolo desde el menú desplegable y haciendo clic en **Descargar**.
 
@@ -386,9 +386,9 @@ Para convertir una VM de Windows de %%Xen|xen-hvm%% a %%KVM|kvm%%, sigue estos p
 
   7. Deje los otros ajustes para gráficos y sonido en sus valores predeterminados, luego haga clic en **Crear**.
 
-  8. If the VM started automatically, stop it:
-     - Prefer **Stop** (avoid **Force stop** unless the VM is unresponsive).
-     - Alternatively, uncheck **Start VM after creation** when creating the VM.
+  8. Si la VM comenzó automáticamente, detenla:
+     - Prefiere **Detener** (evita **Detención forzada** a menos que la VM no responda).
+     - Alternativamente, desmarca **Iniciar VM después de la creación** al crear la VM.
 
   9. Edite la configuración de la VM:
      - Haga clic en el icono de VM y seleccione **Editar**.
@@ -401,7 +401,7 @@ Para convertir una VM de Windows de %%Xen|xen-hvm%% a %%KVM|kvm%%, sigue estos p
       - Haga clic en **Actualizar**.
 
   :::tip[Why the temporary disk?]
-  The 1MB temporary disk forces Unraid to assign the primary disk as `hda` (IDE) instead of `vda` (%%VirtIO|virtio%%), allowing Windows to boot without %%VirtIO|virtio%% drivers initially. This temporary disk will be removed after the driver installation.
+  El disco temporal de 1MB obliga a Unraid a asignar el disco primario como `hda` (IDE) en lugar de `vda` (%%VirtIO|virtio%%), permitiendo que Windows arranque sin controladores %%VirtIO|virtio%% inicialmente. Este disco temporal se eliminará después de la instalación del controlador.
   :::
 </details>
 
@@ -443,11 +443,11 @@ Para convertir una VM de Windows de %%Xen|xen-hvm%% a %%KVM|kvm%%, sigue estos p
      - Cambie el `bus` del disco principal de `ide` a `virtio`.
      - Haga clic en **Actualizar** y reinicie la VM.
 
-  :::tip[Driver troubleshooting]
-  If you notice errors on devices after migration:
+  :::consejo[Solución de problemas de controladores]
+  Si notas errores en los dispositivos después de la migración:
 
   1. Reinstale los controladores %%VirtIO|virtio%% desde el ISO.
   2. Busque actualizaciones de Windows, que pueden proporcionar controladores más recientes.
-  3. Visit the [Red Hat VirtIO Drivers](https://docs.fedoraproject.org/en-US/quick-docs/creating-windows-virtual-machines-using-virtio-drivers/) page for the latest versions.
+  3. Visita la página de [Controladores VirtIO de Red Hat](https://docs.fedoraproject.org/en-US/quick-docs/creating-windows-virtual-machines-using-virtio-drivers/) para las últimas versiones.
      :::
 </details>
