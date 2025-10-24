@@ -3,13 +3,16 @@ sidebar_position: 2
 sidebar_label: Configuration de VM
 ---
 
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
 # Configuration de VM
 
-La configuration d'une machine virtuelle (VM) sur Unraid est un moyen flexible d'exécuter des systèmes d'exploitation complets - comme Windows, Linux, ou d'autres plateformes - aux côtés de vos conteneurs et applications natives. Que vous souhaitiez tester de nouveaux logiciels, exécuter des applications anciennes, héberger un environnement de bureau, ou utiliser le passage matériel pour le jeu ou le travail créatif, le **Gestionnaire de VM** d'Unraid rend le processus accessible à tous les niveaux de compétence.
+Setting up a %%VM|vm%% on Unraid is a flexible way to run full operating systems - such as Windows, Linux, or other platforms - alongside your containers and native apps. Whether you want to test new software, run legacy applications, host a desktop environment, or utilize hardware passthrough for gaming or creative work, Unraid's **VM Manager** makes the process approachable for all skill levels.
 
 :::tip[New dans Unraid 7.0]
 
-Unraid 7.x apporte des améliorations significatives aux %%machines virtuelles (VM)|vm%%, notamment :
+Unraid 7.x brings significant enhancements to %%VMs|vm%%, including:
 
 - Clones et instantanés des %%VM|vm%%
 - Modèles de %%VM|vm%% créés par l'utilisateur
@@ -24,7 +27,7 @@ Une fois votre système préparé et vos préférences définies, vous pouvez cr
 
 ## Créer vos propres machines virtuelles
 
-Une fois votre système préparé et vos préférences définies, vous pouvez créer une nouvelle %%machine virtuelle (VM)|vm%% en utilisant le %%WebGUI|web-gui%%.
+With your system prepared and preferences set, you can create a new %%VM|vm%% using the %%WebGUI|web-gui%%.
 
 :::note[Before vous commencez]
 
@@ -71,7 +74,7 @@ Pour créer un modèle utilisateur :
 
 Pour utiliser un modèle utilisateur :
 
-- Sur la page **VMs**, cliquez sur **ajouter une VM** et sélectionnez votre modèle dans la section **modèles utilisateur**.
+- On the **VMs** page, click **Add VM** and select your template from the **User Templates** section.
 
 Importation/exportation :
 
@@ -82,7 +85,7 @@ Importation/exportation :
 
 ## Nouveautés dans Unraid 7.x : Gestionnaire de VM
 
-Unraid 7.x introduit une gamme d’améliorations puissantes au **Gestionnaire de %%VM|vm%%**, simplifiant le processus d'exécution et de gestion des %%machines virtuelles|vm%%. Ces fonctionnalités s'adressent tant aux débutants qu'aux utilisateurs avancés, rendant le déploiement, la personnalisation et l'optimisation de vos %%VM|vm%% plus simples.
+Unraid 7.x introduces a range of powerful enhancements to the **%%VM|vm%% Manager**, streamlining the process of running and managing %%VMs|vm%%. These features cater to beginners and advanced users, making deploying, customizing, and optimizing your %%VMs|vm%% simpler.
 
 :::tip\[Highlights]
 
@@ -95,8 +98,8 @@ Unraid 7.x introduit une gamme d’améliorations puissantes au **Gestionnaire d
 <details>
   <summary><strong>Améliorations des graphismes et du partage GPU</strong></summary>
 
-  - View all graphics cards and %%VM|vm%%-assigned IP addresses in the %%VM|vm%% tab
-  - Support pour la cible %%QEMU|qemu%% ppc64 et `qemu:override`
+  - **%%VM|vm%% clones & [snapshots](#vm-snapshots):** Duplicate %%VMs|vm%% or quickly save/restore their state for testing or backup.
+  - **User %%VM|vm%% templates:** Save your custom %%VM|vm%% configurations and deploy new %%VMs|vm%% with just a few clicks.
   - **Edition/visualisation XML en ligne :** Visualisez ou copiez instantanément le `XML` généré par le %%WebGUI|web-gui%% ; passez en mode `XML` pour des éditions avancées.
   - **Désactivation du démarrage automatique :** Choisissez quels %%VMs|vm%% démarrent automatiquement avec votre %%array|array%%.
   - Options de configuration du Timer/décalage
@@ -134,6 +137,137 @@ Unraid 7.x introduit une gamme d’améliorations puissantes au **Gestionnaire d
   - Démarrez les %%VMs|vm%% Unraid en mode GUI avec le pilote vidéo `QXL`
   - Divers correctifs pour les problèmes de chemin et d'icône dans la vue `XML`
 </details>
+
+---
+
+## VM snapshots
+
+VM snapshots allow you to save the current state of your %%VM|vm%% at a specific point in time. You can revert to that state if something goes wrong or use snapshots to test changes safely. This is particularly useful before installing new software, making configuration changes, or performing system updates.
+
+:::info[How VM snapshots work]
+
+When you create a snapshot, Unraid generates an "overlay file" that captures all changes made to your VM after that point. You can think of it like this:
+
+- **Original VM disk**: This represents your VM's current state (similar to a photograph).
+- **Snapshot overlay**: This is a separate file that records all changes made after the snapshot (like a list of edits).
+- **VM continues running**: Your VM uses both the original disk and the overlay file together.
+
+This setup allows you to create multiple snapshots, with each one generating its own overlay file. This means you can easily revert to any previous state.
+
+**Example scenario:**
+
+1. You create a snapshot called "Clean Windows Install."
+2. You install some software and make changes.
+3. You create another snapshot called "After Software Install."
+4. You can now revert to either the clean install or the state after the software installation.
+5. You can also use Block Commit or Block Pull to make changes permanent.
+
+:::
+
+<Tabs>
+  <TabItem value="créer" label="Creating snapshots" default>
+    To create a snapshot of your %%VM|vm%%:
+
+    1. Go to the **VMs** page in the %%WebGUI|web-gui%%.
+    2. Click on the %%VM|vm%% name to expand its details.
+    3. Look for the **Snapshots** section and click **Create Snapshot**.
+    4. Enter a descriptive name for your snapshot (for example, "Before Windows Update" or "Clean Install State").
+    5. **Memory dump option**: In current Unraid builds, the "Memory dump" checkbox is not preselected by default. Checking it includes the %%VM|vm%%'s RAM for a full memory-backed snapshot (captures the live running state, but is larger and slower to create/restore). Leaving it unchecked creates a disk-only, crash-consistent snapshot (smaller and faster, but any unsaved in-memory data will be lost). Choose based on whether you need full live state preservation or just disk recovery.
+    6. Click **Create** to save the snapshot.
+
+    :::tip[Best pratiques]
+
+    - Create snapshots before making significant changes to your %%VM|vm%%.
+    - Use descriptive names that help you remember what the snapshot contains.
+    - Choose Memory dump based on your needs: enable it for full live state preservation, or leave it off for faster disk-only recovery.
+    - Keep snapshots for important milestones, but delete old ones to save storage space.
+
+    :::
+  </TabItem>
+
+  <TabItem value="gérer" label="Managing snapshots">
+    Once you have snapshots, you can see them listed in the %%VM|vm%%'s details section. Each snapshot shows:
+
+    - **Name**: The name you gave the snapshot.
+    - **Date**: When the snapshot was created.
+    - **Size**: How much storage space it uses.
+
+    To manage snapshots:
+
+    1. Allez à l'onglet **VMs** dans le %%WebGUI|web-gui%%.
+    2. Click on the %%VM|vm%% name to expand its details.
+    3. Navigate to the **Snapshots** section.
+    4. Use the available buttons for **Revert**, **Block Commit**, **Block Pull**, or **Remove**.
+
+    :::tip
+    **Revert snapshot**: This restores your %%VM|vm%% to exactly how it was when you created the snapshot. Any changes made after the snapshot will be lost. The VM will use the original disk file as if the snapshot never existed.
+
+    **Block Commit**: This process copies all changes from the snapshot overlay back into the original %%VM|vm%% disk file. By default, it shows "Pivot" and "Delete" options selected:
+
+    - **Pivot**: This option switches your VM from using the overlay file back to using the original disk file. After the commit, your VM will use the original disk (which now contains the changes) instead of the overlay file.
+
+    - **Delete**: This option removes the snapshot overlay file after the changes have been committed to the original disk.
+
+    - **Together ("Pivot" + "Delete")**:
+      - **With both selected**: Changes are committed to the original file, your VM switches back to using the original disk, and the overlay file is deleted. This is the most common choice.
+      - **With both unchecked**: Changes are committed to the original file, but your VM continues using the overlay file, and the overlay file remains to capture future changes.
+
+    Use Block Commit when you are satisfied with the changes and want to make them permanent.
+
+    **Block Pull**: This merges the original disk data into the snapshot overlay file, making the overlay file complete and independent. Your VM continues using the overlay file, but it no longer depends on the original disk. Use this when you want to keep your current state and make the snapshot permanent.
+
+    **Remove snapshot**: This simply deletes the snapshot overlay file without affecting your %%VM|vm%%. Your %%VM|vm%% continues using the original disk file, and any changes made after the snapshot are lost.
+
+    :::
+  </TabItem>
+
+  <TabItem value="revert" label="Reverting to snapshots">
+    If you need to go back to a previous state:
+
+    1. Stop the %%VM|vm%% if it's currently running.
+    2. Allez à l'onglet **VMs** dans le %%WebGUI|web-gui%%.
+    3. Click on the %%VM|vm%% name to expand its details.
+    4. Navigate to the **Snapshots** section.
+    5. Find the snapshot you want to restore and click the **Revert** button.
+    6. Confirm that you want to revert (this will lose any changes made after the snapshot).
+    7. Start your %%VM|vm%% - it will now be exactly as it was when you created the snapshot.
+
+    :::caution[Data loss warning]
+
+    Reverting to a snapshot permanently deletes any changes made after that snapshot was created. Make sure you really want to lose those changes before reverting.
+
+    :::
+  </TabItem>
+</Tabs>
+
+### Snapshot storage
+
+Snapshots use storage space on your system. Each snapshot saves only the differences between the current state and the snapshot state; however, these differences can still accumulate over time.
+
+Here are some points to consider:
+
+- **QCOW2 disks** support snapshots and work well with this feature.
+- **Storage location**: Snapshots are stored with your %%VM|vm%% files, so make sure you have enough space on your %%cache pools|cache-pool%% or %%array|array%%.
+
+**Snapshot storage location:**
+
+- Snapshot metadata is stored in `/etc/libvirt/qemu/snapshotdb/VM_name/`.
+- Actual snapshot data is stored alongside your %%VM|vm%% files on %%cache pools|cache-pool%% or %%array|array%%.
+
+:::info[Advanced snapshot concepts]
+
+For more detailed technical information about how VM snapshots work, including block diagrams and advanced scenarios with multiple snapshots, see the [QEMU snapshots documentation](https://kashyapc.fedorapeople.org/virt/lc-2012/snapshots-handout.html).
+
+:::
+
+:::tip[Common use cases]
+
+- **Before system updates**: Create a snapshot before installing Windows updates or Linux package updates. If something goes wrong, you can quickly revert to a previous version.
+- **Testing software**: Install new applications or make configuration changes. If you're not satisfied with the results, revert to your clean %%VM|vm%% snapshots from before the changes.
+- **Development work**: Create snapshots at different stages of your project. This lets you experiment freely and return to known good states.
+- **Backup strategy**: While not a replacement for proper backups, snapshots provide quick recovery for recent changes.
+
+:::
 
 ---
 
@@ -218,7 +352,7 @@ Unraid supporte désormais le partage avancé de GPU via `VirGL` et `QXL` pour l
 
 ## Attachement des appareils PCI pour le passage
 
-Avant de pouvoir attribuer un GPU ou n'importe quel dispositif PCI à une %%machine virtuelle|vm%%, il est important de "lier" le périphérique au pilote **vfio-pci**. Ce processus cache le périphérique à Unraid et le consacre uniquement à votre %%VM|vm%%.
+Before you can assign a GPU or any PCI device to a %%VM|vm%%, it's important to "bind" the device to the **vfio-pci** driver. This process hides the device from Unraid and dedicates it solely to your %%VM|vm%%.
 
 Pour lier un dispositif PCI (GPU, contrôleur USB, NVMe, etc.) pour le passage :
 
@@ -252,7 +386,7 @@ Après liaison, les appareils liés apparaîtront dans le menu déroulant **Autr
 
 ## Passerelle GPU pour machines virtuelles
 
-Le %%GPU passthrough|gpu-passthrough%% vous permet d'assigner une carte graphique physique directement à une %%machine virtuelle (VM)|vm%%, offrant des performances quasi-native pour les jeux, le travail créatif ou l'apprentissage automatisé.
+%%GPU passthrough|gpu-passthrough%% allows you to assign a physical graphics card directly to a %%VM|vm%%, providing near-native performance for gaming, creative work, or machine learning.
 
 :::info[Why utiliser la transmission directe du GPU?]
 
@@ -275,7 +409,7 @@ Pour injecter un ROM :
 - Unraid 6.9+ avec la virtualisation activée.
 - Le BIOS OVMF (UEFI) est recommandé pour les %%VM|vm%% sur %%SeaBIOS|seabios%%).
 
-Pour configurer la transmission directe du GPU :
+To set up GPU passthrough:
 
 1. Assurez-vous que votre matériel prend en charge %%IOMMU|iommu%% et est activé dans votre BIOS.
 2. Activez les fonctionnalités de virtualisation dans le BIOS (Intel VT-x/VT-d ou AMD-v/AMD-vi).
@@ -324,14 +458,14 @@ Pour injecter un ROM :
 
 ## Problèmes courants
 
-Cette section aborde les sujets avancés et les solutions pour les problèmes courants lors de la gestion des %%machines virtuelles (VMs)|vm%% sur Unraid. Déroulez les sections ci-dessous pour des instructions étape par étape et des conseils de dépannage.
+This section covers advanced topics and solutions for common issues when managing %%VMs|vm%% on Unraid. Expand the sections below for step-by-step instructions and troubleshooting tips.
 
 ### Agrandir un vDisk
 
 <details>
   <summary><strong>Cliquer pour développer/réduire</strong></summary>
 
-  Si votre %%VM|vm%% manque d'espace disque, vous pouvez augmenter la taille de son %%disque virtuel (**vDisk**)|vdisk%% directement depuis le %%WebGUI|web-gui%%.
+  If your %%VM|vm%% is running low on disk space, you can increase the size of its %%vDisk|vdisk%% directly from the %%WebGUI|web-gui%%.
 
   Pour agrandir un %%vDisk|vdisk%% :
 
