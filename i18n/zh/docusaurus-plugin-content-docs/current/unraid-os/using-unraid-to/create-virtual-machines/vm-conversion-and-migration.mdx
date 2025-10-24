@@ -3,8 +3,8 @@ sidebar_position: 5
 sidebar_label: VM 转换与迁移
 ---
 
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
 
 # VM 转换与迁移
 
@@ -91,7 +91,7 @@ import TabItem from '@theme/TabItem';
 
       <disk type='file' device='disk'>
       <driver name='qemu' type='raw' cache='writeback'/>
-      <source file='/mnt/cache/vdisk_share/vmname/vdisk1.img'/>
+      <source file='/mnt/user/[vdisk_share]/[vmname]/vdisk1.img'/>
       <backingStore/>
       <target dev='hda' bus='virtio'/>
       <boot order='1'/>
@@ -110,7 +110,7 @@ import TabItem from '@theme/TabItem';
 
       <disk type='file' device='disk'>
       <driver name='qemu' type='raw' cache='writeback'/>
-      <source file='/mnt/cache/vdisk_share/vmname/vdisk1.img'/>
+      <source file='/mnt/user/[vdisk_share]/[vmname]/vdisk1.img'/>
       <backingStore/>
       <target dev='hda' bus='ide'/>
       <boot order='1'/>
@@ -161,7 +161,7 @@ import TabItem from '@theme/TabItem';
 
 **磁盘映像转换：** 将物理磁盘转换为 %%虚拟磁盘|vdisk%% 映像（`.img` 格式）供 %%VM|vm%% 使用。
 
-- 优点：更灵活，允许将磁盘用作 Unraid 共享或用于快照。
+- Pros: More flexibility, allows the disk to be used as an Unraid share or for [%%VM|vm%% snapshots](./vm-setup.mdx#vm-snapshots).
 - 缺点：需时，还需转换过程的可用空间。
 
 如果您需要简单的迁移或打算双启动磁盘，请选择直通。选择图像转换以获得更好的便携性和备份选项。
@@ -197,15 +197,18 @@ Sysprep 内置于 Windows 中，消除了独特的系统信息，准备在不同
 
 1. 下载并安装 [Acronis True Image 2025](https://www.acronis.com/en-us/products/true-image/)。
    - 以管理员身份打开命令提示符。
+
    - 导航到 sysprep 目录：
 
      ```bash
      cd C:\Windows\System32\Sysprep
      ```
+
    - 执行 sysprep 进行常规化：
      ```bash
      sysprep.exe /generalize /shutdown /oobe
      ```
+
    - 系统将常规化安装，然后关机。
 
 2. **在关机后将磁盘安装到您的 Unraid 服务器中。**
@@ -253,7 +256,7 @@ Acronis True Image 2025 带有通用恢复功能，可协助硬件迁移。
 
    <disk type='file' device='disk'>
    <driver name='qemu' type='raw' cache='writeback'/>
-   <source file='/mnt/cache/vdisk_share/vmname/vdisk1.img'/>
+   <source file='/mnt/user/[vdisk_share]/[vmname]/vdisk1.img'/>
    <backingStore/>
    <target dev='hda' bus='virtio'/>
    <boot order='1'/>
@@ -273,7 +276,7 @@ Acronis True Image 2025 带有通用恢复功能，可协助硬件迁移。
    </disk>
    ```
 
-   如果您的磁盘是 IDE，将总线从 "SATA" 更改为 "IDE"。
+   If your disk is IDE, change the bus from "SATA" to "IDE" and the target device from "hdd" to "hda".
 
    使用 `/dev/disk/by-id/` 优于 `/dev/sdX` 以确保即使在重启或硬件更换后磁盘分配保持一致。
 
@@ -326,13 +329,14 @@ Unraid 从版本 6.2 开始不再支持 %%Xen|xen-hvm%%。现在，%%KVM|kvm%% �
 <details>
   <summary><strong>步骤 1：确定您的 VM 是否使用 Xen 的 GPLPV 驱动程序</strong> -，点击展开/折叠</summary>
 
-  1. 在您的 %%Xen|xen-hvm%% VM 内，打开 **Windows 设备管理器** (按 *Windows 键 + X*，然后选择 **设备管理器**）。
+  1. Inside your %%Xen|xen-hvm%% VM, open **Windows Device Manager** (press *Windows key + X*, then select **Device Manager**).
   2. 展开 **网络适配器** 并检查设备名称。
      - 如果名称包含 “Xen”，您正在使用 GPLPV 驱动程序。
      - 如果不是，请跳转到关于重启至 %%KVM|kvm%% 模式的步骤。
 
-  :::提示
-  如果您不使用 GPLPV 驱动程序，可以跳过接下来的几个步骤，并从进入 %%KVM|kvm%% 模式部分继续。  :::
+  :::tip
+  如果您不使用 GPLPV 驱动程序，可以跳过接下去的几个步骤并继续从重启至 %%KVM|kvm%% 模式部分。
+  :::
 </details>
 
 <details>
@@ -351,15 +355,16 @@ Unraid 从版本 6.2 开始不再支持 %%Xen|xen-hvm%%。现在，%%KVM|kvm%% �
 
   重启后，使用 [Xen Project Wiki](https://wiki.xenproject.org/wiki/Xen_Windows_GPLPV) 中的全面手动移除过程从系统中完全清除所有 %%Xen|xen-hvm%% GPLPV 驱动程序。
 
-  :::提示
-  如果您不使用 GPLPV 驱动程序，可以跳过接下来的几个步骤，并从进入 %%KVM|kvm%% 模式部分继续。  :::
+  :::caution
+  GPLPV removal requires extensive registry editing and manual file deletion. Follow the Xen Project Wiki instructions **exactly** as written, as errors can cause system instability or boot failures.
+  :::
 </details>
 
 <details>
   <summary><strong>步骤 2：为 GPLPV 驱动程序移除准备 Windows</strong> - 点击展开/折叠</summary>
 
   1. 确保启用了 **VM 管理器**：
-     - 前往 **设置 → VM 管理器**。
+     - Go to ***Settings → VM manager***.
      - 设置 **启用 VM** 为 **是**。
      - 通过从下拉菜单中选择最新 Windows **VirtIO 驱动程序 ISO**，下载并点击 **下载**。
 
@@ -381,8 +386,9 @@ Unraid 从版本 6.2 开始不再支持 %%Xen|xen-hvm%%。现在，%%KVM|kvm%% �
 
   7. 其余的图形和声音设置保持默认值，然后点击 **创建**。
 
-  8. 立即强行停止 VM:
-     - 点击 VM 图标并选择 **强制停止**。
+  8. If the VM started automatically, stop it:
+     - Prefer **Stop** (avoid **Force stop** unless the VM is unresponsive).
+     - Alternatively, uncheck **Start VM after creation** when creating the VM.
 
   9. 编辑 VM 配置：
      - 点击 VM 图标并选择 **编辑**。
@@ -394,8 +400,9 @@ Unraid 从版本 6.2 开始不再支持 %%Xen|xen-hvm%%。现在，%%KVM|kvm%% �
       - 在 `<target>` 标签中将 `bus='virtio'` 修改为 `bus='ide'`。
       - 点击 **Update**。
 
-  :::提示[为何使用临时磁盘？]
-  1MB 的临时磁盘强制 Unraid 将主磁盘分配为 `hda` (IDE) 而不是 `vda` (%%VirtIO|virtio%%)，这使 Windows 可以在没有 %%VirtIO|virtio%% 驱动程序的情况下启动。该临时磁盘将在驱动程序安装后移除。  :::
+  :::tip[Why the temporary disk?]
+  The 1MB temporary disk forces Unraid to assign the primary disk as `hda` (IDE) instead of `vda` (%%VirtIO|virtio%%), allowing Windows to boot without %%VirtIO|virtio%% drivers initially. This temporary disk will be removed after the driver installation.
+  :::
 </details>
 
 <details>
@@ -436,10 +443,11 @@ Unraid 从版本 6.2 开始不再支持 %%Xen|xen-hvm%%。现在，%%KVM|kvm%% �
      - 将主磁盘的 `bus` 从 `ide` 改为 `virtio`。
      - 点击 **Update** 并重启 VM。
 
-  :::提示[为何使用临时磁盘？]
-  1MB 的临时磁盘强制 Unraid 将主磁盘分配为 `hda` (IDE) 而不是 `vda` (%%VirtIO|virtio%%)，这使 Windows 可以在没有 %%VirtIO|virtio%% 驱动程序的情况下启动。该临时磁盘将在驱动程序安装后移除。  :::
+  :::tip[Driver troubleshooting]
+  If you notice errors on devices after migration:
 
   1. 从 ISO 重新安装 %%VirtIO|virtio%% 驱动程序。
   2. 检查 Windows 更新，可能会提供更新的驱动程序。
-  3. 访问 [Red Hat VirtIO Drivers](https://docs.fedoraproject.org/en-US/quick-docs/creating-windows-virtual-machines-using-virtio-drivers/) 页面以获取最新版本。  :::
+  3. Visit the [Red Hat VirtIO Drivers](https://docs.fedoraproject.org/en-US/quick-docs/creating-windows-virtual-machines-using-virtio-drivers/) page for the latest versions.
+     :::
 </details>
