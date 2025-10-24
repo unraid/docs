@@ -166,13 +166,27 @@ Wenn Sie einen %%ZFS|zfs%%-Pool einrichten, bestimmt Ihr Zuweisungs-Profil, wie 
   ![](/img/zfs11.png)
 </div>
 
-| Profil  | Redundanz                    | Leistung                                                                          | Erweiterung                      | Speichereffizienz | Typischer Anwendungsfall                   |
-| ------- | ---------------------------- | --------------------------------------------------------------------------------- | -------------------------------- | ----------------- | ------------------------------------------ |
-| Stripe  | Keine                        | Schnell, aber riskant                                                             | Hinzufügen von mehr Festplatten  | 100%              | Temporärer/zwischengespeicherter Speicher  |
-| Spiegel | 1:1 (%%RAID 1\|raid1%%-Stil) | Hervorragend für zufällige I/O                                                    | Hinzufügen von mehr Spiegelungen | 50%               | Hohe Leistung, einfache Erweiterung        |
-| RAIDZ1  | 1 Festplatte pro Vdev        | Schnell für große Dateien. Nicht ideal für kleine oder zufällige Schreibvorgänge. | Neue Vdevs hinzufügen            | Hoch              | Allgemeine Nutzung, 1-Festplatten-Toleranz |
-| RAIDZ2  | 2 Festplatten pro Vdev       | Wie Z1, aber leicht langsamere Schreibvorgänge (zusätzliche Parität)              | Neue Vdevs hinzufügen            | Mäßig             | Wichtige Daten, 2-Festplatten-Toleranz     |
-| RAIDZ3  | 3 Festplatten pro Vdev       | Wie Z2, mit mehr Schreibaufwand (für maximale Sicherheit)                         | Neue Vdevs hinzufügen            | Niedriger         | Mission-kritisch, 3-Festplatten-Toleranz   |
+| Profil  | Redundanz                    | Leistung                                                                          | Erweiterung                      | Speichereffizienz | Typischer Anwendungsfall                   | Empfohlene Anzahl von Festplatten pro vdev     |
+| ------- | ---------------------------- | --------------------------------------------------------------------------------- | -------------------------------- | ----------------- | ------------------------------------------ | ---------------------------------------------- |
+| Stripe  | Keine                        | Schnell, aber riskant                                                             | Hinzufügen von mehr Festplatten  | 100%              | Temporärer/zwischengespeicherter Speicher  | beliebige Anzahl                               |
+| Spiegel | 1:1 (%%RAID 1\|raid1%%-Stil) | Hervorragend für zufällige I/O                                                    | Hinzufügen von mehr Spiegelungen | 50%               | Hohe Leistung, einfache Erweiterung        | 2 Festplatten (können mehr Spiegel hinzufügen) |
+| RAIDZ1  | 1 Festplatte pro Vdev        | Schnell für große Dateien. Nicht ideal für kleine oder zufällige Schreibvorgänge. | Neue Vdevs hinzufügen            | Hoch              | Allgemeine Nutzung, 1-Festplatten-Toleranz | 3-6 Festplatten (max. 8)                       |
+| RAIDZ2  | 2 Festplatten pro Vdev       | Wie Z1, aber leicht langsamere Schreibvorgänge (zusätzliche Parität)              | Neue Vdevs hinzufügen            | Mäßig             | Wichtige Daten, 2-Festplatten-Toleranz     | 6-12 Festplatten (max. 14)                     |
+| RAIDZ3  | 3 Festplatten pro Vdev       | Wie Z2, mit mehr Schreibaufwand (für maximale Sicherheit)                         | Neue Vdevs hinzufügen            | Niedriger         | Mission-kritisch, 3-Festplatten-Toleranz   | 10-16 Festplatten (max. 20)                    |
+
+:::tip[Optimizing Festplattenanzahlen
+
+Die empfohlenen Festplattenanzahlen in der obigen Tabelle eignen sich für die meisten Benutzer. Für noch bessere Leistung können Sie innerhalb dieser Bereiche optimieren, indem Sie Konfigurationen wählen, bei denen die Anzahl der Datenträger (insgesamt weniger Paritätslaufwerke) eine **Potenz von 2** ist (z.B. 2, 4, 8, 16). Dadurch wird eine korrekte Ausrichtung der Datenstreifen erreicht, wodurch Platzverschwendung und ungleichmäßige E/A vermieden werden.
+
+**Beispiele für optimierte Konfigurationen:**
+
+- **RAIDZ1**: 3, 5 oder 9 Festplatten (Datenträger = 2, 4 oder 8)
+- **RAIDZ2**: 4, 6 oder 10 Festplatten (Datenträger = 2, 4 oder 8)
+- **RAIDZ3**: 5, 9 oder 17 Festplatten (Datenträger = 2, 6 oder 14)
+
+Note that these optimizations are optional - the recommendations above should work well for most use cases.
+
+:::
 
 :::important[How to choose]
 
