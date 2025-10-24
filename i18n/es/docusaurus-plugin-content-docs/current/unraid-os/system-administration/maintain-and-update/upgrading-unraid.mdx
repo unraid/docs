@@ -3,12 +3,12 @@ sidebar_position: 2
 sidebar_label: Actualización de Unraid
 ---
 
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
-import UpgradeModern from './partials/upgrade-modern.mdx';
-import UpgradeLegacy611612 from './partials/upgrade-legacy-611-612.mdx';
-import ManualDowngradeSimplest from './partials/manual-downgrade-simplest.mdx';
-import ManualDowngradeCommandLine from './partials/manual-downgrade-command-line.mdx';
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import UpgradeModern from "./partials/upgrade-modern.mdx";
+import UpgradeLegacy611612 from "./partials/upgrade-legacy-611-612.mdx";
+import ManualDowngradeSimplest from "./partials/manual-downgrade-simplest.mdx";
+import ManualDowngradeCommandLine from "./partials/manual-downgrade-command-line.mdx";
 
 # Actualización de Unraid
 
@@ -26,7 +26,7 @@ Antes de comenzar la actualización, asegúrate de crear una copia de seguridad 
 2. **Lea las notas de la versión** para la versión que planea instalar.
 3. **Actualice todos los complementos** a sus versiones más recientes.
 4. **Opcionalmente, detenga el array** antes de proceder.
-5. **Actualice Unraid OS** utilizando la página ***Herramientas → Actualizar OS***.
+5. **Actualiza Unraid OS** utilizando la página de ***Herramientas → Actualizar OS***.
 6. **Reinicie** su servidor para completar la actualización.
 
 :::
@@ -34,11 +34,11 @@ Antes de comenzar la actualización, asegúrate de crear una copia de seguridad 
 ## Proceso de actualización estándar
 
 <Tabs>
-  <TabItem value="Moderno (2025)" label="Unraid 7.x y posteriores" default>
+  <TabItem value="modern-7x" label="Unraid 7.x y posteriores" default>
     <UpgradeModern />
   </TabItem>
 
-  <TabItem value="Legado (6.11 a 6.12)" label="Unraid 6.11 a 6.12">
+  <TabItem value="legacy-611-612" label="Unraid 6.11 a 6.12">
     <UpgradeLegacy611612 />
   </TabItem>
 </Tabs>
@@ -68,9 +68,9 @@ Si encuentra problemas después de la actualización, consulte la sección relev
 <details>
   <summary><strong>Las VMs muestran "no se puede obtener la interfaz MTU" o errores de red</strong> - Haga clic para expandir/colapsar</summary>
 
-  Si tienes %%OVMF|ovmf%%-basados %%VMs|vm%% creados en versiones anteriores de Unraid, podrías encontrar un shell EFI. Puedes arrancar el %%VM|vm%% introduciendo los siguientes comandos:
+  Si encuentras errores como *"las capas del manifiesto no coinciden con la configuración de la imagen,"* es posible que necesites reconstruir tu archivo de imagen de Docker. Aquí tienes cómo:
 
-  1. Escriba `fs0:`.
+  1. Ve a ***Configuraciones → Docker*** y detén el servicio Docker.
   2. Luego escriba `cd efi/boot`.
   3. Finalmente, escriba `bootx64.efi`.
   4. Navegue a la pestaña **Aplicaciones**, **Aplicaciones anteriores** y marque lo que desea reinstalar y haga clic en **"Instalar xx Aplicaciones"**.
@@ -83,7 +83,7 @@ Si encuentra problemas después de la actualización, consulte la sección relev
 
   1. Vaya a la pestaña **VMs** y edite cada %%VM|vm%% (asegúrese de habilitar **Vista avanzada**).
   2. Configure el puente de red en `br0` y haga clic en **Aplicar**.
-  3. Navegue a ***Configuración → Administrador de VM*** (en **Vista avanzada**) y configure el puente predeterminado en `br0`.
+  3. Navega a ***Configuraciones → Administrador de VM*** (en **Vista Avanzada**) y establece el puente predeterminado en `br0`.
 </details>
 
 <details>
@@ -122,27 +122,9 @@ Si encuentra problemas después de la actualización, consulte la sección relev
 
 ---
 
-## Actualización o degradación manual
+## Degradación manual
 
-Las actualizaciones manuales son raras, pero pueden ser necesarias si no puedes acceder al %%WebGUI|web-gui%% o necesitas volver a una versión anterior. Antes de proceder, es importante hacer un respaldo de tu dispositivo USB, cuyos detalles puedes encontrar en [Respaldar tu dispositivo flash](../maintain-and-update/changing-the-flash-device.mdx#backing-up-your-flash-device).
-
-### Degradar utilizando la herramienta Downgrade OS (si el WebGUI es accesible)
-
-Si puede acceder al WebGUI:
-
-1. Inicie sesión en el %%WebGUI|web-gui%%.
-2. Navegue a ***Herramientas → Degradar OS***.
-3. Su versión anterior se listará como la opción de degradación disponible.
-4. Haga clic en **Degradar** y siga las indicaciones.
-5. Reinicie su servidor cuando se le indique.
-
-:::caution
-
-Ten en cuenta que bajar de versión puede generar problemas de compatibilidad con complementos o contenedores de Docker. Siempre respalda tu dispositivo USB y cualquier dato importante de antemano.
-
-:::
-
-### Metodos manuales (si el WebGUI es inaccesible)
+Las degradaciones manuales son raramente necesarias pero pueden serlo si no puedes acceder al %%WebGUI|web-gui%% o necesitas volver a una versión anterior. Antes de proceder, es importante que hagas una copia de seguridad de tu dispositivo USB, cuyos detalles puedes encontrar en [Copia de seguridad de tu dispositivo flash](../maintain-and-update/changing-the-flash-device.mdx#backing-up-your-flash-device).
 
 Solo utilice estos métodos si no puede acceder al %%WebGUI|web-gui%%:
 
@@ -155,3 +137,78 @@ Solo utilice estos métodos si no puede acceder al %%WebGUI|web-gui%%:
     <ManualDowngradeCommandLine />
   </TabItem>
 </Tabs>
+
+:::info[What sucede durante el proceso de degradación]
+
+Al usar la herramienta Degradar OS (WebGUI), la herramienta manejará automáticamente lo siguiente:
+
+1. **Validación del sistema**: Comprueba que la degradación sea segura de realizar.
+2. **Copia de seguridad de archivos**: Se creará una copia de seguridad de tus archivos del sistema actuales.
+3. **Verificación de la versión**: La herramienta se asegura de que los archivos para la versión objetivo sean válidos y completos.
+4. **Reemplazo de archivos**: Reemplaza los archivos actuales del sistema operativo con los archivos de la versión anterior.
+5. **Preservación de configuraciones**: Se mantendrán tus configuraciones actuales.
+6. **Preparación del sistema**: Se preparará el sistema para la versión anterior.
+7. **Programación de reinicio**: Se programará un reinicio para finalizar la degradación.
+
+:::
+
+#### Verificación posterior a la degradación
+
+Después de que la degradación esté completa y tu servidor haya reiniciado:
+
+1. **Comprueba la versión**: Verifica que estés usando la versión de Unraid que esperas.
+2. **Prueba la funcionalidad principal**: Asegúrate de que los servicios de %%array|array%%, Docker y VM estén funcionando correctamente.
+3. **Verifica los complementos**: Comprueba que tus complementos instalados sean compatibles y funcionen como se espera.
+4. **Prueba los contenedores de Docker**: Inicia tus contenedores de Docker y confirma que estén funcionando correctamente.
+5. **Revisa las VMs**: Si tienes máquinas virtuales (VMs), asegúrate de que inicien y operen correctamente. Consulta [Configuración de VM](../../using-unraid-to/create-virtual-machines/vm-setup.mdx) para orientación sobre configuración.
+6. **Monitorea los registros del sistema**: Mantente atento a los registros del sistema para detectar mensajes de error. Utiliza [herramientas de diagnóstico](../../troubleshooting/diagnostics/capture-diagnostics-and-logs.mdx) para capturar información detallada del sistema.
+
+#### Resolución de problemas de degradación
+
+<details>
+  <summary><strong>Opción de degradación no disponible</strong> - Haz clic para expandir/colapsar</summary>
+
+  Si no ves una opción para degradar:
+
+  - **Revisa el historial del sistema**: Asegúrate de haber mejorado previamente desde una versión compatible.
+  - **Verifica la integridad de los archivos**: Los archivos de la versión anterior pueden estar dañados o desaparecer.
+  - **Verifica la compatibilidad**: La versión anterior puede no ser compatible con tu hardware actual.
+  - **Método manual**: Si es necesario, sigue los métodos de degradación manual que se describen en esta página.
+</details>
+
+<details>
+  <summary><strong>La degradación falla durante el proceso</strong> - Haz clic para expandir/colapsar</summary>
+
+  Si el proceso de degradación no sale como se planeó:
+
+  1. **No te alarmes**: Tu sistema debería seguir funcionando con la versión actual.
+  2. **Revisa los registros**: Examina los registros del sistema para encontrar mensajes de error específicos. Utiliza [herramientas de diagnóstico](../../troubleshooting/diagnostics/capture-diagnostics-and-logs.mdx) para un análisis de registros completo.
+  3. **Verifica los archivos**: Asegúrate de que todos los archivos necesarios para la versión objetivo estén disponibles.
+  4. **Intenta el método manual**: Si la herramienta no funciona, considera usar los métodos de degradación manual.
+  5. **Contacta al soporte**: Si los problemas persisten, comunícate con el soporte de Unraid con tus diagnósticos.
+</details>
+
+<details>
+  <summary><strong>El sistema no arranca después de la degradación</strong> - Haz clic para expandir/colapsar</summary>
+
+  Si tu sistema no arranca después de la degradación:
+
+  1. **Arranca desde USB**: Usa otra computadora para acceder a tu dispositivo flash USB. Consulta [resolución de problemas de arranque](../../troubleshooting/common-issues/boot-and-startup-failures.mdx) para obtener pasos detallados de recuperación.
+  2. **Restaura desde una copia de seguridad**: Copia tus archivos de respaldo de nuevo al dispositivo USB.
+  3. **Revisa la integridad de los archivos**: Asegúrate de que todos los archivos del sistema estén presentes y no estén dañados.
+  4. **Intenta el Modo Seguro**: Arranca en [Modo Seguro](../../using-unraid-to/customize-your-experience/plugins.mdx#troubleshooting-with-safe-mode) para más resolución de problemas.
+  5. **Recuperación manual**: Si es necesario, utiliza los métodos de recuperación manual.
+</details>
+
+<details>
+  <summary><strong>Complementos o contenedores de Docker no funcionarán</strong> - Haz clic para expandir/colapsar</summary>
+
+  Después de degradar, algunos complementos o contenedores pueden no funcionar correctamente:
+
+  - **Actualiza los complementos**: Busca actualizaciones de complementos compatibles con la versión degradada. Revisa [Aplicaciones Comunitarias](../../using-unraid-to/run-docker-containers/community-applications.mdx) para encontrar versiones compatibles.
+  - **Reconstruye Docker**: Elimina y recrea tu archivo de imagen de Docker. Consulta [resolución de problemas de Docker](../../troubleshooting/common-issues/docker-troubleshooting.mdx#re-creating-the-docker-image-file) para pasos detallados.
+    - **Revisa las dependencias**: Asegúrate de que todas las dependencias necesarias estén disponibles.
+    - **Compatibilidad de complementos**: Algunos complementos podrían no ser compatibles con versiones anteriores de Unraid.
+    - **Plugins dependientes de características de UI/WebGUI**: Los complementos que dependen de las nuevas características de WebGUI pueden no funcionar correctamente en versiones anteriores.
+    - **Plugins temáticos**: Es posible que los complementos de personalización visual necesiten actualizaciones o eliminación si son incompatibles.
+</details>
