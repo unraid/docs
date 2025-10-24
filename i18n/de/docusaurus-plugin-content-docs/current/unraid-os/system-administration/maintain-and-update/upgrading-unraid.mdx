@@ -3,12 +3,12 @@ sidebar_position: 2
 sidebar_label: Unraid aktualisieren
 ---
 
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
-import UpgradeModern from './partials/upgrade-modern.mdx';
-import UpgradeLegacy611612 from './partials/upgrade-legacy-611-612.mdx';
-import ManualDowngradeSimplest from './partials/manual-downgrade-simplest.mdx';
-import ManualDowngradeCommandLine from './partials/manual-downgrade-command-line.mdx';
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import UpgradeModern from "./partials/upgrade-modern.mdx";
+import UpgradeLegacy611612 from "./partials/upgrade-legacy-611-612.mdx";
+import ManualDowngradeSimplest from "./partials/manual-downgrade-simplest.mdx";
+import ManualDowngradeCommandLine from "./partials/manual-downgrade-command-line.mdx";
 
 # Unraid aktualisieren
 
@@ -26,7 +26,7 @@ Bevor Sie mit der Aktualisierung beginnen, sichern Sie unbedingt eine vollständ
 2. **Lesen Sie die Versionshinweise** für die Version, die Sie installieren möchten.
 3. **Aktualisieren Sie alle Plugins** auf die neuesten Versionen.
 4. **Stoppen Sie optional das Array**, bevor Sie fortfahren.
-5. **Aktualisieren Sie Unraid OS** über die Seite ***Tools → Update OS***.
+5. **Update Unraid OS** using the ***Tools → Update OS*** page.
 6. **Starten Sie** Ihren Server neu, um das Upgrade abzuschließen.
 
 :::
@@ -34,11 +34,11 @@ Bevor Sie mit der Aktualisierung beginnen, sichern Sie unbedingt eine vollständ
 ## Standard-Aktualisierungsprozess
 
 <Tabs>
-  <TabItem value="Modern (2025)" label="Unraid 7.x und später" default>
+  <TabItem value="modern-7x" label="Unraid 7.x und später" default>
     <UpgradeModern />
   </TabItem>
 
-  <TabItem value="Legacy (6.11 bis 6.12)" label="Unraid 6.11 bis 6.12">
+  <TabItem value="legacy-611-612" label="Unraid 6.11 bis 6.12">
     <UpgradeLegacy611612 />
   </TabItem>
 </Tabs>
@@ -68,9 +68,9 @@ Wenn Sie nach dem Upgrade auf Probleme stoßen, sehen Sie sich den entsprechende
 <details>
   <summary><strong>VMs zeigen "Kann Schnittstellen-MTU nicht abrufen" oder Netzwerkfehler</strong> - Klicken zum Expandieren/Reduzieren</summary>
 
-  Wenn Sie %%OVMF|ovmf%%-basierte %%VMs|vm%% in älteren Unraid-Versionen erstellt haben, könnten Sie auf eine EFI-Shell stoßen. Sie können die %%VM|vm%% starten, indem Sie die folgenden Befehle eingeben:
+  If you encounter errors like *"layers from manifest don't match image configuration,"* you may need to rebuild your Docker image file. Here’s how:
 
-  1. Geben Sie `fs0:` ein.
+  1. Go to ***Settings → Docker*** and stop the Docker service.
   2. Geben Sie dann `cd efi/boot` ein.
   3. Schließlich geben Sie `bootx64.efi` ein.
   4. Navigieren Sie zur **Apps**-Registerkarte, **Vorherige Apps** und markieren Sie, was Sie erneut installieren möchten, und klicken Sie auf **„xx Anwendungen installieren“**.
@@ -83,7 +83,7 @@ Wenn Sie nach dem Upgrade auf Probleme stoßen, sehen Sie sich den entsprechende
 
   1. Gehen Sie zum **VMs**-Tab und bearbeiten Sie jede %%VM|vm%% (stellen Sie sicher, dass die **Erweiterte Ansicht** aktiviert ist).
   2. Setzen Sie die Netzwerkbrücke auf `br0` und klicken Sie auf **Anwenden**.
-  3. Navigieren Sie zu ***Einstellungen → VM-Manager*** (in **Erweiterter Ansicht**) und setzen Sie die Standard-Bridge auf `br0`.
+  3. Navigate to ***Settings → VM Manager*** (in **Advanced View**) and set the default bridge to `br0`.
 </details>
 
 <details>
@@ -122,27 +122,9 @@ Wenn Sie nach dem Upgrade auf Probleme stoßen, sehen Sie sich den entsprechende
 
 ---
 
-## Manuelles Upgrade oder Downgrade
+## Manual downgrade
 
-Manuelle Aktualisierungen sind selten erforderlich, können jedoch notwendig sein, wenn Sie keinen Zugriff auf die WebGUI haben oder auf eine frühere Version zurückkehren müssen. Bevor Sie fortfahren, ist es wichtig, Ihr USB-Flash-Gerät zu sichern. Einzelheiten finden Sie unter [Sicherung Ihres Flash-Geräts](../maintain-and-update/changing-the-flash-device.mdx#backing-up-your-flash-device).
-
-### Downgrade mit dem Downgrade-OS-Tool (falls WebGUI zugänglich ist)
-
-Wenn Sie auf das WebGUI zugreifen können:
-
-1. Loggen Sie sich in die %%WebGUI|web-gui%% ein.
-2. Navigieren Sie zu ***Tools → Downgrade OS***.
-3. Ihre vorherige Version wird als verfügbare Downgrade-Option aufgeführt.
-4. Klicken Sie auf **Downgrade** und folgen Sie den Anweisungen.
-5. Starten Sie Ihren Server neu, wenn Sie dazu aufgefordert werden.
-
-:::caution
-
-Bedenken Sie, dass ein Downgrade zu Kompatibilitätsproblemen mit Plugins oder Docker-Containern führen kann. Sichern Sie immer Ihr USB-Flash-Gerät und alle wichtigen Daten zuvor.
-
-:::
-
-### Manuelle Methoden (wenn WebGUI unzugänglich ist)
+Manual downgrades are infrequently necessary but may be needed if you can't access the %%WebGUI|web-gui%% or need to revert to a prior version. Before proceeding, it's important to back up your USB flash device, details of which you can find in [Backing up your flash device](../maintain-and-update/changing-the-flash-device.mdx#backing-up-your-flash-device).
 
 Verwenden Sie diese Methoden nur, wenn Sie keinen Zugriff auf die %%WebGUI|web-gui%% haben:
 
@@ -155,3 +137,78 @@ Verwenden Sie diese Methoden nur, wenn Sie keinen Zugriff auf die %%WebGUI|web-g
     <ManualDowngradeCommandLine />
   </TabItem>
 </Tabs>
+
+:::info[What happens during the downgrade process]
+
+When using the Downgrade OS tool (WebGUI), the tool will automatically handle the following:
+
+1. **System validation**: It checks that the downgrade is safe to perform.
+2. **File backup**: A backup of your current system files will be created.
+3. **Version verification**: The tool ensures that the files for the target version are valid and complete.
+4. **File replacement**: It replaces the current OS files with the files from the previous version.
+5. **Configuration preservation**: Your current settings will be maintained.
+6. **System preparation**: The system will be prepared for the previous version.
+7. **Reboot scheduling**: A reboot will be scheduled to finish the downgrade.
+
+:::
+
+#### Post-downgrade verification
+
+After the downgrade is complete and your server has rebooted:
+
+1. **Check the version**: Verify that you're running the version of Unraid you expect.
+2. **Test core functionality**: Ensure that the %%array|array%%, Docker, and VM services are working properly.
+3. **Verify plugins**: Check that your installed plugins are compatible and functioning as expected.
+4. **Test Docker containers**: Start your Docker containers and confirm they are working correctly.
+5. **Check VMs**: If you have any virtual machines (VMs), make sure they start and operate properly. See [VM setup](../../using-unraid-to/create-virtual-machines/vm-setup.mdx) for configuration guidance.
+6. **Monitor system logs**: Keep an eye on the system logs for any error messages. Use [diagnostics tools](../../troubleshooting/diagnostics/capture-diagnostics-and-logs.mdx) to capture detailed system information.
+
+#### Troubleshooting downgrade issues
+
+<details>
+  <summary><strong>Downgrade option not available</strong> - Click to expand/collapse</summary>
+
+  If you don’t see an option to downgrade:
+
+  - **Check system history**: Make sure you've previously upgraded from a compatible version.
+  - **Verify file integrity**: Previous version files might be corrupted or missing.
+  - **Check compatibility**: The earlier version may not be compatible with your current hardware.
+  - **Manual method**: If needed, follow the manual downgrade methods outlined on this page.
+</details>
+
+<details>
+  <summary><strong>Downgrade fails during process</strong> - Click to expand/collapse</summary>
+
+  If the downgrade process doesn't go as planned:
+
+  1. **Don’t panic**: Your system should still work with the current version.
+  2. **Check logs**: Take a look at the system logs to find specific error messages. Use [diagnostics tools](../../troubleshooting/diagnostics/capture-diagnostics-and-logs.mdx) for comprehensive log analysis.
+  3. **Verify files**: Ensure that all required files for the target version are available.
+  4. **Try the manual method**: If the tool doesn't work, consider using the manual downgrade methods.
+  5. **Contact support**: If problems continue, reach out to Unraid support with your diagnostics.
+</details>
+
+<details>
+  <summary><strong>System won't boot after downgrade</strong> - Click to expand/collapse</summary>
+
+  If your system doesn’t boot after downgrading:
+
+  1. **Boot from USB**: Use another computer to access your USB flash device. See [boot troubleshooting](../../troubleshooting/common-issues/boot-and-startup-failures.mdx) for detailed recovery steps.
+  2. **Restore from backup**: Copy your backup files back to the USB device.
+  3. **Check file integrity**: Make sure all system files are present and not damaged.
+  4. **Try Safe Mode**: Boot into [Safe Mode](../../using-unraid-to/customize-your-experience/plugins.mdx#troubleshooting-with-safe-mode) for further troubleshooting.
+  5. **Manual recovery**: If necessary, utilize the manual recovery methods.
+</details>
+
+<details>
+  <summary><strong>Plugins or Docker containers not working</strong> - Click to expand/collapse</summary>
+
+  After downgrading, some plugins or containers may not function properly:
+
+  - **Update plugins**: Look for plugin updates that work with the downgraded version. Check [Community Applications](../../using-unraid-to/run-docker-containers/community-applications.mdx) for compatible versions.
+  - **Rebuild Docker**: Delete and recreate your Docker image file. See [Docker troubleshooting](../../troubleshooting/common-issues/docker-troubleshooting.mdx#re-creating-the-docker-image-file) for detailed steps.
+    - **Check dependencies**: Ensure that all necessary dependencies are available.
+    - **Plugin compatibility**: Some plugins might not support earlier Unraid versions.
+    - **UI/WebGUI feature-dependent plugins**: Plugins relying on newer WebGUI features may not operate correctly on older versions.
+    - **Theme plugins**: Visual customization plugins may require updates or removal if they are incompatible.
+</details>
