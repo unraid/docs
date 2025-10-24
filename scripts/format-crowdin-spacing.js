@@ -126,9 +126,12 @@ function normalizeAdmonitionDirectives(content) {
     const rest = match[4] || '';
     let lineModified = false;
 
-    if (colons !== ':::') {
+    const colonCount = colons.length;
+    if (colonCount < 3) {
       colons = ':::';
       lineModified = true;
+    } else {
+      colons = ':'.repeat(colonCount);
     }
 
     if (rest.trim().length === 0) {

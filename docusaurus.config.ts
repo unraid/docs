@@ -218,6 +218,16 @@ const config: Config = {
             { label: "Blog", href: "https://unraid.net/blog" },
           ],
         },
+        {
+          title: "License",
+          items: [
+            { 
+              label: "CC BY-SA 4.0", 
+              href: "https://creativecommons.org/licenses/by-sa/4.0/",
+              description: "This documentation is available under the Creative Commons Attribution-ShareAlike 4.0 International License. Feel free to share, copy, and use our docs however you need. You can even modify and build upon them for your own projects. Just make sure to give us credit and share any improvements you make under the same license. Note: This license applies only to the documentation content, not to Unraid software or trademarks."
+            },
+          ],
+        },
       ],
       logo: {
         alt: "Unraid Logo",
