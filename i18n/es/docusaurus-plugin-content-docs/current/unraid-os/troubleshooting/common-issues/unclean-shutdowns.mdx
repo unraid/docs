@@ -19,7 +19,7 @@ Tomar algunas medidas proactivas puede ayudarte a evitar o identificar apagados 
 
 - **Usa un SAI:** Mantén tu servidor conectado a un Sistema de Alimentación Ininterrumpida (SAI) y configúralo para iniciar un apagado controlado cuando la energía de la batería sea baja.
 - **Intentar un apagado ordenado:** Si su servidor no responde, presione brevemente el botón de encendido para activar un apagado seguro. No mantenga el botón presionado, ya que esto forzará un apagado duro y provocará un apagado no limpio.
-- **Enable persistent logging:** Go to ***Settings → Syslog Server*** to activate logging that persists after a reboot. See [Persistent logs (Syslog server)](../diagnostics/capture-diagnostics-and-logs.mdx#persistent-logs-syslog-server) for more details.
+- **Habilitar registro persistente:** Vaya a ***Configuración → Servidor Syslog*** para activar el registro que persiste después de un reinicio. Vea [Registros persistentes (Servidor Syslog)](../diagnostics/capture-diagnostics-and-logs.mdx#persistent-logs-syslog-server) para más detalles.
 - **Adjuntar diagnósticos para soporte:** Si ocurre un apagado no limpio, Unraid intentará guardar los diagnósticos en `/log/diagnostics.zip` en su dispositivo de flash. Adjunte este archivo a las publicaciones en el foro cuando busque ayuda.
 
 :::
@@ -29,7 +29,7 @@ Tomar algunas medidas proactivas puede ayudarte a evitar o identificar apagados 
 Un SAI bien configurado es tu mejor defensa contra apagados no limpios causados por pérdida de energía.
 
 - **Conecta el SAI vía USB** a tu servidor Unraid.
-- **Enable UPS support** in ***Settings → UPS Settings***.
+- **Habilitar soporte para UPS** en ***Configuración → Configuraciones de UPS***.
 - **Configurar tiempos de espera de apagado:** Configure el SAI para que desencadene un apagado controlado antes de que la batería se agote. Ajuste los umbrales de "Tiempo restante de la batería" o "Nivel de carga de la batería" para proporcionar tiempo suficiente para que Unraid [detenga el %%array|array%%](../../using-unraid-to/manage-storage/array-configuration.mdx#startstop-the-array) y se apague de forma segura.
 - **Prueba tu configuración:** Simula una pérdida de energía para asegurarte de que el SAI y Unraid respondan correctamente.
 
@@ -59,53 +59,53 @@ Configurar correctamente los tiempos de espera de apagado es esencial para asegu
 
 ## Tiempo de espera para máquinas virtuales
 
-Properly configuring shutdown timeouts is essential to ensure your Unraid server can stop all services effectively. This prevents unclean shutdowns, especially during power loss or maintenance. The most important step is to configure your %%VMs|vm%% to hibernate instead of shutting down. This approach helps eliminate many timeout-related issues.
+Configurar correctamente los tiempos de espera de apagado es esencial para asegurar que su servidor Unraid pueda detener todos los servicios de manera efectiva. Esto evita apagados no limpios, especialmente durante cortes de energía o mantenimiento. El paso más importante es configurar sus %%VMs|vm%% para hibernar en lugar de apagarse. Este enfoque ayuda a eliminar muchos problemas relacionados con el tiempo de espera.
 
-### VM hibernation setup
+### Configuración de hibernación de VM
 
-:::tip[Use VM hibernation]
+:::tip[Use Hibernación de VM
 
-For the most reliable and fastest shutdowns, configure your %%VMs|vm%% to hibernate instead of shutting down. This is especially important for Windows %%VMs|vm%% but benefits all %%VM|vm%% types.
+Para los apagados más confiables y rápidos, configure sus %%VMs|vm%% para hibernar en lugar de apagarse. Esto es especialmente importante para las %%VMs|vm%% de Windows, pero beneficia a todos los tipos de %%VM|vm%%.
 
-We recommend using hibernation because it:
+Recomendamos usar la hibernación porque:
 
-- **Saves VM state instantly** - No waiting for the guest OS to shut down.
-- **Prevents data loss** - No risk of interrupting updates or unsaved work.
-- **Avoids timeout issues** - Hibernation is nearly instantaneous.
-- **Faster recovery** - %%VMs|vm%% resume exactly where they left off.
+- **Guarda el estado de la VM al instante** - No hay que esperar a que el sistema operativo invitado se apague.
+- **Previene la pérdida de datos** - Sin riesgo de interrumpir actualizaciones o trabajos no guardados.
+- **Evita problemas de tiempo de espera** - La hibernación es casi instantánea.
+- **Recuperación más rápida** - Las %%VMs|vm%% se reanudan exactamente donde se quedaron.
 
-Shutdown can be problematic because:
+El apagado puede ser problemático porque:
 
-- Windows may display dialog boxes ("Save this document?") that halt the shutdown indefinitely.
-- Windows updates can take 10+ minutes during shutdown.
-- If the timeout expires, Unraid force-kills the %%VM|vm%%, potentially corrupting in-progress Windows updates, unsaved documents, application data, and file systems in the guest OS.
+- Windows puede mostrar cuadros de diálogo ("¿Guardar este documento?") que detienen el apagado indefinidamente.
+- Las actualizaciones de Windows pueden tardar más de 10 minutos durante el apagado.
+- Si el tiempo de espera expira, Unraid forzará el cierre de la %%VM|vm%%, lo que podría corromper actualizaciones de Windows en curso, documentos no guardados, datos de aplicaciones y sistemas de archivos en el sistema operativo invitado.
 
-**Critical requirement:** Ensure the %%QEMU|qemu%% %%Guest Agent|guest-agent%% is installed in the %%VM|vm%% for hibernation to function correctly.
+**Requisito crítico:** Asegúrese de que el %%QEMU|qemu%% %%Guest Agent|guest-agent%% esté instalado en la %%VM|vm%% para que la hibernación funcione correctamente.
 
 :::
 
-To enable VM hibernation:
+Para habilitar la hibernación de VM:
 
 <Tabs>
-  <TabItem value="windows" label="Windows VMs" default>
-    1. **Download %%QEMU|qemu%% %%Guest Agent|guest-agent%%:**
-       - Go to the [VirtIO drivers download page](https://fedorapeople.org/groups/virt/virtio-win/direct-downloads/).
-       - Download the latest `virtio-win.iso` file.
+  <TabItem value="windows" label="VMs de Windows" default>
+    1. **Descargar %%QEMU|qemu%% %%Guest Agent|guest-agent%%:**
+       - Vaya a la [página de descarga de controladores VirtIO](https://fedorapeople.org/groups/virt/virtio-win/direct-downloads/).
+       - Descargue el archivo `virtio-win.iso` más reciente.
 
-    2. **Install in Windows %%VM|vm%%:**
-       - Mount the `virtio-win.iso` to your %%VM|vm%%.
-       - Run the installer from the mounted ISO.
-       - Install both %%VirtIO|virtio%% drivers AND %%QEMU|qemu%% %%Guest Agent|guest-agent%%.
-       - Restart the %%VM|vm%%.
+    2. **Instalar en Windows %%VM|vm%%:**
+       - Monte la `virtio-win.iso` en su %%VM|vm%%.
+       - Ejecute el instalador desde la ISO montada.
+       - Instale tanto los controladores %%VirtIO|virtio%% como el %%QEMU|qemu%% %%Guest Agent|guest-agent%%.
+       - Reinicie la %%VM|vm%%.
 
-    3. **Configure in Unraid:**
-       - Go to your %%VM|vm%% settings in the ***VMs*** tab.
-       - Set **Shutdown Action** to **Hibernate**.
+    3. **Configure en Unraid:**
+       - Vaya a la configuración de su %%VM|vm%% en la pestaña ***VMs***.
+       - Establezca **Acción de apagado** en **Hibernar**.
        - Haga clic en **Aplicar**.
   </TabItem>
 
-  <TabItem value="linux" label="Linux VMs">
-    1. **Install %%QEMU|qemu%% %%Guest Agent|guest-agent%%:**
+  <TabItem value="linux" label="VMs de Linux">
+    1. **Instale %%QEMU|qemu%% %%Guest Agent|guest-agent%%:**
 
     ```bash
     # Ubuntu/Debian
@@ -117,190 +117,190 @@ To enable VM hibernation:
     sudo dnf install qemu-guest-agent
     ```
 
-    2. **Enable the service:**
+    2. **Habilitar el servicio:**
        ```bash
        sudo systemctl enable qemu-guest-agent
        sudo systemctl start qemu-guest-agent
        ```
 
-    3. **Configure in Unraid:**
-       - Set **Shutdown Action** to **Hibernate** in your %%VM|vm%% settings.
+    3. **Configure en Unraid:**
+       - Configure **Acción de apagado** en **Hibernar** en la configuración de su %%VM|vm%%.
   </TabItem>
 
-  <TabItem value="appliance" label="Appliance VMs">
-    Some %%VMs|vm%%, like Home Assistant, don't allow the installation of additional software. For these:
+  <TabItem value="aparato" label="VMs de electrodomésticos">
+    Algunas %%VMs|vm%%, como Home Assistant, no permiten la instalación de software adicional. Para estas:
 
-    - Keep **Shutdown Action** set to **Shutdown**.
-    - Use longer timeout values (see timeout recommendations below).
-    - Consider the risks of force-killing these %%VMs|vm%% during updates.
+    - Mantenga **Acción de apagado** establecida en **Apagar**.
+    - Use valores de tiempo de espera más largos (consulte las recomendaciones de tiempo de espera a continuación).
+    - Considere los riesgos de forzar el cierre de estas %%VMs|vm%% durante las actualizaciones.
 
-    :::note[Why appliance VMs are different]
+    :::nota[Por qué las VMs de electrodomésticos son diferentes]
 
-    Appliance %%VMs|vm%% are designed to run specific software and often don't allow the installation of additional packages, such as %%QEMU|qemu%% %%Guest Agent|guest-agent%%. This means hibernation isn't available, so you'll need to rely on proper timeout configuration.
+    Las %%VMs|vm%% de electrodomésticos están diseñadas para ejecutar software específico y a menudo no permiten la instalación de paquetes adicionales, como el %%QEMU|qemu%% %%Guest Agent|guest-agent%%. Esto significa que la hibernación no está disponible, por lo que deberá confiar en una configuración de tiempo de espera adecuada.
 
     :::
   </TabItem>
 </Tabs>
 
-Now to verify your hibernation works, start your %%VM|vm%% and open some applications. Then stop it from Unraid. When you start it again, it should resume with all applications still open.
+Ahora, para verificar que tu hibernación funcione, inicia tu %%VM|vm%% y abre algunas aplicaciones. Luego, deténla desde Unraid. Cuando la reinicies, debería reanudarse con todas las aplicaciones aún abiertas.
 
-:::warning[Guest Agent is critical]
+:::warning[Guest Agente es crítico
 
-Without the %%QEMU|qemu%% %%Guest Agent|guest-agent%% installed, hibernation may not work properly. In that case, the %%VM|vm%% will revert to shutdown mode, consuming the full timeout period.
+Sin el %%QEMU|qemu%% %%Guest Agent|guest-agent%% instalado, la hibernación puede no funcionar correctamente. En ese caso, la %%VM|vm%% volverá al modo de apagado, consumiendo todo el periodo de tiempo de espera.
 
 :::
 
-### Timeout configuration
+### Configuración de tiempo de espera
 
-In this section, we’ll cover how to configure timeouts for various systems and processes. This information is important to ensure that your %%VMs|vm%% and Docker containers shut down gracefully without data loss.
+En esta sección, cubriremos cómo configurar los tiempos de espera para varios sistemas y procesos. Esta información es importante para asegurar que sus %%VMs|vm%% y contenedores Docker se apaguen correctamente sin pérdida de datos.
 
-| Configuración                                   | Defecto | When to increase                                  | Dónde configurar                                                             |
-| ----------------------------------------------- | ------- | ------------------------------------------------- | ---------------------------------------------------------------------------- |
-| Tiempo de espera para apagado de %%VM\|vm%%     | 60s     | 300s if not using hibernation and VMs crash       | ***Configuración → Gestor de VM → Apagado de VM (Avanzado)***                |
-| Tiempo de espera para detener contenedor Docker | 10s     | 30s if any containers are crashing when stopped   | ***Configuración → Docker (Avanzado)***                                      |
-| Tiempo de espera general de apagado             | 90s     | 180s if you get unclean shutdowns, 300s+ with VMs | ***Configuración → Configuración de Disco → Tiempo de espera para apagado*** |
+| Configuración                                   | Defecto | Cuándo aumentar                                           | Dónde configurar                                                             |
+| ----------------------------------------------- | ------- | --------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| Tiempo de espera para apagado de %%VM\|vm%%     | 60s     | 300s si no se usa hibernación y las VMs se bloquean       | ***Configuración → Gestor de VM → Apagado de VM (Avanzado)***                |
+| Tiempo de espera para detener contenedor Docker | 10s     | 30s si alguno de los contenedores se bloquea al detenerse | ***Configuración → Docker (Avanzado)***                                      |
+| Tiempo de espera general de apagado             | 90s     | 180s si obtienes apagados no limpios, 300s+ con VMs       | ***Configuración → Configuración de Disco → Tiempo de espera para apagado*** |
 
-:::tip[When to increase timeouts]
+:::tip[When para aumentar tiempo de espera
 
-If you're experiencing unclean shutdowns or containers that crash during shutdown, consider increasing the general shutdown timeout to **180 seconds** (or **300+ seconds** if you have multiple %%VMs|vm%%). This gives services more time to shut down gracefully.
+Si está experimentando apagados no limpios o contenedores que se bloquean durante el apagado, considere aumentar el tiempo de espera general de apagado a **180 segundos** (o **300+ segundos** si tiene múltiples %%VMs|vm%%). Esto le da a los servicios más tiempo para apagarse correctamente.
 :::
 
-### Shutdown sequence
+### Secuencia de apagado
 
-When shutting down, the process happens in the following order:
+Al apagar, el proceso ocurre en el siguiente orden:
 
-1. **%%VM|vm%% shutdown**: This involves three stages, and each one can take up to the VM timeout:
+1. **Apagado de %%VM|vm%%:** Esto implica tres etapas, y cada una puede tomar hasta el tiempo de espera de la VM:
 
-   - Stage 1: Resume any paused %%VMs|vm%%
-   - Stage 2: Hibernate %%VMs|vm%% that are set up for hibernation
-   - Stage 3: Shut down any remaining %%VMs|vm%%
+   - Etapa 1: Reanudar cualquier %%VMs|vm%% pausada
+   - Etapa 2: Hibernar %%VMs|vm%% que están configuradas para hibernación
+   - Etapa 3: Apagar cualquier %%VMs|vm%% restantes
 
-   All %%VMs|vm%% in each stage are processed at the same time, meaning the total shutdown time can be calculated as: VM timeout × 3.
+   Todas las %%VMs|vm%% en cada etapa se procesan al mismo tiempo, lo que significa que el tiempo total de apagado puede calcularse como: tiempo de espera de la VM × 3.
 
-2. **Docker containers stop**: All containers will stop simultaneously (total time = Docker timeout).
+2. **Detener contenedores Docker:** Todos los contenedores se detendrán simultáneamente (tiempo total = tiempo de espera de Docker).
 
-3. **Other services**: This includes tasks like LXC containers and third-party plugins, which usually take a few seconds.
+3. **Otros servicios:** Esto incluye tareas como contenedores LXC y complementos de terceros, que generalmente toman unos pocos segundos.
 
-4. **Array shutdown**: Drives need to be unmounted and data synced; this typically takes 15-30 seconds.
+4. **Apagado del array:** Las unidades deben desmontarse y sincronizarse los datos; esto generalmente toma de 15 a 30 segundos.
 
-:::tip[Calculate your general shutdown timeout]
+:::tip[Calculate su tiempo de espera general de apagado
 
-**Formula:** Your general shutdown timeout should be greater than:
+**Fórmula:** Su tiempo de espera general de apagado debe ser mayor que:
 
 ```
 (VM timeout × 3) + (Docker timeout) + (Other services) + 15-30 seconds
 ```
 
-**Example:** If we follow the formula, it would look like this: `(300 × 3) + 30 + 10 + 30 = 970 seconds (over 16 minutes)`.
+**Ejemplo:** Si seguimos la fórmula, se vería así: `(300 × 3) + 30 + 10 + 30 = 970 segundos (más de 16 minutos)`.
 
-**Recommended:** At least **180 seconds (3 minutes)** at minimum and **300+ seconds (5+ minutes)** if you have multiple %%VMs|vm%% or complex containers.
+**Recomendado:** Al menos **180 segundos (3 minutos)** como mínimo y **300+ segundos (5+ minutos)** si tiene múltiples %%VMs|vm%% o contenedores complejos.
 
 :::
 
-If all your %%VMs|vm%% are set to hibernate rather than shutting down, then the VM timeout is less critical since hibernation is nearly immediate. You could use a lower VM timeout (for example, 60-120 seconds) as a backup for any %%VMs|vm%% that don’t support hibernation.
+Si todas sus %%VMs|vm%% están configuradas para hibernar en lugar de apagarse, entonces el tiempo de espera de la VM es menos crítico ya que la hibernación es casi inmediata. Podría usar un tiempo de espera de VM más bajo (por ejemplo, 60-120 segundos) como respaldo para cualquier %%VMs|vm%% que no sea compatible con la hibernación.
 
-### Detailed configuration guide
+### Guía detallada de configuración
 
-This section provides in-depth information about configuring timeouts for different system components. Each timeout setting works together to ensure your server shuts down gracefully without data loss.
+Esta sección proporciona información detallada sobre cómo configurar los tiempos de espera para diferentes componentes del sistema. Cada configuración de tiempo de espera funciona junta para garantizar que su servidor se apague correctamente sin pérdida de datos.
 
 <Tabs>
-  <TabItem value="vm-timeouts" label="VM Timeouts" default>
-    Where to set: ***Settings → VM Manager → VM Shutdown*** (enable Advanced view)
+  <TabItem value="tiempos de espera de vm" label="Tiempos de espera de VM" default>
+    Dónde establecer: ***Configuración → Gestor VM → Apagado VM*** (habilite la vista avanzada)
 
     **Cómo funciona:**
 
-    - %%VMs|vm%% go through three shutdown stages, each consuming the full VM timeout
-    - All %%VMs|vm%% in each stage are processed simultaneously
-    - Total VM shutdown time = VM timeout × 3
+    - Las %%VMs|vm%% pasan por tres etapas de apagado, cada una consume el tiempo de espera completo de la VM.
+    - Todas las %%VMs|vm%% en cada etapa se procesan simultáneamente
+    - Tiempo total de apagado de VM = tiempo de espera de VM × 3
 
-    **Common issues:**
+    **Problemas comunes:**
 
-    - **Windows update interruptions:** Updates during shutdown can be corrupted if timeout expires.
-    - **Unsaved work:** Dialog boxes asking to save documents can halt shutdown indefinitely.
-    - **Hibernation failures:** %%VMs|vm%% without %%QEMU|qemu%% %%Guest Agent|guest-agent%% may fail to hibernate and use full timeout.
+    - **Interrupciones de actualización de Windows:** Las actualizaciones durante el apagado pueden corromperse si expira el tiempo de espera.
+    - **Trabajo no guardado:** Los cuadros de diálogo que preguntan si desea guardar documentos pueden detener el apagado indefinidamente.
+    - **Fallos de hibernación:** %%VMs|vm%% sin el %%QEMU|qemu%% %%Guest Agent|guest-agent%% pueden fallar en hibernar y usar todo el tiempo de espera.
 
-    :::tip[VM timeout recommendations]
+    :::consejo[Recomendaciones de tiempo de espera de VM]
 
-    - **Primary recommendation:** Configure %%VMs|vm%% to hibernate instead of shutting down (requires %%QEMU|qemu%% %%Guest Agent|guest-agent%%).
-    - **If VMs crash during shutdown:** Increase timeout to **300 seconds (5 minutes)** for Windows %%VMs|vm%%.
-    - **Windows updates:** Set Windows to install updates at startup rather than during shutdown.
-    - **Test your setup:** Manually stop your %%VMs|vm%% to confirm they shut down or hibernate within the timeout period.
+    - **Recomendación principal:** Configure las %%VMs|vm%% para hibernar en lugar de apagar (requiere %%QEMU|qemu%% %%Guest Agent|guest-agent%%).
+    - **Si las VMs se bloquean durante el apagado:** Aumente el tiempo de espera a **300 segundos (5 minutos)** para %%VMs|vm%% de Windows.
+    - **Actualizaciones de Windows:** Configure Windows para instalar actualizaciones al inicio en lugar de durante el apagado.
+    - **Pruebe su configuración:** Detenga manualmente sus %%VMs|vm%% para confirmar que se apagan o hibernan dentro del periodo de tiempo de espera.
       :::
 
-    :::warning[No safe timeout without hibernation]
-    Without hibernation and %%QEMU|qemu%% %%Guest Agent|guest-agent%%, there isn't a truly safe timeout for Windows %%VMs|vm%%. Dialog boxes or ongoing update installations could render any timeout inadequate, leading to forced shutdowns and data corruption risk.
+    :::advertencia[No hay tiempo de espera seguro sin hibernación]
+    Sin hibernación y %%QEMU|qemu%% %%Guest Agent|guest-agent%%, no existe un tiempo de espera verdaderamente seguro para %%VMs|vm%% de Windows. Los cuadros de diálogo o las instalaciones de actualizaciones en curso podrían hacer que cualquier tiempo de espera sea inadecuado, lo que llevaría a apagados forzosos y riesgo de corrupción de datos.
     :::
   </TabItem>
 
-  <TabItem value="docker-timeouts" label="Docker Timeouts">
-    Where to set: ***Settings → Docker*** (enable Advanced view)
+  <TabItem value="tiempos de espera de Docker" label="Tiempos de espera de Docker">
+    Dónde establecer: ***Configuración → Docker*** (habilite la vista avanzada)
 
     **Cómo funciona:**
 
-    - Containers are stopped in parallel, so total time equals the Docker stop timeout.
-    - Most containers stop within 10 seconds, but some may need more time.
-    - Complex containers with large databases or ongoing operations might require additional time.
+    - Los contenedores se detienen en paralelo, por lo que el tiempo total es igual al tiempo de espera de detención de Docker.
+    - La mayoría de los contenedores se detienen en 10 segundos, pero algunos pueden necesitar más tiempo.
+    - Contenedores complejos con grandes bases de datos u operaciones en curso podrían requerir tiempo adicional.
     - Si el temporizador expira, los contenedores se detienen forzosamente.
 
-    :::tip[Docker timeout recommendations]
+    :::consejo[Recomendaciones de tiempo de espera de Docker]
 
-    - The **default 10 seconds** works well for most containers.
-    - **If containers are crashing when stopped:** Increase timeout to **30 seconds**.
-    - Monitor your containers during shutdown to identify any that consistently need more time.
+    - Los **10 segundos predeterminados** funcionan bien para la mayoría de los contenedores.
+    - **Si los contenedores se bloquean al detenerse:** Aumente el tiempo de espera a **30 segundos**.
+    - Monitoree sus contenedores durante el apagado para identificar aquellos que consistentemente necesitan más tiempo.
       :::
   </TabItem>
 
-  <TabItem value="general-timeouts" label="General Timeouts">
-    Where to set: ***Settings → Disk Settings → Shutdown time-out***
+  <TabItem value="tiempos de espera generales" label="Tiempos de Espera Generales">
+    Dónde establecer: ***Configuración → Configuraciones de Disco → Tiempo de espera de apagado***
 
-    **UPS considerations (most critical factor):**
+    **Consideraciones de UPS (factor más crítico):**
 
-    - Your UPS must provide enough runtime to complete the full shutdown sequence before battery runs out.
-    - For **manual shutdown**, you can set longer timeouts since you control when shutdown starts.
-    - With **power outage shutdown**, your timeout is limited by UPS battery life.
-    - **Test your UPS** by simulating a power outage to ensure your server shuts down cleanly with time to spare.
+    - Su UPS debe proporcionar suficiente tiempo de ejecución para completar toda la secuencia de apagado antes de que se agote la batería.
+    - Para **apagado manual**, puede establecer tiempos de espera más largos ya que usted controla cuándo comienza el apagado.
+    - Con el **apagado por corte de energía**, su tiempo de espera está limitado por la vida de la batería del UPS.
+    - **Pruebe su UPS** simulando un corte de energía para asegurarse de que su servidor se apague limpiamente con tiempo de sobra.
 
-    :::tip[General timeout recommendations]
+    :::consejo[Recomendaciones de tiempo de espera generales]
 
-    - **If you get unclean shutdowns:** Increase to **180 seconds (3 minutes)** for systems without %%VMs|vm%%.
-    - **For systems with %%VMs|vm%%:** Use **300+ seconds (5+ minutes)** if not using hibernation.
-    - **If using hibernation:** **180-300 seconds** is usually sufficient.
-    - Ensure timeouts are not longer than what your UPS can support during a power outage.
+    - **Si obtiene apagados no limpios:** Aumente a **180 segundos (3 minutos)** para sistemas sin %%VMs|vm%%.
+    - **Para sistemas con %%VMs|vm%%:** Use **300+ segundos (5+ minutos)** si no usa hibernación.
+    - **Si usa hibernación:** **180-300 segundos** generalmente son suficientes.
+    - Asegúrese de que los tiempos de espera no sean más largos de lo que su UPS pueda soportar durante un corte de energía.
       :::
   </TabItem>
 
-  <TabItem value="third-party" label="Third-party Services">
-    **LXC containers:**
-    The LXC plugin has its own timeout setting for stopping containers. Like Docker containers, LXC containers typically stop within a few seconds, but some may require more time. Check the LXC plugin settings for the container stop timeout and include this timeout in your general shutdown timeout calculation.
+  <TabItem value="terceros" label="Servicios de Terceros">
+    **Contenedores LXC:**
+    El plugin LXC tiene su propia configuración de tiempo de espera para detener contenedores. Al igual que los contenedores Docker, los contenedores LXC generalmente se detienen en pocos segundos, pero algunos pueden requerir más tiempo. Revise la configuración del plugin LXC para el tiempo de espera de detención del contenedor e incluya este tiempo de espera en su cálculo de tiempo de espera general.
 
-    **Other services:**
-    Some plugins or custom services may have their own shutdown procedures. Refer to the plugin documentation for specific timeout settings and incorporate them into your calculations.
+    **Otros servicios:**
+    Algunos plugins o servicios personalizados pueden tener sus propios procedimientos de apagado. Consulte la documentación del plugin para configuraciones de tiempo de espera específicas e incorpórelas en sus cálculos.
 
-    **Updated formula with third-party services:**
+    **Fórmula actualizada con servicios de terceros:**
 
     ```
     (VM timeout × 3) + (Docker timeout) + (LXC/other timeouts) + 15-30 seconds
     ```
 
-    **Dynamix Stop Shell plugin:**
-    If you frequently use SSH or terminal sessions, open sessions can prevent clean shutdowns because Unraid waits for them to close before proceeding.
+    **Plugin Dynamix Stop Shell:**
+    Si usa con frecuencia sesiones SSH o terminal, las sesiones abiertas pueden impedir apagados limpios porque Unraid espera que se cierren antes de continuar.
 
-    The [Dynamix Stop Shell](https://unraid.net/community/apps/c/tools-system/p2?srsltid=AfmBOoqBXyDNfHxRDCL7Fv9Gcfz8-8CdHmiJSX16PRZpZLLzgQtw2mVk#:~:text=the%20given%20interval.-,Dynamix%20Stop%20Shell,-Dynamix%20Repository) plugin helps by automatically closing lingering bash or SSH sessions when the array is stopped, ensuring a timely shutdown.
+    El plugin [Dynamix Stop Shell](https://unraid.net/community/apps/c/tools-system/p2?srsltid=AfmBOoqBXyDNfHxRDCL7Fv9Gcfz8-8CdHmiJSX16PRZpZLLzgQtw2mVk#:~:text=the%20given%20interval.-,Dynamix%20Stop%20Shell,-Dynamix%20Repository) ayuda cerrando automáticamente las sesiones bash o SSH persistentes cuando el array se detiene, asegurando un apagado oportuno.
 
-    You can install it from [Community Applications (search for "Dynamix Stop Shell")](https://unraid.net/community/apps/c/tools-system/p2?srsltid=AfmBOoqBXyDNfHxRDCL7Fv9Gcfz8-8CdHmiJSX16PRZpZLLzgQtw2mVk#:~:text=the%20given%20interval.-,Dynamix%20Stop%20Shell,-Dynamix%20Repository).
+    Puede instalarlo desde [Aplicaciones de la Comunidad (busque "Dynamix Stop Shell")](https://unraid.net/community/apps/c/tools-system/p2?srsltid=AfmBOoqBXyDNfHxRDCL7Fv9Gcfz8-8CdHmiJSX16PRZpZLLzgQtw2mVk#:~:text=the%20given%20interval.-,Dynamix%20Stop%20Shell,-Dynamix%20Repository).
 
-    :::tip[When to use the plugin]
+    :::consejo[Cuándo usar el plugin]
 
-    - If you regularly have terminal sessions open.
-    - To prevent forgotten SSH sessions from delaying shutdown.
-    - For automated cleanup during shutdown.
+    - Si tiene regularmente sesiones de terminal abiertas.
+    - Para prevenir que sesiones SSH olvidadas retrasen el apagado.
+    - Para limpieza automatizada durante el apagado.
       :::
 
     :::precaución
 
-    - Be cautious if you have scripts or processes running in terminal sessions.
-    - Ensure no critical write operations are in progress before shutdown.
-    - The plugin will forcefully close sessions, which could interrupt work.
+    - Sea cauteloso si tiene scripts o procesos ejecutándose en sesiones de terminal.
+    - Asegúrese de que no haya operaciones de escritura críticas en progreso antes del apagado.
+    - El plugin cerrará forzadamente las sesiones, lo que podría interrumpir el trabajo.
       :::
   </TabItem>
 </Tabs>
