@@ -3,12 +3,12 @@ sidebar_position: 2
 sidebar_label: Mise à niveau d'Unraid
 ---
 
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
-import UpgradeModern from './partials/upgrade-modern.mdx';
-import UpgradeLegacy611612 from './partials/upgrade-legacy-611-612.mdx';
-import ManualDowngradeSimplest from './partials/manual-downgrade-simplest.mdx';
-import ManualDowngradeCommandLine from './partials/manual-downgrade-command-line.mdx';
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import UpgradeModern from "./partials/upgrade-modern.mdx";
+import UpgradeLegacy611612 from "./partials/upgrade-legacy-611-612.mdx";
+import ManualDowngradeSimplest from "./partials/manual-downgrade-simplest.mdx";
+import ManualDowngradeCommandLine from "./partials/manual-downgrade-command-line.mdx";
 
 # Mise à niveau d'Unraid
 
@@ -26,7 +26,7 @@ Avant de commencer la mise à niveau, assurez-vous de créer une sauvegarde comp
 2. **Lisez les notes de version** de la version que vous prévoyez d'installer.
 3. **Mettez à jour tous les plugins** vers leurs dernières versions.
 4. **Optionnellement, arrêtez le réseau** avant de procéder.
-5. **Mettez à jour Unraid OS** en utilisant la page ***Outils → Mise à jour de l'OS***.
+5. **Mettre à jour Unraid OS** en utilisant la page ***Outils → Mise à jour OS***.
 6. **Redémarrez** votre serveur pour finaliser la mise à jour.
 
 :::
@@ -34,11 +34,11 @@ Avant de commencer la mise à niveau, assurez-vous de créer une sauvegarde comp
 ## Processus de mise à niveau standard
 
 <Tabs>
-  <TabItem value="Moderne (2025)" label="Unraid 7.x et plus" default>
+  <TabItem value="modern-7x" label="Unraid 7.x et plus" default>
     <UpgradeModern />
   </TabItem>
 
-  <TabItem value="Ancien (6.11 à 6.12)" label="Unraid 6.11 à 6.12">
+  <TabItem value="legacy-611-612" label="Unraid 6.11 à 6.12">
     <UpgradeLegacy611612 />
   </TabItem>
 </Tabs>
@@ -68,9 +68,9 @@ Si vous rencontrez des problèmes après la mise à niveau, consultez la section
 <details>
   <summary><strong>Les VMs affichent "impossible d'obtenir l'interface MTU" ou des erreurs réseau</strong> - Cliquez pour développer/réduire</summary>
 
-  If you have %%OVMF|ovmf%%-based %%VMs|vm%% created in older Unraid versions, you might encounter an EFI shell. You can boot the %%VM|vm%% by entering the following commands:
+  Si vous rencontrez des erreurs comme *"les couches du manifeste ne correspondent pas à la configuration de l'image,"* vous devrez peut-être reconstruire votre fichier d'image Docker. Voici comment :
 
-  1. Tapez `fs0:`.
+  1. Allez dans ***Paramètres → Docker*** et arrêtez le service Docker.
   2. Ensuite, tapez `cd efi/boot`.
   3. Enfin, tapez `bootx64.efi`.
   4. Naviguez vers l'onglet **Applications**, **Applications Précédentes**, cochez ce que vous souhaitez réinstaller, puis cliquez sur **"Installer xx Applications"**.
@@ -83,7 +83,7 @@ Si vous rencontrez des problèmes après la mise à niveau, consultez la section
 
   1. Allez à l'onglet **VMs** et modifiez chaque %%VM|vm%% (assurez-vous d'activer **Vue avancée**).
   2. Réglez le pont réseau sur `br0` et cliquez sur **Appliquer**.
-  3. Allez à ***Paramètres → Gestionnaire de VM*** (en **Vue avancée**) et réglez le pont par défaut sur `br0`.
+  3. Accédez à ***Paramètres → Gestionnaire de VM*** (en **Vue avancée**) et définissez le pont par défaut sur `br0`.
 </details>
 
 <details>
@@ -122,27 +122,9 @@ Si vous rencontrez des problèmes après la mise à niveau, consultez la section
 
 ---
 
-## Mise à niveau ou rétrogradation manuelle
+## Rétrogradation manuelle
 
-Les mises à niveau manuelles sont rarement nécessaires mais peuvent être requises si vous ne pouvez pas accéder au %%WebGUI|web-gui%% ou avez besoin de revenir à une version antérieure. Avant de procéder, il est important de sauvegarder votre périphérique flash USB, dont les détails se trouvent dans [Sauvegarder votre périphérique flash](../maintain-and-update/changing-the-flash-device.mdx#backing-up-your-flash-device).
-
-### Utiliser l'outil de rétrogradation du système d'exploitation (si WebGUI est accessible)
-
-Si vous pouvez accéder au WebGUI :
-
-1. Connectez-vous au %%WebGUI|web-gui%%.
-2. Allez à ***Outils → Rétrograder OS***.
-3. Votre version précédente sera listée comme option de rétrogradation disponible.
-4. Cliquez sur **Rétrograder** et suivez les instructions.
-5. Redémarrez votre serveur lorsque vous y êtes invité.
-
-:::caution
-
-Gardez à l'esprit que la rétrogradation peut entraîner des problèmes de compatibilité avec les plugins ou les conteneurs Docker. Sauvegardez toujours votre périphérique flash USB et toutes les données importantes au préalable.
-
-:::
-
-### Méthodes manuelles (si WebGUI est inaccessible)
+Les rétrogradations manuelles sont rarement nécessaires mais peuvent l'être si vous ne pouvez pas accéder au %%WebGUI|web-gui%% ou si vous devez revenir à une version antérieure. Avant de continuer, il est important de sauvegarder votre dispositif flash USB, les détails peuvent être trouvés dans [Sauvegarder votre dispositif flash](../maintain-and-update/changing-the-flash-device.mdx#backing-up-your-flash-device).
 
 Utilisez ces méthodes uniquement si vous ne pouvez pas accéder au %%WebGUI|web-gui%% :
 
@@ -155,3 +137,78 @@ Utilisez ces méthodes uniquement si vous ne pouvez pas accéder au %%WebGUI|web
     <ManualDowngradeCommandLine />
   </TabItem>
 </Tabs>
+
+:::info[What se produit pendant le processus de rétrogradation]
+
+Lors de l'utilisation de l'outil de rétrogradation OS (WebGUI), l'outil gérera automatiquement les actions suivantes :
+
+1. **Validation du système** : Vérifie que la rétrogradation est sûre à effectuer.
+2. **Sauvegarde des fichiers** : Une sauvegarde de vos fichiers système actuels sera créée.
+3. **Vérification de la version** : L'outil s'assure que les fichiers de la version cible sont valides et complets.
+4. **Remplacement des fichiers** : Il remplace les fichiers actuels de l'OS par ceux de la version précédente.
+5. **Préservation de la configuration** : Vos paramètres actuels seront conservés.
+6. **Préparation du système** : Le système sera préparé pour la version précédente.
+7. **Planification du redémarrage** : Un redémarrage sera programmé pour terminer la rétrogradation.
+
+:::
+
+#### Vérification post-rétrogradation
+
+Après la rétrogradation et le redémarrage de votre serveur :
+
+1. **Vérifiez la version** : Assurez-vous que vous exécutez la version d'Unraid que vous attendez.
+2. **Testez les fonctionnalités essentielles** : Assurez-vous que les services %%array|array%%, Docker, et VM fonctionnent correctement.
+3. **Vérifiez les plugins** : Vérifiez que vos plugins installés sont compatibles et fonctionnent comme prévu.
+4. **Testez les conteneurs Docker** : Démarrez vos conteneurs Docker et confirmez leur bon fonctionnement.
+5. **Vérifiez les VMs** : Si vous avez des machines virtuelles (VMs), assurez-vous qu'elles démarrent et fonctionnent correctement. Voir [Configuration de VM](../../using-unraid-to/create-virtual-machines/vm-setup.mdx) pour des conseils de configuration.
+6. **Surveillez les journaux du système** : Surveillez les journaux du système pour tout message d'erreur. Utilisez [les outils de diagnostic](../../troubleshooting/diagnostics/capture-diagnostics-and-logs.mdx) pour capturer des informations détaillées sur le système.
+
+#### Dépannage des problèmes de rétrogradation
+
+<details>
+  <summary><strong>Option de rétrogradation non disponible</strong> - Cliquez pour développer/réduire</summary>
+
+  Si vous ne voyez pas d'option pour rétrograder :
+
+  - **Vérifiez l'historique du système** : Assurez-vous que vous avez précédemment mis à jour à partir d'une version compatible.
+  - **Vérifiez l'intégrité des fichiers** : Les fichiers de la version précédente peuvent être corrompus ou manquants.
+  - **Vérifiez la compatibilité** : Il se peut que la version antérieure ne soit pas compatible avec votre matériel actuel.
+  - **Méthode manuelle** : Si nécessaire, suivez les méthodes de rétrogradation manuelle décrites sur cette page.
+</details>
+
+<details>
+  <summary><strong>Échec de la rétrogradation pendant le processus</strong> - Cliquez pour développer/réduire</summary>
+
+  Si le processus de rétrogradation ne se passe pas comme prévu :
+
+  1. **Ne paniquez pas** : Votre système devrait toujours fonctionner avec la version actuelle.
+  2. **Vérifiez les journaux** : Examinez les journaux du système pour trouver des messages d'erreur spécifiques. Utilisez [les outils de diagnostic](../../troubleshooting/diagnostics/capture-diagnostics-and-logs.mdx) pour une analyse complète des journaux.
+  3. **Vérifiez les fichiers** : Assurez-vous que tous les fichiers requis pour la version cible sont disponibles.
+  4. **Essayez la méthode manuelle** : Si l'outil ne fonctionne pas, envisagez d'utiliser les méthodes de rétrogradation manuelle.
+  5. **Contactez le support** : Si les problèmes persistent, contactez le support Unraid avec vos diagnostics.
+</details>
+
+<details>
+  <summary><strong>Le système ne démarre pas après la rétrogradation</strong> - Cliquez pour développer/réduire</summary>
+
+  Si votre système ne démarre pas après la rétrogradation :
+
+  1. **Démarrez à partir de l'USB** : Utilisez un autre ordinateur pour accéder à votre dispositif flash USB. Voir [dépannage du démarrage](../../troubleshooting/common-issues/boot-and-startup-failures.mdx) pour des étapes de récupération détaillées.
+  2. **Restaurer à partir de la sauvegarde** : Copiez vos fichiers de sauvegarde sur le dispositif USB.
+  3. **Vérifiez l'intégrité des fichiers** : Assurez-vous que tous les fichiers système sont présents et non endommagés.
+  4. **Essayez le mode sans échec** : Démarrez en [mode sans échec](../../using-unraid-to/customize-your-experience/plugins.mdx#troubleshooting-with-safe-mode) pour un dépannage plus approfondi.
+  5. **Récupération manuelle** : Si nécessaire, utilisez les méthodes de récupération manuelle.
+</details>
+
+<details>
+  <summary><strong>Plugins ou conteneurs Docker ne fonctionnent pas</strong> - Cliquez pour développer/réduire</summary>
+
+  Après une rétrogradation, certains plugins ou conteneurs peuvent ne pas fonctionner correctement :
+
+  - **Mettez à jour les plugins** : Cherchez des mises à jour de plugins compatible avec la version rétrogradée. Consulter [Applications Communautaires](../../using-unraid-to/run-docker-containers/community-applications.mdx) pour des versions compatibles.
+  - **Reconstruisez Docker** : Supprimez et recréez votre fichier d'image Docker. Voir [Dépannage Docker](../../troubleshooting/common-issues/docker-troubleshooting.mdx#re-creating-the-docker-image-file) pour des étapes détaillées.
+    - **Vérifiez les dépendances** : Assurez-vous que toutes les dépendances nécessaires sont disponibles.
+    - **Compatibilité des plugins** : Certains plugins peuvent ne pas prendre en charge les versions antérieures d'Unraid.
+    - **Plugins dépendants des fonctionnalités UI/WebGUI** : Les plugins reposant sur des fonctionnalités plus récentes de WebGUI peuvent ne pas fonctionner correctement sur des versions plus anciennes.
+    - **Plugins de thèmes** : Les plugins de personnalisation visuelle peuvent nécessiter des mises à jour ou la suppression s'ils sont incompatibles.
+</details>
