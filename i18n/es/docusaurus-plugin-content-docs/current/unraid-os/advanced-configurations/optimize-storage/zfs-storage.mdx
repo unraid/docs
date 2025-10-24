@@ -166,13 +166,27 @@ Cuando configuras un pool %%ZFS|zfs%%, tu perfil de asignación determina cómo 
   ![](/img/zfs11.png)
 </div>
 
-| Perfil | Redundancia                    | Rendimiento                                                                              | Expansión            | Eficiencia Espacial | Caso de uso típico                                      |
-| ------ | ------------------------------ | ---------------------------------------------------------------------------------------- | -------------------- | ------------------- | ------------------------------------------------------- |
-| Raya   | Ninguno                        | Rápido, pero arriesgado                                                                  | Agregar más discos   | 100%                | Almacenamiento temporal/de raspado                      |
-| Espejo | 1:1 (estilo %%RAID 1\|raid1%%) | Excelente para E/S aleatoria                                                             | Agregar más espejos  | 50%                 | Alto rendimiento, fácil expansión                       |
-| RAIDZ1 | 1 disco por vdev               | Rápido para archivos grandes. No ideal para pequeñas escrituras o escrituras aleatorias. | Agregar nuevos vdevs | Alta                | Uso general, tolerancia a fallas de 1 disco             |
-| RAIDZ2 | 2 discos por vdev              | Como Z1, pero con escrituras un poco más lentas (paridad adicional)                      | Agregar nuevos vdevs | Moderado            | Datos importantes, tolerancia a fallas de 2 discos      |
-| RAIDZ3 | 3 discos por vdev              | Como Z2, con más sobrecarga de escritura (para máxima seguridad)                         | Agregar nuevos vdevs | Inferior            | Crítico para la misión, tolerancia a fallas de 3 discos |
+| Perfil | Redundancia                    | Rendimiento                                                                              | Expansión            | Eficiencia Espacial | Caso de uso típico                                      | Recuento Recomendado de Unidades Por vdev  |
+| ------ | ------------------------------ | ---------------------------------------------------------------------------------------- | -------------------- | ------------------- | ------------------------------------------------------- | ------------------------------------------ |
+| Raya   | Ninguno                        | Rápido, pero arriesgado                                                                  | Agregar más discos   | 100%                | Almacenamiento temporal/de raspado                      | Cualquier número                           |
+| Espejo | 1:1 (estilo %%RAID 1\|raid1%%) | Excelente para E/S aleatoria                                                             | Agregar más espejos  | 50%                 | Alto rendimiento, fácil expansión                       | 2 unidades (se pueden agregar más espejos) |
+| RAIDZ1 | 1 disco por vdev               | Rápido para archivos grandes. No ideal para pequeñas escrituras o escrituras aleatorias. | Agregar nuevos vdevs | Alta                | Uso general, tolerancia a fallas de 1 disco             | 3-6 unidades (máximo 8)                    |
+| RAIDZ2 | 2 discos por vdev              | Como Z1, pero con escrituras un poco más lentas (paridad adicional)                      | Agregar nuevos vdevs | Moderado            | Datos importantes, tolerancia a fallas de 2 discos      | 6-12 unidades (máximo 14)                  |
+| RAIDZ3 | 3 discos por vdev              | Como Z2, con más sobrecarga de escritura (para máxima seguridad)                         | Agregar nuevos vdevs | Inferior            | Crítico para la misión, tolerancia a fallas de 3 discos | 10-16 unidades (máximo 20)                 |
+
+:::tip[Optimizing conteos de unidades
+
+Los recuentos de unidades recomendados en la tabla anterior funcionan bien para la mayoría de los usuarios. Para un mejor rendimiento, puede optimizar dentro de esos rangos eligiendo configuraciones donde el número de discos de datos (discos totales menos discos de paridad) sea una **potencia de 2** (por ejemplo, 2, 4, 8, 16). Esto ayuda a alinear correctamente las franjas de datos, evitando el espacio desperdiciado y la E/S desigual.
+
+**Ejemplos de configuraciones optimizadas:**
+
+- **RAIDZ1**: 3, 5 o 9 unidades (discos de datos = 2, 4 u 8)
+- **RAIDZ2**: 4, 6 o 10 unidades (discos de datos = 2, 4 u 8)
+- **RAIDZ3**: 5, 9 o 17 unidades (discos de datos = 2, 6 o 14)
+
+Note that these optimizations are optional - the recommendations above should work well for most use cases.
+
+:::
 
 :::important[How to choose]
 
