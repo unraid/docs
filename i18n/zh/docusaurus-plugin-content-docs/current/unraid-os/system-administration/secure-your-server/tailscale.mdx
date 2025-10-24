@@ -42,20 +42,45 @@ HTTPS证书中的机器名称是公开的。使用您愿意分享的名称。
 3. 打开***设置→Tailscale***并单击重新验证。使用您的%%Tailscale|tailscale%%账户登录。
 4. 点击 **连接** 以将您的 Unraid 服务器添加到您的 %%Tailnet|tailnet%%。
 5. 访问 ***Settings → Management Access*** 查看您的 %%Tailscale|tailscale%% 用于 WebGUI 的 URL。
-6. 在***设置→Tailscale***中，找到您的服务器的%%Tailnet|tailnet%%名称和IP。使用这些信息从您的%%Tailnet|tailnet%%上的任何设备访问SMB/NFS共享、Docker容器等。
+6. In ***Settings → Tailscale***, find your server's %%Tailnet|tailnet%% name and IP. Use these to access SMB/NFS shares, Docker containers, and more from any device on your %%Tailnet|tailnet%%.
+   \+7. (Optional) Enable **Include Tailscale peers in /etc/hosts** (see [Enhanced hostname resolution](#enhanced-hostname-resolution)) to automatically add Tailscale devices to your server's hostname resolution, making it easier to access other devices on your %%Tailnet|tailnet%%.
 
 ### 子网路由（可选）
 
 要通过其主 LAN IP 访问您的 Unraid 服务器（或访问具有自有 IP 的 Docker 容器）：
 
-1. 转到 ***Settings → Tailscale***，点击查看，并登录。
-2. 点击 **子网路由器** 并添加：
-   - 您的 Unraid 服务器的 IP（例如，`192.168.0.12/32`），或
-   - 您的整个网络的子网（例如，`192.168.0.0/24`）。
-3. 点击 **发布路由**。
-4. 在您的 Tailscale 管理控制台中批准待处理路由。
-5. 一旦获得批准，您的 %%Tailnet|tailnet%% 设备就可以通过其常规 IP 地址访问您的 Unraid 服务器和/或 LAN 设备。
-6. For advanced details, see the [%%Tailscale|tailscale%% %%subnet routing|subnet-routing%% documentation](https://tailscale.com/kb/1019/subnets).
+1. Go to ***Settings → Tailscale***, click **Reauthenticate**, and sign in with your Tailscale account.
+2. In the Tailscale settings, locate the **Advertise Routes** section and add:
+   - Your Unraid server's IP (e.g., `192.168.0.12/32`), or
+   - Your whole network's subnet (e.g., `192.168.0.0/24`).
+3. 点击 **应用** 以保存更改。
+4. Log in to your [Tailscale admin console](https://login.tailscale.com/admin) and navigate to the **Machines** page.
+5. Locate your Unraid server and approve the pending route for the advertised subnet.
+6. 一旦获得批准，您的 %%Tailnet|tailnet%% 设备就可以通过其常规 IP 地址访问您的 Unraid 服务器和/或 LAN 设备。
+
+:::note
+
+For advanced details, see the [%%Tailscale|tailscale%% subnet routing documentation](https://tailscale.com/kb/1019/subnets).
+
+:::
+
+### Enhanced hostname resolution
+
+The Tailscale plugin includes an option to automatically add Tailscale peers to your server's `/etc/hosts` file. This feature simplifies device access by enabling hostname-based connections to other devices on your %%Tailnet|tailnet%%.
+
+Benefits include:
+
+- Accessing other Tailscale devices using friendly hostnames instead of IP addresses.
+- Automatic updates when devices join or leave your %%Tailnet|tailnet%%.
+- Improved compatibility with applications that rely on hostname resolution.
+
+To enable this feature:
+
+1. Go to ***Settings → Tailscale*** in the %%WebGUI|web-gui%%.
+2. Enable the **Include Tailscale peers in /etc/hosts** option.
+3. 点击 **应用** 以保存更改。
+
+Once enabled, you can access other devices on your %%Tailnet|tailnet%% using their Tailscale hostnames from your Unraid server, making it easier to configure services, access shared resources, and manage your network.
 
 ---
 
@@ -110,7 +135,7 @@ HTTPS 证书将为此主机名生成，并发布在公共证书册中。选择�
 :::
 
 5. 决定此容器是否应成为出口节点（对于 VPN 容器非常有用）。
-6. 选择容器是否应使用出口节点处理其外发流量。如果安装了 Tailnet 插件，您将看到可用的出口节点列表；否则，请手动输入 IP。
+6. Choose whether the container should use an exit node for its outgoing traffic. If the Tailscale plugin is installed, you’ll see a list of available exit nodes; otherwise, enter the IP manually.
 7. 如果使用出口节点，指定容器是否还应访问您的 LAN。
 8. Tailscale **用户空间网络** 字段通常自动设置。除非有特定需求，否则请保持禁用状态。
 9. 决定是否启用 **%%Tailscale|tailscale%% %%SSH|ssh%%**（通过 %%Tailscale|tailscale%% 认证的安全外壳访问）。
@@ -130,7 +155,7 @@ HTTPS 证书将为此主机名生成，并发布在公共证书册中。选择�
 
 :::
 
-11. **更新 Unraid %%Tailscale|tailscale%% 插件：** 当有新版本时，请通过 Unraid 应用程序标签更新插件，就像其他插件一样。您始终可以在 [%%Tailscale|tailscale%% 更改日志](https://tailscale.com/changelog) 中查看最新更改。
+11. **Apply** your changes and check the **Enhanced Log** or **Log Viewer** for Tailscale messages. Click the **To authenticate, visit...** link to approve the container on your Tailnet.
 
 :::caution\[Troubleshooting]
 
@@ -149,15 +174,18 @@ HTTPS 证书将为此主机名生成，并发布在公共证书册中。选择�
 
 %%Tailscale|tailscale%% 经常更新以提供新功能和安全改进。为使您的 Unraid 系统保持安全和兼容，请确保 Unraid %%Tailscale|tailscale%% 插件和使用 %%Tailscale|tailscale%% 的任何 Docker 容器都是最新的。
 
-Tailscale 集成和用户空间网络的行为取决于容器的网络类型。使用下表了解兼容性和访问选项：
+### Updating the Tailscale Plugin
 
-- **更新 Unraid %%Tailscale|tailscale%% 插件：** 当有新版本时，请通过 Unraid 应用程序标签更新插件，就像其他插件一样。您始终可以在 [%%Tailscale|tailscale%% 更改日志](https://tailscale.com/changelog) 中查看最新更改。
+When a new version is available, update the plugin through the Unraid Apps tab just like any other plugin. The plugin is actively maintained and regularly updated with the latest Tailscale features. You can always review the latest Tailscale changes in the [%%Tailscale|tailscale%% changelog](https://tailscale.com/changelog) and the [plugin release notes](https://github.com/unraid/unraid-tailscale/releases).
 
-- **在 Docker 容器中更新 %%Tailscale|tailscale%%：**
-  1. 在 Docker 页面，悬停在某个容器的 %%Tailscale|tailscale%% 图标上。如果有可用更新，您将看到通知。
-  2. 通过以下方式更新容器：
-     - 切换到 **高级视图**（右上角），然后点击 **强制更新**。
-     - 编辑容器，进行微小更改（如切换一个设置），并点击 **应用**。
+### Updating Tailscale in Docker Containers
+
+To update %%Tailscale|tailscale%% in Docker containers:
+
+1. 在 Docker 页面，悬停在某个容器的 %%Tailscale|tailscale%% 图标上。如果有可用更新，您将看到通知。
+2. 通过以下方式更新容器：
+   - Switching to **Advanced View** (upper-right corner), then clicking **Force update**.
+   - 编辑容器，进行微小更改（如切换一个设置），并点击 **应用**。
 
 ---
 
