@@ -3,13 +3,16 @@ sidebar_position: 2
 sidebar_label: VM 设置
 ---
 
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
 # VM 设置
 
-在 Unraid 上设置虚拟机（VM）是一种灵活的方法，可以在您的容器和本地应用程序旁运行完整的操作系统 - 例如 Windows、Linux 或其他平台。无论您是想测试新软件，运行旧版应用，托管桌面环境，还是为游戏或创意工作使用硬件直通，Unraid 的 **VM 管理器**使这一过程对所有技能水平的用户都变得切合可行。
+Setting up a %%VM|vm%% on Unraid is a flexible way to run full operating systems - such as Windows, Linux, or other platforms - alongside your containers and native apps. Whether you want to test new software, run legacy applications, host a desktop environment, or utilize hardware passthrough for gaming or creative work, Unraid's **VM Manager** makes the process approachable for all skill levels.
 
 :::tip[New 在 Unraid 7.0 中]
 
-Unraid 7.x 为 %%虚拟机 (VM)|虚拟机%% 带来了显著增强，包括：
+Unraid 7.x brings significant enhancements to %%VMs|vm%%, including:
 
 - %%VM|虚拟机%% 克隆和快照
 - 用户创建的 %%VM|虚拟机%% 模板
@@ -24,7 +27,7 @@ Unraid 7.x 为 %%虚拟机 (VM)|虚拟机%% 带来了显著增强，包括：
 
 ## 创建您自己的虚拟机
 
-在准备好系统和设置好偏好后，您可以使用 %%WebGUI|web-gui%% 创建新的 %%虚拟机 (VM)|虚拟机%%。
+With your system prepared and preferences set, you can create a new %%VM|vm%% using the %%WebGUI|web-gui%%.
 
 :::note[Before 开始]
 
@@ -71,7 +74,7 @@ Unraid 7.1+引入了用户%%VM|vm%%模板，使得保存和重用您自定义的
 
 使用用户模板：
 
-- 在 **VMs** 页面上，点击 **添加 VM** 并从 **用户模板** 部分选择您的模板。
+- On the **VMs** page, click **Add VM** and select your template from the **User Templates** section.
 
 导入/导出：
 
@@ -82,7 +85,7 @@ Unraid 7.1+引入了用户%%VM|vm%%模板，使得保存和重用您自定义的
 
 ## Unraid 7.x 新增功能：VM 管理器
 
-Unraid 7.x为\*\*%%VM|vm%%管理器\*\*引入了许多强大的增强功能，简化了运行和管理%%虚拟机|vm%%的过程。这些功能满足了初学者和高级用户的需求，使得部署、定制和优化您的%%VM|vm%%更加简单。
+Unraid 7.x introduces a range of powerful enhancements to the **%%VM|vm%% Manager**, streamlining the process of running and managing %%VMs|vm%%. These features cater to beginners and advanced users, making deploying, customizing, and optimizing your %%VMs|vm%% simpler.
 
 :::tip\[Highlights]
 
@@ -95,8 +98,8 @@ Unraid 7.x为\*\*%%VM|vm%%管理器\*\*引入了许多强大的增强功能，�
 <details>
   <summary><strong>增强的图形和 GPU 共享</strong></summary>
 
-  - View all graphics cards and %%VM|vm%%-assigned IP addresses in the %%VM|vm%% tab
-  - 支持 %%QEMU|qemu%% ppc64 target 和 `qemu:override`
+  - **%%VM|vm%% clones & [snapshots](#vm-snapshots):** Duplicate %%VMs|vm%% or quickly save/restore their state for testing or backup.
+  - **User %%VM|vm%% templates:** Save your custom %%VM|vm%% configurations and deploy new %%VMs|vm%% with just a few clicks.
   - **内联 XML 查看/编辑：** 立即查看或复制 %%WebGUI|web-gui%% 生成的 `XML`；切换到 `XML` 模式以进行高级编辑。
   - **自动启动禁用：** 选择哪些 %%VM|虚拟机%% 随您的 %%array|array%% 自动启动。
   - 计时器/偏移配置选项
@@ -134,6 +137,137 @@ Unraid 7.x为\*\*%%VM|vm%%管理器\*\*引入了许多强大的增强功能，�
   - 通过 `QXL` 视频驱动程序，将 Unraid %%VM|虚拟机%% 启动到 GUI 模式
   - 在 `XML` 视图中修复路径和图标问题
 </details>
+
+---
+
+## VM snapshots
+
+VM snapshots allow you to save the current state of your %%VM|vm%% at a specific point in time. You can revert to that state if something goes wrong or use snapshots to test changes safely. This is particularly useful before installing new software, making configuration changes, or performing system updates.
+
+:::info[How VM snapshots work]
+
+When you create a snapshot, Unraid generates an "overlay file" that captures all changes made to your VM after that point. You can think of it like this:
+
+- **Original VM disk**: This represents your VM's current state (similar to a photograph).
+- **Snapshot overlay**: This is a separate file that records all changes made after the snapshot (like a list of edits).
+- **VM continues running**: Your VM uses both the original disk and the overlay file together.
+
+This setup allows you to create multiple snapshots, with each one generating its own overlay file. This means you can easily revert to any previous state.
+
+**Example scenario:**
+
+1. You create a snapshot called "Clean Windows Install."
+2. You install some software and make changes.
+3. You create another snapshot called "After Software Install."
+4. You can now revert to either the clean install or the state after the software installation.
+5. You can also use Block Commit or Block Pull to make changes permanent.
+
+:::
+
+<Tabs>
+  <TabItem value="创建" label="Creating snapshots" default>
+    To create a snapshot of your %%VM|vm%%:
+
+    1. Go to the **VMs** page in the %%WebGUI|web-gui%%.
+    2. Click on the %%VM|vm%% name to expand its details.
+    3. Look for the **Snapshots** section and click **Create Snapshot**.
+    4. Enter a descriptive name for your snapshot (for example, "Before Windows Update" or "Clean Install State").
+    5. **Memory dump option**: In current Unraid builds, the "Memory dump" checkbox is not preselected by default. Checking it includes the %%VM|vm%%'s RAM for a full memory-backed snapshot (captures the live running state, but is larger and slower to create/restore). Leaving it unchecked creates a disk-only, crash-consistent snapshot (smaller and faster, but any unsaved in-memory data will be lost). Choose based on whether you need full live state preservation or just disk recovery.
+    6. Click **Create** to save the snapshot.
+
+    :::tip[Best 实践]
+
+    - Create snapshots before making significant changes to your %%VM|vm%%.
+    - Use descriptive names that help you remember what the snapshot contains.
+    - Choose Memory dump based on your needs: enable it for full live state preservation, or leave it off for faster disk-only recovery.
+    - Keep snapshots for important milestones, but delete old ones to save storage space.
+
+    :::
+  </TabItem>
+
+  <TabItem value="管理" label="Managing snapshots">
+    Once you have snapshots, you can see them listed in the %%VM|vm%%'s details section. Each snapshot shows:
+
+    - **Name**: The name you gave the snapshot.
+    - **Date**: When the snapshot was created.
+    - **Size**: How much storage space it uses.
+
+    To manage snapshots:
+
+    1. 进入 %%WebGUI|web-gui%% 中的 **VMs** 标签。
+    2. Click on the %%VM|vm%% name to expand its details.
+    3. Navigate to the **Snapshots** section.
+    4. Use the available buttons for **Revert**, **Block Commit**, **Block Pull**, or **Remove**.
+
+    :::tip
+    **Revert snapshot**: This restores your %%VM|vm%% to exactly how it was when you created the snapshot. Any changes made after the snapshot will be lost. The VM will use the original disk file as if the snapshot never existed.
+
+    **Block Commit**: This process copies all changes from the snapshot overlay back into the original %%VM|vm%% disk file. By default, it shows "Pivot" and "Delete" options selected:
+
+    - **Pivot**: This option switches your VM from using the overlay file back to using the original disk file. After the commit, your VM will use the original disk (which now contains the changes) instead of the overlay file.
+
+    - **Delete**: This option removes the snapshot overlay file after the changes have been committed to the original disk.
+
+    - **Together ("Pivot" + "Delete")**:
+      - **With both selected**: Changes are committed to the original file, your VM switches back to using the original disk, and the overlay file is deleted. This is the most common choice.
+      - **With both unchecked**: Changes are committed to the original file, but your VM continues using the overlay file, and the overlay file remains to capture future changes.
+
+    Use Block Commit when you are satisfied with the changes and want to make them permanent.
+
+    **Block Pull**: This merges the original disk data into the snapshot overlay file, making the overlay file complete and independent. Your VM continues using the overlay file, but it no longer depends on the original disk. Use this when you want to keep your current state and make the snapshot permanent.
+
+    **Remove snapshot**: This simply deletes the snapshot overlay file without affecting your %%VM|vm%%. Your %%VM|vm%% continues using the original disk file, and any changes made after the snapshot are lost.
+
+    :::
+  </TabItem>
+
+  <TabItem value="revert" label="Reverting to snapshots">
+    If you need to go back to a previous state:
+
+    1. Stop the %%VM|vm%% if it's currently running.
+    2. 进入 %%WebGUI|web-gui%% 中的 **VMs** 标签。
+    3. Click on the %%VM|vm%% name to expand its details.
+    4. Navigate to the **Snapshots** section.
+    5. Find the snapshot you want to restore and click the **Revert** button.
+    6. Confirm that you want to revert (this will lose any changes made after the snapshot).
+    7. Start your %%VM|vm%% - it will now be exactly as it was when you created the snapshot.
+
+    :::caution[Data loss warning]
+
+    Reverting to a snapshot permanently deletes any changes made after that snapshot was created. Make sure you really want to lose those changes before reverting.
+
+    :::
+  </TabItem>
+</Tabs>
+
+### Snapshot storage
+
+Snapshots use storage space on your system. Each snapshot saves only the differences between the current state and the snapshot state; however, these differences can still accumulate over time.
+
+Here are some points to consider:
+
+- **QCOW2 disks** support snapshots and work well with this feature.
+- **Storage location**: Snapshots are stored with your %%VM|vm%% files, so make sure you have enough space on your %%cache pools|cache-pool%% or %%array|array%%.
+
+**Snapshot storage location:**
+
+- Snapshot metadata is stored in `/etc/libvirt/qemu/snapshotdb/VM_name/`.
+- Actual snapshot data is stored alongside your %%VM|vm%% files on %%cache pools|cache-pool%% or %%array|array%%.
+
+:::info[Advanced snapshot concepts]
+
+For more detailed technical information about how VM snapshots work, including block diagrams and advanced scenarios with multiple snapshots, see the [QEMU snapshots documentation](https://kashyapc.fedorapeople.org/virt/lc-2012/snapshots-handout.html).
+
+:::
+
+:::tip[Common use cases]
+
+- **Before system updates**: Create a snapshot before installing Windows updates or Linux package updates. If something goes wrong, you can quickly revert to a previous version.
+- **Testing software**: Install new applications or make configuration changes. If you're not satisfied with the results, revert to your clean %%VM|vm%% snapshots from before the changes.
+- **Development work**: Create snapshots at different stages of your project. This lets you experiment freely and return to known good states.
+- **Backup strategy**: While not a replacement for proper backups, snapshots provide quick recovery for recent changes.
+
+:::
 
 ---
 
@@ -218,7 +352,7 @@ Unraid 现在支持通过 `VirGL` 和 `QXL` 的高级 GPU 共享适用于 Linux 
 
 ## 绑定 PCI 设备以进行直通
 
-在您可以将 GPU 或任何 PCI 设备分配给 %%虚拟机|vm%% 之前，重要的是要将该设备 "绑定" 到 **vfio-pci** 驱动程序。这个过程将设备从 Unraid 中隐藏，并完全供您的 %%VM|vm%% 使用。
+Before you can assign a GPU or any PCI device to a %%VM|vm%%, it's important to "bind" the device to the **vfio-pci** driver. This process hides the device from Unraid and dedicates it solely to your %%VM|vm%%.
 
 要绑定PCI设备（GPU、USB控制器、NVMe等）以进行直通：
 
@@ -252,7 +386,7 @@ Unraid 现在支持通过 `VirGL` 和 `QXL` 的高级 GPU 共享适用于 Linux 
 
 ## GPU透传用于虚拟机
 
-%%GPU透传|gpu-passthrough%%允许您将物理显卡直接分配给%%虚拟机 (VM)|vm%%，为游戏、创作工作或机器学习提供近乎原生的性能。
+%%GPU passthrough|gpu-passthrough%% allows you to assign a physical graphics card directly to a %%VM|vm%%, providing near-native performance for gaming, creative work, or machine learning.
 
 :::info[Why 使用 GPU 直通功能？]
 
@@ -275,7 +409,7 @@ Unraid 现在支持通过 `VirGL` 和 `QXL` 的高级 GPU 共享适用于 Linux 
 - Unraid 6.9以上版本，启用了虚拟化。
 - %%OVMF|ovmf%%（%%UEFI|uefi%%） BIOS用于%%VM|vm%%（推荐使用%%OVMF|ovmf%%而不是%%SeaBIOS|seabios%%）。
 
-设置GPU透传：
+To set up GPU passthrough:
 
 1. 确保您的硬件支持%%IOMMU|iommu%%并在您的BIOS中启用。
 2. 在BIOS中启用虚拟化特性（Intel VT-x/VT-d或AMD-v/AMD-vi）。
@@ -324,14 +458,14 @@ Unraid 现在支持通过 `VirGL` 和 `QXL` 的高级 GPU 共享适用于 Linux 
 
 ## 常见问题
 
-本节涵盖在 Unraid 上管理 %%虚拟机 (VMs)|vm%% 时常见问题的高级主题和解决方案。展开以下部分以获取分步说明和故障排除提示。
+This section covers advanced topics and solutions for common issues when managing %%VMs|vm%% on Unraid. Expand the sections below for step-by-step instructions and troubleshooting tips.
 
 ### 扩展vDisk
 
 <details>
   <summary><strong>点击展开/折叠</strong></summary>
 
-  如果您的 %%VM|vm%% 磁盘空间不足，可以直接通过%%WebGUI|web-gui%%增加其%%virtual disk (**vDisk**)|vdisk%%的大小。
+  If your %%VM|vm%% is running low on disk space, you can increase the size of its %%vDisk|vdisk%% directly from the %%WebGUI|web-gui%%.
 
   要扩展%%vDisk|vdisk%%：
 
