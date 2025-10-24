@@ -166,13 +166,27 @@ When you set up a %%ZFS|zfs%% pool, your allocation profile determines how your 
   ![](/img/zfs11.png)
 </div>
 
-| Profile | Redundancy                    | Performance                                               | Expansion        | Space Efficiency | Typical Use Case                         |
-| ------- | ----------------------------- | --------------------------------------------------------- | ---------------- | ---------------- | ---------------------------------------- |
-| Stripe  | None                          | Fast, but risky                                           | Add more disks   | 100%             | Temporary/scratch storage                |
-| Mirror  | 1:1 (%%RAID 1\|raid1%% style) | Excellent for random I/O                                  | Add more mirrors | 50%              | High performance, easy expansion         |
-| RAIDZ1  | 1 disk per vdev               | Fast for big files. Not ideal for small or random writes. | Add new vdevs    | High             | General use, 1-disk fault tolerance      |
-| RAIDZ2  | 2 disks per vdev              | Like Z1 but slightly slower writes (extra parity)         | Add new vdevs    | Moderate         | Important data, 2-disk fault tolerance   |
-| RAIDZ3  | 3 disks per vdev              | Like Z2, with more write overhead (for maximum safety)    | Add new vdevs    | Lower            | Mission-critical, 3-disk fault tolerance |
+| Profile | Redundancy                    | Performance                                               | Expansion        | Space Efficiency | Typical Use Case                         | Recommended Drive Count Per vdev |
+| ------- | ----------------------------- | --------------------------------------------------------- | ---------------- | ---------------- | ---------------------------------------- | ----------------------------------- |
+| Stripe  | None                          | Fast, but risky                                           | Add more disks   | 100%             | Temporary/scratch storage                | Any number                          |
+| Mirror  | 1:1 (%%RAID 1\|raid1%% style) | Excellent for random I/O                                  | Add more mirrors | 50%              | High performance, easy expansion         | 2 drives (can add more mirrors)        |
+| RAIDZ1  | 1 disk per vdev               | Fast for big files. Not ideal for small or random writes. | Add new vdevs    | High             | General use, 1-disk fault tolerance      | 3-6 drives (max 8)                    |
+| RAIDZ2  | 2 disks per vdev              | Like Z1 but slightly slower writes (extra parity)         | Add new vdevs    | Moderate         | Important data, 2-disk fault tolerance   | 6-12 drives (max 14)                  |
+| RAIDZ3  | 3 disks per vdev              | Like Z2, with more write overhead (for maximum safety)    | Add new vdevs    | Lower            | Mission-critical, 3-disk fault tolerance | 10-16 drives (max 20)                 |
+
+:::tip[Optimizing drive counts]
+
+The recommended drive counts in the table above work well for most users. For even better performance, you can optimize within those ranges by choosing configurations where the number of data disks (total disks minus parity disks) is a **power of 2** (e.g., 2, 4, 8, 16). This helps align data stripes correctly, preventing wasted space and uneven I/O.
+
+**Examples of optimized configurations:**
+
+- **RAIDZ1**: 3, 5, or 9 drives (data disks = 2, 4, or 8)
+- **RAIDZ2**: 4, 6, or 10 drives (data disks = 2, 4, or 8)  
+- **RAIDZ3**: 5, 9, or 17 drives (data disks = 2, 6, or 14)
+
+Note that these optimizations are optional - the recommendations above should work well for most use cases.
+
+:::
 
 :::important[How to choose]
 
