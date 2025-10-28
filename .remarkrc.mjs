@@ -19,6 +19,7 @@ import remarkLintNoFileNameOuterDashes from 'remark-lint-no-file-name-outer-dash
 import remarkLintNoHeadingPunctuation from 'remark-lint-no-heading-punctuation'
 import remarkLintNoMultipleToplevelHeadings from 'remark-lint-no-multiple-toplevel-headings'
 import remarkLintNoShellDollars from 'remark-lint-no-shell-dollars'
+import {visit, SKIP} from 'unist-util-visit'
 import jsxContentSpacing from './remark-jsx-spacing.js'
 
 const plugins = [
@@ -26,6 +27,7 @@ const plugins = [
     remarkMdx,
     remarkDirective,
     directiveColonSafe,
+    stripDanglingDirectiveClosings,
     remarkFrontmatter,
     remarkGfm,
 
@@ -125,7 +127,7 @@ function wrapContainerDirectiveHandler(extension) {
 
     try {
       const output = containerDirective(node, parent, state, info)
-      return collapseDirectivePadding(output)
+      return collapseDirectivePadding(normalizeDirectiveFences(output))
     } finally {
       state.bulletLastUsed = previous
     }
@@ -136,4 +138,84 @@ function collapseDirectivePadding(value) {
   return value
     .replace(/(^|\n)([ \t]*:::[^\n]*?)\n\n/g, '$1$2\n')
     .replace(/\n\n([ \t]*:::)/g, '\n$1')
+}
+
+function normalizeDirectiveFences(value) {
+  const lines = value.split('\n')
+  const stack = []
+
+  const normalized = lines.map((line) => {
+    const openMatch = line.match(/^([ \t]*)(:{3,})([A-Za-z[{].*)$/)
+    if (openMatch) {
+      const [, indent, colons, rest] = openMatch
+      const count = colons.length
+      stack.push({indent, count})
+      return `${indent}${':'.repeat(count)}${rest}`
+    }
+
+    const closeMatch = line.match(/^([ \t]*)(:{3,})([ \t]*)$/)
+    if (closeMatch) {
+      const [, indent, colons, trailing = ''] = closeMatch
+      let count = colons.length
+      let matched = false
+
+      for (let i = stack.length - 1; i >= 0; i--) {
+        if (stack[i].indent === indent) {
+          count = stack[i].count
+          stack.length = i
+          matched = true
+          break
+        }
+      }
+
+      if (!matched && stack.length > 0) {
+        const entry = stack.pop()
+        count = entry.count
+        matched = true
+      }
+
+      if (!matched) {
+        return ''
+      }
+
+      return `${indent}${':'.repeat(count)}${trailing}`
+    }
+
+    return line
+  })
+
+  return normalized.join('\n')
+}
+
+function stripDanglingDirectiveClosings() {
+  return (tree) => {
+    visit(tree, (node, index, parent) => {
+      if (
+        !parent ||
+        typeof index !== 'number' ||
+        node.type !== 'paragraph' ||
+        !node.children ||
+        node.children.length !== 1
+      ) {
+        return
+      }
+
+      const child = node.children[0]
+
+      if (
+        child.type !== 'text' ||
+        !/^:{3,}$/.test(child.value.trim())
+      ) {
+        return
+      }
+
+      const previous = parent.children[index - 1]
+      if (!previous || previous.type !== 'containerDirective') {
+        return
+      }
+
+      parent.children.splice(index, 1)
+      return [SKIP, index]
+    })
+  }
 }
