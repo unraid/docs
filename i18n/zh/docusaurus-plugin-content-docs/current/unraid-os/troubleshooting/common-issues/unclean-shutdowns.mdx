@@ -19,7 +19,7 @@ import UncleanShutdownsTerminal from "./partials/unclean-shutdowns/open-terminal
 
 - \*\*使用不间断电源（UPS）：\*\*确保服务器连接到UPS并设置在电池电量不足时自动关闭。
 - \*\*尝试优雅关闭：\*\*如果您的服务器无响应，短按电源按钮以触发安全关闭。不要长按该按钮，因为这将强制硬关机并导致不洁关机。
-- **启用持久性日志：**前往***设置 → Syslog 服务器***以激活在重启后持续的日志。详见[持久日志 (Syslog 服务器)](../diagnostics/capture-diagnostics-and-logs.mdx#persistent-logs-syslog-server)。
+- **启用持久日志记录：** 前往 ***设置 → Syslog 服务器*** 以激活在重启后仍然存在的日志记录。查看 [持久日志 (Syslog 服务器)](../diagnostics/capture-diagnostics-and-logs.mdx#persistent-logs-syslog-server) 以了解更多详情。
 - **附加诊断信息以获得支持：** 如果发生非正常关机，Unraid 将尝试将诊断信息保存到您的闪存设备的 `/log/diagnostics.zip` 中。当您寻求帮助时，请将此文件附加到论坛帖子中。
 
 :::
@@ -29,7 +29,7 @@ import UncleanShutdownsTerminal from "./partials/unclean-shutdowns/open-terminal
 配置良好的 UPS 是防止因掉电导致非正常关机的最佳防卫。
 
 - **通过 USB 连接 UPS 到 Unraid 服务器。**
-- 在***设置→ UPS 设置***中**启用 UPS 支持**。
+- **在设置中启用 UPS 支持。**
 - \*\*配置关机超时时间：\*\*设置UPS以便在电池电量不足之前触发受控关机。调整“剩余电池运行时间”或“电池充电电平”阈值，以提供足够的时间让Unraid [停止%%array|array%%](../../using-unraid-to/manage-storage/array-configuration.mdx#startstop-the-array) 并安全关机。
 - **测试配置：** 模拟掉电以确保 UPS 和 Unraid 的正确反应。
 
@@ -134,10 +134,8 @@ Properly configuring shutdown timeouts is essential to ensure your Unraid server
     - 使用较长的超时值 (请参见下文的超时建议)。
     - 考虑在更新期间强制关闭这些虚拟机(%%VMs|vm%%)的风险。
 
-    :::note[为何设备虚拟机不同]
-
-    设备虚拟机(%%VMs|vm%%)专为运行特定软件而设计，通常不允许安装额外的软件包，比如 %%QEMU|qemu%% %%Guest Agent|guest-agent%%。这意味着休眠不可用，因此您需要依赖适当的超时配置。
-
+    :::note[Why appliance VMs are different]
+    Appliance %%VMs|vm%% are designed to run specific software and often don't allow the installation of additional packages, such as %%QEMU|qemu%% %%Guest Agent|guest-agent%%. This means hibernation isn't available, so you'll need to rely on proper timeout configuration.
     :::
   </TabItem>
 </Tabs>
@@ -154,15 +152,16 @@ Properly configuring shutdown timeouts is essential to ensure your Unraid server
 
 在本节中，我们将介绍如何为不同的系统和过程配置超时信息。这对确保您的虚拟机(%%VMs|vm%%)和 Docker 容器能平滑关闭且无数据丢失至关重要。
 
-| 设置              | 默认值 | 何时增加                            | 配置位置                           |
-| --------------- | --- | ------------------------------- | ------------------------------ |
-| %%VM\|vm%% 关机超时 | 60秒 | 如果没有使用休眠且虚拟机崩溃则设置为 300s         | ***设置 → 虚拟机管理器 → 虚拟机关机 (高级)*** |
-| Docker 容器停止超时时间 | 10秒 | 如果任何容器在停止时崩溃则设置为 30s            | ***设置 → Docker (高级)***         |
-| 通用关机超时时间        | 90秒 | 如果出现不干净关机，设置为 180s，与虚拟机一起 300s+ | ***设置 → 磁盘设置 → 关机超时***         |
+| 设置              | 默认值 | 何时增加                            | 配置位置                         |
+| --------------- | --- | ------------------------------- | ---------------------------- |
+| %%VM\|vm%% 关机超时 | 60秒 | 如果没有使用休眠且虚拟机崩溃则设置为 300s         | ***设置 → 虚拟机管理 → 虚拟机关机（高级）*** |
+| Docker 容器停止超时时间 | 10秒 | 如果任何容器在停止时崩溃则设置为 30s            | ***设置 → Docker（高级）***        |
+| 通用关机超时时间        | 90秒 | 如果出现不干净关机，设置为 180s，与虚拟机一起 300s+ | ***设置 → 磁盘设置 → 关机超时***       |
 
 :::tip[When 增加超时]
 
-如果您遇到不干净关机或容器在关机时崩溃，可以考虑将一般关机超时增加至 **180 秒**（或如果有多个虚拟机则增加至 **300+ 秒**）。这给服务更多时间平滑关闭。
+如果您遇到不干净的关机或容器在关机时崩溃的情况，请考虑将通用关机超时时间增加到 **180 秒**（如果您有多个 %%VMs|vm%%，则为 **300+ 秒**）。这将为服务提供更多时间来优雅地关闭。
+
 :::
 
 ### 停机顺序
