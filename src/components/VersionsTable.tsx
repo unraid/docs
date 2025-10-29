@@ -158,7 +158,27 @@ type Minor = `${number}.${number}`;
 const supportPolicies = {
   stable: {
     title: "Current/Stable Release",
-    description: "The 7.1.x series is our current/stable release",
+    description: "The 7.2.x series is our current/stable release",
+    details: [
+      { type: "header", content: "Kernel: Linux 6.12 LTS" },
+      { type: "header", content: "ZFS Version: OpenZFS 2.3.x" },
+      { type: "text", content: "Primary features are detailed in the <a href='/unraid-os/release-notes/7.2.0'>7.2.0 Release Notes</a>." },
+      { type: "header", content: "License Information:" },
+      { type: "bullet", content: "If your license extension expires on or after 2025-10-29, you are eligible for all releases in this series." },
+      { type: "header", content: "Update Recommendations:" },
+      { type: "bullet", content: "If you are experiencing issues with earlier releases, we recommend updating to the latest release as it may resolve the issue." },
+      { type: "header", content: "Release Status:" },
+      { type: "bullet", content: "This series is feature complete; no new features are expected." },
+      { type: "bullet", content: "Bug fixes will be backported to 7.2.x as appropriate until the release of 7.3.0." },
+      { type: "bullet", content: "Security updates will be provided for 7.2.x as appropriate until the release of 7.4.0." },
+      { type: "header", content: "Future Releases:" },
+      { type: "bullet", content: "Additional public beta/RC releases for 7.2.x are unlikely, but any announcements will be made in the <a href='https://forums.unraid.net/forum/7-announcements/'>main forum</a>." },
+      { type: "bullet", content: "New stable releases of 7.2.x will be announced in the forum." }
+    ]
+  },
+  previous: {
+    title: "Previous Release",
+    description: "The 7.1.x series is no longer being actively developed",
     details: [
       { type: "header", content: "Kernel: Linux 6.12 LTS" },
       { type: "header", content: "ZFS Version: OpenZFS 2.3.x" },
@@ -166,17 +186,14 @@ const supportPolicies = {
       { type: "header", content: "License Information:" },
       { type: "bullet", content: "If your license extension expires on or after 2025-05-05, you are eligible for all releases in this series." },
       { type: "header", content: "Update Recommendations:" },
-      { type: "bullet", content: "If you are experiencing issues with earlier releases, we recommend updating to the latest release as it may resolve the issue." },
-      { type: "header", content: "Release Status:" },
-      { type: "bullet", content: "This series is feature complete; no new features are expected." },
-      { type: "bullet", content: "Bug fixes will be backported to 7.1.x as appropriate until the release of 7.2.0." },
-      { type: "bullet", content: "Security updates will be provided for 7.1.x as appropriate until the release of 7.3.0." },
+      { type: "bullet", content: "Until Unraid 7.3.0 is released, 7.1.x will only receive updates for serious security issues, with no bug fixes or new features." },
+      { type: "bullet", content: "All users are encouraged to upgrade to the current release." },
       { type: "header", content: "Future Releases:" },
       { type: "bullet", content: "Additional public beta/RC releases for 7.1.x are unlikely, but any announcements will be made in the <a href='https://forums.unraid.net/forum/7-announcements/'>main forum</a>." },
       { type: "bullet", content: "New stable releases of 7.1.x will be announced in the forum." }
     ]
   },
-  previous: {
+  previousUnused: {
     title: "Previous Release",
     description: "The 7.0.x series is no longer being actively developed",
     details: [
@@ -194,7 +211,7 @@ const supportPolicies = {
   },
   legacy: {
     title: "End of Life (EOL) Releases",
-    description: "Unraid 6.12.x, 6.11.x, 6.10.x, and earlier have reached End of Life (EOL)",
+    description: "Unraid 7.0.x, 6.12.x, 6.11.x, 6.10.x, and earlier have reached End of Life (EOL)",
     details: [
       { type: "header", content: "Support Status:" },
       { type: "bullet", content: "These versions have reached End of Life (EOL) and are not supported." },
@@ -219,8 +236,8 @@ const supportPolicies = {
  */
 const upcoming = [
   {
-    version: "7.2.x",
-    status: "RC currently available. Check out the <a href='/unraid-os/release-notes/7.2.0/'>release notes</a> to see what's coming.",
+    version: "7.3.x",
+    status: "Currently in development. When a beta is available, it will be announced in the <a href='https://forums.unraid.net/forum/7-announcements/'>main forum</a>.",
     highlights: [],
   },
   // Add more upcoming versions here if needed:
@@ -399,7 +416,6 @@ function Viewer() {
   */
   const minors = Array.from(new Set(releases.map((r) => minorOf(r.version))))
     .sort((a, b) => (b > a ? 1 : -1));
-
   const currentMinor = minors[0];   // e.g., "7.1"
   const previousMinor = minors[1];  // e.g., "7.0"
 
@@ -667,12 +683,7 @@ function Viewer() {
             Future release information
           </summary>
           <div style={{marginTop: "1rem"}}>
-            <p>We are currently working on Unraid 7.2.0, to see what is coming check the <a href='/unraid-os/release-notes/7.2.0/'>release notes</a>.</p>
-            <p>If you are interested in running betas and RCs, check the <a href='https://forums.unraid.net/forum/7-announcements/'>announcements forum</a> for upgrade instructions. We appreciate the community's involvement in testing on a wide range of hardware and with varied use cases to help identify potential issues.</p>
-            <ul>
-              <li>If you find an issue in a beta or RC, please start a new thread in the <a href='https://forums.unraid.net/bug-reports/prereleases/'>prerelease forum</a>, providing as much detail as you can for us to be able to reproduce the problem. Please include your diagnostics.</li>
-              <li>For more information about pre-releases, see the <a href="/unraid-os/troubleshooting/licensing-faq/#pre-release-policy">licensing FAQ</a>.</li>
-            </ul>
+            <p>Details to come!</p>
           </div>
         </details>
       </div>
