@@ -199,6 +199,7 @@ Sysprep is built into Windows and eliminates unique system information, preparin
 
 1. **Run sysprep:**
    - Open Command Prompt as an administrator.
+
    - Navigate to the sysprep directory:
 
      ```bash
@@ -209,6 +210,7 @@ Sysprep is built into Windows and eliminates unique system information, preparin
      ```bash
      sysprep.exe /generalize /shutdown /oobe
      ```
+
    - The system will generalize the installation and then shut down.
 
 2. **Install the disk in your Unraid server** after the shutdown.
@@ -329,131 +331,131 @@ To convert a Windows VM from %%Xen|xen-hvm%% to %%KVM|kvm%%, follow these steps.
 <details>
   <summary><strong>Step 1: Determine if your VM uses Xen's GPLPV drivers</strong> - Click to expand/collapse</summary>
 
-1. Inside your %%Xen|xen-hvm%% VM, open **Windows Device Manager** (press _Windows key + X_, then select **Device Manager**).
-2. Expand **Network adapters** and check the device name.
-   - If the name contains "Xen," you are using GPLPV drivers.
-   - If it doesn't, skip to the step about rebooting into %%KVM|kvm%% mode.
+  1. Inside your %%Xen|xen-hvm%% VM, open **Windows Device Manager** (press *Windows key + X*, then select **Device Manager**).
+  2. Expand **Network adapters** and check the device name.
+     - If the name contains "Xen," you are using GPLPV drivers.
+     - If it doesn't, skip to the step about rebooting into %%KVM|kvm%% mode.
 
-:::tip
-If you are not using GPLPV drivers, you can skip the next several steps and continue from the rebooting into %%KVM|kvm%% mode section.
-:::
+  :::tip
+  If you are not using GPLPV drivers, you can skip the next several steps and continue from the rebooting into %%KVM|kvm%% mode section.
+  :::
 
 </details>
 
 <details>
   <summary><strong>Step 2: Prepare Windows for GPLPV driver removal</strong> - Click to expand/collapse</summary>
 
-1. Open a command prompt as Administrator (**Start menu** → type `cmd` → right-click **Command Prompt** → select **Run as administrator**).
-2. Enter the following command:
-   ```
-   bcdedit -set loadoptions nogplpv
-   ```
-3. Reboot your VM.
+  1. Open a command prompt as Administrator (**Start menu** → type `cmd` → right-click **Command Prompt** → select **Run as administrator**).
+  2. Enter the following command:
+     ```
+     bcdedit -set loadoptions nogplpv
+     ```
+  3. Reboot your VM.
 
 </details>
 
 <details>
   <summary><strong>Step 3: Uninstall GPLPV drivers</strong> - Click to expand/collapse</summary>
 
-After the reboot, purge all %%Xen|xen-hvm%% GPLPV drivers from your system using the comprehensive manual removal process documented in the [Xen Project Wiki](https://wiki.xenproject.org/wiki/Xen_Windows_GPLPV).
+  After the reboot, purge all %%Xen|xen-hvm%% GPLPV drivers from your system using the comprehensive manual removal process documented in the [Xen Project Wiki](https://wiki.xenproject.org/wiki/Xen_Windows_GPLPV).
 
-:::caution
-GPLPV removal requires extensive registry editing and manual file deletion. Follow the Xen Project Wiki instructions **exactly** as written, as errors can cause system instability or boot failures.
-:::
+  :::caution
+  GPLPV removal requires extensive registry editing and manual file deletion. Follow the Xen Project Wiki instructions **exactly** as written, as errors can cause system instability or boot failures.
+  :::
 
 </details>
 
 <details>
   <summary><strong>Step 4: Create a new KVM virtual machine</strong> - Click to expand/collapse</summary>
 
-1. Ensure the **VM manager** is enabled:
-   - Go to **_Settings → VM manager_**.
-   - Set **Enable VMs** to **Yes**.
-   - Download the latest **VirtIO drivers ISO** for Windows by selecting it from the dropdown menu and clicking **Download**.
+  1. Ensure the **VM manager** is enabled:
+     - Go to ***Settings → VM manager***.
+     - Set **Enable VMs** to **Yes**.
+     - Download the latest **VirtIO drivers ISO** for Windows by selecting it from the dropdown menu and clicking **Download**.
 
-2. Navigate to the **VMs** tab and click **Add VM**.
+  2. Navigate to the **VMs** tab and click **Add VM**.
 
-3. Select the Windows version that matches your original %%Xen|xen-hvm%% virtual machine.
+  3. Select the Windows version that matches your original %%Xen|xen-hvm%% virtual machine.
 
-4. Configure the basic settings:
-   - **Name**: Assign a descriptive name to your VM.
-   - **VirtIO drivers ISO**: Choose the version you just downloaded.
+  4. Configure the basic settings:
+     - **Name**: Assign a descriptive name to your VM.
+     - **VirtIO drivers ISO**: Choose the version you just downloaded.
 
-5. Under **Primary vDisk Location**:
-   - Browse and select your existing %%Xen|xen-hvm%% virtual disk.
+  5. Under **Primary vDisk Location**:
+     - Browse and select your existing %%Xen|xen-hvm%% virtual disk.
 
-6. Add a **temporary secondary vDisk**:
-   - Click the green plus sign.
-   - Set the size to **1M** (this will enforce IDE bus compatibility during the initial boot).
-   - Choose any temporary directory for the location (this will be removed later).
+  6. Add a **temporary secondary vDisk**:
+     - Click the green plus sign.
+     - Set the size to **1M** (this will enforce IDE bus compatibility during the initial boot).
+     - Choose any temporary directory for the location (this will be removed later).
 
-7. Leave the other settings for graphics and sound at their default values, then click **Create**.
+  7. Leave the other settings for graphics and sound at their default values, then click **Create**.
 
-8. If the VM started automatically, stop it:
-   - Prefer **Stop** (avoid **Force stop** unless the VM is unresponsive).
-   - Alternatively, uncheck **Start VM after creation** when creating the VM.
+  8. If the VM started automatically, stop it:
+     - Prefer **Stop** (avoid **Force stop** unless the VM is unresponsive).
+     - Alternatively, uncheck **Start VM after creation** when creating the VM.
 
-9. Edit the VM configuration:
-   - Click the VM icon and select **Edit**.
-   - Switch to **XML view** using the toggle in the top-right corner.
+  9. Edit the VM configuration:
+     - Click the VM icon and select **Edit**.
+     - Switch to **XML view** using the toggle in the top-right corner.
 
-10. Modify the primary disk XML:
-    - Locate the `<disk>` section for your primary virtual disk.
-    - Remove the entire `<address>` line.
-    - Change `bus='virtio'` to `bus='ide'` in the `<target>` tag.
-    - Click **Update**.
+  10. Modify the primary disk XML:
+      - Locate the `<disk>` section for your primary virtual disk.
+      - Remove the entire `<address>` line.
+      - Change `bus='virtio'` to `bus='ide'` in the `<target>` tag.
+      - Click **Update**.
 
-:::tip[Why the temporary disk?]
-The 1MB temporary disk forces Unraid to assign the primary disk as `hda` (IDE) instead of `vda` (%%VirtIO|virtio%%), allowing Windows to boot without %%VirtIO|virtio%% drivers initially. This temporary disk will be removed after the driver installation.
-:::
+  :::tip[Why the temporary disk?]
+  The 1MB temporary disk forces Unraid to assign the primary disk as `hda` (IDE) instead of `vda` (%%VirtIO|virtio%%), allowing Windows to boot without %%VirtIO|virtio%% drivers initially. This temporary disk will be removed after the driver installation.
+  :::
 
 </details>
 
 <details>
   <summary><strong>Step 5: Install VirtIO drivers</strong> - Click to expand/collapse</summary>
 
-1. Start the VM from the **VMs** tab.
-2. Connect via %%VNC|vnc-session%% by clicking the VM icon and select **Start with console (VNC)**.
-3. During boot:
-   - Windows will detect new hardware but might fail to install drivers.
-   - Choose **Reboot later** when prompted.
-4. Open **Device Manager** (press Win+X and choose Device Manager):
-   - Install drivers for each device listed under **Other devices** (like Ethernet Controller, PCI Device, etc.):
-     1. Right-click the device and select **Update driver**.
-     2. Choose **Browse my computer for drivers**.
-     3. Point to the %%VirtIO|virtio%% ISO drive (for example, `D:\`).
-     4. Check **Include subfolders**.
-     5. If prompted, accept **Always trust Red Hat**.
-5. Install the %%QEMU|qemu%% %%guest agent|guest-agent%%:
-   - Open File Explorer and navigate to `D:\guest-agent\`.
-   - Double-click `qemu-ga-x64.msi`.
-6. Shut down the VM.
+  1. Start the VM from the **VMs** tab.
+  2. Connect via %%VNC|vnc-session%% by clicking the VM icon and select **Start with console (VNC)**.
+  3. During boot:
+     - Windows will detect new hardware but might fail to install drivers.
+     - Choose **Reboot later** when prompted.
+  4. Open **Device Manager** (press Win+X and choose Device Manager):
+     - Install drivers for each device listed under **Other devices** (like Ethernet Controller, PCI Device, etc.):
+       1. Right-click the device and select **Update driver**.
+       2. Choose **Browse my computer for drivers**.
+       3. Point to the %%VirtIO|virtio%% ISO drive (for example, `D:\`).
+       4. Check **Include subfolders**.
+       5. If prompted, accept **Always trust Red Hat**.
+  5. Install the %%QEMU|qemu%% %%guest agent|guest-agent%%:
+     - Open File Explorer and navigate to `D:\guest-agent\`.
+     - Double-click `qemu-ga-x64.msi`.
+  6. Shut down the VM.
 
 </details>
 
 <details>
   <summary><strong>Step 6: Finalize the VM configuration</strong> - Click to expand/collapse</summary>
 
-1. Edit the VM:
-   - Remove the temporary secondary %%vDisk|vdisk%% by clicking the red minus icon.
-   - Confirm that the primary %%vDisk|vdisk%% points to your original %%Xen|xen-hvm%% disk.
-2. Update the VM:
-   - Click **Update** to save your changes.
-3. Start the VM normally.
-4. Verify in **Device Manager** that:
-   - No warning icons appear.
-   - All devices utilize %%VirtIO|virtio%% drivers (for example, "Red Hat %%VirtIO|virtio%% Ethernet Adapter").
-5. (Optional) Enable %%VirtIO|virtio%% for better performance:
-   - Edit the VM and switch to XML view.
-   - Change the primary disk's `bus` from `ide` to `virtio`.
-   - Click **Update** and reboot the VM.
+  1. Edit the VM:
+     - Remove the temporary secondary %%vDisk|vdisk%% by clicking the red minus icon.
+     - Confirm that the primary %%vDisk|vdisk%% points to your original %%Xen|xen-hvm%% disk.
+  2. Update the VM:
+     - Click **Update** to save your changes.
+  3. Start the VM normally.
+  4. Verify in **Device Manager** that:
+     - No warning icons appear.
+     - All devices utilize %%VirtIO|virtio%% drivers (for example, "Red Hat %%VirtIO|virtio%% Ethernet Adapter").
+  5. (Optional) Enable %%VirtIO|virtio%% for better performance:
+     - Edit the VM and switch to XML view.
+     - Change the primary disk's `bus` from `ide` to `virtio`.
+     - Click **Update** and reboot the VM.
 
-:::tip[Driver troubleshooting]
-If you notice errors on devices after migration:
+  :::tip[Driver troubleshooting]
+  If you notice errors on devices after migration:
 
-1. Reinstall the %%VirtIO|virtio%% drivers from the ISO.
-2. Check for Windows updates, which may provide newer drivers.
-3. Visit the [Red Hat VirtIO Drivers](https://docs.fedoraproject.org/en-US/quick-docs/creating-windows-virtual-machines-using-virtio-drivers/) page for the latest versions.
-   :::
+  1. Reinstall the %%VirtIO|virtio%% drivers from the ISO.
+  2. Check for Windows updates, which may provide newer drivers.
+  3. Visit the [Red Hat VirtIO Drivers](https://docs.fedoraproject.org/en-US/quick-docs/creating-windows-virtual-machines-using-virtio-drivers/) page for the latest versions.
+  :::
 
 </details>
