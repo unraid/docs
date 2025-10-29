@@ -2,6 +2,7 @@
 sidebar_position: 2
 sidebar_label: VM setup
 ---
+
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
@@ -158,6 +159,7 @@ When you create a snapshot, Unraid generates an "overlay file" that captures all
 This setup allows you to create multiple snapshots, with each one generating its own overlay file. This means you can easily revert to any previous state.
 
 **Example scenario:**
+
 1. You create a snapshot called "Clean Windows Install."
 2. You install some software and make changes.
 3. You create another snapshot called "After Software Install."
@@ -169,86 +171,84 @@ This setup allows you to create multiple snapshots, with each one generating its
 <Tabs>
   <TabItem value="create" label="Creating snapshots" default>
 
-To create a snapshot of your %%VM|vm%%:
+    To create a snapshot of your %%VM|vm%%:
 
-1. Go to the **VMs** page in the %%WebGUI|web-gui%%.
-2. Click on the %%VM|vm%% name to expand its details.
-3. Look for the **Snapshots** section and click **Create Snapshot**.
-4. Enter a descriptive name for your snapshot (for example, "Before Windows Update" or "Clean Install State").
-5. **Memory dump option**: In current Unraid builds, the "Memory dump" checkbox is not preselected by default. Checking it includes the %%VM|vm%%'s RAM for a full memory-backed snapshot (captures the live running state, but is larger and slower to create/restore). Leaving it unchecked creates a disk-only, crash-consistent snapshot (smaller and faster, but any unsaved in-memory data will be lost). Choose based on whether you need full live state preservation or just disk recovery.
-6. Click **Create** to save the snapshot.
+    1. Go to the **VMs** page in the %%WebGUI|web-gui%%.
+    2. Click on the %%VM|vm%% name to expand its details.
+    3. Look for the **Snapshots** section and click **Create Snapshot**.
+    4. Enter a descriptive name for your snapshot (for example, "Before Windows Update" or "Clean Install State").
+    5. **Memory dump option**: In current Unraid builds, the "Memory dump" checkbox is not preselected by default. Checking it includes the %%VM|vm%%'s RAM for a full memory-backed snapshot (captures the live running state, but is larger and slower to create/restore). Leaving it unchecked creates a disk-only, crash-consistent snapshot (smaller and faster, but any unsaved in-memory data will be lost). Choose based on whether you need full live state preservation or just disk recovery.
+    6. Click **Create** to save the snapshot.
 
-:::tip[Best practices]
-
-- Create snapshots before making significant changes to your %%VM|vm%%.
-- Use descriptive names that help you remember what the snapshot contains.
-- Choose Memory dump based on your needs: enable it for full live state preservation, or leave it off for faster disk-only recovery.
-- Keep snapshots for important milestones, but delete old ones to save storage space.
-
-:::
+    :::tip[Best practices]
+    - Create snapshots before making significant changes to your %%VM|vm%%.
+    - Use descriptive names that help you remember what the snapshot contains.
+    - Choose Memory dump based on your needs: enable it for full live state preservation, or leave it off for faster disk-only recovery.
+    - Keep snapshots for important milestones, but delete old ones to save storage space.
+    :::
 
   </TabItem>
+
   <TabItem value="manage" label="Managing snapshots">
 
-Once you have snapshots, you can see them listed in the %%VM|vm%%'s details section. Each snapshot shows:
-- **Name**: The name you gave the snapshot.
-- **Date**: When the snapshot was created.
-- **Size**: How much storage space it uses.
+    Once you have snapshots, you can see them listed in the %%VM|vm%%'s details section. Each snapshot shows:
 
-To manage snapshots:
+    - **Name**: The name you gave the snapshot.
+    - **Date**: When the snapshot was created.
+    - **Size**: How much storage space it uses.
 
-1. Go to the **VMs** tab in the %%WebGUI|web-gui%%.
-2. Click on the %%VM|vm%% name to expand its details.
-3. Navigate to the **Snapshots** section.
-4. Use the available buttons for **Revert**, **Block Commit**, **Block Pull**, or **Remove**.
+    To manage snapshots:
 
-:::tip
-**Revert snapshot**: This restores your %%VM|vm%% to exactly how it was when you created the snapshot. Any changes made after the snapshot will be lost. The VM will use the original disk file as if the snapshot never existed.
+    1. Go to the **VMs** tab in the %%WebGUI|web-gui%%.
+    2. Click on the %%VM|vm%% name to expand its details.
+    3. Navigate to the **Snapshots** section.
+    4. Use the available buttons for **Revert**, **Block Commit**, **Block Pull**, or **Remove**.
 
-**Block Commit**: This process copies all changes from the snapshot overlay back into the original %%VM|vm%% disk file. By default, it shows "Pivot" and "Delete" options selected:
+    :::tip
+    **Revert snapshot**: This restores your %%VM|vm%% to exactly how it was when you created the snapshot. Any changes made after the snapshot will be lost. The VM will use the original disk file as if the snapshot never existed.
 
-- **Pivot**: This option switches your VM from using the overlay file back to using the original disk file. After the commit, your VM will use the original disk (which now contains the changes) instead of the overlay file.
+    **Block Commit**: This process copies all changes from the snapshot overlay back into the original %%VM|vm%% disk file. By default, it shows "Pivot" and "Delete" options selected:
 
-- **Delete**: This option removes the snapshot overlay file after the changes have been committed to the original disk.
+    - **Pivot**: This option switches your VM from using the overlay file back to using the original disk file. After the commit, your VM will use the original disk (which now contains the changes) instead of the overlay file.
 
-- **Together ("Pivot" + "Delete")**:
-  - **With both selected**: Changes are committed to the original file, your VM switches back to using the original disk, and the overlay file is deleted. This is the most common choice.
-  - **With both unchecked**: Changes are committed to the original file, but your VM continues using the overlay file, and the overlay file remains to capture future changes.
+    - **Delete**: This option removes the snapshot overlay file after the changes have been committed to the original disk.
 
-Use Block Commit when you are satisfied with the changes and want to make them permanent.
+    - **Together ("Pivot" + "Delete")**:
+      - **With both selected**: Changes are committed to the original file, your VM switches back to using the original disk, and the overlay file is deleted. This is the most common choice.
 
+      - **With both unchecked**: Changes are committed to the original file, but your VM continues using the overlay file, and the overlay file remains to capture future changes.
 
-**Block Pull**: This merges the original disk data into the snapshot overlay file, making the overlay file complete and independent. Your VM continues using the overlay file, but it no longer depends on the original disk. Use this when you want to keep your current state and make the snapshot permanent.
+    Use Block Commit when you are satisfied with the changes and want to make them permanent.
 
-**Remove snapshot**: This simply deletes the snapshot overlay file without affecting your %%VM|vm%%. Your %%VM|vm%% continues using the original disk file, and any changes made after the snapshot are lost.
+    **Block Pull**: This merges the original disk data into the snapshot overlay file, making the overlay file complete and independent. Your VM continues using the overlay file, but it no longer depends on the original disk. Use this when you want to keep your current state and make the snapshot permanent.
 
-:::
+    **Remove snapshot**: This simply deletes the snapshot overlay file without affecting your %%VM|vm%%. Your %%VM|vm%% continues using the original disk file, and any changes made after the snapshot are lost.
+    :::
 
   </TabItem>
+
   <TabItem value="revert" label="Reverting to snapshots">
 
-If you need to go back to a previous state:
+    If you need to go back to a previous state:
 
-1. Stop the %%VM|vm%% if it's currently running.
-2. Go to the **VMs** tab in the %%WebGUI|web-gui%%.
-3. Click on the %%VM|vm%% name to expand its details.
-4. Navigate to the **Snapshots** section.
-5. Find the snapshot you want to restore and click the **Revert** button.
-6. Confirm that you want to revert (this will lose any changes made after the snapshot).
-7. Start your %%VM|vm%% - it will now be exactly as it was when you created the snapshot.
+    1. Stop the %%VM|vm%% if it's currently running.
+    2. Go to the **VMs** tab in the %%WebGUI|web-gui%%.
+    3. Click on the %%VM|vm%% name to expand its details.
+    4. Navigate to the **Snapshots** section.
+    5. Find the snapshot you want to restore and click the **Revert** button.
+    6. Confirm that you want to revert (this will lose any changes made after the snapshot).
+    7. Start your %%VM|vm%% - it will now be exactly as it was when you created the snapshot.
 
-:::caution[Data loss warning]
-
-Reverting to a snapshot permanently deletes any changes made after that snapshot was created. Make sure you really want to lose those changes before reverting.
-
-:::
+    :::caution[Data loss warning]
+    Reverting to a snapshot permanently deletes any changes made after that snapshot was created. Make sure you really want to lose those changes before reverting.
+    :::
 
   </TabItem>
 </Tabs>
 
 ### Snapshot storage
 
-Snapshots use storage space on your system. Each snapshot saves only the differences between the current state and the snapshot state; however, these differences can still accumulate over time. 
+Snapshots use storage space on your system. Each snapshot saves only the differences between the current state and the snapshot state; however, these differences can still accumulate over time.
 
 Here are some points to consider:
 
@@ -256,6 +256,7 @@ Here are some points to consider:
 - **Storage location**: Snapshots are stored with your %%VM|vm%% files, so make sure you have enough space on your %%cache pools|cache-pool%% or %%array|array%%.
 
 **Snapshot storage location:**
+
 - Snapshot metadata is stored in `/etc/libvirt/qemu/snapshotdb/VM_name/`.
 - Actual snapshot data is stored alongside your %%VM|vm%% files on %%cache pools|cache-pool%% or %%array|array%%.
 
@@ -273,7 +274,6 @@ For more detailed technical information about how VM snapshots work, including b
 - **Backup strategy**: While not a replacement for proper backups, snapshots provide quick recovery for recent changes.
 
 :::
-
 
 ---
 
