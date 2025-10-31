@@ -1,0 +1,191 @@
+---
+sidebar_position: 1
+sidebar_label: Visión General
+---
+
+# Arreglos
+
+El sistema de almacenamiento de Unraid combina flexibilidad con protección de datos mediante su arquitectura de %%array|array%% y %%cache|cache%%. El %%array|array%% gestiona su almacenamiento principal con protección de %%paridad|parity%% opcional, mientras que los grupos de caché aceleran el rendimiento.
+
+## Principios de conducción
+
+1. **Use your largest drives for parity** - Data disks can't be larger than your %%parity disks|parity-drives%%, so use your biggest drives for parity to avoid future expansion limits. If you use dual parity, both drives should be at least the size of your largest data disk, but they can be different sizes from each other. No disk can be larger than your smallest parity drive.
+
+2. **Guarda los SSDs para cachés de memoria** - Unraid no admite TRIM/Descartar para SSDs en la matriz principal, lo que causa degradación del rendimiento con el tiempo. Usa SSDs en %%cachés de memoria|cache-pool%% o como dispositivos no asignados en su lugar, donde estas características funcionan correctamente.
+
+3. **Agrega un caché para mejorar el rendimiento de escritura** - Un caché acelera dramáticamente las escrituras al almacenar temporalmente datos en discos rápidos antes de que el %%Mover|mover%% los transfiera a la matriz (típicamente a las 3:40 AM). Los datos en caché aún aparecen en tus recursos compartidos, por lo que el acceso se siente instantáneo mientras la transferencia ocurre en segundo plano.
+
+4. **Use a cache pool for data protection** - A single cache device puts your cached data at risk until the %%Mover|mover%% runs. Multiple devices in a %%cache pool|cache-pool%% provide redundancy and protect your data from cache device failures.
+
+5. **SSDs excel for apps and VMs** - Applications and virtual machines benefit significantly from SSD speed. A %%cache pool|cache-pool%% with SSDs provides the perfect balance of speed, efficiency, and data protection for these workloads.
+
+6. **La encriptación es opcional** - La encriptación está deshabilitada por defecto y requiere reformatear los discos (lo cual borra los datos). Si la necesitas, mueve datos fuera del disco, cambia a un sistema de archivos encriptado, formatea, y luego mueve los datos de nuevo. Consulta [Cómo encriptar un disco en Unraid](../../../system-administration/secure-your-server/securing-your-data.mdx#how-to-encrypt-a-drive-in-unraid) para más detalles. Ten en cuenta que la encriptación complica la recuperación de datos si algo sale mal.
+
+:::info[Disk Reconocimiento y Flexibilidad de Puerto]
+
+Unraid identifica los discos según sus números de serie y tamaños, no por los puertos SATA específicos a los que están conectados. Esto significa que puedes cambiar las unidades entre diferentes puertos SATA sin afectar sus asignaciones en Unraid. Esta función es especialmente útil para solucionar problemas de hardware, como encontrar un puerto defectuoso o reemplazar cables de alimentación o SATA poco confiables.
+
+:::
+
+:::caution
+
+Tu matriz no iniciará si asignas o conectas más dispositivos de los que permite tu clave de licencia.
+
+:::
+
+## Iniciar/detener la matriz
+
+Cuando tu sistema inicia, normalmente enciende automáticamente la matriz de discos. Sin embargo, si has cambiado recientemente la configuración del disco, como añadir un nuevo disco, la matriz permanecerá apagada para que puedas verificar tu configuración.
+
+:::caution
+
+Unraid ofrece varias opciones de mantenimiento y configuración para tu matriz de almacenamiento. Las operaciones clave incluyen:
+
+:::
+
+Para iniciar o detener la matriz:
+
+1. Haga clic en la pestaña **Principal**.
+2. Navega a la sección **Operación de la matriz**.
+3. Haz clic en **Iniciar** o **Parar**. Puede que necesites marcar la casilla que dice "Sí, quiero hacer esto" antes de continuar.
+
+## Selección de sistema de archivos
+
+De forma predeterminada, los nuevos discos de la matriz se formatearán con %%XFS|xfs%%. Si deseas usar %%ZFS|zfs%% o %%BTRFS|btrfs%%, selecciona tu sistema de archivos preferido del menú desplegable.
+
+Para obtener información detallada sobre las opciones del sistema de archivos, consulta [Sistemas de archivos](../file-systems.mdx).
+
+## Configurando discos nuevos
+
+Unraid proporciona varias opciones de mantenimiento y configuración para tu matriz de almacenamiento. Las operaciones incluyen:
+
+- [Adición de discos a la matriz](./adding-disks-to-array.mdx) - Expandir la capacidad de almacenamiento
+- [Reemplazo de discos en la matriz](./replacing-disks-in-array.mdx) - Actualizar o intercambiar unidades fallidas
+- [Remoción de discos de la matriz](./removing-disks-from-array.mdx) - Descomisionar o reducir el tamaño de la matriz
+- [Salud y mantenimiento de la matriz](./array-health-and-maintenance.mdx) - Monitorear y mantener tu matriz
+
+## Modos de escritura del arreglo
+
+Unraid proporciona diversos modos de escritura para gestionar las operaciones del arreglo, cada uno con sus propias ventajas y desventajas en cuanto a velocidad, consumo de energía y desgaste de los discos. Conocer cómo funcionan estos modos, junto con el papel de una unidad de caché o pool, puede ayudarlo a afinar su servidor para que se adapte mejor a sus necesidades.
+
+Si un segundo disco falla mientras está reconstruyendo otro, lo que pueda hacer dependerá de su configuración de paridad.
+
+| Modo de Escritura                | Velocidad (Típica)                       | Uso de energía | Cuando las unidades se activan       | Protección de datos     | Mejor caso de uso                                                                                 |
+| -------------------------------- | ---------------------------------------- | -------------- | ------------------------------------ | ----------------------- | ------------------------------------------------------------------------------------------------- |
+| Leer/Modificar/Escribir          | 20–40 MB/s                               | Bajo           | Solo la paridad y la unidad objetivo | Sí                      | La mayoría de las cargas de trabajo, ahorro de energía, escrituras pequeñas                       |
+| Turbo Escritura (Reconstrucción) | 40–120 MB/s                              | Alta           | Todas las unidades                   | Sí                      | Transferencias de archivos grandes, reconstrucciones del arreglo, %%parity checks\|parity-check%% |
+| Escritura en Caché (SSD/NVMe)    | 50–110 MB/s (SSD), 250–900 MB/s (NVMe)\* | Varía          | Solo las unidades de caché           | No (hasta que se mueva) | Aplicaciones, VMs, escrituras frecuentes, maximizar velocidad                                     |
+
+### Leer/Modificar/Escribir
+
+This is the default write mode. It reads the existing data and the parity, calculates the new parity, and then writes the updated data. Only the %%parity drive|parity-drives%% and the target data drive spin up, which results in lower power usage and less wear on the drives. However, it can be slower due to the additional read/write cycles.
+
+Usa este modo en cualquier momento, especialmente si deseas ahorrar energía y que las unidades inactivas se apaguen. Es ideal para escrituras pequeñas o poco frecuentes.
+
+### Turbo Escritura (Escritura reconstruida)
+
+Turbo write, también conocido como escritura de reconstrucción, es una característica diseñada para aumentar la velocidad de escritura de tu matriz Unraid. Funciona leyendo todos los discos de datos y actualizando la paridad simultáneamente. Este proceso elimina los retrasos causados por esperar a que los platillos giren, como se ve en el modo de escritura predeterminado. Sin embargo, todos los discos de la matriz deben estar girando y funcionando correctamente para que esto funcione efectivamente.
+
+**Cómo funciona:** Cuando escribes nuevos datos, Unraid lee de todos los demás discos de datos y recalcula la paridad al mismo tiempo. Tanto los nuevos datos como la paridad actualizada se escriben juntos. Todos los discos de la matriz deben estar operativos y girando activamente.
+
+**When to use:** Transferring large, sequential files to the array. During array rebuilds or %%parity checks|parity-check%%, as all drives are already spinning. When minimizing write time is a priority and you can confirm all drives are healthy.
+
+**Cuándo evitar:** Si deseas que tus discos se apaguen durante los tiempos de inactividad para conservar energía. Para operaciones de escritura pequeñas o poco frecuentes, ya que hace que todos los discos se activen para cada escritura, aumentando el consumo de energía y el desgaste. Si sospechas que algún disco está fallando o es poco fiable, ya que depende de que todos los discos estén operativos.
+
+:::info
+
+El Turbo write es más adecuado para operaciones a granel y escenarios que requieren alto rendimiento. Sin embargo, podría no ser la mejor opción para tareas cotidianas si te centras en ahorrar energía y minimizar el desgaste de los discos.
+
+:::
+
+### Escritura en Caché
+
+Los datos se escriben primero en un SSD o NVMe %%caché|cache%% rápido y luego pueden transferirse a la matriz principal por un proceso llamado %%Mover|mover%%. Las velocidades varían: SSD: 50–110 MB/s; NVMe: 250–900 MB/s (que pueden utilizar redes de 10GbE). Una vez que los datos se transfieren a la matriz, están protegidos por paridad.
+
+**Cuándo usar:** Para recursos compartidos con operaciones de escritura frecuentes, como aplicaciones, máquinas virtuales o descargas. Para mejorar el rendimiento y reducir la latencia percibida de escritura.
+
+**Expectativas de rendimiento:**
+
+- Sin una unidad de caché: Promedio 20–30 MB/s, con picos de hasta 40 MB/s
+- Con caché SSD: 50–110 MB/s
+- Con caché NVMe: 250–900 MB/s dependiendo de las limitaciones de la red o la unidad
+
+:::tip
+
+Considera usar un grupo de caché (múltiples dispositivos) para mayor redundancia y protección de datos antes de que el %%Mover|mover%% funcione.
+
+:::
+
+:::info[Automated Tiempo]
+
+- El modo **Auto** (una característica futura) activará la turbo escritura solo cuando todas las unidades ya estén girando.
+- Los plugins de la comunidad (busca "Turbo Write" en la pestaña de Apps) pueden ofrecer opciones mejoradas de automatización o programación.
+
+:::
+
+Para cambiar el Modo de Escritura:
+
+1. Navega a ***Configuración → Configuración de Disco***.
+2. Localiza **Ajustable (md_write_method)**.
+3. Elige tu modo preferido:
+   - **Leer/Modificar/Escribir** (predeterminado)
+   - **Reconstruct Write** (Turbo Write)
+   - **Auto** (característica futura)
+4. Haz clic en **Aplicar** para confirmar tu elección.
+
+:::important[Quick recapitulación
+
+- Usa **Turbo Write** cuando necesites velocidad, pero ten en cuenta el aumento del consumo de energía y la activación de las unidades.
+- Utiliza **Escritura en Caché** para un rendimiento óptimo, especialmente con unidades SSD o NVMe.
+- Para la mayoría de los usuarios, el modo de escritura predeterminado ofrece el mejor equilibrio, a menos que necesites específicamente mayores velocidades.
+
+:::
+
+## Modos de lectura
+
+Cuando uses Unraid, la velocidad a la que puedes leer archivos está determinada principalmente por el disco individual que contiene cada archivo. A diferencia de los sistemas %%RAID|raid%% tradicionales, que combinan múltiples discos para mejorar el rendimiento, Unraid almacena cada archivo en un solo disco. Esto significa que las velocidades de lectura no se incrementarán por las velocidades combinadas de varios discos.
+
+### Expectativas de rendimiento
+
+- **HDD único típico:** 70–250 MB/s (depende del modelo de la unidad, la edad y la ubicación de los datos)
+- **SSD SATA típico:** 400–550 MB/s
+- **NVMe SSD (en un pool):** 250–7,000 MB/s (se aplican limitaciones de generación PCIe y red/PCIe; por ejemplo, red 10GbE se limita a ~1,100 MB/s)
+
+:::note[Special casos
+
+- Si un disco está deshabilitado y sus datos están siendo reconstruidos, Unraid usará las unidades restantes junto con la información de paridad para recrear los datos. Durante este proceso, la velocidad de lectura puede reducirse a 30–60 MB/s o incluso menos, dependiendo del disco más lento en tu sistema.
+- Cualquier operación en curso en la matriz, como una verificación de %%parity|parity-check%% o la reconstrucción de una unidad, también puede afectar el rendimiento de lectura. Esto se debe al aumento del movimiento de los cabezales de la unidad y la competencia general por los recursos.
+
+:::
+
+## Piscinas de caché
+
+Los %%Cache pools|cache-pool%% en Unraid proporcionan ventajas significativas, particularmente para tareas intensivas en escrituras, máquinas virtuales (VMs) y contenedores Docker. Estos pools operan por separado del array principal y pueden configurarse con múltiples discos utilizando los sistemas de archivos %%BTRFS|btrfs%% o %%ZFS|zfs%%, soportando varias configuraciones de %%RAID|raid%% para velocidad y protección de datos.
+
+### Pools de caché vs. el arreglo principal
+
+| Característica                     | Pool de caché (BTRFS)                                                                                             | Pool de caché (ZFS)                                                                                                                                                    | Arreglo principal (Unraid)                                  |
+| ---------------------------------- | ----------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------- |
+| **Velocidad de lectura**           | SSD: 400–550 MB/s, NVMe: 250–7,000 MB/s\*                                                                         | SSD: 400–550 MB/s, NVMe: 250–7,000 MB/s\*                                                                                                                              | HDD: 70–250 MB/s (por disco)                                |
+| **Velocidad de escritura**         | SSD: 400–550 MB/s, NVMe: 250–7,000 MB/s\*                                                                         | SSD: 400–550 MB/s, NVMe: 250–7,000 MB/s\*                                                                                                                              | 20–120 MB/s (dependiente del modo de paridad)               |
+| **Protección de datos**            | %%RAID 1\|raid1%%/%%RAID 10\|raid10%%; %%RAID 5\|raid5%%/%%RAID 6\|raid6%% (experimental, no para datos críticos) | %%RAID 1\|raid1%%/%%RAID 10\|raid10%%; %%RAIDZ1\|raidz1%%/%%RAIDZ2\|raidz2%%/%%RAIDZ3\|raidz3%% (estable, listo para producción)                                       | Basado en paridad, independiente del sistema de archivos    |
+| **Expansión**                      | Mezclar tamaños de unidades; agregar/eliminar dispositivos dinámicamente                                          | Soporte limitado de adición/eliminación de dispositivos; no se puede eliminar de RAIDZ; adición de un solo dispositivo para expandir un único vdev RAIDZ en Unraid 7.2 | Agregar unidades, pero sin banda ni escalado de rendimiento |
+| **Complejidad en la recuperación** | Mayor riesgo de pérdida de datos; se necesitan herramientas %%BTRFS\|btrfs%%                                      | Mayor riesgo de pérdida de datos; se requieren herramientas %%ZFS\|zfs%%                                                                                               | Reconstrucciones más fáciles basadas en paridad             |
+| **Mejor para**                     | Aplicaciones, máquinas virtuales, escrituras frecuentes                                                           | Aplicaciones, máquinas virtuales, escrituras frecuentes, cargas de trabajo empresariales                                                                               | Almacenamiento a granel, bibliotecas de medios              |
+
+\**Las velocidades reales de NVMe dependen de la generación PCIe, el enfriamiento, y el ancho de banda de la red (p.ej., 10GbE se limita a ~1,100 MB/s).*
+
+### Pros de los pools de caché
+
+- **Mayor rendimiento:** Los pools NVMe pueden saturar redes de 10GbE/40GbE (1,100–3,500 MB/s).
+- **RAID flexible:** Tanto %%BTRFS|btrfs%% como %%ZFS|zfs%% soportan %%RAID 1|raid1%%/%%RAID 10|raid10%% para redundancia sin necesidad de igualar tamaños de unidades.
+- **Baja latencia:** Ideal para bases de datos, máquinas virtuales y contenedores Docker.
+- **Ventajas de ZFS:** %%ZFS|zfs%% proporciona funciones de grado empresarial como verificación de integridad de datos, compresión y snapshots.
+
+### Contras de los pools de caché
+
+- **Sin protección de paridad:** Los datos no están protegidos hasta que se trasladan al arreglo.
+- **Riesgos de recuperación:** %%BTRFS|btrfs%% %%RAID 5|raid5%%/%%RAID 6|raid6%% es inestable; los pools de un solo disco carecen de redundancia.
+- **Consideraciones de ZFS:** %%ZFS|zfs%% requiere más memoria RAM y tiene requisitos de hardware más estrictos que %%BTRFS|btrfs%%.
+
+Para obtener información más detallada sobre %%cache pools|cache-pool%%, incluyendo cómo configurarlos, gestionarlos y características avanzadas, consulte la página [Pools de Caché](../cache-pools.mdx).
