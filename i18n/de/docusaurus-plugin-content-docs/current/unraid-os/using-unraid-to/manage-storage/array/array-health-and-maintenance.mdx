@@ -1,0 +1,200 @@
+---
+sidebar_position: 5
+sidebar_label: Array health and maintenance
+---
+
+import ArrayCheckParity from "../partials/array-check-parity.mdx";
+import ArrayCheckRead from "../partials/array-check-read.mdx";
+import TroubleshootMissingDisks from "../partials/troubleshoot-missing-disks.mdx";
+import TroubleshootDeviceLimit from "../partials/troubleshoot-device-limit.mdx";
+import TroubleshootLicenseIssues from "../partials/troubleshoot-license-issues.mdx";
+import TroubleshootKeyServer from "../partials/troubleshoot-key-server.mdx";
+import TroubleshootWithdrawnRelease from "../partials/troubleshoot-withdrawn-release.mdx";
+
+# Array health and maintenance
+
+Regularly checking your Unraid array is crucial for maintaining data integrity and identifying potential issues before they result in data loss. This page covers monitoring tools and troubleshooting procedures for your array.
+
+## Array-Geräte überprüfen
+
+You can initiate a check using the **Check** button under ***Array Operations***. Depending on your array's configuration, this button allows you to conduct either a %%parity check|parity-check%% or a %%read check|read-check%%.
+
+<div
+  style={{
+   margin: "auto",
+   maxWidth: "400px",
+   display: "flex",
+   flexDirection: "column",
+   alignItems: "center",
+  }}
+>
+  ![Die Überprüfungsschaltfläche ermöglicht es Ihnen, Paritäts- und Leseüberprüfungen durchzuführen.](/img/Check_button.PNG)
+</div>
+
+For convenience, you can schedule these checks to run automatically at intervals that suit you by navigating to ***Settings → Scheduler***. It's advisable to perform automated, correcting checks on a monthly or quarterly basis to ensure the ongoing health of your data and fix any sync errors found.
+
+### Paritätsprüfungen
+
+<ArrayCheckParity />
+
+### Lesekontrollen
+
+<ArrayCheckRead />
+
+### Verlauf prüfen
+
+Whenever the system performs a %%parity check|parity-check%% or a %%read check|read-check%%, it keeps a record of what happened. You can view these details easily by clicking the **History** button found under ***Array Operations*** in the interface.
+
+Unraid bietet verschiedene Schreibmodi zum Verwalten von Array-Operationen, die jeweils ihre eigenen Vor- und Nachteile in Bezug auf Geschwindigkeit, Stromverbrauch und Laufwerksverschleiß haben. Zu wissen, wie diese Modi funktionieren, zusammen mit der Rolle eines Cache-Laufwerks oder Pools, kann Ihnen helfen, Ihren Server optimal an Ihre Anforderungen anzupassen.
+
+## Laufwerke herunter oder hoch drehen
+
+Unraid allows you to control the power states of your hard drives. You can easily %%spin them up or down|spin-state%%, and manage SSDs to be active or in standby. This helps save energy, extend the life of your drives, and reduce noise when the disks are not being used.
+
+### Warum runter- oder hochdrehen?
+
+Spinning down drives that aren't used often saves energy and helps them last longer. Spinning up disks ahead of time cuts down wait times when you need files soon.
+
+### Wie man Drehzustände kontrolliert
+
+Control disk spin states through the **Main** tab:
+
+1. Go to the **Main** tab and locate your array devices.
+2. Each disk shows spin control buttons:
+   - 🔘 button - **Spin Up** (if currently spun down)
+   - 🟢 button - **Spin Down** (if currently spinning)
+3. Click the appropriate button for the action you want.
+
+Denken Sie daran, dass eine Festplatte, die gerade zugegriffen wird (z. B. wenn Sie eine Datei öffnen), aktiv bleibt und eine Runterdreh-Anfrage ignoriert.
+
+Wenn eine Festplatte heruntergefahren ist, wird ihre Temperatur in der %%WebGUI|web-gui%% nicht angezeigt. Sobald jedoch eine Anwendung oder ein Benutzer darauf zugreift, wird sie automatisch hochgefahren.
+
+:::tip
+
+Um den Schreibmodus zu ändern:
+
+:::
+
+## Array-Konfiguration zurücksetzen
+
+Das Zurücksetzen Ihrer Array-Konfiguration ist ein wichtiger Schritt, der sorgfältig durchgeführt werden sollte. Dieser Prozess ist normalerweise erforderlich, wenn eine Festplatte entfernt, ein neues Array-Layout erstellt oder Festplattenzuweisungsprobleme behoben werden. Beachten Sie bitte, dass diese Aktion den Datenschutz und die Parität beeinflussen kann. Gehen Sie daher nur dann vor, wenn es wirklich nötig ist.
+
+Reset your array when:
+
+- Removing or replacing disks
+- Starting fresh with a new array layout
+- Fixing disk assignment errors
+- Recovering from configuration problems
+
+<div
+  style={{
+   margin: "auto",
+   maxWidth: "650px",
+   display: "flex",
+   flexDirection: "column",
+   alignItems: "center",
+  }}
+>
+  ![Das Zurücksetzen Ihrer Laufwerkskonfiguration kann über die neue Konfigurationsseite vorgenommen werden](/img/Newconfig.png)
+</div>
+
+Um Ihre Array-Konfiguration zurückzusetzen:
+
+1. Go to **Tools → New Config**.
+2. Optionally keep some existing disk assignments for minor adjustments.
+3. Check the confirmation box and click **Apply**.
+4. Return to the **Main** tab.
+5. Assign or unassign disks as needed.
+6. Start the array in Normal or %%Maintenance Mode|maintenance-mode%%.
+
+:::important
+
+- Unraid attempts to recognize previously used drives and preserve data where possible
+- Removing a data drive invalidates parity unless that drive was zeroed before removal
+- Changing disk order won't affect parity1, but it can invalidate parity2
+
+:::
+
+:::caution
+
+Wenn Sie die **Start**-Schaltfläche sehen, gibt es ein Kontrollkästchen mit der Aufschrift **Parität ist gültig**. Markieren Sie dieses Kontrollkästchen nur, wenn Sie sich sicher sind, dass es korrekt ist, oder wenn ein erfahrener Unraid-Benutzer Ihnen dies während der Wiederherstellung empfohlen hat. Ein fehlerhaftes Markieren dieser Option kann zu Datenverlust führen.
+
+%%Cache-Pools|cache-pool%% in Unraid bieten erhebliche Vorteile, insbesondere für schreibintensive Aufgaben, virtuelle Maschinen (VMs) und Docker-Container. Diese Pools arbeiten separat vom Hauptarray und können mit mehreren Laufwerken entweder mit dem %%BTRFS|btrfs%% oder %%ZFS|zfs%% Dateisystem eingerichtet werden, wobei verschiedene %%RAID|raid%% Konfigurationen zur Geschwindigkeits- und Datensicherheit unterstützt werden.
+
+:::
+
+### Rückgängigmachen eines Resets
+
+To reverse a reset:
+
+1. Zugriff auf Ihr Flash-Gerät über das Netzwerk (SMB).
+2. Open the `config` folder.
+3. Rename `super.old` to `super.dat`.
+4. Reboot your server to restore the prior configuration.
+
+## Statusberichte
+
+Unraid bietet Statusberichte, die Ihnen helfen, den Zustand Ihres Speichera arrays im Blick zu behalten. Diese Berichte sind eine schnelle Möglichkeit, zu überprüfen, ob einer Ihrer Datenträger deaktiviert ist oder Probleme mit dem Lesen oder Schreiben von Daten hat.
+
+- **Aktueller Status:** Statusberichte zeigen den aktuellen Zustand Ihres Arrays an. Es ist wichtig zu beachten, dass diese Informationen nach einem Neustart Ihres Systems zurückgesetzt werden. Sie speichern also keine Historie vergangener Probleme.
+
+- **Keine historischen Daten:** Wenn Sie sehen möchten, was vor einem Neustart passiert ist, müssen Sie an anderer Stelle nachsehen, da diese Berichte keine vergangenen Zustände speichern.
+
+:::important
+
+Denken Sie daran, dass die Statusberichte keine %%SMART|smart%% Daten enthalten. %%SMART-Berichte|smart-report%% geben Ihnen eine detailliertere Ansicht des Gesundheitszustands einzelner Festplatten. Auch wenn Ihr Statusbericht zeigt, dass alles in Ordnung ist, ist es dennoch ratsam, die %%SMART-Berichte|smart-report%% regelmäßig zu überprüfen, um potenzielle Probleme frühzeitig zu erkennen.
+
+:::
+
+## Fehlerbehebung bei Array-Startproblemen
+
+If your array won't start, follow these steps to identify and fix common problems. Look for error messages under ***Main → Array Operation***.
+
+### Fehlende Festplatten
+
+<TroubleshootMissingDisks />
+
+### Gerätebegrenzung
+
+<TroubleshootDeviceLimit />
+
+### Lizenzprobleme
+
+<TroubleshootLicenseIssues />
+
+### Schlüsselserververbindung
+
+<TroubleshootKeyServer />
+
+### Zurückgezogene Freigabe
+
+<TroubleshootWithdrawnRelease />
+
+## Festplattenausfall während eines Wiederaufbaus
+
+Wenn während des Wiederaufbaus einer Festplatte eine zweite Festplatte ausfällt, hängt das weitere Vorgehen von Ihrer Paritätskonfiguration ab.
+
+### Single parity disk
+
+Wenn während des Wiederaufbaus einer anderen Festplatte eine Festplatte ausfällt, wird der Wiederaufbau gestoppt, da die Daten nicht genau wiederhergestellt werden können. Leider können Sie Ihre Daten in dieser Situation nicht wiederherstellen.
+
+### Dual parity disk
+
+Wenn Sie zwei %%parity drives|parity-drives%% haben, haben Sie mehr Möglichkeiten:
+
+- Sie können warten, bis der erste Neuaufbau abgeschlossen ist, und sich dann mit der zweiten fehlgeschlagenen Festplatte befassen.
+- Oder Sie können den aktuellen Wiederaufbau stoppen, die zweite ausgefallene Festplatte ersetzen und dann das Array starten, um beide Festplatten gleichzeitig wieder aufzubauen.
+
+Wenn der erste Wiederaufbau fast abgeschlossen ist, ist es normalerweise besser, ihn fertigstellen zu lassen. Wenn er gerade erst begonnen hat, könnte es schneller sein, beide zusammen wiederherzustellen.
+
+:::warning
+
+Der Wiederaufbau von Festplatten belastet alle Laufwerke stark, was die Chance auf neue Ausfälle erhöht. Überprüfen Sie immer die Laufwerkgesundheit mithilfe der %%SMART-Berichte|smart-report%%, bevor Sie mit einem Wiederaufbau beginnen.
+
+:::
+
+:::info[Rebuild Zeit
+
+Seien Sie darauf vorbereitet, dass der Wiederherstellungsprozess mehrere Stunden dauern kann. Die Dauer kann je nach Festplattengröße und Systemauslastung variieren. Größere Festplatten und ausgelastete Systeme benötigen möglicherweise länger.
+
+:::
