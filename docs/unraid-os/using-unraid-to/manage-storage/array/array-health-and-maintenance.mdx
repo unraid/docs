@@ -1,0 +1,202 @@
+---
+sidebar_position: 5
+sidebar_label: Array health and maintenance
+---
+
+import ArrayCheckParity from "../partials/array-check-parity.mdx";
+import ArrayCheckRead from "../partials/array-check-read.mdx";
+import TroubleshootMissingDisks from "../partials/troubleshoot-missing-disks.mdx";
+import TroubleshootDeviceLimit from "../partials/troubleshoot-device-limit.mdx";
+import TroubleshootLicenseIssues from "../partials/troubleshoot-license-issues.mdx";
+import TroubleshootKeyServer from "../partials/troubleshoot-key-server.mdx";
+import TroubleshootWithdrawnRelease from "../partials/troubleshoot-withdrawn-release.mdx";
+
+# Array health and maintenance
+
+Regularly checking your Unraid array is crucial for maintaining data integrity and identifying potential issues before they result in data loss. This page covers monitoring tools and troubleshooting procedures for your array.
+
+## Checking array devices
+
+You can initiate a check using the **Check** button under **_Array Operations_**. Depending on your array's configuration, this button allows you to conduct either a %%parity check|parity-check%% or a %%read check|read-check%%.
+
+<div
+  style={{
+    margin: "auto",
+    maxWidth: "400px",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+  }}
+>
+  ![The check button lets you perform parity and read
+  checks](/img/Check_button.PNG)
+</div>
+
+For convenience, you can schedule these checks to run automatically at intervals that suit you by navigating to **_Settings → Scheduler_**. It's advisable to perform automated, correcting checks on a monthly or quarterly basis to ensure the ongoing health of your data and fix any sync errors found.
+
+### Parity checks
+
+<ArrayCheckParity />
+
+### Read checks
+
+<ArrayCheckRead />
+
+### Check history
+
+Whenever the system performs a %%parity check|parity-check%% or a %%read check|read-check%%, it keeps a record of what happened. You can view these details easily by clicking the **History** button found under **_Array Operations_** in the interface.
+
+For those who want to dive deeper, all these records are saved in a text file located in the `config` directory on your Unraid USB flash device.
+
+## Spinning disks down or up
+
+Unraid allows you to control the power states of your hard drives. You can easily %%spin them up or down|spin-state%%, and manage SSDs to be active or in standby. This helps save energy, extend the life of your drives, and reduce noise when the disks are not being used.
+
+### Why spin down or up?
+
+Spinning down drives that aren't used often saves energy and helps them last longer. Spinning up disks ahead of time cuts down wait times when you need files soon.
+
+### How to control spin states
+
+Control disk spin states through the **Main** tab:
+
+1. Go to the **Main** tab and locate your array devices.
+2. Each disk shows spin control buttons:
+   - 🔘 button - **Spin Up** (if currently spun down)
+   - 🟢 button - **Spin Down** (if currently spinning)
+3. Click the appropriate button for the action you want.
+
+Remember that if a disk is being accessed (like if you're opening a file), it will stay active and ignore any spin-down request.
+
+When a disk is spun down, its temperature won't show in the %%WebGUI|web-gui%%. However, once any application or user accesses it, it will automatically spin up.
+
+:::tip
+
+Use the spin controls to save power and reduce wear on your drives. Remember that disks that are actively being used will stay on until all tasks are finished.
+
+:::
+
+## Reset the array configuration
+
+Resetting your array configuration is an important step that should be undertaken carefully. This process is usually necessary when removing a disk, starting fresh with a new array layout, or fixing disk assignment issues. Please note that this action can impact data protection and parity, so ensure you only proceed when truly needed.
+
+Reset your array when:
+- Removing or replacing disks
+- Starting fresh with a new array layout
+- Fixing disk assignment errors
+- Recovering from configuration problems
+
+<div
+  style={{
+    margin: "auto",
+    maxWidth: "650px",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+  }}
+>
+  ![Resetting your disk configuration can be done via the new config
+  page](/img/Newconfig.png)
+</div>
+
+To reset your array configuration:
+
+1. Go to **Tools → New Config**.
+2. Optionally keep some existing disk assignments for minor adjustments.
+3. Check the confirmation box and click **Apply**.
+4. Return to the **Main** tab.
+5. Assign or unassign disks as needed.
+6. Start the array in Normal or %%Maintenance Mode|maintenance-mode%%.
+
+:::important
+
+- Unraid attempts to recognize previously used drives and preserve data where possible
+- Removing a data drive invalidates parity unless that drive was zeroed before removal
+- Changing disk order won't affect parity1, but it can invalidate parity2
+
+:::
+
+:::caution
+
+When you see the **Start** button, there is a checkbox labeled **Parity is Valid**. Only check this box if you are certain it is correct or if an experienced Unraid user has advised you to do so during recovery. Incorrectly checking this option can lead to data loss.
+
+Do not use **New Config** if your goal is to rebuild a disk. Performing a New Config clears the array history required for a rebuild, and Unraid will not offer to rebuild the disk afterward. Follow the disk rebuild procedure instead.
+
+:::
+
+### Undoing a reset
+
+To reverse a reset:
+
+1. Access your flash device over the network (SMB).
+2. Open the `config` folder.
+3. Rename `super.old` to `super.dat`.
+4. Reboot your server to restore the prior configuration.
+
+## Status reports
+
+Unraid provides status reports that help you keep track of the health of your storage array. These reports are a quick way to check if any of your disks are disabled or having issues with reading or writing data.
+
+- **Current status:** Status reports show the current condition of your array. It's important to note that this information resets after you restart your system, so that it won't keep a history of past issues.
+
+- **No historical data:** If you want to see what has happened before a reboot, you'll need to look elsewhere, as these reports don't save past states.
+
+:::important
+
+Remember that the status reports don't include %%SMART|smart%% data. %%SMART reports|smart-report%% give you a more detailed view of individual disk health. So, even if your status report shows everything is fine, checking the %%SMART reports|smart-report%% regularly is still a good idea to catch any potential problems early.
+
+:::
+
+## Troubleshooting array start failures
+
+If your array won't start, follow these steps to identify and fix common problems. Look for error messages under **_Main → Array Operation_**.
+
+### Missing disks
+
+<TroubleshootMissingDisks />
+
+### Device limit
+
+<TroubleshootDeviceLimit />
+
+### License issues
+
+<TroubleshootLicenseIssues />
+
+### Key server connection
+
+<TroubleshootKeyServer />
+
+### Withdrawn release
+
+<TroubleshootWithdrawnRelease />
+
+## Disk failure during a rebuild
+
+If a second disk fails while you're rebuilding another one, what you can do will depend on your parity setup.
+
+### Single parity disk
+
+If one disk fails during the rebuild of another, the rebuild will stop because the data can't be accurately restored. Unfortunately, you won't be able to recover your data in this situation.
+
+### Dual parity disk
+
+If you have two %%parity drives|parity-drives%%, you have more options:
+
+- You can wait for the first rebuild to finish and then deal with the second failed disk.
+- Or, you can stop the current rebuild, replace the second failed disk, and then start the array to rebuild both disks at the same time.
+
+If the first rebuild is almost done, it's usually better to let it finish. If it just started, it might be faster to rebuild both together.
+
+:::warning
+
+Rebuilding disks puts a lot of stress on all drives, which increases the chance of new failures. Always check drive health using %%SMART reports|smart-report%% before starting a rebuild.
+
+:::
+
+:::info[Rebuild Time]
+
+Be prepared for the rebuild process to take several hours. The time can vary based on disk size and how busy your system is. Larger disks and busy systems may take longer.
+
+:::
+
