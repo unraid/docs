@@ -5,9 +5,6 @@ sidebar_label: Apagados no limpios
 
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
-import UncleanShutdownsPower from "./partials/unclean-shutdowns/unexpected-power-loss.mdx";
-import UncleanShutdownsFlash from "./partials/unclean-shutdowns/flash-drive-failure.mdx";
-import UncleanShutdownsTerminal from "./partials/unclean-shutdowns/open-terminal-sessions.mdx";
 
 # Apagados no limpios
 
@@ -30,30 +27,40 @@ Un SAI bien configurado es tu mejor defensa contra apagados no limpios causados 
 
 - **Conecta el SAI vía USB** a tu servidor Unraid.
 - **Habilitar el soporte de SAI** en ***Configuración → Configuración de SAI***.
-- **Configurar tiempos de espera de apagado:** Configure el SAI para que desencadene un apagado controlado antes de que la batería se agote. Ajuste los umbrales de "Tiempo restante de la batería" o "Nivel de carga de la batería" para proporcionar tiempo suficiente para que Unraid [detenga el %%array|array%%](../../using-unraid-to/manage-storage/array-configuration.mdx#startstop-the-array) y se apague de forma segura.
+- **Configure shutdown timeouts:** Set the UPS to trigger a controlled shutdown before the battery runs low. Adjust the "Battery runtime left" or "Battery charge level" thresholds to provide enough time for Unraid to [stop the %%array|array%%](../../using-unraid-to/manage-storage/array/overview.mdx#startstop-the-array) and power down safely.
 - **Prueba tu configuración:** Simula una pérdida de energía para asegurarte de que el SAI y Unraid respondan correctamente.
 
 Consulte el [plugin NUT](https://unraid.net/community/apps/c/plugins/p4?srsltid=AfmBOop675PrJQW4iqb4JBN3GyPpwDDiSmnZReq78t27XyxkFdMX8inO#:~:text=NUT%20%2D%20Network%20UPS%20Tools) para obtener una mayor compatibilidad con modelos UPS más avanzados o hardware no compatible.
 
 :::
 
-## Configuración de tiempos de apagado
+## Events that cause unclean shutdowns
 
-Configurar correctamente los tiempos de espera de apagado es esencial para asegurar que su servidor Unraid pueda detener efectivamente todos los servicios, previniendo apagados no limpios, especialmente durante pérdidas de energía o mantenimiento. Cada componente de su sistema - %%VM|vm%%s, contenedores de Docker, y el %%array|array%% general - tiene su propia configuración de tiempo de espera que puede ajustarse.
+Understanding the main triggers for unclean shutdowns helps you prevent them. The following sections cover the most common scenarios and their solutions.
 
-<Tabs>
-  <TabItem value="energía" label="Pérdida de energía inesperada" default>
-    <UncleanShutdownsPower />
-  </TabItem>
+### Pérdida de energía inesperada
 
-  <TabItem value="flash" label="Fallo de unidad flash">
-    <UncleanShutdownsFlash />
-  </TabItem>
+Las interrupciones de energía son una de las principales razones de apagados no limpios. Protege tu sistema con un SAI (Sistema de Alimentación Ininterrumpida) configurado correctamente que pueda apagar automáticamente Unraid antes de que se agote la batería.
 
-  <TabItem value="terminal" label="Abrir sesiones de terminal">
-    <UncleanShutdownsTerminal />
-  </TabItem>
-</Tabs>
+:::note
+
+Unraid admite la mayoría de las unidades UPS utilizando el protocolo %%apcupsd|apcupsd%% (APC y CyberPower suelen ser compatibles). Si tu UPS no es compatible, considera usar el complemento Network UPS Tools (NUT) de Community Applications.
+
+:::
+
+### Fallo de unidad flash
+
+El estado de %%array|array%% se guarda en tu dispositivo USB. Si la unidad flash se vuelve inaccesible o entra en un estado de solo lectura, Unraid no puede actualizar el estado de apagado, incluso si el %%array|array%% se detiene correctamente. Esto resulta en un apagado incorrecto que se detecta en el próximo arranque.
+
+### Abrir sesiones de terminal
+
+Unraid espera que todas las sesiones abiertas de terminal o SSH se cierren durante el apagado. Si estas sesiones permanecen activas y el temporizador de apagado expira, se produce un apagado forzado.
+
+:::tip
+
+El plugin [Dynamix Stop Shell](https://unraid.net/community/apps/c/tools-system/p2?srsltid=AfmBOoqBXyDNfHxRDCL7Fv9Gcfz8-8CdHmiJSX16PRZpZLLzgQtw2mVk#:~:text=the%20given%20interval.-,Dynamix%20Stop%20Shell,-Dynamix%20Repository) puede cerrar automáticamente sesiones de bash o SSH que estén sin actividad, ayudando a asegurar un apagado ordenado. Sin embargo, tenga cuidado si hay operaciones de escritura en curso en el %%array|array%%.
+
+:::
 
 ---
 
@@ -148,6 +155,8 @@ Sin el %%QEMU|qemu%% %%Guest Agent|guest-agent%% instalado, la hibernación pued
 
 :::
 
+---
+
 ### Configuración de tiempo de espera
 
 En esta sección, cubriremos cómo configurar los tiempos de espera para varios sistemas y procesos. Esta información es importante para asegurar que sus %%VMs|vm%% y contenedores Docker se apaguen correctamente sin pérdida de datos.
@@ -176,11 +185,11 @@ Al apagar, el proceso ocurre en el siguiente orden:
 
    Todas las %%VMs|vm%% en cada etapa se procesan al mismo tiempo, lo que significa que el tiempo total de apagado puede calcularse como: tiempo de espera de la VM × 3.
 
-2. **Detener contenedores Docker:** Todos los contenedores se detendrán simultáneamente (tiempo total = tiempo de espera de Docker).
+2. Docker containers stop simultaneously (total time = Docker timeout).
 
-3. **Otros servicios:** Esto incluye tareas como contenedores LXC y complementos de terceros, que generalmente toman unos pocos segundos.
+3. Other services include tasks like LXC containers and third-party plugins, which usually take a few seconds.
 
-4. **Apagado del array:** Las unidades deben desmontarse y sincronizarse los datos; esto generalmente toma de 15 a 30 segundos.
+4. Array shutdown: drives need to be unmounted and data synced; this typically takes 15-30 seconds.
 
 :::tip[Calculate su tiempo de espera general de apagado
 
@@ -196,110 +205,115 @@ Al apagar, el proceso ocurre en el siguiente orden:
 
 :::
 
-Si todas sus %%VMs|vm%% están configuradas para hibernar en lugar de apagarse, entonces el tiempo de espera de la VM es menos crítico ya que la hibernación es casi inmediata. Podría usar un tiempo de espera de VM más bajo (por ejemplo, 60-120 segundos) como respaldo para cualquier %%VMs|vm%% que no sea compatible con la hibernación.
+If all your %%VMs|vm%% are set to hibernate rather than shutting down, then the VM timeout is less critical since hibernation is nearly immediate. You could use a lower VM timeout (for example, 60-120 seconds) as a backup for any %%VMs|vm%% that don't support hibernation.
+
+---
 
 ### Guía detallada de configuración
 
 Esta sección proporciona información detallada sobre cómo configurar los tiempos de espera para diferentes componentes del sistema. Cada configuración de tiempo de espera funciona junta para garantizar que su servidor se apague correctamente sin pérdida de datos.
 
-<Tabs>
-  <TabItem value="tiempos de espera de vm" label="Tiempos de espera de VM" default>
-    Dónde establecer: ***Configuración → Gestor VM → Apagado VM*** (habilite la vista avanzada)
+#### VM timeouts
 
-    **Cómo funciona:**
+Configure VM shutdown timeouts in ***Settings → VM Manager → VM Shutdown*** (enable Advanced view).
 
-    - Las %%VMs|vm%% pasan por tres etapas de apagado, cada una consume el tiempo de espera completo de la VM.
-    - Todas las %%VMs|vm%% en cada etapa se procesan simultáneamente
-    - Tiempo total de apagado de VM = tiempo de espera de VM × 3
+**Cómo funciona:**
 
-    **Problemas comunes:**
+- Las %%VMs|vm%% pasan por tres etapas de apagado, cada una consume el tiempo de espera completo de la VM.
+- Todas las %%VMs|vm%% en cada etapa se procesan simultáneamente
+- Tiempo total de apagado de VM = tiempo de espera de VM × 3
 
-    - **Interrupciones de actualización de Windows:** Las actualizaciones durante el apagado pueden corromperse si expira el tiempo de espera.
-    - **Trabajo no guardado:** Los cuadros de diálogo que preguntan si desea guardar documentos pueden detener el apagado indefinidamente.
-    - **Fallos de hibernación:** %%VMs|vm%% sin el %%QEMU|qemu%% %%Guest Agent|guest-agent%% pueden fallar en hibernar y usar todo el tiempo de espera.
+**Problemas comunes:**
 
-    :::consejo[Recomendaciones de tiempo de espera de VM]
+- **Interrupciones de actualización de Windows:** Las actualizaciones durante el apagado pueden corromperse si expira el tiempo de espera.
+- **Trabajo no guardado:** Los cuadros de diálogo que preguntan si desea guardar documentos pueden detener el apagado indefinidamente.
+- **Fallos de hibernación:** %%VMs|vm%% sin el %%QEMU|qemu%% %%Guest Agent|guest-agent%% pueden fallar en hibernar y usar todo el tiempo de espera.
 
-    - **Recomendación principal:** Configure las %%VMs|vm%% para hibernar en lugar de apagar (requiere %%QEMU|qemu%% %%Guest Agent|guest-agent%%).
-    - **Si las VMs se bloquean durante el apagado:** Aumente el tiempo de espera a **300 segundos (5 minutos)** para %%VMs|vm%% de Windows.
-    - **Actualizaciones de Windows:** Configure Windows para instalar actualizaciones al inicio en lugar de durante el apagado.
-    - **Pruebe su configuración:** Detenga manualmente sus %%VMs|vm%% para confirmar que se apagan o hibernan dentro del periodo de tiempo de espera.
-      :::
+:::tip[VM timeout recommendations]
 
-    :::advertencia[No hay tiempo de espera seguro sin hibernación]
-    Sin hibernación y %%QEMU|qemu%% %%Guest Agent|guest-agent%%, no existe un tiempo de espera verdaderamente seguro para %%VMs|vm%% de Windows. Los cuadros de diálogo o las instalaciones de actualizaciones en curso podrían hacer que cualquier tiempo de espera sea inadecuado, lo que llevaría a apagados forzosos y riesgo de corrupción de datos.
-    :::
-  </TabItem>
+- **Recomendación principal:** Configure las %%VMs|vm%% para hibernar en lugar de apagar (requiere %%QEMU|qemu%% %%Guest Agent|guest-agent%%).
+- **Si las VMs se bloquean durante el apagado:** Aumente el tiempo de espera a **300 segundos (5 minutos)** para %%VMs|vm%% de Windows.
+- **Actualizaciones de Windows:** Configure Windows para instalar actualizaciones al inicio en lugar de durante el apagado.
+- **Test your setup:** Manually stop your %%VMs|vm%% to confirm they shut down or hibernate within the timeout period.
 
-  <TabItem value="tiempos de espera de Docker" label="Tiempos de espera de Docker">
-    Dónde establecer: ***Configuración → Docker*** (habilite la vista avanzada)
+:::
 
-    **Cómo funciona:**
+:::warning[No safe timeout without hibernation]
+Without hibernation and %%QEMU|qemu%% %%Guest Agent|guest-agent%%, there isn't a truly safe timeout for Windows %%VMs|vm%%. Dialog boxes or ongoing update installations could render any timeout inadequate, leading to forced shutdowns and data corruption risk.
+:::
 
-    - Los contenedores se detienen en paralelo, por lo que el tiempo total es igual al tiempo de espera de detención de Docker.
-    - La mayoría de los contenedores se detienen en 10 segundos, pero algunos pueden necesitar más tiempo.
-    - Contenedores complejos con grandes bases de datos u operaciones en curso podrían requerir tiempo adicional.
-    - Si el temporizador expira, los contenedores se detienen forzosamente.
+#### Docker timeouts
 
-    :::consejo[Recomendaciones de tiempo de espera de Docker]
+Configure Docker container stop timeouts in ***Settings → Docker*** (enable Advanced view).
 
-    - Los **10 segundos predeterminados** funcionan bien para la mayoría de los contenedores.
-    - **Si los contenedores se bloquean al detenerse:** Aumente el tiempo de espera a **30 segundos**.
-    - Monitoree sus contenedores durante el apagado para identificar aquellos que consistentemente necesitan más tiempo.
-      :::
-  </TabItem>
+**Cómo funciona:**
 
-  <TabItem value="tiempos de espera generales" label="Tiempos de Espera Generales">
-    Dónde establecer: ***Configuración → Configuraciones de Disco → Tiempo de espera de apagado***
+- Los contenedores se detienen en paralelo, por lo que el tiempo total es igual al tiempo de espera de detención de Docker.
+- La mayoría de los contenedores se detienen en 10 segundos, pero algunos pueden necesitar más tiempo.
+- Contenedores complejos con grandes bases de datos u operaciones en curso podrían requerir tiempo adicional.
+- Si el temporizador expira, los contenedores se detienen forzosamente.
 
-    **Consideraciones de UPS (factor más crítico):**
+:::tip[Docker timeout recommendations]
 
-    - Su UPS debe proporcionar suficiente tiempo de ejecución para completar toda la secuencia de apagado antes de que se agote la batería.
-    - Para **apagado manual**, puede establecer tiempos de espera más largos ya que usted controla cuándo comienza el apagado.
-    - Con el **apagado por corte de energía**, su tiempo de espera está limitado por la vida de la batería del UPS.
-    - **Pruebe su UPS** simulando un corte de energía para asegurarse de que su servidor se apague limpiamente con tiempo de sobra.
+- Los **10 segundos predeterminados** funcionan bien para la mayoría de los contenedores.
+- **Si los contenedores se bloquean al detenerse:** Aumente el tiempo de espera a **30 segundos**.
+- Monitor your containers during shutdown to identify any that consistently need more time.
 
-    :::consejo[Recomendaciones de tiempo de espera generales]
+:::
 
-    - **Si obtiene apagados no limpios:** Aumente a **180 segundos (3 minutos)** para sistemas sin %%VMs|vm%%.
-    - **Para sistemas con %%VMs|vm%%:** Use **300+ segundos (5+ minutos)** si no usa hibernación.
-    - **Si usa hibernación:** **180-300 segundos** generalmente son suficientes.
-    - Asegúrese de que los tiempos de espera no sean más largos de lo que su UPS pueda soportar durante un corte de energía.
-      :::
-  </TabItem>
+#### General timeouts
 
-  <TabItem value="terceros" label="Servicios de Terceros">
-    **Contenedores LXC:**
-    El plugin LXC tiene su propia configuración de tiempo de espera para detener contenedores. Al igual que los contenedores Docker, los contenedores LXC generalmente se detienen en pocos segundos, pero algunos pueden requerir más tiempo. Revise la configuración del plugin LXC para el tiempo de espera de detención del contenedor e incluya este tiempo de espera en su cálculo de tiempo de espera general.
+Configure the general shutdown timeout in ***Settings → Disk Settings → Shutdown time-out***.
 
-    **Otros servicios:**
-    Algunos plugins o servicios personalizados pueden tener sus propios procedimientos de apagado. Consulte la documentación del plugin para configuraciones de tiempo de espera específicas e incorpórelas en sus cálculos.
+**UPS considerations (most critical factor):**
 
-    **Fórmula actualizada con servicios de terceros:**
+- Your UPS must provide enough runtime to complete the full shutdown sequence before battery runs out.
+- For **manual shutdown**, you can set longer timeouts since you control when shutdown starts.
+- With **power outage shutdown**, your timeout is limited by UPS battery life.
+- **Test your UPS** by simulating a power outage to ensure your server shuts down cleanly with time to spare.
 
-    ```
-    (VM timeout × 3) + (Docker timeout) + (LXC/other timeouts) + 15-30 seconds
-    ```
+:::tip[General timeout recommendations]
 
-    **Plugin Dynamix Stop Shell:**
-    Si usa con frecuencia sesiones SSH o terminal, las sesiones abiertas pueden impedir apagados limpios porque Unraid espera que se cierren antes de continuar.
+- **If you get unclean shutdowns:** Increase to **180 seconds (3 minutes)** for systems without %%VMs|vm%%.
+- **For systems with %%VMs|vm%%:** Use **300+ seconds (5+ minutes)** if not using hibernation.
+- **If using hibernation:** **180-300 seconds** is usually sufficient.
+- Ensure timeouts are not longer than what your UPS can support during a power outage.
 
-    El plugin [Dynamix Stop Shell](https://unraid.net/community/apps/c/tools-system/p2?srsltid=AfmBOoqBXyDNfHxRDCL7Fv9Gcfz8-8CdHmiJSX16PRZpZLLzgQtw2mVk#:~:text=the%20given%20interval.-,Dynamix%20Stop%20Shell,-Dynamix%20Repository) ayuda cerrando automáticamente las sesiones bash o SSH persistentes cuando el array se detiene, asegurando un apagado oportuno.
+:::
 
-    Puede instalarlo desde [Aplicaciones de la Comunidad (busque "Dynamix Stop Shell")](https://unraid.net/community/apps/c/tools-system/p2?srsltid=AfmBOoqBXyDNfHxRDCL7Fv9Gcfz8-8CdHmiJSX16PRZpZLLzgQtw2mVk#:~:text=the%20given%20interval.-,Dynamix%20Stop%20Shell,-Dynamix%20Repository).
+#### Third-party services
 
-    :::consejo[Cuándo usar el plugin]
+**LXC containers:**
+The LXC plugin has its own timeout setting for stopping containers. Like Docker containers, LXC containers typically stop within a few seconds, but some may require more time. Check the LXC plugin settings for the container stop timeout and include this timeout in your general shutdown timeout calculation.
 
-    - Si tiene regularmente sesiones de terminal abiertas.
-    - Para prevenir que sesiones SSH olvidadas retrasen el apagado.
-    - Para limpieza automatizada durante el apagado.
-      :::
+**Other services:**
+Some plugins or custom services may have their own shutdown procedures. Refer to the plugin documentation for specific timeout settings and incorporate them into your calculations.
 
-    :::precaución
+**Fórmula actualizada con servicios de terceros:**
 
-    - Sea cauteloso si tiene scripts o procesos ejecutándose en sesiones de terminal.
-    - Asegúrese de que no haya operaciones de escritura críticas en progreso antes del apagado.
-    - El plugin cerrará forzadamente las sesiones, lo que podría interrumpir el trabajo.
-      :::
-  </TabItem>
-</Tabs>
+```
+(VM timeout × 3) + (Docker timeout) + (LXC/other timeouts) + 15-30 seconds
+```
+
+**Dynamix Stop Shell plugin:**
+If you frequently use SSH or terminal sessions, open sessions can prevent clean shutdowns because Unraid waits for them to close before proceeding.
+
+El plugin [Dynamix Stop Shell](https://unraid.net/community/apps/c/tools-system/p2?srsltid=AfmBOoqBXyDNfHxRDCL7Fv9Gcfz8-8CdHmiJSX16PRZpZLLzgQtw2mVk#:~:text=the%20given%20interval.-,Dynamix%20Stop%20Shell,-Dynamix%20Repository) ayuda cerrando automáticamente las sesiones bash o SSH persistentes cuando el array se detiene, asegurando un apagado oportuno.
+
+Puede instalarlo desde [Aplicaciones de la Comunidad (busque "Dynamix Stop Shell")](https://unraid.net/community/apps/c/tools-system/p2?srsltid=AfmBOoqBXyDNfHxRDCL7Fv9Gcfz8-8CdHmiJSX16PRZpZLLzgQtw2mVk#:~:text=the%20given%20interval.-,Dynamix%20Stop%20Shell,-Dynamix%20Repository).
+
+:::tip[When to use the plugin]
+
+- Si tiene regularmente sesiones de terminal abiertas.
+- Para prevenir que sesiones SSH olvidadas retrasen el apagado.
+- For automated cleanup during shutdown.
+
+:::
+
+:::caution
+
+- Sea cauteloso si tiene scripts o procesos ejecutándose en sesiones de terminal.
+- Asegúrese de que no haya operaciones de escritura críticas en progreso antes del apagado.
+- The plugin will forcefully close sessions, which could interrupt work.
+
+:::
