@@ -1,0 +1,267 @@
+---
+sidebar_position: 3
+sidebar_label: Replacing disks in array
+---
+
+# Replacing disks in array
+
+您可能会需要因以下两个主要原因来更换阵列中的磁盘：
+
+1. **Capacity upgrade**: Your storage is nearly full, and you want to use larger disks.
+2. **Failure or retirement**: A disk has failed or is no longer supported.
+
+虽然两种情况下更换磁盘的过程相似，但请注意，替换过程中存在数据丢失的风险。校验设备可以保护您的数据；一个校验设备可以防止单个磁盘故障导致的数据丢失，而两个设备可以在两个磁盘故障情况下保护数据。更换磁盘时，请始终了解您的保护级别。
+
+## 升级容量
+
+在将数据驱动器升级为更大的驱动器时，请注意以下几点：
+
+- **不可挂载的磁盘：** 在升级之前修复任何不可挂载的磁盘。不可挂载状态在重建期间不会被解决。
+
+- **单个校验的风险：** 如果您只有单个校验，在升级期间如果另一个驱动器发生故障，您将面临数据丢失的风险。如果发生这种情况，请在论坛中寻求建议。
+
+- **双校验保护：** 通过双校验，如果在升级单个驱动器时一个驱动器出现故障，您可以放心，不会丢失数据。您还可以同时升级两个驱动器，但请注意这会增加风险，因为您将没有另一驱动器故障的保护。
+
+- **备份旧磁盘：** 在确认升级成功之前，保持原磁盘完好无损。这为出现任何问题时提供了回退选项。
+
+:::warning
+
+更换驱动器总是涉及到一定的风险。如果在升级期间另一块驱动器故障，特别是只有单一校验的情况下，您可能会丢失数据。在开始之前务必检查驱动器的健康状况，并确保在升级完成并确认数据安全之前保持旧驱动器完整无损。
+
+:::
+
+要升级现有数据磁盘：
+
+1. Run a %%parity check|parity-check%% and ensure there are zero errors. If parity isn't valid, rebuilding the disk will corrupt its file system.
+2. 停止数组。
+3. Unassign the target disk.
+4. Start the array. Unraid emulates the missing disk using the existing parity and data disks. You have two modes to choose from:
+   - %%Maintenance Mode|maintenance-mode%% - Prevents any writes to the emulated disk
+   - Normal Mode - Allows read/write access to the emulated disk
+
+:::note
+
+Starting in Normal Mode is optional. You can use it to verify that the emulated disk mounts and the data looks correct before proceeding.
+
+:::
+
+5. Stop the array again.
+6. Assign the replacement disk to the vacant slot.
+7. Start the array to begin the rebuild. Unraid rebuilds the contents onto the new disk, and the file system automatically adjusts to the larger disk's capacity.
+
+## 更换故障/禁用磁盘
+
+### What is a failed/disabled disk?
+
+A failed or disabled disk is one that Unraid has stopped using for writing data, usually because it encountered a write error. A failed drive isn't always broken; it might be due to bad connections, power issues, or a temporary glitch.
+
+Indications include a red "X" on the disk indicator and failure notification alerts.
+
+| 故障场景      | 无奇偶校验 | 单一奇偶校验 | 双重奇偶校验 |
+| --------- | ----- | ------ | ------ |
+| **1磁盘故障** | 数据丢失  | 可重建    | 可重建    |
+| **2磁盘故障** | 数据丢失  | 数据丢失   | 可重建    |
+
+:::tip[Tips for Safe Rebuilds]
+
+- **对于单个校验：** 您只能一次替换一个磁盘。如果在重建期间另一个磁盘出现故障，您可能会丢失数据。
+- \*\*对于双重校验：\*\*您可以同时更换一个或两个磁盘，但如果超过两个磁盘发生故障，请谨慎行事。
+
+:::
+
+:::important
+
+If more disks fail than your parity can protect:
+
+1. Immediately halt all write operations to prevent further data loss.
+2. 通过在[Unraid 论坛](https://forums.unraid.net/)发帖并附上诊断信息寻求帮助。
+3. Do not attempt a rebuild until you've received advice—focus on salvaging your data first.
+
+:::
+
+### How to diagnose the issue
+
+Check the %%syslog|syslog%% and %%SMART reports|smart-report%%:
+
+- 如果%%syslog|syslog%%显示磁盘已重置，可能是连接或电缆有问题。
+- %%SMART报告|smart-report%%可以评估驱动器的健康状态，但最好通过运行%%SMART|smart%%扩展测试来检查。如果测试没有错误，则驱动器可能是正常的。
+- If you see %%CRC errors|crc-errors%%, it usually points to issues with the cabling. These errors accumulate over time and don't reset.
+
+:::tip
+
+To stay informed about drive issues, enable notifications in Unraid by going to **Settings → Notification Settings**. This way, you're alerted right away if something goes wrong, reducing the risk to your data.
+
+:::
+
+### What is emulation?
+
+When a drive is disabled, Unraid uses its parity and other working drives to emulate the failed drive. The system continues to operate, and you can still access the data stored on the %%emulated drive|emulated-disk%%.
+
+- Unraid stops writing to the physical drive, and any updates are saved in parity and the emulation instead.
+- 在更换故障驱动之前，您可以检查并从%%emulated drive|emulated-disk%%恢复数据，这将使物理磁盘保持完整以便潜在恢复。
+- 如果无法访问 %%emulated drive|模拟盘%%，在任何重建之前修复文件系统是必要的，因为修复文件系统比重建更快更有效。
+
+### Preparing for drive replacement
+
+Make sure the new drive is at least as large as the failed drive but not larger than your smallest parity drive. If you have to use a larger drive, follow the Parity Swap procedure.
+
+虽然不是强制性的，许多用户选择预清理新驱动器以测试它们并帮助防止早期故障。您可以使用Preclear插件、%%SMART|smart%%延伸测试或制造商工具来执行此操作。
+
+:::caution
+
+If you try to rebuild using an unmountable %%emulated drive|emulated-disk%%, the new drive will also become unmountable. Always repair the file system before attempting a rebuild.
+
+:::
+
+To replace and rebuild a disk, follow the size requirements described in the "Preparing for drive replacement" section above.
+
+:::important
+
+Before you start, check for any disk errors or warnings. Unraid must be able to read all the remaining disks without any issues for the rebuild to work correctly. If another disk is failing, it could lead to data loss.
+
+:::
+
+1. 停止数组。
+
+:::tip
+
+If your server supports hot-swap, you can skip step 2.
+
+:::
+
+2. Power down your server.
+3. Remove the old, failed disk and install the new disk. Ensure the replacement meets the size requirements described above.
+4. Power up your server.
+5. Assign the new disk to the failed disk's slot.
+6. Check **Yes, I want to do this** and confirm.
+7. Optionally select %%Maintenance Mode|maintenance-mode%% to speed up the rebuild (the array won't be accessible during this time).
+8. Click **Start** to begin the rebuild. Unraid copies data from the emulated disk to the new disk. If the new disk is larger, Unraid manages the extra space.
+
+:::warning
+
+如果 Unraid 在重建期间提示您格式化新磁盘，请**不要这样做**。格式化将清除所有数据，使恢复不可能。
+
+:::
+
+### 重建期间的期望
+
+- \*\*停止阵列：\*\*开始通过访问%%WebGUI|web-gui%%并停止阵列。
+- **取消分配 %%parity drives|校验盘%%：** 找到 %%parity drives|校验盘%% 槽位并将其设置为“未分配”。
+- **启动阵列：** 最后，重启阵列以提交更改，并成功地从配置中移除 %%parity drives|校验盘%%。
+- 如果旧磁盘由于文件系统问题而无法挂载，新的磁盘也将无法挂载。请在开始重建之前修复任何文件系统问题。
+
+:::note[Additional 笔记]
+
+- 使用双重校验可以从单个失效驱动器中恢复，但请注意，在重建过程中，您将无法承受另一次故障。
+- 使用单校验，您将失去所有冗余，这意味着任何额外的驱动器故障都可能导致数据丢失。
+  :::
+
+:::
+
+## 重新启用已禁用的磁盘（自我重建）
+
+有时，磁盘可能由于松动的电缆、电源问题或临时故障等问题而被禁用，而不是实际上有问题。如果是这种情况，您可以尝试通过将其重建到自身来重新启用被禁用的磁盘，而不是更换它。
+
+:::important[When 要使用该过程]
+
+仅在以下情况下使用此过程：
+
+- 由于外部因素（如电缆或电源问题）导致磁盘被禁用。
+- 您已通过 [%%SMART 报告|smart-report%%](../../system-administration/monitor-performance/smart-reports-and-disk-health.mdx) 检查磁盘健康状况。
+- 您已修复导致磁盘被禁用的任何外部问题。
+- 磁盘似乎正常工作。
+
+:::
+
+:::warning[Important 注意事项]
+
+- If you are rebuilding a data drive, make sure that the %%emulated disk|emulated-disk%% shows the right content before you proceed. The rebuild process will ensure that the physical drive matches the emulated one exactly.
+- The %%emulated disk|emulated-disk%% may show as 'unmountable' in some cases. A rebuild will not necessarily fix an unmountable emulated disk, so verify the situation first. If the emulated disk shows 'unmountable' or the content doesn't look right, ask for help in the [Unraid forums](https://forums.unraid.net/) before proceeding with the rebuild.
+- 在开始此过程之前，务必对已禁用的驱动器进行 [%%SMART|smart%% 扩展测试](../../system-administration/advanced-tools/command-line-interface.mdx#smartctl)，以确保其健康。
+- If the %%emulated disk|emulated-disk%% shows any file system issues, use the [automated XFS repair feature](../../troubleshooting/common-issues/data-recovery.mdx#running-the-repair) for XFS‑formatted disks, or the respective file system repair options for other file systems in the %%WebGUI|web-gui%% before beginning the rebuild.
+- 虽然重建过程应该保留您的数据，但如果可以，建议备份重要文件。
+
+:::
+
+要通过将驱动器重建到自身来重新启用禁用的驱动器：
+
+1. Verify disk health by running a [%%SMART|smart%% extended test](../../system-administration/advanced-tools/command-line-interface.mdx#smartctl) and acknowledging any warning icons in the dashboard.
+2. 停止数组。
+3. Unassign the disabled disk.
+4. Start the array so Unraid can register the missing disk. The array displays the disk as "Not installed."
+5. For data drives only, verify that the emulated disk shows the content you expect.
+6. 停止数组。
+7. Reassign the disabled disk to its original slot.
+8. Optionally select %%Maintenance Mode|maintenance-mode%% to speed up the rebuild process.
+9. Click **Start** to begin the rebuild. Unraid takes the contents from the emulated disk and reconstructs them onto the physical drive.
+
+:::info[Rebuild 时间预期]
+
+将驱动器重建到自身可能需要数小时到一天以上的时间，具体取决于驱动器的大小和系统活动。影响重建时间的因素包括驱动器容量、磁盘速度和系统负载。您可以在 %%WebGUI|web-gui%% 中监控进度。
+
+:::
+
+This procedure works for both data drives and %%parity drives|parity-drives%% that have been disabled.
+
+## 校验交换
+
+Parity swap is a special procedure used when you need to replace a data disk with a disk that is larger than your current parity disk. The process moves your current parity disk to the data slot, then installs a new, larger disk as the new parity disk. This ensures your array remains protected and allows for larger data drives in the future.
+
+Use a parity swap when your replacement data drive is larger than your current parity disk. This isn't necessary if your new data drive is the same size or smaller than your parity disk.
+
+**Example scenario:** You have an Unraid setup with a **2TB parity drive** and a **1TB data drive** and want to replace the 1TB drive with a **4TB drive**. First, assign the new 4TB drive as the parity drive, which will replace the 2TB drive. Then move the original 2TB drive to the data slot, and remove the 1TB drive entirely. After these changes, you'll have a 4TB drive as your new parity, ensuring you can add future data drives up to 4TB. The 2TB drive will now hold your existing data, while the 1TB drive can be repurposed. This swap keeps your data secure and your array protected, allowing for future upgrades.
+
+:::important\[Prerequisites]
+
+- Before starting, ensure the data drive you want to replace is disabled. Failed drives (showing a red indicator) are already disabled. For healthy drives you want to replace, unassign the drive and start the array once without it to force Unraid to mark it as disabled.
+- When your replacement data drive is not larger than your parity drive, use the standard [Replacing failed/disabled disks](#replacing-faileddisabled-disks) procedure instead.
+- This procedure is only needed for replacing data drives in an Unraid array with a disk larger than the current parity drive. For parity drive upgrades only, simply remove the old parity drive, add the new one, and start the array. Parity will rebuild automatically.
+
+:::
+
+:::warning\[Warnings]
+
+- 在开始 %%parity swap|校验交换%% 之前，总是使用 %%SMART reports|SMART 报告%% 验证所有驱动器的健康状况。尝试在另一个故障或不健康的磁盘上进行此过程会增加数据丢失的风险。
+- 如果可能，请预清理新磁盘。尽管不需要，但预清理可以对磁盘进行压力测试并减少早期失效的风险。
+- 在开始之前，正确识别所有驱动器。记下每个驱动器的型号和序列号的最后四位字符，以避免分配过程中出错。
+
+:::
+
+执行奇偶校验交换：
+
+:::note
+
+If the drive to be replaced is already disabled, you can skip steps 1–4. If you've already installed the new replacement drive, you can skip steps 5–8.
+
+:::
+
+1. 停止数组。
+2. Unassign the old data drive if it's still assigned.
+3. Start the array. The data drive should now show as "Not installed."
+4. Stop the array again.
+5. Power down the server.
+
+:::tip
+
+If your system supports hot-swap, you don't need to power down. Make sure the array is stopped before making any hardware changes.
+
+:::
+
+6. Optionally remove the old drive.
+7. Install the new drive. Pre-clearing is strongly recommended, but formatting is not needed.
+8. Power on the server.
+9. Stop the array if it started automatically.
+10. Unassign the parity drive.
+11. Assign the new drive to the parity slot.
+12. Assign the old parity drive to the data slot of the drive being replaced.
+13. You should see a **Copy** button with a message stating "Copy will copy the parity information to the new parity disk."
+14. Check the confirmation box and click **Copy**. The array isn't available during this operation, which can take many hours depending on disk size.
+15. Start the array to begin the data rebuild. You can use the array during the rebuild, but limit usage for best performance. The rebuild process also takes several hours.
+
+:::warning
+
+在该过程中永远不要格式化磁盘。格式化将擦除所有数据并更新校验，使恢复不可能。
+
+:::
+
+完成后，您将拥有一个更大的校验盘和一个更换的数据盘。许多用户在此之后会执行一个 %%parity check|校验检查%% 以获得额外的信心，但这是可选的。
