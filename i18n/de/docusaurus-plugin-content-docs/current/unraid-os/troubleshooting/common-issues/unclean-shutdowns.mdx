@@ -5,9 +5,6 @@ sidebar_label: Unbereinigt heruntergefahrene Systeme
 
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
-import UncleanShutdownsPower from "./partials/unclean-shutdowns/unexpected-power-loss.mdx";
-import UncleanShutdownsFlash from "./partials/unclean-shutdowns/flash-drive-failure.mdx";
-import UncleanShutdownsTerminal from "./partials/unclean-shutdowns/open-terminal-sessions.mdx";
 
 # Unbereinigt heruntergefahrene Systeme
 
@@ -30,30 +27,40 @@ Eine gut konfigurierte USV ist Ihre beste Verteidigung gegen unbereinigte Herunt
 
 - **Verbinden Sie die USV über USB** mit Ihrem Unraid-Server.
 - **Aktivieren Sie die USV-Unterstützung** unter ***Einstellungen → USV-Einstellungen***.
-- **Configure shutdown timeouts:** Set the UPS to trigger a controlled shutdown before the battery runs low. Adjust the "Battery runtime left" or "Battery charge level" thresholds to provide enough time for Unraid to [stop the %%array|array%%](../../using-unraid-to/manage-storage/array-configuration.mdx#startstop-the-array) and power down safely.
+- **Configure shutdown timeouts:** Set the UPS to trigger a controlled shutdown before the battery runs low. Adjust the "Battery runtime left" or "Battery charge level" thresholds to provide enough time for Unraid to [stop the %%array|array%%](../../using-unraid-to/manage-storage/array/overview.mdx#startstop-the-array) and power down safely.
 - **Testen Sie Ihre Konfiguration:** Simulieren Sie einen Stromausfall, um sicherzustellen, dass die USV und Unraid korrekt reagieren.
 
 Schauen Sie sich das [NUT Plugin](https://unraid.net/community/apps/c/plugins/p4?srsltid=AfmBOop675PrJQW4iqb4JBN3GyPpwDDiSmnZReq78t27XyxkFdMX8inO#:~:text=NUT%20%2D%20Network%20UPS%20Tools) für eine bessere Kompatibilität mit fortschrittlicheren USV-Modellen oder nicht unterstützter Hardware an.
 
 :::
 
-## Konfigurierung der Shutdown-Timeouts
+## Events that cause unclean shutdowns
 
-Properly configuring shutdown timeouts is essential to ensure your Unraid server can stop all services effectively, preventing unclean shutdowns, particularly during power loss or maintenance. Each component of your system - %%VM|vm%%s, Docker containers, and the overall %%array|array%% - has its own timeout setting that can be adjusted.
+Understanding the main triggers for unclean shutdowns helps you prevent them. The following sections cover the most common scenarios and their solutions.
 
-<Tabs>
-  <TabItem value="leistung" label="Unerwarteter Stromausfall" default>
-    <UncleanShutdownsPower />
-  </TabItem>
+### Unerwarteter Stromausfall
 
-  <TabItem value="Blitz" label="Fehler des Flash-Laufwerks">
-    <UncleanShutdownsFlash />
-  </TabItem>
+Stromausfälle sind einer der Hauptgründe für unsaubere Abschaltungen. Schützen Sie Ihr System mit einer richtig konfigurierten USV, die Unraid automatisch herunterfahren kann, bevor der Akku leer ist.
 
-  <TabItem value="Terminal" label="Terminalsitzungen öffnen">
-    <UncleanShutdownsTerminal />
-  </TabItem>
-</Tabs>
+:::note
+
+Unraid supports most UPS units using the %%apcupsd Protocol|apcupsd%% protocol (APC and CyberPower are usually compatible). If your UPS isn't supported, consider using the Network UPS Tools (NUT) plugin from Community Applications.
+
+:::
+
+### Fehler des Flash-Laufwerks
+
+Der Status des %%array|array%% wird auf Ihrem USB-Flash-Laufwerk gespeichert. Wenn das Flash-Laufwerk nicht verfügbar oder schreibgeschützt wird, kann Unraid den Herunterfahrstatus nicht aktualisieren, selbst wenn das %%array|array%% korrekt stoppt. Dies führt dazu, dass beim nächsten Start ein unsauberes Herunterfahren erkannt wird.
+
+### Terminalsitzungen öffnen
+
+Unraid wartet während des Herunterfahrens auf alle offenen Terminal- oder SSH-Sitzungen. Wenn diese Sitzungen aktiv bleiben und der Shutdown-Timer abläuft, erfolgt ein erzwungenes Herunterfahren.
+
+:::tip
+
+Das [Dynamix Stop Shell](https://unraid.net/community/apps/c/tools-system/p2?srsltid=AfmBOoqBXyDNfHxRDCL7Fv9Gcfz8-8CdHmiJSX16PRZpZLLzgQtw2mVk#:~:text=the%20given%20interval.-,Dynamix%20Stop%20Shell,-Dynamix%20Repository) Plugin kann automatisch lange offene Bash- oder SSH-Sitzungen schließen und so für ein reibungsloses Herunterfahren sorgen. Seien Sie jedoch vorsichtig, wenn noch Schreibvorgänge auf das %%array|array%% ausgeführt werden.
+
+:::
 
 ---
 
@@ -148,6 +155,8 @@ Without the %%QEMU|qemu%% %%Guest Agent|guest-agent%% installed, hibernation may
 
 :::
 
+---
+
 ### Timeout-Konfiguration
 
 In diesem Abschnitt behandeln wir, wie man Timeouts für verschiedene Systeme und Prozesse konfiguriert. Diese Informationen sind wichtig, um sicherzustellen, dass Ihre %%VMs|vm%% und Docker-Container ohne Datenverlust ordnungsgemäß heruntergefahren werden.
@@ -176,11 +185,11 @@ Beim Herunterfahren erfolgt der Prozess in folgender Reihenfolge:
 
    Alle %%VMs|vm%% in jeder Phase werden gleichzeitig verarbeitet, was bedeutet, dass die gesamte Abschaltzeit berechnet werden kann als: VM-Timeout × 3.
 
-2. **Docker-Container stoppen**: Alle Container werden gleichzeitig gestoppt (Gesamtzeit = Docker-Timeout).
+2. Docker containers stop simultaneously (total time = Docker timeout).
 
-3. **Weitere Dienste:** Dies umfasst Aufgaben wie LXC-Container und von Drittanbietern angebotene Plugins, die normalerweise nur wenige Sekunden erfordern.
+3. Other services include tasks like LXC containers and third-party plugins, which usually take a few seconds.
 
-4. **Festplattenabschaltung**: Laufwerke müssen ausgehängt und Daten synchronisiert werden; dies dauert normalerweise 15-30 Sekunden.
+4. Array shutdown: drives need to be unmounted and data synced; this typically takes 15-30 seconds.
 
 :::tip[Calculate Ihr allgemeines Abschalt-Timeout]
 
@@ -196,110 +205,115 @@ Beim Herunterfahren erfolgt der Prozess in folgender Reihenfolge:
 
 :::
 
-Wenn alle Ihre %%VMs|vm%% so eingestellt sind, dass sie in den Ruhezustand gehen, anstatt herunterzufahren, ist das VM-Timeout weniger kritisch, da der Ruhezustand nahezu sofort erfolgt. Sie könnten ein niedrigeres VM-Timeout verwenden (zum Beispiel 60-120 Sekunden) als Backup für irgendwelche %%VMs|vm%%, die den Ruhezustand nicht unterstützen.
+If all your %%VMs|vm%% are set to hibernate rather than shutting down, then the VM timeout is less critical since hibernation is nearly immediate. You could use a lower VM timeout (for example, 60-120 seconds) as a backup for any %%VMs|vm%% that don't support hibernation.
+
+---
 
 ### Detaillierte Konfigurationsanleitung
 
 Dieser Abschnitt bietet ausführliche Informationen zur Konfiguration von Timeouts für verschiedene Systemkomponenten. Jede Timeout-Einstellung arbeitet zusammen, um sicherzustellen, dass Ihr Server ohne Datenverlust ordnungsgemäß heruntergefahren wird.
 
-<Tabs>
-  <TabItem value="VM-Timeouts" label="Wo zu setzen: ***Einstellungen → VM-Manager → VM-Abschaltung*** (erweiterte Ansicht aktivieren)" default>
-    Wo einzustellen: ***Einstellungen → VM-Manager → VM-Herunterfahren*** (Erweiterte Ansicht aktivieren)
+#### VM timeouts
 
-    **Wie es funktioniert:**
+Configure VM shutdown timeouts in ***Settings → VM Manager → VM Shutdown*** (enable Advanced view).
 
-    - %%VMs|vm%% durchlaufen drei Abschaltphasen, die jeweils das vollständige VM-Timeout benötigen
-    - Alle %%VMs|vm%% in jeder Phase werden gleichzeitig verarbeitet
-    - Gesamt-VM-Abschaltzeit = VM-Timeout × 3
+**Wie es funktioniert:**
 
-    **Häufige Probleme:**
+- %%VMs|vm%% durchlaufen drei Abschaltphasen, die jeweils das vollständige VM-Timeout benötigen
+- Alle %%VMs|vm%% in jeder Phase werden gleichzeitig verarbeitet
+- Gesamt-VM-Abschaltzeit = VM-Timeout × 3
 
-    - **Unterbrechungen von Windows-Updates:** Updates während des Herunterfahrens können beschädigt werden, wenn das Timeout abläuft.
-    - **Ungespeicherte Arbeit:** Dialogfelder, die zum Speichern von Dokumenten auffordern, können das Herunterfahren unbegrenzt aufhalten.
-    - **Ruhezustandsfehler:** %%VMs|vm%% ohne %%QEMU|qemu%% %%Guest Agent|guest-agent%% werden möglicherweise beim Ruhezustand fehlschlagen und das vollständige Timeout verwenden.
+**Häufige Probleme:**
 
-    :::tip[VM-Timeout-Empfehlungen]
+- **Unterbrechungen von Windows-Updates:** Updates während des Herunterfahrens können beschädigt werden, wenn das Timeout abläuft.
+- **Ungespeicherte Arbeit:** Dialogfelder, die zum Speichern von Dokumenten auffordern, können das Herunterfahren unbegrenzt aufhalten.
+- **Ruhezustandsfehler:** %%VMs|vm%% ohne %%QEMU|qemu%% %%Guest Agent|guest-agent%% werden möglicherweise beim Ruhezustand fehlschlagen und das vollständige Timeout verwenden.
 
-    - **Primäre Empfehlung:** Konfigurieren Sie %%VMs|vm%% so, dass sie in den Ruhezustand versetzt werden, anstatt herunterzufahren (erfordert %%QEMU|qemu%% %%Guest Agent|guest-agent%%).
-    - **Wenn VMs während des Herunterfahrens abstürzen:** Erhöhen Sie das Timeout auf **300 Sekunden (5 Minuten)** für Windows-%%VMs|vm%%.
-    - **Windows-Updates:** Stellen Sie Windows so ein, dass es Updates beim Starten anstatt beim Herunterfahren installiert.
-    - **Testen Sie Ihr Setup:** Stoppen Sie manuell Ihre %%VMs|vm%%, um zu bestätigen, dass sie innerhalb der Timeout-Periode heruntergefahren oder in den Ruhezustand versetzt werden.
-      :::
+:::tip[VM timeout recommendations]
 
-    :::warning[Kein sicheres Timeout ohne Ruhezustand]
-    Ohne Ruhezustand und %%QEMU|qemu%% %%Guest Agent|guest-agent%% gibt es kein wirklich sicheres Timeout für Windows-%%VMs|vm%%. Dialogfelder oder laufende Update-Installationen könnten jedes Timeout unzureichend machen, was zu erzwungenen Abschaltungen und einem Risiko der Datenbeschädigung führen könnte.
-    :::
-  </TabItem>
+- **Primäre Empfehlung:** Konfigurieren Sie %%VMs|vm%% so, dass sie in den Ruhezustand versetzt werden, anstatt herunterzufahren (erfordert %%QEMU|qemu%% %%Guest Agent|guest-agent%%).
+- **Wenn VMs während des Herunterfahrens abstürzen:** Erhöhen Sie das Timeout auf **300 Sekunden (5 Minuten)** für Windows-%%VMs|vm%%.
+- **Windows-Updates:** Stellen Sie Windows so ein, dass es Updates beim Starten anstatt beim Herunterfahren installiert.
+- **Test your setup:** Manually stop your %%VMs|vm%% to confirm they shut down or hibernate within the timeout period.
 
-  <TabItem value="Docker-Timeouts" label="Wo zu setzen: ***Einstellungen → Docker*** (erweiterte Ansicht aktivieren)">
-    Container werden parallel gestoppt, sodass die Gesamtzeit dem Docker-Stop-Timeout entspricht.
+:::
 
-    **Wie es funktioniert:**
+:::warning[No safe timeout without hibernation]
+Without hibernation and %%QEMU|qemu%% %%Guest Agent|guest-agent%%, there isn't a truly safe timeout for Windows %%VMs|vm%%. Dialog boxes or ongoing update installations could render any timeout inadequate, leading to forced shutdowns and data corruption risk.
+:::
 
-    - Die meisten Container stoppen innerhalb von 10 Sekunden, aber einige benötigen möglicherweise mehr Zeit.
-    - Komplexe Container mit großen Datenbanken oder laufenden Operationen könnten zusätzliche Zeit benötigen.
-    - :::tip[Docker-Timeout-Empfehlungen]
-    - Wenn der Timer abläuft, werden Container erzwungenermaßen gestoppt.
+#### Docker timeouts
 
-    :::tip[Docker-Timeout-Empfehlungen]
+Configure Docker container stop timeouts in ***Settings → Docker*** (enable Advanced view).
 
-    - Die **standardmäßigen 10 Sekunden** funktionieren gut für die meisten Container.
-    - **Wenn Container beim Stoppen abstürzen:** Erhöhen Sie das Timeout auf **30 Sekunden**.
-    - Überwachen Sie Ihre Container während des Herunterfahrens, um festzustellen, ob jemand dabei konstant mehr Zeit benötigt.
-      :::
-  </TabItem>
+**Wie es funktioniert:**
 
-  <TabItem value="Allgemeine Timeouts" label="Wo zu setzen: ***Einstellungen → Festplatten Einstellungen → Herunterfahr-Timeout***">
-    **Überlegungen zur USV (wichtigster Faktor):**
+- Die meisten Container stoppen innerhalb von 10 Sekunden, aber einige benötigen möglicherweise mehr Zeit.
+- Komplexe Container mit großen Datenbanken oder laufenden Operationen könnten zusätzliche Zeit benötigen.
+- :::tip[Docker-Timeout-Empfehlungen]
+- Wenn der Timer abläuft, werden Container erzwungenermaßen gestoppt.
 
-    Ihre USV muss genügend Laufzeit bieten, um die vollständige Abschaltsequenz abzuschließen, bevor die Batterie leer ist.
+:::tip[Docker timeout recommendations]
 
-    - Für **manuelle Abschaltung** können Sie längere Timeouts einstellen, da Sie kontrollieren, wann die Abschaltung startet.
-    - Bei **Stromausfall-Abschaltung** ist Ihr Timeout durch die Batterielebensdauer der USV begrenzt.
-    - **Testen Sie Ihre USV** durch Simulieren eines Stromausfalls, um sicherzustellen, dass Ihr Server sauber herunterfährt und noch Zeit übrig bleibt.
-    - **Testen Sie Ihre USV**, indem Sie einen Stromausfall simulieren, um sicherzustellen, dass ihr Server sauber herunterfährt, mit genügend Zeit zum Ausführen.
+- Die **standardmäßigen 10 Sekunden** funktionieren gut für die meisten Container.
+- **Wenn Container beim Stoppen abstürzen:** Erhöhen Sie das Timeout auf **30 Sekunden**.
+- Monitor your containers during shutdown to identify any that consistently need more time.
 
-    :::tip[Allgemeine Timeout-Empfehlungen]
+:::
 
-    - **Wenn Sie unsaubere Abschaltungen erleben:** Erhöhen auf **180 Sekunden (3 Minuten)** für Systeme ohne %%VMs|vm%%.
-    - **Für Systeme mit %%VMs|vm%%:** Verwenden Sie **300+ Sekunden (5+ Minuten)**, wenn kein Ruhezustand verwendet wird.
-    - **Wenn Ruhezustand verwendet wird:** **180-300 Sekunden** sind in der Regel ausreichend.
-    - Stellen Sie sicher, dass Timeouts nicht länger sind, als Ihre USV während eines Stromausfalls unterstützen kann.
-      :::
-  </TabItem>
+#### General timeouts
 
-  <TabItem value="Drittanbieter" label="Drittanbieter-Dienste">
-    **LXC-Container:**
-    Das LXC-Plugin verfügt über eine eigene Timeout-Einstellung für das Stoppen von Containern. Wie Docker-Container stoppen LXC-Container normalerweise innerhalb weniger Sekunden, aber einige benötigen möglicherweise mehr Zeit. Überprüfen Sie die LXC-Plugin-Einstellungen für das Container-Stop-Timeout und schließen Sie dieses Timeout in Ihre allgemeine Abschalt-Timeout-Berechnung ein.
+Configure the general shutdown timeout in ***Settings → Disk Settings → Shutdown time-out***.
 
-    **Andere Dienste:**
-    Einige Plugins oder benutzerdefinierte Dienste können ihre eigenen Abschaltverfahren haben. Beziehen Sie sich auf die Plugin-Dokumentation für spezifische Timeout-Einstellungen und integrieren Sie sie in Ihre Berechnungen.
+**UPS considerations (most critical factor):**
 
-    **Aktualisierte Formel mit Drittanbieterdiensten:**
+- Your UPS must provide enough runtime to complete the full shutdown sequence before battery runs out.
+- For **manual shutdown**, you can set longer timeouts since you control when shutdown starts.
+- With **power outage shutdown**, your timeout is limited by UPS battery life.
+- **Test your UPS** by simulating a power outage to ensure your server shuts down cleanly with time to spare.
 
-    ```
-    (VM timeout × 3) + (Docker timeout) + (LXC/other timeouts) + 15-30 seconds
-    ```
+:::tip[General timeout recommendations]
 
-    **Dynamix Stop Shell Plugin:**
-    Wenn Sie häufig SSH- oder Terminal-Sitzungen verwenden, können geöffnete Sitzungen einen sauberen Abschaltungsprozess verhindern, da Unraid darauf wartet, dass sie sich schließen, bevor es fortfährt.
+- **If you get unclean shutdowns:** Increase to **180 seconds (3 minutes)** for systems without %%VMs|vm%%.
+- **For systems with %%VMs|vm%%:** Use **300+ seconds (5+ minutes)** if not using hibernation.
+- **If using hibernation:** **180-300 seconds** is usually sufficient.
+- Ensure timeouts are not longer than what your UPS can support during a power outage.
 
-    Das [Dynamix Stop Shell](https://unraid.net/community/apps/c/tools-system/p2?srsltid=AfmBOoqBXyDNfHxRDCL7Fv9Gcfz8-8CdHmiJSX16PRZpZLLzgQtw2mVk#:~:text=the%20given%20interval.-,Dynamix%20Stop%20Shell,-Dynamix%20Repository) Plugin hilft, indem es automatisch verbleibende Bash- oder SSH-Sitzungen schließt, wenn das Array gestoppt wird, und so für eine rechtzeitige Abschaltung sorgt.
+:::
 
-    Sie können es von [Community Applications (nach "Dynamix Stop Shell" suchen)](https://unraid.net/community/apps/c/tools-system/p2?srsltid=AfmBOoqBXyDNfHxRDCL7Fv9Gcfz8-8CdHmiJSX16PRZpZLLzgQtw2mVk#:~:text=the%20given%20interval.-,Dynamix%20Stop%20Shell,-Dynamix%20Repository) installieren.
+#### Third-party services
 
-    :::tip[Wann das Plugin zu verwenden ist]
+**LXC containers:**
+The LXC plugin has its own timeout setting for stopping containers. Like Docker containers, LXC containers typically stop within a few seconds, but some may require more time. Check the LXC plugin settings for the container stop timeout and include this timeout in your general shutdown timeout calculation.
 
-    - Wenn Sie regelmäßig Terminalsitzungen offen haben.
-    - Um zu verhindern, dass vergessene SSH-Sitzungen das Herunterfahren verzögern.
-    - Für die automatisierte Bereinigung während des Herunterfahrens.
-      :::
+**Other services:**
+Some plugins or custom services may have their own shutdown procedures. Refer to the plugin documentation for specific timeout settings and incorporate them into your calculations.
 
-    :::vorsicht
+**Aktualisierte Formel mit Drittanbieterdiensten:**
 
-    - Seien Sie vorsichtig, wenn Sie Skripte oder Prozesse in Terminalsitzungen laufen haben.
-    - Stellen Sie sicher, dass keine kritischen Schreibvorgänge vor dem Herunterfahren in Bearbeitung sind.
-    - Das Plugin wird Sitzungen gewaltsam schließen, was die Arbeit unterbrechen könnte.
-      :::
-  </TabItem>
-</Tabs>
+```
+(VM timeout × 3) + (Docker timeout) + (LXC/other timeouts) + 15-30 seconds
+```
+
+**Dynamix Stop Shell plugin:**
+If you frequently use SSH or terminal sessions, open sessions can prevent clean shutdowns because Unraid waits for them to close before proceeding.
+
+Das [Dynamix Stop Shell](https://unraid.net/community/apps/c/tools-system/p2?srsltid=AfmBOoqBXyDNfHxRDCL7Fv9Gcfz8-8CdHmiJSX16PRZpZLLzgQtw2mVk#:~:text=the%20given%20interval.-,Dynamix%20Stop%20Shell,-Dynamix%20Repository) Plugin hilft, indem es automatisch verbleibende Bash- oder SSH-Sitzungen schließt, wenn das Array gestoppt wird, und so für eine rechtzeitige Abschaltung sorgt.
+
+Sie können es von [Community Applications (nach "Dynamix Stop Shell" suchen)](https://unraid.net/community/apps/c/tools-system/p2?srsltid=AfmBOoqBXyDNfHxRDCL7Fv9Gcfz8-8CdHmiJSX16PRZpZLLzgQtw2mVk#:~:text=the%20given%20interval.-,Dynamix%20Stop%20Shell,-Dynamix%20Repository) installieren.
+
+:::tip[When to use the plugin]
+
+- Wenn Sie regelmäßig Terminalsitzungen offen haben.
+- Um zu verhindern, dass vergessene SSH-Sitzungen das Herunterfahren verzögern.
+- For automated cleanup during shutdown.
+
+:::
+
+:::caution
+
+- Seien Sie vorsichtig, wenn Sie Skripte oder Prozesse in Terminalsitzungen laufen haben.
+- Stellen Sie sicher, dass keine kritischen Schreibvorgänge vor dem Herunterfahren in Bearbeitung sind.
+- The plugin will forcefully close sessions, which could interrupt work.
+
+:::
