@@ -27,16 +27,16 @@ import TabItem from "@theme/TabItem";
 
 - **通过 USB 连接 UPS 到 Unraid 服务器。**
 - **在设置中启用 UPS 支持。**
-- **Configure shutdown timeouts:** Set the UPS to trigger a controlled shutdown before the battery runs low. Adjust the "Battery runtime left" or "Battery charge level" thresholds to provide enough time for Unraid to [stop the %%array|array%%](../../using-unraid-to/manage-storage/array/overview.mdx#startstop-the-array) and power down safely.
+- **配置关闭超时：** 设置不间断电源（UPS）在电池电量不足前触发自动关闭。调整"剩余电池运行时间"或"电池电量水平"阈值，确保Unraid有足够时间[停止%%array|array%%](../../using-unraid-to/manage-storage/array/overview.mdx#startstop-the-array)并安全关闭电源。
 - **测试配置：** 模拟掉电以确保 UPS 和 Unraid 的正确反应。
 
 了解 [NUT 插件](https://unraid.net/community/apps/c/plugins/p4?srsltid=AfmBOop675PrJQW4iqb4JBN3GyPpwDDiSmnZReq78t27XyxkFdMX8inO#:~:text=NUT%20%2D%20Network%20UPS%20Tools)，它可以更广泛地兼容更多高级 UPS 型号或未支持的硬件。
 
 :::
 
-## Events that cause unclean shutdowns
+## 引发非正常关闭的事件
 
-Understanding the main triggers for unclean shutdowns helps you prevent them. The following sections cover the most common scenarios and their solutions.
+了解非正常关闭的主要原因有助于预防。以下部分介绍了最常见的情况及其解决方案。
 
 ### “意外的电源损失”
 
@@ -185,11 +185,11 @@ The [Dynamix Stop Shell](https://unraid.net/community/apps/c/tools-system/p2?srs
 
    每个阶段中的所有虚拟机(%%VMs|vm%%)同时进行处理，这意味着总关闭时间可以计算为：虚拟机关闭超时 × 3。
 
-2. Docker containers stop simultaneously (total time = Docker timeout).
+2. Docker容器同时停止（总时间= Docker超时）。
 
-3. Other services include tasks like LXC containers and third-party plugins, which usually take a few seconds.
+3. 其他服务包括LXC容器和第三方插件，通常只需几秒钟。
 
-4. Array shutdown: drives need to be unmounted and data synced; this typically takes 15-30 seconds.
+4. 阵列关闭：驱动器需卸载并同步数据；这通常需要15-30秒。
 
 :::tip[Calculate 您的总体关机超时]
 
@@ -205,7 +205,7 @@ The [Dynamix Stop Shell](https://unraid.net/community/apps/c/tools-system/p2?srs
 
 :::
 
-If all your %%VMs|vm%% are set to hibernate rather than shutting down, then the VM timeout is less critical since hibernation is nearly immediate. You could use a lower VM timeout (for example, 60-120 seconds) as a backup for any %%VMs|vm%% that don't support hibernation.
+如果所有的%%VMs|vm%%设为休眠而不是关机，那么虚拟机超时不那么重要，因为休眠几乎是即时的。您可以为不支持休眠的%%VMs|vm%%使用较低的虚拟机超时（例如，60-120秒）作为备用。
 
 ---
 
@@ -213,9 +213,9 @@ If all your %%VMs|vm%% are set to hibernate rather than shutting down, then the 
 
 本节提供有关不同系统组件的超时配置的深入信息。每个超时设置共同作用以确保您的服务器能平滑关闭且无数据丢失。
 
-#### VM timeouts
+#### 虚拟机超时
 
-Configure VM shutdown timeouts in ***Settings → VM Manager → VM Shutdown*** (enable Advanced view).
+在***设置 → 虚拟机管理器 → 虚拟机关闭***中配置虚拟机关闭超时（启用高级视图）。
 
 **原理:**
 
@@ -229,22 +229,22 @@ Configure VM shutdown timeouts in ***Settings → VM Manager → VM Shutdown*** 
 - **未保存的工作：** 提示用户是否保存文档的对话框可能会导致关机无期限中止。
 - **休眠失败：** 在没有 %%QEMU|qemu%% %%Guest Agent|guest-agent%% 的情况下，虚拟机(%%VMs|vm%%)可能无法休眠并使用完整的超时时间。
 
-:::tip[VM timeout recommendations]
+:::tip[VM 超时建议]
 
 - **主要建议：** 配置你的虚拟机(%%VMs|vm%%)为休眠状态而不是关机（需要 %%QEMU|qemu%% %%Guest Agent|guest-agent%%）。
 - **如果虚拟机在关机时崩溃：** 增加超时至 **300 秒（5 分钟）** 针对 Windows 虚拟机(%%VMs|vm%%)。
 - **Windows 更新：** 设定 Windows 在启动时执行更新而不是在关机时。
-- **Test your setup:** Manually stop your %%VMs|vm%% to confirm they shut down or hibernate within the timeout period.
+- **测试您的配置：** 手动停止您的%%VMs|vm%%以确认它们在超时时间内关闭或休眠。
 
 :::
 
-:::warning[No safe timeout without hibernation]
-Without hibernation and %%QEMU|qemu%% %%Guest Agent|guest-agent%%, there isn't a truly safe timeout for Windows %%VMs|vm%%. Dialog boxes or ongoing update installations could render any timeout inadequate, leading to forced shutdowns and data corruption risk.
+:::warning[No 无休眠的安全超时]
+在没有休眠和%%QEMU|qemu%%%%Guest Agent|guest-agent%%的情况下，Windows %%VMs|vm%%没有真正安全的超时。对话框或正在进行的更新安装可能导致任何超时不充分，从而导致强制关机和数据损坏的风险。
 :::
 
-#### Docker timeouts
+#### Docker超时
 
-Configure Docker container stop timeouts in ***Settings → Docker*** (enable Advanced view).
+在***设置 → Docker***（启用高级视图）中配置Docker容器停止超时。
 
 **原理:**
 
@@ -253,41 +253,41 @@ Configure Docker container stop timeouts in ***Settings → Docker*** (enable Ad
 - 拥有大型数据库或正在进行业务操作的复杂容器可能需要额外时间。
 - 如果定时器到期，容器将被强制停止。
 
-:::tip[Docker timeout recommendations]
+:::tip[Docker 超时建议]
 
 - **默认 10 秒** 对大多数容器都是足够的。
 - **如果容器在停止时崩溃：** 增加超时至 **30 秒**。
-- Monitor your containers during shutdown to identify any that consistently need more time.
+- 在关闭期间监控您的容器，识别任何始终需要更多时间的容器。
 
 :::
 
-#### General timeouts
+#### 通用超时
 
-Configure the general shutdown timeout in ***Settings → Disk Settings → Shutdown time-out***.
+在***设置 → 磁盘设置 → 关闭超时***中配置通用关闭超时。
 
-**UPS considerations (most critical factor):**
+**不间断电源（UPS）注意事项（最关键因素）：**
 
-- Your UPS must provide enough runtime to complete the full shutdown sequence before battery runs out.
-- For **manual shutdown**, you can set longer timeouts since you control when shutdown starts.
-- With **power outage shutdown**, your timeout is limited by UPS battery life.
-- **Test your UPS** by simulating a power outage to ensure your server shuts down cleanly with time to spare.
+- 您的UPS必须提供足够的运行时间以完成完整的关闭序列，在电池用完之前。
+- 对于\*\*手动关闭，\*\*您可以设置更长的超时，因为您可以控制何时开始关闭。
+- 在\*\*断电关闭时，\*\*您的超时受限于UPS电池寿命。
+- **测试您的UPS**，模拟断电以确保服务器能在有足够余地的情况下自动关闭。
 
-:::tip[General timeout recommendations]
+:::tip[General 超时建议]
 
-- **If you get unclean shutdowns:** Increase to **180 seconds (3 minutes)** for systems without %%VMs|vm%%.
-- **For systems with %%VMs|vm%%:** Use **300+ seconds (5+ minutes)** if not using hibernation.
-- **If using hibernation:** **180-300 seconds** is usually sufficient.
-- Ensure timeouts are not longer than what your UPS can support during a power outage.
+- **如果遇到非正常关闭：** 对于无%%VMs|vm%%的系统，将超时增加到**180秒（3分钟）**。
+- **对于有%%VMs|vm%%的系统：** 如果不使用休眠，使用**300+秒（5+分钟）**。
+- **如果使用休眠：** **180-300秒** 通常足够。
+- 确保超时时间不超过UPS在断电时可以支持的时间。
 
 :::
 
-#### Third-party services
+#### 第三方服务
 
-**LXC containers:**
-The LXC plugin has its own timeout setting for stopping containers. Like Docker containers, LXC containers typically stop within a few seconds, but some may require more time. Check the LXC plugin settings for the container stop timeout and include this timeout in your general shutdown timeout calculation.
+**LXC容器：**
+LXC插件有自己的容器停止超时设置。与Docker容器类似，LXC容器通常在几秒钟内停止，但有些可能需要更多时间。检查LXC插件设置中的容器停止超时，并将其包括在一般关闭超时计算中。
 
-**Other services:**
-Some plugins or custom services may have their own shutdown procedures. Refer to the plugin documentation for specific timeout settings and incorporate them into your calculations.
+**其他服务：**
+某些插件或自定义服务可能有自己的关闭程序。请参阅插件文档获取特定的超时设置，并将其纳入您的计算中。
 
 **更新的公式与第三方服务：**
 
@@ -302,11 +302,11 @@ If you frequently use SSH or terminal sessions, open sessions can prevent clean 
 
 您可以从 [社区应用程序（搜索 "Dynamix 停止 Shell"）](https://unraid.net/community/apps/c/tools-system/p2?srsltid=AfmBOoqBXyDNfHxRDCL7Fv9Gcfz8-8CdHmiJSX16PRZpZLLzgQtw2mVk#:~:text=the%20given%20interval.-,Dynamix%20Stop%20Shell,-Dynamix%20Repository) 安装插件。
 
-:::tip[When to use the plugin]
+:::tip[When 使用插件]
 
 - 如果您经常有终端会话打开。
 - 为了防止遗忘的 SSH 会话拖延关机。
-- For automated cleanup during shutdown.
+- 在关闭期间自动清理。
 
 :::
 
@@ -314,6 +314,6 @@ If you frequently use SSH or terminal sessions, open sessions can prevent clean 
 
 - 当心如果在终端会话中有脚本或进程运行。
 - 确保在关机前没有关键的写入操作正在进行中。
-- The plugin will forcefully close sessions, which could interrupt work.
+- 该插件将强制关闭会话，这可能会中断工作。
 
 :::
