@@ -1,0 +1,267 @@
+---
+sidebar_position: 3
+sidebar_label: Replacing disks in array
+---
+
+# Replacing disks in array
+
+Vous pouvez avoir besoin de remplacer des disques dans votre matrice pour deux raisons principales :
+
+1. **Capacity upgrade**: Your storage is nearly full, and you want to use larger disks.
+2. **Failure or retirement**: A disk has failed or is no longer supported.
+
+Bien que le processus de remplacement des disques soit similaire dans les deux cas, soyez prudent, car il y a un risque de perte de données pendant le remplacement. Les dispositifs de parité aident à protéger vos données ; un dispositif de parité peut protéger contre une défaillance de disque unique, tandis que deux peuvent protéger contre la perte de données si deux disques échouent. Soyez toujours conscient de votre niveau de protection lors de remplacement de disques.
+
+## Mise à niveau de la capacité
+
+Lors de la mise à niveau de votre disque de données vers un plus grand, voici quelques points à garder à l'esprit :
+
+- **Disques non montables :** Corrigez tous les disques non montables avant de mettre à jour. Un statut non montable ne sera pas résolu pendant la reconstruction.
+
+- **Risques de parité unique :** Si vous avez une parité unique, vous risquez une perte de données si un autre lecteur échoue pendant la mise à jour. Cherchez des conseils dans les forums si cela se produit.
+
+- **Protection par double parité :** Avec une double parité, vous êtes à l'abri de la perte de données si un lecteur échoue lors de la mise à jour d'un seul disque. Vous pouvez également mettre à niveau deux disques à la fois, mais notez que cela augmente le risque puisque vous n'aurez pas de protection contre l'échec d'un autre lecteur.
+
+- **Sauvegardez l'ancien disque :** Conservez le disque original intact jusqu'à ce que la mise à niveau soit confirmée réussie. Cela offre une option de secours si quelque chose tourne mal.
+
+:::warning
+
+Le remplacement des disques comporte toujours un risque. Si un autre disque tombe en panne lors de la mise à niveau, surtout avec une seule parité, vous risquez de perdre des données. Vérifiez toujours la santé de vos disques avant de commencer le processus et assurez-vous de conserver l'ancien disque intact jusqu'à ce que la mise à niveau soit terminée et que vos données soient confirmées comme sécurisées.
+
+:::
+
+Pour mettre à niveau un disque de données existant :
+
+1. Run a %%parity check|parity-check%% and ensure there are zero errors. If parity isn't valid, rebuilding the disk will corrupt its file system.
+2. Arrêtez l'ensemble.
+3. Unassign the target disk.
+4. Start the array. Unraid emulates the missing disk using the existing parity and data disks. You have two modes to choose from:
+   - %%Maintenance Mode|maintenance-mode%% - Prevents any writes to the emulated disk
+   - Normal Mode - Allows read/write access to the emulated disk
+
+:::note
+
+Starting in Normal Mode is optional. You can use it to verify that the emulated disk mounts and the data looks correct before proceeding.
+
+:::
+
+5. Stop the array again.
+6. Assign the replacement disk to the vacant slot.
+7. Start the array to begin the rebuild. Unraid rebuilds the contents onto the new disk, and the file system automatically adjusts to the larger disk's capacity.
+
+## Remplacement des disques échoués/désactivés
+
+### What is a failed/disabled disk?
+
+A failed or disabled disk is one that Unraid has stopped using for writing data, usually because it encountered a write error. A failed drive isn't always broken; it might be due to bad connections, power issues, or a temporary glitch.
+
+Indications include a red "X" on the disk indicator and failure notification alerts.
+
+| Scénario d'échec       | Pas de parité   | Parité simple   | Double parité  |
+| ---------------------- | --------------- | --------------- | -------------- |
+| **1 Panne de disque**  | Données perdues | Reconstituable  | Reconstituable |
+| **2 Pannes de disque** | Données perdues | Données perdues | Reconstituable |
+
+:::tip[Tips for Safe Rebuilds]
+
+- **Pour une seule parité :** Vous ne pouvez remplacer qu'un disque à la fois. Si un autre disque échoue pendant la reconstruction, vous pourriez perdre des données.
+- **Pour la double parité :** Vous pouvez remplacer un ou deux disques à la fois, mais soyez prudent si plus de deux disques échouent.
+
+:::
+
+:::important
+
+If more disks fail than your parity can protect:
+
+1. Immediately halt all write operations to prevent further data loss.
+2. Cherchez de l'aide en postant votre problème sur les [forums Unraid](https://forums.unraid.net/) avec des diagnostics.
+3. Do not attempt a rebuild until you've received advice—focus on salvaging your data first.
+
+:::
+
+### How to diagnose the issue
+
+Check the %%syslog|syslog%% and %%SMART reports|smart-report%%:
+
+- Si le %%syslog|syslog%% montre que le lecteur a été réinitialisé, il pourrait y avoir un problème de connexion ou de câbles.
+- %%SMART reports|smart-report%% can help assess the drive's health, but the best way to check is by running a %%SMART|smart%% extended test. If it completes without errors, the drive is likely fine.
+- If you see %%CRC errors|crc-errors%%, it usually points to issues with the cabling. These errors accumulate over time and don't reset.
+
+:::tip
+
+To stay informed about drive issues, enable notifications in Unraid by going to **Settings → Notification Settings**. This way, you're alerted right away if something goes wrong, reducing the risk to your data.
+
+:::
+
+### What is emulation?
+
+When a drive is disabled, Unraid uses its parity and other working drives to emulate the failed drive. The system continues to operate, and you can still access the data stored on the %%emulated drive|emulated-disk%%.
+
+- Unraid stops writing to the physical drive, and any updates are saved in parity and the emulation instead.
+- Before replacing the failed drive, you can check and recover data from the %%emulated drive|emulated-disk%%, which keeps the physical drive intact for potential recovery.
+- If you can't access the %%emulated drive|emulated-disk%%, repairing the file system is essential before any rebuild since fixing the file system is quicker and more effective than a rebuild.
+
+### Preparing for drive replacement
+
+Make sure the new drive is at least as large as the failed drive but not larger than your smallest parity drive. If you have to use a larger drive, follow the Parity Swap procedure.
+
+Bien que cela ne soit pas obligatoire, de nombreux utilisateurs choisissent de pré-effacer les nouveaux disques pour les tester et aider à prévenir les défaillances précoces. Vous pouvez le faire avec le plugin Preclear, un test étendu %%SMART|smart%%, ou les outils du fabricant.
+
+:::caution
+
+If you try to rebuild using an unmountable %%emulated drive|emulated-disk%%, the new drive will also become unmountable. Always repair the file system before attempting a rebuild.
+
+:::
+
+To replace and rebuild a disk, follow the size requirements described in the "Preparing for drive replacement" section above.
+
+:::important
+
+Before you start, check for any disk errors or warnings. Unraid must be able to read all the remaining disks without any issues for the rebuild to work correctly. If another disk is failing, it could lead to data loss.
+
+:::
+
+1. Arrêtez l'ensemble.
+
+:::tip
+
+If your server supports hot-swap, you can skip step 2.
+
+:::
+
+2. Éteignez votre serveur.
+3. Remove the old, failed disk and install the new disk. Ensure the replacement meets the size requirements described above.
+4. Allumez votre serveur.
+5. Assign the new disk to the failed disk's slot.
+6. Check **Yes, I want to do this** and confirm.
+7. Optionally select %%Maintenance Mode|maintenance-mode%% to speed up the rebuild (the array won't be accessible during this time).
+8. Click **Start** to begin the rebuild. Unraid copies data from the emulated disk to the new disk. If the new disk is larger, Unraid manages the extra space.
+
+:::warning
+
+Il peut arriver que vous souhaitiez retirer un disque de votre matrice Unraid. Que vous cherchiez à économiser de l'énergie, à retirer un disque ancien ou peu fiable, ou à réaffecter le matériel à un autre usage, le processus est assez simple.
+
+:::
+
+### À quoi s'attendre pendant la reconstruction
+
+- **Arrêtez l'array :** Commencez par accéder au %%WebGUI|web-gui%% et en arrêtant l'array.
+- **Unassign the %%parity drives|parity-drives%%:** Locate the %%parity drives|parity-drives%% slot and set it to "Unassigned."
+- **Démarrez l'array :** Enfin, redémarrez l'array pour valider les changements et retirer avec succès les disques de parité %%parity drives|parity-drives%% de la configuration.
+- Si l'ancien disque était non montable en raison de problèmes de système de fichiers, le nouveau disque ne sera également pas montable. Veuillez corriger tous les problèmes de système de fichiers avant de commencer la reconstruction.
+
+:::note[Additional notes]
+
+- Avec une double parité, vous pouvez récupérer d'un seul lecteur défaillant, mais soyez conscient que vous ne pourrez pas survivre à une autre défaillance pendant le processus de reconstruction.
+- Avec une seule parité, vous perdez toute redondance, ce qui signifie que toute défaillance supplémentaire pourrait entraîner une perte de données.
+  :::
+
+:::
+
+## Réactivation d'un disque désactivé (reconstruire sur lui-même)
+
+Parfois, un disque peut être désactivé non pas parce qu'il est réellement défectueux, mais à cause de problèmes tels que des câbles lâches, des problèmes d'alimentation ou des pannes temporaires. Dans ce cas, vous pouvez essayer de réactiver le disque désactivé en le reconstruisant sur lui-même au lieu de le remplacer.
+
+:::important[When pour utiliser cette procédure]
+
+N'utilisez cette procédure que lorsque:
+
+- Le disque a été désactivé en raison de facteurs externes (comme des câbles ou des problèmes d'alimentation).
+- You've checked the disk's health using [%%SMART reports|smart-report%%](../../system-administration/monitor-performance/smart-reports-and-disk-health.mdx).
+- Vous avez réparé tous les problèmes externes qui ont causé la désactivation du disque.
+- Le disque semble fonctionner normalement.
+
+:::
+
+:::warning[Important consid�e9rations]
+
+- If you are rebuilding a data drive, make sure that the %%emulated disk|emulated-disk%% shows the right content before you proceed. The rebuild process will ensure that the physical drive matches the emulated one exactly.
+- The %%emulated disk|emulated-disk%% may show as 'unmountable' in some cases. A rebuild will not necessarily fix an unmountable emulated disk, so verify the situation first. If the emulated disk shows 'unmountable' or the content doesn't look right, ask for help in the [Unraid forums](https://forums.unraid.net/) before proceeding with the rebuild.
+- Always run a [%%SMART|smart%% extended test](../../system-administration/advanced-tools/command-line-interface.mdx#smartctl) on the disabled drive to double-check that it's healthy before starting this process.
+- If the %%emulated disk|emulated-disk%% shows any file system issues, use the [automated XFS repair feature](../../troubleshooting/common-issues/data-recovery.mdx#running-the-repair) for XFS‑formatted disks, or the respective file system repair options for other file systems in the %%WebGUI|web-gui%% before beginning the rebuild.
+- Bien que le processus de reconstruction doive préserver vos données, il est conseillé de sauvegarder les fichiers importants si vous le pouvez.
+
+:::
+
+Pour réactiver un disque désactivé en le reconstruisant sur lui-même :
+
+1. Verify disk health by running a [%%SMART|smart%% extended test](../../system-administration/advanced-tools/command-line-interface.mdx#smartctl) and acknowledging any warning icons in the dashboard.
+2. Arrêtez l'ensemble.
+3. Unassign the disabled disk.
+4. Start the array so Unraid can register the missing disk. The array displays the disk as "Not installed."
+5. For data drives only, verify that the emulated disk shows the content you expect.
+6. Arrêtez l'ensemble.
+7. Reassign the disabled disk to its original slot.
+8. Optionally select %%Maintenance Mode|maintenance-mode%% to speed up the rebuild process.
+9. Click **Start** to begin the rebuild. Unraid takes the contents from the emulated disk and reconstructs them onto the physical drive.
+
+:::info[Rebuild attentes de temps]
+
+Reconstruire un disque sur lui-même peut prendre de plusieurs heures à plus d'une journée pour des disques plus grands, en fonction de la taille du disque et de l'activité du système. Les facteurs qui peuvent affecter le temps de reconstruction incluent la capacité du disque, la vitesse du disque et la charge du système. Vous pouvez garder un œil sur l'avancement dans le %%WebGUI|web-gui%%.
+
+:::
+
+This procedure works for both data drives and %%parity drives|parity-drives%% that have been disabled.
+
+## Retrait de disques de données
+
+Parity swap is a special procedure used when you need to replace a data disk with a disk that is larger than your current parity disk. The process moves your current parity disk to the data slot, then installs a new, larger disk as the new parity disk. This ensures your array remains protected and allows for larger data drives in the future.
+
+Use a parity swap when your replacement data drive is larger than your current parity disk. This isn't necessary if your new data drive is the same size or smaller than your parity disk.
+
+**Example scenario:** You have an Unraid setup with a **2TB parity drive** and a **1TB data drive** and want to replace the 1TB drive with a **4TB drive**. First, assign the new 4TB drive as the parity drive, which will replace the 2TB drive. Then move the original 2TB drive to the data slot, and remove the 1TB drive entirely. After these changes, you'll have a 4TB drive as your new parity, ensuring you can add future data drives up to 4TB. The 2TB drive will now hold your existing data, while the 1TB drive can be repurposed. This swap keeps your data secure and your array protected, allowing for future upgrades.
+
+:::important\[Prerequisites]
+
+- Before starting, ensure the data drive you want to replace is disabled. Failed drives (showing a red indicator) are already disabled. For healthy drives you want to replace, unassign the drive and start the array once without it to force Unraid to mark it as disabled.
+- When your replacement data drive is not larger than your parity drive, use the standard [Replacing failed/disabled disks](#replacing-faileddisabled-disks) procedure instead.
+- This procedure is only needed for replacing data drives in an Unraid array with a disk larger than the current parity drive. For parity drive upgrades only, simply remove the old parity drive, add the new one, and start the array. Parity will rebuild automatically.
+
+:::
+
+:::warning\[Warnings]
+
+- Always verify the health of all drives using %%SMART reports|smart-report%% before starting a %%parity swap|parity-swap%%. Attempting this procedure with another failing or unhealthy disk increases the risk of data loss.
+- Précleurez le nouveau disque si possible. Bien que cela ne soit pas requis, le prédéclairage teste la résistance du disque et réduit le risque de défaillance précoce.
+- Identifiez correctement tous les disques avant de commencer. Notez les numéros de modèle et les quatre derniers caractères de chaque numéro de série pour éviter les erreurs lors de l'affectation.
+
+:::
+
+Unraid fournit des rapports de statut qui vous aident à suivre la santé de votre matrice de stockage. Ces rapports sont un moyen rapide de vérifier si l'un de vos disques est désactivé ou rencontre des problèmes de lecture ou d'écriture de données.
+
+:::note
+
+If the drive to be replaced is already disabled, you can skip steps 1–4. If you've already installed the new replacement drive, you can skip steps 5–8.
+
+:::
+
+1. Arrêtez l'ensemble.
+2. Unassign the old data drive if it's still assigned.
+3. Start the array. The data drive should now show as "Not installed."
+4. Stop the array again.
+5. Power down the server.
+
+:::tip
+
+If your system supports hot-swap, you don't need to power down. Make sure the array is stopped before making any hardware changes.
+
+:::
+
+6. Optionally remove the old drive.
+7. Install the new drive. Pre-clearing is strongly recommended, but formatting is not needed.
+8. Power on the server.
+9. Stop the array if it started automatically.
+10. Unassign the parity drive.
+11. Assign the new drive to the parity slot.
+12. Assign the old parity drive to the data slot of the drive being replaced.
+13. You should see a **Copy** button with a message stating "Copy will copy the parity information to the new parity disk."
+14. Check the confirmation box and click **Copy**. The array isn't available during this operation, which can take many hours depending on disk size.
+15. Start the array to begin the data rebuild. You can use the array during the rebuild, but limit usage for best performance. The rebuild process also takes several hours.
+
+:::warning
+
+Ne formatez jamais un disque pendant ce processus. Le formatage effacera toutes les données et mettra à jour la parité, rendant la récupération impossible.
+
+:::
+
+After completion, you will have a larger parity disk and a replaced data disk. Many users run a %%parity check|parity-check%% afterward for extra confidence, though this is optional.
