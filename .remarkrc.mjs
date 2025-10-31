@@ -195,7 +195,7 @@ function normalizeDirectiveFences(value) {
 
   // Filter out any null/undefined entries (unmatched closers) before joining
   // so we don't introduce blank lines into the output.
-  return normalized.filter(Boolean).join("\n");
+  return normalized.filter(v => v != null).join("\n");
 }
 
 function stripDanglingDirectiveClosings() {

@@ -22,7 +22,7 @@ import remarkLintNoHeadingPunctuation from "remark-lint-no-heading-punctuation";
 import remarkLintNoMultipleToplevelHeadings from "remark-lint-no-multiple-toplevel-headings";
 import remarkLintNoShellDollars from "remark-lint-no-shell-dollars";
 import jsxContentSpacing from "./remark-jsx-spacing.js";
-import { sortSidebarItems } from "./sitebar-semver-sort.js";
+import { sortSidebarItems } from "./sidebar-semver-sort.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -331,7 +331,7 @@ const config: Config = {
           },
           {
             from: "/legacy/FAQ/Parity/",
-            to: "/unraid-os/using-unraid-to/manage-storage/array/",
+            to: "/unraid-os/using-unraid-to/manage-storage/array/overview/",
           },
           {
             from: "/legacy/FAQ/parity-swap-procedure/",
@@ -551,7 +551,7 @@ const config: Config = {
           },
           {
             from: "/unraid-os/manual/storage-management/",
-            to: "/unraid-os/using-unraid-to/manage-storage/array/",
+            to: "/unraid-os/using-unraid-to/manage-storage/array/overview/",
           },
           { from: "/unraid-os/manual/tools/", to: "/category/advanced-tools/" },
           {
@@ -850,7 +850,7 @@ const config: Config = {
           },
           {
             from: "/go/parity/",
-            to: "/unraid-os/using-unraid-to/manage-storage/array/",
+            to: "/unraid-os/using-unraid-to/manage-storage/array/overview/",
           },
           {
             from: "/go/quick-install-guide-assigning-devices/",
@@ -899,7 +899,7 @@ const config: Config = {
           },
           {
             from: "/go/storage-management/",
-            to: "/unraid-os/using-unraid-to/manage-storage/array/",
+            to: "/unraid-os/using-unraid-to/manage-storage/array/overview/",
           },
           {
             from: "/go/syslog-server/",
