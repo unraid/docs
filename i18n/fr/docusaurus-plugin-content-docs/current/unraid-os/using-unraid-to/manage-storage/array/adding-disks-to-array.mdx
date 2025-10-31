@@ -1,0 +1,178 @@
+---
+sidebar_position: 2
+sidebar_label: Ajout de disques à la matrice
+---
+
+# Ajout de disques à la matrice
+
+Ajouter des disques de données est un excellent moyen d'augmenter l'espace de stockage de votre matrice Unraid. En ajoutant plus de disques, vous pouvez conserver plus de fichiers, d'applications et de sauvegardes, tout en protégeant vos données.
+
+:::important[Important Remarque :]
+
+When adding a new data disk, it must be the same size or smaller than your current %%parity disks|parity-drives%%. If you want to use a larger disk, you'll need to replace the %%parity disks|parity-drives%% first with the larger one, then use the old %%parity disks|parity-drives%% as a data disk.
+
+:::
+
+:::tip[Hot-Swap Fonctionnalité]
+
+Si vous utilisez du matériel moderne compatible avec Unraid, vous pouvez changer les disques sans éteindre votre serveur. Cette fonction, connue sous le nom de hot-swap, est disponible dans les serveurs LimeTech depuis le début.
+
+:::
+
+## Configuration de nouveaux disques
+
+1. Aller à ***Principal → Périphériques de la matrice*** dans l'interface.
+2. Choisissez l'emplacement où vous souhaitez ajouter le disque et sélectionnez le disque dans la liste déroulante.
+3. Par défaut, les nouveaux disques de la matrice seront formatés avec %%XFS|xfs%%. Si vous souhaitez utiliser %%ZFS|zfs%% ou %%BTRFS|btrfs%% à la place, sélectionnez votre système de fichiers préféré dans le menu déroulant.
+
+## Effacer vs Pré-Effacer
+
+Unraid nécessite que les disques soient dans un état nettoyé - complètement remplis de zéros et marqués d'une signature spéciale - avant de les ajouter à une matrice protégée par parité. Ce processus garantit l'intégrité de la parité et maintient la matrice en ligne pendant la préparation du disque.
+
+Clearance is mandatory when adding a data disk to a %%parity|parity%%-protected array. If you are adding a %%parity disk|parity-drives%% or working with an array that does not use %%parity|parity%%, clearance is not required.
+
+L'opération de nettoyage intégrée écrit des zéros sur le disque en arrière-plan, permettant à la matrice de rester disponible. Une fois le processus terminé, le disque doit être formaté avant utilisation. Cette méthode est efficace, ne nécessite pas d'outils tiers et est idéale pour des extensions rapides.
+
+Pour une approche plus approfondie, l'opération de pré-nettoyage - disponible via des plugins comme [Unassigned Devices Preclear](https://unraid.net/community/apps?q=unassigned+devices#r:~:text=enable%20destructive%20mode.-,Unassigned%20Devices%20Preclear,-dlandon) - effectue une pré-lecture pour vérifier les mauvais secteurs, écrit des zéros sur le disque, puis vérifie l'intégrité avec une post-lecture. Cette étape supplémentaire aide à détecter les pannes prématurées des disques mais prend beaucoup plus de temps et nécessite l'installation manuelle du plugin.
+
+**Règle générale :** Utilisez l'opération d'effacement intégrée pour des ajouts rapides à votre array, ou choisissez le pré-effacement si vous souhaitez des tests étendus de la santé des disques avant de mettre un disque en service.
+
+<h3>Comparaison Effacer vs Pré-Effacer</h3>
+
+<div
+  style={{
+   margin: "auto",
+   display: "flex",
+   flexDirection: "column",
+   alignItems: "center",
+  }}
+>
+  |                        | Effacer                                     | Pré-Effacer                                       |
+  | ---------------------- | ------------------------------------------- | ------------------------------------------------- |
+  | **Objectif**           | Assure la compatibilité de base des disques | Teste l'état du disque et prépare son utilisation |
+  | **Vitesse**            | Rapide                                      | Significativement plus lent                       |
+  | **Impact sur l'array** | Opération en arrière-plan                   | Disque hors ligne requis                          |
+  | **Meilleur pour**      | Expansions rapides                          | Préparation/vérification des nouveaux disques     |
+</div>
+
+%%Parity disks|parity-drives%% are a helpful feature that provide an extra layer of protection for your data. They allow your storage system to recover information if a hard drive fails. While using %%parity disks|parity-drives%% is optional, it's highly recommended to keep your data safe.
+
+**Pré-Effacer** prend plus de temps mais fournit un test approfondi, garantissant qu'un nouveau disque est fiable avant de devenir une partie de votre array.
+
+:::caution[Critical Remarque]
+
+Évitez de formater un disque pré-effacé avant de l'inclure dans l'array, car cela supprime la signature de dédouanement.
+
+:::
+
+## Ajout de disques de données
+
+Ajouter un nouveau disque de données à votre array augmente la capacité de stockage. Le processus varie légèrement selon que vous avez la protection parité activée ou non. Les arrays protégés par parité effacent les nouveaux disques avant qu'ils ne deviennent disponibles, tandis que les arrays sans parité peuvent ajouter des disques plus rapidement.
+
+### Ajouter à un array protégé par la parité
+
+1. Arrêtez l'ensemble.
+2. Éteignez votre serveur.
+3. Installez physiquement le(s) nouveau(x) disque(s) dur(s).
+4. Rallumez le serveur.
+5. Assignez le(s) nouveau(x) disque(s) aux emplacements disponibles.
+6. Démarrez l'array. Unraid lance automatiquement une opération de nettoyage sur le nouveau disque, le remplissant de zéros pour s'assurer qu'il est prêt à l'emploi tout en maintenant l'intégrité des données. L'opération de nettoyage se déroule en arrière-plan, vous pouvez donc toujours accéder à votre array. Le disque ne sera pas utilisable avant la fin du processus. Si vous avez pré-nettoyé le disque, Unraid passe cette étape.
+7. Après le nettoyage, le disque apparaît comme non montable. Il vous sera demandé de le formater.
+8. **Confirmez le formatage :** Cochez la case de confirmation et cliquez sur le bouton **Format**.
+9. Le formatage prend quelques minutes. Une fois terminé, le disque est monté et prêt à l'emploi.
+
+:::important
+
+Vérifiez toujours le numéro de série pour vous assurer que vous formatez le bon disque. Le formatage efface tout sur ce disque, et cette action est irréversible.
+
+:::
+
+:::note
+
+Vous pouvez ajouter plusieurs disques, mais ils ne seront pas utilisables tant qu'ils n'auront pas tous été effacés et formatés.
+
+:::
+
+### Ajouter à un array sans protection de parité
+
+1. Arrêtez l'ensemble.
+2. Éteignez votre serveur.
+3. Installez physiquement le(s) nouveau(x) disque(s) dur(s).
+4. Rallumez le serveur.
+5. Assignez le(s) nouveau(x) disque(s) aux emplacements disponibles.
+6. Démarrez l'array. L'étape de nettoyage est complètement écartée lorsqu'il n'y a pas de %%parity disk|parity-drives%% dans l'array.
+7. Le nouveau disque apparaît comme non montable et il vous sera demandé de le formater.
+
+:::important
+
+Vérifiez toujours le numéro de série pour vous assurer que vous formatez le bon disque. Le formatage efface tout sur ce disque, et cette action est irréversible.
+
+:::
+
+## Ajout de disques de parité
+
+%%Parity disks|parity-drives%% are a helpful feature that provide an extra layer of protection for your data. They allow your storage system to recover information if a hard drive fails. While using %%parity disks|parity-drives%% is optional, it's highly recommended to keep your data safe.
+
+:::important\[Requirements]
+
+- **Parité Unique :** Le disque doit être au moins de la même taille que votre plus grand disque de données.
+- **Double Parité :** Les deux %%parity disks|parity-drives%% doivent également être au moins de la taille de votre plus grand disque de données, mais ils peuvent être de tailles différentes.
+
+:::
+
+L'ajout d'un %%parity disk|parity-drives%% est similaire à l'ajout d'un disque de données :
+
+1. Sélectionnez le %%parity disk|parity-drives%% et démarrez l'array. Unraid commence le calcul de la parité.
+2. Vous pouvez toujours accéder à vos fichiers pendant ce processus, mais le système peut fonctionner plus lentement.
+
+### Comprendre la parité
+
+**What is parity?** %%Parity|parity%% in Unraid protects your data by ensuring that you can recover from a drive failure. With the use of a %%parity disk|parity-drives%%, any single missing disk can be reconstructed by combining the information from all other data drives along with the %%parity|parity%% data.
+
+**Comment cela fonctionne-t-il :** Unraid utilise un bit spécial appelé le *bit de parité*, stocké pour chaque position de bit sur tous les disques de données et géré par un %%parity disk|parity-drives%% dédié. La %%parité|parity%% est calculée de telle sorte que le nombre total de bits dans chaque position à travers tous les disques (y compris le %%parity disk|parity-drives%%) est toujours un nombre pair (parité paire). Unraid utilise l'opération XOR (ou exclusif) pour ce calcul.
+
+**Comment les données sont-elles reconstruites :** Unraid reconstruit un disque manquant ou répare un mauvais secteur en lisant tous les disques restants, y compris le %%parity disk|parity-drives%%, et en appliquant la %%parité|parity%% paire pour résoudre les données manquantes. La fonctionnalité de %%parité|parity%% permet à Unraid de "simuler" le disque manquant pour que vous puissiez continuer à utiliser l'array comme si le disque était encore fonctionnel. Une fois que vous installez un nouveau disque dans l'emplacement défaillant, Unraid recrée toutes les données manquantes en se basant sur l'état actuel de la %%parité|parity%% et des autres disques.
+
+**Taille du disque de parité :** Votre %%parity disk|parity-drives%% doit être égal ou plus grand que votre plus grand disque de données. Par exemple, si votre plus grand disque de données est de 10 To, votre %%parity disk|parity-drives%% devrait être d'au moins 10 To.
+
+**Performance impact:** Writing to a %%parity|parity%%-protected array involves four disk operations for each write: reading data, reading %%parity|parity%%, writing data, and writing %%parity|parity%%. This process requires a full rotation from each affected drive, so the overall write speed is limited by the slowest drive involved in the operation.
+
+**Double Parité :** La double %%parité|parity%% permet la récupération de deux défaillances de disque simultanées. Le second %%parity disk|parity-drives%% ne se contente pas de refléter le premier. Au lieu de cela, la Parité 1 utilise des calculs de %%parité|parity%% XOR (paire) standard, tandis que la Parité 2 implémente la Q-parité utilisant des calculs de syndrome de champ de Galois (style Reed-Solomon), comparable à %%RAID 6|raid6%%. Cela permet à Unraid de reconstruire à partir de deux défaillances de disque simultanées, augmentant ainsi considérablement la résilience pour les grandes matrices.
+
+:::caution\[Remember]
+
+When setting up a new data storage system, add your data disks **first**, making sure they all use a compatible file system. **After** placing your data disks, you can add a %%parity disk|parity-drives%% to protect against drive failures.
+
+Once your %%parity disk|parity-drives%% is added, remember that any new disk you want to include in the array must be cleared (zeroed) before it's integrated. This is to ensure that the %%parity|parity%% remains valid and continues to protect your data.
+
+:::
+
+## Remplacement des disques
+
+Vous pouvez mettre à niveau votre(vos) dispositif(s) de disque de %%parité|parity-drives%% vers un plus grand afin d'utiliser des disques de plus grande taille dans la matrice ou ajouter un disque de %%parité|parity-drives%% supplémentaire.
+
+:::caution
+
+Si vous envisagez de suivre les étapes suivantes et que vous n'avez qu'un seul disque de %%parity disk|parité%%, gardez à l'esprit ces points :
+
+- Vos données ne seront pas protégées tant que la reconstruction de la %%parity|parity%% ne sera pas terminée. Si un disque de données tombe en panne pendant ce temps, vous pourriez perdre les informations sur ce disque.
+- Si vous disposez déjà d'un disque de données défaillant, procéder ainsi vous empêchera de pouvoir reconstruire ce disque. Dans ce cas, vous devez suivre la procédure de **remplacement de la parité**.
+
+:::
+
+Pour mettre à niveau un disque de parité :
+
+1. Arrêtez l'ensemble.
+2. Éteignez votre serveur (passez cette étape et l'étape 4 si votre serveur prend en charge le hot-swap).
+3. Installez le nouveau, plus grand %%parity disk|parity-drives%% dans votre serveur.
+4. Allumez votre serveur.
+5. Assignez le nouveau disque à l'emplacement de parité, en remplaçant l'ancien.
+6. Démarrez l'ensemble.
+
+Une fois l'array remonté, Unraid commence à construire la parité sur le nouveau disque. Vous pouvez toujours accéder à vos données pendant ce temps, mais cela pourrait être plus lent jusqu'à ce que le processus soit terminé.
+
+:::tip[Planning your parity upgrade]
+
+Gardez le vieux %%parity disk|parity-drives%% installé jusqu'à ce que la nouvelle construction de parité soit complète. Si un disque de données échoue pendant la mise à jour, l'ancien %%parity disk|parity-drives%% peut vous aider à récupérer vos données. Après la mise à jour réussie, vous pouvez réutiliser l'ancien disque comme disque de données si vous le souhaitez.
+
+:::
