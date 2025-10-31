@@ -1,0 +1,178 @@
+---
+sidebar_position: 2
+sidebar_label: 添加磁盘到阵列
+---
+
+# 添加磁盘到阵列
+
+Adding data disks is a great way to increase your Unraid array's storage space. By adding more disks, you can keep more files, applications, and backups, while still protecting your data.
+
+:::important[Important 注意：]
+
+添加新的数据盘时，其大小必须与当前%%parity disks|parity-drives%%相同或更小。如果您想使用更大的磁盘，首先需要用较大的替换%%parity disks|parity-drives%%，然后将旧的%%parity disks|parity-drives%%作为数据磁盘使用。
+
+:::
+
+:::tip[Hot-Swap 特性]
+
+If you're using modern Unraid-compatible hardware, you can change disks without shutting down your server. This feature, known as hot-swap, has been available in LimeTech servers since the beginning.
+
+:::
+
+## 设置新磁盘
+
+1. 转到 ***主界面 → 阵列设备***。
+2. 选择想要添加磁盘的插槽，并从下拉列表中选择磁盘。
+3. 默认情况下，新的阵列驱动器将使用%%XFS|xfs%%格式化。如果您希望使用%%ZFS|zfs%%或%%BTRFS|btrfs%%，请从下拉菜单中选择您喜欢的文件系统。
+
+## 清除与预清除
+
+Unraid requires disks to be in a cleared state - completely filled with zeros and marked with a special signature - before adding them to a parity-protected array. This process ensures parity integrity and keeps the array online during disk preparation.
+
+Clearance is mandatory when adding a data disk to a %%parity|parity%%-protected array. If you are adding a %%parity disk|parity-drives%% or working with an array that does not use %%parity|parity%%, clearance is not required.
+
+内置的清除操作在后台将零写入磁盘，使阵列保持可用。完成该过程后，磁盘必须格式化才能使用。这种方法高效，不需要第三方工具，是快速扩展的理想选择。
+
+对于更全面的方法，通过插件（如[未挂载设备预清除](https://unraid.net/community/apps?q=unassigned+devices#r:~:text=enable%20destructive%20mode.-,Unassigned%20Devices%20Preclear,-dlandon)）提供的预清除操作执行预读以检查坏扇区，对磁盘写零，然后通过后读验证完整性。此额外步骤有助于检测早期驱动器故障，但耗时更长，并需要手动安装插件。
+
+**基本准则：** 使用内置清除操作快速添加到您的阵列中，或者选择预清除如果您想在将驱动器投入使用之前广泛检测其健康状况。
+
+<h3>清除与预清除比较</h3>
+
+<div
+  style={{
+   margin: "auto",
+   display: "flex",
+   flexDirection: "column",
+   alignItems: "center",
+  }}
+>
+  |          | 清除               | 预清除                           |
+  | -------- | ---------------- | ----------------------------- |
+  | **目的**   | 确保基本磁盘兼容性        | 测试驱动器健康状况并准备使用                |
+  | **速度**   | 快速               | 明显较慢                          |
+  | **阵列影响** | 后台运行             | Disk offline required         |
+  | **最佳用途** | Quick expansions | Preparing/checking new drives |
+</div>
+
+%%Parity disks|parity-drives%%是有用的特性，为您的数据提供额外的保护层。如果硬盘出故障，它们允许您的存储系统恢复信息。虽然使用%%parity disks|parity-drives%%是可选的，但强烈建议使用以保障数据安全。
+
+**预清除**耗时较长，但提供全面测试，以确保新磁盘在成为阵列一部分之前是可靠的。
+
+:::caution[Critical 注意]
+
+避免在将预先清除的磁盘包括在阵列中之前对其进行格式化，因为这将移除清除签名。
+
+:::
+
+## 添加数据盘
+
+Adding a new data disk to your array expands storage capacity. The process varies slightly depending on whether you have parity protection enabled. Parity-protected arrays clear new disks before they become available, while arrays without parity can add disks more quickly.
+
+### Adding to a parity-protected array
+
+1. 停止数组。
+2. Power down your server.
+3. Install the new hard drive(s) physically.
+4. Power the server back on.
+5. Assign the new disk(s) to available data slots.
+6. Start the array. Unraid will automatically start a clear operation on the new disk, filling it with zeros to ensure it's ready for use while maintaining data integrity. The clear operation runs in the background, so you can still access your array. The disk won't be usable until the process is complete. If you've pre-cleared the disk, Unraid skips this step.
+7. After clearing completes, the disk shows as unmountable. You'll be prompted to format it.
+8. Check the confirmation box and click the **Format** button.
+9. The formatting takes a few minutes. Once completed, the disk shows as mounted and ready for use.
+
+:::important
+
+Always double-check the serial number to make sure you're formatting the right disk. Formatting erases everything on that disk, and this action cannot be undone.
+
+:::
+
+:::note
+
+You can add multiple disks, but they won't be usable until all have been cleared and formatted.
+
+:::
+
+### Adding to an array without parity protection
+
+1. 停止数组。
+2. Power down your server.
+3. Install the new hard drive(s) physically.
+4. Power the server back on.
+5. Assign the new disk(s) to available data slots.
+6. Start the array. The clearing step is skipped entirely when there is no %%parity disk|parity-drives%% in the array.
+7. The new disk shows as unmountable and you'll be prompted to format it.
+
+:::important
+
+Always double-check the serial number to make sure you're formatting the right disk. Formatting erases everything on that disk, and this action cannot be undone.
+
+:::
+
+## 添加奇偶盘
+
+%%Parity disks|parity-drives%%是有用的特性，为您的数据提供额外的保护层。如果硬盘出故障，它们允许您的存储系统恢复信息。虽然使用%%parity disks|parity-drives%%是可选的，但强烈建议使用以保障数据安全。
+
+:::important\[Requirements]
+
+- **单一奇偶：** 该磁盘的大小必须至少与最大数据驱动器相同。
+- **双Parity：** 两个%%parity disks|parity-drives%%的大小也必须不小于您最大的一个数据磁盘，但彼此之间可以有不同的大小。
+
+:::
+
+Adding a %%parity disk|parity-drives%% is similar to adding a data disk:
+
+1. Select the %%parity disk|parity-drives%% and start the array. Unraid begins calculating parity.
+2. You can still access your files during this process, but the system may run slower.
+
+### Understanding parity
+
+**What is parity?** %%Parity|parity%% in Unraid protects your data by ensuring that you can recover from a drive failure. With the use of a %%parity disk|parity-drives%%, any single missing disk can be reconstructed by combining the information from all other data drives along with the %%parity|parity%% data.
+
+**How it works:** Unraid uses a special bit called the *parity bit*, stored for each bit position across all data disks and managed by a dedicated %%parity disk|parity-drives%%. The %%parity|parity%% is calculated such that the total number of bits in each position across all disks (including the %%parity disk|parity-drives%%) is always an even number (even parity). Unraid uses the XOR (exclusive OR) operation for this calculation.
+
+**How data is reconstructed:** Unraid reconstructs a missing drive or repairs a bad sector by reading all remaining drives, including the %%parity disk|parity-drives%%, and applying even %%parity|parity%% to solve for the missing data. The %%parity|parity%% feature allows Unraid to "simulate" the missing disk so you can continue using the array as if the drive were still functional. Once you install a new drive in the failed slot, Unraid recreates all the missing data based on the current state of %%parity|parity%% and the other disks.
+
+**Parity disk size:** Your %%parity disk|parity-drives%% must be equal to or larger than your largest data disk. For instance, if your largest data disk is 10TB, your %%parity disk|parity-drives%% should be at least 10TB.
+
+**Performance impact:** Writing to a %%parity|parity%%-protected array involves four disk operations for each write: reading data, reading %%parity|parity%%, writing data, and writing %%parity|parity%%. This process requires a full rotation from each affected drive, so the overall write speed is limited by the slowest drive involved in the operation.
+
+**Dual Parity:** Dual %%parity|parity%% enables recovery from two simultaneous disk failures. The second %%parity disk|parity-drives%% doesn't simply mirror the first. Instead, Parity 1 uses standard XOR (even) %%parity|parity%% calculations, while Parity 2 implements Q-parity using Galois-field syndrome calculations (Reed-Solomon–style), comparable to %%RAID 6|raid6%%. This allows Unraid to rebuild from any two simultaneous disk failures, significantly boosting resilience for larger arrays.
+
+:::caution\[Remember]
+
+设置新的数据存储系统时，首先**添加您的数据磁盘**，确保它们都使用兼容的文件系统。**在**放置数据磁盘之后，您可以添加%%parity disk|parity-drives%%以防止磁盘故障。
+
+一旦添加了%%parity disk|parity-drives%%，请记住您想要在阵列中包含的任何新磁盘在集成前必须被清零。这是为了确保%%parity|parity%%保持有效，并继续保护您的数据。
+
+:::
+
+## 更换磁盘
+
+您可以将%%parity disk|parity-drives%%设备升级到更大以便在阵列中使用更大尺寸的磁盘或添加额外的%%parity disk|parity-drives%%。
+
+:::caution
+
+如果您计划采取以下步骤且只有一个%%parity disk|parity-drives%%，请记住这些要点：
+
+- 在%%parity|parity%%重建完成之前，您的数据将没有保护。如果数据磁盘在此期间故障，您可能会丢失那块磁盘上的信息。
+- 如果您已经有一个失败的数据驱动器，继续这些步骤将阻止您重建该驱动器。在这种情况下，您应遵循**Parity Swap**程序。
+
+:::
+
+要升级校验盘：
+
+1. 停止数组。
+2. Power down your server (skip this and step 4 if your server supports hot-swap).
+3. Install the new, larger %%parity disk|parity-drives%% into your server.
+4. Power up your server.
+5. Assign the new disk to the parity slot, replacing the old one.
+6. 启动数组。
+
+Once the array is back up, Unraid starts building parity on the new disk. You can still access your data during this time, but it might be slower until the process completes.
+
+:::tip[Planning your parity upgrade]
+
+Keep the old %%parity disk|parity-drives%% installed until the new parity build completes. If a data disk fails during the upgrade, the old %%parity disk|parity-drives%% can help you recover your data. After the upgrade completes successfully, you can repurpose the old disk as a data disk if desired.
+
+:::
