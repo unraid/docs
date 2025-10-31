@@ -1,0 +1,191 @@
+---
+sidebar_position: 1
+sidebar_label: Übersicht
+---
+
+# Arrays
+
+Unraid's storage system combines flexibility with data protection through its %%array|array%% and %%cache|cache%% architecture. The %%array|array%% manages your primary storage with optional %%parity|parity%% protection, while cache pools accelerate performance.
+
+## Driving principles
+
+1. **Use your largest drives for parity** - Data disks can't be larger than your %%parity disks|parity-drives%%, so use your biggest drives for parity to avoid future expansion limits. If you use dual parity, both drives should be at least the size of your largest data disk, but they can be different sizes from each other. No disk can be larger than your smallest parity drive.
+
+2. **Save SSDs for cache pools** - Unraid doesn't support TRIM/Discard for SSDs in the main array, which causes performance degradation over time. Use SSDs in %%cache pools|cache-pool%% or as unassigned devices instead, where these features work properly.
+
+3. **Add a cache for better write performance** - A cache dramatically speeds up writes by temporarily storing data on fast drives before the %%Mover|mover%% transfers it to the array (typically at 3:40 AM). Cached data still appears in your shares, so access feels instant while the transfer happens in the background.
+
+4. **Use a cache pool for data protection** - A single cache device puts your cached data at risk until the %%Mover|mover%% runs. Multiple devices in a %%cache pool|cache-pool%% provide redundancy and protect your data from cache device failures.
+
+5. **SSDs excel for apps and VMs** - Applications and virtual machines benefit significantly from SSD speed. A %%cache pool|cache-pool%% with SSDs provides the perfect balance of speed, efficiency, and data protection for these workloads.
+
+6. **Encryption is optional** - Encryption is disabled by default and requires reformatting drives (which erases data). If you need it, move data off the disk, change to an encrypted file system, format, then move data back. See [How to encrypt a drive in Unraid](../../../system-administration/secure-your-server/securing-your-data.mdx#how-to-encrypt-a-drive-in-unraid) for details. Be aware that encryption complicates data recovery if something goes wrong.
+
+:::info[Disk Erkennung und Anschlusserkennung]
+
+Unraid identifiziert Festplatten anhand ihrer Seriennummern und Größen, nicht basierend auf den spezifischen SATA-Ports, an die sie angeschlossen sind. Das bedeutet, dass Sie die Laufwerke zwischen verschiedenen SATA-Ports wechseln können, ohne die Zuweisungen in Unraid zu beeinflussen. Diese Funktion ist besonders nützlich bei der Fehlerbehebung von Hardwareproblemen, wie dem Auffinden eines fehlerhaften Ports oder dem Ersetzen von unzuverlässigen Strom- oder SATA-Kabeln.
+
+:::
+
+:::caution
+
+Ihr Array wird nicht gestartet, wenn Sie mehr Geräte zuweisen oder anschließen, als Ihr Lizenzschlüssel erlaubt.
+
+:::
+
+## Array starten/stoppen
+
+Wenn Ihr System hochfährt, startet es normalerweise automatisch die Festplattenablage. Wenn Sie jedoch kürzlich die Festplattenkonfiguration geändert haben, wie z.B. das Hinzufügen einer neuen Festplatte, bleibt die Ablage ausgeschaltet, um Ihnen die Möglichkeit zu geben, Ihre Konfiguration zu überprüfen.
+
+:::caution
+
+Unraid bietet mehrere Wartungs- und Konfigurationsoptionen für Ihre Speicherablage. Zu den wichtigsten Operationen gehören:
+
+:::
+
+So starten oder stoppen Sie das Array:
+
+1. Klicken Sie auf die Registerkarte **Haupt**.
+2. Navigieren Sie zum Abschnitt **Array-Betrieb**.
+3. Klicken Sie auf **Start** oder **Stopp**. Möglicherweise müssen Sie das Kontrollkästchen aktivieren, das besagt "Ja, ich möchte dies tun", bevor Sie fortfahren.
+
+## File system selection
+
+Standardmäßig werden neue Festplatten der Ablage mit %%XFS|xfs%% formatiert. Wenn Sie stattdessen %%ZFS|zfs%% oder %%BTRFS|btrfs%% verwenden möchten, wählen Sie Ihr bevorzugtes Dateisystem aus dem Dropdown-Menü.
+
+For detailed information about file system options, see [File systems](../file-systems.mdx).
+
+## Neue Festplatten einrichten
+
+Unraid provides several maintenance and configuration options for your storage array. Operations include:
+
+- [Adding disks to array](./adding-disks-to-array.mdx) - Expand storage capacity
+- [Replacing disks in array](./replacing-disks-in-array.mdx) - Upgrade or swap failed drives
+- [Removing disks from array](./removing-disks-from-array.mdx) - Decommission or reduce array size
+- [Array health and maintenance](./array-health-and-maintenance.mdx) - Monitor and maintain your array
+
+## Array-Schreibmodi
+
+Unraid bietet verschiedene Schreibmodi zum Verwalten von Array-Operationen, die jeweils ihre eigenen Vor- und Nachteile in Bezug auf Geschwindigkeit, Stromverbrauch und Laufwerksverschleiß haben. Zu wissen, wie diese Modi funktionieren, zusammen mit der Rolle eines Cache-Laufwerks oder Pools, kann Ihnen helfen, Ihren Server optimal an Ihre Anforderungen anzupassen.
+
+Wenn während des Wiederaufbaus einer Festplatte eine zweite Festplatte ausfällt, hängt das weitere Vorgehen von Ihrer Paritätskonfiguration ab.
+
+| Schreibmodus                     | Geschwindigkeit (typisch)                | Energieverbrauch | Wenn Laufwerke hochfahren    | Datenschutz       | Beste Einsatzmöglichkeit                                                             |
+| -------------------------------- | ---------------------------------------- | ---------------- | ---------------------------- | ----------------- | ------------------------------------------------------------------------------------ |
+| Lesen/Modifizieren/Schreiben     | 20–40 MB/s                               | Niedrig          | Nur Parität und Ziellaufwerk | Ja                | Die meisten Arbeitslasten, Energieeinsparungen, kleine Schreibvorgänge               |
+| Turbo-Schreiben (Rekonstruktion) | 40–120 MB/s                              | Hoch             | Alle Laufwerke               | Ja                | Große Dateiübertragungen, Array-Wiederherstellungen, %%parity checks\|parity-check%% |
+| Cache-Schreiben (SSD/NVMe)       | 50–110 MB/s (SSD), 250–900 MB/s (NVMe)\* | Variiert         | Nur Cache-Laufwerke          | Nein (bis bewegt) | Apps, VMs, häufiges Schreiben, Maximieren der Geschwindigkeit                        |
+
+### Lesen/Modifizieren/Schreiben
+
+This is the default write mode. It reads the existing data and the parity, calculates the new parity, and then writes the updated data. Only the %%parity drive|parity-drives%% and the target data drive spin up, which results in lower power usage and less wear on the drives. However, it can be slower due to the additional read/write cycles.
+
+Use this mode anytime, especially if you want energy savings and idle drives to spin down. It's great for small or infrequent writes.
+
+### Turbo Write (Rekonstruktionsschreiben)
+
+Turbo write, also known as reconstruct write, is a feature designed to boost the writing speed of your Unraid array. It works by reading all data drives and updating the parity simultaneously. This process eliminates the delays caused by waiting for the platters to rotate, as seen in the default write mode. However, all array drives need to be spinning and functioning properly for this to work effectively.
+
+**How it works:** When you write new data, Unraid reads from all the other data drives and recalculates the parity at the same time. Both the new data and the updated parity get written together. All drives in the array must be operational and actively spinning.
+
+**When to use:** Transferring large, sequential files to the array. During array rebuilds or %%parity checks|parity-check%%, as all drives are already spinning. When minimizing write time is a priority and you can confirm all drives are healthy.
+
+**When to avoid:** If you want your drives to spin down during idle times to conserve energy. For small or infrequent write operations since it causes all drives to spin up for every write, increasing power usage and wear. If you suspect any drive is failing or unreliable, since it relies on every drive being operational.
+
+:::info
+
+Turbo write is best suited for bulk operations and scenarios requiring high throughput. However, it might not be the best choice for everyday tasks if you're focused on energy savings and minimizing drive wear.
+
+:::
+
+### Cache-Schreiben
+
+Data is written first to a fast SSD or NVMe %%cache|cache%% and can then be moved to the main array later by a process called the %%Mover|mover%%. The speeds vary: SSD: 50–110 MB/s; NVMe: 250–900 MB/s (which can utilize 10GbE networks). Once data is moved to the array, it is protected by parity.
+
+**When to use:** For shares with frequent write operations like applications, virtual machines, or downloads. To enhance performance and reduce perceived write latency.
+
+**Leistungserwartungen:**
+
+- Ohne Cache-Laufwerk: Durchschnittlich 20–30 MB/s, mit Spitzen bis zu 40 MB/s
+- Mit SSD-Cache: 50–110 MB/s
+- Mit NVMe-Cache: 250–900 MB/s, abhängig von Netzwerk- oder Laufwerkseinschränkungen
+
+:::tip
+
+Erwägen Sie die Verwendung eines Cache-Pools (mehrere Geräte) für zusätzliche Redundanz und Datenschutz, bevor der Mover läuft.
+
+:::
+
+:::info[Automated Zeit
+
+- Der **Auto**-Modus (eine zukünftige Funktion) wird Turbo-Schreiben nur dann aktivieren, wenn alle Laufwerke bereits drehen.
+- Community-Plugins ("Turbo Write" im Apps-Tab suchen) bieten möglicherweise erweiterte Automatisierungs- oder Planungsoptionen.
+
+:::
+
+Um den Schreibmodus zu ändern:
+
+1. Navigate to ***Settings → Disk Settings***.
+2. Suchen Sie **Tunable (md_write_method)**.
+3. Wählen Sie Ihren bevorzugten Modus:
+   - **Lesen/Modifizieren/Schreiben** (Standard)
+   - **Rekonstruieren Schreiben** (Turbo Write)
+   - **Auto** (zukünftige Funktion)
+4. Klicken Sie auf **Anwenden**, um Ihre Wahl zu bestätigen.
+
+:::important[Quick Zusammenfassung
+
+- Verwenden Sie **Turbo Write**, wenn Sie Geschwindigkeit benötigen, beachten Sie jedoch, dass der Stromverbrauch und das Hochfahren der Laufwerke zunehmen.
+- Nutzen Sie **Cache-Schreiben** für optimale Leistung, insbesondere mit SSD oder NVMe-Laufwerken.
+- Für die meisten Benutzer bietet der Standard-Schreibmodus das beste Gleichgewicht, es sei denn, Sie benötigen speziell höhere Geschwindigkeiten.
+
+:::
+
+## Lese-Modi
+
+Bei der Verwendung von Unraid wird die Geschwindigkeit, mit der Sie Dateien lesen können, hauptsächlich durch das individuelle Laufwerk bestimmt, das jede Datei hält. Im Gegensatz zu herkömmlichen %%RAID|raid%%-Systemen, die mehrere Laufwerke kombinieren, um die Leistung zu verbessern, speichert Unraid jede Datei auf einer einzigen Festplatte. Dies bedeutet, dass die Lesegeschwindigkeit nicht durch die kombinierten Geschwindigkeiten mehrerer Laufwerke erhöht wird.
+
+### Leistungserwartungen
+
+- **Typische einzelne Festplatte:** 70–250 MB/s (abhängig vom Laufwerksmodell, Alter und Datensatzstandort)
+- **Typische SATA SSD:** 400–550 MB/s
+- **NVMe SSD (in einem Pool):** 250–7.000 MB/s (PCIe-Generation und Netz-/PCIe-Beschränkungen gelten; z. B. 10 GbE-Netzwerk begrenzt auf ~1.100 MB/s)
+
+:::note[Special Fälle
+
+- Wenn ein Datenträger deaktiviert ist und seine Daten rekonstruiert werden, verwendet Unraid die verbleibenden Laufwerke zusammen mit den Paritätsinformationen, um die Daten wiederherzustellen. Während dieses Prozesses kann die Lesegeschwindigkeit auf 30–60 MB/s oder sogar weniger sinken, abhängig von der langsamsten Festplatte in Ihrem System.
+- Any ongoing operations in the array, such as a %%parity check|parity-check%% or rebuilding a drive, can also affect read performance. This is due to increased movement of the drive heads and overall contention for resources.
+
+:::
+
+## Cache-Pools
+
+%%Cache-Pools|cache-pool%% in Unraid bieten erhebliche Vorteile, insbesondere für schreibintensive Aufgaben, virtuelle Maschinen (VMs) und Docker-Container. Diese Pools arbeiten separat vom Hauptarray und können mit mehreren Laufwerken entweder mit dem %%BTRFS|btrfs%% oder %%ZFS|zfs%% Dateisystem eingerichtet werden, wobei verschiedene %%RAID|raid%% Konfigurationen zur Geschwindigkeits- und Datensicherheit unterstützt werden.
+
+### Cache-Pools vs. Hauptarray
+
+| Funktion                          | Cache-Pool (BTRFS)                                                                                                    | Cache-Pool (ZFS)                                                                                                                                                                    | Hauptarray (Unraid)                                               |
+| --------------------------------- | --------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------- |
+| **Lesegeschwindigkeit**           | SSD: 400–550 MB/s, NVMe: 250–7.000 MB/s\*                                                                             | SSD: 400–550 MB/s, NVMe: 250–7.000 MB/s\*                                                                                                                                           | HDD: 70–250 MB/s (pro Festplatte)                                 |
+| **Schreibgeschwindigkeit**        | SSD: 400–550 MB/s, NVMe: 250–7.000 MB/s\*                                                                             | SSD: 400–550 MB/s, NVMe: 250–7.000 MB/s\*                                                                                                                                           | 20–120 MB/s (abhängig vom Paritätsmodus)                          |
+| **Datenschutz**                   | %%RAID 1\|raid1%%/%%RAID 10\|raid10%%; %%RAID 5\|raid5%%/%%RAID 6\|raid6%% (experimentell, nicht für kritische Daten) | %%RAID 1\|raid1%%/%%RAID 10\|raid10%%; %%RAIDZ1\|raidz1%%/%%RAIDZ2\|raidz2%%/%%RAIDZ3\|raidz3%% (stabil, produktionsbereit)                                                         | Paritätsbasiert, Dateisystemunabhängig                            |
+| **Erweiterung**                   | Mischen von Laufwerksgrößen; Geräte dynamisch hinzufügen/entfernen                                                    | Unterstützung für das Hinzufügen/Entfernen von Geräten beschränkt; kein Entfernen aus RAIDZ; Hinzufügen eines Einzellaufwerks zur Erweiterung eines einzel-VDEV RAIDZ in Unraid 7.2 | Laufwerke hinzufügen, aber kein Striping oder Leistungsskalierung |
+| **Wiederherstellungskomplexität** | Higher risk of data loss; %%BTRFS\|btrfs%% tools required                                                             | Höheres Risiko von Datenverlusten; %%ZFS\|zfs%%-Werkzeuge erforderlich                                                                                                              | Einfachere paritätsbasierte Wiederherstellungen                   |
+| **Am besten geeignet für**        | Apps, VMs, häufige Schreibvorgänge                                                                                    | Apps, VMs, häufige Schreibvorgänge, Unternehmens-Workloads                                                                                                                          | Massenspeicher, Mediatheken                                       |
+
+\**Actual NVMe speeds depend on PCIe generation, cooling, and network bandwidth (e.g., 10GbE caps at ~1,100 MB/s).*
+
+### Vorteile von Cache-Pools
+
+- **Höhere Leistung:** NVME-Pools können 10GbE/40GbE Netzwerke sättigen (1.100–3.500 MB/s).
+- **Flexibles RAID:** Sowohl %%BTRFS|btrfs%% als auch %%ZFS|zfs%% unterstützen %%RAID 1|raid1%%/%%RAID 10|raid10%% für Redundanz ohne übereinstimmende Laufwerksgrößen.
+- **Niedrige Latenz:** Ideal für Datenbanken, VMs und Docker-Container.
+- **Vorteile von ZFS:** %%ZFS|zfs%% bietet Unternehmens-Features wie Datenintegritätsprüfung, Komprimierung und Snapshots.
+
+### Nachteile von Cache-Pools
+
+- **Kein Paritätsschutz:** Daten sind ungeschützt, bis sie ins Array verschoben werden.
+- **Wiederherstellungsrisiken:** %%BTRFS|btrfs%% %%RAID 5|raid5%%/%%RAID 6|raid6%% ist instabil; Einzellaufwerk-Pools fehlen Redundanz.
+- **ZFS-Anforderungen:** %%ZFS|zfs%% benötigt mehr RAM und hat strengere Hardwarevoraussetzungen als %%BTRFS|btrfs%%.
+
+For more detailed information about %%cache pools|cache-pool%%, including how to set them up, manage them, and advanced features, check the [Cache pools](../cache-pools.mdx) page.
