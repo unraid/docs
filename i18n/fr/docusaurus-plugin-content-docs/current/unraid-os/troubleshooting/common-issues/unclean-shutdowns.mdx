@@ -5,9 +5,6 @@ sidebar_label: Arrêts imprévus
 
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
-import UncleanShutdownsPower from "./partials/unclean-shutdowns/unexpected-power-loss.mdx";
-import UncleanShutdownsFlash from "./partials/unclean-shutdowns/flash-drive-failure.mdx";
-import UncleanShutdownsTerminal from "./partials/unclean-shutdowns/open-terminal-sessions.mdx";
 
 # Arrêts imprévus
 
@@ -30,30 +27,40 @@ Un onduleur bien configuré est votre meilleure défense contre les arrêts impr
 
 - **Connectez l'onduleur via USB** à votre serveur Unraid.
 - **Activez le support de l'onduleur** dans ***Paramètres → Paramètres de l'onduleur***.
-- **Configurer les délais d'arrêt :** Configurez l'onduleur pour déclencher un arrêt contrôlé avant que la batterie ne soit faible. Ajustez les seuils de « temps d'exécution restant de la batterie » ou « niveau de charge de la batterie » pour laisser suffisamment de temps à Unraid pour [arrêter le %%array|array%%](../../using-unraid-to/manage-storage/array-configuration.mdx#startstop-the-array) et pour éteindre en toute sécurité.
+- **Configure shutdown timeouts:** Set the UPS to trigger a controlled shutdown before the battery runs low. Adjust the "Battery runtime left" or "Battery charge level" thresholds to provide enough time for Unraid to [stop the %%array|array%%](../../using-unraid-to/manage-storage/array/overview.mdx#startstop-the-array) and power down safely.
 - **Testez votre configuration :** Simulez une perte de puissance pour garantir que l'onduleur et Unraid réagissent correctement.
 
 Consultez le [plugin NUT](https://unraid.net/community/apps/c/plugins/p4?srsltid=AfmBOop675PrJQW4iqb4JBN3GyPpwDDiSmnZReq78t27XyxkFdMX8inO#:~:text=NUT%20%2D%20Network%20UPS%20Tools) pour une compatibilité étendue avec des modèles UPS avancés ou du matériel non pris en charge.
 
 :::
 
-## Configurer les délais d'arrêt
+## Events that cause unclean shutdowns
 
-La configuration appropriée des délais d'arrêt est essentielle pour garantir que votre serveur Unraid peut arrêter tous les services efficacement, évitant ainsi les arrêts inopinés, notamment en cas de panne de courant ou de maintenance. Chaque composant de votre système - %%VM|vm%%s, conteneurs Docker, et le %%array|array%% global - a son propre paramètre de délai qui peut être ajusté.
+Understanding the main triggers for unclean shutdowns helps you prevent them. The following sections cover the most common scenarios and their solutions.
 
-<Tabs>
-  <TabItem value="puissance" label="Perte de puissance inattendue" default>
-    <UncleanShutdownsPower />
-  </TabItem>
+### Perte de puissance inattendue
 
-  <TabItem value="flash" label="Défaillance du lecteur flash">
-    <UncleanShutdownsFlash />
-  </TabItem>
+Les interruptions de courant sont l'une des principales raisons des arrêts non propres. Protégez votre système avec un onduleur configuré correctement qui peut arrêter automatiquement Unraid avant que la batterie ne se décharge.
 
-  <TabItem value="terminal" label="Ouvrir des sessions terminal">
-    <UncleanShutdownsTerminal />
-  </TabItem>
-</Tabs>
+:::note
+
+Unraid prend en charge la plupart des unités UPS utilisant le protocole %%apcupsd|apcupsd%% (APC et CyberPower sont généralement compatibles). Si votre UPS n'est pas pris en charge, envisagez d'utiliser le plugin Network UPS Tools (NUT) de Community Applications.
+
+:::
+
+### Défaillance du lecteur flash
+
+Le statut de %%array|array%% est stocké sur votre dispositif USB. Si la clé USB devient indisponible ou passe en mode lecture seule, Unraid ne peut pas mettre à jour le statut d'arrêt, même si l'%%array|array%% s'arrête correctement. Cela entraîne la détection d'un arrêt incorrect au prochain démarrage.
+
+### Ouvrir des sessions terminal
+
+Unraid attend que toutes les sessions terminales ou SSH ouvertes se ferment lors de l'arrêt. Si ces sessions restent actives et que le minuteur d'arrêt expire, un arrêt forcé se produit.
+
+:::tip
+
+Le plugin [Dynamix Stop Shell](https://unraid.net/community/apps/c/tools-system/p2?srsltid=AfmBOoqBXyDNfHxRDCL7Fv9Gcfz8-8CdHmiJSX16PRZpZLLzgQtw2mVk#:~:text=the%20given%20interval.-,Dynamix%20Stop%20Shell,-Dynamix%20Repository) peut automatiquement fermer les sessions bash ou SSH persistantes, aidant ainsi à garantir une fermeture en douceur. Cependant, soyez prudent si des opérations d'écriture sont en cours sur le %%array|array%%.
+
+:::
 
 ---
 
@@ -148,6 +155,8 @@ Without the %%QEMU|qemu%% %%Guest Agent|guest-agent%% installed, hibernation may
 
 :::
 
+---
+
 ### Configuration de délai
 
 Dans cette section, nous couvrirons comment configurer les délais pour divers systèmes et processus. Ces informations sont importantes pour s'assurer que vos %%VMs|vm%% et conteneurs Docker s'arrêtent gracieusement sans perte de données.
@@ -176,11 +185,11 @@ Lorsque l'arrêt est en cours, le processus se déroule dans l'ordre suivant :
 
    Toutes les %%VMs|vm%% à chaque étape sont traitées en même temps, ce qui signifie que le temps total d'arrêt peut être calculé comme : Temps d'attente VM × 3.
 
-2. **Arrêt des conteneurs Docker :** Tous les conteneurs s'arrêtent simultanément (temps total = délai d'arrêt de Docker).
+2. Docker containers stop simultaneously (total time = Docker timeout).
 
-3. **Autres services :** Cela inclut des tâches comme les conteneurs LXC et les plugins tiers, ce qui prend généralement quelques secondes.
+3. Other services include tasks like LXC containers and third-party plugins, which usually take a few seconds.
 
-4. **Arrêt de l'array :** Les disques doivent être démontés et les données synchronisées ; cela prend généralement 15-30 secondes.
+4. Array shutdown: drives need to be unmounted and data synced; this typically takes 15-30 seconds.
 
 :::tip[Calculate votre délai d'arrêt général]
 
@@ -196,110 +205,115 @@ Lorsque l'arrêt est en cours, le processus se déroule dans l'ordre suivant :
 
 :::
 
-Si toutes vos %%VMs|vm%% sont configurées pour hiberner plutôt que de s'éteindre, alors le délai de la VM est moins critique puisque l'hibernation est presque immédiate. Vous pourriez utiliser un délai de la VM plus faible (par exemple, 60-120 secondes) comme solution de secours pour toute %%VM|vm%% qui ne supporte pas l'hibernation.
+If all your %%VMs|vm%% are set to hibernate rather than shutting down, then the VM timeout is less critical since hibernation is nearly immediate. You could use a lower VM timeout (for example, 60-120 seconds) as a backup for any %%VMs|vm%% that don't support hibernation.
+
+---
 
 ### Guide de configuration détaillé
 
 Cette section fournit des informations détaillées sur la configuration des délais pour différents composants système. Chaque réglage de délai fonctionne ensemble pour garantir que votre serveur s'arrête en douceur sans perte de données.
 
-<Tabs>
-  <TabItem value="délais-vm" label="Délais VMs" default>
-    Où régler : ***Paramètres → Gestionnaire de VM → Arrêt de VM*** (activez la vue Avancée)
+#### VM timeouts
 
-    **Comment ça fonctionne:**
+Configure VM shutdown timeouts in ***Settings → VM Manager → VM Shutdown*** (enable Advanced view).
 
-    - Les %%VMs|vm%% passent par trois étapes d'arrêt, chacune consommant la totalité du délai de la VM.
-    - Toutes les %%VMs|vm%% à chaque étape sont traitées simultanément.
-    - Temps total d'arrêt de la VM = Temps d'attente de la VM × 3
+**Comment ça fonctionne:**
 
-    **Problèmes courants :**
+- Les %%VMs|vm%% passent par trois étapes d'arrêt, chacune consommant la totalité du délai de la VM.
+- Toutes les %%VMs|vm%% à chaque étape sont traitées simultanément.
+- Temps total d'arrêt de la VM = Temps d'attente de la VM × 3
 
-    - **Interruptions de mise à jour Windows :** Les mises à jour pendant l'arrêt peuvent être corrompues si le délai expire.
-    - **Travail non sauvegardé :** Les boîtes de dialogue demandant de sauvegarder les documents peuvent arrêter l'arrêt indéfiniment.
-    - **Hibernation failures:** %%VMs|vm%% without %%QEMU|qemu%% %%Guest Agent|guest-agent%% may fail to hibernate and use full timeout.
+**Problèmes courants :**
 
-    :::conseil[Recommandations de délais pour VMs]
+- **Interruptions de mise à jour Windows :** Les mises à jour pendant l'arrêt peuvent être corrompues si le délai expire.
+- **Travail non sauvegardé :** Les boîtes de dialogue demandant de sauvegarder les documents peuvent arrêter l'arrêt indéfiniment.
+- **Hibernation failures:** %%VMs|vm%% without %%QEMU|qemu%% %%Guest Agent|guest-agent%% may fail to hibernate and use full timeout.
 
-    - **Primary recommendation:** Configure %%VMs|vm%% to hibernate instead of shutting down (requires %%QEMU|qemu%% %%Guest Agent|guest-agent%%).
-    - **Si les VMs plantent lors de l'arrêt :** Augmentez le délai à **300 secondes (5 minutes)** pour les %%VMs|vm%% Windows.
-    - **Mises à jour Windows :** Configurez Windows pour installer les mises à jour au démarrage plutôt que lors de l'arrêt.
-    - **Testez votre configuration :** Arrêtez manuellement vos %%VMs|vm%% pour confirmer qu'elles s'arrêtent ou hibernent dans le délai d'attente.
-      :::
+:::tip[VM timeout recommendations]
 
-    :::warning[No safe timeout without hibernation]
-    Without hibernation and %%QEMU|qemu%% %%Guest Agent|guest-agent%%, there isn't a truly safe timeout for Windows %%VMs|vm%%. Dialog boxes or ongoing update installations could render any timeout inadequate, leading to forced shutdowns and data corruption risk.
-    :::
-  </TabItem>
+- **Primary recommendation:** Configure %%VMs|vm%% to hibernate instead of shutting down (requires %%QEMU|qemu%% %%Guest Agent|guest-agent%%).
+- **Si les VMs plantent lors de l'arrêt :** Augmentez le délai à **300 secondes (5 minutes)** pour les %%VMs|vm%% Windows.
+- **Mises à jour Windows :** Configurez Windows pour installer les mises à jour au démarrage plutôt que lors de l'arrêt.
+- **Test your setup:** Manually stop your %%VMs|vm%% to confirm they shut down or hibernate within the timeout period.
 
-  <TabItem value="délais-docker" label="Délais Docker">
-    Où régler : ***Paramètres → Docker*** (activez la vue Avancée)
+:::
 
-    **Comment ça fonctionne:**
+:::warning[No safe timeout without hibernation]
+Without hibernation and %%QEMU|qemu%% %%Guest Agent|guest-agent%%, there isn't a truly safe timeout for Windows %%VMs|vm%%. Dialog boxes or ongoing update installations could render any timeout inadequate, leading to forced shutdowns and data corruption risk.
+:::
 
-    - Les conteneurs sont arrêtés en parallèle, donc le temps total égale le délai d'arrêt de Docker.
-    - La plupart des conteneurs s'arrêtent en 10 secondes, mais certains peuvent avoir besoin de plus de temps.
-    - Les conteneurs complexes avec de grandes bases de données ou des opérations en cours pourraient nécessiter plus de temps.
-    - Si le temps imparti expire, les conteneurs sont arrêtés de force.
+#### Docker timeouts
 
-    :::conseil[Recommandations de délais Docker]
+Configure Docker container stop timeouts in ***Settings → Docker*** (enable Advanced view).
 
-    - Les **10 secondes par défaut** fonctionnent bien pour la plupart des conteneurs.
-    - **Si les conteneurs plantent à l'arrêt :** Augmentez le délai à **30 secondes**.
-    - Surveillez vos conteneurs pendant l'arrêt pour identifier ceux qui nécessitent systématiquement plus de temps.
-      :::
-  </TabItem>
+**Comment ça fonctionne:**
 
-  <TabItem value="délais-généraux" label="Délais Généraux">
-    Où régler : ***Paramètres → Paramètres Disque → Délai d'arrêt***
+- Les conteneurs sont arrêtés en parallèle, donc le temps total égale le délai d'arrêt de Docker.
+- La plupart des conteneurs s'arrêtent en 10 secondes, mais certains peuvent avoir besoin de plus de temps.
+- Les conteneurs complexes avec de grandes bases de données ou des opérations en cours pourraient nécessiter plus de temps.
+- Si le temps imparti expire, les conteneurs sont arrêtés de force.
 
-    **Considérations UPS (facteur le plus critique) :**
+:::tip[Docker timeout recommendations]
 
-    - Votre UPS doit fournir suffisamment d'autonomie pour compléter la séquence d'arrêt complète avant que la batterie ne soit épuisée.
-    - Pour un **arrêt manuel**, vous pouvez régler des délais plus longs car vous contrôlez quand l'arrêt commence.
-    - En cas **d'arrêt lié à une panne de courant**, votre délai est limité par la durée de la batterie de l'UPS.
-    - **Testez votre UPS** en simulant une panne de courant pour s'assurer que votre serveur s'arrête proprement à temps.
+- Les **10 secondes par défaut** fonctionnent bien pour la plupart des conteneurs.
+- **Si les conteneurs plantent à l'arrêt :** Augmentez le délai à **30 secondes**.
+- Monitor your containers during shutdown to identify any that consistently need more time.
 
-    :::conseil[Recommandations de délais généraux]
+:::
 
-    - **Si vous avez des arrêts non propres :** Augmentez à **180 secondes (3 minutes)** pour les systèmes sans %%VMs|vm%%.
-    - **Pour les systèmes avec %%VMs|vm%% :** Utilisez **300+ secondes (5+ minutes)** si vous n'utilisez pas l'hibernation.
-    - **Si vous utilisez l'hibernation :** **180-300 secondes** est généralement suffisant.
-    - Assurez-vous que les délais ne sont pas plus longs que ce que votre UPS peut supporter lors d'une panne de courant.
-      :::
-  </TabItem>
+#### General timeouts
 
-  <TabItem value="tiers" label="Services Tiers">
-    **Conteneurs LXC :**
-    Le plugin LXC a ses propres réglages de délai pour arrêter les conteneurs. Comme les conteneurs Docker, les conteneurs LXC s'arrêtent généralement en quelques secondes, mais certains peuvent nécessiter plus de temps. Consultez les paramètres du plugin LXC pour le délai d'arrêt des conteneurs et incluez ce délai dans le calcul de votre délai d'arrêt général.
+Configure the general shutdown timeout in ***Settings → Disk Settings → Shutdown time-out***.
 
-    **Autres services :**
-    Certains plugins ou services personnalisés peuvent avoir leurs propres procédures d'arrêt. Référez-vous à la documentation des plugins pour des paramètres de délai spécifiques et incorporez-les dans vos calculs.
+**UPS considerations (most critical factor):**
 
-    **Formule mise à jour avec services tiers :**
+- Your UPS must provide enough runtime to complete the full shutdown sequence before battery runs out.
+- For **manual shutdown**, you can set longer timeouts since you control when shutdown starts.
+- With **power outage shutdown**, your timeout is limited by UPS battery life.
+- **Test your UPS** by simulating a power outage to ensure your server shuts down cleanly with time to spare.
 
-    ```
-    (VM timeout × 3) + (Docker timeout) + (LXC/other timeouts) + 15-30 seconds
-    ```
+:::tip[General timeout recommendations]
 
-    **Plugin Dynamix Stop Shell :**
-    Si vous utilisez fréquemment des sessions SSH ou terminal, des sessions ouvertes peuvent empêcher un arrêt propre car Unraid attend qu'elles se ferment avant de poursuivre.
+- **If you get unclean shutdowns:** Increase to **180 seconds (3 minutes)** for systems without %%VMs|vm%%.
+- **For systems with %%VMs|vm%%:** Use **300+ seconds (5+ minutes)** if not using hibernation.
+- **If using hibernation:** **180-300 seconds** is usually sufficient.
+- Ensure timeouts are not longer than what your UPS can support during a power outage.
 
-    Le plugin [Dynamix Stop Shell](https://unraid.net/community/apps/c/tools-system/p2?srsltid=AfmBOoqBXyDNfHxRDCL7Fv9Gcfz8-8CdHmiJSX16PRZpZLLzgQtw2mVk#:~:text=the%20given%20interval.-,Dynamix%20Stop%20Shell,-Dynamix%20Repository) aide en fermant automatiquement les sessions bash ou SSH persistantes lorsque l'array est arrêté, assurant un arrêt en temps opportun.
+:::
 
-    Vous pouvez l'installer depuis [Applications Communautaires (recherchez "Dynamix Stop Shell")](https://unraid.net/community/apps/c/tools-system/p2?srsltid=AfmBOoqBXyDNfHxRDCL7Fv9Gcfz8-8CdHmiJSX16PRZpZLLzgQtw2mVk#:~:text=the%20given%20interval.-,Dynamix%20Stop%20Shell,-Dynamix%20Repository).
+#### Third-party services
 
-    :::conseil[Quand utiliser le plugin]
+**LXC containers:**
+The LXC plugin has its own timeout setting for stopping containers. Like Docker containers, LXC containers typically stop within a few seconds, but some may require more time. Check the LXC plugin settings for the container stop timeout and include this timeout in your general shutdown timeout calculation.
 
-    - Si vous avez régulièrement des sessions terminal ouvertes.
-    - Pour éviter que des sessions SSH oubliées retardent l'arrêt.
-    - Pour un nettoyage automatisé lors de l'arrêt.
-      :::
+**Other services:**
+Some plugins or custom services may have their own shutdown procedures. Refer to the plugin documentation for specific timeout settings and incorporate them into your calculations.
 
-    :::caution
+**Formule mise à jour avec services tiers :**
 
-    - Faites attention si vous avez des scripts ou processus en cours dans les sessions terminal.
-    - Assurez-vous qu'aucune opération d'écriture critique n'est en cours avant l'arrêt.
-    - Le plugin fermera les sessions de force, ce qui pourrait interrompre le travail.
-      :::
-  </TabItem>
-</Tabs>
+```
+(VM timeout × 3) + (Docker timeout) + (LXC/other timeouts) + 15-30 seconds
+```
+
+**Dynamix Stop Shell plugin:**
+If you frequently use SSH or terminal sessions, open sessions can prevent clean shutdowns because Unraid waits for them to close before proceeding.
+
+Le plugin [Dynamix Stop Shell](https://unraid.net/community/apps/c/tools-system/p2?srsltid=AfmBOoqBXyDNfHxRDCL7Fv9Gcfz8-8CdHmiJSX16PRZpZLLzgQtw2mVk#:~:text=the%20given%20interval.-,Dynamix%20Stop%20Shell,-Dynamix%20Repository) aide en fermant automatiquement les sessions bash ou SSH persistantes lorsque l'array est arrêté, assurant un arrêt en temps opportun.
+
+Vous pouvez l'installer depuis [Applications Communautaires (recherchez "Dynamix Stop Shell")](https://unraid.net/community/apps/c/tools-system/p2?srsltid=AfmBOoqBXyDNfHxRDCL7Fv9Gcfz8-8CdHmiJSX16PRZpZLLzgQtw2mVk#:~:text=the%20given%20interval.-,Dynamix%20Stop%20Shell,-Dynamix%20Repository).
+
+:::tip[When to use the plugin]
+
+- Si vous avez régulièrement des sessions terminal ouvertes.
+- Pour éviter que des sessions SSH oubliées retardent l'arrêt.
+- For automated cleanup during shutdown.
+
+:::
+
+:::caution
+
+- Faites attention si vous avez des scripts ou processus en cours dans les sessions terminal.
+- Assurez-vous qu'aucune opération d'écriture critique n'est en cours avant l'arrêt.
+- The plugin will forcefully close sessions, which could interrupt work.
+
+:::
