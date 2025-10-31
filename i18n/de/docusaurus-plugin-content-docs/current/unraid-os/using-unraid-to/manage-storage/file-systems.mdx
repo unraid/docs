@@ -12,11 +12,11 @@ Die Wahl des richtigen Dateisystems für Ihr Unraid-%%array|array%% oder %%cache
 | Dateisystem      | Datenschutz                                                                                | Speichereffizienz                     | Erweiterte Funktionen                                            | Bester Anwendungsfall                                             |
 | ---------------- | ------------------------------------------------------------------------------------------ | ------------------------------------- | ---------------------------------------------------------------- | ----------------------------------------------------------------- |
 | %%XFS\|xfs%%     | Keine eingebaute Redundanz                                                                 | 100%                                  | Robust gegen Korruption                                          | Standard für Array-Laufwerke; hohe Zuverlässigkeit                |
-| EXT4             | Keine eingebaute Redundanz                                                                 | 100%                                  | Mature, stable, journaled                                        | Array drives or single-drive pools; alternative to XFS            |
+| EXT4             | Keine eingebaute Redundanz                                                                 | 100%                                  | Reif, stabil, gelehrbuchmäßiges Journaling                       | Array-Laufwerke oder Einzellaufwerkspools; Alternative zu XFS     |
 | %%ZFS\|zfs%%     | %%RAIDZ1\|raidz1%%/%%RAIDZ2\|raidz2%%/%%RAIDZ3\|raidz3%%, Spiegel, usw.                    | Variiert je nach %%RAID\|raid%%-Level | %%Checksums\|checksum%%, %%Snapshots\|snapshot%%, %%RAID\|raid%% | Multigeräte-Pools, %%VMs\|vm%%, Docker, fortgeschrittene Benutzer |
 | %%BTRFS\|btrfs%% | %%RAID 0\|raid0%%/%%RAID 1\|raid1%%/%%10\|raid10%%/%%5\|raid5%%/%%6\|raid6%%, Spiegelungen | Variiert je nach %%RAID\|raid%%-Level | %%Checksums\|checksum%%, %%Snapshots\|snapshot%%, %%RAID\|raid%% | Multigeräte-Pools, gemischte SSD/HDD, flexible Pools              |
-| NTFS             | Keine eingebaute Redundanz                                                                 | 100%                                  | Windows compatibility                                            | Adding existing Windows drives without data migration             |
-| exFAT            | Keine eingebaute Redundanz                                                                 | 100%                                  | Plattformübergreifende Kompatibilität                            | Adding existing exFAT drives without data migration               |
+| NTFS             | Keine eingebaute Redundanz                                                                 | 100%                                  | Windows-Kompatibilität                                           | Hinzufügen vorhandener Windows-Laufwerke ohne Datenmigration      |
+| exFAT            | Keine eingebaute Redundanz                                                                 | 100%                                  | Plattformübergreifende Kompatibilität                            | Hinzufügen vorhandener exFAT-Laufwerke ohne Datenmigration        |
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
@@ -37,10 +37,10 @@ import FsRepairCliZfs from './partials/fs-repair-cli-zfs.mdx';
 
 ### EXT4
 
-EXT4 is a mature and stable file system that offers excellent compatibility and reliability. It is fully supported and stands on par with %%XFS|xfs%%, %%BTRFS|btrfs%%, and %%ZFS|zfs%%, making it a strong choice for array drives or single-drive pools.
+EXT4 ist ein reifes und stabiles Dateisystem, das exzellente Kompatibilität und Zuverlässigkeit bietet. Es wird vollständig unterstützt und steht auf Augenhöhe mit %%XFS|xfs%%, %%BTRFS|btrfs%% und %%ZFS|zfs%%, was es zu einer starken Wahl für Array-Laufwerke oder Einzellaufwerkspools macht.
 
-- **Data protection:** It does not have built-in redundancy and relies on Unraid's %%parity|parity%% for protection.
-- **Performance:** It provides consistent and reliable performance with journaling to ensure data integrity.
+- **Datenschutz:** Es verfügt nicht über eingebaute Redundanz und verlässt sich auf die %%parity|parity%% von Unraid zum Schutz.
+- **Leistung:** Es bietet konsistente und zuverlässige Leistung mit Journaling, um die Datenintegrität sicherzustellen.
 - **Best for:** %%Array|array%% drives or single-drive pools when you are looking for an alternative to %%XFS|xfs%%.
 
 ### ZFS
@@ -51,7 +51,7 @@ EXT4 is a mature and stable file system that offers excellent compatibility and 
 - **Leistung:** Hervorragend, besonders bei Multigeräte-Pools.
 - **Am besten geeignet für:** Hochleistungsumgebungen, %%virtual machines|vm%%, Docker oder wenn erweiterte Funktionen wie %%snapshots|snapshot%% erforderlich sind.
 
-For comprehensive guidance on %%ZFS|zfs%% features, configuration, and best practices, see the dedicated [ZFS storage](../../advanced-configurations/optimize-storage/zfs-storage.mdx) page.
+Für umfassende Anleitungen zu %%ZFS|zfs%%-Funktionen, Konfiguration und Best Practices, besuchen Sie die [ZFS-Speicher](../../advanced-configurations/optimize-storage/zfs-storage.mdx) Seite.
 
 ### BTRFS
 
@@ -61,35 +61,35 @@ For comprehensive guidance on %%ZFS|zfs%% features, configuration, and best prac
 - **Leistung:** Gut, mit Flexibilität für Erweiterung und Verkleinerung.
 - **Am besten geeignet für:** %%Cache pools|cache-pool%%, insbesondere wenn Sie planen, SSDs und HDDs zu mischen oder eine einfache Möglichkeit zur Erweiterung benötigen.
 
-### NTFS and exFAT (limited support)
+### NTFS und exFAT (eingeschränkte Unterstützung)
 
-NTFS and exFAT file systems are supported with some limitations. This is mainly to help you add existing drives with data to your Unraid system without needing to transfer the data elsewhere first.
+NTFS- und exFAT-Dateisysteme werden mit einigen Einschränkungen unterstützt. Dies soll hauptsächlich helfen, vorhandene Laufwerke mit Daten hinzuzufügen, ohne Daten auf Ihr Unraid-System übertragen zu müssen.
 
 :::warning
 
 Drives formatted with NTFS or exFAT must be added to the %%array|array%% **before** you add any parity drives. Once a parity drive has been added to your %%array|array%%, any new data drives you add will be zeroed out, regardless of their file system format.
 
-If you want to use existing NTFS or exFAT drives:
+Wenn Sie vorhandene NTFS- oder exFAT-Laufwerke verwenden möchten:
 
-- Add them to the %%array|array%% first (or run ***Tools → New Config*** to reset your array configuration).
-- After adding your NTFS/exFAT data drives, you can then add parity drives.
-- The existing data on these drives will be preserved and protected by parity.
+- Fügen Sie sie zuerst dem %%array|array%% hinzu (oder führen Sie ***Tools → Neue Konfiguration*** aus, um Ihre Array-Konfiguration zurückzusetzen).
+- Nachdem Sie Ihre NTFS-/exFAT-Datenlaufwerke hinzugefügt haben, können Sie dann Paritätslaufwerke hinzufügen.
+- Die vorhandenen Daten auf diesen Laufwerken werden erhalten und durch Parität geschützt.
 
 :::
 
-- **Data protection:** These drives do not offer built-in redundancy; they rely on Unraid's %%parity|parity%% for protection once parity is added.
-- **Performance:** Adequate for basic storage needs.
-- **Best for:** Adding existing Windows-formatted drives (NTFS) or cross-platform formatted drives (exFAT) without the need for data migration. They can also be used for single-drive pools.
-- **Limitations:** These file systems are not recommended for regular use; they are intended primarily for migrating existing drives. For new drives, consider using %%XFS|xfs%%, EXT4, %%BTRFS|btrfs%%, or %%ZFS|zfs%% instead.
+- **Datenschutz:** Diese Laufwerke bieten keine eingebaute Redundanz; sie verlassen sich auf die %%parity|parity%% von Unraid, sobald Parität hinzugefügt wurde.
+- **Leistung:** Ausreichend für grundlegende Speicheranforderungen.
+- **Am besten für:** Hinzufügen vorhandener Windows-formatierter Laufwerke (NTFS) oder plattformübergreifend formatierter Laufwerke (exFAT) ohne Migrationsbedarf. Sie können auch für Einzellaufwerkspools genutzt werden.
+- **Einschränkungen:** Diese Dateisysteme sind nicht für den regelmäßigen Gebrauch empfohlen; sie sind hauptsächlich zum Migrieren bestehender Laufwerke gedacht. Für neue Laufwerke erwägen Sie die Verwendung von %%XFS|xfs%%, EXT4, %%BTRFS|btrfs%% oder %%ZFS|zfs%%.
 
-For more details on adding existing drives, see the [release notes](../../release-notes/7.2.0.md#ext234-ntfs-and-exfat-support).
+Für weitere Informationen zum Hinzufügen bestehender Laufwerke lesen Sie die [Release Notes](../../release-notes/7.2.0.md#ext234-ntfs-und-exfat-unterstützung).
 
 :::note[Additional Anmerkungen]
 
 - Mixing different file system types in your Unraid system is perfectly acceptable; the Unraid %%parity|parity%% system works independently of the file system used.
 - Immer innerhalb von Unraid formatieren und partitionieren, um Kompatibilität zu gewährleisten.
 - Linux-Systeme können diese Dateisysteme nativ lesen; Windows und macOS benötigen jedoch zusätzliche Software für den Zugriff.
-- You can **encrypt** drives for enhanced security, but keep in mind that encrypted drives might pose challenges for recovery if corruption occurs.
+- Sie können Laufwerke **verschlüsseln**, um die Sicherheit zu erhöhen, beachten Sie jedoch, dass verschlüsselte Laufwerke Herausforderungen beim Wiederherstellen darstellen können, wenn es zu Beschädigungen kommt.
 - Für Übertragungslaufwerke oder externe Geräte wird empfohlen, das **[Nicht zugewiesene Geräte](#using-the-unassigned-devices-plugins)** Plugin zu verwenden, welches zusätzliche Dateisysteme unterstützt.
   :::
 
@@ -97,10 +97,10 @@ For more details on adding existing drives, see the [release notes](../../releas
 
 :::tip[Still Brauchen Sie Hilfe bei der Auswahl?]
 
-- **For array drives:** %%XFS|xfs%% is generally the best choice for most users. EXT4 is also a solid option if you prefer a more traditional Linux file system.
+- **Für Array-Laufwerke:** %%XFS|xfs%% ist im Allgemeinen die beste Wahl für die meisten Benutzer. EXT4 ist auch eine solide Option, wenn Sie ein traditionelleres Linux-Dateisystem bevorzugen.
 - **For high-performance or advanced features:** Choose %%ZFS|zfs%% or %%BTRFS|btrfs%% for %%cache pools|cache-pool%% or multi-device setups. See the [ZFS storage](../../advanced-configurations/optimize-storage/zfs-storage.mdx) page for detailed %%ZFS|zfs%% guidance.
 - **Für gemischte oder erweiternde Pools:** %%BTRFS|btrfs%% ist ideal, wenn Sie unterschiedliche Laufwerksgrößen verwenden oder Geräte einfach hinzufügen oder entfernen möchten.
-- **For existing drives:** Use NTFS or exFAT only when adding existing drives with data; add them before adding parity.
+- **Für bestehende Laufwerke:** Verwenden Sie NTFS oder exFAT nur, wenn Sie vorhandene Laufwerke mit Daten hinzufügen; fügen Sie sie hinzu, bevor Sie Parität hinzufügen.
 
 If you're uncertain, starting with the defaults is a good approach: use %%XFS|xfs%% for %%array|array%% drives and %%BTRFS|btrfs%% for %%cache pools|cache-pool%%.
 
@@ -116,24 +116,24 @@ To set the file system type globally, navigate to ***Settings → Disk Settings*
 
 :::note
 
-There is currently no global default setting for %%cache pools|cache-pool%%. They will always default to %%BTRFS|btrfs%% if left to "auto".
+Es gibt derzeit keine globale Standardeinstellung für %%cache pools|cache-pool%%. Sie werden immer auf %%BTRFS|btrfs%% standardmäßig gesetzt, wenn auf "auto" gelassen.
 
 :::
 
 :::important
 
-If you're adding drives with existing NTFS or exFAT data, they must be added to the %%array|array%% before any parity drives are added. Once parity is present, all newly added data drives will be zeroed out regardless of their file system type.
+Wenn Sie Laufwerke mit vorhandenen NTFS- oder exFAT-Daten hinzufügen, müssen diese vor dem Hinzufügen von Paritätslaufwerken dem %%array|array%% hinzugefügt werden. Sobald Parität vorhanden ist, werden alle neu hinzugefügten Datenlaufwerke gelöscht, unabhängig vom Dateisystemtyp.
 
 :::
 
-To set the file system for an individual drive:
+Um den Dateisystemtyp für ein einzelnes Laufwerk festzulegen:
 
-1. Stop the %%array|array%% before making changes.
-2. In the **Main** tab, click the drive you want to configure.
-3. Select the desired file system type from the drop-down menu.
-4. (Optional) If you select **auto**, Unraid uses the global default.
+1. Stoppen Sie das %%array|array%%, bevor Sie Änderungen vornehmen.
+2. Klicken Sie im **Main**-Tab auf das Laufwerk, das Sie konfigurieren möchten.
+3. Wählen Sie den gewünschten Dateisystemtyp aus dem Dropdown-Menü.
+4. (Optional) Wenn Sie **auto** auswählen, verwendet Unraid die globale Standardeinstellung.
 5. Für Mehrgerätige %%cache pools|cache-pool%% werden nur %%BTRFS|btrfs%% oder %%ZFS|zfs%% unterstützt.
-6. If adding existing NTFS or exFAT data drives to the %%array|array%%, add them before adding any parity drives.
+6. Wenn Sie bestehende NTFS- oder exFAT-Datenlaufwerke zum %%array|array%% hinzufügen, fügen Sie diese vor dem Hinzufügen von Paritätslaufwerken hinzu.
 
 ---
 
@@ -143,18 +143,18 @@ Bevor Sie eine neue Festplatte in Unraid verwenden können, müssen Sie sie mit 
 
 :::warning
 
-Formatting will erase all existing content on the drive. Make sure you've backed up any important data before proceeding.
+Durch das Formatieren werden alle vorhandenen Inhalte auf dem Laufwerk gelöscht. Stellen Sie sicher, dass Sie alle wichtigen Daten gesichert haben, bevor Sie fortfahren.
 
 :::
 
-To format a drive:
+Um ein Laufwerk zu formatieren:
 
 1. Starten Sie das %%array|array%%.
-2. Identify unmountable drives (they appear as **unmountable**).
-3. Verify that all unmountable drives are the ones you want to format.
-4. Check the confirmation box, read the warning dialog, and click **Format**.
-5. Monitor the process. For new disks, Unraid first rewrites the partition table.
-6. Wait for completion. If progress stalls, refresh the **Main** tab.
+2. Identifizieren Sie nicht montierbare Laufwerke (sie erscheinen als **nicht montierbar**).
+3. Stellen Sie sicher, dass alle nicht montierbaren Laufwerke die sind, die Sie formatieren möchten.
+4. Aktivieren Sie das Bestätigungsfeld, lesen Sie den Warnhinweis, und klicken Sie auf **Format**.
+5. Überwachen Sie den Fortschritt. Bei neuen Festplatten überschreibt Unraid zunächst die Partitionstabelle.
+6. Warten Sie auf die Fertigstellung. Wenn der Fortschritt ins Stocken gerät, aktualisieren Sie den **Main**-Tab.
 
 Sobald die Formatierung abgeschlossen ist, ist das Laufwerk bereit zur Dateispeicherung.
 
@@ -173,12 +173,12 @@ Sollten Sie auf Probleme stoßen, besuchen Sie gerne die [Unraid-Foren](https://
 Um den Dateisystemtyp eines bestimmten Laufwerks zu ändern:
 
 1. Stoppen Sie das %%array|array%%.
-2. In the **Main** tab, click the drive you want to change.
-3. Choose the new file system from the drop-down (repeat for multiple drives as needed).
+2. Klicken Sie im **Main**-Tab auf das Laufwerk, das Sie ändern möchten.
+3. Wählen Sie das neue Dateisystem aus dem Dropdown aus (wiederholen Sie dies für mehrere Laufwerke, falls erforderlich).
 4. Starten Sie das %%array|array%%.
-5. In the **Main** tab, review the unmountable drives list and ensure only the intended drives are included.
-6. Check the confirmation box and click **Format**.
-7. Wait for completion. If status doesn’t update, refresh the **Main** tab.
+5. Überprüfen Sie im **Main**-Tab die Liste der nicht montierbaren Laufwerke und stellen Sie sicher, dass nur die beabsichtigten Laufwerke enthalten sind.
+6. Markieren Sie das Bestätigungsfeld und klicken Sie auf **Format**.
+7. Warten Sie auf die Fertigstellung. Wenn der Status nicht aktualisiert wird, aktualisieren Sie den **Main**-Tab.
 
 Sollten Sie auf Probleme stoßen, besuchen Sie gerne die [Unraid-Foren](https://forums.unraid.net/). Fügen Sie die ZIP-Datei mit den Systemdiagnosen (zu finden unter ***Tools → Diagnosen***) zur Unterstützung bei.
 
@@ -188,10 +188,10 @@ Sollten Sie auf Probleme stoßen, besuchen Sie gerne die [Unraid-Foren](https://
 
 :::important
 
-The ***Main*** page will warn if any array or pool drives are formatted in legacy filesystems:
+Die ***Main***-Seite warnt Sie, wenn irgendwelche Array- oder Pool-Laufwerke in älteren Dateisystemen formatiert sind:
 
-- Any drives formatted in ReiserFS need to be migrated to another filesystem ASAP as they will not be usable in future releases of Unraid.
-- Any drives formatted in older XFS versions need to be migrated before 2030.
+- Alle in ReiserFS formatierten Laufwerke müssen so bald wie möglich auf ein anderes Dateisystem migriert werden, da sie in zukünftigen Unraid-Versionen nicht mehr nutzbar sein werden.
+- Alle in älteren XFS-Versionen formatierten Laufwerke müssen vor 2030 migriert werden.
 
 :::
 
@@ -207,7 +207,7 @@ Um sicher in einen neuen Dateisystemtyp zu konvertieren:
 
 1. Move all data off the drive to another location (another %%array|array%% drive, %%cache pool|cache-pool%%, or external backup). Use one of these methods:
 
-   **Via the WebGUI:**
+   **Über die WebGUI:**
 
    - Navigieren Sie zu ***Haupt → Array-Betrieb*** und stoppen Sie das Array
    - Navigieren Sie zu ***Einstellungen → Globale Freigabeeinstellungen***. Wählen Sie im Bereich **Leeren von Festplatte(n)** die zu leerende(n) Festplatte(n) aus und **Anwenden**. Hinweis: Dieser Status wird automatisch entfernt, wenn das Array gestoppt wird.
@@ -216,18 +216,18 @@ Um sicher in einen neuen Dateisystemtyp zu konvertieren:
    - Mover leert die Festplatte gemäß Ihren Freigabeeinstellungen. Beachten Sie, dass Dateien im Stammverzeichnis des Laufwerks außerhalb jeglicher Freigaben liegen und nicht verschoben werden.
    - Überprüfen Sie ***Werkzeuge → Systemprotokoll*** auf Nachrichten über Dateien, die aufgrund von Verwendung oder mangelndem Speicherplatz nicht verschoben werden konnten.
 
-   **Or via the command line:**
+   **Oder über die Befehlszeile:**
 
-   - Move files [using 'mover' to empty an array disk](../../release-notes/7.0.0.md#using-mover-to-empty-an-array-disk) to other array drives
+   - Bewegen Sie Dateien [mithilfe des 'mover', um eine Array-Festplatte zu leeren](../../release-notes/7.0.0.md#using-mover-to-empty-an-array-disk) auf andere Array-Laufwerke
 
-   **Or manually:**
+   **Oder manuell:**
 
-   - Move files manually to another location
+   - Bewegen Sie Dateien manuell an einen anderen Ort
 
-   Once completed, navigate to ***Main → Array Devices*** and browse the disk to confirm it is empty. Proceed only when you are certain the disk is empty.
-2. Follow the procedure for [changing a file system type](#changing-a-file-system-type). This formats the drive and erases all content, leaving a blank drive in the new format.
-3. (Optional) Move your data back to the newly formatted drive, depending on where you moved the files.
-4. If you have multiple drives to convert, repeat these steps for each drive.
+   Nachdem der Vorgang abgeschlossen ist, navigieren Sie zu ***Main → Array Devices*** und durchsuchen Sie die Festplatte, um zu bestätigen, dass sie leer ist. Fahren Sie nur fort, wenn Sie sicher sind, dass die Festplatte leer ist.
+2. Befolgen Sie die Verfahren zum [Ändern eines Dateisystemtyps](#changing-a-file-system-type). Dies formatiert das Laufwerk und löscht alle Inhalte, sodass ein leeres Laufwerk im neuen Format bleibt.
+3. (Optional) Verschieben Sie Ihre Daten je nach Speicherort, an den Sie die Dateien verschoben haben, zurück auf das neu formatierte Laufwerk.
+4. Wenn Sie mehrere Laufwerke konvertieren möchten, wiederholen Sie diese Schritte für jedes Laufwerk.
 
 :::note\[Timing]
 
@@ -270,53 +270,53 @@ Sometimes, you'll need to reformat a %%cache|cache%% drive for the following rea
 - Um anhaltende Dateisystemfehler zu beheben
 - Um frisch für neue Workloads zu starten
 
-#### Preparation
+#### Vorbereitung
 
-Before reformatting, prepare the system:
+Vor der Neuformatierung, bereiten Sie das System vor:
 
 1. Stoppen Sie das %%array|array%%.
-2. Go to **Settings** and disable Docker and %%VM|vm%% services (this prevents their tabs from appearing during the process).
-3. Start the %%array|array%% again.
+2. Gehen Sie zu **Einstellungen** und deaktivieren Sie Docker und %%VM|vm%%-Dienste (dies verhindert, dass ihre Registerkarten während des Prozesses angezeigt werden).
+3. Starten Sie das %%array|array%% erneut.
 
-#### Move data off the cache
+#### Daten vom Cache verschieben
 
 Um Daten vom Cache zu verschieben:
 
-1. Set share storage and Mover action (cache → array):
+1. Speicherfreigabe und Verschiebeaktion festlegen (Cache → Array):
    - Gehen Sie zur **Shares**-Registerkarte.
    - For each share with files in the %%cache|cache%%, set **Primary storage** to the source %%cache|cache%% pool and **Secondary storage** to the %%array|array%%.
    - Setzen Sie die **Mover-Aktion** auf **Cache → Array**.
-   - Note the shares you changed and their original settings.
-2. In the **Main** tab, click **Move Now** and wait for completion. Ensure the %%cache|cache%% is empty.
-   - If files remain, stop and check the forums for help.
+   - Merken Sie sich die Freigaben, die Sie geändert haben und deren ursprüngliche Einstellungen.
+2. Klicken Sie im **Main**-Tab auf **Jetzt verschieben** und warten Sie auf die Fertigstellung. Stellen Sie sicher, dass der %%cache|cache%% leer ist.
+   - Wenn Dateien verbleiben, stoppen Sie und suchen Sie im Forum nach Hilfe.
 
-#### Reformat the cache drive
+#### Cache-Laufwerk neu formatieren
 
 Schauen wir uns an, was jede Operation macht und wann sie verwendet wird:
 
 1. Stoppen Sie das %%array|array%%.
-2. Set the cache drive format:
-   - In the **Main** tab, click the cache drive.
-   - Choose between %%XFS|xfs%%, EXT4, or %%BTRFS|btrfs%%.
+2. Cache-Laufwerksformat festlegen:
+   - Klicken Sie im **Main**-Tab auf das Cache-Laufwerk.
+   - Wählen Sie zwischen %%XFS|xfs%%, EXT4 oder %%BTRFS|btrfs%%.
    - For a single-drive %%cache|cache%%, %%XFS|xfs%% or EXT4 are recommended.
    - Note that %%XFS|xfs%% and EXT4 are only available with one %%cache|cache%% slot.
 3. Starten Sie das %%array|array%%.
 4. Formatieren Sie das Cache-Laufwerk:
    - Confirm only the %%cache|cache%% drive is listed as unmountable.
-   - Check the confirmation box and click **Format**.
+   - Markieren Sie das Bestätigungsfeld und klicken Sie auf **Format**.
 
-#### Restore data and settings
+#### Daten und Einstellungen wiederherstellen
 
 Um Daten und Einstellungen wiederherzustellen:
 
-1. For each share you changed, set **Primary storage** and **Secondary storage** back to their original values.
-2. Move data back (array → cache):
+1. Für jede geänderte Freigabe setzen Sie **Primärspeicher** und **Sekundärspeicher** auf ihre ursprünglichen Werte zurück.
+2. Daten zurückverschieben (Array → Cache):
    - For each share you changed, set **Primary storage** to the destination %%cache|cache%% pool and **Secondary storage** to the %%array|array%%.
    - Setzen Sie **Mover-Aktion** auf **Array → Cache**.
-   - In the **Main** tab, click **Move Now** to move data back to the %%cache|cache%%.
+   - Klicken Sie im **Main**-Tab auf **Jetzt verschieben** um die Daten zurück auf den %%cache|cache%% zu verschieben.
 3. Stoppen Sie das %%array|array%%.
-4. Go to **Settings** and re-enable Docker and %%VM|vm%% services.
-5. Start the %%array|array%% to complete the process.
+4. Wechseln Sie zu **Einstellungen** und aktivieren Sie Docker und %%VM|vm%%-Dienste erneut.
+5. Starten Sie das %%array|array%%, um den Vorgang abzuschließen.
 
 :::note\[Timing]
 
@@ -330,7 +330,7 @@ Die Zeit, die das Verschieben von Daten mit dem %%Mover|mover%% und das Formatie
 
 Maintaining your %%BTRFS|btrfs%% pools in Unraid is essential for keeping them running well and ensuring your data stays safe. Two key tools you’ll want to use regularly are **Balance** and **Scrub**. These operations help solve space allocation problems, optimize your storage use, and protect your data from hidden corruption.
 
-Let's break down what each operation does and when to use them:
+Lassen Sie uns aufschlüsseln, was jede Operation tut und wann sie zu verwenden ist:
 
 ### Gleichgewicht
 
@@ -338,15 +338,15 @@ The **Balance** operation redistributes data and metadata chunks across your %%B
 
 #### Wann Balance durchgeführt werden sollte
 
-- When you encounter "no space left on device" errors but have free space.
+- Wenn Sie "Kein Speicherplatz mehr auf dem Gerät"-Fehler haben, aber noch freier Speicherplatz vorhanden ist.
 - Nach dem Hinzufügen oder Entfernen von Laufwerken in einem Pool.
 - Um den Platzverbrauch zu optimieren und die Leistung zu verbessern.
 
 #### Wie man Balance durchführt
 
-1. In the %%WebGUI|web-gui%%, click the pool in the **Main** tab and select **Balance**.
-2. (Optional) Add parameters for advanced use (refer to Unraid Help for details).
-3. Click **Start** to begin.
+1. Klicken Sie im %%WebGUI|web-gui%% auf den Pool im **Main**-Tab und wählen Sie **Balance**.
+2. (Optional) Fügen Sie Parameter für den erweiterten Gebrauch hinzu (siehe Unraid-Hilfe für Details).
+3. Klicken Sie auf **Start**, um zu beginnen.
 
 :::note\[Timing]
 
@@ -356,7 +356,7 @@ Balance-Aktionen können je nach Poolgröße und Datenmenge einige Minuten bis z
 
 ### Scrub
 
-The **Scrub** operation reads all data and metadata, checks the integrity of checksums, and repairs any corrupt blocks using available redundant copies. Scrubbing helps identify and fix silent data corruption, known as "bit rot," before it becomes a significant issue.
+Die **Scrub**-Operation liest alle Daten- und Metadaten, überprüft die Integrität der Prüfsummen und repariert beschädigte Blöcke mithilfe vorhandener redundanter Kopien. Scrubbing hilft, stille Datenbeschädigungen, auch bekannt als "Bit Rot", zu identifizieren und zu beheben, bevor sie zu einem signifikanten Problem werden.
 
 #### Wann Scrub durchgeführt werden sollte
 
@@ -371,8 +371,8 @@ The **Scrub** operation reads all data and metadata, checks the integrity of che
 
 #### Wie man Scrub durchführt
 
-1. In the %%WebGUI|web-gui%%, click the pool in the **Main** tab and select **Scrub**.
-2. Click **Start** to initiate.
+1. Klicken Sie im %%WebGUI|web-gui%% auf den Pool im **Main**-Tab und wählen Sie **Scrub**.
+2. Klicken Sie auf **Start**, um den Betrieb zu starten.
 
 :::note\[Timing]
 
@@ -396,7 +396,7 @@ Unassigned drives are storage devices connected to your Unraid server that aren'
 
 :::note
 
-All drives connected to your server when the %%array|array%% starts count toward your Unraid Attached Devices license limit, even if they aren't assigned to the %%array|array%% or a pool.
+Alle Laufwerke, die bei Beginn Ihres %%array|array%% mit Ihrem Server verbunden sind, zählen zu Ihrem Unraid-Attached-Devices-Lizenzlimit, auch wenn sie nicht dem %%array|array%% oder einem Pool zugewiesen sind.
 
 :::
 
@@ -432,9 +432,9 @@ Für weitere Details zur Installation und Verwaltung von Plugins, schauen Sie si
 
 Wenn Sie sehen, dass ein Laufwerk in Unraid als **nicht mountbar** angezeigt wird, könnte dies an einem der beiden Hauptgründe liegen:
 
-1. If you just added a new drive to your setup, it will show as unmountable until you format it. Formatting creates a file system that allows the drive to store files. You can find the steps to format a drive [here](#creating-a-file-system-formatting).
+1. Wenn Sie gerade ein neues Laufwerk zu Ihrer Konfiguration hinzugefügt haben, wird es als nicht montierbar angezeigt, bis Sie es formatieren. Formatieren erstellt ein Dateisystem, das das Laufwerk zur Speicherung von Dateien verwendet. Die Schritte zum Formatieren eines Laufwerks finden Sie [hier](#creating-a-file-system-formatting).
 
-2. If a drive that was previously working suddenly shows as unmountable, it likely has a file system issue. This can happen due to unexpected shutdowns, problems while writing data, or if the drive has been marked as disabled (which appears as a red 'x' in the %%WebGUI|web-gui%%).
+2. Wenn ein zuvor funktionierendes Laufwerk plötzlich als nicht montierbar angezeigt wird, hat es wahrscheinlich ein Dateisystemproblem. Dies kann aufgrund unerwarteter Ausschaltungen, Problemen beim Schreiben von Daten oder wenn das Laufwerk als deaktiviert markiert wird (was als rotes 'x' im %%WebGUI|web-gui%% angezeigt wird) auftreten.
 
 :::important
 
@@ -444,9 +444,9 @@ Do not format an unmountable drive unless you are okay with losing all the data 
 
 Wenn Ihr Laufwerk nicht montierbar ist:
 
-1. Determine if it's a new drive or a previously working drive.
-2. For new drives: Format the drive to create a new file system (see [formatting steps](#creating-a-file-system-formatting)).
-3. For previously working drives: Perform a file system check or repair (see [Checking a file system](#checking-a-file-system)). Avoid formatting if you want to keep the data.
+1. Bestimmen Sie, ob es sich um ein neues Laufwerk oder ein zuvor funktionierendes Laufwerk handelt.
+2. Für neue Laufwerke: Formatieren Sie das Laufwerk, um ein neues Dateisystem zu erstellen (siehe [Formatierungsschritte](#creating-a-file-system-formatting)).
+3. Für zuvor funktionierende Laufwerke: Führen Sie eine Dateisystemüberprüfung oder -reparatur durch (siehe [Überprüfung eines Dateisystems](#checking-a-file-system)). Vermeiden Sie das Formatieren, wenn Sie die Daten behalten möchten.
 
 :::note
 
@@ -484,22 +484,22 @@ Wenn ein zuvor ohne Probleme gemountetes Laufwerk jetzt als **nicht mountierbar*
 
 :::important
 
-If the %%WebGUI|web-gui%% suggests formatting an unmountable drive, **do not format** unless you intend to erase all data. Formatting will destroy the contents of the drive and update %%parity|parity%%, making recovery impossible.
+Wenn das %%WebGUI|web-gui%% vorschlägt, ein nicht montierbares Laufwerk zu formatieren, **formatieren Sie nicht**, es sei denn, Sie möchten alle Daten löschen. Formatieren zerstört den Inhalt des Laufwerks und aktualisiert die %%parity|parity%%, wodurch die Wiederherstellung unmöglich wird.
 
 :::
 
 #### Vorbereitung zum Überprüfen oder Reparieren
 
-1. Identify the file system type:
-   - In the **Main** tab, select your disk (e.g., Disk 3, Cache).
-   - Find the **File system type** (should be %%XFS|xfs%%, EXT4, %%BTRFS|btrfs%%, or %%ZFS|zfs%%).
+1. Bestimmen Sie den Dateisystemtyp:
+   - Im **Main**-Tab wählen Sie Ihre Festplatte aus (z.B. Disk 3, Cache).
+   - Finden Sie den **Dateisystemtyp** (sollte %%XFS|xfs%%, EXT4, %%BTRFS|btrfs%% oder %%ZFS|zfs%% sein).
 
 2. Starten Sie das Array im richtigen Modus:
-   - For **%%XFS|xfs%%** or **EXT4**, start the %%array|array%% in **%%Maintenance Mode|maintenance-mode%%**.
+   - Für **%%XFS|xfs%%** oder **EXT4**, starten Sie das %%array|array%% im **%%Maintenance Mode|maintenance-mode%%**.
    - Für **%%BTRFS|btrfs%%** starten Sie das %%array|array%% im **Normalmodus** für einen %%scrub|scrub%% oder im **%%Wartungsmodus|maintenance-mode%%** für eine Reparatur.
    - Für **%%ZFS|zfs%%**, siehe den %%ZFS|zfs%%-Abschnitt unten.
 
-3. If the disk is disabled and being emulated, run the check/repair on the %%emulated disk|emulated-disk%% before attempting a rebuild. If the %%emulated disk|emulated-disk%% is unmountable, the rebuilt disk will also be unmountable.
+3. Wenn die Festplatte deaktiviert ist und emuliert wird, führen Sie die Prüfung/Reparatur auf der %%emulated disk|emulated-disk%% durch, bevor Sie versuchen, eine Wiederherstellung durchzuführen. Wenn die %%emulated disk|emulated-disk%% nicht montierbar ist, wird auch die wiederhergestellte Festplatte nicht montierbar sein.
 
 #### Häufige Fehlermeldungen
 
@@ -512,32 +512,32 @@ If the %%WebGUI|web-gui%% suggests formatting an unmountable drive, **do not for
 | **Mount: falscher FS-Typ, schlechte Option, etc.**              | Falsche Auswahl des Dateisystems oder die Festplatte ist nicht formatiert.                          |
 | **Kann /dev/mdX nicht mounten: Struktur muss gereinigt werden** | Dateisystem ist beschädigt; führen Sie eine Reparatur durch.                                        |
 
-#### Checking via the WebGUI
+#### Überprüfung über die WebGUI
 
-1. Start the %%array|array%% in the correct mode (refer to the steps above).
-2. In the **Main** tab, select the disk you wish to check.
-3. Scroll to **Check Filesystem Status**.
-4. For XFS: You will see a **CHECK** button without any options to enter. The system automatically determines the necessary actions based on the check results.
-5. For other file systems: Enter any necessary options (for details, see **Help** in the upper right).
-6. Click **Check** to initiate the process.
-7. Monitor progress in the output box. Use **Refresh** if required.
-8. Review results. If uncertain, copy the output and post it on the [forums](https://forums.unraid.net/) for advice.
+1. Starten Sie das %%array|array%% im richtigen Modus (siehe Steps oben).
+2. Wählen Sie im **Main**-Tab die Festplatte aus, die Sie überprüfen möchten.
+3. Scrollen Sie zu **Dateisystemstatus überprüfen**.
+4. Für XFS: Sie werden eine **CHECK**-Schaltfläche sehen, ohne dass Optionen einzugeben sind. Das System bestimmt automatisch die notwendigen Maßnahmen basierend auf den Prüfergebnissen.
+5. Für andere Dateisysteme: Geben Sie alle notwendigen Optionen ein (für Details, siehe **Hilfe** oben rechts).
+6. Klicken Sie auf **Check**, um den Prozess zu initiieren.
+7. Verfolgen Sie den Fortschritt im Ausgabefeld. Verwenden Sie **Aktualisieren**, falls erforderlich.
+8. Überprüfen Sie die Ergebnisse. Wenn Sie unsicher sind, kopieren Sie die Ausgabe und posten Sie sie im [Forum](https://forums.unraid.net/) zur Beratung.
 
-#### XFS automatic repair workflow
+#### XFS automatisierter Reparaturworkflow
 
-XFS file system repair is fully automated through the WebGUI:
+Die XFS-Dateisystemreparatur ist vollständig über das WebGUI automatisiert:
 
-1. Click the **CHECK** button (no options to enter)
-2. Check results:
+1. Klicken Sie auf die **CHECK**-Schaltfläche (keine Optionen einzugeben)
+2. Prüfergebnisse:
    - **Keine Beschädigung erkannt**: Zeigt "keine Dateisystembeschädigung erkannt" an und der **PRÜFEN**-Button bleibt
    - **Beschädigung erkannt**: Zeigt "Dateisystembeschädigung erkannt" an und ein **FIX**-Button erscheint
-3. Click **FIX** to automatically repair the file system
-4. If needed, a **ZERO LOG** button may appear
-5. Shows "filesystem repaired" when the process is complete
+3. Klicken Sie auf **FIX**, um das Dateisystem automatisch zu reparieren.
+4. Bei Bedarf kann eine **ZERO LOG**-Schaltfläche erscheinen.
+5. Zeigt "Dateisystem repariert" an, wenn der Prozess abgeschlossen ist.
 
 Dieses automatisierte System eliminiert die Notwendigkeit für Benutzer, manuell Reparaturoptionen einzugeben, und stellt sicher, dass die korrekte Reparatursequenz eingehalten wird.
 
-#### Checking via the command line
+#### Überprüfung über die Befehlszeile
 
 <Tabs>
   <TabItem value="xfs" label="XFS">
@@ -575,27 +575,27 @@ Reparaturen können je nach Größe oder starkem Schaden des Dateisystems von me
 
 #### Vorbereitungen zur Reparatur
 
-1. In the **Main** tab, click the disk and identify the file system type (%%XFS|xfs%%, EXT4, %%BTRFS|btrfs%%, or %%ZFS|zfs%%).
+1. Klicken Sie im **Main**-Tab auf die Festplatte und bestimmen Sie den Dateisystemtyp (%%XFS|xfs%%, EXT4, %%BTRFS|btrfs%% oder %%ZFS|zfs%%).
 
 2. Starten Sie das Array im richtigen Modus:
 
-   - **For %%XFS|xfs%% or EXT4:** Use **%%Maintenance Mode|maintenance-mode%%**.
+   - **Für %%XFS|xfs%% oder EXT4:** Verwenden Sie **%%Maintenance Mode|maintenance-mode%%**.
    - **Für %%BTRFS|btrfs%%:** Verwenden Sie den **Normalmodus** für ein %%scrub|scrub%%; verwenden Sie den **%%Wartungsmodus|maintenance-mode%%** für eine Reparatur.
    - **For %%ZFS|zfs%%:** Use **Normal mode** and run a %%scrub|scrub%% to check for errors. See the [ZFS storage page](../../advanced-configurations/optimize-storage/zfs-storage.mdx) for guidance on %%ZFS|zfs%% pool maintenance and repair procedures.
 
-3. If the disk is disabled and being emulated, run the repair on the %%emulated disk|emulated-disk%% before trying to do a rebuild.
+3. Wenn die Festplatte deaktiviert ist und emuliert wird, führen Sie die Reparatur auf der %%emulated disk|emulated-disk%% durch, bevor Sie versuchen, eine Wiederherstellung vorzunehmen.
 
-#### Repairing via the WebGUI
+#### Reparatur über die WebGUI
 
-1. Start the %%array|array%% in the correct mode (refer to the section above).
-2. In the **Main** tab, click the disk you want to repair.
-3. Scroll down to **Check Filesystem Status**.
-4. For XFS: The repair process is fully automated. Click **CHECK**, then **FIX** if corruption is detected, and **ZERO LOG** if prompted.
-5. For other file systems: Remove any options that would run the process in check-only mode (like `--readonly` for %%BTRFS|btrfs%%).
-6. If prompted, add the suggested options as indicated in the check output.
-7. Click **Check** to begin the repair.
-8. Monitor progress in the output box. Use **Refresh** if needed.
-9. If you notice a `lost+found` folder after the repair, it may contain files or folders that couldn't be fully recovered. Use backups or the Linux `file` command to identify the contents if necessary.
+1. Starten Sie das %%array|array%% im richtigen Modus (siehe Abschnitt oben).
+2. Klicken Sie im **Main**-Tab auf die Festplatte, die Sie reparieren möchten.
+3. Scrollen Sie nach unten zu **Dateisystemstatus überprüfen**.
+4. Für XFS: Der Reparaturvorgang ist vollständig automatisiert. Klicken Sie auf **PRÜFEN** und dann auf **REPARIEREN**, wenn eine Beschädigung erkannt wird, und auf **LOG NULLEN**, wenn Sie dazu aufgefordert werden.
+5. Für andere Dateisysteme: Entfernen Sie alle Optionen, die den Vorgang nur im Prüfmodus ausführen würden (wie `--readonly` für %%BTRFS|btrfs%%).
+6. Fügen Sie gegebenenfalls die im Prüfbericht angegebenen Optionen hinzu.
+7. Klicken Sie auf **Prüfen**, um mit der Reparatur zu beginnen.
+8. Überwachen Sie den Fortschritt im Ausgabefeld. Verwenden Sie **Aktualisieren** bei Bedarf.
+9. Wenn Sie nach der Reparatur einen `lost+found`-Ordner bemerken, kann dieser Dateien oder Ordner enthalten, die nicht vollständig wiederhergestellt werden konnten. Verwenden Sie Backups oder den Linux-Befehl `file`, um den Inhalt bei Bedarf zu identifizieren.
 
 :::info
 
@@ -603,7 +603,7 @@ Wenn Sie unsicher bezüglich der Ausgabe sind, kopieren und teilen Sie sie in de
 
 :::
 
-#### Repairing via the command line
+#### Reparatur über die Befehlszeile
 
 <Tabs>
   <TabItem value="xfs" label="XFS">
