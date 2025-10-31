@@ -1,9 +1,9 @@
 ---
 sidebar_position: 4
-sidebar_label: Removing disks from array
+sidebar_label: 从阵列中移除磁盘
 ---
 
-# Removing disks from array
+# 从阵列中移除磁盘
 
 有可能您想从 Unraid 阵列中移除一个磁盘。无论您是想节约电力，退役一个旧的或不可靠的驱动器，还是将硬件重新用于其他用途，此过程都相对简单。
 
@@ -14,8 +14,8 @@ sidebar_label: Removing disks from array
 要移除奇偶校验驱动器：
 
 1. 停止数组。
-2. Unassign the parity drive slot and set it to "Unassigned."
-3. Start the array to commit the changes.
+2. 取消分配校验盘插槽，并设置为“未分配”。
+3. 启动阵列以提交更改。
 
 :::warning
 
@@ -28,27 +28,27 @@ Before you make any changes, please keep this in mind: If you already have any f
 
 ## 移除数据磁盘
 
-Removing a data disk requires a parity sync afterward. Until this sync completes, there's a risk of data loss if another disk fails.
+移除数据盘后需要进行校验同步。在此同步完成之前，如果另一块磁盘出现故障，可能会导致数据丢失的风险。
 
-### Standard method (Recommended)
+### 标准方法（推荐）
 
 1. 停止数组。
-2. Optionally document your disk assignments with a screenshot.
-3. Reset the array configuration using **Tools → New Config**, choosing the option to preserve all current assignments.
-4. Unassign the disk you want to remove.
-5. Start the array, but do not check the "Parity is valid" box.
+2. 可选择使用截屏记录您的磁盘分配。
+3. 使用**Tools → New Config**重设阵列配置，选择保留所有当前分配的选项。
+4. 取消分配您想移除的磁盘。
+5. 启动阵列，但不要勾选“校验有效”框。
 
-A parity sync starts if you have a parity disk assigned. The array is vulnerable to data loss until this sync completes.
+如果您已经分配了一个校验盘，校验同步将开始。在此同步完成之前，阵列容易出现数据丢失的风险。
 
 :::tip
 
-Move important data off the disk before removal. The parity sync process may take several hours depending on disk size and system activity.
+在移除前将重要数据显示移出磁盘。校验同步过程可能需要几个小时，具体取决于磁盘大小和系统活动。
 
 :::
 
 ### 校验保留方法（高级）
 
-This method allows you to remove a data disk while keeping your parity valid. It zeros out the data disk, allowing you to keep your parity intact. This is only recommended for advanced users.
+此方法允许您在保持校验有效的情况下移除数据盘。它将数据盘清零，允许您保持校验完整。这仅推荐给高级用户。
 
 :::warning
 
@@ -56,20 +56,20 @@ This method erases all data on the selected disk. Verify that all important data
 
 :::
 
-To use the parity-preserve method:
+使用保持校验的方法：
 
-1. Start the array in maintenance mode, click on the disk you want to remove, and then click **Erase**. This erases the file system from the device while maintaining parity, then stops the array.
-2. Start the array in normal mode. The disk won't mount, but the remaining disks are online.
-3. Record array assignments, especially the parity drive.
-4. Optionally enable Reconstruct Write ("Turbo Write") in **Settings → Disk Settings** for faster zeroing, but only if all drives are healthy.
-5. Unmount the disk: `umount /mnt/diskX`
-6. Zero out the disk:
+1. 以维护模式启动阵列，点击您想移除的磁盘，然后点击**擦除**。这将在保持校验的情况下从设备中擦除文件系统，然后停止阵列。
+2. 以正常模式启动阵列。该磁盘将无法挂载，但其余的磁盘在线。
+3. 记录阵列分配，特别是校验盘。
+4. 在**设置 → 磁盘设置**中启用重建写入（“Turbo Write”）以加快清零速度，但仅当所有磁盘都处于健康状态时。
+5. 卸载磁盘：`umount /mnt/diskX`
+6. 清零磁盘：
    - For Unraid 6.12 or later: `dd bs=1M if=/dev/zero of=/dev/mdXp1 status=progress`
    - For Unraid 6.11 and earlier: `dd bs=1M if=/dev/zero of=/dev/mdX status=progress`
-   Replace `X` with the specific number of the data disk you're removing.
-7. Stop the array once clearing is complete.
-8. Reset array configuration, retaining all current assignments.
-9. Unassign the disk you want to remove, double-checking all assignments, especially the parity drive.
-10. Check the box indicating "Parity is already valid."
-11. Start the array to finish the removal.
-12. Optionally run a correcting %%parity check|parity-check%% afterward to ensure parity integrity.
+   将`X`替换为您要移除的数据盘的特定编号。
+7. 清除完成后停止阵列。
+8. 重置阵列配置，保留所有当前分配。
+9. 取消分配您要移除的磁盘，仔细检查所有分配，特别是校验盘。
+10. 勾选“校验已经有效”的选项。
+11. 启动阵列以完成移除。
+12. 可选择在完成后运行修正%%parity check|parity-check%%以确保校验完整性。
