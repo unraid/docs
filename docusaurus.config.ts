@@ -275,6 +275,10 @@ const config: Config = {
             from: "/account/link-key/",
             to: "/unraid-connect/overview-and-setup/",
           },
+          {
+            from: "/go/redeem-activation-code/",
+            to: "/unraid-account/redeem-activation-code/",
+          },
 
           // Category redirects
           { from: "/category/faq/", to: "/unraid-os/troubleshooting/faq/" },
