@@ -9,6 +9,7 @@ Use the following guidance when loading the Unraid documentation inside an ifram
 ## Optional Query Parameters
 
 - `theme=<light|dark>` — Forces the initial Docs theme. The value is persisted for the iframe session so reloads stay consistent.
+- `lang=<locale>` — Sets the initial Docs language. When the locale is not English, the generated URLs automatically include the language segment in the pathname (for example `/es/...`).
 - `entry=<path>` — Marks the logical entry point for the iframe session. Supply an absolute docs path (e.g. `/unraid-os/...`) or a full docs URL; the embedded UI shows a floating back icon that returns visitors to this path and hides itself while you remain on it. Defaults to the first loaded URL if omitted.
 
 ## Session Storage Keys
@@ -26,12 +27,16 @@ A host can clear these keys to reset the embedded state before opening a new ifr
 ## Example URL Builders
 
 ```js
-function buildDocsUrl(path, { theme, entry } = {}) {
+function buildDocsUrl(path, { theme, lang, entry } = {}) {
   const url = new URL(path, "https://docs.unraid.net");
   url.searchParams.set("embed", "1");
 
   if (theme === "light" || theme === "dark") {
     url.searchParams.set("theme", theme);
+  }
+
+  if (lang) {
+    url.searchParams.set("lang", lang);
   }
 
   if (entry) {
