@@ -15,11 +15,11 @@ Use the following guidance when loading the Unraid documentation inside an ifram
 
 The iframe experience uses `window.sessionStorage` to remember state while a browser tab stays open. Host applications normally do not need to interact with these keys, but they are listed here for completeness.
 
-| Key                       | Purpose                                                         |
-| ------------------------- | --------------------------------------------------------------- |
-| `unraidDocsIframe`        | Tracks whether the current session originated inside an iframe. |
-| `unraidDocsTheme`         | Stores the last used Docs theme so reloads stay consistent.     |
-| `unraidDocsIframeEntry`   | Holds the iframe entry path for the fallback back button.       |
+| Key                     | Purpose                                                         |
+| ----------------------- | --------------------------------------------------------------- |
+| `unraidDocsIframe`      | Tracks whether the current session originated inside an iframe. |
+| `unraidDocsTheme`       | Stores the last used Docs theme so reloads stay consistent.     |
+| `unraidDocsIframeEntry` | Holds the iframe entry path for the fallback back button.       |
 
 A host can clear these keys to reset the embedded state before opening a new iframe session.
 
