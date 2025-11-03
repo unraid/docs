@@ -215,7 +215,7 @@ The [Dynamix Stop Shell](https://unraid.net/community/apps/c/tools-system/p2?srs
 
 #### 虚拟机超时
 
-在***设置 → 虚拟机管理器 → 虚拟机关闭***中配置虚拟机关闭超时（启用高级视图）。
+在 ***设置 → 虚拟机管理器 → 虚拟机关机***（启用高级视图）中配置虚拟机关机超时。
 
 **原理:**
 
@@ -239,81 +239,83 @@ The [Dynamix Stop Shell](https://unraid.net/community/apps/c/tools-system/p2?srs
 :::
 
 :::warning[No 无休眠的安全超时]
-在没有休眠和%%QEMU|qemu%%%%Guest Agent|guest-agent%%的情况下，Windows %%VMs|vm%%没有真正安全的超时。对话框或正在进行的更新安装可能导致任何超时不充分，从而导致强制关机和数据损坏的风险。
+
+Without hibernation and %%QEMU|qemu%% %%Guest Agent|guest-agent%%, there isn't a truly safe timeout for Windows %%VMs|vm%%. Dialog boxes or ongoing update installations could render any timeout inadequate, leading to forced shutdowns and data corruption risk.
+
 :::
 
-#### Docker超时
+#### Docker 超时
 
-在***设置 → Docker***（启用高级视图）中配置Docker容器停止超时。
+在 ***设置 → Docker***（启用高级视图）中配置 Docker 容器停止超时。
 
 **原理:**
 
-- 容器并行停止，因此总时间等于 Docker 停止超时。
-- 大多数容器能在 10 秒内停止，但有些可能需要更长的时间。
-- 拥有大型数据库或正在进行业务操作的复杂容器可能需要额外时间。
+- 容器是并行停止的，因此总时间等于 Docker 停止超时。
+- 大多数容器会在 10 秒内停止，但有些可能需要更长时间。
+- 复杂的容器具有大型数据库或正在进行的操作，可能需要额外时间。
 - 如果定时器到期，容器将被强制停止。
 
 :::tip[Docker 超时建议]
 
-- **默认 10 秒** 对大多数容器都是足够的。
-- **如果容器在停止时崩溃：** 增加超时至 **30 秒**。
-- 在关闭期间监控您的容器，识别任何始终需要更多时间的容器。
+- **默认的 10 秒** 对大多数容器效果良好。
+- **如果容器在停止时崩溃**：将超时增加到 **30 秒**。
+- 在关机期间监控您的容器，以识别需要更多时间的容器。
 
 :::
 
 #### 通用超时
 
-在***设置 → 磁盘设置 → 关闭超时***中配置通用关闭超时。
+在 ***设置 → 磁盘设置 → 关机超时*** 中配置通用关机超时。
 
-**不间断电源（UPS）注意事项（最关键因素）：**
+**UPS 使用注意事项（最关键因素）：**
 
-- 您的UPS必须提供足够的运行时间以完成完整的关闭序列，在电池用完之前。
-- 对于\*\*手动关闭，\*\*您可以设置更长的超时，因为您可以控制何时开始关闭。
-- 在\*\*断电关闭时，\*\*您的超时受限于UPS电池寿命。
-- **测试您的UPS**，模拟断电以确保服务器能在有足够余地的情况下自动关闭。
+- 您的UPS必须提供足够的运行时间，以在电池耗尽之前完成完全关机过程。
+- 对于**手动关机**，您可以设置更长的超时时间，因为您可以控制何时开始关机。
+- 在 **停电关机** 时，您的超时受限于 UPS 电池寿命。
+- **测试您的UPS**，通过模拟停电确保服务器能在电池充分的情况下干净关机。
 
 :::tip[General 超时建议]
 
-- **如果遇到非正常关闭：** 对于无%%VMs|vm%%的系统，将超时增加到**180秒（3分钟）**。
-- **对于有%%VMs|vm%%的系统：** 如果不使用休眠，使用**300+秒（5+分钟）**。
-- **如果使用休眠：** **180-300秒** 通常足够。
-- 确保超时时间不超过UPS在断电时可以支持的时间。
+- **如果遇到非干净关机**：对于没有%%虚拟机|vm%%的系统，将超时增至 **180 秒（3 分钟）**。
+- **对于有%%虚拟机|vm%%的系统**：在不使用休眠的情况下使用 **300+ 秒（5+ 分钟）**。
+- **如果使用休眠**：通常 **180-300 秒** 是足够的。
+- 确保超时不超过您的UPS在断电时能支持的时长。
 
 :::
 
 #### 第三方服务
 
-**LXC容器：**
-LXC插件有自己的容器停止超时设置。与Docker容器类似，LXC容器通常在几秒钟内停止，但有些可能需要更多时间。检查LXC插件设置中的容器停止超时，并将其包括在一般关闭超时计算中。
+**LXC 容器：**
+LXC 插件有自己的容器停止超时设置。像 Docker 容器一样，LXC 容器通常在几秒钟内停止，但有些可能需要更多时间。检查 LXC 插件设置中的容器停止超时，并将此超时包括在您的通用关机超时计算中。
 
 **其他服务：**
-某些插件或自定义服务可能有自己的关闭程序。请参阅插件文档获取特定的超时设置，并将其纳入您的计算中。
+某些插件或自定义服务可能有自己的关机程序。请参阅插件文档中的特定超时设置，并将其纳入您的计算。
 
-**更新的公式与第三方服务：**
+**带有第三方服务的更新公式：**
 
 ```
 (VM timeout × 3) + (Docker timeout) + (LXC/other timeouts) + 15-30 seconds
 ```
 
-**Dynamix Stop Shell plugin:**
-If you frequently use SSH or terminal sessions, open sessions can prevent clean shutdowns because Unraid waits for them to close before proceeding.
+**Dynamix Stop Shell 插件：**
+如果您经常使用 SSH 或终端会话，打开的会话可能会阻止干净的关机，因为 Unraid 在关闭之前会等待它们关闭。
 
-[Dynamix 停止 Shell](https://unraid.net/community/apps/c/tools-system/p2?srsltid=AfmBOoqBXyDNfHxRDCL7Fv9Gcfz8-8CdHmiJSX16PRZpZLLzgQtw2mVk#:~:text=the%20given%20interval.-,Dynamix%20Stop%20Shell,-Dynamix%20Repository) 插件通过在停止阵列时自动关闭拖延的 bash 或 SSH 会话来帮助确保及时关机。
+[Dynamix Stop Shell](https://unraid.net/community/apps/c/tools-system/p2?srsltid=AfmBOoqBXyDNfHxRDCL7Fv9Gcfz8-8CdHmiJSX16PRZpZLLzgQtw2mVk#:~:text=the%20given%20interval.-,Dynamix%20Stop%20Shell,-Dynamix%20Repository) 插件通过在停止阵列时自动关闭剩余的 bash 或 SSH 会话以确保及时关机。
 
-您可以从 [社区应用程序（搜索 "Dynamix 停止 Shell"）](https://unraid.net/community/apps/c/tools-system/p2?srsltid=AfmBOoqBXyDNfHxRDCL7Fv9Gcfz8-8CdHmiJSX16PRZpZLLzgQtw2mVk#:~:text=the%20given%20interval.-,Dynamix%20Stop%20Shell,-Dynamix%20Repository) 安装插件。
+您可以在 [Community Applications (搜索“Dynamix Stop Shell”)](https://unraid.net/community/apps/c/tools-system/p2?srsltid=AfmBOoqBXyDNfHxRDCL7Fv9Gcfz8-8CdHmiJSX16PRZpZLLzgQtw2mVk#:~:text=the%20given%20interval.-,Dynamix%20Stop%20Shell,-Dynamix%20Repository) 中安装它。
 
-:::tip[When 使用插件]
+:::tip[When 使用该插件]
 
-- 如果您经常有终端会话打开。
-- 为了防止遗忘的 SSH 会话拖延关机。
-- 在关闭期间自动清理。
+- 如果您定期打开终端会话。
+- 为了防止忘记的 SSH 会话延迟关机。
+- 用于关机期间自动清理。
 
 :::
 
 :::caution
 
-- 当心如果在终端会话中有脚本或进程运行。
-- 确保在关机前没有关键的写入操作正在进行中。
-- 该插件将强制关闭会话，这可能会中断工作。
+- 如果您在终端会话中运行脚本或进程，请保持谨慎。
+- 确保在关机前没有正在进行的重要写入操作。
+- 插件会强行关闭会话，这可能会中断工作。
 
 :::
