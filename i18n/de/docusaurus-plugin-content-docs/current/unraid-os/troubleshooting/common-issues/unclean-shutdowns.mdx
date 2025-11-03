@@ -215,7 +215,7 @@ Dieser Abschnitt bietet ausführliche Informationen zur Konfiguration von Timeou
 
 #### VM-Timeouts
 
-Konfigurieren Sie VM-Shutdown-Timeouts in ***Einstellungen → VM-Manager → VM-Shutdown*** (erweiterte Ansicht aktivieren).
+Konfigurieren Sie die VM-Abschaltzeitlimits in ***Einstellungen → VM-Manager → VM-Abschaltung*** (erweiterten Ansichtsmodus aktivieren).
 
 **Wie es funktioniert:**
 
@@ -239,81 +239,83 @@ Konfigurieren Sie VM-Shutdown-Timeouts in ***Einstellungen → VM-Manager → VM
 :::
 
 :::warning[No Sicherer Timeout ohne Ruhezustand]
-Ohne Ruhezustand und %%QEMU|qemu%% %%Guest Agent|guest-agent%% gibt es kein wirklich sicheres Timeout für Windows-%%VMs|VM%%. Dialogfelder oder laufende Update-Installationen könnten jedes Timeout unzureichend machen, was zu erzwungenen Shutdowns und dem Risiko von Datenverlust führen könnte.
+
+Ohne Hibernation und %%QEMU|qemu%% %%Guest Agent|guest-agent%% gibt es kein wirklich sicheres Timeout für Windows %%VMs|vm%%. Dialogboxen oder laufende Installationen von Updates könnten jedes Timeout unzureichend machen, was zu erzwungenen Abschaltungen und Datenverlust führen könnte.
+
 :::
 
 #### Docker-Timeouts
 
-Konfigurieren Sie Timeout-Einstellungen für das Stoppen von Docker-Containern in ***Einstellungen → Docker*** (erweiterte Ansicht aktivieren).
+Konfigurieren Sie die Timeout-Einstellungen für das Stoppen von Docker-Containern in ***Einstellungen → Docker*** (erweiterten Ansichtsmodus aktivieren).
 
 **Wie es funktioniert:**
 
+- Container werden parallel gestoppt, daher entspricht die Gesamtzeit dem Docker-Stop-Timeout.
 - Die meisten Container stoppen innerhalb von 10 Sekunden, aber einige benötigen möglicherweise mehr Zeit.
-- Komplexe Container mit großen Datenbanken oder laufenden Operationen könnten zusätzliche Zeit benötigen.
-- :::tip[Docker-Timeout-Empfehlungen]
+- Komplexe Container mit großen Datenbanken oder laufenden Vorgängen könnten zusätzliche Zeit benötigen.
 - Wenn der Timer abläuft, werden Container erzwungenermaßen gestoppt.
 
 :::tip[Docker Zeitempfehlungen]
 
-- Die **standardmäßigen 10 Sekunden** funktionieren gut für die meisten Container.
-- **Wenn Container beim Stoppen abstürzen:** Erhöhen Sie das Timeout auf **30 Sekunden**.
-- Überwachen Sie Ihre Container während des Shutdowns, um diejenigen zu identifizieren, die regelmäßig mehr Zeit benötigen.
+- Die **Standardzeit von 10 Sekunden** ist für die meisten Container geeignet.
+- **Wenn Container abstürzen, wenn sie gestoppt werden:** Erhöhen Sie das Timeout auf **30 Sekunden**.
+- Überwachen Sie Ihre Container während der Abschaltung, um diejenigen zu identifizieren, die regelmäßig mehr Zeit benötigen.
 
 :::
 
 #### Allgemeine Timeouts
 
-Konfigurieren Sie das allgemeine Shutdown-Timeout unter ***Einstellungen → Festplatteneinstellungen → Shutdown-Timeout***.
+Konfigurieren Sie das allgemeine Shutdown-Timeout in ***Einstellungen → Datenträgereinstellungen → Abschaltzeitlimit***.
 
-**USV-Überlegungen (wichtigster Faktor):**
+**Berücksichtigungen der USV (kritischster Faktor):**
 
-- Ihre USV muss genug Laufzeit bereitstellen, um die vollständige Abschaltsequenz abzuschließen, bevor der Akku leer ist.
-- Für **manuelles Herunterfahren** können Sie längere Timeouts festlegen, da Sie steuern, wann das Herunterfahren beginnt.
-- Bei **Stromausfall-Shutdowns** wird Ihr Timeout durch die Batterielebensdauer der USV begrenzt.
+- Ihre USV muss ausreichende Laufzeit bieten, um die vollständige Abschaltsequenz vor Erschöpfung der Batterie abzuschließen.
+- Für einen **manuellen Shutdown** können Sie längere Timeouts einstellen, da Sie kontrollieren, wann die Abschaltung beginnt.
+- Bei einem **Stromausfall-Shutdown** ist Ihr Timeout durch die Batterielaufzeit der USV begrenzt.
 - **Testen Sie Ihre USV** durch Simulation eines Stromausfalls, um sicherzustellen, dass Ihr Server sauber herunterfährt und genügend Zeit bleibt.
 
 :::tip[General Zeitempfehlungen]
 
 - **Wenn Sie unsaubere Shutdowns erhalten:** Erhöhen Sie auf **180 Sekunden (3 Minuten)** für Systeme ohne %%VMs|vm%%.
-- **Für Systeme mit %%VMs|vm%%:** Verwenden Sie **300+ Sekunden (5+ Minuten)**, wenn kein Ruhezustand verwendet wird.
-- **Bei Verwendung des Ruhezustands:** **180-300 Sekunden** sind in der Regel ausreichend.
-- Stellen Sie sicher, dass Timeouts nicht länger sind, als Ihre USV bei einem Stromausfall unterstützen kann.
+- **Für Systeme mit %%VMs|vm%%:** Verwenden Sie **300+ Sekunden (5+ Minuten)**, wenn keine Hibernation verwendet wird.
+- **Bei Verwendung der Hibernation:** **180-300 Sekunden** sind normalerweise ausreichend.
+- Stellen Sie sicher, dass Timeouts nicht länger sind als das, was Ihre USV während eines Stromausfalls unterstützen kann.
 
 :::
 
-#### Drittanbieterdienste
+#### Drittdienste
 
 **LXC-Container:**
-Das LXC-Plugin hat seine eigene Timeout-Einstellung zum Stoppen von Containern. Wie Docker-Container stoppen LXC-Container in der Regel in wenigen Sekunden, aber einige benötigen möglicherweise mehr Zeit. Überprüfen Sie die LXC-Plugin-Einstellungen für das Container-Stop-Timeout und beziehen Sie dieses Timeout in Ihre Berechnung der allgemeinen Shutdown-Timeouts ein.
+Das LXC-Plugin hat eigene Timeout-Einstellungen zum Stoppen von Containern. Wie Docker-Container stoppen LXC-Container in der Regel innerhalb weniger Sekunden, aber einige könnten mehr Zeit beanspruchen. Überprüfen Sie die LXC-Plugin-Einstellungen für das Container-Stop-Timeout und fügen Sie dieses Timeout zu Ihrer allgemeinen Shutdown-Timeout-Berechnung hinzu.
 
 **Andere Dienste:**
-Einige Plugins oder benutzerdefinierte Dienste können eigene Abschaltroutinen haben. Konsultieren Sie die Plugindokumentation für spezifische Timeout-Einstellungen und berücksichtigen Sie diese in Ihren Berechnungen.
+Einige Plugins oder benutzerdefinierte Dienste können eigene Abschaltverfahren haben. Konsultieren Sie die Plugin-Dokumentation für spezifische Timeout-Einstellungen und integrieren Sie sie in Ihre Berechnungen.
 
-**Aktualisierte Formel mit Drittanbieterdiensten:**
+**Aktualisierte Formel mit Drittdiensten:**
 
 ```
 (VM timeout × 3) + (Docker timeout) + (LXC/other timeouts) + 15-30 seconds
 ```
 
-**Dynamix Stop Shell Plugin:**
-Wenn Sie häufig SSH oder Terminalsitzungen verwenden, können offene Sitzungen saubere Shutdowns verhindern, weil Unraid wartet, bis sie geschlossen sind, bevor es fortfährt.
+**Dynamix-Stop-Shell-Plugin:**
+Wenn Sie regelmäßig SSH- oder Terminalsitzungen verwenden, können offene Sitzungen saubere Shutdowns verhindern, da Unraid wartet, bis diese geschlossen sind, bevor es fortfährt.
 
-Das [Dynamix Stop Shell](https://unraid.net/community/apps/c/tools-system/p2?srsltid=AfmBOoqBXyDNfHxRDCL7Fv9Gcfz8-8CdHmiJSX16PRZpZLLzgQtw2mVk#:~:text=the%20given%20interval.-,Dynamix%20Stop%20Shell,-Dynamix%20Repository) Plugin hilft, indem es automatisch verbleibende Bash- oder SSH-Sitzungen schließt, wenn das Array gestoppt wird, und so für eine rechtzeitige Abschaltung sorgt.
+Das [Dynamix-Stop-Shell-Plugin](https://unraid.net/community/apps/c/tools-system/p2?srsltid=AfmBOoqBXyDNfHxRDCL7Fv9Gcfz8-8CdHmiJSX16PRZpZLLzgQtw2mVk#:~:text=the%20given%20interval.-,Dynamix%20Stop%20Shell,-Dynamix%20Repository) hilft, indem es automatisch verbleibende Bash- oder SSH-Sitzungen schließt, wenn das Array gestoppt wird, um einen pünktlichen Shutdown zu gewährleisten.
 
-Sie können es von [Community Applications (nach "Dynamix Stop Shell" suchen)](https://unraid.net/community/apps/c/tools-system/p2?srsltid=AfmBOoqBXyDNfHxRDCL7Fv9Gcfz8-8CdHmiJSX16PRZpZLLzgQtw2mVk#:~:text=the%20given%20interval.-,Dynamix%20Stop%20Shell,-Dynamix%20Repository) installieren.
+Sie können es von [Community Applications (nach "Dynamix-Stop-Shell" suchen)](https://unraid.net/community/apps/c/tools-system/p2?srsltid=AfmBOoqBXyDNfHxRDCL7Fv9Gcfz8-8CdHmiJSX16PRZpZLLzgQtw2mVk#:~:text=the%20given%20interval.-,Dynamix%20Stop%20Shell,-Dynamix%20Repository) installieren.
 
 :::tip[When um das Plugin zu verwenden]
 
-- Wenn Sie regelmäßig Terminalsitzungen offen haben.
-- Um zu verhindern, dass vergessene SSH-Sitzungen das Herunterfahren verzögern.
-- Für automatisierte Bereinigung während des Shutdowns.
+- Wenn Sie regelmäßig Terminalsitzungen geöffnet haben.
+- Um zu verhindern, dass vergessene SSH-Sitzungen die Abschaltung verzögern.
+- Für die automatische Bereinigung während der Abschaltung.
 
 :::
 
 :::caution
 
-- Seien Sie vorsichtig, wenn Sie Skripte oder Prozesse in Terminalsitzungen laufen haben.
-- Stellen Sie sicher, dass keine kritischen Schreibvorgänge vor dem Herunterfahren in Bearbeitung sind.
+- Seien Sie vorsichtig, wenn Sie Skripte oder Prozesse in Terminalsitzungen ausführen.
+- Stellen Sie sicher, dass keine kritischen Schreibvorgänge vor der Abschaltung durchgeführt werden.
 - Das Plugin wird Sitzungen gewaltsam schließen, was die Arbeit unterbrechen könnte.
 
 :::
