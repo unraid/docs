@@ -87,14 +87,16 @@ If your HASP key is a USB dongle, you can assign it to only one %%VM|vm%% at a t
 请参考 [重置您的密码](../system-administration/secure-your-server/user-management.mdx#reset-your-password)。
 
 :::note
-如果您使用加密的驱动器并忘记了加密密码，则无法恢复数据 - 没有后门。
+
+如果您使用加密驱动器并忘记加密密码，无法恢复数据 - 没有后门。
+
 :::
 
 <br />
 
-<a id="factory-reset" />
+<a id="恢复出厂设置" />
 
-### 我如何从头开始彻底启动 Unraid 操作系统？（工厂重置流程）
+### 如何完全重新安装 Unraid 系统？（恢复出厂设置）
 
 1. 备份任何你希望保留的数据。
 2. 停止%%array|array%%并关闭服务器。
@@ -104,7 +106,9 @@ If your HASP key is a USB dongle, you can assign it to only one %%VM|vm%% at a t
 6. 在 WebGUI 中打开终端并运行 `lsblk` 列出现有驱动器（不包括闪存）。
 7. 清除每个数据驱动器上的现有文件系统：
 
-:::danger[Critical: 毁灭性操作]
+:::danger[Critical: 破坏性操作
+
+**此步骤将永久删除指定驱动器上的所有数据，并且无法撤销！**
 
 - **在继续之前，确保您已经备份**所需的任何数据
 
@@ -118,7 +122,8 @@ If your HASP key is a USB dongle, you can assign it to only one %%VM|vm%% at a t
 wipefs /dev/sdX
 ```
 
-将 `X` 替换为正确的驱动器字母（例如，sda、sdb、sdc）
+将`X`替换为正确的驱动器字母（例如：sda、sdb、sdc）
+
 :::
 
 8. 继续正常的 Unraid 设置和配置。
@@ -129,7 +134,7 @@ wipefs /dev/sdX
 
 ### 如何更改我服务器的主机名？
 
-要更改 Unraid 服务器的主机名，请浏览至 %%WebGUI|web-gui%%，依次选择 ***Settings → System Settings → Identification***。
+要更改 Unraid 服务器的主机名，请在 WebGUI 中导航到 ***设置 → 系统设置 → 标识***。
 
 **更改主机名的影响：**
 
@@ -208,7 +213,7 @@ Unraid 具有独特的存储架构，使其与传统的 %%RAID|raid%% 系统区�
 - **Unraid %%parity|parity%% %%array|array%%** 非常适合增量扩展，允许不匹配的驱动器大小并且重建压力较小。
 - **%%ZFS|zfs%% pools** (available in 7.x) provide enterprise-class redundancy, %%snapshot|snapshot%%s, and %%checksum|checksum%%s, making them ideal for %%VM|vm%%s and databases.
 - **%%BTRFS|btrfs%% pools** excel for fast SSD %%cache|cache%%s, especially in mirrored %%RAID 1|raid1%%/%%RAID 10|raid10%% mode.
-- 传统硬件 %%RAID|raid%% 卡并不是必须的；您可以使用简单的 HBA 让 Unraid 直接管理驱动器。
+- 传统硬件 %%RAID|raid%% 卡*不是*必要的；你可以使用简单的 HBA 让 Unraid 直接管理驱动器。
 
 <br />
 
@@ -230,7 +235,9 @@ Unraid 具有独特的存储架构，使其与传统的 %%RAID|raid%% 系统区�
 MBR (主引导记录) 分区支持的磁盘最大为 2TB，并且仅允许最多四个主分区。另一方面，GPT (%%GUID|guid%% 分区表) 可以处理更大的磁盘和几乎无限的分区。如果您处理较大的驱动器或需要更好的分区管理，建议转换为 GPT。
 
 :::important[Use **维护模式**]
+
 在开始转换过程之前，将您的 %%array|array%% 放入 **维护模式**。此步骤确保在转换期间不发生写入操作，从而保护您的数据。
+
 :::
 
 <div
@@ -245,7 +252,7 @@ MBR (主引导记录) 分区支持的磁盘最大为 2TB，并且仅允许最多
 </div>
 
 1. 确保您有一个有效的%%parity|parity%%和一个最新的闪存驱动器备份。
-2. 从 ***Main*** 标签进入 **维护模式**。
+2. 从主标签页进入**维护模式**。
 3. 首先替换并重建您的%%parity|parity%%驱动器。
 4. 一次替换每个数据驱动器，并在每次更换后重建%%array|array%%。
 5. 新的驱动器将根据其大小被格式化为适当的分区样式：
@@ -261,8 +268,8 @@ MBR (主引导记录) 分区支持的磁盘最大为 2TB，并且仅允许最多
   - **2TB或更小**：始终使用MBR分区
   - **大于2TB**：始终使用GPT分区
 
-- 从 Unraid OS 6.9 开始，分区 1 在旋转设备上开始于 32KiB，而在非旋转设备上开始于 1MiB，无论分区风格如何。
-  \-- 在开始此转换过程之前，请始终[备份您的闪存设备](../system-administration/secure-your-server/secure-your-flash-drive.mdx#backups)。
+- 从 Unraid OS 6.9 开始，分区 1 无论分区样式如何，旋转设备的起始位置为 32KiB，非旋转设备的起始位置为 1MiB。
+  \-- 在开始此转换过程之前，请始终[备份您的闪存驱动器](../system-administration/secure-your-server/secure-your-flash-drive.mdx#backups)。
 
 :::
 
@@ -279,7 +286,9 @@ MBR (主引导记录) 分区支持的磁盘最大为 2TB，并且仅允许最多
 是的。**br0** 桥接是一个允许 Docker 容器和 %%VM|vm%%s 直接连接到本地局域网（LAN）并获得其 IP 地址的 Linux 网络桥接器。它充当虚拟网络交换机，将物理网络接口连接到容器和 %%VM|vm%%s 使用的虚拟接口。
 
 :::note
+
 禁用 br0 意味着 %%VMs|vm%% 和 Docker 容器将无法直接访问 LAN，并可能失去一些高级网络功能。
+
 :::
 
 <br />
@@ -331,7 +340,7 @@ MBR (主引导记录) 分区支持的磁盘最大为 2TB，并且仅允许最多
 
 #### 选项 2： 在遗留模式启动后
 
-在 %%WebGUI|web-gui%%，转到闪存设备页面的 ***Settings → Flash Device***。
+在%%WebGUI|web-gui%%中，前往闪存设备***设置→闪存设备***页面。
 
 启用 %%UEFI|uefi%% 启动模式并重新启动服务器。
 
@@ -368,7 +377,9 @@ MBR (主引导记录) 分区支持的磁盘最大为 2TB，并且仅允许最多
 如果您需要 [Unraid 的 30 天免费试用](https://unraid.net/download) 的更多时间，可以申请延期。在原始试用期到期后，停止 %%array|array%% 并转到 **注册** 页面。您应该看到一个按钮，允许您申请 15 天的延长。您可以这样做两次，总共延长 60 天，然后需要购买许可证。
 
 :::important
+
 您必须使用同一个 USB 闪存设备来继续试用。更换闪存设备将需要从头开始新的试用。
+
 :::
 
 <br />
