@@ -215,7 +215,7 @@ Esta sección proporciona información detallada sobre cómo configurar los tiem
 
 #### Tiempos de espera de VM
 
-Configure los tiempos de espera para el apagado de las VM en ***Configuración → Gerente de VM → Apagado de VM*** (activar vista avanzada).
+Configura los tiempos de espera al apagar la VM en ***Configuración → Administrador de VM → Apagado de VM*** (activa la vista avanzada).
 
 **Cómo funciona:**
 
@@ -239,12 +239,14 @@ Configure los tiempos de espera para el apagado de las VM en ***Configuración �
 :::
 
 :::warning[No tiempo de espera seguro sin hibernación]
-Sin hibernación y %%QEMU|qemu%% %%Guest Agent|guest-agent%%, no hay un tiempo de espera verdaderamente seguro para Windows %%VMs|vm%%. Los cuadros de diálogo o las instalaciones de actualizaciones en curso podrían hacer que cualquier tiempo de espera sea inadecuado, lo que llevaría a apagados forzados y riesgo de corrupción de datos.
+
+Sin hibernación y %%QEMU|qemu%% %%Guest Agent|guest-agent%%, no existe un tiempo de espera verdaderamente seguro para las %%VMs|vm%% de Windows. Los cuadros de diálogo o las instalaciones de actualizaciones en curso podrían hacer que cualquier tiempo de espera sea inadecuado, lo que podría llevar a apagados forzados y riesgo de corrupción de datos.
+
 :::
 
 #### Tiempos de espera de Docker
 
-Configure los tiempos de espera para detener contenedores de Docker en ***Configuración → Docker*** (activar vista avanzada).
+Configura los tiempos de espera de detención de contenedores Docker en ***Configuración → Docker*** (activa la vista avanzada).
 
 **Cómo funciona:**
 
@@ -255,39 +257,39 @@ Configure los tiempos de espera para detener contenedores de Docker en ***Config
 
 :::tip[Docker recomendaciones de tiempo de espera]
 
-- Los **10 segundos predeterminados** funcionan bien para la mayoría de los contenedores.
-- **Si los contenedores se bloquean al detenerse:** Aumente el tiempo de espera a **30 segundos**.
-- Monitorea tus contenedores durante el apagado para identificar aquellos que constantemente necesitan más tiempo.
+- Los **10 segundos por defecto** funcionan bien para la mayoría de los contenedores.
+- **Si los contenedores fallan al detenerse:** Incrementa el tiempo de espera a **30 segundos**.
+- Supervisa tus contenedores durante el apagado para identificar aquellos que consistentemente necesitan más tiempo.
 
 :::
 
 #### Tiempos de espera generales
 
-Configure el tiempo de espera general para apagado en ***Configuración → Configuración de disco → Tiempo de espera de apagado***.
+Configura el tiempo de espera general de apagado en ***Configuración → Configuración de disco → Tiempo de espera de apagado***.
 
-**Consideraciones de UPS (factor más crítico):**
+**Consideraciones sobre la UPS (factor más crítico):**
 
-- Tu UPS debe proporcionar suficiente tiempo de ejecución para completar toda la secuencia de apagado antes de que se agote la batería.
-- Para **apagado manual**, puede configurar tiempos de espera más largos ya que controla cuándo comienza el apagado.
-- Con **apagado por corte de energía**, su tiempo de espera está limitado por la vida de la batería del UPS.
-- **Prueba tu UPS** simulando un corte de energía para asegurarte de que tu servidor se apague correctamente con tiempo de sobra.
+- Tu UPS debe proporcionar suficiente tiempo de ejecución para completar la secuencia de apagado completa antes de que se agote la batería.
+- Para **apagado manual**, puedes establecer tiempos de espera más largos ya que controlas cuándo comienza el apagado.
+- Con **apagado por corte de energía**, tu tiempo de espera está limitado por la vida útil de la batería de la UPS.
+- **Prueba tu UPS** simulando una interrupción eléctrica para asegurarte de que tu servidor se apague limpiamente con tiempo de sobra.
 
 :::tip[General recomendaciones de tiempo de espera]
 
-- **Si experimentas apagados no limpios:** Incrementa a **180 segundos (3 minutos)** para sistemas sin %%VMs|vm%%.
-- **Para sistemas con %%VMs|vm%%:** Usa **300+ segundos (5+ minutos)** si no utilizas hibernación.
-- **Si usas hibernación:** **180-300 segundos** suele ser suficiente.
-- Asegúrate de que los tiempos de espera no sean más largos de lo que puede soportar tu UPS durante un corte de energía.
+- **Si obtienes apagados no limpios:** Incrementa a **180 segundos (3 minutos)** para sistemas sin %%VMs|vm%%.
+- **Para sistemas con %%VMs|vm%%:** Utiliza **300+ segundos (5+ minutos)** si no usas hibernación.
+- **Si usas hibernación:** **180-300 segundos** suelen ser suficientes.
+- Asegúrate de que los tiempos de espera no sean más largos de lo que tu UPS puede soportar durante un corte de energía.
 
 :::
 
 #### Servicios de terceros
 
 **Contenedores LXC:**
-El complemento LXC tiene su propia configuración de tiempo de espera para detener contenedores. Al igual que los contenedores de Docker, los contenedores LXC generalmente se detienen en unos pocos segundos, pero algunos pueden requerir más tiempo. Revisa la configuración del complemento LXC para el tiempo de espera de detención de contenedores e incluye este tiempo de espera en tu cálculo general de tiempo de espera de apagado.
+El plugin LXC tiene su propia configuración de tiempo de espera para detener contenedores. Al igual que los contenedores Docker, los contenedores LXC normalmente se detienen en unos pocos segundos, pero algunos pueden requerir más tiempo. Revisa la configuración del plugin LXC para el tiempo de espera de detención y añade este tiempo de espera a tu cálculo general de apagado.
 
 **Otros servicios:**
-Algunos complementos o servicios personalizados pueden tener sus propios procedimientos de apagado. Consulte la documentación del complemento para obtener configuraciones de tiempo de espera específicas e incorpórelas a sus cálculos.
+Algunos plugins o servicios personalizados pueden tener sus propios procedimientos de apagado. Consulta la documentación del plugin para configuraciones de tiempo de espera específicas e incorpóralas en tus cálculos.
 
 **Fórmula actualizada con servicios de terceros:**
 
@@ -295,25 +297,25 @@ Algunos complementos o servicios personalizados pueden tener sus propios procedi
 (VM timeout × 3) + (Docker timeout) + (LXC/other timeouts) + 15-30 seconds
 ```
 
-**Plugin de detención de shell de Dynamix:**
-Si utiliza frecuentemente sesiones SSH o de terminal, las sesiones abiertas pueden prevenir apagados limpios porque Unraid espera que cierren antes de proceder.
+**Plugin Dynamix Stop Shell:**
+Si frecuentemente utilizas sesiones SSH o de terminal, las sesiones abiertas pueden evitar apagados limpios porque Unraid espera a que se cierren antes de proceder.
 
-El plugin [Dynamix Stop Shell](https://unraid.net/community/apps/c/tools-system/p2?srsltid=AfmBOoqBXyDNfHxRDCL7Fv9Gcfz8-8CdHmiJSX16PRZpZLLzgQtw2mVk#:~:text=the%20given%20interval.-,Dynamix%20Stop%20Shell,-Dynamix%20Repository) ayuda cerrando automáticamente las sesiones bash o SSH persistentes cuando el array se detiene, asegurando un apagado oportuno.
+El plugin [Dynamix Stop Shell](https://unraid.net/community/apps/c/tools-system/p2?srsltid=AfmBOoqBXyDNfHxRDCL7Fv9Gcfz8-8CdHmiJSX16PRZpZLLzgQtw2mVk#:~:text=the%20given%20interval.-,Dynamix%20Stop%20Shell,-Dynamix%20Repository) ayuda cerrando automáticamente las sesiones persistentes de bash o SSH cuando se detiene el array, asegurando un apagado oportuno.
 
-Puede instalarlo desde [Aplicaciones de la Comunidad (busque "Dynamix Stop Shell")](https://unraid.net/community/apps/c/tools-system/p2?srsltid=AfmBOoqBXyDNfHxRDCL7Fv9Gcfz8-8CdHmiJSX16PRZpZLLzgQtw2mVk#:~:text=the%20given%20interval.-,Dynamix%20Stop%20Shell,-Dynamix%20Repository).
+Puedes instalarlo desde [Community Applications (busca "Dynamix Stop Shell")](https://unraid.net/community/apps/c/tools-system/p2?srsltid=AfmBOoqBXyDNfHxRDCL7Fv9Gcfz8-8CdHmiJSX16PRZpZLLzgQtw2mVk#:~:text=the%20given%20interval.-,Dynamix%20Stop%20Shell,-Dynamix%20Repository).
 
-:::tip[When utilizar el plugin]
+:::tip[When para usar el plugin]
 
-- Si tiene regularmente sesiones de terminal abiertas.
-- Para prevenir que sesiones SSH olvidadas retrasen el apagado.
+- Si regularmente tienes sesiones de terminal abiertas.
+- Para prevenir que las sesiones SSH olvidadas retrasen el apagado.
 - Para limpieza automatizada durante el apagado.
 
 :::
 
 :::caution
 
-- Sea cauteloso si tiene scripts o procesos ejecutándose en sesiones de terminal.
-- Asegúrese de que no haya operaciones de escritura críticas en progreso antes del apagado.
-- El plugin cerrará las sesiones de manera forzosa, lo que podría interrumpir el trabajo.
+- Sé cauteloso si tienes scripts o procesos ejecutándose en sesiones de terminal.
+- Asegúrate de que no haya operaciones de escritura críticas en progreso antes de apagar.
+- El plugin cerrará las sesiones de manera forzada, lo que podría interrumpir el trabajo.
 
 :::
