@@ -87,24 +87,28 @@ Si vous aviez activé [Unraid Connect](../../unraid-connect/overview-and-setup.m
 Référez-vous à [Réinitialiser votre mot de passe](../system-administration/secure-your-server/user-management.mdx#reset-your-password).
 
 :::note
-Si vous utilisez des lecteurs chiffrés et oubliez le mot de passe de chiffrement, la récupération des données est impossible - il n'y a pas de porte dérobée.
+
+Si vous utilisez des disques chiffrés et oubliez le mot de passe de chiffrement, la récupération de données n'est pas possible - il n'y a pas de porte dérobée.
+
 :::
 
 <br />
 
-<a id="réinitialisation-usine" />
+<a id="réinitialisation d'usine" />
 
-### Comment puis-je complètement démarrer l'OS Unraid à partir de zéro ? (Procédure de réinitialisation usine)
+### Comment puis-je redémarrer complètement Unraid OS à partir de zéro ? (Procédure de réinitialisation d'usine)
 
 1. Sauvegardez toutes les données que vous souhaitez conserver.
-2. Arrêter le %%array|array%% et éteindre votre serveur.
+2. Stop the %%array|array%% and shut down your server.
 3. Retirez le périphérique flash USB.
 4. Utilisez l'outil Unraid USB Flash Creator pour reformater et réinstaller Unraid sur le périphérique flash.
 5. Réinsérez le périphérique flash et démarrez votre serveur.
 6. Dans le WebGUI, ouvrez un terminal et exécutez `lsblk` pour répertorier tous les disques (à l'exception du flash).
 7. Effacer les systèmes de fichiers existants de chaque disque de données :
 
-:::danger[Critical: Opération destructive]
+:::danger[Critical: Opération destructive
+
+**Cette étape effacera définitivement TOUTES les données sur le(s) disque(s) spécifié(s) et est IRRÉVERSIBLE !**
 
 - **Vérifiez que vous avez des sauvegardes** de toutes les données dont vous avez besoin avant de continuer
 
@@ -118,7 +122,8 @@ Pour chaque disque de données, exécutez :
 wipefs /dev/sdX
 ```
 
-Remplacez `X` par la lettre de lecteur correcte (par ex., sda, sdb, sdc)
+Remplacez `X` par la lettre correcte du disque (par exemple, sda, sdb, sdc)
+
 :::
 
 8. Continuez avec la configuration et l'installation normales d'Unraid.
@@ -129,7 +134,7 @@ Remplacez `X` par la lettre de lecteur correcte (par ex., sda, sdb, sdc)
 
 ### Comment puis-je changer le nom d'hôte de mon serveur ?
 
-Pour changer le nom de votre serveur Unraid, accédez au %%WebGUI|web-gui%% à ***Paramètres → Paramètres du système → Identification***.
+Pour changer le nom d'hôte de votre serveur Unraid, accédez au WebGUI dans **Paramètres → Paramètres Système → Identification**.
 
 **Effets du changement de nom d'hôte :**
 
@@ -208,7 +213,7 @@ Unraid dispose d'une architecture de stockage unique qui le distingue des systè
 - **Unraid %%parity|parité%% %%array|grappe%%** est excellent pour une expansion incrémentielle, permettant des tailles de disque disparates avec un stress minimal lors de la reconstruction.
 - Les **pools %%ZFS|zfs%%** (disponibles en 7.x) offrent une redondance de niveau entreprise, des %%snapshot|snapshot%%s, et des %%checksum|checksum%%s, ce qui les rend idéaux pour les %%VM|vm%%s et les bases de données.
 - **Pools %%BTRFS|btrfs%%** excellent pour les %%cache|cache%%s SSD rapides, en mode %%RAID 1|raid1%%/%%RAID 10|raid10%% en miroir, en particulier.
-- Les cartes %%RAID|raid%% matérielles traditionnelles ne sont *pas* nécessaires; vous pouvez utiliser des HBA simples pour permettre à Unraid de gérer directement les disques.
+- Les cartes matérielles %%RAID|raid%% traditionnelles ne sont *pas* nécessaires ; vous pouvez utiliser de simples cartes HBA pour permettre à Unraid de gérer directement les disques.
 
 <br />
 
@@ -230,7 +235,9 @@ Unraid dispose d'une architecture de stockage unique qui le distingue des systè
 Le partitionnement MBR (Master Boot Record) prend en charge les disques jusqu'à 2 To et ne permet qu'un maximum de quatre partitions principales. D'autre part, GPT (%%GUID|guid%% Partition Table) peut gérer des disques beaucoup plus grands et des partitions presque illimitées. La conversion en GPT est conseillée si vous travaillez avec des disques plus grands ou souhaitez une meilleure gestion des partitions.
 
 :::important[Use **Mode maintenance**]
+
 Avant de commencer le processus de conversion, mettez votre %%array|array%% en **Mode Maintenance**. Cette étape garantit qu'aucune écriture ne se produit pendant la conversion, protégeant vos données.
+
 :::
 
 <div
@@ -245,7 +252,7 @@ Avant de commencer le processus de conversion, mettez votre %%array|array%% en *
 </div>
 
 1. Assurez-vous d'avoir une %%parity|parité%% valide et une sauvegarde actuelle de votre lecteur flash.
-2. Entrez en **Mode Maintenance** depuis l'onglet ***Principal***.
+2. Entrez en **Mode de Maintenance** depuis l'onglet ***Principal***.
 3. Remplacez et reconstruisez d'abord votre lecteur de %%parity|parité%%.
 4. Remplacez chaque lecteur de données un à la fois, en reconstruisant le %%array|array%% après chaque remplacement.
 5. Le nouveau disque sera formaté avec le style de partitionnement approprié selon sa taille :
@@ -262,8 +269,7 @@ Ce processus garde vos données en sécurité tout en changeant le style de part
   - **2 To ou moins** : Utilise toujours un partitionnement MBR
   - **Plus grand que 2 To** : Utilise toujours un partitionnement GPT
 
-- À partir de l'OS Unraid 6.9, la partition 1 commence à 32KiB pour les appareils rotatifs et 1MiB pour les appareils non-rotatifs, quel que soit le style de partition.
-  \-- Toujours [sauvegardez votre clé USB](../system-administration/secure-your-server/secure-your-flash-drive.mdx#backups) avant de commencer ce processus de conversion.
+- À partir d'Unraid OS 6.9, la partition 1 commence à 32KiB pour les dispositifs rotatifs et à 1MiB pour les dispositifs non rotatifs, quel que soit le style de partition.\n  -- Toujours [sauvegarder votre clé USB](../system-administration/secure-your-server/secure-your-flash-drive.mdx#backups) avant de commencer ce processus de conversion.
 
 :::
 
@@ -280,7 +286,9 @@ Ce processus garde vos données en sécurité tout en changeant le style de part
 Oui. Le pont **br0** est un pont réseau Linux permettant aux conteneurs Docker et aux %%VM|vm%%s de se connecter directement à votre réseau local (LAN) avec leurs adresses IP. Il agit comme un commutateur réseau virtuel connectant votre interface réseau physique aux interfaces virtuelles utilisées par les conteneurs et les %%VM|vm%%s.
 
 :::note
+
 Désactiver br0 signifie que les %%VMs|vm%% et les conteneurs Docker n'auront pas accès direct au LAN et pourraient perdre certaines fonctionnalités réseau avancées.
+
 :::
 
 <br />
@@ -332,7 +340,7 @@ Lors de l'utilisation du créateur de clé USB, sélectionnez l'option pour acti
 
 #### Option 2 : Après le démarrage en mode Legacy
 
-Dans le %%WebGUI|web-gui%%, allez à la page ***Paramètres du dispositif Flash → Dispositif Flash***.
+Dans le %%WebGUI|web-gui%%, rendez-vous sur la page ***Paramètres → périphérique Flash***.
 
 Activez le mode de démarrage %%UEFI|uefi%% et redémarrez votre serveur.
 
@@ -369,7 +377,9 @@ Si les problèmes persistent, essayez d'accéder au %%WebGUI|web-gui%% depuis un
 Si vous avez besoin de plus de temps avec votre [essai gratuit de 30 jours](https://unraid.net/download) de Unraid, vous pouvez le prolonger. Une fois votre essai initial expiré, arrêtez votre %%array|array%% et allez à la page **Enregistrement**. Vous devriez voir un bouton vous permettant de demander une extension de 15 jours. Vous pouvez le faire deux fois pour un total de 60 jours avant de devoir acheter une licence.
 
 :::important
+
 Vous devez utiliser le même dispositif USB pour continuer votre essai. Changer le dispositif USB nécessitera de recommencer un nouvel essai à partir de zéro.
+
 :::
 
 <br />
