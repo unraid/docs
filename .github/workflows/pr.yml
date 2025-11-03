@@ -1,12 +1,6 @@
 name: PR Preview
 
 on:
-  pull_request:
-    types:
-      - opened
-      - reopened
-      - synchronize
-      - closed
   pull_request_target:
     types:
       - opened
@@ -20,7 +14,7 @@ concurrency:
 
 jobs:
   lint:
-    if: ${{ github.event_name == 'pull_request' && github.event.action != 'closed' }}
+    if: ${{ github.event.action != 'closed' }}
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -29,7 +23,9 @@ jobs:
         uses: actions/checkout@v5
         with:
           fetch-depth: 0
-          ref: ${{ github.head_ref }}
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          ref: ${{ github.event.pull_request.head.ref }}
+          persist-credentials: false
 
       - name: Setup Node.js
         uses: actions/setup-node@v5
@@ -70,11 +66,14 @@ jobs:
 
       - name: Push lint fixes
         if: steps.lint_changes.outputs.has_changes == 'true' && github.repository == github.event.pull_request.head.repo.full_name
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          git push origin HEAD:${{ github.head_ref }} || echo "Unable to push lint fixes (likely due to branch permissions)."
+          git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git
+          git push origin HEAD:${{ github.event.pull_request.head.ref }} || echo "Unable to push lint fixes (likely due to branch permissions)."
 
   deploy-preview:
-    if: ${{ github.event_name == 'pull_request_target' && github.event.action != 'closed' }}
+    if: ${{ github.event.action != 'closed' }}
     runs-on: ubuntu-latest
     permissions:
       contents: write
