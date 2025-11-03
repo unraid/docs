@@ -9,7 +9,6 @@ Use the following guidance when loading the Unraid documentation inside an ifram
 ## Optional Query Parameters
 
 - `theme=<light|dark>` — Forces the initial Docs theme. The value is persisted for the iframe session so reloads stay consistent.
-- `lang=<locale>` — Sets the initial Docs language. When the locale is not English, the generated URLs automatically include the language segment in the pathname (for example `/es/...`).
 - `entry=<path>` — Marks the logical entry point for the iframe session. Supply an absolute docs path (e.g. `/unraid-os/...`) or a full docs URL; the embedded UI shows a floating back icon that returns visitors to this path and hides itself while you remain on it. Defaults to the first loaded URL if omitted.
 
 ## Session Storage Keys
@@ -27,16 +26,29 @@ A host can clear these keys to reset the embedded state before opening a new ifr
 ## Example URL Builders
 
 ```js
-function buildDocsUrl(path, { theme, lang, entry } = {}) {
-  const url = new URL(path, "https://docs.unraid.net");
+function prefixLocale(path, locale) {
+  const cleanLocale = (locale || "").toLowerCase();
+  if (!cleanLocale || cleanLocale === "en") {
+    return path;
+  }
+
+  const trimmed = path.replace(/^\/+/, "");
+  const segments = trimmed.split("/").filter(Boolean);
+
+  if (segments[0]?.toLowerCase() === cleanLocale) {
+    return `/${segments.join("/")}`;
+  }
+
+  return `/${cleanLocale}/${segments.join("/")}`;
+}
+
+function buildDocsUrl(path, { theme, entry, locale } = {}) {
+  const localizedPath = prefixLocale(path, locale);
+  const url = new URL(localizedPath, "https://docs.unraid.net");
   url.searchParams.set("embed", "1");
 
   if (theme === "light" || theme === "dark") {
     url.searchParams.set("theme", theme);
-  }
-
-  if (lang) {
-    url.searchParams.set("lang", lang);
   }
 
   if (entry) {
@@ -51,7 +63,8 @@ function buildDocsUrl(path, { theme, lang, entry } = {}) {
 
 1. Decide which route should serve as the iframe entry point and supply it via `entry` when loading the iframe.
 2. Pass the current host theme if you want the Docs theme to match immediately.
-3. When tearing down an iframe session, optionally clear the session-storage keys to remove residual state before launching a new session in the same tab.
+3. Prefix the docs path with the desired locale segment (for example `/es/...`) if you want to start in a translated version. The iframe experience reads the language from the pathname, not from a query parameter.
+4. When tearing down an iframe session, optionally clear the session-storage keys to remove residual state before launching a new session in the same tab.
 
 ## Messaging API
 
