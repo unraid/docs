@@ -87,14 +87,16 @@ Wenn Sie [Unraid Connect](../../unraid-connect/overview-and-setup.mdx) für Flas
 Sehen Sie sich die Anleitung [Passwort zurücksetzen](../system-administration/secure-your-server/user-management.mdx#reset-your-password) an.
 
 :::note
-Wenn Sie verschlüsselte Laufwerke verwenden und das Verschlüsselungspasswort vergessen, ist die Datenwiederherstellung nicht möglich - es gibt keinen Hintereingang.
+
+Wenn Sie verschlüsselte Laufwerke verwenden und das Verschlüsselungspasswort vergessen, ist eine Datenwiederherstellung nicht möglich - es gibt keinen Hintereingang.
+
 :::
 
 <br />
 
-<a id="werkseinstellungen-zurücksetzen" />
+<a id="werkseinstellung" />
 
-### Wie starte ich das Unraid OS komplett neu? (Verfahren zum Zurücksetzen auf Werkseinstellungen)
+### Wie starte ich Unraid OS komplett neu? (Vorgehensweise beim Zurücksetzen auf die Werkseinstellungen)
 
 1. Sichern Sie alle Daten, die Sie behalten möchten.
 2. Stoppen Sie das %%array|Array%% und fahren Sie Ihren Server herunter.
@@ -104,7 +106,9 @@ Wenn Sie verschlüsselte Laufwerke verwenden und das Verschlüsselungspasswort v
 6. Öffnen Sie im WebGUI ein Terminal und führen Sie `lsblk` aus, um alle Laufwerke (außer dem Flash) aufzulisten.
 7. Bestehende Dateisysteme von jedem Datenlaufwerk entfernen:
 
-:::danger[Critical: Destruktive Operation]
+:::danger[Critical: Destruktiver Vorgang
+
+**Dieser Schritt wird ALLE Daten auf den angegebenen Laufwerk(en) dauerhaft löschen und ist UNUMKEHRBAR!**
 
 - **Stellen Sie sicher, dass Sie Backups haben** von allen Daten, die Sie benötigen, bevor Sie fortfahren
 
@@ -118,7 +122,8 @@ Für jedes Datenlaufwerk ausführen:
 wipefs /dev/sdX
 ```
 
-Ersetzen Sie `X` durch den korrekten Laufwerksbuchstaben (z. B. sda, sdb, sdc)
+Ersetzen Sie `X` durch den richtigen Laufwerksbuchstaben (z.B. sda, sdb, sdc)
+
 :::
 
 8. Fahren Sie mit der normalen Unraid-Einrichtung und -Konfiguration fort.
@@ -129,7 +134,7 @@ Ersetzen Sie `X` durch den korrekten Laufwerksbuchstaben (z. B. sda, sdb, sdc)
 
 ### Wie ändere ich den Hostnamen meines Servers?
 
-Um den Hostnamen Ihres Unraid-Servers zu ändern, navigieren Sie im %%WebGUI|web-gui%% zu ***Einstellungen → System Einstellungen → Identifikation***.
+Um den Hostnamen Ihres Unraid-Servers zu ändern, navigieren Sie im WebGUI zu ***Einstellungen → Systemeinstellungen → Identifikation***.
 
 **Auswirkungen der Änderung Ihres Hostnamens:**
 
@@ -208,7 +213,7 @@ Unraid verfügt über eine einzigartige Speicherarchitektur, die es von traditio
 - **Unraid %%parity|parity%% %%array|array%%** ist ideal für inkrementelle Erweiterungen, ermöglicht nicht passende Laufwerksgrößen mit minimalem Wiederaufbaustress.
 - **%%ZFS|zfs%% Pools** (verfügbar in 7.x) bieten Enterprise-Klassen-Redundanz, %%snapshot|snapshot%%s und %%checksum|checksum%%s, wodurch sie ideal für %%VM|vm%%s und Datenbanken sind.
 - **%%BTRFS|btrfs%% Pools** sind ideal für schnelle SSD-%%cache|cache%%s, insbesondere im gespiegelt mitteln \*\*RAID 1|raid1%%/%%RAID 10|raid10%% Modus.
-- Traditionelle Hardware %%RAID|raid%%-Karten sind *nicht* notwendig; Sie können einfache HBAs verwenden, um Unraid die Verwaltung der Laufwerke direkt zu ermöglichen.
+- Traditionelle Hardware-%%RAID|raid%%-Karten sind *nicht* erforderlich; einfache HBAs reichen aus, damit Unraid Laufwerke direkt verwalten kann.
 
 <br />
 
@@ -230,7 +235,9 @@ Unraid verfügt über eine einzigartige Speicherarchitektur, die es von traditio
 MBR (Master Boot Record) Partitionierung unterstützt Festplatten bis zu 2TB und erlaubt nur maximal vier primäre Partitionen. Andererseits kann GPT (%%GUID|guid%% Partitionsschema) viel größere Festplatten und nahezu unbegrenzte Partitionen verarbeiten. Das Konvertieren zu GPT wird empfohlen, wenn Sie mit größeren Laufwerken arbeiten oder eine bessere Partitionsverwaltung wünschen.
 
 :::important[Use **Wartungsmodus**]
+
 Before starting the conversion process, put your %%array|array%% into **Maintenance Mode**. This step ensures no writes occur during the conversion, protecting your data.
+
 :::
 
 <div
@@ -245,7 +252,7 @@ Before starting the conversion process, put your %%array|array%% into **Maintena
 </div>
 
 1. Sicherstellen, dass eine gültige %%parity|parity%% und ein aktuelles Backup Ihres Flash-Laufwerks vorhanden ist.
-2. Gehen Sie in den **Wartungsmodus** vom ***Haupt***-Tab aus.
+2. Den **Wartungsmodus** über den ***Main***-Tab betreten.
 3. Ersetzen und erneuern Sie zuerst Ihre %%parity|parity%% Platte.
 4. Jedes Datenlaufwerk nacheinander austauschen und das %%array|array%% nach jedem Austausch wiederherstellen.
 5. Das neue Laufwerk wird mit dem passenden Partitionierungsstil basierend auf seiner Größe formatiert:
@@ -261,8 +268,7 @@ Dieser Prozess hält Ihre Daten sicher, während der Partitionierungsstil geänd
   - **2TB oder kleiner**: Verwendet immer MBR-Partitionierung
   - **Größer als 2TB**: Verwendet immer GPT-Partitionierung
 
-- Ab Unraid OS 6.9 beginnt Partition 1 bei 32KiB für rotierende Geräte und 1MiB für nicht rotierende Geräte, unabhängig vom Partitionsstil.
-  \-- Immer [sichern Sie Ihr Flash-Laufwerk](../system-administration/secure-your-server/secure-your-flash-drive.mdx#backups) vor Beginn dieses Konvertierungsprozesses.
+- Ab Unraid OS 6.9 beginnt Partition 1 bei 32 KiB für rotierende Geräte und 1 MiB für nicht rotierende Geräte, unabhängig vom Partitionsstil.\n  -- Sichern Sie immer [Ihr Flash-Laufwerk](../system-administration/secure-your-server/secure-your-flash-drive.mdx#backups), bevor Sie diesen Konvertierungsprozess starten.
 
 :::
 
@@ -279,7 +285,9 @@ Dieser Prozess hält Ihre Daten sicher, während der Partitionierungsstil geänd
 Ja. Die **br0**-Brücke ist eine Linux-Netzwerkbrücke, die Docker-Container und %%VM|vm%%s ermöglicht, direkt mit dem lokalen Netzwerk (LAN) über ihre IP-Adressen zu verbinden. Sie fungiert als virtueller Netzwerkschalter, der Ihre physische Netzwerkschnittstelle mit den virtuellen Schnittstellen verbindet, die von Containern und %%VM|vm%%s verwendet werden.
 
 :::note
+
 Das Deaktivieren von br0 bedeutet, dass %%VMs|vm%% und Docker-Container keinen direkten Zugang zum LAN haben und möglicherweise einige erweiterte Netzwerkfunktionen verlieren.
+
 :::
 
 <br />
@@ -331,7 +339,7 @@ Wenn Sie den USB-Flash-Creator verwenden, wählen Sie die Option, um den %%UEFI|
 
 #### Option 2: Nach dem Booten im Legacy-Modus
 
-Im %%WebGUI|web-gui%%, gehen Sie zur Flash-Gerät ***Einstellungen → Flash-Gerät***-Seite.
+Gehen Sie im %%WebGUI|web-gui%% zur ***Flash-Laufwerk Einstellungen → Flash-Laufwerk*** Seite.
 
 Aktivieren Sie den %%UEFI|uefi%%-Bootmodus und starten Sie Ihren Server neu.
 
@@ -368,7 +376,9 @@ Wenn Probleme bestehen bleiben, versuchen Sie, auf die %%WebGUI|web-gui%% von ei
 Wenn Sie mehr Zeit mit Ihrer [30-tägigen kostenlosen Testversion](https://unraid.net/download) von Unraid benötigen, können Sie diese verlängern. Sobald Ihre ursprüngliche Testversion abläuft, stoppen Sie das %%array|array%% und gehen Sie zur **Registrierungsseite**. Sie sollten eine Schaltfläche sehen, die Ihnen ermöglicht, eine Verlängerung um 15 Tage zu beantragen. Dies können Sie zweimal tun, insgesamt 60 Tage, bevor Sie eine Lizenz kaufen müssen.
 
 :::important
+
 Sie müssen dasselbe USB-Flash-Gerät verwenden, um Ihre Testversion fortzusetzen. Wenn Sie das Flash-Gerät wechseln, müssen Sie eine neue Testversion von Grund auf starten.
+
 :::
 
 <br />
