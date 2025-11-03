@@ -1,12 +1,10 @@
 export const IFRAME_QUERY_PARAM = "embed";
 export const THEME_QUERY_PARAM = "theme";
 export const ENTRY_QUERY_PARAM = "entry";
-export const SIDEBAR_QUERY_PARAM = "sidebar";
 
 export const IFRAME_STORAGE_KEY = "unraidDocsIframe";
 export const THEME_STORAGE_KEY = "unraidDocsTheme";
 export const ENTRY_STORAGE_KEY = "unraidDocsIframeEntry";
-export const SIDEBAR_STORAGE_KEY = "unraidDocsIframeSidebar";
 
 const BOOLEAN_TRUE_VALUES = new Set(["1", "true", "yes"]);
 
@@ -19,6 +17,7 @@ export function parseBooleanFlag(value: string | null): boolean {
 
   return BOOLEAN_TRUE_VALUES.has(value.toLowerCase());
 }
+
 
 export function normalizeTheme(theme: string | null): SupportedTheme | null {
   if (!theme) {
