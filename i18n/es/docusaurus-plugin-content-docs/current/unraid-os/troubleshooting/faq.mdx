@@ -87,14 +87,16 @@ Si tenías activado [Unraid Connect](../../unraid-connect/overview-and-setup.mdx
 Consulta [Restablecer tu contraseña](../system-administration/secure-your-server/user-management.mdx#reset-your-password).
 
 :::note
-Si estás usando discos cifrados y olvidas la contraseña de cifrado, la recuperación de datos no es posible: no hay puerta trasera.
+
+Si usas unidades encriptadas y olvidas la contraseña de encriptación, la recuperación de datos no es posible - no hay puerta trasera.
+
 :::
 
 <br />
 
-<a id="restablecimiento-fábrica" />
+<a id="restablecimiento-de-fábrica" />
 
-### ¿Cómo comienzo completamente desde cero con Unraid OS? (Procedimiento de restablecimiento de fábrica)
+### ¿Cómo inicio Unraid OS completamente desde cero? (Procedimiento de restablecimiento de fábrica)
 
 1. Haz una copia de respaldo de cualquier dato que desees conservar.
 2. Detén el %%array|array%% y apaga tu servidor.
@@ -104,7 +106,9 @@ Si estás usando discos cifrados y olvidas la contraseña de cifrado, la recuper
 6. En el %%WebGUI|web-gui%%, abre un terminal y ejecuta `lsblk` para listar todas las unidades (excluyendo el flash).
 7. Borra los sistemas de archivos existentes de cada unidad de datos:
 
-:::danger[Critical: Operación Destructiva
+:::danger[Critical: Operación Destructiva]
+
+**¡Este paso borrará permanentemente TODOS los datos en las unidad(es) especificadas y es IRREVERSIBLE!**
 
 - **Verifica que tengas copias de seguridad** de cualquier dato que necesites antes de continuar
 
@@ -118,7 +122,9 @@ Para cada unidad de datos, ejecuta:
 wipefs /dev/sdX
 ```
 
-Reemplaza 'X' con la letra de unidad correcta (e.g., sda, sdb, sdc)
+Reemplaza `X` con la letra correcta de la unidad (por ejemplo, sda, sdb, sdc)
+
+:::
 
 8. Continúa con la configuración e instalación habitual de Unraid.
 
@@ -207,7 +213,7 @@ Unraid presenta una arquitectura de almacenamiento única que lo distingue de lo
 - **Unraid %%parity|paridad%% %%array|arreglo%%** es excelente para la expansión incremental, permitiendo tamaños de unidades desiguales con un estrés mínimo durante la reconstrucción.
 - **Pools de %%ZFS|zfs%%** (disponibles en 7.x) proporcionan redundancia de nivel empresarial, %%snapshot|snapshot%%s y %%checksum|checksum%%s, haciéndolos ideal para %%VM|vm%%s y bases de datos.
 - **Pools de %%BTRFS|btrfs%%** sobresalen para %%caché|cache%%s SSD rápidos, especialmente en modo %%RAID 1|raid1%%/%%RAID 10|raid10%% escalado.
-- Las tarjetas de %%RAID|raid%% de hardware tradicional *no* son necesarias; puedes usar HBAs simples para permitir que Unraid gestione los discos directamente.
+- Las tarjetas de %%RAID|raid%% de hardware tradicionales *no* son necesarias; se pueden usar simples HBAs para permitir que Unraid gestione las unidades directamente.
 
 <br />
 
@@ -229,7 +235,9 @@ Unraid presenta una arquitectura de almacenamiento única que lo distingue de lo
 El particionamiento MBR (Master Boot Record) soporta discos de hasta 2TB y solo permite un máximo de cuatro particiones primarias. Por otro lado, GPT (%%GUID|guid%% Partition Table) puede manejar discos mucho más grandes y particiones casi ilimitadas. Convertir a GPT es recomendable si trabajas con discos más grandes o deseas una mejor gestión de particiones.
 
 :::important[Use **Modo de Mantenimiento**]
+
 Antes de iniciar el proceso de conversión, pon tu %%array|array%% en **Modo de Mantenimiento**. Este paso asegura que no se realicen escrituras durante la conversión, protegiendo tus datos.
+
 :::
 
 <div
@@ -244,7 +252,7 @@ Antes de iniciar el proceso de conversión, pon tu %%array|array%% en **Modo de 
 </div>
 
 1. Asegúrese de tener un %%parity|paridad%% válido y una copia de seguridad actual de su unidad flash.
-2. Entra en **Modo de Mantenimiento** desde la pestaña ***Principal***.
+2. Ingrese a **Modo de Mantenimiento** desde la pestaña ***Principal***.
 3. Reemplace y reconstruya su unidad de %%parity|paridad%% primero.
 4. Reemplace cada unidad de datos una a la vez, reconstruyendo el %%array|arreglo%% después de cada sustitución.
 5. La nueva unidad se formateará con el estilo de particionamiento adecuado según su tamaño:
@@ -260,8 +268,8 @@ Este proceso mantiene su información segura mientras cambia el estilo de partic
   - **2TB o menos**: Siempre usa particionamiento MBR
   - **Mayor a 2TB**: Siempre usa particionamiento GPT
 
-- A partir de Unraid OS 6.9, la partición 1 comienza en 32KiB para dispositivos rotacionales y 1MiB para dispositivos no rotacionales, sin importar el estilo de partición.
-  \-- Siempre [haz una copia de seguridad de tu unidad flash](../system-administration/secure-your-server/secure-your-flash-drive.mdx#backups) antes de comenzar este proceso de conversión.
+- A partir de Unraid OS 6.9, la partición 1 comienza a las 32KiB para dispositivos rotacionales y a las 1MiB para dispositivos no rotacionales, independientemente del estilo de partición.
+  \-- Siempre [respalda tu unidad flash](../system-administration/secure-your-server/secure-your-flash-drive.mdx#backups) antes de comenzar este proceso de conversión.
 
 :::
 
@@ -278,7 +286,9 @@ Este proceso mantiene su información segura mientras cambia el estilo de partic
 Sí. El puente **br0** es un puente de red de Linux que permite que los contenedores Docker y las %%VM|vm%%s se conecten directamente a tu red de área local (LAN) con sus direcciones IP. Actúa como un interruptor de red virtual que conecta tu interfaz de red física a las interfaces virtuales utilizadas por los contenedores y las %%VM|vm%%s.
 
 :::note
+
 Desactivar br0 significa que %%VMs|vm%% y los contenedores Docker no tendrán acceso directo a la LAN y pueden perder algunas funciones avanzadas de red.
+
 :::
 
 <br />
@@ -330,7 +340,7 @@ Al utilizar el creador de USB flash, seleccione la opción para habilitar el mod
 
 #### Opción 2: Después de iniciar en modo Legacy
 
-En el %%WebGUI|web-gui%%, dirígete a la página de ***Configuración del Dispositivo Flash***.
+En el %%WebGUI|web-gui%%, diríjase a la página ***Configuraciones → Dispositivo de Flash***.
 
 Habilite el modo de arranque %%UEFI|uefi%% y reinicie su servidor.
 
@@ -367,7 +377,9 @@ Si los problemas persisten, intente acceder al WebGUI desde otro navegador o dis
 Si necesitas más tiempo con tu [prueba gratuita de 30 días](https://unraid.net/download) de Unraid, puedes extenderla. Una vez que tu prueba original expire, detén el %%array|array%% y ve a la página de **Registro**. Deberías ver un botón que te permite solicitar una extensión de 15 días. Puedes hacer esto dos veces para un total de 60 días antes de necesitar comprar una licencia.
 
 :::important
+
 Debes usar el mismo dispositivo flash USB para continuar tu prueba. Cambiar el dispositivo flash requerirá comenzar una nueva prueba desde cero.
+
 :::
 
 <br />
