@@ -215,7 +215,7 @@ Cette section fournit des informations détaillées sur la configuration des dé
 
 #### Delais d'attente pour les VM
 
-Configurer les délais d'arrêt des VM dans ***Paramètres → Gestionnaire de VM → Arrêt de la VM*** (activer la vue avancée).
+Configurer les délais d'arrêt VM dans ***Paramètres → Gestionnaire de VM → Arrêt VM*** (activer la vue avancée).
 
 **Comment ça fonctionne:**
 
@@ -239,81 +239,83 @@ Configurer les délais d'arrêt des VM dans ***Paramètres → Gestionnaire de V
 :::
 
 :::warning[No délai d'attente sécuritaire sans hibernation]
+
 Without hibernation and %%QEMU|qemu%% %%Guest Agent|guest-agent%%, there isn't a truly safe timeout for Windows %%VMs|vm%%. Dialog boxes or ongoing update installations could render any timeout inadequate, leading to forced shutdowns and data corruption risk.
+
 :::
 
-#### Délais d'attente Docker
+#### Délais d'arrêt Docker
 
 Configurer les délais d'arrêt des conteneurs Docker dans ***Paramètres → Docker*** (activer la vue avancée).
 
 **Comment ça fonctionne:**
 
-- Les conteneurs sont arrêtés en parallèle, donc le temps total égale le délai d'arrêt de Docker.
-- La plupart des conteneurs s'arrêtent en 10 secondes, mais certains peuvent avoir besoin de plus de temps.
-- Les conteneurs complexes avec de grandes bases de données ou des opérations en cours pourraient nécessiter plus de temps.
+- Les conteneurs sont arrêtés en parallèle, donc le temps total équivaut au délai d'arrêt Docker.
+- La plupart des conteneurs s'arrêtent en moins de 10 secondes, mais certains peuvent nécessiter plus de temps.
+- Les conteneurs complexes avec de grandes bases de données ou des opérations en cours pourraient nécessiter un temps supplémentaire.
 - Si le temps imparti expire, les conteneurs sont arrêtés de force.
 
 :::tip[Docker recommandations de délai d'attente]
 
-- Les **10 secondes par défaut** fonctionnent bien pour la plupart des conteneurs.
-- **Si les conteneurs plantent à l'arrêt :** Augmentez le délai à **30 secondes**.
-- Surveillez vos conteneurs lors de l'arrêt pour identifier ceux qui nécessitent systématiquement plus de temps.
+- Le **délai par défaut de 10 secondes** fonctionne bien pour la plupart des conteneurs.
+- **Si les conteneurs se plantent à l'arrêt :** Augmentez le délai à **30 secondes**.
+- Surveillez vos conteneurs pendant l'arrêt pour identifier ceux qui ont systématiquement besoin de plus de temps.
 
 :::
 
-#### Délais d'attente généraux
+#### Délais généraux
 
 Configurer le délai d'arrêt général dans ***Paramètres → Paramètres du disque → Délai d'arrêt***.
 
-**Considérations d'onduleur (facteur le plus critique) :**
+**Considérations UPS (facteur le plus critique) :**
 
-- Votre onduleur doit fournir une autonomie suffisante pour compléter la séquence d'arrêt complète avant que la batterie ne soit épuisée.
-- Pour un **arrêt manuel**, vous pouvez définir des délais plus longs puisque vous contrôlez quand l'arrêt commence.
-- Avec un **arrêt en cas de panne de courant**, votre délai est limité par la durée de vie de la batterie de l'onduleur.
-- **Testez votre onduleur** en simulant une panne de courant pour vous assurer que votre serveur s'éteint proprement avec du temps à revendre.
+- Votre onduleur doit offrir suffisamment de temps pour compléter la séquence d'arrêt complète avant que la batterie ne s'épuise.
+- Pour un **arrêt manuel**, vous pouvez définir des délais plus longs puisque vous contrôlez le début de l'arrêt.
+- Avec un **arrêt en cas de coupure de courant**, votre délai est limité par l'autonomie de la batterie de l'onduleur.
+- **Testez votre onduleur** en simulant une coupure de courant pour assurer un arrêt propre de votre serveur avec du temps à revendre.
 
 :::tip[General recommandations de délai d'attente]
 
-- **Si vous rencontrez des arrêts non propres :** Augmentez à **180 secondes (3 minutes)** pour les systèmes sans %%VMs|vm%%.
-- **Pour les systèmes avec %%VMs|vm%% :** Utilisez **300+ secondes (5+ minutes)** si l'hibernation n'est pas utilisée.
-- **Si vous utilisez l'hibernation :** **180-300 secondes** est généralement suffisant.
-- Assurez-vous que les délais d'attente ne sont pas plus longs que ce que votre onduleur peut supporter lors d'une panne de courant.
+- **Si vous avez des arrêts non propres :** Augmenter à **180 secondes (3 minutes)** pour les systèmes sans %%VMs|vm%%.
+- **Pour les systèmes avec %%VMs|vm%% :** Utilisez **300+ secondes (5+ minutes)** si vous n'utilisez pas l'hibernation.
+- **Si l'hibernation est utilisée :** **180-300 secondes** sont généralement suffisantes.
+- Assurez-vous que les délais ne dépassent pas ce que votre onduleur peut supporter lors d'une coupure de courant.
 
 :::
 
 #### Services tiers
 
 **Conteneurs LXC :**
-Le plugin LXC a son propre paramètre de délai d'attente pour l'arrêt des conteneurs. Comme les conteneurs Docker, les conteneurs LXC s'arrêtent généralement en quelques secondes, mais certains peuvent nécessiter plus de temps. Vérifiez les paramètres du plugin LXC pour le délai d'arrêt des conteneurs et incluez ce délai dans votre calcul de délai d'arrêt général.
+Le plugin LXC a son propre paramètre de délai d'arrêt pour arrêter les conteneurs. Comme les conteneurs Docker, les conteneurs LXC s'arrêtent généralement en quelques secondes, mais certains peuvent nécessiter plus de temps. Consultez les paramètres du plugin LXC pour le délai d'arrêt du conteneur et incluez ce délai dans le calcul de votre délai d'arrêt général.
 
 **Autres services :**
-Certains plugins ou services personnalisés peuvent avoir leurs propres procédures d'arrêt. Référez-vous à la documentation du plugin pour les paramètres spécifiques de délai d'attente et intégrez-les dans vos calculs.
+Certains plugins ou services personnalisés peuvent avoir leurs propres procédures d'arrêt. Consultez la documentation du plugin pour des délais d'arrêt spécifiques et intégrez-les dans vos calculs.
 
-**Formule mise à jour avec services tiers :**
+**Formule mise à jour avec des services tiers :**
 
 ```
 (VM timeout × 3) + (Docker timeout) + (LXC/other timeouts) + 15-30 seconds
 ```
 
 **Plugin Dynamix Stop Shell :**
-Si vous utilisez fréquemment SSH ou des sessions terminal, les sessions ouvertes peuvent empêcher des arrêts propres car Unraid attend qu'elles se ferment avant de poursuivre.
+Si vous utilisez souvent SSH ou des sessions terminal, des sessions ouvertes peuvent empêcher des arrêts propres car Unraid attend qu'elles se ferment avant de procéder.
 
-Le plugin [Dynamix Stop Shell](https://unraid.net/community/apps/c/tools-system/p2?srsltid=AfmBOoqBXyDNfHxRDCL7Fv9Gcfz8-8CdHmiJSX16PRZpZLLzgQtw2mVk#:~:text=the%20given%20interval.-,Dynamix%20Stop%20Shell,-Dynamix%20Repository) aide en fermant automatiquement les sessions bash ou SSH persistantes lorsque l'array est arrêté, assurant un arrêt en temps opportun.
+Le plugin [Dynamix Stop Shell](https://unraid.net/community/apps/c/tools-system/p2?srsltid=AfmBOoqBXyDNfHxRDCL7Fv9Gcfz8-8CdHmiJSX16PRZpZLLzgQtw2mVk#:~:text=the%20given%20interval.-,Dynamix%20Stop%20Shell,-Dynamix%20Repository) aide en fermant automatiquement les sessions bash ou SSH persistantes lorsque le tableau est arrêté, assurant un arrêt en temps opportun.
 
-Vous pouvez l'installer depuis [Applications Communautaires (recherchez "Dynamix Stop Shell")](https://unraid.net/community/apps/c/tools-system/p2?srsltid=AfmBOoqBXyDNfHxRDCL7Fv9Gcfz8-8CdHmiJSX16PRZpZLLzgQtw2mVk#:~:text=the%20given%20interval.-,Dynamix%20Stop%20Shell,-Dynamix%20Repository).
+Vous pouvez l'installer depuis [Applications Communautaires (rechercher "Dynamix Stop Shell")](https://unraid.net/community/apps/c/tools-system/p2?srsltid=AfmBOoqBXyDNfHxRDCL7Fv9Gcfz8-8CdHmiJSX16PRZpZLLzgQtw2mVk#:~:text=the%20given%20interval.-,Dynamix%20Stop%20Shell,-Dynamix%20Repository).
 
 :::tip[When pour utiliser le plugin]
 
 - Si vous avez régulièrement des sessions terminal ouvertes.
-- Pour éviter que des sessions SSH oubliées retardent l'arrêt.
+- Pour éviter que des sessions SSH oubliées ne retardent l'arrêt.
 - Pour un nettoyage automatisé lors de l'arrêt.
 
 :::
 
 :::caution
 
-- Faites attention si vous avez des scripts ou processus en cours dans les sessions terminal.
+- Soyez prudent si vous avez des scripts ou des processus en cours dans des sessions terminal.
 - Assurez-vous qu'aucune opération d'écriture critique n'est en cours avant l'arrêt.
-- Le plugin fermera les sessions de manière forcée, ce qui pourrait interrompre le travail.
+- Le plugin fermera de force les sessions, ce qui pourrait interrompre le travail.
 
 :::
