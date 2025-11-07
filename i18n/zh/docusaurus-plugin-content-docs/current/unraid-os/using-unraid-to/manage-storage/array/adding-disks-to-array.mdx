@@ -1,0 +1,178 @@
+---
+sidebar_position: 2
+sidebar_label: 添加磁盘到阵列
+---
+
+# 添加磁盘到阵列
+
+添加数据磁盘是增加 Unraid 阵列存储空间的好方法。通过添加更多磁盘，您可以存储更多的文件、应用程序和备份，同时保护您的数据。
+
+:::important[Important 注意：]
+
+添加新的数据盘时，其大小必须与当前%%parity disks|parity-drives%%相同或更小。如果您想使用更大的磁盘，首先需要用较大的替换%%parity disks|parity-drives%%，然后将旧的%%parity disks|parity-drives%%作为数据磁盘使用。
+
+:::
+
+:::tip[Hot-Swap 特性]
+
+如果您使用的是现代兼容 Unraid 的硬件，可以在不关机的情况下更换磁盘。这项称为热插拔的功能自 LimeTech 服务器推出以来一直可用。
+
+:::
+
+## 设置新磁盘
+
+1. 转到界面的 ***主界面 → 阵列设备***。
+2. 选择想要添加磁盘的插槽，并从下拉列表中选择磁盘。
+3. 默认情况下，新的阵列驱动器将使用%%XFS|xfs%%格式化。如果您希望使用%%ZFS|zfs%%或%%BTRFS|btrfs%%，请从下拉菜单中选择您喜欢的文件系统。
+
+## 清除与预清除
+
+Unraid 要求在将磁盘添加到保护奇偶的阵列之前，磁盘必须处于清除状态 - 完全填充零并标有特殊签名。这一过程能确保奇偶完整性并在磁盘准备期间保持阵列在线。
+
+Clearance is mandatory when adding a data disk to a %%parity|parity%%-protected array. If you are adding a %%parity disk|parity-drives%% or working with an array that does not use %%parity|parity%%, clearance is not required.
+
+内置的清除操作在后台将零写入磁盘，使阵列保持可用。完成该过程后，磁盘必须格式化才能使用。这种方法高效，不需要第三方工具，是快速扩展的理想选择。
+
+对于更全面的方法，通过插件（如[未挂载设备预清除](https://unraid.net/community/apps?q=unassigned+devices#r:~:text=enable%20destructive%20mode.-,Unassigned%20Devices%20Preclear,-dlandon)）提供的预清除操作执行预读以检查坏扇区，对磁盘写零，然后通过后读验证完整性。此额外步骤有助于检测早期驱动器故障，但耗时更长，并需要手动安装插件。
+
+**基本准则：** 使用内置清除操作快速添加到您的阵列中，或者选择预清除如果您想在将驱动器投入使用之前广泛检测其健康状况。
+
+<h3>清除与预清除比较</h3>
+
+<div
+  style={{
+   margin: "auto",
+   display: "flex",
+   flexDirection: "column",
+   alignItems: "center",
+  }}
+>
+  |          | 清除        | 预清除            |
+  | -------- | --------- | -------------- |
+  | **目的**   | 确保基本磁盘兼容性 | 测试驱动器健康状况并准备使用 |
+  | **速度**   | 快速        | 明显较慢           |
+  | **阵列影响** | 后台运行      | 磁盘离线要求         |
+  | **最佳用途** | 快速扩展      | 准备/检查新驱动器      |
+</div>
+
+%%Parity disks|parity-drives%%是有用的特性，为您的数据提供额外的保护层。如果硬盘出故障，它们允许您的存储系统恢复信息。虽然使用%%parity disks|parity-drives%%是可选的，但强烈建议使用以保障数据安全。
+
+**预清除**耗时较长，但提供全面测试，以确保新磁盘在成为阵列一部分之前是可靠的。
+
+:::caution[Critical 注意]
+
+避免在将预先清除的磁盘包括在阵列中之前对其进行格式化，因为这将移除清除签名。
+
+:::
+
+## 添加数据盘
+
+添加新数据盘到您的阵列可扩展存储容量。过程根据您是否启用了奇偶保护略有不同。带有奇偶保护的阵列在新磁盘可用之前会对其进行清除，而没有奇偶保护的阵列可更快增加磁盘。
+
+### 添加到奇偶保护的阵列中
+
+1. 停止数组。
+2. 关闭您的服务器。
+3. 物理安装新硬盘。
+4. 重新启动服务器。
+5. 将新磁盘分配到可用的数据槽。
+6. 启动阵列。Unraid 会自动开始在新磁盘上进行清除操作，用零填充以确保其可用同时保持数据完整性。清除操作在后台运行，因此您仍可以访问阵列。磁盘在过程完成之前不可用。如果您已预先清除了磁盘，Unraid 会跳过此步骤。
+7. 清除完成后，磁盘显示为不可挂载状态。系统会提示您格式化它。
+8. 勾选确认框并点击**格式化**按钮。
+9. 格式化需要几分钟。一旦完成，磁盘将显示为已挂载并准备使用。
+
+:::important
+
+始终仔细检查序列号以确保您正在格式化正确的磁盘。格式化将清除该磁盘上的所有内容，此操作无法撤销。
+
+:::
+
+:::note
+
+您可以添加多个磁盘，但在它们全部清除和格式化之前将无法使用。
+
+:::
+
+### 添加到无奇偶保护的阵列中
+
+1. 停止数组。
+2. 关闭您的服务器。
+3. 物理安装新硬盘。
+4. 重新启动服务器。
+5. 将新磁盘分配到可用的数据槽。
+6. 启动阵列。当阵列中没有%%parity disk|parity-drives%%时，整个清除步骤将被跳过。
+7. 新磁盘显示为不可挂载，系统会提示您格式化。
+
+:::important
+
+始终仔细检查序列号以确保您正在格式化正确的磁盘。格式化将清除该磁盘上的所有内容，此操作无法撤销。
+
+:::
+
+## 添加奇偶盘
+
+%%Parity disks|parity-drives%%是有用的特性，为您的数据提供额外的保护层。如果硬盘出故障，它们允许您的存储系统恢复信息。虽然使用%%parity disks|parity-drives%%是可选的，但强烈建议使用以保障数据安全。
+
+:::important\[Requirements]
+
+- **单一奇偶：** 该磁盘的大小必须至少与最大数据驱动器相同。
+- **双Parity：** 两个%%parity disks|parity-drives%%的大小也必须不小于您最大的一个数据磁盘，但彼此之间可以有不同的大小。
+
+:::
+
+添加一个%%parity disk|parity-drives%%类似于添加数据磁盘：
+
+1. 选择%%parity disk|parity-drives%%并启动阵列。Unraid 开始计算奇偶。
+2. 在此过程中您仍然可以访问文件，但系统可能会运行得稍慢。
+
+### 理解奇偶校验
+
+**What is parity?** %%Parity|parity%% in Unraid protects your data by ensuring that you can recover from a drive failure. With the use of a %%parity disk|parity-drives%%, any single missing disk can be reconstructed by combining the information from all other data drives along with the %%parity|parity%% data.
+
+**工作原理：** Unraid 使用一位特殊的位称为 *奇偶位*，存储在所有数据磁盘的每个位位置，并由专用的 %%parity disk|parity-drives%% 管理。 %%parity|parity%% 的计算方式是确保所有磁盘（包括 %%parity disk|parity-drives%%）中每个位置的位数总是偶数（偶校验）。Unraid 使用 XOR（异或）运算进行此计算。
+
+\*\*数据如何重建：\*\*Unraid 通过读取所有剩余驱动器，包括%%parity disk|parity-drives%%，并应用偶%%parity|parity%%来解决丢失的数据，从而重建丢失的驱动器或修复坏扇区。%%parity|parity%%功能允许 Unraid "模拟" 丢失的磁盘，因此您可以继续使用阵列，仿佛驱动器仍然正常。在丢失的槽中安装新驱动后，Unraid 根据当前的%%parity|parity%%和其他磁盘重建所有缺失的数据。
+
+\*\*奇偶磁盘大小：\*\*您的%%parity disk|parity-drives%%必须与您最大的数据磁盘相等或更大。例如，如果您最大的磁盘为10TB，您的%%parity disk|parity-drives%%至少应为10TB。
+
+**Performance impact:** Writing to a %%parity|parity%%-protected array involves four disk operations for each write: reading data, reading %%parity|parity%%, writing data, and writing %%parity|parity%%. This process requires a full rotation from each affected drive, so the overall write speed is limited by the slowest drive involved in the operation.
+
+**Dual Parity:** Dual %%parity|parity%% enables recovery from two simultaneous disk failures. The second %%parity disk|parity-drives%% doesn't simply mirror the first. Instead, Parity 1 uses standard XOR (even) %%parity|parity%% calculations, while Parity 2 implements Q-parity using Galois-field syndrome calculations (Reed-Solomon–style), comparable to %%RAID 6|raid6%%. This allows Unraid to rebuild from any two simultaneous disk failures, significantly boosting resilience for larger arrays.
+
+:::caution\[Remember]
+
+设置新的数据存储系统时，首先**添加您的数据磁盘**，确保它们都使用兼容的文件系统。**在**放置数据磁盘之后，您可以添加%%parity disk|parity-drives%%以防止磁盘故障。
+
+一旦添加了%%parity disk|parity-drives%%，请记住您想要在阵列中包含的任何新磁盘在集成前必须被清零。这是为了确保%%parity|parity%%保持有效，并继续保护您的数据。
+
+:::
+
+## 更换磁盘
+
+您可以将%%parity disk|parity-drives%%设备升级到更大以便在阵列中使用更大尺寸的磁盘或添加额外的%%parity disk|parity-drives%%。
+
+:::caution
+
+如果您计划采取以下步骤且只有一个%%parity disk|parity-drives%%，请记住这些要点：
+
+- 在%%parity|parity%%重建完成之前，您的数据将没有保护。如果数据磁盘在此期间故障，您可能会丢失那块磁盘上的信息。
+- 如果您已经有一个失败的数据驱动器，继续这些步骤将阻止您重建该驱动器。在这种情况下，您应遵循**Parity Swap**程序。
+
+:::
+
+要升级校验盘：
+
+1. 停止数组。
+2. 关闭您的服务器（如果服务器支持热插拔，请跳过此步骤和步骤 4）。
+3. 将新的、更大的%%parity disk|parity-drives%%安装到您的服务器中。
+4. 启动您的服务器。
+5. 将新磁盘分配到奇偶插槽，替代旧磁盘。
+6. 启动数组。
+
+一旦阵列重新上架，Unraid 会开始在新磁盘上构建奇偶。在此期间您仍然可以访问数据，但在过程完成之前，速度可能较慢。
+
+:::tip[Planning 您的奇偶升级
+
+在新奇偶构建完成之前，保留旧的%%parity disk|parity-drives%%。如果在升级中数据磁盘出现故障，旧的%%parity disk|parity-drives%%可以帮助您恢复数据。成功完成升级后，如果需要，您可以将旧磁盘重新用作数据磁盘。
+
+:::
