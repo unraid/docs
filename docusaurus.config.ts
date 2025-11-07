@@ -275,10 +275,6 @@ const config: Config = {
             from: "/account/link-key/",
             to: "/unraid-connect/overview-and-setup/",
           },
-          {
-            from: "/go/redeem-activation-code/",
-            to: "/unraid-account/redeem-activation-code/",
-          },
 
           // Category redirects
           { from: "/category/faq/", to: "/unraid-os/troubleshooting/faq/" },
@@ -335,7 +331,7 @@ const config: Config = {
           },
           {
             from: "/legacy/FAQ/Parity/",
-            to: "/unraid-os/using-unraid-to/manage-storage/array/overview/",
+            to: "/unraid-os/using-unraid-to/manage-storage/array/",
           },
           {
             from: "/legacy/FAQ/parity-swap-procedure/",
@@ -555,7 +551,7 @@ const config: Config = {
           },
           {
             from: "/unraid-os/manual/storage-management/",
-            to: "/unraid-os/using-unraid-to/manage-storage/array/overview/",
+            to: "/unraid-os/using-unraid-to/manage-storage/array/",
           },
           { from: "/unraid-os/manual/tools/", to: "/category/advanced-tools/" },
           {
@@ -854,7 +850,7 @@ const config: Config = {
           },
           {
             from: "/go/parity/",
-            to: "/unraid-os/using-unraid-to/manage-storage/array/overview/",
+            to: "/unraid-os/using-unraid-to/manage-storage/array/",
           },
           {
             from: "/go/quick-install-guide-assigning-devices/",
@@ -903,7 +899,7 @@ const config: Config = {
           },
           {
             from: "/go/storage-management/",
-            to: "/unraid-os/using-unraid-to/manage-storage/array/overview/",
+            to: "/unraid-os/using-unraid-to/manage-storage/array/",
           },
           {
             from: "/go/syslog-server/",

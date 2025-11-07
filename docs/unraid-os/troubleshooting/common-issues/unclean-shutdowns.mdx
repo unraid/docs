@@ -3,6 +3,8 @@ sidebar_position: 2
 sidebar_label: Unclean shutdowns
 ---
 
+<!-- markdownlint-disable MD041 -->
+
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
 
@@ -16,7 +18,7 @@ Taking some proactive steps can help you avoid or identify unclean shutdowns:
 
 - **Use a UPS:** Keep your server connected to an Uninterruptible Power Supply (UPS) and set it up to initiate a controlled shutdown when battery power runs low.
 - **Attempt a graceful shutdown:** If your server is unresponsive, briefly press the power button to trigger a safe shutdown. Do not hold the button down, as this will force a hard power off and lead to an unclean shutdown.
-- **Enable persistent logging:** Go to ***Settings → Syslog Server*** to activate logging that persists after a reboot. See [Persistent logs (Syslog server)](../diagnostics/capture-diagnostics-and-logs.mdx#persistent-logs-syslog-server) for more details.
+- **Enable persistent logging:** Go to **_Settings → Syslog Server_** to activate logging that persists after a reboot. See [Persistent logs (Syslog server)](../diagnostics/capture-diagnostics-and-logs.mdx#persistent-logs-syslog-server) for more details.
 - **Attach diagnostics for support:** If an unclean shutdown occurs, Unraid will attempt to save diagnostics to `/log/diagnostics.zip` on your flash device. Attach this file to forum posts when you seek help.
 
 :::
@@ -26,7 +28,7 @@ Taking some proactive steps can help you avoid or identify unclean shutdowns:
 A well-configured UPS is your best defense against unclean shutdowns caused by power loss.
 
 - **Connect the UPS via USB** to your Unraid server.
-- **Enable UPS support** in ***Settings → UPS Settings***.
+- **Enable UPS support** in **_Settings → UPS Settings_**.
 - **Configure shutdown timeouts:** Set the UPS to trigger a controlled shutdown before the battery runs low. Adjust the "Battery runtime left" or "Battery charge level" thresholds to provide enough time for Unraid to [stop the %%array|array%%](../../using-unraid-to/manage-storage/array/overview.mdx#startstop-the-array) and power down safely.
 - **Test your configuration:** Simulate a power loss to ensure the UPS and Unraid respond correctly.
 
@@ -115,17 +117,16 @@ To enable VM hibernation:
 
   <TabItem value="linux" label="Linux VMs">
 
-    1. **Install %%QEMU|qemu%% %%Guest Agent|guest-agent%%:**
+     1. **Install %%QEMU|qemu%% %%Guest Agent|guest-agent%%:**
+       ```bash
+       # Ubuntu/Debian
+       sudo apt install qemu-guest-agent
 
-    ```bash
-    # Ubuntu/Debian
-    sudo apt install qemu-guest-agent
-
-    # CentOS/RHEL/Fedora
-    sudo yum install qemu-guest-agent
-    # or
-    sudo dnf install qemu-guest-agent
-    ```
+       # CentOS/RHEL/Fedora
+       sudo yum install qemu-guest-agent
+       # or
+       sudo dnf install qemu-guest-agent
+       ```
 
     2. **Enable the service:**
        ```bash
@@ -147,7 +148,9 @@ To enable VM hibernation:
     - Consider the risks of force-killing these %%VMs|vm%% during updates.
 
     :::note[Why appliance VMs are different]
+
     Appliance %%VMs|vm%% are designed to run specific software and often don't allow the installation of additional packages, such as %%QEMU|qemu%% %%Guest Agent|guest-agent%%. This means hibernation isn't available, so you'll need to rely on proper timeout configuration.
+
     :::
 
   </TabItem>
@@ -169,22 +172,20 @@ In this section, we’ll cover how to configure timeouts for various systems and
 
 | Setting                       | Default | When to increase                                  | Where to configure                                   |
 | ----------------------------- | ------- | ------------------------------------------------- | ---------------------------------------------------- |
-| %%VM\|vm%% shutdown timeout   | 60s     | 300s if not using hibernation and VMs crash       | ***Settings → VM Manager → VM Shutdown (Advanced)*** |
-| Docker container stop timeout | 10s     | 30s if any containers are crashing when stopped   | ***Settings → Docker (Advanced)***                   |
-| General shutdown timeout      | 90s     | 180s if you get unclean shutdowns, 300s+ with VMs | ***Settings → Disk Settings → Shutdown time-out***   |
+| %%VM\|vm%% shutdown timeout   | 60s     | 300s if not using hibernation and VMs crash       | **_Settings → VM Manager → VM Shutdown (Advanced)_** |
+| Docker container stop timeout | 10s     | 30s if any containers are crashing when stopped   | **_Settings → Docker (Advanced)_**                   |
+| General shutdown timeout      | 90s     | 180s if you get unclean shutdowns, 300s+ with VMs | **_Settings → Disk Settings → Shutdown time-out_**   |
 
 :::tip[When to increase timeouts]
 
 If you're experiencing unclean shutdowns or containers that crash during shutdown, consider increasing the general shutdown timeout to **180 seconds** (or **300+ seconds** if you have multiple %%VMs|vm%%). This gives services more time to shut down gracefully.
-
 :::
 
 ### Shutdown sequence
 
 When shutting down, the process happens in the following order:
 
-1. **%%VM|vm%% shutdown**: This involves three stages, and each one can take up to the VM timeout:
-
+1. %%VM|vm%% shutdown involves three stages, and each one can take up to the VM timeout:
    - Stage 1: Resume any paused %%VMs|vm%%
    - Stage 2: Hibernate %%VMs|vm%% that are set up for hibernation
    - Stage 3: Shut down any remaining %%VMs|vm%%
@@ -201,7 +202,8 @@ When shutting down, the process happens in the following order:
 
 **Formula:** Your general shutdown timeout should be greater than:
 
-```
+<!-- markdownlint-disable-next-line MD046 -->
+```text
 (VM timeout × 3) + (Docker timeout) + (Other services) + 15-30 seconds
 ```
 
@@ -221,7 +223,7 @@ This section provides in-depth information about configuring timeouts for differ
 
 #### VM timeouts
 
-Configure VM shutdown timeouts in ***Settings → VM Manager → VM Shutdown*** (enable Advanced view).
+Configure VM shutdown timeouts in **_Settings → VM Manager → VM Shutdown_** (enable Advanced view).
 
 **How it works:**
 
@@ -245,14 +247,12 @@ Configure VM shutdown timeouts in ***Settings → VM Manager → VM Shutdown*** 
 :::
 
 :::warning[No safe timeout without hibernation]
-
 Without hibernation and %%QEMU|qemu%% %%Guest Agent|guest-agent%%, there isn't a truly safe timeout for Windows %%VMs|vm%%. Dialog boxes or ongoing update installations could render any timeout inadequate, leading to forced shutdowns and data corruption risk.
-
 :::
 
 #### Docker timeouts
 
-Configure Docker container stop timeouts in ***Settings → Docker*** (enable Advanced view).
+Configure Docker container stop timeouts in **_Settings → Docker_** (enable Advanced view).
 
 **How it works:**
 
@@ -271,7 +271,7 @@ Configure Docker container stop timeouts in ***Settings → Docker*** (enable Ad
 
 #### General timeouts
 
-Configure the general shutdown timeout in ***Settings → Disk Settings → Shutdown time-out***.
+Configure the general shutdown timeout in **_Settings → Disk Settings → Shutdown time-out_**.
 
 **UPS considerations (most critical factor):**
 
@@ -299,7 +299,8 @@ Some plugins or custom services may have their own shutdown procedures. Refer to
 
 **Updated formula with third-party services:**
 
-```
+<!-- markdownlint-disable-next-line MD046 -->
+```text
 (VM timeout × 3) + (Docker timeout) + (LXC/other timeouts) + 15-30 seconds
 ```
 
