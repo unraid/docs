@@ -32,8 +32,9 @@ const DEFAULT_LOCALE = "en";
 
 const config: Config = {
   title: "Unraid Docs",
-  tagline: "Documentation for Unraid",
-  favicon: "img/favicon.svg",
+  tagline: "Unraid Documentation",
+  favicon: "img/favicon.ico",
+  clientModules: [path.resolve(__dirname, "./src/clientModules/gtag-stub.js")],
 
   // Set the production url of your site here
   url: "https://docs.unraid.net/",
