@@ -27,47 +27,51 @@ Unraid bietet zwei Arten von Freigaben, um Ihr Datenmanagement zu optimieren:
 
 Es ist wichtig, sich daran zu erinnern, dass beide Freigabetypen unterschiedliche Ansichten desselben zugrunde liegenden Dateisystems präsentieren; jede Datei oder jeder Ordner, der in einer %%user share|user-share%% sichtbar ist, wird auch unter der Festplattenfreigabe für das jeweilige physische Laufwerk angezeigt.
 
-Wenn Sie Dienste wie Docker oder VM-Manager starten, erstellt Unraid automatisch einen [Satz von Standardbenutzerfreigaben](#default-shares), die darauf ausgelegt sind, gängige Plugins, Docker-Container und **virtuelle Maschinen (VMs)** zu unterstützen. Sie können bei Bedarf bequem zusätzliche Freigaben für Ihre persönlichen Daten erstellen.
+Wenn Sie Dienste wie Docker oder %%VM|vm%% Manager starten, erstellt Unraid automatisch ein [Set von Standard-Benutzerfreigaben](#default-shares), die darauf ausgelegt sind, gängige Plugins, Docker-Container und %%virtuelle Maschinen (VMs)|vm%% zu unterstützen. Sie können bei Bedarf bequem zusätzliche Freigaben für Ihre persönlichen Daten erstellen.
 
 :::note
-To manage your shares, simply navigate to the **Shares** tab in the WebGUI. Here, you can easily enable or disable shares through ***Settings → Global Share Settings***. By default, %%user shares|user-share%% are enabled, providing a straightforward starting point for your file organization.
+
+To manage your shares, simply navigate to the **Shares** tab in %%WebGUI|web-gui%%. Here, you can easily enable or disable shares through ***Settings → Global Share Settings***. By default, %%user shares|user-share%% are enabled, providing a straightforward starting point for your file organization.
+
 :::
 
 ---
 
-## Benutzerfreigaben
+## Verwaltung von Benutzerfreigaben
 
-%%User shares|user-share%% provide an aggregated view of top-level folders with the same name across **%%cache|cache%%** and **array drives**. The share name corresponds to the folder name, creating a unified network-accessible view that spans multiple drives. It's important to note that while directories appear merged, individual files remain stored on a single drive.
+%%User shares|user-share%% provide an aggregated view of top-level folders with the same name across %%cache|cache%% and array drives. The share name corresponds to the folder name, creating a unified network-accessible view that spans multiple drives. It's important to note that while directories appear merged, individual files remain stored on a single drive.
 
 ### Verwaltung von Benutzerfreigaben
 
-Sie können auf %%Benutzer-Freigaben|user-share%% über die **Shares**-Registerkarte im **WebGUI** zugreifen und diese verwalten. Diese Schnittstelle ermöglicht es Ihnen:
+Sie können auf %%Benutzerfreigaben|user-share%% von der Registerkarte **Freigaben** im %%WebGUI|web-gui%% zugreifen und diese verwalten. Diese Schnittstelle ermöglicht es Ihnen:
 
 - Alle vorhandenen Freigaben prüfen
 - Neue Freigaben erstellen
 - Vorhandene Freigaben ändern oder löschen
 
-Jeder auf einem Laufwerk manuell erstellte Ordner auf oberster Ebene wird automatisch als Benutzerfreigabe erkannt und erhält standardmäßige Attribute.
+At the Linux level, %%User shares|user-share%% are accessible under `/mnt/user`, which combines files from both the %%array|array%% and %%pools|cache-pool%%. This logical view overlays the physical file system, meaning files are also visible through **Disk Shares** at the drive level.
 
 ### Dateisystemstruktur
 
 At the Linux level, %%User shares|user-share%% are accessible under `/mnt/user`, which combines files from both the %%array|array%% and %%pools|cache-pool%%. This logical view overlays the physical file system, meaning files are also visible through **Disk Shares** at the drive level.
 
 :::warning
+
 The deprecated `/mnt/user0` mount point (which excludes %%pool|cache-pool%% files) may be removed in future Unraid releases.
+
 :::
 
 ### Speicherzuweisung
 
-The physical drive that stores a file is determined by share settings such as **%%Allocation Method|allocation-method%%**, **%%Included/Excluded Disks|included-or-excluded-disks%%**, and **%%Split Level|split-level%%**. Changes to these settings will affect only new files; existing files will remain untouched unless moved manually.
+The physical drive that stores a file is determined by share settings such as %%Allocation Method|allocation-method%%, %%Included/Excluded Disks|included-or-excluded-disks%%, and %%Split Level|split-level%%. Changes to these settings will affect only new files; existing files will remain untouched unless moved manually.
 
 :::caution\[Critical]
 
 **Nicht %%User Shares|user-share%% und %%Disk Shares|disk-share%% mischen**
 
-Kopieren oder verschieben Sie niemals Dateien direkt zwischen einer **Benutzerfreigabe** und einer **Laufwerksfreigabe** (zum Beispiel zwischen `/mnt/user/share` und `/mnt/disk1/share`) – besonders wenn die Ordnernamen gleich sind. Dies kann zu Dateikorruption oder permanentem Datenverlust führen.
+Bevor Sie eine Freigabe erstellen, überlegen Sie, wie Sie sie nutzen werden, Ihre Leistungsanforderungen, Sicherheit und wo Dateien gespeichert werden sollen.
 
-Für sichere Dateiverwaltungspraktiken und weitere Details siehe die untenstehenden [Richtlinien für Festplattenfreigaben](#disk-share-guidelines).
+Um eine Freigabe hinzuzufügen:
 
 :::
 
@@ -75,108 +79,90 @@ Für sichere Dateiverwaltungspraktiken und weitere Details siehe die untenstehen
 
 Bevor Sie eine Freigabe erstellen, überlegen Sie, wie Sie sie nutzen werden, Ihre Leistungsanforderungen, Sicherheit und wo Dateien gespeichert werden sollen.
 
+:::important[Share name]
+
+Obwohl Netzlaufwerke (%%SMB|samba%%) keine Rücksicht auf Groß- und Kleinschreibung nehmen (z.B. `MEDIA` ist dasselbe wie `media`), tun dies Linux-Dateisysteme. Verwenden Sie keine Namen, die sich nur durch die Großschreibung unterscheiden, um Probleme zu vermeiden.
+
+:::
+
 Um eine Freigabe hinzuzufügen:
 
-1. **Prozess starten:** Gehen Sie zur Registerkarte **Shares** und klicken Sie auf **Share hinzufügen**.
-
-2. **Einen Freigabenamen wählen:** Wählen Sie einen eindeutigen Namen für Ihre Freigabe, wie `Media` oder `Dokumente`.
-
-:::important[Share name]
-Auch wenn Netzfreigaben (%%SMB|Samba%%) sich nicht um Groß- und Kleinschreibung kümmern (z.B. `MEDIA` ist dasselbe wie `media`), tun Linux-Dateisysteme dies. Vermeiden Sie die Verwendung von Namen, die nur in der Groß- und Kleinschreibung unterschiedlich sind, um Probleme zu vermeiden.
-:::
-
-3. **Optionale Einstellungen:**
-   - **Kommentare:** Schreiben Sie eine kurze Beschreibung, um Ihre Freigabe zu identifizieren (z.B. "Familienfotos").
-   - **Mindestfreier Speicherplatz:** Legen Sie eine Mindestmenge an freiem Speicherplatz fest (z.B. `50GB` für große Dateien). (Für weitere Details siehe [Mindestfreier Speicherplatz](#minimum-free-space))
-
-4. **Speicherorte wählen:**
-
-   - **Primärspeicher:** Wählen Sie, wo die Freigabe zunächst gespeichert wird (z.B. **%%cache|cache%%**, **%%array|array%%** oder ein bestimmter %%pool|cache-pool%%).
-   - **Sekundärspeicher:** Legen Sie einen Überlaufplatz fest, der genutzt werden kann, wenn der Primärspeicher voll ist, und der auch als Endziel für die Freigabe dient, sobald der %%Mover|mover%% läuft.
-
-   (Für weitere Details siehe [Primär- und Sekundärspeicher](#primary-and-secondary-storage).)
-
-5. **Datenregeln festlegen:**
-   - **%%Zuweisungsmethode|Zuweisungsmethode%%:** Wählen Sie, wie Daten gespeichert werden sollen – Optionen beinhalten High-Water, Fill-Up oder Most-Free. (Für weitere Details siehe [Zuweisungsmethode](#allocation-method).)
-   - **%%Split Level|Split-Level%%:** Bestimmen Sie, wie Ordner organisiert werden sollen. (Für weitere Details siehe [Split Level](#split-level).)
-
-6. **Laufwerke verwalten:**
-
-   - **Enthaltene Festplatten:** Wählen Sie spezifische Laufwerke zum Einbeziehen (z.B. `disk1,disk2`).
-   - **Ausgeschlossene Festplatten:** Geben Sie alle Laufwerke an, die Sie nicht einbeziehen möchten (wie ältere Laufwerke).
-
-   (Für weitere Details siehe [Ein- oder ausgeschlossene Festplatten](#included-or-excluded-disks).)
-
-:::tip
-Sie können entweder **Eingeschlossene** oder **Ausgeschlossene Festplatten** konfigurieren, aber nicht beide gleichzeitig.
-:::
-
-7. **Mover-Einstellungen (falls erforderlich)**
-
-   - **Beweger Aktion:** Bestimmen Sie die Richtung der Datenbewegung (entweder *Primär → Sekundär* oder *Sekundär → Primär*).
-
-   (Für weitere Details siehe [Verschieben von Dateien zwischen Cache und Array](#moving-files-between-cache-and-array).)
-
-8. **Prozess abschließen:** Klicken Sie auf **Share hinzufügen**, um das Einrichten Ihrer neuen Freigabe abzuschließen.
+1. Gehen Sie zur Registerkarte **Freigaben** und klicken Sie auf **Freigabe hinzufügen**.
+2. Wählen Sie einen einzigartigen Namen für Ihre Freigabe, wie `Medien` oder `Dokumente`.
+3. Optionale Einstellungen konfigurieren:
+   - **Kommentare**: Schreiben Sie eine kurze Beschreibung für Ihre Freigabe (z.B. "Familienfotos").
+   - **Mindestfreier Speicherplatz**: Legen Sie eine Mindestmenge an freiem Speicherplatz fest (z.B. `50GB` für große Dateien). Weitere Details finden Sie unter [Mindestfreier Speicherplatz](#minimum-free-space).
+4. Speicherorte wählen:
+   - **Primary Storage**: Choose where the share will initially be stored (e.g., %%cache|cache%%, %%array|array%%, or a specific %%pool|cache-pool%%).
+   - **Sekundärer Speicher**: Legen Sie einen Überlauf-Speicherort fest, der verwendet werden kann, wenn der primäre Speicher voll ist, und der auch als endgültiger Speicherort für die Freigabe dient, wenn der %%Mover|mover%% läuft.
+   - Für weitere Details siehe [Primär- und Sekundärspeicher](#primary-and-secondary-storage).
+5. Datenregeln festlegen:
+   - **%%Zuweisungsmethode|allocation-method%%**: Wählen Sie, wie Daten gespeichert werden sollen - Optionen sind high-water, fill-up oder most-free. Weitere Details finden Sie unter [Zuweisungsmethode](#allocation-method).
+   - **%%Split-Level|split-level%%**: Bestimmen Sie, wie Verzeichnisse organisiert sein sollen. Weitere Details finden Sie unter [Split-Level](#split-level).
+6. Laufwerke verwalten:
+   - **Eingeschlossene Datenträger**: Wählen Sie spezifische Laufwerke zur Einbeziehung aus (z.B. `disk1,disk2`).
+   - **Ausgeschlossene Datenträger**: Geben Sie alle Laufwerke an, die Sie ausschließen möchten (wie ältere Laufwerke).
+   - Für weitere Details siehe [Ein- oder ausgeschlossene Festplatten](#included-or-excluded-disks).
+7. (Optional) Mover-Einstellungen konfigurieren:
+   - **Mover Aktion**: Bestimmen Sie die Richtung der Datenbewegung (entweder *Primär → Sekundär* oder *Sekundär → Primär*).
+   - Für weitere Details siehe [Verschieben von Dateien zwischen Cache und Array](#moving-files-between-cache-and-array).
+8. Klicken Sie auf **Freigabe hinzufügen**, um Ihre neue Freigabe fertig einzurichten.
 
 :::important
+
 Standardmäßig wird eine neue Freigabe nicht über das Netzwerk freigegeben. Sie müssen den [Netzwerkzugang](../../system-administration/secure-your-server/security-fundamentals.mdx#managing-network-visibility-of-shares) konfigurieren, nachdem die Freigabe erstellt wurde.
+
+:::
+
+:::tip
+
+Sie können entweder **Eingeschlossene** oder **Ausgeschlossene Festplatten** konfigurieren, aber nicht beide gleichzeitig.
+
 :::
 
 ### Eine Freigabe löschen
 
 :::important
-Um Datenverlust zu vermeiden, können Freigaben, die Daten enthalten, nicht gelöscht werden. Daher sollten Sie zuerst alle Inhalte in der Freigabe löschen oder verschieben. Überprüfen Sie immer doppelt, ob die Freigabe leer ist, bevor Sie mit der Entfernung fortfahren, um einen sicheren Prozess zu gewährleisten.
+
+Um potenziellen Datenverlust zu vermeiden, können Freigaben, die Daten enthalten, nicht gelöscht werden. Sie müssen entweder alle Inhalte innerhalb der Freigabe löschen oder umziehen. Überprüfen Sie immer doppelt, um zu bestätigen, dass die Freigabe leer ist, bevor Sie mit dem Entfernen fortfahren.
+
 :::
 
-**Freigaben mit Daten**
+#### Eine Freigabe mit Daten löschen
 
 Für Freigaben mit Daten:
 
-1. **Leer Sie zuerst die Freigabe:**
-   - Verwenden Sie den integrierten **Dateimanager**, der über die Systemverknüpfungen (***Tools → Dateimanager***) zugänglich ist, oder klicken Sie auf das ![Dateimanager](/img/filemanager.png) Symbol oben rechts.
+1. Die Freigabe leeren:
+
+   - Verwenden Sie den integrierten **Dateimanager**, der über ***Werkzeuge → Dateimanager*** oder durch Klicken auf das ![Dateimanager](/img/filemanager.png) Symbol in der rechten oberen Ecke zugänglich ist.
    - Finden Sie Ihre Freigabe unter **Shares** und klicken Sie auf das **Durchsuchen**-Symbol.
    - Löschen oder verschieben Sie alle Dateien mit dem Dateimanager.
 
-<details>
-  <summary>Kommandozeilenbenutzung (fortgeschritten)</summary>
+   ::::Hinweis[Alternative Methoden]
+   Sie können auch:
 
-  1. **Öffnen Sie das Terminal:** Verwenden Sie das **Web Terminal** (***Tools → Terminal***) oder verbinden Sie sich über %%SSH|ssh%%.
+   - **Verwenden Sie die Befehlszeile**: Öffnen Sie das **Web-Terminal** (***Werkzeuge → Terminal***) oder verbinden Sie sich über %%SSH|ssh%%, dann führen Sie `rm -rf /mnt/user/[share_name]/*` aus (ersetzen Sie `[share_name]` durch den Namen Ihrer Freigabe).
 
-  2. **Dateien löschen:**
-     Führen Sie diesen Befehl aus und ersetzen Sie `[share_name]` durch den Namen Ihres Freigabeordners:
+   - **Use network access**: Connect via **Windows Explorer** (%%SMB|samba%%) or **macOS Finder** (%%AFP|AFP%%/%%SMB|samba%%) and manually delete the files.
+     :::caution
+     The `rm -rf` command will permanently delete files. Double-check before using it. Make sure no Docker or %%VM|vm%% services are using the share before you delete it.
+     :::
+     ::::
 
-  ```
-  rm -rf /mnt/user/[share_name]/*
-  ```
-
-  3. **Freigabe löschen:** Folgen Sie den Schritten zum Löschen einer leeren Freigabe oben.
-
-  :::vorsicht
-  - Der Befehl `rm -rf` löscht Dateien dauerhaft. Überprüfen Sie vor der Verwendung doppelt.
-  - Stellen Sie sicher, dass keine Docker- oder VM-Dienste die Freigabe verwenden, bevor Sie sie löschen
-  :::
-</details>
-
-:::note[Alternative Methode]
-Wenn Sie auf die Freigabe über das Netzwerk zugreifen können:
-
-- Verwenden Sie **Windows Explorer** (%%SMB|samba%%) oder **macOS Finder** (%%AFP|AFP%%/%%SMB|samba%%), um sich mit der Freigabe zu verbinden.
-- Löschen Sie die Dateien manuell und entfernen Sie dann die Freigabe über das **WebGUI**.
-:::
-
-2. **Freigabe löschen:**
-   - Gehe zurück zu **Freigaben** und klicke auf die jetzt leere Freigabe.
+2. Freigabe löschen:
+   - Gehen Sie zurück zu **Freigaben** und klicken Sie auf die jetzt leere Freigabe.
    - Aktivieren Sie das **Löschen**-Feld und klicken Sie auf **Löschen**.
    - Bestätigen und klicken Sie auf **Fertig**.
 
 #### Eine leere Freigabe löschen
 
+Um eine Freigabe zu löschen, die bereits leer ist:
+
 1. Gehen Sie zur **Shares**-Registerkarte.
 2. Klicken Sie auf die Freigabe, die Sie löschen möchten.
-3. Aktivieren Sie das Kontrollkästchen neben **Löschen**. Die Schaltfläche wird zu **Löschen**.
+3. Aktivieren Sie das Kontrollkästchen neben **Löschen**. Die Taste ändert sich zu **Löschen**.
 4. Klicken Sie auf **Löschen**.
-5. Bestätigen Sie die Löschung und klicken Sie auf **Fertig**.
+5. Bestätigen und klicken Sie auf **Fertig**.
 
 ---
 
@@ -184,45 +170,47 @@ Wenn Sie auf die Freigabe über das Netzwerk zugreifen können:
 
 ### Mindestfreier Speicherplatz
 
-The **Minimum Free Space** setting works in conjunction with the **%%allocation method|allocation-method%%** and **%%split level|split-level%%** to determine where new files are stored. This setting specifies the amount of free space that must remain on a drive for it to be considered eligible for new file writes. If a drive’s free space falls below this threshold, Unraid will stop placing new data on that drive, provided that the **%%split level|split-level%%** permits splitting to another disk.
+The **Minimum Free Space** setting works in conjunction with the %%allocation method|allocation-method%% and %%split level|split-level%% to determine where new files are stored. This setting specifies the amount of free space that must remain on a drive for it to be considered eligible for new file writes. If a drive's free space falls below this threshold, Unraid will stop placing new data on that drive, provided that the %%split level|split-level%% permits splitting to another disk.
 
-<details>
-  <summary><strong>Wie es funktioniert</strong> - Klicken zum Erweitern/Reduzieren</summary>
+#### Wie es funktioniert
 
-  Beim Übertragen einer Datei (z. B. `file.eg`) wählt Unraid eine Festplatte basierend auf den verfügbaren Einstellungen aus, kann jedoch die endgültige Größe der Datei nicht vorhersagen. Wenn die gewählte Festplatte während der Übertragung keinen Speicherplatz mehr hat, schlägt der Vorgang mit einem "Datenträger voll"-Fehler fehl. Um dies zu verhindern, stellen Sie den **Mindestfreier Speicherplatz** auf einen Wert ein, der größer als Ihre größte Datei ist. Dies stellt sicher, dass Unraid Festplatten vermeidet, die nicht die gesamte Datei aufnehmen können.
-</details>
+Beim Übertragen einer Datei (z. B. `file.eg`) wählt Unraid eine Festplatte basierend auf den verfügbaren Einstellungen aus, kann jedoch die endgültige Größe der Datei nicht vorhersagen. Wenn die gewählte Festplatte während der Übertragung keinen Speicherplatz mehr hat, schlägt der Vorgang mit einem "Datenträger voll"-Fehler fehl. Um dies zu verhindern, stellen Sie den **Mindestfreier Speicherplatz** auf einen Wert ein, der größer als Ihre größte Datei ist. Dies stellt sicher, dass Unraid Festplatten vermeidet, die nicht die gesamte Datei aufnehmen können.
 
-<h4>Empfehlungen</h4>
+#### Empfehlung
 
 Setzen Sie diesen Wert auf **das Doppelte der Größe Ihrer größten Datei**. Zum Beispiel:
 
 - Wenn Ihre größte Datei 8GB ist, setzen Sie den Mindestfreier Speicherplatz auf 16GB.
 
-Dieser Puffer berücksichtigt Schwankungen in Dateigrößen und hilft, Übertragungsfehler zu verhindern.
+Unraid provides a straightforward way to manage file placement between **%%cache pools|cache-pool%%** and the **%%array|array%%**, allowing you to optimize performance and manage your data effectively. The key is to set up your share settings based on your preferred data flow and let the **%%Mover|mover%%** handle file transfers automatically according to its schedule.
 
-<h4>Konfiguration</h4>
+#### Konfiguration
 
 - Geben Sie den Wert in KB, MB, GB oder TB ein (z.B. `50GB`).
 - Neue %%user shares|user-share%% standardmäßig auf 10% der Gesamtkapazität der Festplatte.
 
 :::warning
+
 Always configure **Minimum Free Space** when using the *fill-up* %%allocation method|allocation-method%%. If you do not set it, you may encounter "disk full" errors during write operations.
+
 :::
 
 :::caution
-There is a separate **Minimum Free Space** setting for **%%cache pools|cache-pool%%**. You can access this by going to the **Main** tab and clicking on a %%pool|cache-pool%%. Make sure to set this value higher than your largest file to avoid overfilling, especially for shares configured with *Yes* or *Prefer* cache modes.
+
+There is a separate **Minimum Free Space** setting for %%cache pools|cache-pool%%. You can access this by going to the **Main** tab and clicking on a %%pool|cache-pool%%. Make sure to set this value higher than your largest file to avoid overfilling, especially for shares configured with *Yes* or *Prefer* cache modes.
+
 :::
 
-<h4>Einschränkungen</h4>
+#### Einschränkungen
 
-- Unraid prioritizes **%%split level|split-level%%** rules over free space settings. If splitting is not allowed, files may still fill up a disk regardless of the free space threshold.
-- Das Aktualisieren vorhandener Dateien (zum Beispiel beim Wachstum von Sicherungsdateien) löst keine Neuverteilung aus, was im Laufe der Zeit zu "Festplatte voll"-Fehlern führen kann.
+- Unraid prioritizes %%split level|split-level%% rules over free space settings. If splitting is not allowed, files may still fill up a disk regardless of the free space threshold.
+- Wenn Sie mit großen Datensätzen arbeiten, überwachen Sie die %%Mover|mover%%-Aktivität über die Protokolle.
 
-Für detailliertere Anleitungen verwenden Sie das **Hilfe**-Symbol im **WebGUI** während der Konfiguration Ihrer Freigaben.
+Für detailliertere Anleitungen verwenden Sie das **Hilfe**-Symbol im %%WebGUI|web-gui%%, während Sie Ihre Freigaben konfigurieren.
 
 ---
 
-## Primäres und Sekundäres Speicher
+## Primärer und sekundärer Speicher
 
 Unraid’s storage management lets you control where new files are written and how data moves between %%pools|cache-pool%%, %%cache|cache%%, and the %%array|array%%. The options and terminology differ between Unraid 6.12+ and earlier versions.
 
@@ -238,15 +226,17 @@ Unraid’s storage management lets you control where new files are written and h
 
 ---
 
-### Dateien zwischen Cache und Array verschieben
+### Teilungsstufe
 
-Unraid provides a straightforward way to manage file placement between **%%cache pools|cache-pool%%** and the **%%array|array%%**, allowing you to optimize performance and manage your data effectively. The key is to set up your share settings based on your preferred data flow and let the **%%Mover|mover%%** handle file transfers automatically according to its schedule.
+Unraid provides a straightforward way to manage file placement between %%cache pools|cache-pool%% and %%array|array%%, allowing you to optimize performance and manage your data effectively. The key is to set up your share settings based on your preferred data flow and let the %%Mover|mover%% handle file transfers automatically according to its schedule.
 
 :::tip[Scheduling the Mover]
-You can configure the [**%%Mover|mover%%** schedule](../../getting-started/set-up-unraid/customize-unraid-settings.mdx#scheduler) by going to **Settings → Scheduler → Mover Settings**. Running it automatically during off-peak hours helps move files between the %%cache|cache%% and %%array|array%% without requiring manual action.
+
+You can configure the [%%Mover|mover%% schedule](../../getting-started/set-up-unraid/customize-unraid-settings.mdx#scheduler) by going to **Settings → Scheduler → Mover Settings**. Running it automatically during off-peak hours helps move files between the %%cache|cache%% and %%array|array%% without requiring manual action.
+
 :::
 
-#### Cache zum Array
+#### Eingeschlossene oder ausgeschlossene Laufwerke
 
 *Use case:* Moving files from your high-speed %%cache|cache%% to the %%array|array%% for long-term storage.
 
@@ -262,26 +252,30 @@ You can configure the [**%%Mover|mover%%** schedule](../../getting-started/set-u
 
 #### Array zum Cache
 
-*Use case:* Improving performance for Docker containers and VMs by moving files to the %%cache|cache%%.
+*Use case:* Improving performance for Docker containers and %%VMs|vm%% by moving files to the %%cache|cache%%.
 
 <Tabs>
   <TabItem value="6.12+" label="Unraid 6.12+" default>
     <SharesArrayToCache612 />
   </TabItem>
 
-  <TabItem value="6.11+" label="Unraid 6.11 oder darunter">
+  <TabItem value="ausschließen" label="Unraid 6.11 oder darunter">
     <SharesArrayToCache611 />
   </TabItem>
 </Tabs>
 
 :::tip[Enabling Mover-Protokoll für die Fehlerbehebung aktivieren]
+
 Wenn Sie Probleme mit Dateibewegungen haben, können Sie durch die Seite ***Einstellungen → Zeitplan → Mover-Einstellungen*** die **Mover-Protokollierung** aktivieren. Dies protokolliert jede verschobene Datei und kann in ***Tools → Systemprotokoll*** eingesehen werden.
+
 :::
 
 :::caution[Critical Kritische Schritte für beide Richtungen]
+
 - Make sure your %%parity|parity%% is valid before moving files from the %%array|array%% to the %%cache|cache%%.
 - Wenn Sie mit großen Datensätzen arbeiten, überwachen Sie die %%Mover|mover%%-Aktivität über die Protokolle.
-- Wenn Dateien scheinbar "feststecken", sollten Sie in Betracht ziehen, Docker und den VM-Manager vorübergehend zu deaktivieren und den %%Mover|mover%% manuell über ***Hauptnavigation → Array-Betrieb → Verschieben*** auszuführen.
+- Wenn Dateien "festzuhängen" scheinen, ziehen Sie in Betracht, Docker und den %%VM|vm%% Manager vorübergehend zu deaktivieren, und führen Sie dann den %%Mover|mover%% manuell über ***Haupt → Array-Operationen → Verschieben*** aus.
+
 :::
 
 ---
@@ -292,71 +286,75 @@ Wenn Sie eine neue Benutzerfreigabe erstellen oder eine Datei oder einen Ordner 
 
 Es gibt drei einfache Optionen, die Sie auswählen können, wie das System den Speicherplatz für Ihre Benutzerfreigabe zuteilt:
 
-<Tabs>
-  <TabItem value="hochwasser" label="Hochwasser (Empfohlen)" default>
-    <h4>Wie es funktioniert</h4>
+#### Hochwasser (Empfohlen)
 
-    Die **High-Water**-Methode füllt Festplatten schrittweise mit "Schaltpunkten" basierend auf der Hälfte der Kapazität des größten Laufwerks. Dies balanciert die Festplattennutzung aus, hält zusammengehörige Dateien zusammen und minimiert das Hochdrehen der Festplatten.
+**Wie es funktioniert**
 
-    <h4>Beispiel mit 8TB, 3TB und 2TB Laufwerken</h4>
+Die **High-Water**-Methode füllt Festplatten schrittweise mit "Schaltpunkten" basierend auf der Hälfte der Kapazität des größten Laufwerks. Dies balanciert die Festplattennutzung aus, hält zusammengehörige Dateien zusammen und minimiert das Hochdrehen der Festplatten.
 
-    1. **Erster Durchgang:** Fülle 8TB-Laufwerk, bis 4TB frei bleiben (die Hälfte von 8TB).
-    2. **Zweiter Durchgang:** Fülle 8TB/3TB-Laufwerke, bis 2TB frei bleiben.
-    3. **Dritter Durchgang:** Fülle alle Laufwerke, bis 1TB frei bleibt.
+**Beispiel mit 8TB, 3TB und 2TB Laufwerken**
 
-    <h4>Am besten für:</h4>
+1. **Erster Durchgang:** Fülle 8TB-Laufwerk, bis 4TB frei bleiben (die Hälfte von 8TB).
+2. **Zweiter Durchgang:** Fülle 8TB/3TB-Laufwerke, bis 2TB frei bleiben.
+3. **Dritter Durchgang:** Fülle alle Laufwerke, bis 1TB frei bleibt.
 
-    - Medienserver (z.B. Plex)
-    - Szenarien, in denen das Halten von Dateien auf weniger Festplatten die Effizienz beim Ausschalten verbessert
-    - Arrays mit gemischten Laufwerksgrößen
+**Am besten für:**
 
-    :::Hinweis
-    High-Water ist die Standardmethode und funktioniert gut für die meisten Benutzer. Es reduziert das Rattern der Festplatten im Vergleich zu "Most-free."
-    :::
-  </TabItem>
+- Medienserver (z.B. Plex)
+- Szenarien, in denen das Halten von Dateien auf weniger Festplatten die Effizienz beim Ausschalten verbessert
+- Arrays mit gemischten Laufwerksgrößen
 
-  <TabItem value="am meisten frei" label="Am meisten frei">
-    <h4>Wie es funktioniert</h4>
+:::note
 
-    Die **Most-free**-Methode wählt die Festplatte mit dem meisten freien Speicherplatz für jede neue Datei aus. Dies maximiert die Speichereffizienz, erhöht jedoch das Rattern der Festplatten.
+High-water ist die Standardmethode und funktioniert gut für die meisten Benutzer. Sie reduziert das ständige Hin- und Her-Navigieren auf den Laufwerken im Vergleich zu "Most-free".
 
-    <h4>Leistungs-Auswirkungen</h4>
+:::
 
-    - Häufige Laufwerkswechsel halten mehrere Laufwerke eingeschaltet
-    - May reduce %%parity|parity%% write speeds due to overlapping operations
+#### Am meisten frei
 
-    <h4>Am besten für:</h4>
+**Wie es funktioniert**
 
-    - Workflows mit hohem Durchsatz (z.B. Videobearbeitung)
-    - Temporary or %%cache|cache%%-like data
-    - Arrays, bei denen die Leistung höher bewertet wird als Energieeinsparungen
+Die **Most-free**-Methode wählt die Festplatte mit dem meisten freien Speicherplatz für jede neue Datei aus. Dies maximiert die Speichereffizienz, erhöht jedoch das Rattern der Festplatten.
 
-    :::tip
-    Combine with **%%split level|split-level%%** settings to group related files despite frequent disk switching.
-    :::
-  </TabItem>
+**Leistungs-Auswirkungen**
 
-  <TabItem value="auffüllen" label="Auffüllen">
-    <h4>Wie es funktioniert</h4>
+- Häufige Laufwerkswechsel halten mehrere Laufwerke eingeschaltet
+- May reduce %%parity|parity%% write speeds due to overlapping operations
 
-    Die **Auffüllmethode** schreibt der Reihe nach auf Laufwerke, bis sie die **Mindestfreiraum**-Schwelle erreichen, dann auf das nächste Laufwerk.
+**Am besten für:**
 
-    <h4>Anforderungen</h4>
+- Workflows mit hohem Durchsatz (z.B. Videobearbeitung)
+- Temporary or %%cache|cache%%-like data
+- Arrays, bei denen die Leistung höher bewertet wird als Energieeinsparungen
 
-    - Immer **Mindestfreiraum** festlegen (z.B. 2x größte Dateigröße)
-    - **Split-Level** konfigurieren, um Dateigruppierung zu steuern
+:::tip
 
-    <h4>Am besten für:</h4>
+Combine with %%split level|split-level%% settings to group related files despite frequent disk switching.
 
-    - Statische Datenarchive
-    - Benutzer, die manuelle Laufwerksverwaltung bevorzugen
-    - Arrays mit identischen Laufwerksgrößen
+:::
 
-    :::Achtung
-    Ohne konfigurierten **Mindestfreier Speicherplatz** treten "Datenträger voll"-Fehler auf, wenn eine Festplatte fast voll ist.
-    :::
-  </TabItem>
-</Tabs>
+#### Auffüllen
+
+**Wie es funktioniert**
+
+Die **Auffüllmethode** schreibt der Reihe nach auf Laufwerke, bis sie die **Mindestfreiraum**-Schwelle erreichen, dann auf das nächste Laufwerk.
+
+**Anforderungen**
+
+- Immer **Mindestfreiraum** festlegen (z.B. 2x größte Dateigröße)
+- **Split-Level** konfigurieren, um Dateigruppierung zu steuern
+
+**Am besten für:**
+
+- Statische Datenarchive
+- Benutzer, die manuelle Laufwerksverwaltung bevorzugen
+- Arrays mit identischen Laufwerksgrößen
+
+:::caution
+
+Ohne **Mindestfreiraum**-Konfiguration treten "Laufwerk voll"-Fehler auf, wenn ein Laufwerk fast die Kapazität erreicht.
+
+:::
 
 ---
 
@@ -364,57 +362,57 @@ Es gibt drei einfache Optionen, die Sie auswählen können, wie das System den S
 
 The **Split Level** setting in Unraid helps manage how files and folders are organized across multiple disks. It determines how deep folder structures can go on different disks while keeping certain files together. The %%split level|split-level%% is numbered starting from 1, where the top level (the main share) is considered level 1.
 
-<Tabs>
-  <TabItem value="auto-irgend" label="Automatisch jedes Verzeichnis teilen (Standard)" default>
-    <h4>Verhalten</h4>
+#### Automatisch jedes Verzeichnis teilen (Standard)
 
-    Unraid creates any required folders on the selected disk, regardless of folder depth. New files and folders are placed based on %%allocation method|allocation-method%% and available space, even if their parent directories do not already exist on that disk.
+**Verhalten**
 
-    <h4>Anwendungsfall</h4>
+Unraid creates any required folders on the selected disk, regardless of folder depth. New files and folders are placed based on %%allocation method|allocation-method%% and available space, even if their parent directories do not already exist on that disk.
 
-    Am besten für allgemeine Datenshares geeignet, bei denen die Ordnerstruktur nicht entscheidend ist, wie Downloads oder gemischte Medienbibliotheken. Bietet maximale Flexibilität bei der Dateiablage und Festplattennutzung.
-  </TabItem>
+**Anwendungsfall**
 
-  <TabItem value="auto-top" label="Nur oberste Ebene automatisch teilen">
-    <h4>Verhalten</h4>
+Am besten für allgemeine Datenshares geeignet, bei denen die Ordnerstruktur nicht entscheidend ist, wie Downloads oder gemischte Medienbibliotheken. Bietet maximale Flexibilität bei der Dateiablage und Festplattennutzung.
 
-    Unraid erstellt nur untergeordnete erste Ordnerebenen auf einer Festplatte, wenn sie noch nicht vorhanden sind. Für tiefere Ordner werden neue Dateien und Ordner auf der Festplatte platziert, auf der das übergeordnete Verzeichnis existiert.
+#### Nur oberste Ebene automatisch teilen
 
-    <h4>Anwendungsfall</h4>
+**Verhalten**
 
-    Ideal für Medienbibliotheken (z. B. Filme/Titel), bei denen alle Dateien für einen bestimmten Unterordner (wie ein Film oder eine TV-Serie) zusammen auf derselben Festplatte bleiben sollen.
-  </TabItem>
+Unraid erstellt nur dann Unterverzeichnisse auf einer Festplatte der ersten Ebene, wenn sie noch nicht existieren. Für tiefere Verzeichnisse werden neue Dateien und Verzeichnisse auf der Festplatte abgelegt, auf der das übergeordnete Verzeichnis existiert.
 
-  <TabItem value="auto-n" label="Automatisch die obersten 'N' Ebenen teilen">
-    <h4>Verhalten</h4>
+**Anwendungsfall**
 
-    Sie geben an, wie viele Verzeichnisebenen (N) Unraid automatisch verwaltet. Für Ordner auf oder über Ebene N kann Unraid diese bei Bedarf erstellen. Für tiefere Ebenen werden neue Dateien auf der Festplatte platziert, auf der das übergeordnete Verzeichnis vorhanden ist.
+Ideal für Medienbibliotheken (z. B. Filme/Titel), bei denen alle Dateien für einen bestimmten Unterordner (wie ein Film oder eine TV-Serie) zusammen auf derselben Festplatte bleiben sollen.
 
-    <h4>Anwendungsfall</h4>
+#### Automatisch die obersten 'N' Ebenen teilen
 
-    Nützlich für komplexe Ordnerstrukturen, wie verschachtelte Projektverzeichnisse, bei denen verwandte Inhalte über die oberste Ebene hinweg gruppiert bleiben sollen.
-  </TabItem>
+**Verhalten**
 
-  <TabItem value="Handbuch" label="Manuell (Keine automatische Teilung)">
-    <h4>Verhalten</h4>
+Sie geben an, wie viele Verzeichnisebenen (N) Unraid automatisch verwaltet. Für Ordner auf oder über Ebene N kann Unraid diese bei Bedarf erstellen. Für tiefere Ebenen werden neue Dateien auf der Festplatte platziert, auf der das übergeordnete Verzeichnis vorhanden ist.
 
-    Unraid legt neue Dateien oder Ordner nur auf Festplatten ab, auf denen das übergeordnete Verzeichnis bereits existiert. Es werden keine neuen Verzeichnisse automatisch erstellt.
+**Anwendungsfall**
 
-    <h4>Anwendungsfall</h4>
+Nützlich für komplexe Ordnerstrukturen, wie verschachtelte Projektverzeichnisse, bei denen verwandte Inhalte über die oberste Ebene hinweg gruppiert bleiben sollen.
 
-    Am besten für fortgeschrittene Benutzer, die vollständige manuelle Kontrolle über die Dateianordnung wünschen oder für Archivdaten, bei denen die Ordnerstruktur fest bleiben muss.
-  </TabItem>
-</Tabs>
+#### Manuell (Keine automatische Teilung)
+
+**Verhalten**
+
+Unraid legt neue Dateien oder Ordner nur auf Festplatten ab, auf denen das übergeordnete Verzeichnis bereits existiert. Es werden keine neuen Verzeichnisse automatisch erstellt.
+
+**Anwendungsfall**
+
+Am besten für fortgeschrittene Benutzer, die vollständige manuelle Kontrolle über die Dateianordnung wünschen oder für Archivdaten, bei denen die Ordnerstruktur fest bleiben muss.
 
 :::important
-Wenn es Konflikte zwischen **Mindestfreier Speicherplatz**, **Ebenenaufteilung** und **%%Zuweisungsmethode|Zuweisungsmethode%%** gibt, erhält die Einstellung **Ebenenaufteilung** Priorität. Dies kann zu "Kein Speicherplatz mehr"-Fehlern führen, auch wenn auf anderen Laufwerken noch Speicher verfügbar ist.
+
+Wenn es Konflikte zwischen **Mindestfreiraum**, **Split-Level** und %%Zuweisungsmethode|allocation-method%% gibt, hat die **Split-Level**-Einstellung Priorität. Dies kann zu "Kein Speicherplatz"-Fehlern führen, selbst wenn andere Laufwerke über freien Speicherplatz verfügen.
+
 :::
 
 ---
 
 ### Eingeschlossene oder ausgeschlossene Laufwerke
 
-Diese Einstellungen helfen Ihnen zu verwalten, welche Laufwerke Dateien für Ihre Freigabe halten können. Sie können entweder bestimmte Festplatten einbeziehen oder bestimmte ausschließen – nur nicht beides gleichzeitig tun! Wenn Sie keine spezifischen Festplatten auswählen, werden alle Laufwerke verwendet, die in ***Einstellungen → Globale Freigabeeinstellungen*** erlaubt sind.
+**Benutzerfreigaben** und **Laufwerksfreigaben** sehen in der Oberfläche möglicherweise unterschiedlich aus, können jedoch auf dieselben Dateien auf der Festplatte verweisen. Linux-Befehle wie `cp` oder `rsync` können nicht immer den Unterschied feststellen, wodurch versehentlich Dateien überschrieben oder gelöscht werden können.
 
 Unraid first checks any included disks, then looks at excluded disks to determine where to store a file. After that, it uses the %%split level|split-level%% and %%allocation method|allocation-method%% to select an appropriate disk.
 
@@ -423,39 +421,41 @@ Unraid first checks any included disks, then looks at excluded disks to determin
 </div>
 
 :::important
+
 The settings for %%included and excluded disks|included-or-excluded-disks%% only affect where new files can be saved. Any existing files in folders that match your share name will still be accessible for reading, even if they’re on a different disk.
+
 :::
 
-<Tabs>
-  <TabItem value="einschließen" label="Eingeschlossene Festplatten" default>
-    <h4>Verhalten</h4>
+#### Eingeschlossene Festplatten
 
-    Unraid berücksichtigt nur die aufgeführten Festplatten bei der Entscheidung, wo neue Dateien für die Freigabe platziert werden sollen. Alle anderen Festplatten werden für neue Schreibvorgänge ignoriert, aber auf anderen Festplatten bereits vorhandene Dateien bleiben weiterhin lesbar.
+**Verhalten**
 
-    <h4>Anwendungsfall</h4>
+Unraid berücksichtigt nur die aufgeführten Festplatten bei der Entscheidung, wo neue Dateien für die Freigabe platziert werden sollen. Alle anderen Festplatten werden für neue Schreibvorgänge ignoriert, aber auf anderen Festplatten bereits vorhandene Dateien bleiben weiterhin lesbar.
 
-    Verwenden Sie diese Einstellung, wenn Sie eine Freigabe auf bestimmte Festplatten beschränken möchten, z. B. um wichtige Dokumente auf neueren oder größeren Laufwerken zu speichern, oder um eine Mediathek aus Leistungs- oder Organisationsgründen auf bestimmte Festplatten zu isolieren.
-  </TabItem>
+**Anwendungsfall**
 
-  <TabItem value="ausschließen" label="Ausgeschlossene Festplatten">
-    <h4>Verhalten</h4>
+Verwenden Sie diese Einstellung, wenn Sie eine Freigabe auf bestimmte Festplatten beschränken möchten, z. B. um wichtige Dokumente auf neueren oder größeren Laufwerken zu speichern, oder um eine Mediathek aus Leistungs- oder Organisationsgründen auf bestimmte Festplatten zu isolieren.
 
-    Unraid verwendet alle berechtigten Festplatten mit Ausnahme der hier aufgeführten, wenn es darum geht, neue Dateien für die Freigabe zu platzieren. Wie bei eingeschlossenen Festplatten bleiben auf ausgeschlossenen Festplatten bereits vorhandene Dateien für das Lesen weiterhin zugänglich.
+#### Ausgeschlossene Festplatten
 
-    <h4>Anwendungsfall</h4>
+**Verhalten**
 
-    Verwenden Sie diese Einstellung, um eine Freigabe davon abzuhalten, bestimmte Festplatten zu nutzen, z. B. ältere Laufwerke, langsamere Festplatten oder Festplatten, die für andere Datentypen reserviert sind, auszuschließen.
-  </TabItem>
-</Tabs>
+Unraid verwendet alle berechtigten Festplatten mit Ausnahme der hier aufgeführten, wenn es darum geht, neue Dateien für die Freigabe zu platzieren. Wie bei eingeschlossenen Festplatten bleiben auf ausgeschlossenen Festplatten bereits vorhandene Dateien für das Lesen weiterhin zugänglich.
+
+**Anwendungsfall**
+
+Verwenden Sie diese Einstellung, um eine Freigabe davon abzuhalten, bestimmte Festplatten zu nutzen, z. B. ältere Laufwerke, langsamere Festplatten oder Festplatten, die für andere Datentypen reserviert sind, auszuschließen.
 
 ---
 
 ### Standardfreigaben
 
-Wenn Sie Unraid mit **Docker** oder **Virtuellen Maschinen (VMs)** verwenden, erstellt es automatisch einige Standardfreigaben.
+Wenn Sie Unraid mit **Docker** oder %%virtuellen Maschinen (VMs)|vm%% verwenden, erstellt es automatisch einige Standardfreigaben.
 
 :::important
-Diese Freigaben werden erst erstellt, nachdem Sie die jeweiligen Dienste (Docker oder VM-Manager) gestartet haben. Wenn Sie diese Freigaben nicht sehen, stellen Sie sicher, dass Docker und/oder der VM-Manager aktiviert und ausgeführt sind.
+
+Diese Freigaben werden nur erstellt, nachdem Sie ihre jeweiligen Dienste (Docker oder %%VM|vm%% Manager) gestartet haben. Wenn Sie diese Freigaben nicht sehen, vergewissern Sie sich, dass Docker und/oder %%VM|vm%% Manager aktiviert und in Betrieb sind.
+
 :::
 
 Sie müssen diese Freigaben nicht verwenden, wenn Sie nicht möchten, und Sie können sie entfernen, wenn Sie es bevorzugen, aber wir empfehlen normalerweise, sie zur Bequemlichkeit zu behalten. Diese Freigaben helfen, die Dinge zu organisieren und machen es einfacher, Unterstützung zu erhalten, wenn Probleme auftreten.
@@ -463,12 +463,14 @@ Sie müssen diese Freigaben nicht verwenden, wenn Sie nicht möchten, und Sie k�
 Hier ist eine kurze Übersicht darüber, wofür jede Standardfreigabe ist:
 
 - `appdata`: Hier werden alle Arbeitsdateien für Ihre Docker-Container gespeichert. Normalerweise hat jeder Docker-Container seinen eigenen Ordner hier.
-- `system`: Diese Freigabe enthält die wesentlichen Dateien für Ihre Docker-Apps und die XML-Vorlagen für Ihre VMs.
-- `Domains`: Diese Freigabe ist für die Speicherung von virtuellen Festplattenbildern (vdisk) vorgesehen, die Ihre VMs verwenden.
-- `isos`: Hier können Sie CD-ISO-Images speichern, die Sie mit Ihren VMs verwenden möchten.
+- `system`: Diese Freigabe enthält die wesentlichen Dateien für Ihre Docker-Anwendungen und die XML-Vorlagen für Ihre %%VMs|vm%%.
+- `domains`: Diese Freigabe ist für die Speicherung von virtuellen Festplattenabbildern (vdisks) vorgesehen, die Ihre %%VMs|vm%% verwenden.
+- `isos`: Hier können Sie CD-ISO-Images speichern, die Sie mit Ihren %%VMs|vm%% verwenden möchten.
 
 :::important
-Es ist am besten, die Berechtigungen für die meisten dieser Standardfreigaben nicht zu ändern, da dies zu Problemen mit der Funktionsweise von Docker-Containern und VMs führen könnte. Die einzige Freigabe, bei der das Ändern der Berechtigungen empfohlen wird, ist die `isos`-Freigabe, da diese über das Netzwerk zugänglich ist, um neue ISO-Dateien für virtuelle Maschinen hinzuzufügen.
+
+Es ist am besten, die Berechtigungen bei den meisten dieser Standardfreigaben nicht zu ändern, da dies Probleme mit der Funktionsweise von Docker-Containern und %%VMs|vm%% verursachen könnte. Die einzige Freigabe, bei der es empfohlen wird, die Berechtigungen zu ändern, ist die `isos`-Freigabe, da diese über das Netzwerk zugänglich ist, um neue ISO-Dateien für %%virtuelle Maschinen|vm%% hinzuzufügen.
+
 :::
 
 ---
@@ -491,15 +493,19 @@ Once you enable them, you'll notice disk shares in the Unraid GUI under a sectio
 - **Pools of drives:** If you have multiple drives grouped together, they will show up as `/mnt/pool-name`. The most common %%pools|cache-pool%% is called `cache`, but you can name your %%pools|cache-pool%% however you like.
 
 :::important
+
 Das Unraid-Flash-Gerät, das Ihre Unraid-Einstellungen speichert, wird nicht als Disk-Share behandelt. Wenn Sie möchten, dass es über das Netzwerk zugänglich ist, können Sie es als "Flash"-Freigabe einrichten. Dieses Gerät ist unter `/boot` in Linux eingehängt.
 
 Aus Sicherheitsgründen ist es am besten, Ihre Freigaben im *Privat*-Modus zu halten und nur vertrauenswürdigen Benutzern Zugriff zu gewähren.
+
 :::
 
 ### Leitlinien für Laufwerksfreigaben
 
 :::danger[Important Erinnerung]
+
 **Niemals Dateien direkt zwischen einem Nutzer-Share und einem Datenträger-Share kopieren**, wenn ihre Ordnernamen gleich sind. Dies könnte dazu führen, dass Dateien beschädigt oder gelöscht werden, was zu einem dauerhaften Datenverlust führen kann.
+
 :::
 
 **Benutzerfreigaben** und **Laufwerksfreigaben** sehen in der Oberfläche möglicherweise unterschiedlich aus, können jedoch auf dieselben Dateien auf der Festplatte verweisen. Linux-Befehle wie `cp` oder `rsync` können nicht immer den Unterschied feststellen, wodurch versehentlich Dateien überschrieben oder gelöscht werden können.
@@ -516,98 +522,10 @@ Aus Sicherheitsgründen ist es am besten, Ihre Freigaben im *Privat*-Modus zu ha
 
 3. **Überprüfen Sie Ihre Kopien:** Beim Verschieben von Dateien lokal können Sie `rsync -c` verwenden, um zu überprüfen, ob die Dateien korrekt kopiert wurden.
 
-4. **Don’t mix share types:** Avoid using paths that mix %%user shares|user-share%% and disk shares, such as `/mnt/user/share/` with `/mnt/disk1/share/` in the same command.
+4. **Don't mix share types:** Avoid using paths that mix %%user shares|user-share%% and disk shares, such as `/mnt/user/share/` with `/mnt/disk1/share/` in the same command.
 
----
+:::tip[Transferring Dateien von externen Netzwerkfreigaben]
 
-## Dateien von einer Netzwerkfreigabe übertragen
+Wenn Sie Dateien von externen Windows- oder Linux-Netzwerkfreigaben (SMB/CIFS) auf Ihren Unraid-Server mit Befehlszeilenwerkzeugen übertragen müssen, finden Sie weitere Informationen unter [Dateiübertragungsoperationen](../../system-administration/advanced-tools/command-line-interface.mdx#file-transfer-operations) in der Dokumentation zur Befehlszeilenschnittstelle.
 
-Es gibt mehrere Tools, mit denen Sie Dateien von einer Windows- oder Linux-Freigabe auf Ihren Unraid-Server kopieren können. Um die Dinge einfach und zuverlässig zu halten, beginnen Sie mit dem integrierten Unraid-Dateiverwaltungstool, bevor Sie sich für Drittanbieteroptionen entscheiden.
-
-### Verwendung von Midnight Commander (integriert)
-
-Unraid enthält **Midnight Commander** (`mc`), einen textbasierten Dateimanager mit zwei Fenstern. Sie können darauf über das [Web-Terminal](../../system-administration/advanced-tools/command-line-interface.mdx) zugreifen.
-
-1. **Öffnen Sie das Web-Terminal:** Diese Option finden Sie im Menü oben rechts der Unraid %%WebGUI|web-gui%%.
-2. **Midnight Commander starten:**
-
-   ```bash
-   mc
-   ```
-
-   Diese Benutzeroberfläche bietet Navigation per Drag-and-Drop zwischen lokalen Freigaben und eingebundenen Netzwerkpfaden.
-3. **Eine Netzwerkfreigabe einbinden** (falls noch nicht geschehen):
-
-   ```bash
-   mkdir /work
-   mount -t cifs //workstation/share /work -o username=youruser,password=yourpassword,iocharset=utf8
-   ```
-
-   - Ersetzen Sie `workstation`, `share` und `youruser` durch die entsprechenden Werte.
-   - Die Option `iocharset=utf8` hilft, internationale Dateinamen beizubehalten.
-4. **Verwenden Sie die MC-Fenster** um Dateien zwischen `/work` (die Netzwerkfreigabe) und jeder `/mnt/user/` oder `/mnt/diskX` Freigabe zu übertragen.
-5. **Danach aufräumen:**
-
-   ```bash
-   umount /work
-   rmdir /work
-   ```
-
-Midnight Commander läuft vollständig innerhalb des integrierten Systems, erfordert keine zusätzliche Installation. Es ist für die meisten Übertragungsbedürfnisse geeignet, einschließlich solcher mit Unicode-Dateinamen, und bewahrt Dateiattribute, wenn sowohl Quelle als auch Ziel dies unterstützen.
-
-### Verwendung von Krusader
-
-Wenn Sie eine grafische Benutzeroberfläche bevorzugen, können Sie Docker-Container wie [Krusader](https://unraid.net/community/apps?q=krusader#r:~:text=batch%20renaming%2C%20etc.-,Krusader,-Productivity%2C%20Tools) als Drittanbieter-Lösung verwenden.
-
-1. **Krusader installieren:**
-   - Navigieren Sie zur **Apps**-Registerkarte (Community Applications).
-   - Suchen und installieren Sie den **Krusader** Docker-Container.
-2. **Krusader starten:** Starten Sie den Container und greifen Sie von der **Docker**-Registerkarte auf seine WebUI zu.
-3. **Connect to remote shares** within Krusader, and use drag-and-drop or copy-paste to transfer files between the network share and your Unraid %%array|array%%.
-
-:::info
-Andere beliebte Dateimanager-Container umfassen [**Double Commander**](https://unraid.net/community/apps?q=double+commander#r:~:text=of%201%20App-,doublecommander,-Tools%20/%20Utilities%2C) und [**CloudCommander**](https://unraid.net/community/apps?q=cloudcommander#r:~:text=of%201%20App-,CloudCommander,-Tools%20/%20Utilities%2C), die beide über Community Applications verfügbar sind.
-:::
-
-### Kommandozeilen-Methoden
-
-Für fortgeschrittene Benutzer oder solche, die Automatisierung nutzen, können Sie auch Kommandozeilen-Übertragungsmethoden verwenden.
-
-<details>
-  <summary>Klicken, um die Anweisungen zur Kommandozeile zu erweitern</summary>
-
-  1. **Öffnen Sie das Terminal** (Web Terminal oder %%SSH|ssh%% als `root`).
-
-  2. **Eine Netzwerkfreigabe erstellen und einbinden:**
-
-     ```bash
-     mkdir /work
-     mount -t cifs //workstation/share /work -o username=youruser,password=yourpassword,iocharset=utf8
-     ```
-
-  3. **Dateien kopieren:**
-     - Sie können `cp` verwenden:
-
-       ```bash
-       cp -r /work/* /mnt/disk1
-       ```
-
-     - Oder verwenden Sie `rsync` für detaillierten Fortschritt:
-
-       ```bash
-       rsync -av --progress /work/ /mnt/disk1/
-       ```
-
-  4. **Die temporären Verzeichnisse aushängen und löschen:**
-
-     ```bash
-     umount /work
-     rmdir /work
-     ```
-</details>
-
-:::caution
-Beim Übertragen von Dateien mit speziellen oder internationalen Zeichen mounten Sie die Freigabe immer mit der Option `iocharset=utf8`. Andernfalls können falsche Dateinamen oder unlesbare Dateien auf anderen Plattformen resultieren.
-
-Wenn Sie auch Dateien als `root` über das Terminal kopieren, können sie restriktive Berechtigungen haben. Wenn dies der Fall ist, verwenden Sie das **Neuer-Berechtigungen-Tool** im **Tools**-Menü im WebGUI oder die **Docker Safe New Perms**, wenn Sie es mit Docker-beteiligten Freigaben zu tun haben, um Berechtigungen zurückzusetzen und sicherzustellen, dass alle Benutzer Netzwerkzugang haben.
 :::
