@@ -32,8 +32,9 @@ const DEFAULT_LOCALE = "en";
 
 const config: Config = {
   title: "Unraid Docs",
-  tagline: "Documentation for Unraid",
-  favicon: "img/favicon.svg",
+  tagline: "Unraid Documentation",
+  favicon: "img/favicon.ico",
+  clientModules: [path.resolve(__dirname, "./src/clientModules/gtag-stub.js")],
 
   // Set the production url of your site here
   url: "https://docs.unraid.net/",
@@ -274,10 +275,6 @@ const config: Config = {
           {
             from: "/account/link-key/",
             to: "/unraid-connect/overview-and-setup/",
-          },
-          {
-            from: "/go/redeem-activation-code/",
-            to: "/unraid-account/redeem-activation-code/",
           },
 
           // Category redirects
