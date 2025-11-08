@@ -1,0 +1,267 @@
+---
+sidebar_position: 3
+sidebar_label: Reemplazando discos en la matriz
+---
+
+# Reemplazando discos en la matriz
+
+Es posible que necesites reemplazar discos en tu arreglo por dos razones principales:
+
+1. **Actualización de capacidad**: Su almacenamiento está casi lleno y desea usar discos más grandes.
+2. **Fallo o retiro**: Un disco ha fallado o ya no es compatible.
+
+Aunque el proceso de reemplazo de discos es similar en ambos casos, ten cuidado, ya que existe el riesgo de pérdida de datos durante el reemplazo. Los dispositivos de paridad ayudan a proteger tus datos; un dispositivo de paridad puede salvaguardarte contra la falla de un solo disco, mientras que dos pueden proteger contra la pérdida de datos si fallan dos discos. Siempre ten en cuenta tu nivel de protección durante el reemplazo de discos.
+
+## Actualización de capacidad
+
+Al actualizar tu disco de datos a uno más grande, ten en cuenta estos puntos:
+
+- **Discos no montables:** Arregla cualquier disco no montable antes de actualizar. Un estado no montable no se resolverá durante la reconstrucción.
+
+- **Riesgos de paridad única:** Si tienes paridad única, corres el riesgo de pérdida de datos si otra unidad falla durante la actualización. Busca consejo en foros si esto sucede.
+
+- **Protección de paridad dual:** Con paridad dual, estás a salvo de perder datos si una unidad falla mientras se actualiza una sola unidad. También puedes actualizar dos unidades a la vez, pero ten en cuenta que esto aumenta el riesgo ya que no tendrás protección contra la falla de otra unidad.
+
+- **Copia de seguridad del disco antiguo:** Mantén el disco original intacto hasta que se confirme que la actualización ha sido exitosa. Esto proporciona una opción de respaldo si algo sale mal.
+
+:::warning
+
+Reemplazar unidades siempre implica un riesgo. Si otra unidad falla durante la actualización, especialmente con solo una paridad, puede experimentar pérdida de datos. Siempre verifique la salud de sus unidades antes de comenzar el proceso y asegúrese de mantener la antigua unidad intacta hasta que la actualización esté completa y sus datos estén confirmados como seguros.
+
+:::
+
+Para actualizar un disco de datos existente:
+
+1. Run a %%parity check|parity-check%% and ensure there are zero errors. If parity isn't valid, rebuilding the disk will corrupt its file system.
+2. Detenga el arreglo.
+3. Desasigne el disco de destino.
+4. Inicie la matriz. Unraid emula el disco faltante utilizando la paridad existente y los discos de datos. Tiene dos modos para elegir:
+   - %%Modo de Mantenimiento|maintenance-mode%% - Previene cualquier escritura en el disco emulado
+   - Modo Normal - Permite acceso de lectura/escritura al disco emulado
+
+:::note
+
+Iniciar en Modo Normal es opcional. Puede usarlo para verificar que el disco emulado se monte y que los datos se vean correctos antes de continuar.
+
+:::
+
+5. Detenga la matriz nuevamente.
+6. Asigne el disco de reemplazo al espacio vacante.
+7. Inicie la matriz para comenzar la reconstrucción. Unraid reconstruye el contenido en el nuevo disco, y el sistema de archivos se ajusta automáticamente a la capacidad del disco más grande.
+
+## Reemplazo de discos fallidos/desactivados
+
+### ¿Qué es un disco fallido/deshabilitado?
+
+Un disco fallido o deshabilitado es aquel que Unraid ha dejado de usar para escribir datos, generalmente porque encontró un error de escritura. Un disco fallido no siempre está roto; podría ser debido a malas conexiones, problemas de energía o un fallo temporal.
+
+Las señales incluyen una "X" roja en el indicador del disco y alertas de notificación de fallo.
+
+| Escenario de Falla    | Sin Paridad    | Paridad Única  | Paridad Dual  |
+| --------------------- | -------------- | -------------- | ------------- |
+| **1 Falla de Disco**  | Datos Perdidos | Reconstruible  | Reconstruible |
+| **2 Fallas de Disco** | Datos Perdidos | Datos Perdidos | Reconstruible |
+
+:::tip[Tips para Reconstrucciones Seguras]
+
+- **Para Paridad Simple:** Solo puede reemplazar un disco a la vez. Si otro disco falla durante la reconstrucción, podría perder datos.
+- **Para Doble Paridad:** Puede reemplazar uno o dos discos al mismo tiempo, pero tenga cuidado si fallan más de dos discos.
+
+:::
+
+:::important
+
+Si fallan más discos de los que su paridad puede proteger:
+
+1. Detenga inmediatamente todas las operaciones de escritura para prevenir más pérdida de datos.
+2. Busque ayuda publicando su problema en los [foros de Unraid](https://forums.unraid.net/) junto con diagnósticos.
+3. No intente una reconstrucción hasta que haya recibido asesoramiento; primero enfoque en salvar sus datos.
+
+:::
+
+### Cómo diagnosticar el problema
+
+Check the %%syslog|syslog%% and %%SMART reports|smart-report%%:
+
+- Si el %%syslog|syslog%% muestra que el disco se ha reiniciado, podría haber un problema con la conexión o los cables.
+- Los informes %%SMART|smart-report%% pueden ayudar a evaluar la salud del disco, pero la mejor manera de verificarlo es realizando una prueba extendida de %%SMART|smart%%. Si se completa sin errores, es probable que el disco esté bien.
+- Si ves errores %%CRC|crc-errors%%, generalmente apunta a problemas con el cableado. Estos errores se acumulan con el tiempo y no se reinician.
+
+:::tip
+
+Para mantenerse informado sobre los problemas de unidad, habilite las notificaciones en Unraid yendo a **Configuración → Configuración de notificaciones**. De esta manera, estará alerta de inmediato si algo sale mal, reduciendo el riesgo para sus datos.
+
+:::
+
+### ¿Qué es la emulación?
+
+When a drive is disabled, Unraid uses its parity and other working drives to emulate the failed drive. The system continues to operate, and you can still access the data stored on the %%emulated drive|emulated-disk%%.
+
+- Unraid deja de escribir en la unidad física y cualquier actualización se guarda en la paridad y la emulación.
+- Before replacing the failed drive, you can check and recover data from the %%emulated drive|emulated-disk%%, which keeps the physical drive intact for potential recovery.
+- If you can't access the %%emulated drive|emulated-disk%%, repairing the file system is essential before any rebuild since fixing the file system is quicker and more effective than a rebuild.
+
+### Preparándose para el reemplazo del disco
+
+Asegúrese de que la nueva unidad sea al menos tan grande como la unidad fallida pero no más grande que su unidad de paridad más pequeña. Si debe usar una unidad más grande, siga el procedimiento de Intercambio de Paridad.
+
+Mientras no es obligatorio, muchos usuarios eligen pre-limpiar los nuevos discos para probarlos y ayudar a prevenir fallas tempranas. Puede hacer esto con el complemento Preclear, una prueba extendida %%SMART|smart%% o herramientas del fabricante.
+
+:::caution
+
+If you try to rebuild using an unmountable %%emulated drive|emulated-disk%%, the new drive will also become unmountable. Always repair the file system before attempting a rebuild.
+
+:::
+
+Para reemplazar y reconstruir un disco, siga los requisitos de tamaño descritos en la sección "Preparándose para el reemplazo del disco" arriba.
+
+:::important
+
+Antes de comenzar, verifique si hay errores o advertencias de disco. Unraid debe poder leer todos los discos restantes sin problemas para que la reconstrucción funcione correctamente. Si otro disco está fallando, podría conducir a la pérdida de datos.
+
+:::
+
+1. Detenga el arreglo.
+
+:::tip
+
+Si su servidor admite intercambio en caliente, puede omitir el paso 2.
+
+:::
+
+2. Apaga tu servidor.
+3. Retire el disco antiguo y fallido e instale el nuevo disco. Asegúrese de que el reemplazo cumpla con los requisitos de tamaño descritos arriba.
+4. Enciende nuevamente tu servidor.
+5. Asigne el nuevo disco a la ranura del disco fallido.
+6. Marque **Sí, quiero hacer esto** y confirme.
+7. Seleccione opcionalmente %%Modo de Mantenimiento|maintenance-mode%% para acelerar la reconstrucción (la matriz no estará accesible durante este tiempo).
+8. Haga clic en **Iniciar** para comenzar la reconstrucción. Unraid copia los datos del disco emulado al nuevo disco. Si el nuevo disco es más grande, Unraid gestiona el espacio extra.
+
+:::warning
+
+Si Unraid le solicita formatear el nuevo disco durante la reconstrucción, **no lo haga**. Formatear borrará todos los datos y hará imposible la recuperación.
+
+:::
+
+### Qué esperar durante la reconstrucción
+
+- **Detenga el array:** Comience accediendo al %%WebGUI|web-gui%% y deteniendo el array.
+- **Desasigne los discos de %%paridad|parity-drives%%:** Ubique la ranura de los discos de %%paridad|parity-drives%% y configúrela como "No asignado".
+- **Inicie la matriz:** Finalmente, reinicie la matriz para aplicar los cambios y eliminar con éxito los discos de %%paridad|parity-drives%% de la configuración.
+- Si el disco viejo era no montable debido a problemas del sistema de archivos, el nuevo disco tampoco será montable. Por favor, solucione cualquier problema del sistema de archivos antes de iniciar la reconstrucción.
+
+:::note[Additional notas]
+
+- Con dual paridad, puedes recuperar de una sola unidad fallida, pero ten en cuenta que no podrás sobrevivir a otra falla durante el proceso de reconstrucción.
+- Con una sola paridad, pierdes toda la redundancia, lo que significa que cualquier falla adicional en las unidades podría resultar en pérdida de datos.
+  :::
+
+:::
+
+## Rehabilitar un disco deshabilitado (reconstruyéndolo sobre sí mismo)
+
+A veces, un disco puede estar deshabilitado no porque esté realmente defectuoso, sino debido a problemas tales como cables sueltos, problemas de energía o fallas temporales. Si ese es el caso, puede intentar rehabilitar el disco deshabilitado reconstruyéndolo sobre sí mismo en lugar de reemplazarlo.
+
+:::important[When para usar este procedimiento]
+
+Solo use este procedimiento cuando:
+
+- El disco fue deshabilitado debido a factores externos (como cables o problemas de energía).
+- You've checked the disk's health using [%%SMART reports|smart-report%%](../../system-administration/monitor-performance/smart-reports-and-disk-health.mdx).
+- Ha solucionado cualquier problema externo que haya causado que el disco fuera deshabilitado.
+- El disco parece funcionar normalmente.
+
+:::
+
+:::warning[Important consideraciones]
+
+- If you are rebuilding a data drive, make sure that the %%emulated disk|emulated-disk%% shows the right content before you proceed. The rebuild process will ensure that the physical drive matches the emulated one exactly.
+- The %%emulated disk|emulated-disk%% may show as 'unmountable' in some cases. A rebuild will not necessarily fix an unmountable emulated disk, so verify the situation first. If the emulated disk shows 'unmountable' or the content doesn't look right, ask for help in the [Unraid forums](https://forums.unraid.net/) before proceeding with the rebuild.
+- Always run a [%%SMART|smart%% extended test](../../system-administration/advanced-tools/command-line-interface.mdx#smartctl) on the disabled drive to double-check that it's healthy before starting this process.
+- If the %%emulated disk|emulated-disk%% shows any file system issues, use the [automated XFS repair feature](../../troubleshooting/common-issues/data-recovery.mdx#running-the-repair) for XFS‑formatted disks, or the respective file system repair options for other file systems in the %%WebGUI|web-gui%% before beginning the rebuild.
+- Aunque el proceso de reconstrucción debería preservar sus datos, es una buena idea respaldar archivos importantes si puede.
+
+:::
+
+Para rehabilitar un disco deshabilitado reconstruyéndolo sobre sí mismo:
+
+1. Verify disk health by running a [%%SMART|smart%% extended test](../../system-administration/advanced-tools/command-line-interface.mdx#smartctl) and acknowledging any warning icons in the dashboard.
+2. Detenga el arreglo.
+3. Desasigne la unidad deshabilitada.
+4. Inicie la matriz para que Unraid pueda registrar el disco faltante. La matriz mostrará el disco como "No instalado."
+5. Solo para unidades de datos, verifique que el disco emulado muestre el contenido que espera.
+6. Detenga el arreglo.
+7. Reasigne la unidad deshabilitada a su ranura original.
+8. Seleccione opcionalmente %%Modo de Mantenimiento|maintenance-mode%% para acelerar el proceso de reconstrucción.
+9. Haga clic en **Iniciar** para comenzar la reconstrucción. Unraid toma el contenido del disco emulado y lo reconstruye en la unidad física.
+
+:::info[Rebuild expectativas de tiempo]
+
+Reconstruir un disco sobre sí mismo puede llevar desde varias horas hasta más de un día para unidades más grandes, dependiendo del tamaño del disco y la actividad del sistema. Factores que pueden afectar el tiempo de reconstrucción incluyen la capacidad del disco, la velocidad del disco, y la carga del sistema. Puede supervisar el progreso en el %%WebGUI|web-gui%%.
+
+:::
+
+This procedure works for both data drives and %%parity drives|parity-drives%% that have been disabled.
+
+## Intercambio de Paridad
+
+El intercambio de paridad es un procedimiento especial utilizado cuando necesita reemplazar un disco de datos con un disco más grande que su disco de paridad actual. El proceso mueve su disco de paridad actual a la ranura de datos, luego instala un nuevo disco más grande como el nuevo disco de paridad. Esto asegura que su matriz permanezca protegida y permite unidades de datos más grandes en el futuro.
+
+Use un intercambio de paridad cuando su unidad de datos de reemplazo sea más grande que su disco de paridad actual. Esto no es necesario si su nueva unidad de datos tiene el mismo tamaño o es más pequeña que su disco de paridad.
+
+**Escenario de ejemplo:** Tienes una configuración de Unraid con un **disco de paridad de 2TB** y un **disco de datos de 1TB** y deseas reemplazar el disco de 1TB con un **disco de 4TB**. Primero, asigne el nuevo disco de 4TB como el disco de paridad, que reemplazará el disco de 2TB. Luego mova el disco de 2TB original a la ranura de datos y retire el disco de 1TB por completo. Después de estos cambios, tendrá un disco de 4TB como su nueva paridad, asegurando que pueda agregar futuras unidades de datos de hasta 4TB. El disco de 2TB ahora contendrá sus datos existentes, mientras que el disco de 1TB puede ser reutilizado. Este intercambio mantiene sus datos seguros y su matriz protegida, permitiendo futuras actualizaciones.
+
+:::important\[Prerequisites]
+
+- Antes de comenzar, asegúrese de que el disco de datos que desea reemplazar esté deshabilitado. Las unidades fallidas (que muestran un indicador rojo) ya están deshabilitadas. Para unidades saludables que desea reemplazar, desasigne la unidad e inicie la matriz una vez sin ella para forzar a Unraid a marcarla como deshabilitada.
+- Cuando su unidad de datos de reemplazo no es más grande que su disco de paridad, utilice el procedimiento estándar de [Reemplazo de discos fallidos/deshabilitados](#replacing-faileddisabled-disks) en su lugar.
+- Este procedimiento solo es necesario para reemplazar discos de datos en una matriz de Unraid con un disco más grande que la unidad de paridad actual. Para solo actualizaciones de disco de paridad, simplemente retire el disco de paridad antiguo, agregue el nuevo y comience la matriz. La paridad se reconstruirá automáticamente.
+
+:::
+
+:::warning\[Warnings]
+
+- Always verify the health of all drives using %%SMART reports|smart-report%% before starting a %%parity swap|parity-swap%%. Attempting this procedure with another failing or unhealthy disk increases the risk of data loss.
+- Si es posible, pre-limpie el nuevo disco. Aunque no es necesario, pre-limpiar comprueba la resistencia del disco y reduce el riesgo de fallo temprano.
+- Identifica correctamente todos los discos antes de comenzar. Anota los números de modelo y los últimos cuatro caracteres de cada número de serie para evitar errores durante la asignación.
+
+:::
+
+Para realizar un intercambio de paridad:
+
+:::note
+
+Si la unidad a reemplazar ya está deshabilitada, puede omitir los pasos 1–4. Si ya ha instalado la nueva unidad de reemplazo, puede omitir los pasos 5–8.
+
+:::
+
+1. Detenga el arreglo.
+2. Desasigne la antigua unidad de datos si todavía está asignada.
+3. Inicie la matriz. La unidad de datos ahora debería mostrar como "No instalado."
+4. Detenga la matriz nuevamente.
+5. Apague el servidor.
+
+:::tip
+
+Si su sistema admite intercambio en caliente, no es necesario apagar. Asegúrese de que la matriz esté detenida antes de realizar cualquier cambio de hardware.
+
+:::
+
+6. De manera opcional, retire la unidad antigua.
+7. Instale la nueva unidad. Se recomienda encarecidamente precalentar, pero no es necesario formatear.
+8. Encienda el servidor.
+9. Detenga la matriz si se inició automáticamente.
+10. Desasigne la unidad de paridad.
+11. Asigne la nueva unidad a la ranura de paridad.
+12. Asigne la antigua unidad de paridad a la ranura del disco que está siendo reemplazado.
+13. Debería ver un botón de **Copiar** con un mensaje que indique "La copia transferirá la información de paridad al nuevo disco de paridad."
+14. Marque la casilla de confirmación y haga clic en **Copiar**. La matriz no estará disponible durante esta operación, que puede durar muchas horas dependiendo del tamaño del disco.
+15. Inicie la matriz para comenzar la reconstrucción de datos. Puede usar la matriz durante la reconstrucción, pero limite su uso para un mejor rendimiento. El proceso de reconstrucción también lleva varias horas.
+
+:::warning
+
+Nunca formatee un disco durante este proceso. Formatear borrará todos los datos y actualizará la paridad, haciendo imposible la recuperación.
+
+:::
+
+After completion, you will have a larger parity disk and a replaced data disk. Many users run a %%parity check|parity-check%% afterward for extra confidence, though this is optional.
