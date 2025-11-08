@@ -3,148 +3,319 @@ sidebar_position: 2
 sidebar_label: Arrêts imprévus
 ---
 
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
-import UncleanShutdownsPower from './partials/unclean-shutdowns/unexpected-power-loss.mdx';
-import UncleanShutdownsFlash from './partials/unclean-shutdowns/flash-drive-failure.mdx';
-import UncleanShutdownsTerminal from './partials/unclean-shutdowns/open-terminal-sessions.mdx';
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
 
 # Arrêts imprévus
 
 Un arrêt inopiné se produit lorsque Unraid détecte que le %%array|array%% n'a pas été correctement arrêté avant que le système ne s'éteigne. Cette situation peut déclencher un %%parity check|parity-check%% automatique lors du prochain démarrage pour garantir l'intégrité des données.
 
 :::important[Recommendations pour prévenir les arrêts non propres]
+
 Prendre des mesures proactives peut vous aider à éviter ou à identifier les arrêts imprévus :
 
 - **Utilisez un onduleur** : Gardez votre serveur connecté à un appareil d'alimentation sans interruption (UPS) et configurez-le pour initier un arrêt contrôlé lorsque l'alimentation de la batterie est faible.
 - **Tentez un arrêt en douceur :** Si votre serveur ne répond pas, appuyez brièvement sur le bouton d'alimentation pour initier un arrêt sécurisé. Ne maintenez pas le bouton enfoncé, car cela provoquerait une coupure d'alimentation brutale et entraînerait un arrêt inopiné.
-- **Activez la journalisation persistante :** Allez dans ***Paramètres → Serveur Syslog*** pour activer la journalisation qui persiste après un redémarrage. Voir [Journalisation persistante (serveur Syslog)](../diagnostics/capture-diagnostics-and-logs.mdx#persistent-logs-syslog-server) pour plus de détails.
+- **Activer la journalisation persistante:** Allez dans ***Paramètres → Serveur Syslog*** pour activer la journalisation qui persiste après un redémarrage. Voir [Logs persistants (serveur Syslog)](../diagnostics/capture-diagnostics-and-logs.mdx#persistent-logs-syslog-server) pour plus de détails.
 - **Joindre des diagnostics pour le support :** Si un arrêt non sécurisé se produit, Unraid tentera de sauvegarder les diagnostics dans `/log/diagnostics.zip` sur votre périphérique flash. Joignez ce fichier à vos publications dans le forum lorsque vous demandez de l'aide.
+
 :::
 
 :::tip[UPS meilleures pratiques de configuration]
+
 Un onduleur bien configuré est votre meilleure défense contre les arrêts imprévus dus à une perte d'alimentation.
 
 - **Connectez l'onduleur via USB** à votre serveur Unraid.
 - **Activez le support de l'onduleur** dans ***Paramètres → Paramètres de l'onduleur***.
-- **Configurer les délais d'arrêt :** Configurez l'onduleur pour déclencher un arrêt contrôlé avant que la batterie ne soit faible. Ajustez les seuils de « temps d'exécution restant de la batterie » ou « niveau de charge de la batterie » pour laisser suffisamment de temps à Unraid pour [arrêter le %%array|array%%](../../using-unraid-to/manage-storage/array-configuration.mdx#startstop-the-array) et pour éteindre en toute sécurité.
+- **Configurer les délais d'arrêt :** Configurez l'onduleur pour déclencher un arrêt contrôlé avant que la batterie ne soit faible. Ajustez les seuils de "Durée de la batterie restante" ou de "Niveau de charge de la batterie" pour assurer suffisamment de temps à Unraid pour [arrêter le %%array|array%%](../../using-unraid-to/manage-storage/array/overview.mdx#startstop-the-array) et s'éteindre en toute sécurité.
 - **Testez votre configuration :** Simulez une perte de puissance pour garantir que l'onduleur et Unraid réagissent correctement.
 
 Consultez le [plugin NUT](https://unraid.net/community/apps/c/plugins/p4?srsltid=AfmBOop675PrJQW4iqb4JBN3GyPpwDDiSmnZReq78t27XyxkFdMX8inO#:~:text=NUT%20%2D%20Network%20UPS%20Tools) pour une compatibilité étendue avec des modèles UPS avancés ou du matériel non pris en charge.
+
 :::
 
-## Événements qui causent des arrêts imprévus
+## Événements qui causent des arrêts incorrects
 
-Comprendre les principales causes des arrêts inopinés vous aide à les prévenir. Explorez les onglets ci-dessous pour plus de détails sur chaque scénario.
+Comprendre les principaux déclencheurs des arrêts incorrects vous aide à les prévenir. Les sections suivantes couvrent les scénarios les plus courants et leurs solutions.
 
-<Tabs>
-  <TabItem value="puissance" label="Perte de puissance inattendue" default>
-    <UncleanShutdownsPower />
-  </TabItem>
+### Perte de puissance inattendue
 
-  <TabItem value="flash" label="Défaillance du lecteur flash">
-    <UncleanShutdownsFlash />
-  </TabItem>
+Les interruptions de courant sont l'une des principales raisons des arrêts non propres. Protégez votre système avec un onduleur configuré correctement qui peut arrêter automatiquement Unraid avant que la batterie ne se décharge.
 
-  <TabItem value="terminal" label="Ouvrir des sessions terminal">
-    <UncleanShutdownsTerminal />
-  </TabItem>
-</Tabs>
+:::note
+
+Unraid prend en charge la plupart des unités UPS utilisant le protocole %%apcupsd|apcupsd%% (APC et CyberPower sont généralement compatibles). Si votre UPS n'est pas pris en charge, envisagez d'utiliser le plugin Network UPS Tools (NUT) de Community Applications.
+
+:::
+
+### Défaillance du lecteur flash
+
+Le statut de %%array|array%% est stocké sur votre dispositif USB. Si la clé USB devient indisponible ou passe en mode lecture seule, Unraid ne peut pas mettre à jour le statut d'arrêt, même si l'%%array|array%% s'arrête correctement. Cela entraîne la détection d'un arrêt incorrect au prochain démarrage.
+
+### Ouvrir des sessions terminal
+
+Unraid attend que toutes les sessions terminales ou SSH ouvertes se ferment lors de l'arrêt. Si ces sessions restent actives et que le minuteur d'arrêt expire, un arrêt forcé se produit.
+
+:::tip
+
+Le plugin [Dynamix Stop Shell](https://unraid.net/community/apps/c/tools-system/p2?srsltid=AfmBOoqBXyDNfHxRDCL7Fv9Gcfz8-8CdHmiJSX16PRZpZLLzgQtw2mVk#:~:text=the%20given%20interval.-,Dynamix%20Stop%20Shell,-Dynamix%20Repository) peut automatiquement fermer les sessions bash ou SSH persistantes, aidant ainsi à garantir une fermeture en douceur. Cependant, soyez prudent si des opérations d'écriture sont en cours sur le %%array|array%%.
+
+:::
 
 ---
 
-## Configurer les délais d'arrêt
+## Délai des machines virtuelles
 
-La configuration appropriée des délais d'arrêt est essentielle pour garantir que votre serveur Unraid peut arrêter tous les services efficacement, évitant ainsi les arrêts inopinés, notamment en cas de panne de courant ou de maintenance. Chaque composant de votre système - %%VM|vm%%s, conteneurs Docker, et le %%array|array%% global - a son propre paramètre de délai qui peut être ajusté.
+La configuration correcte des délais d'arrêt est essentielle pour garantir que votre serveur Unraid peut arrêter tous les services efficacement. Cela prévient les arrêts inappropriés, notamment lors des coupures de courant ou de la maintenance. L'étape la plus importante est de configurer vos %%VMs|vm%% pour hiberner au lieu de s'éteindre. Cette approche aide à éliminer de nombreux problèmes liés aux délais.
 
-### Paramètres de délai d'attente recommandés
+### Configuration de l'hibernation VM
 
-| Paramètre                           | Par défaut | Minimum recommandé                                 | Où configurer                                             |
-| ----------------------------------- | ---------- | -------------------------------------------------- | --------------------------------------------------------- |
-| Délai d'arrêt de %%VM\|vm%%         | 60s        | 300s (5 min)                                       | ***Paramètres → Gestionnaire de VM → Arrêt VM (Avancé)*** |
-| Délai d'arrêt des conteneurs Docker | 10s        | 30–60s                                             | ***Paramètres → Docker (Avancé)***                        |
-| Délai d'arrêt général               | 90s        | 3 × délai de %%VM\|vm%% + délai de Docker + 15–30s | ***Paramètres → Paramètres disque → Délai d'arrêt***      |
+:::tip[Use Hibernation VM]
 
-### Délai des machines virtuelles
+Pour les arrêts les plus fiables et rapides, configurez vos %%VMs|vm%% pour hiberner au lieu de s'éteindre. Ceci est particulièrement important pour les %%VMs|vm%% Windows mais bénéfique pour tous les types de %%VM|vm%%.
 
-<details>
-  <summary><strong>Cliquer pour développer/réduire</strong></summary>
+Nous recommandons l'hibernation car elle :
 
-  Unraid arrête d'abord toutes les machines virtuelles configurées (%%VMs|vm%%) avant d'interrompre les conteneurs Docker ou l'%%array|array%% elle-même. Le délai d'arrêt de la VM détermine combien de temps Unraid attend que chaque %%VM|vm%% s'arrête correctement.
+- **Sauvegarde l'état de la VM instantanément** - Pas d'attente pour que l'OS invité s'arrête.
+- **Préserve la perte de données** - Pas de risque d'interrompre les mises à jour ou le travail non sauvegardé.
+- **Évite les problèmes de délai** - L'hibernation est presque instantanée.
+- **Récupération plus rapide** - Les %%VMs|vm%% reprennent exactement là où elles se sont arrêtées.
 
-  <h4>Où définir</h4>
+L'arrêt peut poser problème car :
 
-  - ***Paramètres → Gestionnaire de VM → Arrêt VM*** (vue Avancée activée)
+- Windows peut afficher des boîtes de dialogue (« Sauvegarder ce document ? ») qui arrêtent l'arrêt indéfiniment.
+- Les mises à jour de Windows peuvent durer plus de 10 minutes pendant l'arrêt.
+- Si le délai expire, Unraid tue de force la %%VM|vm%%, ce qui peut corrompre les mises à jour de Windows en cours, les documents non sauvegardés, les données des applications et les systèmes de fichiers dans l'OS invité.
 
-  <h4>Considérer</h4>
+**Critical requirement:** Ensure the %%QEMU|qemu%% %%Guest Agent|guest-agent%% is installed in the %%VM|vm%% for hibernation to function correctly.
 
-  - %%VMs|vm%% sous Windows peuvent prendre plus de temps à s'arrêter, surtout si des mises à jour sont en attente ou si la %%VM|vm%% est en veille/hibernation.
-  - Si le délai est trop court, les %%VMs|vm%% s'arrêteront de force, risquant une perte de données ou une corruption.
+:::
 
-  <h4>Bonne pratique</h4>
+Pour activer l'hibernation VM :
 
-  Réglez le délai sur au moins 300 secondes (5 minutes) pour les %%VMs|vm%% Windows. Planifiez les mises à jour pour qu'elles s'exécutent au démarrage, et non à l'arrêt, afin d'éviter les retards.
-</details>
+<Tabs>
+  <TabItem value="windows" label="VMs Windows" default>
+    1. **Download %%QEMU|qemu%% %%Guest Agent|guest-agent%%:**
+       - Allez sur la [page de téléchargement des pilotes VirtIO](https://fedorapeople.org/groups/virt/virtio-win/direct-downloads/).
+       - Téléchargez le fichier `virtio-win.iso` le plus récent.
 
-### Délai des conteneurs Docker
+    2. **Installez dans Windows %%VM|vm%% :**
+       - Montez le `virtio-win.iso` sur votre %%VM|vm%%.
+       - Exécutez le programme d'installation depuis l'ISO monté.
+       - Install both %%VirtIO|virtio%% drivers AND %%QEMU|qemu%% %%Guest Agent|guest-agent%%.
+       - Redémarrez la %%VM|vm%%.
 
-<details>
-  <summary><strong>Cliquer pour développer/réduire</strong></summary>
+    3. **Configurez dans Unraid :**
+       - Accédez aux paramètres de votre %%VM|vm%% dans l'onglet ***VMs***.
+       - Choisissez **Action à l'arrêt** sur **Hiberner**.
+       - Cliquez sur **Appliquer**.
+  </TabItem>
 
-  Après les %%VMs|vm%%, Unraid arrête tous les conteneurs Docker en cours d'exécution. Le délai d'arrêt du conteneur Docker contrôle combien de temps Unraid attend pour que chaque conteneur se termine proprement.
+  <TabItem value="linux" label="VMs Linux">
+    1. **Install %%QEMU|qemu%% %%Guest Agent|guest-agent%%:**
 
-  <h4>Où définir</h4>
+    ```bash
+    # Ubuntu/Debian
+    sudo apt install qemu-guest-agent
 
-  - ***Paramètres → Docker*** (vue avancée activée)
+    # CentOS/RHEL/Fedora
+    sudo yum install qemu-guest-agent
+    # or
+    sudo dnf install qemu-guest-agent
+    ```
 
-  <h4>Considérer</h4>
+    2. **Activez le service :**
+       ```bash
+       sudo systemctl enable qemu-guest-agent
+       sudo systemctl start qemu-guest-agent
+       ```
 
-  - Les conteneurs sont arrêtés en parallèle.
-  - Les conteneurs complexes, ou ceux avec de grandes bases de données, peuvent nécessiter plus de 10 secondes par défaut pour s'arrêter en toute sécurité.
-  - Si le temps imparti expire, les conteneurs sont arrêtés de force.
+    3. **Configurez dans Unraid :**
+       - Choisissez **Action à l'arrêt** sur **Hiberner** dans les paramètres de votre %%VM|vm%%.
+  </TabItem>
 
-  <h4>Bonne pratique</h4>
-  Augmentez le délai à 30-60 secondes si vous exécutez des conteneurs Docker qui nécessitent un temps d'arrêt supplémentaire.
-</details>
+  <TabItem value="appareil" label="VMs d'appareil">
+    Certains %%VMs|vm%%, comme Home Assistant, ne permettent pas l'installation de logiciels supplémentaires. Pour ceux-ci :
 
-### Délai d'arrêt général
+    - Gardez **Action à l'arrêt** sur **Éteindre**.
+    - Utilisez des valeurs de délai plus longues (voir recommandations de délai ci-dessous).
+    - Considérez les risques de tuer ces %%VMs|vm%% de force pendant les mises à jour.
 
-<details>
-  <summary><strong>Cliquer pour développer/réduire</strong></summary>
+    :::note[Pourquoi les machines virtuelles d'appliance sont différentes]
+    Les %%VMs d'appliance|vm%% sont conçues pour exécuter des logiciels spécifiques et n'autorisent souvent pas l'installation de paquets supplémentaires, tels que %%QEMU|qemu%% %%Guest Agent|guest-agent%%. Cela signifie que l'hibernation n'est pas disponible, vous devrez donc vous fier à une configuration correcte du délai d'attente.
+    :::
+  </TabItem>
+</Tabs>
 
-  Le délai d'arrêt global est le temps maximum qu'Unraid permet pour tous les processus d'arrêt - %%VM|vm%%s, Docker, et opérations sur les disques - avant de forcer un arrêt.
+Maintenant pour vérifier que votre hibernation fonctionne, démarrez votre %%VM|vm%% et ouvrez quelques applications. Puis arrêtez-la depuis Unraid. Lorsque vous la redémarrez, elle devrait reprendre avec toutes les applications encore ouvertes.
 
-  <h4>Où définir</h4>
+:::warning[Guest L'agent est critique]
 
-  - ***Paramètres → Paramètres disque → Délai d'arrêt***
+Without the %%QEMU|qemu%% %%Guest Agent|guest-agent%% installed, hibernation may not work properly. In that case, the %%VM|vm%% will revert to shutdown mode, consuming the full timeout period.
 
-  <h4>Comment calculer</h4>
+:::
 
-  Additionnez vos délais %%VM|vm%% et Docker, puis ajoutez 15–30 secondes pour le démontage des disques et d'autres processus.
+---
 
-  - Exemple : `3 × délai d'arrêt ***VM*** + délai d'arrêt ***Docker*** + 15–30 secondes`
+### Configuration de délai
 
-  <h4>Bonne pratique</h4>
-  Réglez ce minuteur suffisamment haut pour couvrir votre scénario d'arrêt le plus lent, surtout si vous avez de nombreux lecteurs ou un grand %%array|array%%.
-</details>
+Dans cette section, nous couvrirons comment configurer les délais pour divers systèmes et processus. Ces informations sont importantes pour s'assurer que vos %%VMs|vm%% et conteneurs Docker s'arrêtent gracieusement sans perte de données.
 
-### Autonomie de la batterie UPS
+| Paramètre                           | Par défaut | Quand augmenter                                                    | Où configurer                                             |
+| ----------------------------------- | ---------- | ------------------------------------------------------------------ | --------------------------------------------------------- |
+| Délai d'arrêt de %%VM\|vm%%         | 60s        | 300s si vous n'utilisez pas l'hibernation et que les VMs plantent. | ***Paramètres → Gestionnaire de VM → Arrêt VM (Avancé)*** |
+| Délai d'arrêt des conteneurs Docker | 10s        | 30s si des conteneurs plantent lors de l'arrêt.                    | ***Paramètres → Docker (Avancé)***                        |
+| Délai d'arrêt général               | 90s        | 180s si vous avez des arrêts non propres, 300s+ avec VMs.          | ***Paramètres → Paramètres disque → Délai d'arrêt***      |
 
-<details>
-  <summary><strong>Cliquer pour développer/réduire</strong></summary>
+:::tip[When augmenter les délais]
 
-  Votre UPS doit fournir suffisamment de temps de fonctionnement pour permettre à tous les délais d'arrêt de prendre fin avant que le serveur ne perde du courant.
+Si vous rencontrez des arrêts intempestifs ou des conteneurs qui plantent lors de l'arrêt, envisagez d'augmenter le délai d'arrêt général à **180 secondes** (ou **300+ secondes** si vous avez plusieurs %%VMs|vm%%). Cela donne plus de temps aux services pour s'arrêter correctement.
 
-  <h4>Où définir</h4>
+:::
 
-  - ***Paramètres → Paramètres de l’onduleur*** (voir **Temps restant** avec tous les disques en rotation)
+### Séquence d'arrêt
 
-  <h4>Considérer</h4>
+Lorsque l'arrêt est en cours, le processus se déroule dans l'ordre suivant :
 
-  - L'onduleur doit initier un arrêt suffisamment tôt pour permettre à la séquence d'arrêt complète de se terminer.
-  - Si la batterie se décharge avant que l'arrêt ne soit terminé, vous risquez un arrêt imprévu et une possible perte de données.
+1. **Arrêt des %%VMs|vm%% :** Cela implique trois étapes, chacune pouvant prendre jusqu'au délai d'attente de la VM :
 
-  <h4>Bonne pratique</h4>
+   - Étape 1 : Reprendre toutes les %%VMs|vm%% mises en pause
+   - Étape 2 : Hiberner les %%VMs|vm%% qui sont configurées pour l'hibernation
+   - Étape 3 : Arrêter les %%VMs|vm%% restantes
 
-  Testez votre onduleur en simulant une panne de courant et en confirmant qu'Unraid s'arrête proprement avec du temps devant lui.
-</details>
+   Toutes les %%VMs|vm%% à chaque étape sont traitées en même temps, ce qui signifie que le temps total d'arrêt peut être calculé comme : Temps d'attente VM × 3.
+
+2. Les conteneurs Docker s'arrêtent simultanément (temps total = délai d'attente Docker).
+
+3. Les autres services incluent des tâches telles que les conteneurs LXC et les plugins tiers, qui prennent généralement quelques secondes.
+
+4. Arrêt de l'array : les disques doivent être démontés et les données synchronisées ; cela prend généralement 15 à 30 secondes.
+
+:::tip[Calculate votre délai d'arrêt général]
+
+**Formule :** Votre délai d'arrêt général doit être supérieur à :
+
+```
+(VM timeout × 3) + (Docker timeout) + (Other services) + 15-30 seconds
+```
+
+**Exemple :** Selon la formule, cela ressemblerait à ceci : `(300 × 3) + 30 + 10 + 30 = 970 secondes (plus de 16 minutes)`.
+
+**Recommandation :** Au moins **180 secondes (3 minutes)** au minimum et **300+ secondes (5+ minutes)** si vous avez plusieurs %%VMs|vm%% ou des conteneurs complexes.
+
+:::
+
+Si tous vos %%VMs|vm%% sont réglés pour hiberner plutôt que de s'éteindre, alors le délai d'attente de la VM est moins critique puisque l'hibernation est presque immédiate. Vous pouvez utiliser un délai d'attente plus court pour les VM (par exemple, 60-120 secondes) comme sauvegarde pour les %%VMs|vm%% qui ne prennent pas en charge l'hibernation.
+
+---
+
+### Guide de configuration détaillé
+
+Cette section fournit des informations détaillées sur la configuration des délais pour différents composants système. Chaque réglage de délai fonctionne ensemble pour garantir que votre serveur s'arrête en douceur sans perte de données.
+
+#### Delais d'attente pour les VM
+
+Configurer les délais d'arrêt VM dans ***Paramètres → Gestionnaire de VM → Arrêt VM*** (activer la vue avancée).
+
+**Comment ça fonctionne:**
+
+- Les %%VMs|vm%% passent par trois étapes d'arrêt, chacune consommant la totalité du délai de la VM.
+- Toutes les %%VMs|vm%% à chaque étape sont traitées simultanément.
+- Temps total d'arrêt de la VM = Temps d'attente de la VM × 3
+
+**Problèmes courants :**
+
+- **Interruptions de mise à jour Windows :** Les mises à jour pendant l'arrêt peuvent être corrompues si le délai expire.
+- **Travail non sauvegardé :** Les boîtes de dialogue demandant de sauvegarder les documents peuvent arrêter l'arrêt indéfiniment.
+- **Hibernation failures:** %%VMs|vm%% without %%QEMU|qemu%% %%Guest Agent|guest-agent%% may fail to hibernate and use full timeout.
+
+:::tip[VM recommandations de délai d'attente]
+
+- **Primary recommendation:** Configure %%VMs|vm%% to hibernate instead of shutting down (requires %%QEMU|qemu%% %%Guest Agent|guest-agent%%).
+- **Si les VMs plantent lors de l'arrêt :** Augmentez le délai à **300 secondes (5 minutes)** pour les %%VMs|vm%% Windows.
+- **Mises à jour Windows :** Configurez Windows pour installer les mises à jour au démarrage plutôt que lors de l'arrêt.
+- **Testez votre configuration :** Arrêtez manuellement vos %%VMs|vm%% pour confirmer qu'elles s'arrêtent ou hibernent dans le délai imparti.
+
+:::
+
+:::warning[No délai d'attente sécuritaire sans hibernation]
+
+Without hibernation and %%QEMU|qemu%% %%Guest Agent|guest-agent%%, there isn't a truly safe timeout for Windows %%VMs|vm%%. Dialog boxes or ongoing update installations could render any timeout inadequate, leading to forced shutdowns and data corruption risk.
+
+:::
+
+#### Délais d'arrêt Docker
+
+Configurer les délais d'arrêt des conteneurs Docker dans ***Paramètres → Docker*** (activer la vue avancée).
+
+**Comment ça fonctionne:**
+
+- Les conteneurs sont arrêtés en parallèle, donc le temps total équivaut au délai d'arrêt Docker.
+- La plupart des conteneurs s'arrêtent en moins de 10 secondes, mais certains peuvent nécessiter plus de temps.
+- Les conteneurs complexes avec de grandes bases de données ou des opérations en cours pourraient nécessiter un temps supplémentaire.
+- Si le temps imparti expire, les conteneurs sont arrêtés de force.
+
+:::tip[Docker recommandations de délai d'attente]
+
+- Le **délai par défaut de 10 secondes** fonctionne bien pour la plupart des conteneurs.
+- **Si les conteneurs se plantent à l'arrêt :** Augmentez le délai à **30 secondes**.
+- Surveillez vos conteneurs pendant l'arrêt pour identifier ceux qui ont systématiquement besoin de plus de temps.
+
+:::
+
+#### Délais généraux
+
+Configurer le délai d'arrêt général dans ***Paramètres → Paramètres du disque → Délai d'arrêt***.
+
+**Considérations UPS (facteur le plus critique) :**
+
+- Votre onduleur doit offrir suffisamment de temps pour compléter la séquence d'arrêt complète avant que la batterie ne s'épuise.
+- Pour un **arrêt manuel**, vous pouvez définir des délais plus longs puisque vous contrôlez le début de l'arrêt.
+- Avec un **arrêt en cas de coupure de courant**, votre délai est limité par l'autonomie de la batterie de l'onduleur.
+- **Testez votre onduleur** en simulant une coupure de courant pour assurer un arrêt propre de votre serveur avec du temps à revendre.
+
+:::tip[General recommandations de délai d'attente]
+
+- **Si vous avez des arrêts non propres :** Augmenter à **180 secondes (3 minutes)** pour les systèmes sans %%VMs|vm%%.
+- **Pour les systèmes avec %%VMs|vm%% :** Utilisez **300+ secondes (5+ minutes)** si vous n'utilisez pas l'hibernation.
+- **Si l'hibernation est utilisée :** **180-300 secondes** sont généralement suffisantes.
+- Assurez-vous que les délais ne dépassent pas ce que votre onduleur peut supporter lors d'une coupure de courant.
+
+:::
+
+#### Services tiers
+
+**Conteneurs LXC :**
+Le plugin LXC a son propre paramètre de délai d'arrêt pour arrêter les conteneurs. Comme les conteneurs Docker, les conteneurs LXC s'arrêtent généralement en quelques secondes, mais certains peuvent nécessiter plus de temps. Consultez les paramètres du plugin LXC pour le délai d'arrêt du conteneur et incluez ce délai dans le calcul de votre délai d'arrêt général.
+
+**Autres services :**
+Certains plugins ou services personnalisés peuvent avoir leurs propres procédures d'arrêt. Consultez la documentation du plugin pour des délais d'arrêt spécifiques et intégrez-les dans vos calculs.
+
+**Formule mise à jour avec des services tiers :**
+
+```
+(VM timeout × 3) + (Docker timeout) + (LXC/other timeouts) + 15-30 seconds
+```
+
+**Plugin Dynamix Stop Shell :**
+Si vous utilisez souvent SSH ou des sessions terminal, des sessions ouvertes peuvent empêcher des arrêts propres car Unraid attend qu'elles se ferment avant de procéder.
+
+Le plugin [Dynamix Stop Shell](https://unraid.net/community/apps/c/tools-system/p2?srsltid=AfmBOoqBXyDNfHxRDCL7Fv9Gcfz8-8CdHmiJSX16PRZpZLLzgQtw2mVk#:~:text=the%20given%20interval.-,Dynamix%20Stop%20Shell,-Dynamix%20Repository) aide en fermant automatiquement les sessions bash ou SSH persistantes lorsque le tableau est arrêté, assurant un arrêt en temps opportun.
+
+Vous pouvez l'installer depuis [Applications Communautaires (rechercher "Dynamix Stop Shell")](https://unraid.net/community/apps/c/tools-system/p2?srsltid=AfmBOoqBXyDNfHxRDCL7Fv9Gcfz8-8CdHmiJSX16PRZpZLLzgQtw2mVk#:~:text=the%20given%20interval.-,Dynamix%20Stop%20Shell,-Dynamix%20Repository).
+
+:::tip[When pour utiliser le plugin]
+
+- Si vous avez régulièrement des sessions terminal ouvertes.
+- Pour éviter que des sessions SSH oubliées ne retardent l'arrêt.
+- Pour un nettoyage automatisé lors de l'arrêt.
+
+:::
+
+:::caution
+
+- Soyez prudent si vous avez des scripts ou des processus en cours dans des sessions terminal.
+- Assurez-vous qu'aucune opération d'écriture critique n'est en cours avant l'arrêt.
+- Le plugin fermera de force les sessions, ce qui pourrait interrompre le travail.
+
+:::
