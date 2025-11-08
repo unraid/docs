@@ -6,7 +6,9 @@ sidebar_label: Conceptos básicos de seguridad
 # Conceptos básicos de seguridad
 
 :::note[Principle del menor privilegio]
+
 El principio de menor privilegio significa otorgar a los usuarios y dispositivos solo el acceso mínimo necesario para realizar sus tareas, nunca más. Este enfoque limita el daño potencial de cuentas comprometidas o acciones accidentales y es un concepto clave en la seguridad moderna, incluidos los modelos de confianza cero. Aplica este principio en toda tu configuración de Unraid, especialmente al crear usuarios compartidos y asignar permisos.
+
 :::
 
 ## Controlar el acceso a carpetas compartidas
@@ -22,7 +24,9 @@ Al compartir archivos con su servidor Unraid a través de su red doméstica u of
 | %%FTP\|ftp%% (Protocolo de Transferencia de Archivos) | Compatibilidad multiplataforma       | Soporte universal para cliente; configuración sencilla; transferencias de archivos por lotes          | Protocolo en texto plano sin cifrado; credenciales enviadas sin cifrar; seguridad obsoleta              | Solo para transferencias no sensibles o antiguas; usa FTPS (FTP sobre TLS) o SFTP (FTP sobre SSH) para una transferencia de archivos segura |
 
 :::important
+
 A partir de la versión 6.9 de Unraid, se ha eliminado el soporte para **AFP (Apple Filing Protocol)**. Para asegurar que sus computadoras Mac funcionen bien con su servidor Unraid, incluyendo funciones como copias de seguridad de Time Machine, ve a ***Settings → SMB*** y activa **Mejorar la interoperabilidad con macOS**.
+
 :::
 
 Deciding which protocol to use depends on the types of devices you have and what you need to do with your files. By default, Unraid enables %%SMB|samba%% because it's widely supported by modern Windows and macOS systems. %%NFS|nfs%% and %%FTP|ftp%% are turned off but can be enabled if needed.
@@ -53,7 +57,7 @@ Al modificar estas opciones, puedes gestionar quién puede ver y acceder a cada 
 
 ### Estableciendo permisos de usuario para los shares
 
-El control de seguridad de los shares determina cómo los usuarios acceden a los archivos compartidos en su sistema. Puedes configurar un share para que requiera un nombre de usuario y contraseña para acceder a los archivos, limitar el acceso a solo lectura o hacer que sea completamente público sin necesidad de credenciales.
+Cuando vayas a la pestaña **Shares** y selecciones un share, verás su configuración, incluyendo una sección de seguridad donde puedes gestionar [permisos de acceso](#managing-network-visibility-of-shares) basados en los protocolos que has habilitado. De esta manera, puedes personalizar quién tiene acceso a tus archivos dependiendo de sus necesidades.
 
 :::note\[Example]
 
@@ -61,9 +65,9 @@ Si creas un share de `películas` en tu servidor Unraid, puedes elegir si se req
 
 :::
 
-Cuando vayas a la pestaña **Shares** y selecciones un share, verás su configuración, incluyendo una sección de seguridad donde puedes gestionar [permisos de acceso](#managing-network-visibility-of-shares) basados en los protocolos que has habilitado. De esta manera, puedes personalizar quién tiene acceso a tus archivos dependiendo de sus necesidades.
+**Práctica recomendada:** Configura cuentas de usuario y contraseñas para tus shares de Unraid y conéctate utilizando esas credenciales para un acceso fiable desde Windows.
 
-La configuración de **Seguridad** tiene las siguientes opciones:
+**Limitación de Credenciales:** Windows solo permite un conjunto de credenciales de inicio de sesión por servidor a la vez. Si intentas conectarte a diferentes comparticiones en el mismo servidor con diferentes credenciales, la conexión fallará.
 
 | Tipo        | Explicación                                                                     | Caso de Uso Común                                                                         |
 | ----------- | ------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
@@ -72,15 +76,17 @@ La configuración de **Seguridad** tiene las siguientes opciones:
 | **Privado** | Acceso restringido: Solo usuarios específicos pueden leer o escribir.           | Ideal para información sensible, como registros financieros o documentos personales.      |
 
 :::caution[Windows Acceso SMB]
+
 Modern versions of Windows (Windows 10 1709+, Windows 11, Server 2019+) block access to **Public** (guest/anonymous) %%SMB|samba%% shares by default, due to stricter security policies. Attempting to connect to a public share will usually fail unless you manually enable insecure guest logons in Windows settings - which is not recommended for security reasons.
 
 **Práctica recomendada:** Configura cuentas de usuario y contraseñas para tus shares de Unraid y conéctate utilizando esas credenciales para un acceso fiable desde Windows.
 
 **Limitación de Credenciales:** Windows solo permite un conjunto de credenciales de inicio de sesión por servidor a la vez. Si intentas conectarte a diferentes comparticiones en el mismo servidor con diferentes credenciales, la conexión fallará.
 
-**Solución Alternativa:** Si encuentras problemas de credenciales, intenta conectarte a una compartición usando el nombre del servidor y a otra usando su dirección IP. Windows los tratará como servidores separados.
+Cuando accedes por primera vez a la %%WebGUI|web-gui%% después de la instalación, se te requiere configurar una contraseña para el %%usuario root|root-user%%. Sin embargo, Unraid no impone requisitos de complejidad de contraseña: depende de ti como usuario establecer el grado de seguridad de la contraseña para tu servidor.
 
 Para más detalles, consulta [la documentación de Microsoft sobre el acceso de invitados SMB](https://learn.microsoft.com/en-us/windows-server/storage/file-server/enable-insecure-guest-logons-smb2-and-smb3).
+
 :::
 
 ---
@@ -95,7 +101,7 @@ Cuando accedes por primera vez a la %%WebGUI|web-gui%% después de la instalaci�
 - Considera usar el plugin **Dynamix Password Validator** desde [Community Apps](../../using-unraid-to/run-docker-containers/community-applications.mdx) para obtener comentarios en tiempo real sobre la fuerza de la contraseña.
 - Para orientación adicional, consulta la herramienta de fuerza de contraseñas de [Bitwarden](https://bitwarden.com/) disponible en línea.
 
-### Revisar y minimizar el reenvío de puertos
+### Seguridad del acceso a los shares
 
 Reenviar puertos desde tu router a tu servidor Unraid puede ser necesario para el acceso remoto a servicios, pero expone tu red a riesgos significativos. Solo reenvía puertos que comprendas completamente y necesites.
 
@@ -108,18 +114,22 @@ Reenviar puertos desde tu router a tu servidor Unraid puede ser necesario para e
 | 57xx       | %%VNC\|vnc-session%% para %%VMs\|vm%%     | Expone consolas %%VM\|vm%%; riesgo de acceso remoto no autorizado                                | Usa Unraid Connect o VPN                                                                                                                                          |
 
 :::tip
+
 Si ves una regla de reenvío de puertos que no entiendes, elimínala y monitorea si hay problemas. Siempre puedes volver a agregarla si es necesario.
+
 :::
 
 :::caution
+
 Nunca pongas tu servidor en la DMZ de tu red. Colocar tu servidor Unraid en la DMZ expone todos los puertos a Internet, aumentando dramáticamente el riesgo de un compromiso. Incluso con contraseñas fuertes, esto no se recomienda nunca.
+
 :::
 
 ---
 
 ## Seguridad del acceso a los shares
 
-### Controlar la visibilidad y permisos de los shares
+### Mantén tu servidor actualizado
 
 - Usa la pestaña **Shares** en el WebGUI para establecer la exportación y las configuraciones de seguridad de cada share.
 - Prefiere comparticiones Privadas o Seguras para datos sensibles. Las comparticiones Públicas son accesibles por cualquiera en la red y están bloqueadas por defecto en las versiones modernas de Windows por razones de seguridad.
@@ -169,4 +179,4 @@ Nunca expongas directamente la %%WebGUI|web-gui%% a Internet. En su lugar, utili
 
 ---
 
-\* *"%%WireGuard|wireguard%%" y el logotipo de "%%WireGuard|wireguard%%" son marcas registradas de Jason A. Donenfeld.*
+\* *"%%WireGuard|wireguard%%" y el logo "%%WireGuard|wireguard%%" son marcas registradas de Jason A. Donenfeld.*
