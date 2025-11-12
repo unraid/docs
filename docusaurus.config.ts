@@ -394,7 +394,7 @@ const config: Config = {
           },
           {
             from: "/unraid-os/faq/redeem-license-activation-code/",
-            to: "/unraid-os/troubleshooting/licensing-faq/#redeem-activation-code",
+            to: "/unraid-account/redeem-activation-code/", 
           },
           {
             from: "/unraid-os/faq/unraid-account/",
@@ -800,7 +800,11 @@ const config: Config = {
           },
           {
             from: "/go/faq-licensing-redeem-activation-code/",
-            to: "/unraid-os/troubleshooting/licensing-faq/#redeem-activation-code",
+            to: "/unraid-account/redeem-activation-code/",
+          },
+          {
+            from: "/go/redeem-activation-code/",
+            to: "/unraid-account/redeem-activation-code/",
           },
           {
             from: "/go/faq-licensing-upgrade/",
