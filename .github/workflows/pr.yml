@@ -16,8 +16,6 @@ jobs:
   lint:
     if: ${{ github.event.action != 'closed' }}
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -28,7 +26,7 @@ jobs:
           persist-credentials: false
 
       - name: Setup Node.js
-        uses: actions/setup-node@v5
+        uses: actions/setup-node@v6
         with:
           node-version-file: '.nvmrc'
           cache: npm
@@ -51,26 +49,11 @@ jobs:
             echo "has_changes=false" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Notify forked PRs
-        if: steps.lint_changes.outputs.has_changes == 'true' && github.repository != github.event.pull_request.head.repo.full_name
+      - name: Fail when formatting is required
+        if: steps.lint_changes.outputs.has_changes == 'true'
         run: |
-          echo "::warning::Format fixes were generated but cannot be pushed automatically for pull requests from forks. Please run 'npm run format' locally and push the changes."
-
-      - name: Commit lint fixes
-        if: steps.lint_changes.outputs.has_changes == 'true' && github.repository == github.event.pull_request.head.repo.full_name
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A
-          git commit -m "chore: apply lint and format fixes"
-
-      - name: Push lint fixes
-        if: steps.lint_changes.outputs.has_changes == 'true' && github.repository == github.event.pull_request.head.repo.full_name
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git
-          git push origin HEAD:${{ github.event.pull_request.head.ref }} || echo "Unable to push lint fixes (likely due to branch permissions)."
+          echo "::error::Formatting or lint fixes were generated. Please run 'npm run format' followed by 'npm run lint' locally and push the resulting changes."
+          exit 1
 
   deploy-preview:
     runs-on: ubuntu-latest
@@ -87,7 +70,7 @@ jobs:
           persist-credentials: false
 
       - name: Setup Node.js
-        uses: actions/setup-node@v5
+        uses: actions/setup-node@v6
         if: ${{ github.event.action != 'closed' }}
         with:
           node-version-file: '.nvmrc'
