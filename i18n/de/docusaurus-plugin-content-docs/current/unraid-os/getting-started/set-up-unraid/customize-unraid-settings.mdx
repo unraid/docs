@@ -8,7 +8,9 @@ sidebar_label: Unraid-Einstellungen anpassen
 Das Unraid OS funktioniert automatisch, ermöglicht jedoch die weitere Anpassung von Einstellungen wie IP-Adresse, Hostname, Festplattenoptimierungen und mehr über die Registerkarte **Einstellungen** im Unraid **%%WebGUI|web-gui%%**.
 
 :::tip[Tailscale integration]
+
 **Tailscale** ist ein optionales Plugin, das Sie über den Tab **Apps** durch Suchen nach "Tailscale" installieren können. Es bietet sicheren Fernzugriff auf Ihr Netzwerk und fügt Ihren **Einstellungen** einen Abschnitt **Tailscale** hinzu, um erweiterte Fernverwaltungsfunktionen zu bieten.
+
 :::
 
 <div style={{ margin: 'auto', maxWidth: '700px'}}>
@@ -117,7 +119,7 @@ Unraid kann mit einer APC (oder kompatiblen) USV (Unterbrechungsfreie Stromverso
   ![VM-Manager](/img/settings-vmmanager.png)
 </div>
 
-## Netzwerkdienste
+## NFS (Network File System)
 
 **Network Services** let you configure network communication protocols on your Unraid server, which are essential for user and disk shares. You can also enable an %%FTP|ftp%% server, a logging server, and set up a %%VPN|vpn-tunnel%% for secure remote access.
 
@@ -156,10 +158,12 @@ Der %%Syslog-Server|syslog-server%% speichert dauerhaft Ihr Systemlog, was für 
 ### Tailscale
 
 :::note
+
 Der Tailscale-Abschnitt ist nur verfügbar, wenn Sie das Tailscale-Plugin installiert haben.
+
 :::
 
-Der Abschnitt %%Tailscale|tailscale%% ermöglicht sicheren Fernzugriff über den %%Tailscale|tailscale%% %%VPN|vpn-tunnel%%. Hier können Sie sich anmelden, um Ihren Unraid-Server mit Ihrem %%Tailnet|tailnet%% zu verbinden, die zugewiesene IP-Adresse und den Hostnamen anzeigen sowie die %%Tailscale|tailscale%%-Konnektivität aktivieren oder deaktivieren.
+Sie können eine %%VPN|vpn-tunnel%%-Verbindung zu Ihrem Unraid-Server mithilfe von [%%Wireguard|wireguard%%](https://www.wireguard.com/) für sichere Internetverbindungen herstellen.
 
 Sie können Ihren Server auch als %%Subnetz-Router|subnet-routing%% für lokale Geräte oder als Exit-Node konfigurieren, um Internetverkehr zu leiten. Dieser Abschnitt ermöglicht die Verwaltung beworbener Routen, den Status von Exit-Nodes, Integrationsoptionen für Docker-Container und die Überwachung des Verbindungsstatus zur Fehlersuche.
 
@@ -205,11 +209,162 @@ Passen Sie das Erscheinungsbild des Unraid %%WebGUI|web-gui%% auf dieser Seite a
 
 ### Benachrichtigungseinstellungen
 
-You can configure browser and email notifications on this page, subscribing to different types and setting custom alerts for %%SMART|smart%% attribute values.
+Unraid kann Ihnen Benachrichtigungen über wichtige Systemereignisse, Aktualisierungen und Warnungen über Ihren Browser, per E-Mail oder über Drittanbieter-Benachrichtigungsdienste senden. Die Seite für Benachrichtigungseinstellungen ermöglicht es Ihnen, zu steuern, wie und wann Sie diese Benachrichtigungen erhalten.
+
+Hier werden Drittanbieter-Plugins angezeigt, die die Funktionalität von Unraid erweitern und Ihnen mehr Kontrolle über Ihren Server geben. Zum Beispiel ist das [Community-Applikationen Plugin](../../using-unraid-to/run-docker-containers/community-applications.mdx) enthalten. Andere Plugins bieten Funktionen zur Systemüberwachung, -wartung, Speicherverwaltung und `appdata`-Backups.
 
 <div style={{ margin: 'auto', maxWidth: '400px'}}>
   ![Benachrichtigungseinstellungen](/img/settings-notifications.png)
 </div>
+
+#### Anzeige- und Verhaltenseinstellungen
+
+Konfigurieren Sie, wie Benachrichtigungen in Ihrem Browser erscheinen:
+
+- **Benachrichtigungsanzeige**: Wählen Sie zwischen *Detailiert* oder *Zusammengefasst* für den Benachrichtigungsstil.
+- **Anzeigeposition**: Legen Sie fest, wo Benachrichtigungen erscheinen (*oben rechts*, *oben links*, *unten rechts*, *unten links* oder *mittig*).
+- **Auto-Schließen (Sekunden)**: Wie lange Benachrichtigungen sichtbar bleiben, bevor sie automatisch geschlossen werden.
+- **Datumsformat**: Wählen Sie Ihr bevorzugtes Datumsformat für Benachrichtigungszeitstempel.
+- **Zeitformat**: Wählen Sie zwischen *12-Stunden* oder *24-Stunden* Zeitdarstellung.
+- **Benachrichtigungen auf Flash speichern**: Speichern Sie den Benachrichtigungsverlauf auf Ihrem USB-Stick (erfordert Flash-Speicherplatz).
+
+#### Benachrichtigungstypen
+
+Steuern Sie, welche Ereignisse Benachrichtigungen auslösen:
+
+- **Systembenachrichtigungen**: Allgemeine Systemereignisse und -meldungen.
+- **Unraid OS-Aktualisierungsbenachrichtigung**: Warnungen, wenn neue Versionen von Unraid OS verfügbar sind.
+- **Plugins-Aktualisierungsbenachrichtigung**: Warnungen bei verfügbaren Plugin-Aktualisierungen.
+- **Docker-Aktualisierungsbenachrichtigung**: Warnungen bei verfügbaren Docker-Container-Aktualisierungen.
+- **Sprachpaket-Aktualisierungsbenachrichtigung**: Warnungen, wenn Sprachpaketaktualisierungen verfügbar sind.
+- **Array-Status-Benachrichtigung**: Warnungen zu %%array|array%% Ereignissen und Statusänderungen.
+
+Für jeden Benachrichtigungstyp können Sie die Häufigkeit einstellen: *Nie prüfen*, täglich, wöchentlich, monatlich oder, in einigen Fällen, sogar mehrmals täglich prüfen.
+
+#### Liefermethoden
+
+Wählen Sie, wie Sie Benachrichtigungen für jede Kategorie (*Mitteilungen*, *Warnungen* und *Alarme*) erhalten möchten:
+
+- **Browser**: Zeigt Benachrichtigungen im %%WebGUI|web-gui%% an, wenn Sie eingeloggt sind.
+- **E-Mail**: Sendet Benachrichtigungen per E-Mail (erfordert [SMTP-Konfiguration](#smtp-einstellungen)).
+- **Agenten**: Sendet Benachrichtigungen über konfigurierte Drittanbieter-Dienste.
+
+:::tip
+
+Aktivieren Sie **Browser**-Benachrichtigungen für eine sofortige Sichtbarkeit bei der Nutzung des %%WebGUI|web-gui%% und **E-Mail** für Warnungen, wenn Sie sich nicht bei Ihrem Server befinden. Nutzen Sie **Agenten** zur Integration mit mobilen Apps und Diensten wie Discord oder Telegram.
+
+:::
+
+#### SMTP-Einstellungen
+
+Um E-Mail-Benachrichtigungen zu erhalten, müssen Sie die Einstellungen Ihres E-Mail-Servers konfigurieren. Unraid unterstützt viele E-Mail-Anbieter einschließlich Gmail, Outlook und benutzerdefinierte SMTP-Server.
+
+Die SMTP-Einstellungen finden Sie unter ***Einstellungen → Benutzereinstellungen → Benachrichtigungseinstellungen → SMTP-Einstellungen***.
+
+**Grundkonfiguration:**
+
+- **Voreingestellter Dienst**: Wählen Sie eine voreingestellte Konfiguration (*Gmail*, *Outlook/Hotmail* oder *Benutzerdefiniert*), um gängige Einstellungen automatisch auszufüllen.
+- **Absender-E-Mail-Adresse**: Die E-Mail-Adresse, von der Benachrichtigungen gesendet werden.
+- **E-Mail-Empfänger**: Kommagetrennte Liste von E-Mail-Adressen, die Benachrichtigungen erhalten sollen.
+- **Priorität im Header**: Markiert E-Mails als hohe Priorität (*Ja* oder *Nein*).
+- **E-Mail-Betreff-Präfix**: Text, der allen Benachrichtigungs-E-Mail-Betreffs vorangestellt wird (Standard: *Unraid-Status:*).
+
+**Servereinstellungen:**
+
+- **Mailserver**: SMTP-Serveradresse (z. B. `smtp.gmail.com`).
+- **Mailserver-Port**: SMTP-Portnummer (übliche Ports: `465` für SSL/TLS, `587` für STARTTLS, `25` für unverschlüsselt).
+- **SSL/TLS verwenden**: Aktiviert SSL/TLS-Verschlüsselung (*Ja* oder *Nein*).
+- **STARTTLS verwenden**: Verwendet STARTTLS für die Verschlüsselung (*Ja* oder *Nein*).
+- **TLS-Zertifikat definieren**: Spezifizieren Sie ein benutzerdefiniertes TLS-Zertifikat, falls erforderlich (*Ja* oder *Nein*).
+- **TLS-Zertifikat-Speicherort**: Pfad zur benutzerdefinierten Zertifikatsdatei (nur wenn *TLS-Zertifikat definieren* aktiviert ist).
+
+**Authentifizierung:**
+
+- **Authentifizierungsmethode**: Wählen Sie *Keine*, *CRAM-MD5* oder *Login* (Benutzername/Passwort).
+- **Benutzername**: Ihr Benutzername für Ihr E-Mail-Konto (normalerweise Ihre vollständige E-Mail-Adresse).
+- **Passwort**: Ihr E-Mail-Kontopasswort oder App-spezifisches Passwort.
+
+Nach der Konfiguration Ihrer Einstellungen verwenden Sie die **TEST**-Schaltfläche, um zu überprüfen, ob Ihre E-Mail-Konfiguration korrekt funktioniert.
+
+##### Google Mail mit App-Passwörtern konfigurieren
+
+Gmail erfordert app-spezifische Passwörter, wenn SMTP mit Konten, die die 2-Schritt-Verifizierung aktiviert haben, verwendet wird (empfohlen für die Sicherheit).
+
+**Um Gmail-Benachrichtigungen einzurichten:**
+
+1. Wählen Sie im **Voreingestellten Dienst** *Gmail* aus (dies füllt die **Mailserver** und **Mailserver-Port** automatisch aus).
+2. Geben Sie Ihre Gmail-Adresse in **Absender-E-Mail-Adresse** ein.
+3. Geben Sie die E-Mail-Adresse(n) des Empfängers in **E-Mail-Empfänger** ein.
+4. Setzen Sie **Benutzername** auf Ihre vollständige Gmail-Adresse (z. B. `ihrename@gmail.com`).
+5. Für **Passwort** müssen Sie ein App-Passwort generieren:
+   - Gehen Sie zu Ihren [Google-Kontoeinstellungen](https://myaccount.google.com/)
+   - Navigieren Sie zu **Sicherheit**.
+   - Unter "So melden Sie sich bei Google an" stellen Sie sicher, dass **2-Schritt-Verifizierung** aktiviert ist (erforderlich für App-Passwörter).
+   - Suchen Sie im selben Abschnitt **App-Passwörter** (oder suchen Sie nach "App-Passwörter" in der Suchleiste).
+   - Möglicherweise müssen Sie Ihre Identität überprüfen.
+   - Geben Sie einen benutzerdefinierten Namen für den App-Namen ein, wie "Unraid Server".
+   - Klicken Sie auf **Erstellen**
+   - Google generiert ein 16-stelliges Passwort.
+   - Kopieren Sie dieses Passwort und fügen Sie es in das **Passwort**-Feld in Unraid ein.
+6. Klicken Sie auf **TEST**, um die Konfiguration zu überprüfen.
+7. Klicken Sie auf **FERTIG**, um Ihre Einstellungen zu speichern.
+
+:::tip[Default Gmail-Einstellungen]
+
+- **Mailserver**: `smtp.gmail.com`
+- **Mailserver-Port**: `465`
+- **SSL/TLS verwenden**: `Ja`
+- **STARTTLS verwenden**: `Nein`
+- **Authentifizierungsmethode**: `Login`
+
+:::
+
+:::warning[Security empfehlung]
+
+Verwenden Sie immer App-Passwörter anstelle Ihres Haupt-Gmail-Passworts. App-Passwörter können individuell widerrufen werden, ohne das Hauptkontopasswort zu ändern, was für bessere Sicherheit sorgt, falls Ihre Unraid-Konfiguration jemals kompromittiert wird.
+
+:::
+
+#### Benachrichtigungsagenten
+
+Benachrichtigungsagenten ermöglichen das Senden von Alerts an Drittanbieterdienste und mobile Apps. Unraid enthält integrierte Unterstützung für viele beliebte Benachrichtigungsdienste.
+
+Um Benachrichtigungsagenten zuzugreifen, klicken Sie auf den **Benachrichtigungsagenten**-Link auf der Seite für die Benachrichtigungseinstellungen oder navigieren Sie zu ***Einstellungen → Benutzereinstellungen → Benachrichtigungseinstellungen → Benachrichtigungsagenten***.
+
+**Eingebaute Agenten beinhalten:**
+
+- <img src="/img/customize-unraid-settings/icons/icon-bark.png" alt="Bark" style={{height: '20px', verticalAlign: 'middle', marginRight: '8px'}} /> **Bark**: iOS-Benachrichtigungs-App
+- <img src="/img/customize-unraid-settings/icons/icon-boxcar.png" alt="Boxcar" style={{height: '20px', verticalAlign: 'middle', marginRight: '8px'}} /> **Boxcar**: Push-Nachrichtendienst
+- <img src="/img/customize-unraid-settings/icons/icon-discord.png" alt="Discord" style={{height: '20px', verticalAlign: 'middle', marginRight: '8px'}} /> **Discord**: Senden von Benachrichtigungen an Discord-Kanäle über Webhook
+- <img src="/img/customize-unraid-settings/icons/icon-gotify.png" alt="Gotify" style={{height: '20px', verticalAlign: 'middle', marginRight: '8px'}} /> **Gotify**: Selbstgehosteter Benachrichtigungsserver
+- <img src="/img/customize-unraid-settings/icons/icon-ntfy.png" alt="ntfy.sh" style={{height: '20px', verticalAlign: 'middle', marginRight: '8px'}} /> **ntfy.sh**: Einfacher HTTP-basierter Benachrichtigungsdienst
+- <img src="/img/customize-unraid-settings/icons/icon-prowl.png" alt="Prowl" style={{height: '20px', verticalAlign: 'middle', marginRight: '8px'}} /> **Prowl**: iOS-Push-Benachrichtigungen
+- <img src="/img/customize-unraid-settings/icons/icon-pushbits.png" alt="Pushbits" style={{height: '20px', verticalAlign: 'middle', marginRight: '8px'}} /> **Pushbits**: Selbstgehostete Benachrichtigungsweiterleitung
+- <img src="/img/customize-unraid-settings/icons/icon-pushbullet.png" alt="Pushbullet" style={{height: '20px', verticalAlign: 'middle', marginRight: '8px'}} /> **Pushbullet**: Plattformübergreifender Benachrichtigungsdienst
+- <img src="/img/customize-unraid-settings/icons/icon-pushover.png" alt="Pushover" style={{height: '20px', verticalAlign: 'middle', marginRight: '8px'}} /> **Pushover**: Push-Benachrichtigungsdienst für iOS und Android
+- <img src="/img/customize-unraid-settings/icons/icon-pushplus.png" alt="Pushplus" style={{height: '20px', verticalAlign: 'middle', marginRight: '8px'}} /> **Pushplus**: Chinesischer Push-Nachrichtendienst
+- <img src="/img/customize-unraid-settings/icons/icon-serverchan.png" alt="ServerChan" style={{height: '20px', verticalAlign: 'middle', marginRight: '8px'}} /> **ServerChan**: Chinesischer Serverüberwachungs- und Benachrichtigungsdienst
+- <img src="/img/customize-unraid-settings/icons/icon-slack.png" alt="Slack" style={{height: '20px', verticalAlign: 'middle', marginRight: '8px'}} /> **Slack**: Senden von Benachrichtigungen an Slack-Kanäle über Webhook
+- <img src="/img/customize-unraid-settings/icons/icon-telegram.png" alt="Telegram" style={{height: '20px', verticalAlign: 'middle', marginRight: '8px'}} /> **Telegram**: Nachrichten an den Telegram-Bot senden
+
+**Einen Agenten konfigurieren:**
+
+1. Wählen Sie den Agenten aus, den Sie konfigurieren möchten, aus der Liste.
+2. Ändern Sie **Agentenfunktion** von *Deaktiviert* zu *Aktiviert*.
+3. Füllen Sie die erforderlichen Felder für diesen Dienst aus:
+   - Die meisten Agenten benötigen eine **Webhook-URL**, ein **API-Token** oder ein **Zugriffstoken**.
+   - Einige Dienste erfordern zusätzliche Konfiguration wie Kanal-IDs oder Gruppencodes.
+4. Konfigurieren Sie den **Benachrichtigungstitel** (normalerweise auf *Betreff* gesetzt, um den Benachrichtigungsbetreff zu verwenden).
+5. Konfigurieren Sie die **Benachrichtigungsnachricht** (normalerweise auf *Beschreibung* gesetzt, um den vollständigen Benachrichtigungstext zu verwenden).
+6. Klicken Sie auf **FERTIG**, um zu speichern.
+
+Jeder Agent hat unterschiedliche Anforderungen - konsultieren Sie die Dokumentation für Ihren gewählten Dienst, um die erforderlichen API-Schlüssel, Webhook-URLs oder Tokens zu erhalten.
+
+:::tip
+
+Sie können mehrere Agenten gleichzeitig aktivieren. Beispielsweise könnten Sie Discord für Teambenachrichtigungen und Pushover für persönliche mobile Alarme verwenden. Beachten Sie, dass **alle Benachrichtigungen** an **alle aktivierten Agenten** gesendet werden, sodass die Nutzung mehrerer Agenten zu doppelten Benachrichtigungen führen kann.
+
+:::
 
 ### Scheduler
 
@@ -221,4 +376,4 @@ Hier werden Drittanbieter-Plugins angezeigt, die die Funktionalität von Unraid 
 
 ---
 
-\* *„%%WireGuard|wireguard%%“ und das „%%WireGuard|wireguard%%“-Logo sind eingetragene Warenzeichen von Jason A. Donenfeld.*
+\* *"%%WireGuard|wireguard%%" und das "%%WireGuard|wireguard%%" Logo sind eingetragene Marken von Jason A. Donenfeld.*
