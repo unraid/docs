@@ -3,148 +3,319 @@ sidebar_position: 2
 sidebar_label: Apagados no limpios
 ---
 
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
-import UncleanShutdownsPower from './partials/unclean-shutdowns/unexpected-power-loss.mdx';
-import UncleanShutdownsFlash from './partials/unclean-shutdowns/flash-drive-failure.mdx';
-import UncleanShutdownsTerminal from './partials/unclean-shutdowns/open-terminal-sessions.mdx';
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
 
 # Apagados no limpios
 
 Un cierre no limpio ocurre cuando Unraid detecta que el %%array|array%% no se detuvo correctamente antes de que el sistema se apagara. Esta situación puede desencadenar una %%parity check|parity-check%% automática durante el próximo arranque para garantizar la integridad de los datos.
 
 :::important[Recommendations para prevenir apagados no limpios]
+
 Tomar algunas medidas proactivas puede ayudarte a evitar o identificar apagados no limpios:
 
 - **Usa un SAI:** Mantén tu servidor conectado a un Sistema de Alimentación Ininterrumpida (SAI) y configúralo para iniciar un apagado controlado cuando la energía de la batería sea baja.
 - **Intentar un apagado ordenado:** Si su servidor no responde, presione brevemente el botón de encendido para activar un apagado seguro. No mantenga el botón presionado, ya que esto forzará un apagado duro y provocará un apagado no limpio.
-- **Habilitar registro persistente:** Vaya a ***Ajustes → Servidor de Syslog*** para activar el registro que persiste después de un reinicio. Consulte [Registros persistentes (servidor Syslog)](../diagnostics/capture-diagnostics-and-logs.mdx#persistent-logs-syslog-server) para más detalles.
+- **Habilitar registro persistente:** Ve a ***Configuración → Servidor de Syslog*** para activar el registro que persiste después de un reinicio. Consulta [Registros persistentes (servidor Syslog)](../diagnostics/capture-diagnostics-and-logs.mdx#persistent-logs-syslog-server) para más detalles.
 - **Adjuntar diagnósticos para soporte:** Si ocurre un apagado no limpio, Unraid intentará guardar los diagnósticos en `/log/diagnostics.zip` en su dispositivo de flash. Adjunte este archivo a las publicaciones en el foro cuando busque ayuda.
+
 :::
 
 :::tip[UPS mejores prácticas de configuración]
+
 Un SAI bien configurado es tu mejor defensa contra apagados no limpios causados por pérdida de energía.
 
 - **Conecta el SAI vía USB** a tu servidor Unraid.
 - **Habilitar el soporte de SAI** en ***Configuración → Configuración de SAI***.
-- **Configurar tiempos de espera de apagado:** Configure el SAI para que desencadene un apagado controlado antes de que la batería se agote. Ajuste los umbrales de "Tiempo restante de la batería" o "Nivel de carga de la batería" para proporcionar tiempo suficiente para que Unraid [detenga el %%array|array%%](../../using-unraid-to/manage-storage/array-configuration.mdx#startstop-the-array) y se apague de forma segura.
+- **Configura los tiempos de espera de apagado:** Establezca el UPS para que active un apagado controlado antes de que la batería se agote. Ajuste los umbrales de "Tiempo de ejecución restante de la batería" o "Nivel de carga de la batería" para proporcionar suficiente tiempo para que Unraid [detenga el %%array|array%%](../../using-unraid-to/manage-storage/array/overview.mdx#startstop-the-array) y se apague de forma segura.
 - **Prueba tu configuración:** Simula una pérdida de energía para asegurarte de que el SAI y Unraid respondan correctamente.
 
 Consulte el [plugin NUT](https://unraid.net/community/apps/c/plugins/p4?srsltid=AfmBOop675PrJQW4iqb4JBN3GyPpwDDiSmnZReq78t27XyxkFdMX8inO#:~:text=NUT%20%2D%20Network%20UPS%20Tools) para obtener una mayor compatibilidad con modelos UPS más avanzados o hardware no compatible.
+
 :::
 
-## Eventos que causan apagados no limpios
+## Eventos que provocan apagados no limpios
 
-Comprender los principales desencadenantes de apagados no limpios le ayuda a prevenirlos. Explore las pestañas a continuación para obtener detalles sobre cada escenario.
+Comprender los principales desencadenantes de apagados no limpios lo ayuda a prevenirlos. Las siguientes secciones cubren los escenarios más comunes y sus soluciones.
 
-<Tabs>
-  <TabItem value="energía" label="Pérdida de energía inesperada" default>
-    <UncleanShutdownsPower />
-  </TabItem>
+### Pérdida de energía inesperada
 
-  <TabItem value="flash" label="Fallo de unidad flash">
-    <UncleanShutdownsFlash />
-  </TabItem>
+Las interrupciones de energía son una de las principales razones de apagados no limpios. Protege tu sistema con un SAI (Sistema de Alimentación Ininterrumpida) configurado correctamente que pueda apagar automáticamente Unraid antes de que se agote la batería.
 
-  <TabItem value="terminal" label="Abrir sesiones de terminal">
-    <UncleanShutdownsTerminal />
-  </TabItem>
-</Tabs>
+:::note
+
+Unraid admite la mayoría de las unidades UPS utilizando el protocolo %%apcupsd|apcupsd%% (APC y CyberPower suelen ser compatibles). Si tu UPS no es compatible, considera usar el complemento Network UPS Tools (NUT) de Community Applications.
+
+:::
+
+### Fallo de unidad flash
+
+El estado de %%array|array%% se guarda en tu dispositivo USB. Si la unidad flash se vuelve inaccesible o entra en un estado de solo lectura, Unraid no puede actualizar el estado de apagado, incluso si el %%array|array%% se detiene correctamente. Esto resulta en un apagado incorrecto que se detecta en el próximo arranque.
+
+### Abrir sesiones de terminal
+
+Unraid espera que todas las sesiones abiertas de terminal o SSH se cierren durante el apagado. Si estas sesiones permanecen activas y el temporizador de apagado expira, se produce un apagado forzado.
+
+:::tip
+
+El plugin [Dynamix Stop Shell](https://unraid.net/community/apps/c/tools-system/p2?srsltid=AfmBOoqBXyDNfHxRDCL7Fv9Gcfz8-8CdHmiJSX16PRZpZLLzgQtw2mVk#:~:text=the%20given%20interval.-,Dynamix%20Stop%20Shell,-Dynamix%20Repository) puede cerrar automáticamente sesiones de bash o SSH que estén sin actividad, ayudando a asegurar un apagado ordenado. Sin embargo, tenga cuidado si hay operaciones de escritura en curso en el %%array|array%%.
+
+:::
 
 ---
 
-## Configuración de tiempos de apagado
+## Tiempo de espera para máquinas virtuales
 
-Configurar correctamente los tiempos de espera de apagado es esencial para asegurar que su servidor Unraid pueda detener efectivamente todos los servicios, previniendo apagados no limpios, especialmente durante pérdidas de energía o mantenimiento. Cada componente de su sistema - %%VM|vm%%s, contenedores de Docker, y el %%array|array%% general - tiene su propia configuración de tiempo de espera que puede ajustarse.
+Configurar correctamente los tiempos de espera de apagado es esencial para asegurar que su servidor Unraid pueda detener todos los servicios de manera efectiva. Esto evita apagados no limpios, especialmente durante cortes de energía o mantenimiento. El paso más importante es configurar sus %%VMs|vm%% para hibernar en lugar de apagarse. Este enfoque ayuda a eliminar muchos problemas relacionados con el tiempo de espera.
 
-### Configuraciones recomendadas de tiempo de espera
+### Configuración de hibernación de VM
 
-| Configuración                                   | Defecto | Recomendación mínima                                                     | Dónde configurar                                                             |
-| ----------------------------------------------- | ------- | ------------------------------------------------------------------------ | ---------------------------------------------------------------------------- |
-| Tiempo de espera para apagado de %%VM\|vm%%     | 60s     | 300s (5 min)                                                             | ***Configuración → Gestor de VM → Apagado de VM (Avanzado)***                |
-| Tiempo de espera para detener contenedor Docker | 10s     | 30–60s                                                                   | ***Configuración → Docker (Avanzado)***                                      |
-| Tiempo de espera general de apagado             | 90s     | 3 × tiempo de espera de %%VM\|vm%% + tiempo de espera de Docker + 15–30s | ***Configuración → Configuración de Disco → Tiempo de espera para apagado*** |
+:::tip[Use Hibernación de VM
 
-### Tiempo de espera para máquinas virtuales
+Para los apagados más confiables y rápidos, configure sus %%VMs|vm%% para hibernar en lugar de apagarse. Esto es especialmente importante para las %%VMs|vm%% de Windows, pero beneficia a todos los tipos de %%VM|vm%%.
 
-<details>
-  <summary><strong>Haga clic para expandir/contraer</strong></summary>
+Recomendamos usar la hibernación porque:
 
-  Unraid primero apaga todas las máquinas virtuales configuradas (%%VMs|vm%%) antes de detener los contenedores de Docker o el %%array|array%% en sí. El Tiempo de Espera de Apagado de VM determina cuánto tiempo espera Unraid para que cada %%VM|vm%% se apague de manera ordenada.
+- **Guarda el estado de la VM al instante** - No hay que esperar a que el sistema operativo invitado se apague.
+- **Previene la pérdida de datos** - Sin riesgo de interrumpir actualizaciones o trabajos no guardados.
+- **Evita problemas de tiempo de espera** - La hibernación es casi instantánea.
+- **Recuperación más rápida** - Las %%VMs|vm%% se reanudan exactamente donde se quedaron.
 
-  <h4>Dónde configurarlo</h4>
+El apagado puede ser problemático porque:
 
-  - ***Configuración → Gestor de VM → Apagado de VM*** (activar vista Avanzada)
+- Windows puede mostrar cuadros de diálogo ("¿Guardar este documento?") que detienen el apagado indefinidamente.
+- Las actualizaciones de Windows pueden tardar más de 10 minutos durante el apagado.
+- Si el tiempo de espera expira, Unraid forzará el cierre de la %%VM|vm%%, lo que podría corromper actualizaciones de Windows en curso, documentos no guardados, datos de aplicaciones y sistemas de archivos en el sistema operativo invitado.
 
-  <h4>Considerar</h4>
+**Requisito crítico:** Asegúrese de que el %%QEMU|qemu%% %%Guest Agent|guest-agent%% esté instalado en la %%VM|vm%% para que la hibernación funcione correctamente.
 
-  - Las %%VMs|vm%% de Windows pueden tardar más en apagarse, especialmente si hay actualizaciones pendientes o la %%VM|vm%% está en modo de suspensión/hibernación.
-  - Si el tiempo de espera es muy corto, las %%VMs|vm%% se detendrán a la fuerza, arriesgando pérdida o corrupción de datos.
+:::
 
-  <h4>Mejores prácticas</h4>
+Para habilitar la hibernación de VM:
 
-  Establezca el tiempo de espera en al menos 300 segundos (5 minutos) para las %%VMs|vm%% de Windows. Programe las actualizaciones para ejecutarse al inicio, no al apagarse, para evitar retrasos.
-</details>
+<Tabs>
+  <TabItem value="windows" label="VMs de Windows" default>
+    1. **Descargar %%QEMU|qemu%% %%Guest Agent|guest-agent%%:**
+       - Vaya a la [página de descarga de controladores VirtIO](https://fedorapeople.org/groups/virt/virtio-win/direct-downloads/).
+       - Descargue el archivo `virtio-win.iso` más reciente.
 
-### Tiempo de espera para contenedores Docker
+    2. **Instalar en Windows %%VM|vm%%:**
+       - Monte la `virtio-win.iso` en su %%VM|vm%%.
+       - Ejecute el instalador desde la ISO montada.
+       - Instale tanto los controladores %%VirtIO|virtio%% como el %%QEMU|qemu%% %%Guest Agent|guest-agent%%.
+       - Reinicie la %%VM|vm%%.
 
-<details>
-  <summary><strong>Haga clic para expandir/contraer</strong></summary>
+    3. **Configure en Unraid:**
+       - Vaya a la configuración de su %%VM|vm%% en la pestaña ***VMs***.
+       - Establezca **Acción de apagado** en **Hibernar**.
+       - Haga clic en **Aplicar**.
+  </TabItem>
 
-  Después de las %%VMs|vm%%, Unraid detiene todos los contenedores de Docker en ejecución. El Tiempo de Espera de Detención de Contenedor de Docker controla cuánto tiempo espera Unraid para que cada contenedor salga limpiamente.
+  <TabItem value="linux" label="VMs de Linux">
+    1. **Instale %%QEMU|qemu%% %%Guest Agent|guest-agent%%:**
 
-  <h4>Dónde configurarlo</h4>
+    ```bash
+    # Ubuntu/Debian
+    sudo apt install qemu-guest-agent
 
-  - ***Configuración → Docker*** (activar vista Avanzada)
+    # CentOS/RHEL/Fedora
+    sudo yum install qemu-guest-agent
+    # or
+    sudo dnf install qemu-guest-agent
+    ```
 
-  <h4>Considerar</h4>
+    2. **Habilitar el servicio:**
+       ```bash
+       sudo systemctl enable qemu-guest-agent
+       sudo systemctl start qemu-guest-agent
+       ```
 
-  - Los contenedores se detienen en paralelo.
-  - Los contenedores complejos, o aquellos con grandes bases de datos, pueden necesitar más de los 10 segundos predeterminados para apagarse con seguridad.
-  - Si el temporizador expira, los contenedores se detienen forzosamente.
+    3. **Configure en Unraid:**
+       - Configure **Acción de apagado** en **Hibernar** en la configuración de su %%VM|vm%%.
+  </TabItem>
 
-  <h4>Mejores prácticas</h4>
-  Aumenta el tiempo de espera a 30–60 segundos si ejecutas contenedores Docker que requieren más tiempo de apagado.
-</details>
+  <TabItem value="aparato" label="VMs de electrodomésticos">
+    Algunas %%VMs|vm%%, como Home Assistant, no permiten la instalación de software adicional. Para estas:
 
-### Temporizador general de apagado
+    - Mantenga **Acción de apagado** establecida en **Apagar**.
+    - Use valores de tiempo de espera más largos (consulte las recomendaciones de tiempo de espera a continuación).
+    - Considere los riesgos de forzar el cierre de estas %%VMs|vm%% durante las actualizaciones.
 
-<details>
-  <summary><strong>Haga clic para expandir/contraer</strong></summary>
+    :::note[Why appliance VMs are different]
+    Appliance %%VMs|vm%% are designed to run specific software and often don't allow the installation of additional packages, such as %%QEMU|qemu%% %%Guest Agent|guest-agent%%. This means hibernation isn't available, so you'll need to rely on proper timeout configuration.
+    :::
+  </TabItem>
+</Tabs>
 
-  El tiempo total de espera de apagado es el tiempo máximo que Unraid permite para todos los procesos de apagado - %%VM|vm%%s, Docker y operaciones de disco - antes de forzar un apagado.
+Ahora, para verificar que tu hibernación funcione, inicia tu %%VM|vm%% y abre algunas aplicaciones. Luego, deténla desde Unraid. Cuando la reinicies, debería reanudarse con todas las aplicaciones aún abiertas.
 
-  <h4>Dónde configurarlo</h4>
+:::warning[Guest Agente es crítico
 
-  - ***Configuración → Configuración de Disco → Tiempo de espera para apagado***
+Sin el %%QEMU|qemu%% %%Guest Agent|guest-agent%% instalado, la hibernación puede no funcionar correctamente. En ese caso, la %%VM|vm%% volverá al modo de apagado, consumiendo todo el periodo de tiempo de espera.
 
-  <h4>Cómo calcular</h4>
+:::
 
-  Suma tus tiempos de espera para %%VM|vm%% y Docker, luego añade 15–30 segundos para el desmontaje de disco y otros procesos.
+---
 
-  - Ejemplo: `3 × ***Tiempo de espera para Apagado de VM*** + ***Tiempo de espera para detener Docker*** + 15–30 segundos`
+### Configuración de tiempo de espera
 
-  <h4>Mejores prácticas</h4>
-  Establece este temporizador lo suficientemente alto para cubrir tu escenario de apagado más lento, especialmente si tienes muchas unidades o un gran %%array|array%%.
-</details>
+En esta sección, cubriremos cómo configurar los tiempos de espera para varios sistemas y procesos. Esta información es importante para asegurar que sus %%VMs|vm%% y contenedores Docker se apaguen correctamente sin pérdida de datos.
 
-### Vida útil de la batería del SAI
+| Configuración                                   | Defecto | Cuándo aumentar                                           | Dónde configurar                                                             |
+| ----------------------------------------------- | ------- | --------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| Tiempo de espera para apagado de %%VM\|vm%%     | 60s     | 300s si no se usa hibernación y las VMs se bloquean       | ***Configuración → Gestor de VM → Apagado de VM (Avanzado)***                |
+| Tiempo de espera para detener contenedor Docker | 10s     | 30s si alguno de los contenedores se bloquea al detenerse | ***Configuración → Docker (Avanzado)***                                      |
+| Tiempo de espera general de apagado             | 90s     | 180s si obtienes apagados no limpios, 300s+ con VMs       | ***Configuración → Configuración de Disco → Tiempo de espera para apagado*** |
 
-<details>
-  <summary><strong>Haga clic para expandir/contraer</strong></summary>
+:::tip[When para aumentar tiempo de espera
 
-  Tu SAI debe proporcionar suficiente tiempo de funcionamiento para permitir que todos los temporizadores de apagado expiren antes de que el servidor pierda energía.
+Si experimentas apagados anómalos o contenedores que se bloquean durante el apagado, considera aumentar el tiempo de espera general de apagado a **180 segundos** (o **300+ segundos** si tienes múltiples %%VMs|vm%%). Esto da más tiempo a los servicios para apagarse correctamente.
 
-  <h4>Dónde configurarlo</h4>
+:::
 
-  - ***Configuración → Configuración de SAI*** (ver **Tiempo de ejecución restante** con todos los discos activados)
+### Secuencia de apagado
 
-  <h4>Considerar</h4>
+Al apagar, el proceso ocurre en el siguiente orden:
 
-  - El SAI debería activar un apagado lo suficientemente temprano para permitir que toda la secuencia de apagado se complete.
-  - Si la batería se agota antes de que el apagado se complete, existe el riesgo de un apagado no limpio y posible pérdida de datos.
+1. **Apagado de %%VM|vm%%:** Esto implica tres etapas, y cada una puede tomar hasta el tiempo de espera de la VM:
 
-  <h4>Mejores prácticas</h4>
+   - Etapa 1: Reanudar cualquier %%VMs|vm%% pausada
+   - Etapa 2: Hibernar %%VMs|vm%% que están configuradas para hibernación
+   - Etapa 3: Apagar cualquier %%VMs|vm%% restantes
 
-  Prueba tu SAI simulando un corte de energía y confirma que Unraid se apague limpiamente con tiempo de sobra.
-</details>
+   Todas las %%VMs|vm%% en cada etapa se procesan al mismo tiempo, lo que significa que el tiempo total de apagado puede calcularse como: tiempo de espera de la VM × 3.
+
+2. Los contenedores de Docker se detienen simultaneamente (tiempo total = tiempo de espera de Docker).
+
+3. Otros servicios incluyen tareas como contenedores LXC y complementos de terceros, que generalmente toman unos pocos segundos.
+
+4. Apagado del array: las unidades deben desmontarse y sincronizarse los datos; esto típicamente toma de 15-30 segundos.
+
+:::tip[Calculate su tiempo de espera general de apagado
+
+**Fórmula:** Su tiempo de espera general de apagado debe ser mayor que:
+
+```
+(VM timeout × 3) + (Docker timeout) + (Other services) + 15-30 seconds
+```
+
+**Ejemplo:** Si seguimos la fórmula, se vería así: `(300 × 3) + 30 + 10 + 30 = 970 segundos (más de 16 minutos)`.
+
+**Recomendado:** Al menos **180 segundos (3 minutos)** como mínimo y **300+ segundos (5+ minutos)** si tiene múltiples %%VMs|vm%% o contenedores complejos.
+
+:::
+
+Si todos sus %%VMs|vm%% están configurados para hibernar en lugar de apagarse, entonces el tiempo de espera de la VM es menos crítico ya que la hibernación es casi inmediata. Podría usar un tiempo de espera menor para las VM (por ejemplo, 60-120 segundos) como respaldo para cualquier %%VMs|vm%% que no admitan hibernación.
+
+---
+
+### Guía detallada de configuración
+
+Esta sección proporciona información detallada sobre cómo configurar los tiempos de espera para diferentes componentes del sistema. Cada configuración de tiempo de espera funciona junta para garantizar que su servidor se apague correctamente sin pérdida de datos.
+
+#### Tiempos de espera de VM
+
+Configura los tiempos de espera al apagar la VM en ***Configuración → Administrador de VM → Apagado de VM*** (activa la vista avanzada).
+
+**Cómo funciona:**
+
+- Las %%VMs|vm%% pasan por tres etapas de apagado, cada una consume el tiempo de espera completo de la VM.
+- Todas las %%VMs|vm%% en cada etapa se procesan simultáneamente
+- Tiempo total de apagado de VM = tiempo de espera de VM × 3
+
+**Problemas comunes:**
+
+- **Interrupciones de actualización de Windows:** Las actualizaciones durante el apagado pueden corromperse si expira el tiempo de espera.
+- **Trabajo no guardado:** Los cuadros de diálogo que preguntan si desea guardar documentos pueden detener el apagado indefinidamente.
+- **Fallos de hibernación:** %%VMs|vm%% sin el %%QEMU|qemu%% %%Guest Agent|guest-agent%% pueden fallar en hibernar y usar todo el tiempo de espera.
+
+:::tip[VM recomendaciones de tiempo de espera]
+
+- **Recomendación principal:** Configure las %%VMs|vm%% para hibernar en lugar de apagar (requiere %%QEMU|qemu%% %%Guest Agent|guest-agent%%).
+- **Si las VMs se bloquean durante el apagado:** Aumente el tiempo de espera a **300 segundos (5 minutos)** para %%VMs|vm%% de Windows.
+- **Actualizaciones de Windows:** Configure Windows para instalar actualizaciones al inicio en lugar de durante el apagado.
+- **Prueba tu configuración:** Detén manualmente tus %%VMs|vm%% para confirmar que se apaguen o hibernen dentro del período de espera.
+
+:::
+
+:::warning[No tiempo de espera seguro sin hibernación]
+
+Sin hibernación y %%QEMU|qemu%% %%Guest Agent|guest-agent%%, no existe un tiempo de espera verdaderamente seguro para las %%VMs|vm%% de Windows. Los cuadros de diálogo o las instalaciones de actualizaciones en curso podrían hacer que cualquier tiempo de espera sea inadecuado, lo que podría llevar a apagados forzados y riesgo de corrupción de datos.
+
+:::
+
+#### Tiempos de espera de Docker
+
+Configura los tiempos de espera de detención de contenedores Docker en ***Configuración → Docker*** (activa la vista avanzada).
+
+**Cómo funciona:**
+
+- Los contenedores se detienen en paralelo, por lo que el tiempo total es igual al tiempo de espera de detención de Docker.
+- La mayoría de los contenedores se detienen en 10 segundos, pero algunos pueden necesitar más tiempo.
+- Contenedores complejos con grandes bases de datos u operaciones en curso podrían requerir tiempo adicional.
+- Si el temporizador expira, los contenedores se detienen forzosamente.
+
+:::tip[Docker recomendaciones de tiempo de espera]
+
+- Los **10 segundos por defecto** funcionan bien para la mayoría de los contenedores.
+- **Si los contenedores fallan al detenerse:** Incrementa el tiempo de espera a **30 segundos**.
+- Supervisa tus contenedores durante el apagado para identificar aquellos que consistentemente necesitan más tiempo.
+
+:::
+
+#### Tiempos de espera generales
+
+Configura el tiempo de espera general de apagado en ***Configuración → Configuración de disco → Tiempo de espera de apagado***.
+
+**Consideraciones sobre la UPS (factor más crítico):**
+
+- Tu UPS debe proporcionar suficiente tiempo de ejecución para completar la secuencia de apagado completa antes de que se agote la batería.
+- Para **apagado manual**, puedes establecer tiempos de espera más largos ya que controlas cuándo comienza el apagado.
+- Con **apagado por corte de energía**, tu tiempo de espera está limitado por la vida útil de la batería de la UPS.
+- **Prueba tu UPS** simulando una interrupción eléctrica para asegurarte de que tu servidor se apague limpiamente con tiempo de sobra.
+
+:::tip[General recomendaciones de tiempo de espera]
+
+- **Si obtienes apagados no limpios:** Incrementa a **180 segundos (3 minutos)** para sistemas sin %%VMs|vm%%.
+- **Para sistemas con %%VMs|vm%%:** Utiliza **300+ segundos (5+ minutos)** si no usas hibernación.
+- **Si usas hibernación:** **180-300 segundos** suelen ser suficientes.
+- Asegúrate de que los tiempos de espera no sean más largos de lo que tu UPS puede soportar durante un corte de energía.
+
+:::
+
+#### Servicios de terceros
+
+**Contenedores LXC:**
+El plugin LXC tiene su propia configuración de tiempo de espera para detener contenedores. Al igual que los contenedores Docker, los contenedores LXC normalmente se detienen en unos pocos segundos, pero algunos pueden requerir más tiempo. Revisa la configuración del plugin LXC para el tiempo de espera de detención y añade este tiempo de espera a tu cálculo general de apagado.
+
+**Otros servicios:**
+Algunos plugins o servicios personalizados pueden tener sus propios procedimientos de apagado. Consulta la documentación del plugin para configuraciones de tiempo de espera específicas e incorpóralas en tus cálculos.
+
+**Fórmula actualizada con servicios de terceros:**
+
+```
+(VM timeout × 3) + (Docker timeout) + (LXC/other timeouts) + 15-30 seconds
+```
+
+**Plugin Dynamix Stop Shell:**
+Si frecuentemente utilizas sesiones SSH o de terminal, las sesiones abiertas pueden evitar apagados limpios porque Unraid espera a que se cierren antes de proceder.
+
+El plugin [Dynamix Stop Shell](https://unraid.net/community/apps/c/tools-system/p2?srsltid=AfmBOoqBXyDNfHxRDCL7Fv9Gcfz8-8CdHmiJSX16PRZpZLLzgQtw2mVk#:~:text=the%20given%20interval.-,Dynamix%20Stop%20Shell,-Dynamix%20Repository) ayuda cerrando automáticamente las sesiones persistentes de bash o SSH cuando se detiene el array, asegurando un apagado oportuno.
+
+Puedes instalarlo desde [Community Applications (busca "Dynamix Stop Shell")](https://unraid.net/community/apps/c/tools-system/p2?srsltid=AfmBOoqBXyDNfHxRDCL7Fv9Gcfz8-8CdHmiJSX16PRZpZLLzgQtw2mVk#:~:text=the%20given%20interval.-,Dynamix%20Stop%20Shell,-Dynamix%20Repository).
+
+:::tip[When para usar el plugin]
+
+- Si regularmente tienes sesiones de terminal abiertas.
+- Para prevenir que las sesiones SSH olvidadas retrasen el apagado.
+- Para limpieza automatizada durante el apagado.
+
+:::
+
+:::caution
+
+- Sé cauteloso si tienes scripts o procesos ejecutándose en sesiones de terminal.
+- Asegúrate de que no haya operaciones de escritura críticas en progreso antes de apagar.
+- El plugin cerrará las sesiones de manera forzada, lo que podría interrumpir el trabajo.
+
+:::
