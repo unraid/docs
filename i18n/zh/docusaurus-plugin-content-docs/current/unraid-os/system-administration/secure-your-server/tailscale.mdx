@@ -28,7 +28,9 @@ Unraid 现在通过与 [%%Tailscale|tailscale%%](https://tailscale.com/) 的技�
 - 启用 [HTTPS 证书](https://tailscale.com/kb/1153/enabling-https) 以实现安全、可信的访问。
 
 :::note
+
 HTTPS证书中的机器名称是公开的。使用您愿意分享的名称。
+
 :::
 
 ### 将 Tailscale 添加到 Unraid
@@ -40,20 +42,45 @@ HTTPS证书中的机器名称是公开的。使用您愿意分享的名称。
 3. 打开***设置→Tailscale***并单击重新验证。使用您的%%Tailscale|tailscale%%账户登录。
 4. 点击 **连接** 以将您的 Unraid 服务器添加到您的 %%Tailnet|tailnet%%。
 5. 访问 ***Settings → Management Access*** 查看您的 %%Tailscale|tailscale%% 用于 WebGUI 的 URL。
-6. 在***设置→Tailscale***中，找到您的服务器的%%Tailnet|tailnet%%名称和IP。使用这些信息从您的%%Tailnet|tailnet%%上的任何设备访问SMB/NFS共享、Docker容器等。
+6. 在 ***设置 → Tailscale*** 中，找到您的服务器的%%Tailnet|tailnet%% 名称和 IP。使用这些信息可以从任何设备访问 SMB/NFS 共享、Docker 容器等。
+   \+7. （可选）启用 **在 /etc/hosts 中包括 Tailscale 设备**（请参阅 [增强的主机名解析](#enhanced-hostname-resolution)）以自动将 Tailscale 设备添加到您的服务器主机名解析中，方便访问您 %%Tailnet|tailnet%% 上的其他设备。
 
 ### 子网路由（可选）
 
 要通过其主 LAN IP 访问您的 Unraid 服务器（或访问具有自有 IP 的 Docker 容器）：
 
-1. 转到 ***Settings → Tailscale***，点击查看，并登录。
-2. 点击 **子网路由器** 并添加：
+1. 前往 ***设置 → Tailscale***，点击 **重新验证**，并使用您的 Tailscale 账户登录。
+2. 在 Tailscale 设置中，找到 **播报路由** 部分并添加：
    - 您的 Unraid 服务器的 IP（例如，`192.168.0.12/32`），或
    - 您的整个网络的子网（例如，`192.168.0.0/24`）。
-3. 点击 **发布路由**。
-4. 在您的 Tailscale 管理控制台中批准待处理路由。
-5. 一旦获得批准，您的 %%Tailnet|tailnet%% 设备就可以通过其常规 IP 地址访问您的 Unraid 服务器和/或 LAN 设备。
-6. For advanced details, see the [%%Tailscale|tailscale%% %%subnet routing|subnet-routing%% documentation](https://tailscale.com/kb/1019/subnets).
+3. 点击 **应用** 以保存更改。
+4. 登录到您的 [Tailscale 管理控制台](https://login.tailscale.com/admin) 并导航到 **机器** 页面。
+5. 找到您的 Unraid 服务器，并批准广告子网的待处理路由。
+6. 一旦获得批准，您的 %%Tailnet|tailnet%% 设备就可以通过其常规 IP 地址访问您的 Unraid 服务器和/或 LAN 设备。
+
+:::note
+
+有关高级详细信息，请参见 [%%Tailscale|tailscale%% 子网路由文档](https://tailscale.com/kb/1019/subnets)。
+
+:::
+
+### 增强的主机名解析
+
+Tailscale 插件包括一个选项，可自动将 Tailscale 对等体添加到服务器的 `/etc/hosts` 文件。此功能通过启用基于主机名的连接来简化设备访问，以访问 %%Tailnet|tailnet%% 上的其他设备。
+
+包括的好处：
+
+- 使用友好的主机名而不是 IP 地址访问其他 Tailscale 设备。
+- 当设备加入或离开您的 %%Tailnet|tailnet%% 时自动更新。
+- 提高依赖主机名解析的应用程序的兼容性。
+
+启用此功能的方法：
+
+1. 转到 %%WebGUI|web-gui%% 中的 ***设置 → Tailscale***。
+2. 启用 **在 /etc/hosts 中包括 Tailscale 对等体** 选项。
+3. 点击 **应用** 以保存更改。
+
+启用后，您可以使用 Tailscale 主机名从 Unraid 服务器访问 %%Tailnet|tailnet%% 上的其他设备，使服务配置、访问共享资源和管理您的网络更加容易。
 
 ---
 
@@ -76,13 +103,15 @@ Unraid使连接[Docker容器](../../using-unraid-to/run-docker-containers/overvi
 </details>
 
 :::warning[Container 兼容性]
+
 Tailscale集成不适用于所有容器。如果启用了Tailscale，某些容器可能根本无法运行，特别是以下情况的容器：
 
-- 自定义网络要求
-- 特定的网络隔离需求
+- 首先，在任何将访问您 Docker 容器的计算机上安装 %%Tailscale|tailscale%%。
+- 尽管 Unraid Tailscale 插件不是 Docker 集成的必要条件，但强烈建议在您的 Unraid 服务器上安装并登录以获得最佳体验。
 - 与 Tailscale 网络修改相冲突的应用程序
 
 请首先在非关键容器上测试 Tailscale 集成，并准备在容器无法正常工作时禁用它。
+
 :::
 
 :::note\[Prerequisites]
@@ -94,37 +123,43 @@ Tailscale集成不适用于所有容器。如果启用了Tailscale，某些容�
 
 将 %%Tailscale|tailscale%% 添加到 Docker 容器：
 
-1. 请查看您的 %%Tailscale|tailscale%% 帐户设置，如 [开始使用部分](#getting-started-with-tailscale) 所述。
+1. **Serve**：允许您使用友好的 HTTPS URL 从您的 Tailnet 安全访问容器的网页或 Web 服务。不需要端口转发，且只能通过 Tailnet 设备进行连接。
 2. 在 Unraid 中，转到 **Docker** 选项卡并 [编辑所需的容器](../../using-unraid-to/run-docker-containers/managing-and-customizing-containers.mdx)。
 3. 启用 **使用 Tailscale** 开关。
 4. 为容器输入一个 **Tailscale 主机名**（必须在您的 Tailnet 上唯一）。
 
 :::warning
+
 HTTPS 证书将为此主机名生成，并发布在公共证书册中。选择您愿意公开分享的名称。有关详细信息，请参阅 [Tailscale HTTPS 文档](https://tailscale.com/kb/1153/enabling-https)。
+
 :::
 
 5. 决定此容器是否应成为出口节点（对于 VPN 容器非常有用）。
-6. 选择容器是否应使用出口节点处理其外发流量。如果安装了 Tailnet 插件，您将看到可用的出口节点列表；否则，请手动输入 IP。
+6. 选择容器是否应使用出口节点来处理其出站流量。如果安装了 Tailscale 插件，您将看到可用出口节点的列表；否则，请手动输入 IP。
 7. 如果使用出口节点，指定容器是否还应访问您的 LAN。
 8. Tailscale **用户空间网络** 字段通常自动设置。除非有特定需求，否则请保持禁用状态。
 9. 决定是否启用 **%%Tailscale|tailscale%% %%SSH|ssh%%**（通过 %%Tailscale|tailscale%% 认证的安全外壳访问）。
 
 :::info[Serve 与漏斗]
-- **Serve**：允许您使用友好的 HTTPS URL 从您的 Tailnet 安全访问容器的网页或 Web 服务。不需要端口转发，且只能通过 Tailnet 设备进行连接。
-- **Funnel**: 通过独特的HTTPS URL将容器的网站发布到公共互联网。任何拥有链接的人，即使不在您的Tailnet上，也可以访问该网站。谨慎使用，因为这会将您的服务暴露给更广泛的互联网用户。
+
+- 编辑容器并标识映射路径以存储 Tailscale 状态数据（例如，`/container-path/`）。
+- 启用 Tailscale **显示高级设置** 并设置 Tailscale **状态目录** 为 `/container-path/.tailscale_state`。
+
 :::
 
 10. 启用 **Serve** 可将容器的 Web 界面反向代理到您的 Tailnet，或启用 **Funnel** 以使其在公共互联网中可访问。Unraid 将根据容器的 WebUI 设置自动检测要使用的端口。如有需要，还提供高级选项。
 
 :::warning
-使用 Serve 或 Funnel 时，没有额外的身份验证层 - 容器负责管理用户访问。请相应地保护您的 Web 应用程序。
+
+%%Tailscale|tailscale%% 经常更新以提供新功能和安全改进。为使您的 Unraid 系统保持安全和兼容，请确保 Unraid %%Tailscale|tailscale%% 插件和使用 %%Tailscale|tailscale%% 的任何 Docker 容器都是最新的。
+
 :::
 
-11. **应用** 您的更改并检查 **容器日志** 中的 Tailscale 消息。点击 "要进行身份验证，请访问" 链接以批准您的 Tailnet 上的容器。
+11. **应用** 您的更改并检查 **增强日志** 或 **日志查看器** 以查看 Tailscale 消息。点击 **要进行身份验证，请访问……** 链接以在您的 Tailnet 上批准容器。
 
 :::caution\[Troubleshooting]
 
-**持久状态错误** - 如果您看到 "*错误：未检测到 .tailscale\_state 的持久 Docker 目录*"：
+**持久状态错误** - 如果您看到 "*错误：未检测到 .tailscale_state 的持久 Docker 目录*"：
 
 - 编辑容器并标识映射路径以存储 Tailscale 状态数据（例如，`/container-path/`）。
 - 启用 Tailscale **显示高级设置** 并设置 Tailscale **状态目录** 为 `/container-path/.tailscale_state`。
@@ -139,29 +174,34 @@ HTTPS 证书将为此主机名生成，并发布在公共证书册中。选择�
 
 %%Tailscale|tailscale%% 经常更新以提供新功能和安全改进。为使您的 Unraid 系统保持安全和兼容，请确保 Unraid %%Tailscale|tailscale%% 插件和使用 %%Tailscale|tailscale%% 的任何 Docker 容器都是最新的。
 
-要更新 %%Tailscale|tailscale%%:
+### 更新 Tailscale 插件
 
-- **更新 Unraid %%Tailscale|tailscale%% 插件：** 当有新版本时，请通过 Unraid 应用程序标签更新插件，就像其他插件一样。您始终可以在 [%%Tailscale|tailscale%% 更改日志](https://tailscale.com/changelog) 中查看最新更改。
+当有新版本可用时，请通过 Unraid 应用程序选项卡更新插件，就像其他插件一样。该插件经过积极维护并定期更新，具有最新的 Tailscale 特性。您始终可以在 [Tailscale 更改日志](https://tailscale.com/changelog) 和 [插件发布说明](https://github.com/unraid/unraid-tailscale/releases) 中查看最新更改。
 
-- **在 Docker 容器中更新 %%Tailscale|tailscale%%：**
-  1. 在 Docker 页面，悬停在某个容器的 %%Tailscale|tailscale%% 图标上。如果有可用更新，您将看到通知。
-  2. 通过以下方式更新容器：
-     - 切换到 **高级视图**（右上角），然后点击 **强制更新**。
-     - 编辑容器，进行微小更改（如切换一个设置），并点击 **应用**。
+### 更新 Docker 容器中的 Tailscale
+
+要更新 Docker 容器中的 %%Tailscale|tailscale%%：
+
+1. 在 Docker 页面，悬停在某个容器的 %%Tailscale|tailscale%% 图标上。如果有可用更新，您将看到通知。
+2. 通过以下方式更新容器：
+   - 切换到 **高级视图** (右上角)，然后点击 **强制更新**。
+   - 编辑容器，进行微小更改（如切换一个设置），并点击 **应用**。
 
 ---
 
 ## 用户空间网络
 
-**用户空间网络** 控制容器如何连接到您的 %%Tailnet|tailnet%% 及其他网络。在大多数情况下，如果您使用他们的 %%Tailscale|tailscale%% WebUI URLs 访问容器并在所有客户端系统上安装了 %%Tailscale|tailscale%%，则可以忽略详细信息。
+\* “%%WireGuard|wireguard%%”和“%%WireGuard|wireguard%%”徽标是Jason A. Donenfeld的注册商标。
 
 - **启用：** 容器在受限环境中操作。它无法启动与其他 %%Tailnet|tailnet%% 设备的连接或使用 %%Tailscale|tailscale%% DNS，但仍可通过 %%Tailscale|tailscale%% WebUI 和原始 WebUI URL 访问。
 
 - **禁用：** 容器具有完整的 %%Tailnet|tailnet%% 访问权限，并可以使用 %%Tailscale|tailscale%% DNS。它可以与其他 %%Tailnet|tailnet%% 设备通信，但原始 WebUI URL 可能无法使用。
 
 :::info[Feature 要求]
+
 - 设置为 **出口节点** 的容器始终开启用户空间网络。
 - 使用出口节点的容器始终关闭用户空间网络。
+
 :::
 
 ### 网络类型兼容性
@@ -176,8 +216,10 @@ Tailscale 集成和用户空间网络的行为取决于容器的网络类型。�
 | `container`/`wg0`    | 已禁用（未经测试） | 可以     | 未知                                 | 未知                  | 使用时请谨慎；尚未完全测试                                          |
 
 :::info[Keep 记住]
+
 - %%Tailscale|tailscale%% 的 WebUI 地址仅可由安装了 %%Tailscale|tailscale%% 并加入您 %%Tailnet|tailnet%% 的设备访问，或者在显式共享启用时访问。
 - 对于大多数用户，默认设置提供安全且可靠的访问。针对特殊的网络需求提供高级选项。
+
 :::
 
-\* “%%WireGuard|wireguard%%”和“%%WireGuard|wireguard%%”徽标是Jason A. Donenfeld的注册商标。
+\* *"%%WireGuard|wireguard%%"和 "%%WireGuard|wireguard%%"徽标是Jason A. Donenfeld的注册商标.*
