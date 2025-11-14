@@ -3,6 +3,7 @@ import remarkFrontmatter from "remark-frontmatter";
 import remarkGfm from "remark-gfm";
 import remarkMdx from "remark-mdx";
 import remarkDirective from "remark-directive";
+import remarkComment from "@slorber/remark-comment";
 import remarkPresetLintRecommended from "remark-preset-lint-recommended";
 import remarkLintListItemIndent from "remark-lint-list-item-indent";
 import remarkLintOrderedListMarkerStyle from "remark-lint-ordered-list-marker-style";
@@ -30,6 +31,7 @@ const plugins = [
   stripDanglingDirectiveClosings,
   remarkFrontmatter,
   remarkGfm,
+  remarkComment,
 
   // Base recommended rules
   remarkPresetLintRecommended,

@@ -7,7 +7,7 @@
  * and fixes indentation issues that can break Crowdin's translation system.
  *
  * Run this after linting to fix spacing issues:
- *   npm run lint:fix && node scripts/format-crowdin-spacing.js
+ *   npm run lint && npm run format
  */
 
 const fs = require("fs");
