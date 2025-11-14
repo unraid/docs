@@ -1,0 +1,267 @@
+---
+sidebar_position: 3
+sidebar_label: Ersetzen von Festplatten im Array
+---
+
+# Ersetzen von Festplatten im Array
+
+Möglicherweise müssen Sie aus zwei Hauptgründen Laufwerke in Ihrem Array ersetzen:
+
+1. **Kapazitätserhöhung**: Ihr Speicher ist fast voll, und Sie möchten größere Festplatten verwenden.
+2. **Ausfall oder Ruhestand**: Eine Festplatte ist ausgefallen oder wird nicht mehr unterstützt.
+
+Obwohl der Prozess zum Austausch von Disks in beiden Fällen ähnlich ist, sei vorsichtig, da es ein Risiko von Datenverlusten während des Austauschs gibt. Paritätsgeräte helfen, Ihre Daten zu schützen; ein Paritätsgerät kann gegen den Ausfall eines einzelnen Laufwerks sichern, während zwei Geräte gegen Datenverlust schützen können, wenn zwei Laufwerke ausfallen. Seien Sie sich des Schutzniveaus während der Disk-Ersetzungen immer bewusst.
+
+## Kapazität erweitern
+
+Wenn Sie Ihr Datenlaufwerk gegen ein größeres austauschen, beachten Sie Folgendes:
+
+- **Nicht-montierbare Disks:** Beheben Sie alle nicht montierbaren Disks vor dem Upgrade. Ein nicht montierbarer Status wird während des Wiederaufbaus nicht behoben.
+
+- **Risiken bei Einzelparität:** Wenn Sie eine Einzelparität haben, besteht das Risiko eines Datenverlusts, wenn ein anderes Laufwerk während des Upgrades ausfällt. Suchen Sie Rat in Foren, falls dies geschieht.
+
+- **Schutz durch Dualparität:** Mit Dualparität sind Sie sicher vor Datenverlust, wenn ein Laufwerk ausfällt, während ein einzelnes Laufwerk aufgerüstet wird. Sie können auch zwei Laufwerke gleichzeitig aufrüsten, beachten Sie jedoch, dass dies das Risiko erhöht, da Sie keinen Schutz vor einem weiteren Laufwerksausfall haben.
+
+- **Sichern Sie die alte Disk:** Behalten Sie die Originaldisk solange intakt, bis das Upgrade erfolgreich bestätigt wurde. Dies bietet Ihnen eine Rückfalloption, falls etwas schiefgeht.
+
+:::warning
+
+Der Austausch von Festplatten birgt immer ein gewisses Risiko. Fällt während des Upgrades eine weitere Festplatte aus, insbesondere bei nur einer Parität, kann es zu Datenverlust kommen. Überprüfen Sie immer den Zustand Ihrer Festplatten, bevor Sie den Prozess starten, und stellen Sie sicher, dass Sie die alte Festplatte intakt lassen, bis das Upgrade abgeschlossen und Ihre Daten als sicher bestätigt sind.
+
+:::
+
+Um eine vorhandene Datenfestplatte aufzurüsten:
+
+1. Run a %%parity check|parity-check%% and ensure there are zero errors. If parity isn't valid, rebuilding the disk will corrupt its file system.
+2. Stoppen Sie die Array.
+3. Die Ziel-Festplatte zuweisen.
+4. Starten Sie das Array. Unraid emuliert die fehlende Festplatte unter Verwendung der vorhandenen Paritäts- und Datenplatten. Sie haben zwei Modi zur Auswahl:
+   - %%Wartungsmodus|maintenance-mode%% - Verhindert jegliches Schreiben auf die emulierte Festplatte
+   - Normalmodus - Ermöglicht Lese-/Schreibzugriff auf die emulierte Festplatte
+
+:::note
+
+Das Starten im Normalmodus ist optional. Sie können ihn verwenden, um zu überprüfen, dass die emulierte Festplatte eingebunden ist und die Daten korrekt aussehen, bevor Sie fortfahren.
+
+:::
+
+5. Stoppen Sie das Array erneut.
+6. Weisen Sie die Ersatzfestplatte dem freien Steckplatz zu.
+7. Starten Sie das Array, um den Neubau zu beginnen. Unraid stellt die Inhalte auf der neuen Festplatte wieder her, und das Dateisystem passt sich automatisch an die Kapazität der größeren Festplatte an.
+
+## Fehlerhafte/deaktivierte Festplatten ersetzen
+
+### Was ist eine ausgefallene/deaktivierte Festplatte?
+
+Eine ausgefallene oder deaktivierte Festplatte ist eine, die Unraid nicht mehr zum Schreiben von Daten verwendet, meist weil ein Schreibfehler aufgetreten ist. Eine ausgefallene Festplatte ist nicht immer defekt; möglicherweise treten schlechte Verbindungen, Stromprobleme oder vorübergehende Störungen auf.
+
+Anzeichen sind ein rotes "X" auf der Festplattenanzeige und Fehlermeldungsbenachrichtigungen.
+
+| Ausfallszenario         | Keine Parität | Einzelparität     | Doppelte Parität  |
+| ----------------------- | ------------- | ----------------- | ----------------- |
+| **1 Laufwerksausfall**  | Datenverlust  | Wiederherstellbar | Wiederherstellbar |
+| **2 Laufwerksausfälle** | Datenverlust  | Datenverlust      | Wiederherstellbar |
+
+:::tip[Tips für sichere Neubauten]
+
+- **Für Einzelparität:** Sie können nur eine Festplatte gleichzeitig ersetzen. Wenn eine andere Festplatte während der Wiederherstellung ausfällt, könnten Sie Daten verlieren.
+- **Für Dualparität:** Sie können ein oder zwei Festplatten gleichzeitig austauschen, aber seien Sie vorsichtig, wenn mehr als zwei Festplatten ausfallen.
+
+:::
+
+:::important
+
+Wenn mehr Festplatten ausfallen, als Ihre Parität schützen kann:
+
+1. Halten Sie sofort alle Schreibvorgänge an, um weiteren Datenverlust zu verhindern.
+2. Suchen Sie Hilfe, indem Sie Ihr Problem im [Unraid-Forum](https://forums.unraid.net/) zusammen mit Diagnosedaten posten.
+3. Versuchen Sie keinen Neubau, bis Sie Ratschläge erhalten haben – konzentrieren Sie sich zunächst darauf, Ihre Daten zu retten.
+
+:::
+
+### Wie diagnostiziert man das Problem?
+
+Überprüfen Sie das %%syslog|syslog%% und die %%SMART-Berichte|smart-report%%:
+
+- Wenn das %%syslog|syslog%% zeigt, dass das Laufwerk zurückgesetzt wurde, könnte es ein Problem mit der Verbindung oder den Kabeln geben.
+- %%SMART reports|smart-report%% can help assess the drive's health, but the best way to check is by running a %%SMART|smart%% extended test. If it completes without errors, the drive is likely fine.
+- Wenn Sie %%CRC-Fehler|crc-errors%% sehen, deutet das normalerweise auf Probleme mit der Verkabelung hin. Diese Fehler kumulieren sich im Laufe der Zeit und werden nicht zurückgesetzt.
+
+:::tip
+
+Um über Festplattenprobleme informiert zu bleiben, aktivieren Sie Benachrichtigungen in Unraid, indem Sie zu **Einstellungen → Benachrichtigungseinstellungen** gehen. Auf diese Weise werden Sie sofort benachrichtigt, wenn etwas schiefgeht, und das Risiko für Ihre Daten wird verringert.
+
+:::
+
+### Was ist Emulation?
+
+Wenn eine Festplatte deaktiviert ist, verwendet Unraid die Parität und andere funktionierende Laufwerke, um die ausgefallene Festplatte zu emulieren. Das System funktioniert weiterhin und Sie können weiterhin auf die auf der %%emulierten Festplatte|emulated-disk%% gespeicherten Daten zugreifen.
+
+- Unraid hört auf, auf das physische Laufwerk zu schreiben, und alle Aktualisierungen werden stattdessen in der Parität und der Emulation gespeichert.
+- Bevor Sie das ausgefallene Laufwerk ersetzen, können Sie Daten vom %%emulierten Laufwerk|emulated-disk%% überprüfen und wiederherstellen, was das physische Laufwerk intakt für eine potenzielle Wiederherstellung hält.
+- Falls Sie nicht auf das %%emulierte Laufwerk|emulated-disk%% zugreifen können, muss das Dateisystem vor jedem Neuaufbau repariert werden, da das Reparieren des Dateisystems schneller und effektiver als ein Neuaufbau ist.
+
+### Vorbereitung für den Festplattenaustausch
+
+Stellen Sie sicher, dass die neue Festplatte mindestens so groß ist wie die ausgefallene Festplatte, aber nicht größer als Ihre kleinste Paritätsfestplatte. Wenn Sie eine größere Festplatte verwenden müssen, befolgen Sie das Parity-Swap-Verfahren.
+
+While it's not mandatory, many users choose to pre-clear new drives to test them and help prevent early failure. You can do this with the Preclear plugin, a %%SMART|smart%% extended test, or manufacturer tools.
+
+:::caution
+
+Wenn Sie versuchen, mit einer nicht einbindbaren %%emulierten Festplatte|emulated-disk%% einen Neubau durchzuführen, wird auch die neue Festplatte nicht einbindbar. Reparieren Sie immer zuerst das Dateisystem, bevor Sie einen Neubau versuchen.
+
+:::
+
+Zum Ersetzen und Wiederherstellen einer Festplatte befolgen Sie die Größenanforderungen im Abschnitt "Vorbereitung für den Festplattenaustausch" oben.
+
+:::important
+
+Überprüfen Sie vor dem Start auf Fehler oder Warnungen bei Festplatten. Unraid muss in der Lage sein, alle übrigen Festplatten fehlerfrei zu lesen, damit der Neubau korrekt funktioniert. Wenn eine andere Festplatte ausfällt, kann dies zu Datenverlust führen.
+
+:::
+
+1. Stoppen Sie die Array.
+
+:::tip
+
+Wenn Ihr Server Hot-Swap unterstützt, können Sie Schritt 2 überspringen.
+
+:::
+
+2. Fahren Sie Ihren Server herunter.
+3. Entfernen Sie die alte, ausgefallene Festplatte und installieren Sie die neue Festplatte. Stellen Sie sicher, dass der Ersatz den oben beschriebenen Größenanforderungen entspricht.
+4. Schalten Sie Ihren Server ein.
+5. Weisen Sie die neue Festplatte dem Steckplatz der ausgefallenen Festplatte zu.
+6. Kreuzen Sie **Ja, ich möchte das tun** an und bestätigen Sie.
+7. Optional wählen Sie den %%Wartungsmodus|maintenance-mode%% aus, um den Wiederherstellungsvorgang zu beschleunigen (das Array ist während dieser Zeit nicht zugänglich).
+8. Klicken Sie auf **Start**, um den Neubau zu beginnen. Unraid kopiert die Daten von der emulierten Festplatte auf die neue Festplatte. Wenn die neue Festplatte größer ist, verwaltet Unraid den zusätzlichen Platz.
+
+:::warning
+
+Wenn Unraid Sie während des Wiederaufbaus auffordert, die neue Festplatte zu formatieren, **tun Sie es nicht**. Das Formatieren löscht alle Daten und macht eine Wiederherstellung unmöglich.
+
+:::
+
+### Was Sie während des Neuaufbaus erwarten können
+
+- **Den Array stoppen:** Beginnen Sie mit dem Zugriff auf die WebGUI und stoppen Sie den Array.
+- **Unassign the %%parity drives|parity-drives%%:** Locate the %%parity drives|parity-drives%% slot and set it to "Unassigned."
+- **Starten Sie das Array:** Starten Sie das Array schließlich neu, um die Änderungen zu bestätigen und die %%parity drives|parity-drives%% erfolgreich aus der Konfiguration zu entfernen.
+- Wenn die alte Festplatte aufgrund von Dateisystemproblemen nicht einbindbar war, wird auch die neue Festplatte nicht einbindbar sein. Bitte lösen Sie alle Dateisystemprobleme, bevor Sie mit dem Wiederaufbau beginnen.
+
+:::note[Additional anmerkungen]
+
+- Mit doppelter Parität können Sie von einem einzelnen ausgefallenen Laufwerk wiederherstellen, aber beachten Sie, dass Sie einen weiteren Ausfall während des Wiederherstellungsprozesses nicht überleben werden.
+- Mit einfacher Parität verlieren Sie jegliche Redundanz, was bedeutet, dass zusätzliche Laufwerkausfälle zum Datenverlust führen können.
+  :::
+
+:::
+
+## Ein deaktiviertes Laufwerk wieder aktivieren (auf sich selbst wiederherstellen)
+
+Manchmal wird ein Laufwerk nicht aufgrund eines tatsächlichen Defekts deaktiviert, sondern wegen Problemen wie lockeren Kabeln, Stromproblemen oder vorübergehende Störungen. Falls dies der Fall ist, können Sie versuchen, das deaktivierte Laufwerk wieder zu aktivieren, indem Sie es auf sich selbst wiederherstellen, anstatt es zu ersetzen.
+
+:::important[When um dieses Verfahren zu verwenden]
+
+Verwenden Sie dieses Verfahren nur, wenn:
+
+- Das Laufwerk wurde aufgrund externer Faktoren (wie Kabel oder Stromprobleme) deaktiviert.
+- Sie den Gesundheitszustand des Laufwerks mit [%%SMART-Berichten|smart-report%%](../../system-administration/monitor-performance/smart-reports-and-disk-health.mdx) überprüft haben.
+- Sie alle externen Probleme behoben haben, die zur Deaktivierung des Laufwerks geführt haben.
+- Das Laufwerk scheint normal zu funktionieren.
+
+:::
+
+:::warning[Important Überlegungen]
+
+- Wenn Sie ein Datenlaufwerk wiederherstellen, stellen Sie sicher, dass das %%emulierte Laufwerk|emulated-disk%% den richtigen Inhalt anzeigt, bevor Sie fortfahren. Der Wiederherstellungsprozess gewährleistet, dass das physische Laufwerk dem emulierten exakt entspricht.
+- Die %%emulierte Festplatte|emulated-disk%% kann in einigen Fällen als „nicht einbindbar“ angezeigt werden. Ein Neubau behebt nicht zwingend eine nicht einbindbare emulierte Festplatte, daher überprüfen Sie zuerst die Situation. Wenn die emulierte Festplatte als „nicht einbindbar“ angezeigt wird oder der Inhalt nicht richtig aussieht, fragen Sie im [Unraid-Forum](https://forums.unraid.net/) um Hilfe, bevor Sie mit dem Neubau fortfahren.
+- Führen Sie immer einen [%%SMART|smart%% erweiterten Test](../../system-administration/advanced-tools/command-line-interface.mdx#smartctl) auf dem deaktivierten Laufwerk durch, um sicherzustellen, dass es gesund ist, bevor Sie diesen Prozess starten.
+- Wenn das %%emulierte Laufwerk|emulated-disk%% Dateisystemprobleme zeigt, verwenden Sie die [automatisierte XFS-Reparaturfunktion](../../troubleshooting/common-issues/data-recovery.mdx#running-the-repair) für XFS-formatierte Laufwerke oder die entsprechenden Dateisystem-Reparaturoptionen für andere Dateisysteme im %%WebGUI|web-gui%%, bevor Sie mit der Wiederherstellung beginnen.
+- Während der Wiederherstellungsprozess Ihre Daten bewahren sollte, ist es ratsam, wichtige Dateien zu sichern, wenn Sie können.
+
+:::
+
+Um ein deaktiviertes Laufwerk durch Wiederherstellung auf sich selbst zu reaktivieren:
+
+1. Verify disk health by running a [%%SMART|smart%% extended test](../../system-administration/advanced-tools/command-line-interface.mdx#smartctl) and acknowledging any warning icons in the dashboard.
+2. Stoppen Sie die Array.
+3. Weisen Sie die deaktivierte Festplatte zu.
+4. Starten Sie das Array, damit Unraid die fehlende Festplatte registrieren kann. Das Array zeigt die Festplatte als "Nicht installiert" an.
+5. Nur für Datenträger, vergewissern Sie sich, dass die emulierte Festplatte die erwarteten Inhalte anzeigt.
+6. Stoppen Sie die Array.
+7. Weisen Sie die deaktivierte Festplatte ihrem ursprünglichen Steckplatz zu.
+8. Optional wählen Sie den %%Wartungsmodus|maintenance-mode%%, um den Wiederherstellungsprozess zu beschleunigen.
+9. Klicken Sie auf **Start**, um den Neubau zu beginnen. Unraid nimmt die Inhalte von der emulierten Festplatte und rekonstruiert sie auf dem physischen Laufwerk.
+
+:::info[Rebuild Zeiterwartungen]
+
+Eine Wiederherstellung eines Laufwerks auf sich selbst kann mehrere Stunden bis mehr als einen Tag für größere Laufwerke dauern, abhängig von der Laufwerksgröße und der Systemaktivität. Faktoren, die die Wiederherstellungszeit beeinflussen können, umfassen die Laufwerkskapazität, Laufwerksgeschwindigkeit und Systemlast. Sie können den Fortschritt im %%WebGUI|web-gui%% beobachten.
+
+:::
+
+This procedure works for both data drives and %%parity drives|parity-drives%% that have been disabled.
+
+## Paritätstausch
+
+Parity-Swap ist ein besonderes Verfahren, das verwendet wird, wenn Sie eine Datenfestplatte durch eine Festplatte ersetzen müssen, die größer als Ihre aktuelle Paritätsfestplatte ist. Der Prozess verschiebt Ihre aktuelle Paritätsfestplatte in den Datensteckplatz und installiert eine neue, größere Festplatte als neue Paritätsfestplatte. Dies stellt sicher, dass Ihr Array geschützt bleibt und ermöglicht in Zukunft größere Datenfestplatten.
+
+Verwenden Sie einen Paritäts-Austausch, wenn Ihre Ersatzzur Datenfestplatte größer ist, als Ihre aktuelle Paritätsfestplatte. Dies ist nicht erforderlich, wenn Ihre neue Datenfestplatte gleich groß oder kleiner als Ihre Paritätsfestplatte ist.
+
+**Beispielszenario:** Sie haben eine Unraid-Konfiguration mit einer **2TB Paritätsfestplatte** und einer **1TB Datenfestplatte** und möchten die 1TB Festplatte durch eine **4TB Festplatte** ersetzen. Zuerst weisen Sie die neue 4TB Festplatte als Paritätsfestplatte zu, was die 2TB Festplatte ersetzt. Dann verschieben Sie die ursprüngliche 2TB Festplatte in den Datensteckplatz und entfernen die 1TB Festplatte vollständig. Nach diesen Änderungen haben Sie eine 4TB Festplatte als neue Parität, was sicherstellt, dass Sie in Zukunft Datenfestplatten bis zu 4TB hinzufügen können. Die 2TB Festplatte wird nun Ihre vorhandenen Daten enthalten, während die 1TB Festplatte anderweitig verwendet werden kann. Dieser Austausch hält Ihre Daten sicher und Ihr Array geschützt, während er zukünftige Upgrades ermöglicht.
+
+:::important\[Prerequisites]
+
+- Stellen Sie vor dem Start sicher, dass die zu ersetzende Datenfestplatte deaktiviert ist. Ausgefallene Festplatten (die einen roten Indikator anzeigen) sind bereits deaktiviert. Für gesunde Festplatten, die Sie ersetzen möchten, heben Sie die Zuordnung der Festplatte auf und starten Sie das Array einmal ohne sie, um Unraid zu zwingen, sie als deaktiviert zu markieren.
+- Wenn Ihre Ersatzzur-Datenfestplatte nicht größer als Ihre Paritätsfestplatte ist, verwenden Sie stattdessen das Standardverfahren [Ersetzen faileder/deaktivierter Festplatten](#replacing-faileddisabled-disks).
+- Dieses Verfahren ist nur erforderlich, um Datenfestplatten in einem Unraid-Array mit einer Festplatte zu ersetzen, die größer ist als die aktuelle Paritätsfestplatte. Für Paritätsaufrüstungen entfernen Sie einfach die alte Paritätsfestplatte, fügen Sie die neue hinzu und starten Sie das Array. Die Parität wird automatisch wiederhergestellt.
+
+:::
+
+:::warning\[Warnings]
+
+- Überprüfen Sie immer den Gesundheitszustand aller Laufwerke mithilfe von %%SMART-Berichten|smart-report%%, bevor Sie einen %%parity swap|parity-swap%% durchführen. Dieser Vorgang erhöht das Risiko eines Datenverlusts, wenn ein weiteres defektes oder gesundes Laufwerk dabei ist.
+- Beräumen Sie die neue Festplatte, falls möglich. Obwohl nicht erforderlich, reduziert das Bereinigen die Belastung der Festplatte und das Risiko eines Frühausfalls.
+- Identifizieren Sie vor Beginn korrekt alle Festplatten. Notieren Sie sich die Modellnummern und die letzten vier Zeichen jeder Seriennummer, um Fehler bei der Zuweisung zu vermeiden.
+
+:::
+
+Um einen Paritätstausch durchzuführen:
+
+:::note
+
+Wenn die zu ersetzende Festplatte bereits deaktiviert ist, können Sie die Schritte 1–4 überspringen. Wenn Sie die neue Ersatzfestplatte bereits installiert haben, können Sie die Schritte 5–8 überspringen.
+
+:::
+
+1. Stoppen Sie die Array.
+2. Weisen Sie die alte Datenfestplatte zu, wenn sie noch zugewiesen ist.
+3. Starten Sie das Array. Die Datenfestplatte sollte jetzt als "Nicht installiert" angezeigt werden.
+4. Stoppen Sie das Array erneut.
+5. Fahren Sie den Server herunter.
+
+:::tip
+
+Wenn Ihr System Hot-Swap unterstützt, müssen Sie nicht herunterfahren. Stärken Sie sicher, dass das Array vor Hardware-Änderungen gestoppt wird.
+
+:::
+
+6. Entfernen Sie optional die alte Festplatte.
+7. Installieren Sie die neue Festplatte. Es wird dringend empfohlen, diese vorzubereiten, aber eine Formatierung ist nicht erforderlich.
+8. Schalten Sie den Server ein.
+9. Stoppen Sie das Array, falls es automatisch gestartet ist.
+10. Weisen Sie die Paritätsfestplatte ab.
+11. Weisen Sie die neue Festplatte dem Paritätssteckplatz zu.
+12. Weisen Sie die alte Paritätsfestplatte dem Steckplatz der zu ersetzenden Festplatte zu.
+13. Sie sollten eine **Kopieren**-Schaltfläche mit einer Meldung sehen, die "Kopieren wird die Paritätsinformationen auf die neue Paritätsfestplatte kopieren." lautet.
+14. Kreuzen Sie das Bestätigungsfeld an und klicken Sie auf **Kopieren**. Das Array ist während dieses Vorgangs, der je nach Festplattengröße viele Stunden dauern kann, nicht verfügbar.
+15. Starten Sie das Array, um den Datenwiederherstellungsprozess zu beginnen. Sie können das Array während des Wiederherstellungsprozesses verwenden, aber für die beste Leistung sollten Sie den Gebrauch begrenzen. Der Wiederherstellungsprozess dauert ebenfalls mehrere Stunden.
+
+:::warning
+
+Formatieren Sie niemals ein Laufwerk während dieses Prozesses. Das Formatieren löscht alle Daten und aktualisiert die Parität, wodurch eine Wiederherstellung unmöglich wird.
+
+:::
+
+Nach Abschluss haben Sie eine größere Paritätsfestplatte und eine ersetzte Datenplatte. Viele Benutzer führen anschließend eine %%parity check|parity-check%% durch, um zusätzliche Sicherheit zu gewinnen, obwohl dies optional ist.
