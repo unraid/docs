@@ -69,11 +69,13 @@ sidebar_label: 确保您的外发通信安全
 %%Tailscale|tailscale%% exit nodes offer a secure and modern way to route your Unraid server's outgoing traffic through another device on your %%Tailnet|tailnet%%. This setup provides the security of a %%VPN|vpn-tunnel%% while leveraging %%Tailscale|tailscale%%'s easy-to-use mesh networking, making it ideal for users who want encrypted outgoing traffic without the complexity of traditional %%VPN|vpn-tunnel%%s.
 
 :::tip[When 使用 Tailscale 出口节点]
+
 考虑使用%%Tailscale|tailscale%% 出口节点：
 
 - 在旅行时保护来自家庭网络的外发流量
 - 维护IP地址的一致性以防止封锁VPN流量的服务
 - 与现有%%Tailscale|tailscale%% 基础设施无缝集成
+
 :::
 
 ### 配置Tailscale出口节点
@@ -87,9 +89,9 @@ sidebar_label: 确保您的外发通信安全
    - 在**使用出口节点**字段中选择可用的出口节点。
    - 点击 **应用**。
 
-### Mullvad集成
+### Docker容器出口节点
 
-Tailscale 与 Mullvad VPN 合作提供商业退出节点。您可以通过[Tailscale购买Mullvad VPN](https://tailscale.com/mullvad)，从而获得其全球服务器网络作为退出节点。此组合提供了Tailscale的网状网络与Mullvad隐私优先的基础设施。
+你还可以设置 Docker 容器，使其在 Unraid 服务器上充当 %%Tailscale|tailscale%% 出口节点。
 
 ### Docker容器出口节点
 
@@ -100,9 +102,9 @@ Tailscale 与 Mullvad VPN 合作提供商业退出节点。您可以通过[Tails
 3. **在您的%%Tailscale|tailscale%% 管理控制台中批准出口节点。**
 4. **选择容器作为%%Tailnet|tailnet%%上其他设备的出口节点。**
 
-## 外发VPN连接
+## 选择VPN提供商
 
-Unraid 支持与商业供应商的出站 WireGuard VPN 连接，允许您通过安全隧道路由 Docker 容器或整个服务器的流量。此举对于隐私、绕过地域限制或安全保护外发数据非常有用。有关社区见解和故障排除，请参见[WireGuard VPN隧道访问论坛主题](https://forums.unraid.net/topic/84316-wireguard-vpn-tunneled-access/)。
+选择合适的 %%VPN|vpn-tunnel%% 提供商取决于您的优先事项——速度、隐私、易用性和支持。以下提供商在 Unraid 上支持良好，并提供强大的 %%WireGuard|wireguard%% 集成：
 
 ### 选择VPN提供商
 
@@ -119,21 +121,9 @@ Unraid 支持与商业供应商的出站 WireGuard VPN 连接，允许您通过�
 | [IVPN](https://www.ivpn.net/en/), [OVPN](https://www.ovpn.com/en), [Windscribe](https://windscribe.com/) | 小众需求     | 高级隐私，区域选择         | 良好          | 社区支持           |
 
 :::tip
+
 选择一个本身支持%%WireGuard|wireguard%%且具有强隐私政策的提供商。避免需要自定义客户端或专有协议的提供商。
-:::
 
-### 配置Docker的VPN隧道访问
-
-您可以通过商用%%VPN|vpn-tunnel%% 隧道路由特定的Docker容器——无需更改路由器。
-
-1. 从所选提供商下载%%WireGuard|wireguard%% 配置文件。
-2. 在***设置 → VPN管理器***中，选择**导入配置**并上传文件。这将创建一个新的隧道。
-3. **访问类型的类型**默认设置为*Docker的VPN隧道访问*。可选地，给它一个本地名称。
-4. 点击 **应用**。
-5. 将隧道开关设置为**活动**。
-
-:::tip
-记录隧道名称（例如，`wg0`，`wg1`，`wg2`）。在配置 Docker 容器时您将需要此名称。 如果您的供应商在他们的配置中指定了 DNS 服务器，请记录下来以备后用。如果没有，请使用公共 DNS，例如`8.8.8.8`。
 :::
 
 ### 测试Docker隧道
@@ -143,6 +133,23 @@ Unraid 支持与商业供应商的出站 WireGuard VPN 连接，允许您通过�
 1. 通过社区应用安装[Firefox](https://unraid.net/community/apps?q=Firefox) Docker容器。
 2. 将其**网络类型**设置为**自定义：wgX**（用您的隧道名称替换X）。
 3. 切换到**高级**视图，并将DNS提供商添加到**额外参数**（例如，`--dns=8.8.8.8`）。
+4. 点击 **应用**。
+5. 启动Firefox并访问[whatismyipaddress.com](https://whatismyipaddress.com/)以验证您的IP地址与VPN服务器的国家匹配。
+
+:::tip
+
+记录隧道名称（例如，`wg0`，`wg1`，`wg2`）。在配置 Docker 容器时您将需要此名称。 如果您的供应商在他们的配置中指定了 DNS 服务器，请记录下来以备后用。如果没有，请使用公共 DNS，例如`8.8.8.8`。
+
+:::
+
+### 测试Docker隧道
+
+要验证您的Docker隧道是否工作正常且未泄露DNS或IP信息：
+
+1. 您可能需要暂时禁用隧道以进行 Unraid 更新或插件安装。
+2. 一次只能有一个系统范围内的隧道处于活动状态。
+3. Unraid 忽略从导入的配置中获取的 DNS 设置。将 Unraid 的 DNS 设置为可靠的公共服务器（例如，`8.8.8.8`，`8.8.4.4`）。
+   :::
 4. 应用更改并启动容器。
 5. 启动Firefox并访问[whatismyipaddress.com](https://whatismyipaddress.com/)以验证您的IP地址与VPN服务器的国家匹配。
 6. 访问[dnsleaktest.com](https://www.dnsleaktest.com/)并确认仅检测到您的VPN的DNS服务器。
@@ -157,12 +164,14 @@ Unraid 支持与商业供应商的出站 WireGuard VPN 连接，允许您通过�
 2. 在***设置 → VPN管理器***中，选择**导入配置**并上传文件。
 3. 可以选择重命名隧道。
 4. 点击 **应用**。
-5. 将隧道开关设置为**活动**。
+5. 启动Firefox并访问[whatismyipaddress.com](https://whatismyipaddress.com/)以验证您的IP地址与VPN服务器的国家匹配。
 
 :::note
-- 您可能需要暂时禁用隧道以进行 Unraid 更新或插件安装。
-- 一次只能有一个系统范围内的隧道处于活动状态。
-- Unraid 忽略从导入的配置中获取的 DNS 设置。将 Unraid 的 DNS 设置为可靠的公共服务器（例如，`8.8.8.8`，`8.8.4.4`）。
+
+- **[WireGuard VPN隧道访问](https://forums.unraid.net/topic/84316-wireguard-vpn-tunneled-access/)** - 本社区讨论聚焦于通过商业WireGuard VPN提供商路由Docker容器或系统全局流量。它包括实际设置示例、DNS泄漏测试提示和出站隧道故障排除建议。
+- **[Dynamix WireGuard 插件主题](https://forums.unraid.net/topic/84229-dynamix-wireguard-vpn/)** - 这是 Dynamix WireGuard 插件的官方主题。它涵盖了插件更新、功能请求、错误报告以及与 Unraid 内置 WireGuard 支持相关的一般问题和答案。
+- **[WireGuard快速入门](https://forums.unraid.net/topic/84226-wireguard-quickstart/)** - 为设置到Unraid的入站WireGuard VPN连接提供的分步骤指南。此资源包括配置演练、对等设置说明以及远程访问提示。
+
 :::
 
 ### 测试系统隧道
