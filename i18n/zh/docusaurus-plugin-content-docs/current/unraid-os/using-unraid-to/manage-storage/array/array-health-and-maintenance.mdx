@@ -1,0 +1,201 @@
+---
+sidebar_position: 5
+sidebar_label: 阵列健康和维护
+---
+
+import ArrayCheckParity from "../partials/array-check-parity.mdx";
+import ArrayCheckRead from "../partials/array-check-read.mdx";
+import TroubleshootMissingDisks from "../partials/troubleshoot-missing-disks.mdx";
+import TroubleshootDeviceLimit from "../partials/troubleshoot-device-limit.mdx";
+import TroubleshootLicenseIssues from "../partials/troubleshoot-license-issues.mdx";
+import TroubleshootKeyServer from "../partials/troubleshoot-key-server.mdx";
+import TroubleshootWithdrawnRelease from "../partials/troubleshoot-withdrawn-release.mdx";
+
+# 阵列健康和维护
+
+定期检查您的 Unraid 阵列对于保持数据完整性和在问题导致数据丢失之前识别潜在问题至关重要。本页面介绍了监控工具和故障排除程序，以保证您的阵列健康。
+
+## 检查阵列设备
+
+You can initiate a check using the **Check** button under ***Array Operations***. Depending on your array's configuration, this button allows you to conduct either a %%parity check|parity-check%% or a %%read check|read-check%%.
+
+<div
+  style={{
+   margin: "auto",
+   maxWidth: "400px",
+   display: "flex",
+   flexDirection: "column",
+   alignItems: "center",
+  }}
+>
+  ![检查按钮可让您执行校验和读取
+  检查](/img/Check_button.PNG)
+</div>
+
+为了方便，您可以通过导航到 ***设置 → 调度器*** 来安排这些检查以适应您的时间间隔。建议每月或每季度执行自动纠正检查，以确保数据健康并修复发现的同步错误。
+
+### 校验检查
+
+<ArrayCheckParity />
+
+### 读取检查
+
+<ArrayCheckRead />
+
+### 检查历史
+
+Whenever the system performs a %%parity check|parity-check%% or a %%read check|read-check%%, it keeps a record of what happened. You can view these details easily by clicking the **History** button found under ***Array Operations*** in the interface.
+
+Unraid 提供多种写入模式用于管理阵列操作，每种模式在速度、电量消耗和磁盘损耗方面各有优劣。了解这些模式的工作原理以及缓存盘或缓存池的作用，有助于根据您的需求优化服务器。
+
+## 磁盘升降速操作
+
+Unraid 允许您控制硬盘的电源状态。您可以轻松地 %%spin them up or down|电源状态%%，并管理 SSD 处于活动或待机状态。这有助于省电，延长硬盘寿命，并在磁盘未使用时降低噪音。
+
+### 为什么要启动或停止？
+
+旋转关闭不常用的驱动器可以节省能源并延长它们的寿命。提前旋转驱动器可以减少您需要尽快获取文件时的等待时间。
+
+### 如何控制启动状态
+
+通过 **Main** 选项卡控制磁盘旋转状态：
+
+1. 转到 **Main** 选项卡并找到您的阵列设备。
+2. 每个磁盘都有旋转控制按钮：
+   - 🔘 按钮 - **启动** （如果当前已停止）
+   - 🟢 按钮 - **停止** （如果当前正在旋转）
+3. 点击适当的按钮来执行您想要的操作。
+
+请记住，如果磁盘被访问（例如打开文件），它将保持活动并忽略任何停止请求。
+
+当磁盘不转时，其温度将不会在%%WebGUI|web-gui%%中显示。然而，一旦任何应用程序或用户访问它，它将自动开始转动。
+
+:::tip
+
+使用旋转控制来节省电力并减少对驱动器的损耗。请记住，正在被使用的磁盘将保持开启状态，直到所有任务完成。
+
+:::
+
+## 重置阵列配置
+
+重置阵列配置是一个需要谨慎对待的重要步骤。此过程通常在移除磁盘、以新阵列布局重头开始或修复磁盘分配问题时是必要的。请注意，此操作可能会影响数据保护和校验，因此请确保只有在确有必要时才继续进行。
+
+在以下情况下重置您的阵列：
+
+- 移除或替换磁盘
+- 以新的阵列布局重新开始
+- 修复磁盘分配错误
+- 从配置问题中恢复
+
+<div
+  style={{
+   margin: "auto",
+   maxWidth: "650px",
+   display: "flex",
+   flexDirection: "column",
+   alignItems: "center",
+  }}
+>
+  ![可以通过新配置页面重置您的磁盘配置](/img/Newconfig.png)
+</div>
+
+要重置阵列配置：
+
+1. 转到 **工具 → 新配置**。
+2. 可选地保留某些现有磁盘分配以进行小的调整。
+3. 选中确认框并点击 **应用**。
+4. 返回 **Main** 选项卡。
+5. 根据需要分配或解除磁盘。
+6. 在正常模式或 %%维护模式|maintenance-mode%% 下启动阵列。
+
+:::important
+
+- Unraid 尝试识别以前使用的驱动器并在可能的情况下保留数据。
+- 移除数据盘会导致奇偶校验失效，除非该盘在移除前被清零。
+- 更改磁盘顺序不会影响 Parity1，但可能使 Parity2 失效。
+
+:::
+
+:::caution
+
+当您看到**开始**按钮时，有一个标记为**奇偶有效**的复选框。只有在您确定其正确或经验丰富的 Unraid 用户建议您在恢复期间这样做时，才选中此框。不正确地选中此选项可能导致数据丢失。
+
+如果您的目标是重建磁盘，请勿使用**新配置**。执行新配置会清除重建所需的阵列历史记录，而且 Unraid 将不会提供重建磁盘的选项。请按照磁盘重建程序进行操作。
+
+:::
+
+### 撤销重置
+
+要撤销重置：
+
+1. \*\*无奇偶校验保护：\*\*在移动到数组之前，数据未受保护。
+2. 打开 `config` 文件夹。
+3. 将 `super.old` 重命名为 `super.dat`。
+4. 重启您的服务器以恢复之前的配置。
+
+## 状态报告
+
+Unraid 提供状态报告，帮助您跟踪存储阵列的健康状况。这些报告是快速检查任何磁盘是否禁用或在读取或写入数据时出现问题的快捷方式。
+
+- \*\*当前状态：\*\*状态报告显示您的阵列当前情况。重要的是要注意，这些信息在系统重新启动后将被重置，因此不会保留过去的历史问题。
+
+- \*\*无历史数据：\*\*如果您想查看重启前发生了什么，您需要去其它地方查看，因为这些报告不保存过去的状态。
+
+:::important
+
+请记住，状态报告不包括%%SMART|smart%%数据。%%SMART报告|smart-report%%为您提供了单个磁盘健康的更详细视图。因此，即使您的状态报告显示一切正常，定期检查%%SMART报告|smart-report%%以尽早发现任何潜在问题仍然是个好主意。
+
+:::
+
+## 故障排除数组启动失败
+
+如果您的数组无法启动，请按照这些步骤来识别和修复常见问题。在 ***主菜单→数组操作*** 下查找错误消息。
+
+### 缺少磁盘
+
+<TroubleshootMissingDisks />
+
+### 设备限制
+
+<TroubleshootDeviceLimit />
+
+### 许可问题
+
+<TroubleshootLicenseIssues />
+
+### 密钥服务器连接
+
+<TroubleshootKeyServer />
+
+### 撤回发布
+
+<TroubleshootWithdrawnRelease />
+
+## 重建期间的磁盘故障
+
+如果在重建另一个磁盘时发生第二个磁盘故障，您能做的将取决于您的奇偶校验设置。
+
+### 单个奇偶盘
+
+如果在重建另一个磁盘时一个磁盘故障，重建将停止，因为数据无法准确恢复。
+
+### 双奇偶盘
+
+如果您有两个 %%parity drives|校验盘%%，您有更多的选择：
+
+- 您可以等待第一个重建完成，然后再处理第二个故障磁盘。
+- 或者，您可以停止当前重建，替换第二个故障磁盘，然后启动阵列以同时重建两个磁盘。
+
+如果第一次重建快要完成，通常最好让它完成。如果刚开始，重建两个可能会更快。
+
+:::warning
+
+重建磁盘会给所有驱动器带来很大压力，从而增加新故障的概率。在开始重建前，请使用%%SMART报告|smart-report%%检查磁盘健康。
+
+:::
+
+:::info[Rebuild 时间]
+
+要准备好重建过程可能需要几个小时。时间可能因磁盘大小和系统忙碌程度而异。较大的磁盘和繁忙的系统可能需要更长时间。
+
+:::
