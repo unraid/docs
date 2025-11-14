@@ -144,14 +144,14 @@ npm run start -- --locale zh
 npm run start -- --locale es
 ```
 
-Lint Markdown and MDX content with Remark:
+Lint Markdown and MDX content with Remark (no auto-fixers run now):
 
 ```bash
-npm run lint      # report issues
-npm run lint:fix  # apply automatic fixes
+npm run lint             # report issues
+npm run lint -- --frail  # optional: fail on warnings (CI default)
 ```
 
-Run the full formatting pipeline, including Crowdin spacing adjustments:
+Normalize Crowdin-specific spacing (this is all `npm run format` does now):
 
 ```bash
 npm run format
@@ -195,7 +195,7 @@ Help translate Unraid Docs for the global community.
 
 * Join the project on Crowdin: [unraid.crowdin.com/unraid-docs](https://unraid.crowdin.com/unraid-docs)
 * Follow the glossary and tone guidance in the [Style Guide](docs/contribute/style-guide.mdx)
-* Run Crowdin formatting before submitting source updates: `npm run format:crowdin`
+* Run Crowdin formatting before submitting source updates: `npm run format` (or `npm run format:crowdin`)
 
 Crowdin suggestions are reviewed regularly by maintainers and native-language contributors.
 
