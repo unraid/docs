@@ -61,9 +61,12 @@ Nachdem Sie Ihre Konfigurationseinstellungen in der Container-Vorlage überprüf
 Einige Container sind von anderen abhängig, um korrekt zu funktionieren. Beispielsweise könnte eine Anwendung zuerst einen Datenbankcontainer benötigen, oder ein Dienst könnte einen [%%VPN|vpn-tunnel%%-Container](../../system-administration/secure-your-server/tailscale.mdx) aktiviert haben müssen, bevor er startet.
 
 :::important[Plan Ihren Start]
+
 - Identifizieren Sie Container, die grundlegende Dienste bieten (wie Datenbanken, %%VPNs|vpn-tunnel%% oder Speichergateways).
 - Stellen Sie sicher, dass abhängige Container erst gestartet werden, nachdem ihre Voraussetzungen laufen und bereit sind.
 - Überprüfen Sie die Dokumentation für jeden Container, um spezifische Startanforderungen zu verstehen.
+  :::
+
 :::
 
 ---
@@ -88,7 +91,9 @@ Standardmäßig startet Unraid alle Autostart-Container so schnell wie möglich 
    - Benutzen Sie Versuch und Irrtum, um die besten Wartezeiten für Ihr Setup zu bestimmen.
 
 :::tip
-Das Festlegen der korrekten Reihenfolge und Wartezeiten ist besonders wichtig für Container, die von Diensten anderer abhängen (beispielsweise das Starten einer Datenbank vor einer App, die sie verwendet, oder eines %%VPN|vpn-tunnel%% vor abhängigen Apps).
+
+Während Unraid keine spezielle "Test-Startsequenz"-Funktion besitzt, können Sie Ihre Startreihenfolge simulieren und überprüfen:
+
 :::
 
 ### Testen Ihrer Startsequenz
@@ -101,12 +106,14 @@ Während Unraid keine spezielle "Test-Startsequenz"-Funktion besitzt, können Si
 4. Passen Sie bei Bedarf die Startreihenfolge oder die Wartezeiten an.
 
 :::important
-Testen Sie Ihre Startsequenz erneut, nachdem Sie Container-Abhängigkeiten geändert oder neue Dienste hinzugefügt haben, besonders wenn Ihr Setup auf einem bestimmten Startzeitpunkt basiert.
+
+Um auf das Kontextmenü des Containers zuzugreifen, wechseln Sie zur **Docker**- oder **Dashboard**-Registerkarte und klicken auf das Container-Icon, das Sie verwalten möchten. Dieses Menü bietet einfachen Zugriff auf häufige Aktionen:
+
 :::
 
 ---
 
-## Ihre Container verwalten
+## Gesundheitsindikator
 
 Sobald Sie Ihren Docker-Container erstellt und gestartet haben, ist die Verwaltung über die %%WebGUI|web-gui%% einfach. Dieser Leitfaden erläutert die Verwendung des Kontextmenüs, das Verständnis von Container-Gesundheitsindikatoren und den Zugriff auf Volumen-Zuordnungen innerhalb Ihres Containers.
 
@@ -130,16 +137,18 @@ Um auf das Kontextmenü des Containers zuzugreifen, wechseln Sie zur **Docker**-
 | **Support**       | Bietet Zugang zu Hilfs- und Unterstützungsressourcen für den Container.                                                          |
 | **Weitere Infos** | Zeigt zusätzliche Informationen über den Container und seine Konfiguration an.                                                   |
 
-### Gesundheitsindikator
+### Volume-Mappings innerhalb eines Containers
 
-Es befindet sich ein farbiger Gesundheitsindikator neben dem Symbol jedes Containers:
+Beim Konfigurieren Ihrer Anwendung über ihre Weboberfläche beziehen Sie sich auf den **Container-Pfad**, den Sie während der Konfiguration eingerichtet haben - nicht den Host-Pfad.
 
 - 🟢 **Gesund**: Zeigt an, dass der Container läuft und wie erwartet reagiert.
 - 🟡 **Ungesund**: Der Container läuft, hat aber seine Gesundheitsprüfung nicht bestanden. Untersuchen Sie die Protokolle oder Container-Einstellungen für weitere Informationen.
 - ⚪ **Keine Gesundheitsprüfung**: Dies bedeutet, dass keine Gesundheitsprüfung für den Container konfiguriert ist. Das ist bei vielen Apps üblich und nicht unbedingt ein Problem.
 
 :::note
-Gesundheitschecks werden vom Container-Author definiert und müssen möglicherweise nicht für alle Images vorhanden sein.
+
+Hier sind einige Beispiele für häufige Pfadzuordnungskonfigurationen, die Benutzer häufig benötigen, wenn sie Docker-Container einrichten. Sie zeigen, wie man zwischen dem Host-Dateisystem-Pfad von Unraid und den internen Pfaden des Containers übersetzt, um Anwendungen korrekt zu konfigurieren.
+
 :::
 
 ---
@@ -148,7 +157,7 @@ Gesundheitschecks werden vom Container-Author definiert und müssen möglicherwe
 
 Beim Konfigurieren Ihrer Anwendung über ihre Weboberfläche beziehen Sie sich auf den **Container-Pfad**, den Sie während der Konfiguration eingerichtet haben - nicht den Host-Pfad.
 
-Zum Beispiel, wenn Sie `/mnt/user/media` auf dem Host zu `/unraid_media` im Container zugeordnet haben, sollten Sie in den Einstellungen der Anwendung `/unraid_media` verwenden.
+Unraid unterstützt nativ keine zeitgesteuerten Start- oder Stopp-Aktionen für **Docker-Container**, aber Sie können diesen Prozess ganz einfach mit dem [**User Scripts plugin**](../customize-your-experience/plugins.mdx) automatisieren. Dieses leistungsstarke Tool ermöglicht es Ihnen, benutzerdefinierte Skripte nach einem Zeitplan auszuführen, sodass Sie Ihre Container automatisch steuern können.
 
 <h3>Beispielszenarien</h3>
 
@@ -160,9 +169,7 @@ Hier sind einige Beispiele für häufige Pfadzuordnungskonfigurationen, die Benu
 
   Stellen Sie in der App den Speicherort Ihrer Medienbibliothek auf `/unraid_media` ein.
 
-- **Appdata-Speicher:**
-  Host-Pfad: `/mnt/user/appdata/myapp`\
-  Container-Pfad: `/config`
+- Greifen Sie über ***Einstellungen → Benutzerskripte*** darauf zu, um Ihre Skripte zu erstellen und zu verwalten.
 
   Verwenden Sie in der App `/config` für die Konfigurationsspeicherung.
 
@@ -173,7 +180,9 @@ Hier sind einige Beispiele für häufige Pfadzuordnungskonfigurationen, die Benu
   Verweisen Sie in der Anwendung bei Bedarf auf `/media` oder `/data`.
 
 :::important[Best Praxis]
+
 Verwenden Sie immer den restriktivsten [Zugriffsmodus](../manage-storage/shares.mdx) (nur lesen oder lesen/schreiben), der Ihren Container ordnungsgemäß funktionieren lässt.
+
 :::
 
 ---
@@ -202,7 +211,9 @@ Um das Starten oder Stoppen Ihrer Container nach einem Zeitplan zu automatisiere
 5. Klicken Sie auf **Anwenden**, um Ihr Skript zu speichern und zu aktivieren.
 
 :::tip
+
 Cron-Ausdrücke ermöglichen eine flexible Planung über die integrierten Optionen hinaus. Beispielsweise führt `0 3 * * 1` Ihr Skript jeden Montag um 3:00 Uhr aus.
+
 :::
 
 ### Befehl Beispiele
@@ -230,5 +241,7 @@ Cron-Ausdrücke ermöglichen eine flexible Planung über die integrierten Option
 </Tabs>
 
 :::tip
+
 Sie finden den Containernamen auf dem Docker-Tab oder indem Sie den `docker run`-Befehl im Konfigurationsbildschirm des Containers anzeigen.
+
 :::
