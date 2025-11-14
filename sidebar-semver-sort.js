@@ -55,7 +55,7 @@ function sortSidebarItems(items, sortBySemver = false) {
           .sort((a, b) => {
             const aSemver = getSemverFromId(a.id) || semver.parse("0.0.0");
             const bSemver = getSemverFromId(b.id) || semver.parse("0.0.0");
-            return semver.compare(aSemver, bSemver);
+            return semver.compare(bSemver, aSemver);
           });
 
         return {
