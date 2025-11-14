@@ -8,7 +8,9 @@ sidebar_label: 定制 Unraid 设置
 Unraid OS 可以自动运行，但允许通过 Unraid **%%WebGUI|web-gui%%** 的 **设置** 选项卡进一步自定义设置，例如 IP 地址、主机名、磁盘可调参数和更多选项。
 
 :::tip[Tailscale 集成]
+
 **Tailscale** 是一个可选插件，您可以通过在 **应用** 选项卡中搜索 "Tailscale" 来安装。它为您的网络提供安全的远程访问，并在 **设置** 中添加一个 **Tailscale** 部分，以增强远程管理功能。
+
 :::
 
 <div style={{ margin: 'auto', maxWidth: '700px'}}>
@@ -117,7 +119,7 @@ Unraid 可以连接到 APC（或兼容的）UPS（不间断电源），以便在
   ![虚拟机管理器](/img/settings-vmmanager.png)
 </div>
 
-## 网络服务
+## NFS (网络文件系统)
 
 **网络服务** 让您可以在 Unraid 服务器上配置网络通信协议，这对用户和磁盘共享至关重要。您还可以启用 %%FTP|ftp%% 服务器、日志服务器，并设置 %%VPN|vpn-tunnel%% 以实现安全的远程访问。
 
@@ -156,10 +158,12 @@ The %%Syslog server|syslog-server%% permanently stores your system log, which is
 ### Tailscale
 
 :::note
+
 只要您安装了Tailscale插件，才有可用的 Tailscale 部分。
+
 :::
 
-%%Tailscale|tailscale%% 部分允许通过 %%Tailscale|tailscale%% %%VPN|vpn-tunnel%% 进行安全远程访问。在这里，您可以登录以将 Unraid 服务器连接到您的 %%Tailnet|tailnet%%，查看分配的 IP 地址和主机名，以及启用或禁用 %%Tailscale|tailscale%% 连接。
+您可以使用 [%%Wireguard|wireguard%%](https://www.wireguard.com/) 建立至 Unraid 服务器的 %%VPN|vpn-tunnel%% 连接，以确保互联网连接的安全。
 
 You can also configure your server as a %%Subnet Router|subnet-routing%% for local devices or as an Exit Node to route internet traffic. This section enables management of advertised routes, exit node status, Docker container integration options, and connection status monitoring for troubleshooting.
 
@@ -205,11 +209,162 @@ You can also configure your server as a %%Subnet Router|subnet-routing%% for loc
 
 ### 通知设置
 
-您可以在此页面配置浏览器和电子邮件通知，订阅不同类型并为 %%SMART|smart%% 属性值设定自定义警报。
+Unraid 可以通过您的浏览器、电子邮件或第三方通知服务，向您发送关于重要系统事件、更新和警报的通知。通知设置页面可让您控制如何以及何时接收这些通知。
+
+此处显示第三方插件，增强了 Unraid 的功能，并为您提供更多服务器控制。例如，[社区应用程序插件](../../using-unraid-to/run-docker-containers/community-applications.mdx) 已包含其中。其他插件提供了系统监控、维护、存储管理和 `appdata` 备份等功能。
 
 <div style={{ margin: 'auto', maxWidth: '400px'}}>
   ![通知设置](/img/settings-notifications.png)
 </div>
+
+#### 显示和行为设置
+
+配置通知在浏览器中的显示方式：
+
+- **通知显示**：选择 *详细* 或 *总结* 通知样式
+- **显示位置**：设置通知出现的位置（*右上角*、*左上角*、*右下角*、*左下角* 或 *中央*）
+- **自动关闭（秒）**：通知在自动关闭前保持可见的时间长度
+- **日期格式**：选择您偏好的通知时间戳日期格式
+- **时间格式**：选择 *12 小时* 或 *24 小时* 时间显示
+- **将通知存储到闪存**：将通知历史记录保存到您的 USB 闪存设备（需要闪存存储空间）
+
+#### 通知类型
+
+控制哪些事件会触发通知：
+
+- **系统通知**：常规系统事件和消息
+- **Unraid 系统更新通知**：当有新版本 Unraid 系统可用时发出警报
+- **插件更新通知**：当插件更新可用时发出警报
+- **Docker 更新通知**：当 Docker 容器更新可用时发出警报
+- **语言包更新通知**：当语言包更新可用时发出警报
+- **阵列状态通知**：关于 %%array|array%% 事件和状态变化的警报
+
+对于每种通知类型，您可以将频率设置为 *永不检查*，或每天、每周、每月检查，甚至在某些情况下每天多次检查。
+
+#### 传送方式
+
+选择您希望如何接收每个类别（*通知*、*警告* 和 *警报*）的通知：
+
+- **浏览器**：在您登录时，在 %%WebGUI|web-gui%% 显示通知
+- **电子邮件**：通过电子邮件发送通知（需要 [SMTP 配置](#smtp-settings)）
+- **代理商**：通过配置的第三方服务发送通知
+
+:::tip
+
+启用 **浏览器** 通知以便在使用 %%WebGUI|web-gui%% 时立即可见，并在您远离服务器时通过 **电子邮件** 接收警报。使用 **代理商** 集成移动应用程序和服务，例如 Discord 或 Telegram。
+
+:::
+
+#### SMTP 设置
+
+要接收电子邮件通知，您需要配置您的电子邮件服务器设置。Unraid 支持许多电子邮件提供商，包括 Gmail、Outlook 和自定义 SMTP 服务器。
+
+可以在 ***设置 → 用户偏好 → 通知设置 → SMTP 设置*** 中找到 SMTP 设置。
+
+**基本配置：**
+
+- **预设服务**：选择一个预设配置（*Gmail*、*Outlook/Hotmail* 或 *自定义*）以自动填写常用设置
+- **发送电子邮件地址**：发送通知的电子邮件地址
+- **电子邮件接收者**：以逗号分隔列出接收通知的电子邮件地址
+- **头部优先级**：将电子邮件标记为高优先级（*是* 或 *否*）
+- **电子邮件主题前缀**：添加到所有通知电子邮件主题的文本（默认：*Unraid 状态：*）
+
+**服务器设置：**
+
+- **邮件服务器**：SMTP 服务器地址（例如，`smtp.gmail.com`）
+- **邮件服务器端口**：SMTP 端口号（常用端口：`465` 用于 SSL/TLS，`587` 用于 STARTTLS，`25` 用于未加密）
+- **使用 SSL/TLS**：启用 SSL/TLS 加密（*是* 还是 *否*）
+- **使用 STARTTLS**：使用 STARTTLS 进行加密（*是* 还是 *否*）
+- **定义 TLS 证书**：如果需要，指定自定义 TLS 证书（*是* 还是 *否*）
+- **TLS 证书位置**：自定义证书文件的路径（仅在启用 *定义 TLS 证书* 时）
+
+**身份验证:**
+
+- **验证方法**：选择 *无*、*CRAM-MD5* 或 *登录*（用户名/密码）
+- **用户名**：您的电子邮件帐户用户名（通常是您的完整电子邮件地址）
+- **密码**：您的电子邮件帐户密码或应用专用密码
+
+设置完您的配置后，使用 **TEST** 按钮验证您的电子邮件配置是否正常工作。
+
+##### 使用应用程序密码配置 Gmail
+
+当使用启用了双步验证（推荐以增强安全性）的帐户进行 SMTP 时，Gmail 需要应用专用密码。
+
+**设置 Gmail 通知步骤：**
+
+1. 在 **预设服务** 中选择 *Gmail*（这将自动填充 **邮件服务器** 和 **邮件服务器端口**）
+2. 在 **发送电子邮件地址** 中输入您的 Gmail 地址
+3. 在 **电子邮件接收者** 中输入接收电子邮件地址
+4. 将 **用户名** 设置为您的完整 Gmail 地址（例如，`yourname@gmail.com`）
+5. 对于 **密码**，您需要生成一个应用程序密码：
+   - 前往您的 [Google 帐户设置](https://myaccount.google.com/)
+   - 转到 **安全性**
+   - 在"如何登录 Google"下，确保启用了 **双步验证**（应用程序密码所必需）
+   - 在同一部分中，找到并点击 **应用程序密码**（或在搜索栏中搜索"应用程序密码"）
+   - 您可能需要验证您的身份
+   - 为应用程序名称输入一个自定义名称，如“Unraid 服务器”。
+   - 点击 **创建**
+   - Google 会生成一个 16 字符的密码。
+   - 复制这个密码并将其粘贴到 Unraid 的 **密码** 字段中
+6. 点击 **TEST** 以验证配置
+7. 点击 **DONE** 以保存您的设置
+
+:::tip[Default Gmail 设置]
+
+- **邮件服务器**：`smtp.gmail.com`
+- **邮件服务器端口**：`465`
+- **使用 SSL/TLS**：`是`
+- **使用 STARTTLS**：`否`
+- **身份验证方法**：`登录`
+
+:::
+
+:::warning[Security 建议]
+
+始终使用应用程序密码而不是您的主 Gmail 密码。应用程序密码可以单独撤销而无需更改您的主要帐户密码，如果您的 Unraid 配置被泄露，这提供了更好的安全性。
+
+:::
+
+#### 通知代理
+
+通知代理允许您向第三方服务和移动应用程序发送警报。Unraid 内置支持许多流行的通知服务。
+
+要访问通知代理，请点击通知设置页面的 **通知代理** 链接，或导航到 ***设置 → 用户偏好 → 通知设置 → 通知代理***。
+
+**内置代理包括：**
+
+- <img src="/img/customize-unraid-settings/icons/icon-bark.png" alt="Bark" style={{height: '20px', verticalAlign: 'middle', marginRight: '8px'}} /> **Bark**：iOS 通知应用
+- <img src="/img/customize-unraid-settings/icons/icon-boxcar.png" alt="Boxcar" style={{height: '20px', verticalAlign: 'middle', marginRight: '8px'}} /> **Boxcar**：推送通知服务
+- <img src="/img/customize-unraid-settings/icons/icon-discord.png" alt="Discord" style={{height: '20px', verticalAlign: 'middle', marginRight: '8px'}} /> **Discord**：通过 webhook 发送通知到 Discord 频道
+- <img src="/img/customize-unraid-settings/icons/icon-gotify.png" alt="Gotify" style={{height: '20px', verticalAlign: 'middle', marginRight: '8px'}} /> **Gotify**：自托管通知服务器
+- <img src="/img/customize-unraid-settings/icons/icon-ntfy.png" alt="ntfy.sh" style={{height: '20px', verticalAlign: 'middle', marginRight: '8px'}} /> **ntfy.sh**：基于 HTTP 的简单通知服务
+- <img src="/img/customize-unraid-settings/icons/icon-prowl.png" alt="Prowl" style={{height: '20px', verticalAlign: 'middle', marginRight: '8px'}} /> **Prowl**：iOS 推送通知
+- <img src="/img/customize-unraid-settings/icons/icon-pushbits.png" alt="Pushbits" style={{height: '20px', verticalAlign: 'middle', marginRight: '8px'}} /> **Pushbits**：自托管通知中继
+- <img src="/img/customize-unraid-settings/icons/icon-pushbullet.png" alt="Pushbullet" style={{height: '20px', verticalAlign: 'middle', marginRight: '8px'}} /> **Pushbullet**：跨平台通知服务
+- <img src="/img/customize-unraid-settings/icons/icon-pushover.png" alt="Pushover" style={{height: '20px', verticalAlign: 'middle', marginRight: '8px'}} /> **Pushover**：iOS 和 Android 的推送通知服务
+- <img src="/img/customize-unraid-settings/icons/icon-pushplus.png" alt="Pushplus" style={{height: '20px', verticalAlign: 'middle', marginRight: '8px'}} /> **Pushplus**：中国推送通知服务
+- <img src="/img/customize-unraid-settings/icons/icon-serverchan.png" alt="ServerChan" style={{height: '20px', verticalAlign: 'middle', marginRight: '8px'}} /> **ServerChan**：中国服务器监控和通知服务
+- <img src="/img/customize-unraid-settings/icons/icon-slack.png" alt="Slack" style={{height: '20px', verticalAlign: 'middle', marginRight: '8px'}} /> **Slack**：通过 webhook 发送通知到 Slack 频道
+- <img src="/img/customize-unraid-settings/icons/icon-telegram.png" alt="Telegram" style={{height: '20px', verticalAlign: 'middle', marginRight: '8px'}} /> **Telegram**：发送消息到 Telegram bot
+
+**配置代理：**
+
+1. 从列表中选择您要配置的代理
+2. 将 **代理功能** 从 *禁用* 更改为 *启用*
+3. 填写该服务所需的字段：
+   - 大多数代理需要 **webhook URL**、**API 令牌** 或 **访问令牌**
+   - 一些服务需要额外的配置，例如频道 ID 或组代码
+4. 配置 **通知标题**（通常设置为*主题*以使用通知主题）
+5. 配置 **通知消息**（通常设置为*描述*以使用完整的通知文本）
+6. 点击 **DONE** 保存
+
+每个代理都有不同的要求 - 请查阅所选服务的文档以获取必要的 API 密钥、webhook URL 或令牌。
+
+:::tip
+
+您可以同时启用多个代理。例如，您可以使用 Discord 来进行团队通知，并使用 Pushover 来获取个人移动警报。注意，**所有通知**都会发送到 **所有启用的代理**，因此使用多个代理可能会导致收到重复的通知。
+
+:::
 
 ### 调度程序
 
@@ -221,4 +376,4 @@ You can also configure your server as a %%Subnet Router|subnet-routing%% for loc
 
 ---
 
-\* “%%WireGuard|wireguard%%”和“%%WireGuard|wireguard%%”徽标是Jason A. Donenfeld的注册商标。
+\* *"%%WireGuard|wireguard%%"和 "%%WireGuard|wireguard%%"徽标是Jason A. Donenfeld的注册商标.*
