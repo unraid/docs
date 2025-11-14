@@ -1,0 +1,267 @@
+---
+sidebar_position: 3
+sidebar_label: 更换阵列中的磁盘
+---
+
+# 更换阵列中的磁盘
+
+您可能会需要因以下两个主要原因来更换阵列中的磁盘：
+
+1. **容量升级**：您的存储空间几乎已满，并且您想使用更大的硬盘。
+2. **故障或淘汰**：硬盘发生故障或不再受支持。
+
+虽然两种情况下更换磁盘的过程相似，但请注意，替换过程中存在数据丢失的风险。校验设备可以保护您的数据；一个校验设备可以防止单个磁盘故障导致的数据丢失，而两个设备可以在两个磁盘故障情况下保护数据。更换磁盘时，请始终了解您的保护级别。
+
+## 升级容量
+
+在将数据驱动器升级为更大的驱动器时，请注意以下几点：
+
+- **不可挂载的磁盘：** 在升级之前修复任何不可挂载的磁盘。不可挂载状态在重建期间不会被解决。
+
+- **单个校验的风险：** 如果您只有单个校验，在升级期间如果另一个驱动器发生故障，您将面临数据丢失的风险。如果发生这种情况，请在论坛中寻求建议。
+
+- **双校验保护：** 通过双校验，如果在升级单个驱动器时一个驱动器出现故障，您可以放心，不会丢失数据。您还可以同时升级两个驱动器，但请注意这会增加风险，因为您将没有另一驱动器故障的保护。
+
+- **备份旧磁盘：** 在确认升级成功之前，保持原磁盘完好无损。这为出现任何问题时提供了回退选项。
+
+:::warning
+
+更换驱动器总是涉及到一定的风险。如果在升级期间另一块驱动器故障，特别是只有单一校验的情况下，您可能会丢失数据。在开始之前务必检查驱动器的健康状况，并确保在升级完成并确认数据安全之前保持旧驱动器完整无损。
+
+:::
+
+要升级现有数据磁盘：
+
+1. Run a %%parity check|parity-check%% and ensure there are zero errors. If parity isn't valid, rebuilding the disk will corrupt its file system.
+2. 停止数组。
+3. 取消指定目标磁盘。
+4. 启动阵列。Unraid 使用现有的奇偶校验和数据盘来模拟缺失的盘。您有两种模式可供选择：
+   - %%维护模式|maintenance-mode%% - 防止向模拟磁盘的任何写入
+   - 正常模式 - 允许对模拟磁盘的读/写
+
+:::note
+
+在正常模式下开始是可选的。您可以使用它来验证模拟磁盘安装及数据看起来正确，然后再继续。
+
+:::
+
+5. 再次停止阵列。
+6. 将替换磁盘分配到空闲插槽。
+7. 启动阵列以开始重建。Unraid 将内容重建到新磁盘上，并且文件系统自动调整为更大的磁盘容量。
+
+## 更换故障/禁用磁盘
+
+### 什么是故障/禁用的磁盘？
+
+失败或禁用的磁盘是 Unraid 因遭遇写入错误而停止执行数据写入的磁盘。失败驱动器不总是损坏的；可能是由于连接不良、电源问题或临时故障造成的。
+
+指示包括磁盘指示器上的红色“X”和故障通知警报。
+
+| 故障场景      | 无奇偶校验 | 单一奇偶校验 | 双重奇偶校验 |
+| --------- | ----- | ------ | ------ |
+| **1磁盘故障** | 数据丢失  | 可重建    | 可重建    |
+| **2磁盘故障** | 数据丢失  | 数据丢失   | 可重建    |
+
+:::tip[Tips 对于安全重建]
+
+- **对于单个校验：** 您只能一次替换一个磁盘。如果在重建期间另一个磁盘出现故障，您可能会丢失数据。
+- \*\*对于双重校验：\*\*您可以同时更换一个或两个磁盘，但如果超过两个磁盘发生故障，请谨慎行事。
+
+:::
+
+:::important
+
+如果故障磁盘比您的奇偶校验能保护的数量更多：
+
+1. 立即停止所有写入操作以防止进一步的数据丢失。
+2. 通过在[Unraid 论坛](https://forums.unraid.net/)发帖并附上诊断信息寻求帮助。
+3. 在没有收到建议之前不要尝试重建——首先专注于拯救您的数据。
+
+:::
+
+### 如何诊断问题
+
+Check the %%syslog|syslog%% and %%SMART reports|smart-report%%:
+
+- 如果%%syslog|syslog%%显示磁盘已重置，可能是连接或电缆有问题。
+- %%SMART报告|smart-report%%可以评估驱动器的健康状态，但最好通过运行%%SMART|smart%%扩展测试来检查。如果测试没有错误，则驱动器可能是正常的。
+- 如果您看到%%CRC 错误|crc-errors%%，通常指向电缆的问题。这些错误会随着时间的推移积累并不会重置。
+
+:::tip
+
+为了随时了解驱动器问题，在 Unraid 中导航到**设置 → 通知设置**启用通知。这样可以及时提醒您是否出了问题，从而降低您的数据风险。
+
+:::
+
+### 什么是仿真？
+
+When a drive is disabled, Unraid uses its parity and other working drives to emulate the failed drive. The system continues to operate, and you can still access the data stored on the %%emulated drive|emulated-disk%%.
+
+- Unraid 停止写入物理磁盘，所有更新都保存在奇偶校验和仿真中。
+- 在更换故障驱动之前，您可以检查并从%%emulated drive|emulated-disk%%恢复数据，这将使物理磁盘保持完整以便潜在恢复。
+- 如果无法访问 %%emulated drive|模拟盘%%，在任何重建之前修复文件系统是必要的，因为修复文件系统比重建更快更有效。
+
+### 为驱动器更换做准备
+
+确保新驱动器至少与故障驱动器一样大，但不比您最小的奇偶校验驱动器更大。如果必须使用更大的驱动器，请遵循奇偶校验交换过程。
+
+虽然不是强制性的，许多用户选择预清理新驱动器以测试它们并帮助防止早期故障。您可以使用Preclear插件、%%SMART|smart%%延伸测试或制造商工具来执行此操作。
+
+:::caution
+
+If you try to rebuild using an unmountable %%emulated drive|emulated-disk%%, the new drive will also become unmountable. Always repair the file system before attempting a rebuild.
+
+:::
+
+要更换和重建磁盘，请按照上述"为驱动器更换做准备"部分中描述的大小要求。
+
+:::important
+
+在开始之前，请检查是否有任何磁盘错误或警告。Unraid 必须能读取所有剩余的磁盘而没有任何问题，重建才能正确完成。如果还有另一个磁盘出现故障，这可能导致数据丢失。
+
+:::
+
+1. 停止数组。
+
+:::tip
+
+如果您的服务器支持热插拔，您可以跳过步骤2。
+
+:::
+
+2. 关闭您的服务器。
+3. 拆下旧的故障磁盘并安装新磁盘。确保替换磁盘符合上述大小要求。
+4. 启动您的服务器。
+5. 将新磁盘分配到故障磁盘的插槽中。
+6. 勾选“是，我想这样做”并确认。
+7. 可选择的选择%%维护模式|maintenance-mode%%以加速重建（阵列在此期间无法访问）。
+8. 点击**开始**以开始重建。Unraid 将数据从模拟磁盘复制到新磁盘。如果新磁盘更大，Unraid 将管理额外空间。
+
+:::warning
+
+如果 Unraid 在重建期间提示您格式化新磁盘，请**不要这样做**。格式化将清除所有数据，使恢复不可能。
+
+:::
+
+### 重建期间的期望
+
+- \*\*停止阵列：\*\*开始通过访问%%WebGUI|web-gui%%并停止阵列。
+- **取消分配 %%parity drives|校验盘%%：** 找到 %%parity drives|校验盘%% 槽位并将其设置为“未分配”。
+- **启动阵列：** 最后，重启阵列以提交更改，并成功地从配置中移除 %%parity drives|校验盘%%。
+- 如果旧磁盘由于文件系统问题而无法挂载，新的磁盘也将无法挂载。请在开始重建之前修复任何文件系统问题。
+
+:::note[Additional 笔记]
+
+- 使用双重校验可以从单个失效驱动器中恢复，但请注意，在重建过程中，您将无法承受另一次故障。
+- 使用单校验，您将失去所有冗余，这意味着任何额外的驱动器故障都可能导致数据丢失。
+  :::
+
+:::
+
+## 重新启用已禁用的磁盘（自我重建）
+
+有时，磁盘可能由于松动的电缆、电源问题或临时故障等问题而被禁用，而不是实际上有问题。如果是这种情况，您可以尝试通过将其重建到自身来重新启用被禁用的磁盘，而不是更换它。
+
+:::important[When 要使用该过程]
+
+仅在以下情况下使用此过程：
+
+- 由于外部因素（如电缆或电源问题）导致磁盘被禁用。
+- 您已通过 [%%SMART 报告|smart-report%%](../../system-administration/monitor-performance/smart-reports-and-disk-health.mdx) 检查磁盘健康状况。
+- 您已修复导致磁盘被禁用的任何外部问题。
+- 磁盘似乎正常工作。
+
+:::
+
+:::warning[Important 注意事项]
+
+- If you are rebuilding a data drive, make sure that the %%emulated disk|emulated-disk%% shows the right content before you proceed. The rebuild process will ensure that the physical drive matches the emulated one exactly.
+- The %%emulated disk|emulated-disk%% may show as 'unmountable' in some cases. A rebuild will not necessarily fix an unmountable emulated disk, so verify the situation first. If the emulated disk shows 'unmountable' or the content doesn't look right, ask for help in the [Unraid forums](https://forums.unraid.net/) before proceeding with the rebuild.
+- 在开始此过程之前，务必对已禁用的驱动器进行 [%%SMART|smart%% 扩展测试](../../system-administration/advanced-tools/command-line-interface.mdx#smartctl)，以确保其健康。
+- If the %%emulated disk|emulated-disk%% shows any file system issues, use the [automated XFS repair feature](../../troubleshooting/common-issues/data-recovery.mdx#running-the-repair) for XFS‑formatted disks, or the respective file system repair options for other file systems in the %%WebGUI|web-gui%% before beginning the rebuild.
+- 虽然重建过程应该保留您的数据，但如果可以，建议备份重要文件。
+
+:::
+
+要通过将驱动器重建到自身来重新启用禁用的驱动器：
+
+1. 通过运行[%%SMART|smart%% 扩展测试](../../system-administration/advanced-tools/command-line-interface.mdx#smartctl)并确认仪表板中的任何警告图标来验证磁盘健康状态。
+2. 停止数组。
+3. 取消指定禁用的磁盘。
+4. 启动阵列以便 Unraid 可以注册缺失的磁盘。阵列显示磁盘为"未安装"。
+5. 仅限数据磁盘，验证模拟磁盘显示您期望的内容。
+6. 停止数组。
+7. 将禁用的磁盘重新分配到原始插槽中。
+8. 可选择的选择%%维护模式|maintenance-mode%%以加速重建过程。
+9. 点击 **开始**以开始重建。Unraid 将内容从模拟磁盘重构到物理驱动器上。
+
+:::info[Rebuild 时间预期]
+
+将驱动器重建到自身可能需要数小时到一天以上的时间，具体取决于驱动器的大小和系统活动。影响重建时间的因素包括驱动器容量、磁盘速度和系统负载。您可以在 %%WebGUI|web-gui%% 中监控进度。
+
+:::
+
+This procedure works for both data drives and %%parity drives|parity-drives%% that have been disabled.
+
+## 校验交换
+
+奇偶校验调换是一种特殊程序，当您需要用比当前奇偶校验盘更大的盘替换数据盘时使用。该过程将当前奇偶校验盘移到数据插槽，然后安装一个新的更大的盘作为新的奇偶校验盘。这确保阵列保持保护，并允许将来的数据驱动器更大。
+
+当您的替换数据驱动器比现有奇偶校验盘大时，使用奇偶校验调换。如果新的数据驱动器与奇偶校验盘同样大或更小，则不必使用这种方法。
+
+**示例场景：** 您有一个 **2TB 奇偶校验盘** 和一个 **1TB 数据盘** 的 Unraid 设置，并想用 **4TB 驱动器** 替换 1TB 驱动器。首先，将新的 4TB 盘分配为奇偶校验盘，它将替换 2TB 盘。然后将原 2TB 盘移至数据插槽，并完全移除 1TB 盘。在这些更改后，您将有一个 4TB 的盘作为新的奇偶校验盘，确保您可以添加未来最高至 4TB 的数据盘。2TB 盘将存有您的现有数据，而 1TB 盘可以重新利用。此调换保留了数据安全并保护了阵列，允许未来升级。
+
+:::important\[Prerequisites]
+
+- 在开始之前，确保您要更换的数据盘已经禁用。故障驱动器（显示红色指示器）已被禁用。对于您想要更换的健康驱动器，先将其取消分配，然后启动阵列（没有该驱动器）一次，以强制 Unraid 将其标记为已禁用。
+- 当您的替换数据驱动器不大于您的奇偶校验盘时，使用[替换故障/禁用磁盘](#replacing-faileddisabled-disks)的标准程序。
+- 该程序仅适用于用比当前奇偶校验盘更大的盘替换 Unraid 阵列中的数据盘。仅用于升级奇偶校验盘的情况，只需卸下旧的奇偶校验盘，添加新的奇偶校验盘，并启动阵列。奇偶校验将自动重建。
+
+:::
+
+:::warning\[Warnings]
+
+- 在开始 %%parity swap|校验交换%% 之前，总是使用 %%SMART reports|SMART 报告%% 验证所有驱动器的健康状况。尝试在另一个故障或不健康的磁盘上进行此过程会增加数据丢失的风险。
+- 如果可能，请预清理新磁盘。尽管不需要，但预清理可以对磁盘进行压力测试并减少早期失效的风险。
+- 在开始之前，正确识别所有驱动器。记下每个驱动器的型号和序列号的最后四位字符，以避免分配过程中出错。
+
+:::
+
+执行奇偶校验交换：
+
+:::note
+
+如果要更换的驱动器已经禁用，您可以跳过步骤 1-4。如果您已经安装了新的替换驱动器，您可以跳过步骤 5-8。
+
+:::
+
+1. 停止数组。
+2. 如果旧数据盘仍然被指定，请取消指定。
+3. 启动阵列。此时数据盘应显示为“未安装”。
+4. 再次停止阵列。
+5. 关闭服务器电源。
+
+:::tip
+
+如果您的系统支持热插拔，您无需断电。确保停止阵列，然后再进行任何硬件更改。
+
+:::
+
+6. 选择性地移除旧硬盘。
+7. 安装新的硬盘。强烈建议进行预清除，不需要格式化。
+8. 开启服务器电源。
+9. 如果阵列自动启动，则停止阵列。
+10. 取消指定奇偶校验驱动器。
+11. 将新硬盘分配到奇偶校验插槽中。
+12. 将旧奇偶校验盘分配到数据插槽中的被替换驱动器。
+13. 您应该看到一个**复制**按钮，提示消息为”复制将把奇偶信息复制到新的奇偶盘“。
+14. 勾选确认框并点击**复制**。在此操作期间，阵列不可用，根据硬盘大小，可能需要几个小时。
+15. 启动阵列以开始数据重建。重建期间可以使用阵列，但建议限制使用以获得最佳性能。该过程也需要几个小时。
+
+:::warning
+
+在该过程中永远不要格式化磁盘。格式化将擦除所有数据并更新校验，使恢复不可能。
+
+:::
+
+完成后，您将拥有一个更大的校验盘和一个更换的数据盘。许多用户在此之后会执行一个 %%parity check|校验检查%% 以获得额外的信心，但这是可选的。
