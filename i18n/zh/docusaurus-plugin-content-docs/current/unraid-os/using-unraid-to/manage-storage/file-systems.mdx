@@ -5,23 +5,21 @@ sidebar_label: 文件系统
 
 # 文件系统
 
-### 选择文件系统类型
+## 选择文件系统类型
 
 为您的 Unraid %%array|array%% 或 %%cache pool|cache-pool%% 选择正确的文件系统至关重要。它有助于实现性能、数据保护和高级功能之间的平衡。Unraid 支持多种现代 Linux 文件系统，每种都有其独特的优势和特定的使用场景：
 
-| 文件系统             | 数据保护                                                                            | 空间效率                    | 高级功能                                                             | 最佳使用案例                       |
-| ---------------- | ------------------------------------------------------------------------------- | ----------------------- | ---------------------------------------------------------------- | ---------------------------- |
-| %%XFS\|xfs%%     | 没有内置冗余                                                                          | 100%                    | 对损坏的强大抗性                                                         | 默认的数组驱动器；高可靠性                |
-| %%ZFS\|zfs%%     | %%RAIDZ1\|raidz1%%/%%RAIDZ2\|raidz2%%/%%RAIDZ3\|raidz3%%，镜像等。                   | 根据%%RAID\|raid%%级别而有所不同 | %%Checksums\|checksum%%, %%Snapshots\|snapshot%%, %%RAID\|raid%% | 多设备池，%%虚拟机\|vm%%，Docker，高级用户 |
-| %%BTRFS\|btrfs%% | %%RAID 0\|raid0%%/%%RAID 1\|raid1%%/%%10\|raid10%%/%%5\|raid5%%/%%6\|raid6%%、镜像 | 根据%%RAID\|raid%%级别而有所不同 | %%Checksums\|checksum%%, %%Snapshots\|snapshot%%, %%RAID\|raid%% | 多设备池，混合SSD/HDD，灵活的池          |
+| 文件系统             | 数据保护                                                                            | 空间效率                    | 高级功能                                                | 最佳使用案例                       |
+| ---------------- | ------------------------------------------------------------------------------- | ----------------------- | --------------------------------------------------- | ---------------------------- |
+| %%XFS\|xfs%%     | 没有内置冗余                                                                          | 100%                    | 对损坏的强大抗性                                            | 默认的数组驱动器；高可靠性                |
+| EXT4             | 没有内置冗余                                                                          | 100%                    | 成熟，稳定，带日志功能                                         | 阵列驱动器或单驱动池；XFS的替代方案          |
+| %%ZFS\|zfs%%     | %%RAIDZ1\|raidz1%%/%%RAIDZ2\|raidz2%%/%%RAIDZ3\|raidz3%%，镜像等。                   | 根据%%RAID\|raid%%级别而有所不同 | %%Checksums\|校验和%%，%%Snapshots\|快照%%，%%RAID\|raid%% | 多设备池，%%虚拟机\|vm%%，Docker，高级用户 |
+| %%BTRFS\|btrfs%% | %%RAID 0\|raid0%%/%%RAID 1\|raid1%%/%%10\|raid10%%/%%5\|raid5%%/%%6\|raid6%%、镜像 | 根据%%RAID\|raid%%级别而有所不同 | %%Checksums\|校验和%%，%%Snapshots\|快照%%，%%RAID\|raid%% | 多设备池，混合SSD/HDD，灵活的池          |
+| NTFS             | 没有内置冗余                                                                          | 100%                    | Windows兼容性                                          | 添加现有的Windows驱动器，无需数据迁移       |
+| exFAT            | 没有内置冗余                                                                          | 100%                    | 跨平台兼容性                                              | 添加现有的exFAT驱动器，无需数据迁移         |
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
-import FileSystemXfs from './partials/file-system-xfs.mdx';
-import FileSystemZfs from './partials/file-system-zfs.mdx';
-import FileSystemBtrfs from './partials/file-system-btrfs.mdx';
-import BtrfsBalance from './partials/btrfs-balance.mdx';
-import BtrfsScrub from './partials/btrfs-scrub.mdx';
 import FsCheckCliXfs from './partials/fs-check-cli-xfs.mdx';
 import FsCheckCliBtrfs from './partials/fs-check-cli-btrfs.mdx';
 import FsCheckCliZfs from './partials/fs-check-cli-zfs.mdx';
@@ -29,34 +27,83 @@ import FsRepairCliXfs from './partials/fs-repair-cli-xfs.mdx';
 import FsRepairCliBtrfs from './partials/fs-repair-cli-btrfs.mdx';
 import FsRepairCliZfs from './partials/fs-repair-cli-zfs.mdx';
 
-<Tabs>
-  <TabItem value="xfs" label="XFS" default>
-    <FileSystemXfs />
-  </TabItem>
+### XFS
 
-  <TabItem value="zfs" label="ZFS">
-    <FileSystemZfs />
-  </TabItem>
+%%XFS|xfs%% 是 Unraid 中 %%array|阵列%% 驱动的默认文件系统，以其稳健性和在意外关机或崩溃后能够恢复损坏而闻名。每个使用 %%XFS|xfs%% 格式化的驱动都像一个独立的文件系统，使得在任何 Linux 系统上进行数据恢复变得简单。
 
-  <TabItem value="btrfs" label="BTRFS">
-    <FileSystemBtrfs />
-  </TabItem>
-</Tabs>
+- **数据保护：** 没有内建冗余；依赖 Unraid 的 %%parity|parity%% 进行保护。
+- \*\*性能：\*\*一致且可靠。
+- \*\*最适合：\*\*特别是当稳定性和数据恢复易用性优先时的%%Array|array%%驱动器。
+
+### EXT4
+
+EXT4 是一种成熟且稳定的文件系统，提供出色的兼容性和可靠性。它受到了全面支持，与 %%XFS|xfs%%、%%BTRFS|btrfs%% 和 %%ZFS|zfs%% 相提并论，是选择阵列驱动器或单驱动池的强有力选项。
+
+- **数据保护：** 它不具有内置冗余，需要依赖 Unraid 的 %%parity|parity%% 进行保护。
+- **性能：** 提供一致且可靠的性能，通过日志功能确保数据完整性。
+- **最佳用途：** 当您寻找 %%XFS|xfs%% 的替代方案时，可用于 %%阵列|array%% 驱动器或单驱动池。
+
+### ZFS
+
+%%ZFS|zfs%% 是一种现代文件系统，具有检测 %%bit rot|数据腐坏%% 的 %%checksums|校验和%%、用于备份的 %%snapshots|快照%% 和本地 %%RAID|raid%% 支持选项，如 %%RAIDZ1|raidz1%%/%%RAIDZ2|raidz2%%/%%RAIDZ3|raidz3%% 和镜像。%%ZFS|zfs%% 可用于单设备和多设备池。
+
+- \*\*数据保护：\*\*支持各种%%RAID&#124;raid%%级别以实现冗余。
+- \*\*性能：\*\*尤其是对多设备池来说表现优异。
+- **最佳用途：** 高性能环境、%%虚拟机|vm%%、Docker 或需要高级功能（如 %%snapshots|snapshot%%）时。
+
+有关 %%ZFS|zfs%% 功能、配置和最佳实践的全面指南，请参见专用的[ZFS 存储](../../advanced-configurations/optimize-storage/zfs-storage.mdx)页面。
+
+### BTRFS
+
+%%BTRFS|btrfs%% 提供灵活的 %%RAID|raid%% 支持，%%checksums|checksum%% 确保数据完整性，并在池中有效管理不同大小的驱动器。它是%%cache pools|cache-pool%% 的默认文件系统，并支持单设备和多设备配置。
+
+- **数据保护：** 支持%%RAID 0|raid0%%/%%1|raid1%%/%%10|raid10%%/%%5|raid5%%/%%6|raid6%% （注意%%RAID 5|raid5%%/%%6|raid6%% 仍然是实验性的）。
+- **性能：** 良好，具有扩展和收缩的灵活性。
+- **最适合：** %%Cache pools|cache-pool%%，尤其是在你计划混合使用SSD和HDD或需要简单扩展时。
+
+### NTFS 和 exFAT（支持有限）
+
+支持 NTFS 和 exFAT 文件系统，但存在一些限制。这主要是为了帮助您将现有的驱动器和数据添加到 Unraid 系统中，而无需首先将数据转移到其他地方。
+
+:::warning
+
+格式化为 NTFS 或 exFAT 的驱动必须在添加任何校验驱动之前先添加到 %%array|阵列%% 中。一旦校验驱动已添加到您的 %%array|阵列%% 中，之后添加的任何新数据驱动都将被清空，无论其文件系统格式。
+
+如果您想使用现有的 NTFS 或 exFAT 驱动器：
+
+- 首先将它们添加到 %%array|阵列%% (或运行 ***工具 → 新配置*** 以重置您的阵列配置)。
+- 在添加 NTFS/exFAT 数据驱动器后，您便可以添加奇偶校验驱动器。
+- 这些驱动器上的现有数据将被保留并通过奇偶校验进行保护。
+
+:::
+
+- **数据保护：** 这些驱动器不提供内置冗余；一旦增加了奇偶校验，它们依赖于 Unraid 的 %%parity|parity%% 进行保护。
+- **性能：** 适用于基本的存储需求。
+- **最佳用途：** 添加现有的 Windows 格式驱动器 (NTFS) 或跨平台格式驱动器 (exFAT)，无需数据迁移。它们也可以用于单驱动池。
+- **限制：** 不建议常规使用这些文件系统；它们主要用于迁移现有驱动器。对于新驱动器，建议使用 %%XFS|xfs%%、EXT4、%%BTRFS|btrfs%% 或 %%ZFS|zfs%%。
+
+有关添加现有驱动器的更多详细信息，请参阅[发布说明](../../release-notes/7.2.0.md#ext234-ntfs-and-exfat-support)。
 
 :::note[Additional 笔记]
-- Mixing different file system types in your Unraid system is perfectly acceptable; the Unraid %%parity|parity%% system works independently of the file system used.
+
+- 在 Unraid 系统中混合使用不同的文件系统类型是完全可以接受的；Unraid 的 %%parity|校验%% 系统独立于所使用的文件系统。
 - 始终在 Unraid 内格式化和分区驱动器以确保兼容性。
 - Linux  系统可以原生读取这些文件系统；然而，Windows 和 macOS 将需要额外的软件来访问。
-- 你可以对驱动器进行<u>加密</u>以增强安全性，但请记住，加密驱动器可能会给发生损坏时的恢复带来挑战。
+- 您可以对驱动器进行**加密**以增强安全性，但要记住，如果发生损坏，加密的驱动器可能会带来恢复挑战。
 - 对于传输驱动器或外部设备，建议使用支持额外文件系统的 **[Unassigned Devices](#using-the-unassigned-devices-plugins)** 插件。
+  :::
+
 :::
 
 :::tip[Still 需要帮助选择吗？]
-- **对于数组驱动器：** %%XFS|xfs%%通常是大多数用户的最佳选择。
-- **对于高性能或高级功能：** 选择%%ZFS|zfs%%或%%BTRFS|btrfs%%用于%%cache pools|cache-pool%%或多设备设置。
+
+- **对于阵列驱动器：** %%XFS|xfs%% 通常是大多数用户的最佳选择。如果您更喜欢传统的 Linux 文件系统，EXT4 也是一个不错的选择。
+- **对于高性能或高级功能：** 选择 %%ZFS|zfs%% 或 %%BTRFS|btrfs%% 用于 %%cache pools|缓存池%% 或多设备设置。参见 [ZFS 存储](../../advanced-configurations/optimize-storage/zfs-storage.mdx) 页面以获得 %%ZFS|zfs%% 详细指南。
 - **对于混合或扩展池：** 如果你想使用不同的驱动器大小或轻松地添加或删除设备，%%BTRFS|btrfs%% 是理想选择。
+- **对于现有驱动器：** 仅当为现有驱动器添加数据时使用 NTFS 或 exFAT；在添加奇偶校验之前添加它们。
 
 如果不确定，开始默认设置是一种好的方法：对于%%array|array%%驱动器使用 %%XFS|xfs%% ，对于 %%cache pools|cache-pool%% 使用 %%BTRFS|btrfs%%。
+
 :::
 
 ---
@@ -65,34 +112,49 @@ import FsRepairCliZfs from './partials/fs-repair-cli-zfs.mdx';
 
 在向 Unraid 添加新磁盘时，您可以选择最适合您需求的文件系统类型。文件系统决定了磁盘上数据的组织和保护方式。
 
-设定文件系统类型：
+要全局设置文件系统类型，请导航到 ***设置 → 磁盘设置*** 设置新 %%array|阵列%% 驱动的默认文件系统。Unraid 默认使用 %%XFS|xfs%% 作为 %%array|阵列%% 驱动的文件系统。
 
-1. **全局设定默认值：**
-   - 导航到 ***设置 → 磁盘设置*** ，仅为新 %%array|array%% 驱动器设定默认文件系统。
-   - Unraid 默认使用 %%XFS|xfs%% 作为 %%array|array%% 驱动器。
-   - **Note:** There is currently no global default setting for %%cache pools|cache-pool%%. They will always default to %%BTRFS|btrfs%% if left to "auto".
+:::note
 
-2. **为单个驱动器设定文件系统：**
-   - 停止%%array|array%%。
-   - 点击主标签上的驱动器。
-   - 从下拉菜单中选择你想要的文件系统类型。
-   - 如果选择 **自动** ，Unraid 会使用全局默认值。
-   - 对于多设备 %%cache pools|cache-pool%% ，仅支持 %%BTRFS|btrfs%% 或 %%ZFS|zfs%%。
+目前还没有 %%cache pools|缓存池%% 的全局默认设置。如果选择 “自动”，它们将始终默认使用 %%BTRFS|btrfs%%。
+
+:::
+
+:::important
+
+如果您添加的驱动包含现有的 NTFS 或 exFAT 数据，则必须在添加任何校验驱动之前先将它们添加到 %%array|阵列%% 中。一旦校验存在，所有新添加的数据驱动都将被清空，无论其文件系统类型。
+
+:::
+
+为个别驱动器设置文件系统类型：
+
+1. 在进行更改之前停止 %%array|阵列%%。
+2. 在**主**标签中，点击要配置的驱动器。
+3. 从下拉菜单中选择所需的文件系统类型。
+4. （可选）如果选择 **自动**，Unraid 使用全局默认设置。
+5. 对于多设备 %%cache pools|cache-pool%% ，仅支持 %%BTRFS|btrfs%% 或 %%ZFS|zfs%%。
+6. 如将现有的 NTFS 或 exFAT 数据驱动添加到 %%array|阵列%%，请在添加任何校验驱动之前添加它们。
 
 ---
 
 ## 创建文件系统（格式化）
 
-在 Unraid 中使用新磁盘之前，您必须将其格式化为所选的文件系统。**请记住，格式化将擦除驱动器上的所有现有内容。**
+在 Unraid 中使用新磁盘之前，必须用选定的文件系统格式化。
 
-开始格式化：
+:::warning
 
-1. **启动%%array|array%%**。
-2. **识别无法挂载的驱动器：**未被识别的驱动器将显示为**不可挂载的**。
-3. \*\*验证驱动器选择：\*\*验证所有无法挂载的驱动器是否是你想要格式化的驱动器。
-4. \*\*确认并格式化：\*\*勾选确认框，仔细阅读警告对话框，然后点击 **格式化**。
-5. **监控过程**：格式化过程将开始。对于新磁盘，Unraid 将首先重写分区表。
-6. **等待完成**：格式化通常需要几分钟。如果您看不到进度，请刷新 **Main** 选项卡。
+格式化将擦除驱动器上所有现有内容。请确保在继续之前备份任何重要数据。
+
+:::
+
+格式化一个驱动器：
+
+1. 启动 %%array|array%%。
+2. 识别不可挂载的驱动器（它们显示为 **不可挂载**）。
+3. 验证所有不可挂载的驱动器是您要格式化的那些。
+4. 选中确认框，阅读警告对话框，然后点击 **格式化**。
+5. 监视过程。对于新磁盘，Unraid 首先重写分区表。
+6. 等待完成。如果进程停滞，请刷新 **主** 标签。
 
 格式化完成后，驱动器即可存储文件。
 
@@ -100,21 +162,23 @@ import FsRepairCliZfs from './partials/fs-repair-cli-zfs.mdx';
 
 ## 更改文件系统类型
 
-你可能想更改特定设备上的文件系统类型以利用新功能或确保与其他设备兼容。
+要更改特定驱动器上的文件系统类型：
 
 :::warning
-更改文件系统类型将 **擦除驱动器上的所有现有数据**。在继续之前，请务必备份任何重要文件。
+
+如果您遇到任何问题，可以随时访问 [Unraid 论坛](https://forums.unraid.net/)。附上您的系统诊断 zip 文件（位于 **工具 → 诊断** 下）以获取帮助。
+
 :::
 
 要更改特定驱动器上的文件系统类型：
 
-1. **停止数组：** 开始时停止你的%%array|array%% 以确保变更期间没有操作正在进行。
-2. **选择驱动器：** 在 **主** 标签中，点击你想要更改格式的驱动器。
-3. **选择新的文件系统**：从下拉菜单中选择所需的文件系统格式。如果您有多个驱动器需要更改，请对每个驱动器重复此步骤。
-4. **重新启动数组：** 选择新的文件系统后，再次启动你的%%array|array%%。
-5. **格式化不可挂载的驱动器**：**Main** 选项卡将显示选项以格式化不可挂载的驱动器。花点时间检查列表，确保仅包含您打算更改的驱动器。
-6. **确认并格式化：** 勾选确认框以确认更改，然后点击 **格式化** 按钮继续。
-7. **等待过程完成**：格式化通常只需几分钟。如果您发现状态未更新，可以刷新 **Main** 选项卡以检查进度。
+1. 停止%%array|array%%。
+2. 在 **主** 标签中，点击要更改的驱动器。
+3. 从下拉列表中选择新的文件系统类型（如需要重复多个驱动器的操作）。
+4. 启动 %%array|array%%。
+5. 在 **主** 标签中，查看不可挂载的驱动器列表，并确保只包括预期的驱动器。
+6. 勾选确认框并点击 **格式化**。
+7. 等待完成。如果状态未更新，请刷新 **主** 标签。
 
 如果您遇到任何问题，可以随时访问 [Unraid 论坛](https://forums.unraid.net/)。附上您的系统诊断 zip 文件（位于 **工具 → 诊断** 下）以获取帮助。
 
@@ -123,38 +187,53 @@ import FsRepairCliZfs from './partials/fs-repair-cli-zfs.mdx';
 ## 转换到新的文件系统类型
 
 :::important
-从 Unraid 7.2 开始，**Main** 页面将警告如果任何阵列或池驱动器是以遗留文件系统格式化的：
 
-- 任何格式化为 ReiserFS 的驱动器需要尽快迁移到另一个文件系统，因为它们在未来版本的 Unraid（可能是 Unraid 7.3）中不可用。
-- 任何以旧版 XFS 格式化的驱动器需要在 2030 年之前迁移。
+***主*** 页面会警告任何被格式化为旧版文件系统的阵列或池驱动器：
+
+- 需要将 ReiserFS 格式化的任何驱动器尽快迁移到其他文件系统，因为它们在未来的 Unraid 版本中将无法使用。
+- 需要在 2030 年之前迁移使用旧版 XFS 版本格式化的任何驱动器。
+
 :::
 
 要更改驱动器的文件系统类型但保留其数据，您必须在重新格式化之前迁移内容。该过程对于从不再支持的 ReiserFS（在旧版 Unraid 中使用）迁移到 %%XFS|xfs%% 或 %%BTRFS|btrfs%% 的用户尤为常见，但它适用于任何文件系统转换。
 
 :::important
-This process requires temporarily moving your data to another location. Make sure you have enough free space elsewhere in your %%array|array%% or on an external device before you begin.
+
+该过程需要暂时将您的数据移动到其他位置。在您开始之前，请确保在您的 %%array|阵列%% 中或外部设备上有足够的可用空间。
+
 :::
 
 要安全地转换为新的文件系统类型：
 
-1. **Copy all data off the drive**: Move your files to another location. This could be another drive in your %%array|array%%, a %%cache pool|cache-pool%%, or an external backup.
-   - 在 Unraid 7.0 之前，您需要手动移动文件。
-   - 从 Unraid 7.0 开始，您可以 [使用“移动程序”清空阵列磁盘](../../release-notes/7.0.0.md#using-mover-to-empty-an-array-disk) 通过命令行将文件移动到其他阵列驱动器。
-   - 从 Unraid 7.2 开始，您可以通过 WebGUI 将一个阵列驱动器清空到其他阵列驱动器中：
-     - 导航到 ***主菜单 → 阵列操作*** 并停止阵列。
-     - 导航到 ***设置 → 全局共享设置***。在**清空磁盘**区域，选择要清空的磁盘并点击 **应用**。注意：当阵列停止时，该状态将自动移除。
-     - 导航到 ***主菜单 → 阵列操作*** 并启动阵列。
-     - 在 ***主菜单 → 阵列操作*** 上点击 **移动** （或等待移动程序按其正常计划运行）。
-     - 移动程序将根据您的共享设置清空磁盘。注意根目录的文件不包括在任何共享内，因此不会被移动。
-     - 检查 ***工具 → 系统日志*** 查看文件因正在使用或缺乏空闲空间而无法移动的信息。
-   - 导航到 ***主菜单 → 阵列设备*** 并浏览磁盘以确认其为空。只有在确定磁盘为空时才能继续。
-2. **更改文件系统类型**：遵循[更改文件系统类型](#changing-a-file-system-type) 的步骤。这将格式化驱动器并擦除所有内容，留下一个新的空白驱动器。
-3. **将数据拷回**：（可选）根据文件移动的位置，您可能需要将它们移回到新格式化的驱动器。
-4. **根据需要重复：** 如果有多个驱动器需要转换，则为每个驱动器重复这些步骤，按照需要转移数据。
+1. 将所有数据从驱动中移到其他位置（另一个 %%array|阵列%% 驱动、%%cache pool|缓存池%% 或外部备份）。使用以下方法之一：
+
+   **通过 WebGUI（Unraid 7.2+）：**
+
+   - 导航到 ***主菜单 → 阵列操作*** 并停止阵列。
+   - 导航到 ***设置 → 全局共享设置***。在**清空磁盘**区域，选择要清空的磁盘并点击 **应用**。注意：当阵列停止时，该状态将自动移除。
+     - 在 Unraid 7.2.0 中，此磁盘上的任何数据将在状态删除前对用户共享隐藏。
+     - 从 Unraid 7.2.1 开始，数据仍然可供用户共享，但新的文件不会写入磁盘，直到状态删除。
+   - 导航到 ***主菜单 → 阵列操作*** 并启动阵列。
+   - 在 ***主菜单 → 阵列操作*** 上点击 **移动** （或等待移动程序按其正常计划运行）。
+   - 移动器将清空磁盘，根据共享设置将文件移动到其他阵列驱动器中。请注意，位于驱动器根目录的文件不属于任何共享，将不会被移动。
+   - 检查 ***工具 → 系统日志*** 查看文件因正在使用或缺乏空闲空间而无法移动的信息。
+
+   **或通过命令行（仅适用于 Unraid 7.0 和 7.1）：**
+
+   - 通过['mover'将数据移动到其他阵列驱动器](../../release-notes/7.0.0.md#using-mover-to-empty-an-array-disk)
+
+   **或手动：**
+
+   - 手动将文件移动到其他位置
+
+   完成后，导航到 ***主 → 阵列设备*** 并浏览磁盘以确认为空。只有确定磁盘为空时才继续操作。
+2. 遵循[更改文件系统类型](#changing-a-file-system-type)的过程。此操作将格式化驱动器并擦除所有内容，将它置于空白的新格式中。
+3. （可选）根据您移动文件的位置，将数据移回新格式的驱动器。
+4. 如果需要转换多个驱动器，请为每个驱动器重复这些步骤。
 
 :::note\[Timing]
 
-根据数据量和驱动器的速度，整个过程可能需要几个小时。大多数时间花在复制文件上，可以无人值守运行。
+此简单过程可确保驱动器完全擦除并格式化为所需格式。格式化过程通常只需几分钟。
 
 :::
 
@@ -165,23 +244,25 @@ This process requires temporarily moving your data to another location. Make sur
 在 Unraid 中重新格式化驱动器将擦除所有数据并创建一个新的空文件系统。此过程有助于解决持久的文件系统错误或开始使用新的格式。
 
 :::warning
-重新格式化将永久擦除驱动器上的所有数据。在开始之前，务必备份任何重要文件。
+
+从缓存移动数据：
+
 :::
 
-要 **安全地** 重新格式化你的驱动器：
+重新格式化缓存驱动器：
 
 1. **停止阵列**。
-2. **更改文件系统类型：**
-   - 转到 **主** 标签并点击你想重新格式化的驱动器。
+2. **设置缓存驱动器格式**（在 %%XFS|xfs%% 或 %%BTRFS|btrfs%% 之间选择）。
+   - 对于单驱动 %%cache|cache%%，推荐选择 %%XFS|xfs%%。
    - 选择不同的文件系统类型（例如，从%%XFS|xfs%%更改为%%BTRFS|btrfs%%）。
    - 启动%%array|array%%，驱动器将显示为**不可挂载的**。
    - 在提示时，格式化驱动器。
-3. **（可选）更改回原始文件系统类型：**
+3. **启动阵列**。
    - 再次停止%%array|array%%。
    - 将文件系统改回你首选的类型。
    - 启动%%array|array%%并再次格式化驱动器。
 
-此简单过程可确保驱动器完全擦除并格式化为所需格式。格式化过程通常只需几分钟。
+还原数据和设置：
 
 ### 重新格式化缓存驱动器
 
@@ -191,37 +272,53 @@ This process requires temporarily moving your data to another location. Make sur
 - 修复持久的文件系统错误
 - 为新的工作负载重新开始
 
-<h4>重新格式化缓存驱动器的推荐程序</h4>
+#### 准备
 
-1. **停止阵列**。
-2. 在**设置**中**禁用 Docker 和%%VM|vm%% 服务**。
-3. **启动数组**（这将防止 Docker 和%%VM|vm%% 页签出现）。
+在重新格式化之前，准备系统：
+
+1. 停止%%array|array%%。
+2. 进入 **设置**，并禁用 Docker 和 %%VM|vm%% 服务（这样可以防止在过程中显示它们的标签）。
+3. 重新启动 %%array|阵列%%。
+
+#### 从缓存中移走数据
 
 从缓存移动数据：
 
-4. **Set share storage and Mover action (cache → array)**: For each share that has files in the %%cache|cache%%, set **Primary storage** to the source %%cache|cache%% pool and **Secondary storage** to the %%array|array%%. Set **Mover action** to **cache → array**.
-   - 记录下您更改的任何共享及其原始设置。
-5. **Run %%Mover|mover%%**: Run %%Mover|mover%% from the **Main** tab. Wait for it to finish and ensure that the %%cache|cache%% is empty.
-   - 如果还有文件留存，请停止并在论坛中寻求帮助。
+1. 设定共享存储与Mover操作 (缓存 → 阵列):
+   - 转到**Shares** 选项卡。
+   - For each share with files in the %%cache|cache%%, set **Primary storage** to the source %%cache|cache%% pool and **Secondary storage** to the %%array|array%%.
+   - 将 **Mover操作** 设置为 **缓存 → 阵列**。
+   - 记录您更改的共享及其最初的设置。
+2. 在 **主界面** 选项卡中，点击 **立即移动** 并等待完成。确保 %%cache|缓存%% 是空的。
+   - 如果仍有文件，请停止并检查论坛以获取帮助。
 
-重新格式化缓存驱动器：
+#### 重新格式化缓存驱动器
 
-6. **停止阵列**。
-7. **设置缓存驱动器格式**（在 %%XFS|xfs%% 或 %%BTRFS|btrfs%% 之间选择）。
-   - 对于单驱动 %%cache|cache%%，推荐选择 %%XFS|xfs%%。
-   - 请注意，%%XFS|xfs%% 仅在您有一个 %%cache|cache%% 插槽时可用。
-8. **启动阵列**。
-9. **格式化缓存驱动器**：
-   - 确认仅有 %%cache|cache%% 驱动器列为不可挂载。
-   - 继续格式化驱动器。
+让我们来详细解释每项操作的作用以及何时使用这些操作：
+
+1. 停止%%array|array%%。
+2. 设置缓存驱动器格式：
+   - 在 **主** 标签中，点击缓存驱动器。
+   - 在 %%XFS|xfs%%、EXT4 或 %%BTRFS|btrfs%% 之间选择。
+   - 单驱动 %%cache|缓存%%，推荐使用 %%XFS|xfs%% 或 EXT4。
+   - 请注意，只有在单个 %%cache|缓存%% 插槽中 %%XFS|xfs%% 和 EXT4 才可用。
+3. 启动 %%array|array%%。
+4. 格式化缓存驱动器：
+   - 确认只有 %%cache|缓存%% 驱动列为不可挂载。
+   - 勾选确认框并点击 **格式化**。
+
+#### 还原数据和设置
 
 还原数据和设置：
 
-10. **恢复共享设置**：对于您更改的每个共享，将**主要存储**和**次要存储**恢复到原始值。
-11. **Move data back (array → cache)**: Set **Primary storage** to the destination %%cache|cache%% pool and **Secondary storage** to the %%array|array%% for each share you changed. Set **Mover action** to **array → cache**, then run the %%Mover|mover%% again to move your data back to the %%cache|cache%%.
-12. **停止阵列**。
-13. **重新启用 Docker 和 %%VM|vm%% 服务**。
-14. **启动阵列**。
+1. 对于您更改的每个共享，将 **主存储** 和 **次级存储** 恢复为其最初的值。
+2. 将数据移回（阵列 → 缓存）：
+   - 对于您更改的每个共享，将 **主存储** 设置为目标 %%cache|缓存%% 池，并将 **辅助存储** 设置为 %%array|阵列%%。
+   - 将 **Mover 动作** 设置为 **array → cache**。
+   - 在 **主界面** 选项卡中，点击 **立即移动**，将数据移回到 %%cache|缓存%% 中。
+3. 停止%%array|array%%。
+4. 进入 **设置** 并重新启用 Docker 和 %%VM|vm%% 服务。
+5. 启动 %%array|阵列%% 以完成该过程。
 
 :::note\[Timing]
 
@@ -235,51 +332,94 @@ This process requires temporarily moving your data to another location. Make sur
 
 在 Unraid 中维护您的 %%BTRFS|btrfs%% 池对于保持其正常运行和确保您的数据安全至关重要。您需要定期使用的两个关键工具是 **平衡** 和 **清理**。这些操作有助于解决空间分配问题，优化存储利用率，并保护数据免受隐藏损坏的影响。
 
-让我们来详细解释每项操作的作用以及何时使用这些操作：
+让我们分解每个操作的功能及其使用时间：
 
-<Tabs>
-  <TabItem value="平衡" label="平衡" default>
-    <BtrfsBalance />
-  </TabItem>
+### 平衡
 
-  <TabItem value="校验" label="校验">
-    <BtrfsScrub />
-  </TabItem>
-</Tabs>
+**平衡** 操作将数据和元数据块重新分配到您的 %%BTRFS|btrfs%% 池中。此过程有助于释放空间，解决分配问题，并能在空间似乎可用时解决“设备上没有剩余空间”错误。
+
+#### 何时运行平衡
+
+- 当您遇到“设备上没有剩余空间”错误但仍有空闲空间时。
+- 在池中添加或移除驱动器后。
+- 优化空间使用并提升性能。
+
+#### 如何运行平衡
+
+1. 在 %%WebGUI|web-gui%% 中，点击 **主** 标签中的池，并选择 **平衡**。
+2. （可选）为高级使用添加参数（有关详细信息，请参阅 Unraid 帮助）。
+3. 点击 **开始** 以启动。
+
+:::note\[Timing]
+
+平衡操作可能需要几分钟到几小时，具体取决于池的大小和数据量。
+
+:::
+
+### 校验
+
+**检查** 操作读取所有数据和元数据，检查校验和的完整性，并使用可用的冗余副本修复任何损坏的块。检查有助于在静默数据损坏（称为镜像腐烂）成为严重问题之前识别和修复问题。
+
+#### 何时运行清洗
+
+- 作为常规维护的一部分（请参阅下面的推荐计划）。
+- 在不正常关机后或如果您怀疑有损坏时。
+- 在高使用率池中更频繁地运行。
+
+#### 推荐计划
+
+- 高使用率池： **每周一次**
+- 所有其他池： **每月一次**
+
+#### 如何运行清洗
+
+1. 在 %%WebGUI|web-gui%% 中，点击 **主** 标签中的池，并选择 **检查**。
+2. 点击 **开始** 以启动。
+
+:::note\[Timing]
+
+擦洗操作通常比完全磁盘扫描快，因为它们只会检查已分配的数据。根据池大小和使用情况，这可能需要几分钟到几小时。
+
+:::
 
 :::tip
+
 **平衡** 和 **清理** 都可以在系统在线时进行，但请记住，在这些操作期间性能可能会受到影响。您可以在 %%WebGUI|web-gui%% 中监控进度。
+
 :::
 
 有关高级 %%BTRFS|btrfs%% 功能的更多详细信息，请查阅 [官方 BTRFS 文档](https://btrfs.readthedocs.io/en/latest/Introduction.html)。
 
 ---
 
-## 未分配的驱动器
+## 故障排除
 
-Unassigned drives are storage devices connected to your Unraid server that aren't part of the main %%array|array%% or any %%cache pool|cache-pool%%. You can use these drives to transfer files, create backups, or provide fast storage for %%virtual machines|vm%%.
+未分配的驱动是连接到您的 Unraid 服务器的存储设备，但不属于主 %%array|阵列%% 或任何 %%cache pool|缓存池%%。您可以使用这些驱动传输文件、创建备份或为 %%虚拟机|vm%% 提供快速存储。
 
 :::note
-当 %%array|array%% 启动时，连接到服务器的所有驱动器即使未分配至 %%array|array%% 或池中，也会计入 Unraid 附加设备许可证限制。
+
+当 %%array|阵列%% 启动时连接到您的服务器的所有驱动即使没有分配到 %%array|阵列%% 或池中，也会计入您的 Unraid 附属设备许可证限制。
+
 :::
 
-<h4>未分配驱动器的常见用途</h4>
+### 未分配驱动器的常见用途
 
-- 连接可移动驱动器以便于文件传输或备份。
-- 使用专用驱动器进行高性能任务，如运行 %%virtual machines|vm%% 或临时数据存储。
+- **识别情况**：确定这是新驱动器还是先前工作的驱动器。
+- **对于新驱动器**：格式化驱动器以创建一个新的文件系统（查看 [格式化步骤](#creating-a-file-system-formatting)）。
 
 ### 使用未分配设备插件
 
-要充分利用您的未分配驱动器，请考虑从**应用程序**选项卡安装以下插件：
+修复文件系统通常比重建驱动器所需时间更短，让您可以不丢失任何数据地访问它。请记住，重建驱动器**无法**修复文件系统问题；它仅确保物理驱动器与模拟驱动器相匹配，且将现有问题一同保留。
 
 - \*\*[未分配设备](https://unraid.net/community/apps?q=dlandon\&r=0#:~:text=and%20iso%20files.-,Unassigned%20Devices,-dlandon)：\*\*此插件允许您挂载、共享和管理具有 Unraid 支持的文件系统（如 %%XFS|xfs%%、%%BTRFS|btrfs%% 或 NTFS）的驱动器。
 
 - \*\*[未分配设备Plus](https://unraid.net/community/apps?q=dlandon\&r=0#:~:text=and%20iso%20files.-,Unassigned%20Devices%20Plus,-\(Addon\))：\*\*此扩展支持额外的文件系统，包括 ExFAT 和 HFS+。
 
-这些插件启用：
+如果您不确定：
 
 - 使用 Unraid 网页界面轻松挂载和卸载驱动器。
-- 通过网络共享您的未分配驱动器。
+- 如需专家帮助，请将您的问题连同诊断信息一起发布于 [Unraid 论坛](https://forums.unraid.net/)。
+  :::
 - 在服务器启动时自动挂载。
 - 格式化或擦除驱动器以备将来使用。
 - 安全地断开 USB 或外部驱动器而不产生麻烦。
@@ -290,44 +430,52 @@ Unassigned drives are storage devices connected to your Unraid server that aren'
 
 ## 故障排除
 
-### 驱动器显示为无法挂载
+### 检查文件系统
 
 如果您在 Unraid 中看到驱动器为**无法挂载**，可能是由于两个主要原因之一：
 
-1. **添加新驱动器**：如果您刚刚将新驱动器添加到设置中，除非格式化，否则它将显示为不可挂载。格式化会创建一个允许驱动器存储文件的文件系统。您可以在[这里](#创建文件系统)找到格式化驱动器的步骤。
+1. 如果您刚刚将新驱动器添加到设置中，格式化前它将显示为不可挂载。格式化创建允许驱动器存储文件的文件系统。您可以在[这里](#creating-a-file-system-formatting)找到格式化驱动器的步骤。
 
-2. **文件系统问题**：如果之前正常工作的驱动器突然显示为不可挂载，则可能是文件系统问题。这可能由于意外关机、写入数据时的问题或驱动器被标记为禁用（在 %%WebGUI|web-gui%% 中显示为红色“x”）所导致。
+2. 如果以前正常工作的驱动器突然显示为不可挂载，很可能是文件系统问题。这可能是由于意外关机、写入数据时出现问题，或者驱动器被标记为禁用（在 %%WebGUI|web-gui%% 上显示为红色‘x’）。
 
 :::important
-Do not format an unmountable drive unless you are okay with losing all the data on it. Formatting will erase everything and update the %%parity|parity%% information, making recovery impossible. Always try to fix the file system first.
+
+除非您愿意丢失驱动上的所有数据，否则不要格式化不可挂载的驱动。格式化将擦除所有内容并更新 %%parity|校验%% 信息，使恢复成为不可能。在此之前，请始终尝试修复文件系统。
+
 :::
 
 如果您的驱动器无法挂载：
 
-1. **识别情况**：确定这是新驱动器还是先前工作的驱动器。
-2. **对于新驱动器**：格式化驱动器以创建一个新的文件系统（查看 [格式化步骤](#creating-a-file-system-formatting)）。
-3. **对于之前工作的驱动器**：执行文件系统检查或修复（见[检查文件系统](#checking-a-file-system)）。如果您希望保留数据，请避免格式化。
+1. 确定这是新驱动器还是以前正常工作的驱动器。
+2. 对于新驱动器：格式化驱动器以创建新的文件系统（参见[格式化步骤](#creating-a-file-system-formatting)）。
+3. 对于以前正常工作的驱动器：执行文件系统检查或修复（参见[文件系统检查](#checking-a-file-system)）。如果想保留数据，请避免格式化。
 
 :::note
+
 如果驱动器既不可挂载又被禁用（红色“x”），首先对**模拟**驱动器运行文件系统检查/修复。如果模拟驱动器也不可挂载并尝试重建，新驱动器也将不可挂载。
+
 :::
 
 修复文件系统通常比重建驱动器所需时间更短，让您可以不丢失任何数据地访问它。请记住，重建驱动器**无法**修复文件系统问题；它仅确保物理驱动器与模拟驱动器相匹配，且将现有问题一同保留。
 
 :::important[Why 奇偶校验不足够吗？]
-While %%parity|parity%% helps recover a failed drive, it cannot fix file system problems. If the file system is corrupted, %%parity|parity%% will simply replicate that corruption to the new drive.
+
+虽然 %%parity|校验%% 有助于恢复损坏的驱动，但它不能修复文件系统问题。如果文件系统损坏，%%parity|校验%% 只会将该损坏复制到新驱动上。
 
 如果您不确定：
 
 - 通过导航到 ***工具 → 诊断*** 来下载系统日志。
 - 如需专家帮助，请将您的问题连同诊断信息一起发布于 [Unraid 论坛](https://forums.unraid.net/)。
+
 :::
 
 :::note[Just 重申一下]
+
 - 仅当他们是全新的或想要擦除所有数据时，才格式化无法挂载的驱动器。
 - 使用文件系统检查/修复来解决损坏文件问题；不要依靠 %%parity|parity%% 来解决这些问题。
 - 对于有多个驱动器的 %%cache pools|cache-pool%%，可以考虑使用 %%BTRFS|btrfs%% 或 %%ZFS|zfs%%。
 - 在格式化或修复驱动器之前，请再次检查以避免意外的数据丢失。
+
 :::
 
 ---
@@ -337,23 +485,25 @@ While %%parity|parity%% helps recover a failed drive, it cannot fix file system 
 如果之前正常挂载的磁盘现在显示为**不可挂载**，这通常表示文件系统损坏。这可能由未清洁的关机、失败的写操作或磁盘在 %%WebGUI|web-gui%% 中被标记为禁用所导致。检查和修复文件系统通常比执行重建更快更安全，因此建议在格式化或重建磁盘之前尝试此操作。
 
 :::important
-If the %%WebGUI|web-gui%% suggests formatting an unmountable drive, <strong>do not format</strong> unless you intend to erase all data. Formatting will destroy the contents of the drive and update %%parity|parity%%, making recovery impossible.
+
+如果 %%WebGUI|web-gui%% 提议格式化不可挂载的驱动，除非您打算擦除所有数据，否则 **不要格式化**。格式化将销毁驱动的内容并更新 %%parity|校验%%，使恢复成为不可能。
+
 :::
 
-<h4>准备检查或修复</h4>
+#### 准备检查或修复
 
-1. **识别文件系统类型**：
-   - 导航到 **主** 选项卡并选择您的磁盘（例如：磁盘 3，缓存）。
-   - 找到**文件系统类型**（应为 %%XFS|xfs%%、%%BTRFS|btrfs%% 或 %%ZFS|zfs%%）。
+1. 识别文件系统类型：
+   - 在 **主** 标签中，选择您的磁盘（例如磁盘3，缓存）。
+   - 找到 **文件系统类型**（应为 %%XFS|xfs%%、EXT4、%%BTRFS|btrfs%% 或 %%ZFS|zfs%%）。
 
-2. **以正确模式启动阵列**:
-   - 对于\*\* %%XFS|xfs%% **，在** %%维护模式|maintenance-mode%% \*\*下启动 %%array|array%% 。
+2. 以正确模式启动阵列:
+   - 对于 **%%XFS|xfs%%** 或 **EXT4**，在 **%%维护模式|maintenance-mode%%** 下启动 %%array|阵列%%。
    - 对于 **%%BTRFS|btrfs%% **，请在**正常模式**下启动 %%array|array%% 进行 %%scrub|scrub%% ，或在\*\* %%维护模式|maintenance-mode%% \*\*下进行修复。
    - 对于 **%%ZFS|zfs%%** ，请参考下方的 %%ZFS|zfs%% 内容。
 
-3. **Handle emulated disks**: If the disk is disabled and being emulated, run the check/repair on the %%emulated disk|emulated-disk%% before attempting a rebuild. If the %%emulated disk|emulated-disk%% is unmountable, the rebuilt disk will also be unmountable.
+3. If the disk is disabled and being emulated, run the check/repair on the %%emulated disk|emulated-disk%% before attempting a rebuild. If the %%emulated disk|emulated-disk%% is unmountable, the rebuilt disk will also be unmountable.
 
-<h4>常见错误消息</h4>
+#### 常见错误消息
 
 | 消息                          | 意义/行动             |
 | --------------------------- | ----------------- |
@@ -364,32 +514,32 @@ If the %%WebGUI|web-gui%% suggests formatting an unmountable drive, <strong>do n
 | **挂载：错误的文件系统类型、错误的选项等**     | 文件系统选择错误或磁盘未格式化。  |
 | **无法挂载 /dev/mdX：结构需要清理**    | 文件系统已损坏；执行修复。     |
 
-#### 通过 WebGUI
+#### 通过 WebGUI 检查
 
-1. **启动阵列**：以正确的模式启动 %%array|array%% （请参阅上面的步骤）。
-2. **选择磁盘**：转到 **主** 选项卡并选择您要检查的磁盘。
-3. **访问检查选项**：滚动至**检查文件系统状态**。
-4. **对于 XFS（Unraid 7.0+）：** 您将看到一个没有选项可供输入的 **检查** 按钮。系统会根据检查结果自动确定必要操作。
-5. **对于其他文件系统**：输入必要的选项（详细信息请参阅右上角的**帮助**）。
-6. **启动检查**：点击 **检查** 以开始过程。
-7. **监控进展**：在输出框中监控进度。如有需要，使用 **刷新**。
-8. **查看结果**：查看结果。如果不确定，复制输出并在 [论坛](https://forums.unraid.net/) 上发帖咨询意见。
+1. 以正确模式启动 %%array|阵列%%（参见以上步骤）。
+2. 在 **主** 标签中，选择希望检查的磁盘。
+3. 滚动到 **检查文件系统状态**。
+4. 对于 XFS：您将看到显示 **检查** 按钮，没有任何选项输入。系统会自动根据检查结果确定必要的操作。
+5. 对于其他文件系统：输入任何必要的选项（有关详细信息，请参阅右上角的 **帮助**）。
+6. 点击 **检查** 以启动流程。
+7. 在输出框中监视进度。如需刷新，使用 **刷新**。
+8. 查看结果。如不确定，请复制输出并将其发布在[论坛](https://forums.unraid.net/)中征求建议。
 
-#### XFS 自动修复工作流程（Unraid 7.0+）
+#### XFS 自动修复工作流
 
-从 Unraid 7.0 开始，通过 WebGUI 完全自动化 XFS 文件系统修复：
+通过 WebGUI 完全自动进行 XFS 文件系统修复：
 
-1. **初始检查**: 点击 **CHECK** 按钮（无需输入选项）
-2. **检查结果**:
+1. 点击**检查**按钮(无需输入任何选项)
+2. 检查结果：
    - **未检测到损坏**：显示“未检测到文件系统损坏”，**CHECK** 按钮保持不变
    - **检测到损坏**：显示“检测到文件系统损坏”，出现 **FIX** 按钮
-3. **修复过程**: 点击 **FIX** 自动修复文件系统
-4. **其他操作**: 如有需要，可能会出现 **ZERO LOG** 按钮
-5. **完成**: 过程完成后显示“文件系统已修复”
+3. 点击 **修复** 以自动修复文件系统
+4. 如有需要，可能会出现**清零日志**按钮
+5. 当进程完成时显示“文件系统已修复”
 
 此自动系统消除了用户手动输入修复选项的需求，并确保了正确的修复顺序。
 
-#### 通过命令行
+#### 通过命令行检查
 
 <Tabs>
   <TabItem value="xfs" label="XFS">
@@ -406,9 +556,11 @@ If the %%WebGUI|web-gui%% suggests formatting an unmountable drive, <strong>do n
 </Tabs>
 
 :::tip
+
 - 文件系统修复通常比完整重建更快，并能在不丢失数据的情况下恢复访问。
 - 重建磁盘并 **不会** 解决文件系统损坏；请始终先运行检查或修复。
 - 如果您有疑问，请在 Unraid [论坛](https://forums.unraid.net/) 上发布您的诊断和错误信息以获取专家协助。
+
 :::
 
 ---
@@ -423,35 +575,37 @@ If the %%WebGUI|web-gui%% suggests formatting an unmountable drive, <strong>do n
 
 :::
 
-<h4>准备进行修复</h4>
+#### 准备进行修复
 
-1. **识别文件系统类型**: 进入 **主** 标签页，点击磁盘，查明其文件系统类型是 %%XFS|xfs%%、%%BTRFS|btrfs%% 还是 %%ZFS|zfs%%。
+1. 在 **主** 标签中，点击磁盘并识别文件系统类型（%%XFS|xfs%%、EXT4、%%BTRFS|btrfs%% 或 %%ZFS|zfs%%）。
 
-2. **以正确模式启动阵列**:
+2. 以正确模式启动阵列:
 
-   - **对于 %%XFS|xfs%%:** 使用 **%%维护模式|maintenance-mode%%**。
+   - **对于 %%XFS|xfs%% 或 EXT4：** 使用 **%%维护模式|maintenance-mode%%**。
    - **对于 %%BTRFS|btrfs%%:** 为 %%scrub|scrub%% 使用 **正常模式**；为修复使用 **%%维护模式|maintenance-mode%%**。
-   - **For %%ZFS|zfs%%:** Use **Normal mode** and run a %%scrub|scrub%% to check for errors.  See the [ZFS storage page](../../advanced-configurations/optimize-storage/zfs-storage.mdx) for guidance on %%ZFS|zfs%% pool maintenance and repair procedures.
+   - **对于 %%ZFS|zfs%%：** 使用 **正常模式** 并运行 %%scrub|scrub%% 来检查错误。在 [ZFS 存储页面](../../advanced-configurations/optimize-storage/zfs-storage.mdx)中获取 %%ZFS|zfs%% 池的维护和修复程序的指导。
 
-3. **Handle emulated disks**: If the disk is disabled and being emulated, run the repair on the %%emulated disk|emulated-disk%% before trying to do a rebuild.
+3. If the disk is disabled and being emulated, run the repair on the %%emulated disk|emulated-disk%% before trying to do a rebuild.
 
-#### 通过 WebGUI
+#### 通过 WebGUI 修复
 
-1. **Start the array**: Start the %%array|array%% in the correct mode (refer to the section above).
-2. **选择磁盘**: 进入 **主** 标签页并点击要修复的磁盘。
-3. **访问修复选项**: 向下滚动至 **检查文件系统状态**。
-4. **对于 XFS（Unraid 7.0+）**：修复过程是完全自动化的。单击 **检查**，如果检测到损坏，则单击 **修复**，如果提示，则单击 **清零日志**。
-5. **对于其他文件系统**: 去除任何会将过程置于仅检查模式的选项（如对于 %%BTRFS|btrfs%% 的 `--readonly`）。
-6. **添加建议选项**: 如果提示，根据检查输出添加建议选项。
-7. **开始修复**: 点击 **检查** 开始修复。
-8. **监控进展**：对输出框中进度保持关注。如需使用 **刷新**。
-9. **检查丢失的文件**：如果在修复后注意到一个 `lost+found` 文件夹，它可能包含不能完全恢复的文件或文件夹。如有必要，可使用备份或 Linux 的 `file` 命令识别内容。
+1. 以正确模式启动 %%array|阵列%%（请参考上面的部分）。
+2. 在 **主** 标签中，点击要修复的磁盘。
+3. 滚动到 **检查文件系统状态**。
+4. 对于XFS：修复过程是全自动的。点击 **检查**，如果检测到损坏，请选择 **修复**，并在提示时选择 **ZERO LOG**。
+5. 对于其他文件系统：删除任何会以只检查模式运行该过程的选项（例如：%%BTRFS|btrfs%% 的 `--readonly`）。
+6. 如果提示，请根据检查输出中指示添加建议选项。
+7. 点击 **检查** 以开始修复。
+8. 在输出框中监控进度。如有需要，请使用 **刷新**。
+9. 如果在修复后发现 `lost+found` 文件夹，可能包含无法完全恢复的文件或文件夹。如有必要，使用备份或 Linux `file` 命令识别内容。
 
 :::info
+
 如果对输出不确定，将其复制并分享至 [Unraid 论坛](https://forums.unraid.net/) 寻求专家帮助。使用代码格式选项以保持可读性。
+
 :::
 
-#### 通过命令行
+#### 通过命令行修复
 
 <Tabs>
   <TabItem value="xfs" label="XFS">
@@ -468,9 +622,11 @@ If the %%WebGUI|web-gui%% suggests formatting an unmountable drive, <strong>do n
 </Tabs>
 
 :::info[After 修复]
-- Stop and restart the %%array|array%% in **Normal mode**.
+
+- 在 **正常模式** 下停止并重新启动 %%array|阵列%%。
 - 驱动器现在应挂载并可访问。
 - 如果您看到一个 `lost+found` 文件夹，请检查其内容是否有重要文件。
+
 :::
 
 如果您不理解修复输出或过程失败，请在 [Unraid 论坛](https://forums.unraid.net/) 上分享您的诊断和修复日志以获得进一步的帮助。
