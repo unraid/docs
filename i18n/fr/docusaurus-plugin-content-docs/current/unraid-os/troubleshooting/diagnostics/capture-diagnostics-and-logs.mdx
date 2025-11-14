@@ -17,12 +17,14 @@ import DockerLogsPersistent from './partials/docker-logs/persistent.mdx';
 Lorsque vous rencontrez des problèmes avec votre serveur Unraid, rassembler des informations détaillées est crucial pour un dépannage efficace. Ces informations aident les autres à fournir une assistance précise et en temps opportun, surtout lorsque vous publiez sur des forums.
 
 :::info[Diagnostics inclus...]
+
 Le fichier zip de diagnostics contient plusieurs fichiers texte anonymisés qui créent un instantané détaillé de votre système Unraid, y compris :
 
 - **Configuration du système** : Informations sur votre %%array|array%%, partages, paramètres réseau et plugins installés.
 - **Journaux du système** : Journaux du noyau, %%WebGUI|web-gui%%, et des services système, documentant les événements ayant pu causer le problème.
 - **Informations sur le matériel** : Détails concernant les disques connectés, contrôleurs, et autres composants matériels.
 - **Infos Docker et %%VM|vm%%** : Configuration globale pour Docker et les machines virtuelles (aucune information sur vos containers individuels ou %%VMs|vm%% n'est incluse).
+
 :::
 
 ---
@@ -42,10 +44,12 @@ Unraid fournit un outil de **Diagnostics** situé sous ***Tools → Diagnostics*
 </div>
 
 :::important
-Joignez le fichier zip unique des diagnostics lors de la publication sur les forums - évitez de télécharger les fichiers extraits individuellement.
+
+Lorsque votre système s'éteint correctement, le journal de session est enregistré automatiquement sur le lecteur flash. Vous pouvez y accéder après le redémarrage en allant à ***Tools → Syslog → syslog-previous***. Ce journal est également inclus dans les diagnostics au prochain démarrage. Cependant, si le système se bloque, le journal système sera perdu. Dans ces cas, il est recommandé d'activer la mise en miroir du %%syslog|syslog%% sur le flash ou d'utiliser un %%syslog server|syslog-server%% distant pour préserver les journaux pour le dépannage.
+
 :::
 
-### Anonymisation des données de diagnostic
+### Tester la performance de lecture des disques
 
 By default, diagnostics are automatically anonymized. If you enable %%Mover|mover%% logging under ***Settings → Scheduler → Mover Settings***, the %%syslog|syslog%% will include details about files the %%Mover|mover%% processes. It's best to allow %%Mover|mover%% logging only when troubleshooting specific %%Mover|mover%%-related issues, as it may reveal file paths and names.
 
@@ -58,6 +62,7 @@ Lorsque votre système s'éteint correctement, le journal de session est enregis
 Vous pouvez utiliser les outils Linux intégrés pour évaluer les performances de lecture de vos disques durs. Cela est utile lors du diagnostic de synchronisations de %%parity|parity%% lentes, de réponses de disque lentes ou de vitesses non uniformes parmi les disques d'une %%array|array%% ou d'un %%cache|cache%%.
 
 :::important[When et pourquoi tester la vitesse]
+
 Envisagez d'exécuter des tests de benchmark de lecture de disque si vous rencontrez :
 
 - Extremely slow %%parity|parity%% builds or %%parity check|parity-check%%s
@@ -66,6 +71,7 @@ Envisagez d'exécuter des tests de benchmark de lecture de disque si vous rencon
 - Secteurs réalloués ou erreurs %%CRC UDMA|crc-errors%%, qui peuvent indiquer des disques défaillants
 
 Bien que ces tests ne vous donnent pas des vitesses de transfert de fichiers réelles précises, ils peuvent montrer des disques sous-performants et tout goulet d'étranglement du contrôleur.
+
 :::
 
 ### Test rapide (hdparm)
@@ -82,15 +88,19 @@ hdparm -tT /dev/sdX
 - Le résultat `-t` affiche la performance de lecture tamponnée (séquentielle) du disque.
 
 :::tip
+
 Exécutez ce test plusieurs fois pour obtenir un banc d'essai plus fiable. Par exemple, vous pouvez utiliser la commande suivante pour exécuter le test 12 fois :
 
 ```
 for ((i=0;i<12;i++)); do hdparm -tT /dev/sdX; done
 ```
+
 :::
 
 :::note
+
 Assurez-vous de remplacer `/dev/sdX` par un appareil physique valide. Évitez les appareils logiques Unraid, tels que `/dev/md1`, qui incluent des processus de %%parity|parity%% susceptibles de fausser les lectures de performances brutes.
+
 :::
 
 ### Test complet (diskspeed.sh)
@@ -120,7 +130,9 @@ bash /boot/scripts/diskspeed.sh
 ```
 
 :::note
+
 Ce script effectue uniquement des opérations en lecture seule et ne modifiera pas les données de vos disques. Cependant, il est préférable de programmer le test pendant les périodes d'inactivité, car cela peut affecter l'E/S du disque et interférer avec les performances de l'%%array|array%%.
+
 :::
 
 ---
@@ -129,9 +141,9 @@ Ce script effectue uniquement des opérations en lecture seule et ne modifiera p
 
 Les journaux persistants sont essentiels pour conserver un enregistrement des événements système entre les redémarrages. Contrairement aux journaux standard qui se réinitialisent lorsque le système redémarre, les journaux persistants utilisent le %%syslog server|syslog-server%% intégré d'Unraid pour garantir que vous pouvez diagnostiquer les pannes ou les problèmes intermittents qui surviennent au fil du temps.
 
-### Choisir la bonne méthode de journalisation
+### Journaux des machines virtuelles
 
-Allez à ***Settings → Syslog Server*** pour configurer la journalisation persistante. Chaque méthode a ses avantages et inconvénients :
+Les journaux %%VM|vm%% peuvent être accessibles via leurs hyperviseurs respectifs (par exemple, les journaux %%QEMU|qemu%% se trouvent dans `/var/log/libvirt/`). Consultez la documentation de votre plate-forme %%VM|vm%% pour plus de détails.
 
 | Méthode                                   | Avantages                                                                                       | Inconvénients                                    | Idéal pour                                      |
 | ----------------------------------------- | ----------------------------------------------------------------------------------------------- | ------------------------------------------------ | ----------------------------------------------- |
@@ -140,7 +152,9 @@ Allez à ***Settings → Syslog Server*** pour configurer la journalisation pers
 | **Local %%syslog\|syslog%%**              | Conserve les journaux sur l'%%array\|array%% ou le %%cache\|cache%%, réduisant l'usure du flash | Moins accessible s'il y a un plantage système    | Journalisation continue sans appareils externes |
 
 :::tip
+
 Pour obtenir de l'aide détaillée sur la configuration, consultez l'icône **Aide** dans la barre d'outils WebGUI.
+
 :::
 
 ### Activation du serveur syslog
@@ -186,5 +200,7 @@ Pour récupérer les journaux Docker :
 Les journaux %%VM|vm%% peuvent être accessibles via leurs hyperviseurs respectifs (par exemple, les journaux %%QEMU|qemu%% se trouvent dans `/var/log/libvirt/`). Consultez la documentation de votre plate-forme %%VM|vm%% pour plus de détails.
 
 :::important
+
 N'oubliez pas de joindre les journaux pertinents des containers ou %%VM|vm%% séparément lorsque vous cherchez du support pour des problèmes spécifiques aux applications.
+
 :::
