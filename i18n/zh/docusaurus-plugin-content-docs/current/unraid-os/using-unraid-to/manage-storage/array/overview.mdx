@@ -1,0 +1,191 @@
+---
+sidebar_position: 1
+sidebar_label: 概述
+---
+
+# 数组
+
+Unraid 的存储系统通过结合 %%array|数组%% 和 %%cache|缓存%% 架构，实现灵活性与数据保护。%%array|数组%% 管理您的主要存储，提供可选 %%parity|校验%% 保护，而缓存池则加速性能。
+
+## 驱动原则
+
+1. **使用最大的硬盘作为奇偶校验盘** - 数据盘不能比您的%%parity disk|奇偶校验盘%%大，因此使用最大的硬盘作为奇偶校验盘以避免未来扩展限制。如果您使用双奇偶校验，两者的大小应至少为您最大的单个数据盘大小，但它们可以不同于彼此的大小。没有磁盘可以大于您最小的奇偶校验盘。
+
+2. **Save SSDs for cache pools** - Unraid doesn't support TRIM/Discard for SSDs in the main array, which causes performance degradation over time. Use SSDs in %%cache pools|cache-pool%% or as unassigned devices instead, where these features work properly.
+
+3. **添加一个缓存以提高写入性能** - 缓存通过将数据临时存储在快速硬盘上大大加快了写入速度，然后在背景中由%%Mover|搬运工%%将其传输到阵列（通常在3:40 AM）。被缓存的数据仍然显示在您的共享中，所以在后台传输的同时，访问感觉是即时的。
+
+4. **使用缓存池来保护数据** - 单个缓存设备在%%Mover|搬运工%%运行之前，使您的缓存数据处于危险之中。多设备%%cache pool|缓存池%%提供冗余，并保护您的数据免受缓存设备故障。
+
+5. **SSD在应用程序和虚拟机中表现出色** - 应用程序和虚拟机极大地受益于SSD的速度。带SSD的%%cache pool|缓存池%%提供了速度、效率和数据保护的完美平衡。
+
+6. **加密是可选的** - 加密默认被禁用，需要重新格式化硬盘（会抹掉数据）。如果需要，先将数据移出硬盘，再更换到加密文件系统，格式化，然后将数据移回。详情请参见[如何在Unraid中加密硬盘](../../../system-administration/secure-your-server/securing-your-data.mdx#how-to-encrypt-a-drive-in-unraid)。请注意，加密在出现故障时会复杂化数据恢复。
+
+:::info[Disk 识别和端口灵活性]
+
+Unraid identifies disks based on their serial numbers and sizes, not the specific SATA ports they're connected to. This means you can switch drives between different SATA ports without affecting their assignments in Unraid. This feature is particularly useful for troubleshooting hardware problems, like finding a faulty port or replacing unreliable power or SATA cables.
+
+:::
+
+:::caution
+
+如果您分配或连接的设备数量超过许可证密钥允许的数量，您的阵列将不会启动。
+
+:::
+
+## 启动/停止阵列
+
+当系统启动时，通常会自动启动磁盘阵列。然而，如果您最近更改了磁盘设置，例如添加了新的磁盘，阵列将保持关闭以便让您检查配置。
+
+:::caution
+
+Unraid provides several maintenance and configuration options for your storage array. Key operations include:
+
+:::
+
+要启动或停止阵列：
+
+1. 点击**主界面**选项卡。
+2. 导航到 **阵列操作** 部分。
+3. 单击**开始**或**停止**。在继续之前，您可能需要选中“是，我要这样做”选项框。
+
+## 文件系统选择
+
+默认情况下，新的阵列驱动器将使用%%XFS|xfs%%格式化。如果您希望使用%%ZFS|zfs%%或%%BTRFS|btrfs%%，请从下拉菜单中选择您喜欢的文件系统。
+
+有关文件系统选项的详细信息，请参见[文件系统](../file-systems.mdx) 。
+
+## 设置新磁盘
+
+Unraid provides several maintenance and configuration options for your storage array. Operations include:
+
+- [向阵列中添加磁盘](./adding-disks-to-array.mdx) - 扩展存储容量
+- [替换阵列中的磁盘](./replacing-disks-in-array.mdx) - 升级或更换故障硬盘
+- [从阵列中移除磁盘](./removing-disks-from-array.mdx) - 退役或缩小阵列大小
+- [阵列健康和维护](./array-health-and-maintenance.mdx) - 监控和维护阵列
+
+## 阵列写入模式
+
+Unraid 提供多种写入模式用于管理阵列操作，每种模式在速度、电量消耗和磁盘损耗方面各有优劣。了解这些模式的工作原理以及缓存盘或缓存池的作用，有助于根据您的需求优化服务器。
+
+**写入模式概览**
+
+| 写入模式            | 速度（典型）                                  | 能耗 | 何时驱动器启动   | 数据保护    | 最佳使用场景                               |
+| --------------- | --------------------------------------- | -- | --------- | ------- | ------------------------------------ |
+| 读/修改/写          | 20–40 MB/s                              | 低  | 仅校验和目标驱动器 | 可以      | 大多数工作负载，节能，小写入                       |
+| Turbo Write（重建） | 40–120 MB/s                             | 高  | 所有驱动器     | 可以      | 大文件传输, 阵列重建, %%parity checks\|校验检查%% |
+| 缓存写入（SSD/NVMe）  | 50–110 MB/s (SSD)，250–900 MB/s (NVMe)\* | 变化 | 仅缓存驱动器    | 否（直到移动） | 应用，虚拟机，频繁写入，最大化速度                    |
+
+### 读/修改/写
+
+这是默认的写入模式。它读取现有数据和奇偶校验，计算新的奇偶校验，然后写入更新的数据。只有%%parity drive|奇偶校验盘%%和目标数据盘旋转，这导致较低的能耗和较少的硬盘磨损。但是，由于额外的读/写周期，它可能会更慢。
+
+在任何时候都使用此模式，尤其是如果您想节能并让空闲的硬盘旋转下来。这对于小型或不频繁的写入来说是很好的。
+
+### Turbo Write（重建写入）
+
+Turbo write, also known as reconstruct write, is a feature designed to boost the writing speed of your Unraid array. It works by reading all data drives and updating the parity simultaneously. This process eliminates the delays caused by waiting for the platters to rotate, as seen in the default write mode. However, all array drives need to be spinning and functioning properly for this to work effectively.
+
+**How it works:** When you write new data, Unraid reads from all the other data drives and recalculates the parity at the same time. Both the new data and the updated parity get written together. All drives in the array must be operational and actively spinning.
+
+**使用时间：** 将大型、顺序文件传输到阵列。在阵列重建或%%parity check|奇偶校验检测%%期间，因为所有驱动器已经旋转。将写入时间最小化是优先任务并且您可以确认所有驱动器健康时。
+
+**避免使用时间：** 如果您希望在闲置时让驱动器旋转下来以节省能量。对于小型或不频繁的写入操作，因为它会导致每次写入时所有驱动器都旋转起来，从而增加电力消耗和磨损。如果您怀疑任何驱动器正在失效或不可靠，因为它依赖于每个驱动器都能正常使用时。
+
+:::info
+
+Turbo写入最适用于需要高吞吐量的大量操作和场景。然而，对于日常任务如果您关注节能和最小化驱动器磨损时，可能不是最佳选择。
+
+:::
+
+### 缓存写入
+
+数据首先写入快速SSD或NVMe %%cache|缓存%%，然后由称为%%Mover|搬运工%%的过程稍后移动到主阵列。速度各异：SSD: 50–110 MB/s; NVMe: 250–900 MB/s (可以使用10GbE网络)。一旦数据被移到阵列，它就受到奇偶校验的保护。
+
+**使用时间：** 对于有频繁写入操作的共享，例如应用程序、虚拟机或下载。为了提高性能并减少感知到的写入延迟。
+
+**性能期望:**
+
+- 没有缓存驱动时：平均20–30 MB/s，峰值最高可达40 MB/s
+- 使用SSD缓存时：50–110 MB/s
+- 使用NVMe缓存时：250–900 MB/s，具体取决于网络或驱动器限制
+
+:::tip
+
+考虑使用缓存池（多个设备）以在Mover运行之前增加冗余和数据保护。
+
+:::
+
+:::info[Automated 解决方案]
+
+- **自动**模式（未来功能）将仅在所有驱动器已旋转时启用turbo写入。
+- 社区插件（在应用标签中搜索“Turbo Write”）可能提供增强的自动化或调度选项。
+
+:::
+
+更改写入模式：
+
+1. 导航到 ***设置→磁盘设置***。
+2. 定位 **可调项（md_写入_方法）**。
+3. 选择您喜欢的模式：
+   - **读/修改/写** (默认)
+   - **重建写入** (Turbo Write)
+   - **自动** (未来功能)
+4. 点击**应用**以确认您的选择。
+
+:::important[Quick 回顾]
+
+- 当你需要速度时使用 **Turbo Write**，但要注意增加的功耗和驱动启动。
+- 使用 **缓存写入**以获得最佳性能，特别是在使用SSD或NVMe驱动器时。
+- 对于大多数用户，默认写入模式提供了最佳平衡，除非你特别需要更高的速度。
+
+:::
+
+## 读取模式
+
+使用 Unraid 时，读取文件的速度主要由存储每个文件的单独驱动器决定。与传统 %%RAID|硬盘冗余数组%% 系统不同，Unraid 是将每个文件存储在单个磁盘上。这意味着读取速度不会由于组合多个驱动器的速度而提高。
+
+### 性能期望
+
+- **典型单个HDD：** 70–250 MB/s（取决于驱动型号、年龄和数据位置）
+- **典型SATA SSD：** 400–550 MB/s
+- **NVMe SSD（在池中）：** 250–7,000 MB/s（受PCIe代和网络/PCIe限制影响；例如，10GbE网络限制约1,100 MB/s）
+
+:::note[Special 案例]
+
+- 如果磁盘被禁用且其数据正在重建，Unraid 将使用剩余的磁盘和校验信息重建数据。此过程中，读取速度可能会变慢到 30–60 MB/s 甚至更低，具体取决于系统中最慢的驱动器。
+- Any ongoing operations in the array, such as a %%parity check|parity-check%% or rebuilding a drive, can also affect read performance. This is due to increased movement of the drive heads and overall contention for resources.
+
+:::
+
+## 缓存池
+
+Unraid 中的 %%Cache pools|缓存池%% 为写重任务，虚拟机（VMs）和 Docker 容器提供显著优势。这些池独立于主阵列运行，可以使用 %%BTRFS|BTRFS 文件系统%% 或 %%ZFS|ZFS 文件系统%% 设置多个驱动器，支持多种 %%RAID|硬盘冗余数组%% 配置以提高速度和数据保护。
+
+### 缓存池与主阵列对比
+
+| 功能        | 缓存池 （BTRFS）                                                                            | 缓存池 （ZFS）                                                                                                                | 主阵列（Unraid）            |
+| --------- | -------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ | ---------------------- |
+| **读取速度**  | SSD：400–550 MB/s，NVMe：250–7,000 MB/s\*                                                 | SSD：400–550 MB/s，NVMe：250–7,000 MB/s\*                                                                                   | HDD：70–250 MB/s（每个磁盘）  |
+| **写入速度**  | SSD：400–550 MB/s，NVMe：250–7,000 MB/s\*                                                 | SSD：400–550 MB/s，NVMe：250–7,000 MB/s\*                                                                                   | 20–120 MB/s（取决于奇偶校验模式） |
+| **数据保护**  | %%RAID 1\|raid1%%/%%RAID 10\|raid10%%；%%RAID 5\|raid5%%/%%RAID 6\|raid6%%（实验性，不适合关键数据） | %%RAID 1\|raid1%%/%%RAID 10\|raid10%%；%%RAIDZ1\|raidz1%%/%%RAIDZ2\|raidz2%%/%%RAIDZ3\|raidz3%% （稳定，适合生产）                 | 基于奇偶校验，文件系统无关          |
+| **扩展**    | 混合驱动器尺寸；动态添加/删除设备                                                                      | Limited add/remove device support; cannot remove from RAIDZ; single-device add to expand single-vdev RAIDZ in Unraid 7.2 | 添加驱动器，但无条带化或性能扩展       |
+| **恢复复杂性** | 数据丢失风险较高；需要%%BTRFS\|btrfs%%工具                                                          | 数据丢失风险更高；需要%%ZFS\|zfs%%工具                                                                                                | 更易基于奇偶校验的重建            |
+| **最佳用途**  | 应用程序、VMs、频繁写入                                                                          | 应用程序、VMs、频繁写入、企业工作负载                                                                                                     | 批量存储、媒体库               |
+
+\*实际NVMe速度取决于PCIe代、散热和网络带宽（例如10GbE上限约为~1,100 MB/s）。\*
+
+### 缓存池的优点
+
+- \*\*更高性能：\*\*NVMe池可以饱和10GbE/40GbE网络（1,100–3,500 MB/s）。
+- **灵活的RAID：** %%BTRFS|btrfs%% 和 %%ZFS|zfs%%均支持%%RAID 1|raid1%%/%%RAID 10|raid10%%，以实现冗余而无需匹配驱动器大小。
+- \*\*低延迟：\*\*非常适合数据库、VMs和Docker容器。
+- **ZFS优势：**%%ZFS|zfs%%提供企业级功能，如数据完整性检查、压缩和快照。
+
+### 缓存池的缺点
+
+- \*\*无奇偶校验保护：\*\*在移动到数组之前，数据未受保护。
+- **恢复风险：** %%BTRFS|btrfs%% %%RAID 5|raid5%%/%%RAID 6|raid6%%不稳定；单驱动器池缺乏冗余。
+- **ZFS考虑因素：**%%ZFS|zfs%%需要更多的RAM，并且硬件要求比%%BTRFS|btrfs%%更严格。
+
+For more detailed information about %%cache pools|cache-pool%%, including how to set them up, manage them, and advanced features, check the [Cache pools](../cache-pools.mdx) page.
