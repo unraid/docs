@@ -8,7 +8,9 @@ sidebar_label: Personalizar configuraciones de Unraid
 Unraid OS funciona automáticamente pero permite mayor personalización de configuraciones como dirección IP, nombre del host, ajustables de disco, y más a través de la pestaña **Configuraciones** en el **%%WebGUI|web-gui%%** de Unraid.
 
 :::tip[Tailscale integración]
+
 **Tailscale** es un complemento opcional que puedes instalar mediante la pestaña **Apps** buscando "Tailscale". Proporciona acceso remoto seguro a tu red y agrega una sección de **Tailscale** a tus **Settings** para mejorar las capacidades de gestión remota.
+
 :::
 
 <div style={{ margin: 'auto', maxWidth: '700px'}}>
@@ -117,9 +119,9 @@ Las **máquinas virtuales** (VMs) pueden convertir tu servidor en un escritorio 
   ![Gestor de VM](/img/settings-vmmanager.png)
 </div>
 
-## Servicios de Red
+## NFS (Sistema de Archivos de Red)
 
-**Network Services** let you configure network communication protocols on your Unraid server, which are essential for user and disk shares. You can also enable an %%FTP|ftp%% server, a logging server, and set up a %%VPN|vpn-tunnel%% for secure remote access.
+**Servicios de Red** le permiten configurar protocolos de comunicación de red en su servidor Unraid, que son esenciales para el uso compartido de usuarios y discos. También puede habilitar un servidor %%FTP|ftp%%, un servidor de registros, y establecer un %%VPN|vpn-tunnel%% para acceso remoto seguro.
 
 ### NFS (Sistema de Archivos de Red)
 
@@ -156,10 +158,12 @@ El %%Syslog server|syslog-server%% almacena permanentemente tu registro del sist
 ### Tailscale
 
 :::note
+
 La sección Tailscale solo está disponible si has instalado el plugin Tailscale.
+
 :::
 
-La sección %%Tailscale|tailscale%% permite el acceso remoto seguro mediante el %%VPN|vpn-tunnel%% %%Tailscale|tailscale%%. Aquí, puedes iniciar sesión para conectar tu servidor Unraid a tu %%Tailnet|tailnet%%, ver la dirección IP y nombre de host asignado, y habilitar o deshabilitar la conectividad %%Tailscale|tailscale%%.
+Puedes establecer una conexión %%VPN|vpn-tunnel%% a tu servidor Unraid utilizando [%%Wireguard|wireguard%%](https://www.wireguard.com/) para conexiones de internet seguras.
 
 También puedes configurar tu servidor como un %%Subnet Router|subnet-routing%% para dispositivos locales o como un Nodo de Salida para redirigir el tráfico de Internet. Esta sección permite la gestión de rutas anunciadas, el estado del nodo de salida, opciones de integración con contenedores Docker, y el monitoreo del estado de conexión para la resolución de problemas.
 
@@ -205,11 +209,162 @@ Personaliza la apariencia del %%WebGUI|web-gui%% de Unraid en esta página ajust
 
 ### Configuraciones de Notificaciones
 
-Puedes configurar notificaciones del navegador y por correo electrónico en esta página, suscribiéndote a distintos tipos y configurando alertas personalizadas para valores de atributo %%SMART|smart%%.
+Unraid puede enviarte notificaciones sobre eventos importantes del sistema, actualizaciones y alertas a través de tu navegador, correo electrónico o servicios de notificación de terceros. La página de Configuración de Notificaciones te permite controlar cómo y cuándo recibes estas notificaciones.
+
+Los complementos de terceros se muestran aquí, ampliando la funcionalidad de Unraid y dándote más control sobre tu servidor. Por ejemplo, el [Complemento de Aplicaciones de la Comunidad](../../using-unraid-to/run-docker-containers/community-applications.mdx) está incluido. Otros complementos ofrecen características para monitoreo del sistema, mantenimiento, gestión de almacenamiento y copias de seguridad `appdata`.
 
 <div style={{ margin: 'auto', maxWidth: '400px'}}>
   ![Configuraciones de Notificaciones](/img/settings-notifications.png)
 </div>
+
+#### Configuración de visualización y comportamiento
+
+Configura cómo aparecen las notificaciones en tu navegador:
+
+- **Visualización de notificaciones**: Elige entre estilos de notificación *Detallado* o *Resumido*
+- **Posición de visualización**: Establece dónde aparecen las notificaciones (*arriba a la derecha*, *arriba a la izquierda*, *abajo a la derecha*, *abajo a la izquierda* o *centro*)
+- **Cierre automático (segundos)**: Tiempo que las notificaciones permanecen visibles antes de cerrarse automáticamente
+- **Formato de fecha**: Elige tu formato de fecha preferido para las marcas de tiempo de las notificaciones
+- **Formato de hora**: Elige entre visualización de hora en formato *12 horas* o *24 horas*
+- **Almacenar notificaciones en flash**: Guarda el historial de notificaciones en tu dispositivo USB flash (requiere espacio de almacenamiento flash)
+
+#### Tipos de notificación
+
+Controla qué eventos desencadenan notificaciones:
+
+- **Notificaciones del sistema**: Eventos generales del sistema y mensajes
+- **Notificación de actualización del sistema operativo de Unraid**: Alertas cuando están disponibles nuevas versiones del sistema operativo de Unraid
+- **Notificación de actualización de complementos**: Alertas cuando hay actualizaciones de complementos disponibles
+- **Notificación de actualización de Docker**: Alertas cuando hay actualizaciones de contenedores Docker disponibles
+- **Notificación de actualización de idioma**: Alertas cuando hay actualizaciones de paquetes de idiomas disponibles
+- **Array status notification**: Alerts about %%array|array%% events and status changes
+
+Para cada tipo de notificación, puedes establecer la frecuencia en *Nunca comprobar*, o comprobar diariamente, semanalmente, mensualmente o, en algunos casos, incluso varias veces al día.
+
+#### Métodos de entrega
+
+Elige cómo deseas recibir notificaciones para cada categoría (*Avisos*, *Advertencias* y *Alertas*):
+
+- **Navegador**: Muestra notificaciones en el %%WebGUI|web-gui%% cuando hayas iniciado sesión
+- **Correo electrónico**: Envía notificaciones por correo electrónico (requiere [configuración SMTP](#smtp-settings))
+- **Agentes**: Envía notificaciones a través de servicios de terceros configurados
+
+:::tip
+
+Habilita las notificaciones en **Navegador** para visibilidad inmediata al usar el %%WebGUI|web-gui%%, y **Correo electrónico** para alertas cuando no estés frente a tu servidor. Usa **Agentes** para integrar con aplicaciones móviles y servicios como Discord o Telegram.
+
+:::
+
+#### Configuración SMTP
+
+Para recibir notificaciones por correo electrónico, necesitas configurar la configuración de tu servidor de correo. Unraid es compatible con muchos proveedores de correo electrónico, incluidos Gmail, Outlook y servidores SMTP personalizados.
+
+La Configuración SMTP se encuentra en ***Configuración → Preferencias del Usuario → Configuración de Notificaciones → Configuración SMTP***.
+
+**Configuración básica:**
+
+- **Servicio predefinido**: Selecciona una configuración predefinida (*Gmail*, *Outlook/Hotmail* o *Personalizado*) para rellenar automáticamente la configuración común
+- **Dirección de correo electrónico de envío**: La dirección de correo electrónico desde la que se enviarán las notificaciones
+- **Destinatarios de correo electrónico**: Lista de direcciones de correo electrónico separadas por comas que recibirán las notificaciones
+- **Prioridad en el encabezado**: Marca los correos electrónicos como alta prioridad (*Sí* o *No*)
+- **Prefijo del asunto del correo electrónico**: Texto para anteponer a todos los asuntos de correos electrónicos de notificación (predeterminado: *Estado de Unraid:*)
+
+**Configuración del servidor:**
+
+- **Servidor de correo**: Dirección del servidor SMTP (por ejemplo, `smtp.gmail.com`)
+- **Puerto del servidor de correo**: Número de puerto SMTP (puertos comunes: `465` para SSL/TLS, `587` para STARTTLS, `25` sin cifrado)
+- **Usar SSL/TLS**: Habilitar cifrado SSL/TLS (*Sí* o *No*)
+- **Usar STARTTLS**: Utilizar STARTTLS para cifrado (*Sí* o *No*)
+- **Definir un certificado TLS**: Especificar un certificado TLS personalizado si se necesita (*Sí* o *No*)
+- **Ubicación del certificado TLS**: Ruta al archivo de certificado personalizado (solo si *Definir un certificado TLS* está habilitado)
+
+**Autenticación:**
+
+- **Método de autenticación**: Elige *Ninguno*, *CRAM-MD5* o *Inicio de sesión* (nombre de usuario/contraseña)
+- **Nombre de usuario**: Nombre de usuario de tu cuenta de correo electrónico (generalmente tu dirección de correo electrónico completa)
+- **Contraseña**: La contraseña de tu cuenta de correo electrónico o contraseña específica de la aplicación
+
+Después de configurar tus ajustes, usa el botón **PRUEBA** para verificar que tu configuración de correo electrónico funcione correctamente.
+
+##### Configurando Gmail con contraseñas de aplicación
+
+Gmail requiere contraseñas específicas para aplicaciones cuando se utiliza SMTP con cuentas que tienen la verificación en dos pasos habilitada (lo cual se recomienda por seguridad).
+
+**Para configurar notificaciones de Gmail:**
+
+1. En **Servicio predefinido**, selecciona *Gmail* (esto rellenará automáticamente el **Servidor de correo** y el **Puerto del servidor de correo**)
+2. Introduce tu dirección de Gmail en **Dirección de correo electrónico de envío**
+3. Introduce la(s) dirección(es) de correo electrónico del destinatario en **Destinatarios de correo electrónico**
+4. Configura **Nombre de usuario** para que sea tu dirección de Gmail completa (por ejemplo, `tunombre@gmail.com`)
+5. Para **Contraseña**, necesitarás generar una contraseña de aplicación:
+   - Ve a la [configuración de tu cuenta de Google](https://myaccount.google.com/)
+   - Navega a **Seguridad**
+   - En "Cómo inicias sesión en Google", asegúrate de que la **Verificación en dos pasos** esté habilitada (requerida para contraseñas de aplicación)
+   - En la misma sección, encuentra y haz clic en **Contraseñas de aplicación** (o busca "Contraseñas de aplicación" en la barra de búsqueda)
+   - Puede que necesites verificar tu identidad
+   - Introduce un nombre personalizado para el nombre de la aplicación, como "Servidor Unraid".
+   - Haga clic en **Crear**
+   - Google generará una contraseña de 16 caracteres.
+   - Copia esta contraseña y pégala en el campo **Contraseña** en Unraid
+6. Haz clic en **PRUEBA** para verificar la configuración
+7. Haz clic en **HECHO** para guardar tus ajustes
+
+:::tip[Default Configuraciones de Gmail]
+
+- **Servidor de correo**: `smtp.gmail.com`
+- **Puerto del servidor de correo**: `465`
+- **Usar SSL/TLS**: `Sí`
+- **Usar STARTTLS**: `No`
+- **Método de autenticación**: `Inicio de sesión`
+
+:::
+
+:::warning[Security recomendación]
+
+Siempre usa contraseñas de aplicación en lugar de tu contraseña principal de Gmail. Las contraseñas de aplicación pueden revocarse individualmente sin cambiar tu contraseña principal de cuenta, brindando mejor seguridad si alguna vez se ve comprometida la configuración de tu Unraid.
+
+:::
+
+#### Agentes de Notificación
+
+Los agentes de notificación te permiten enviar alertas a servicios de terceros y aplicaciones móviles. Unraid incluye soporte integrado para muchos servicios de notificación populares.
+
+Para acceder a los Agentes de Notificación, haz clic en el enlace **Agentes de Notificación** en la página de Configuración de Notificaciones, o navega a ***Configuración → Preferencias del Usuario → Configuración de Notificaciones → Agentes de Notificación***.
+
+**Agentes integrados incluyen:**
+
+- <img src="/img/customize-unraid-settings/icons/icon-bark.png" alt="Bark" style={{height: '20px', verticalAlign: 'middle', marginRight: '8px'}} /> **Bark**: Aplicación de notificaciones para iOS
+- <img src="/img/customize-unraid-settings/icons/icon-boxcar.png" alt="Boxcar" style={{height: '20px', verticalAlign: 'middle', marginRight: '8px'}} /> **Boxcar**: Servicio de notificaciones push
+- <img src="/img/customize-unraid-settings/icons/icon-discord.png" alt="Discord" style={{height: '20px', verticalAlign: 'middle', marginRight: '8px'}} /> **Discord**: Envía notificaciones a canales de Discord por webhook
+- <img src="/img/customize-unraid-settings/icons/icon-gotify.png" alt="Gotify" style={{height: '20px', verticalAlign: 'middle', marginRight: '8px'}} /> **Gotify**: Servidor de notificaciones autohospedado
+- <img src="/img/customize-unraid-settings/icons/icon-ntfy.png" alt="ntfy.sh" style={{height: '20px', verticalAlign: 'middle', marginRight: '8px'}} /> **ntfy.sh**: Servicio de notificaciones basado en HTTP simple
+- <img src="/img/customize-unraid-settings/icons/icon-prowl.png" alt="Prowl" style={{height: '20px', verticalAlign: 'middle', marginRight: '8px'}} /> **Prowl**: Notificaciones push para iOS
+- <img src="/img/customize-unraid-settings/icons/icon-pushbits.png" alt="Pushbits" style={{height: '20px', verticalAlign: 'middle', marginRight: '8px'}} /> **Pushbits**: Relé de notificaciones autohospedado
+- <img src="/img/customize-unraid-settings/icons/icon-pushbullet.png" alt="Pushbullet" style={{height: '20px', verticalAlign: 'middle', marginRight: '8px'}} /> **Pushbullet**: Servicio de notificaciones multiplataforma
+- <img src="/img/customize-unraid-settings/icons/icon-pushover.png" alt="Pushover" style={{height: '20px', verticalAlign: 'middle', marginRight: '8px'}} /> **Pushover**: Servicio de notificaciones push para iOS y Android
+- <img src="/img/customize-unraid-settings/icons/icon-pushplus.png" alt="Pushplus" style={{height: '20px', verticalAlign: 'middle', marginRight: '8px'}} /> **Pushplus**: Servicio de notificaciones push en chino
+- <img src="/img/customize-unraid-settings/icons/icon-serverchan.png" alt="ServerChan" style={{height: '20px', verticalAlign: 'middle', marginRight: '8px'}} /> **ServerChan**: Servicio de monitoreo y notificaciones de servidor en chino
+- <img src="/img/customize-unraid-settings/icons/icon-slack.png" alt="Slack" style={{height: '20px', verticalAlign: 'middle', marginRight: '8px'}} /> **Slack**: Envía notificaciones a canales de Slack por webhook
+- <img src="/img/customize-unraid-settings/icons/icon-telegram.png" alt="Telegram" style={{height: '20px', verticalAlign: 'middle', marginRight: '8px'}} /> **Telegram**: Envía mensajes al bot de Telegram
+
+**Configurando un agente:**
+
+1. Selecciona el agente que deseas configurar de la lista
+2. Cambia **Función del agente** de *Deshabilitado* a *Habilitado*
+3. Rellena los campos necesarios para ese servicio:
+   - La mayoría de los agentes requieren una **URL de webhook**, **token de API** o **token de acceso**
+   - Algunos servicios requieren configuración adicional, como IDs de canales o códigos de grupo
+4. Configura **Título de la notificación** (usualmente configurado en *Asunto* para usar el asunto de la notificación)
+5. Configura **Mensaje de la notificación** (usualmente configurado en *Descripción* para usar el texto completo de la notificación)
+6. Haz clic en **HECHO** para guardar
+
+Cada agente tiene diferentes requisitos: consulta la documentación para el servicio elegido para obtener las claves API, URLs de webhook o tokens necesarios.
+
+:::tip
+
+Puedes habilitar múltiples agentes de manera simultánea. Por ejemplo, podrías usar Discord para notificaciones de equipo y Pushover para alertas personales en el móvil. Ten en cuenta que **todas las notificaciones** se envían a **todos los agentes habilitados**, por lo que usar múltiples agentes puede resultar en recibir notificaciones duplicadas.
+
+:::
 
 ### Programador
 
@@ -221,4 +376,4 @@ Los complementos de terceros se muestran aquí, ampliando la funcionalidad de Un
 
 ---
 
-\* *"%%WireGuard|wireguard%%" y el logotipo de "%%WireGuard|wireguard%%" son marcas registradas de Jason A. Donenfeld.*
+\* *"%%WireGuard|wireguard%%" y el logo "%%WireGuard|wireguard%%" son marcas registradas de Jason A. Donenfeld.*
