@@ -69,11 +69,13 @@ Para obtener información adicional sobre el desarrollo de complementos y su com
 %%Tailscale|tailscale%% exit nodes offer a secure and modern way to route your Unraid server's outgoing traffic through another device on your %%Tailnet|tailnet%%. This setup provides the security of a %%VPN|vpn-tunnel%% while leveraging %%Tailscale|tailscale%%'s easy-to-use mesh networking, making it ideal for users who want encrypted outgoing traffic without the complexity of traditional %%VPN|vpn-tunnel%%s.
 
 :::tip[When para usar nodos de salida de Tailscale]
+
 Considera usar nodos de salida de %%Tailscale|tailscale%% para:
 
 - Asegurar el tráfico saliente desde tu red doméstica mientras viajas
 - Mantener direcciones IP consistentes para servicios que bloquean el tráfico de VPN
 - Integrarse de manera fluida con la infraestructura %%Tailscale|tailscale%% existente
+
 :::
 
 ### Configurando nodos de salida de Tailscale
@@ -87,9 +89,9 @@ Para configurar un nodo de salida de %%Tailscale|tailscale%% para el tráfico sa
    - En el campo **Usar Nodo de Salida**, selecciona el nodo de salida disponible.
    - Haga clic en **Aplicar**.
 
-### Integración con Mullvad
+### Nodos de salida de contenedor Docker
 
-Tailscale se ha asociado con Mullvad VPN para proporcionar nodos de salida comerciales. Puedes comprar [Mullvad VPN a través de Tailscale](https://tailscale.com/mullvad) y obtener acceso a su red global de servidores como nodos de salida. Esta combinación ofrece la conectividad en red mesh de Tailscale junto con la infraestructura centrada en la privacidad de Mullvad.
+También puedes configurar un contenedor Docker para funcionar como un nodo de salida de %%Tailscale|tailscale%% en tu servidor Unraid.
 
 ### Nodos de salida de contenedor Docker
 
@@ -100,9 +102,9 @@ También puedes configurar un contenedor Docker para funcionar como un nodo de s
 3. **Aprueba el nodo de salida** en tu consola de administración de %%Tailscale|tailscale%%.
 4. **Selecciona el contenedor** como nodo de salida para tus otros dispositivos en el %%Tailnet|tailnet%%.
 
-## Conexiones salientes de VPN
+## Elegir un proveedor de VPN
 
-Unraid admite conexiones VPN salientes con WireGuard a proveedores comerciales, permitiéndote enrutar contenedores Docker o el tráfico completo de tu servidor a través de un túnel seguro. Esto es útil para la privacidad, evitar restricciones geográficas o asegurar datos salientes. Para información y soluciones de la comunidad, consulta el [hilo del foro sobre acceso tunelizado de WireGuard VPN](https://forums.unraid.net/topic/84316-wireguard-vpn-tunneled-access/).
+Seleccionar el proveedor de %%VPN|vpn-tunnel%% adecuado depende de tus prioridades: velocidad, privacidad, facilidad de uso y soporte. Los siguientes proveedores son bien soportados por Unraid y ofrecen una integración fuerte con %%WireGuard|wireguard%%:
 
 ### Elegir un proveedor de VPN
 
@@ -119,22 +121,9 @@ Seleccionar el proveedor de %%VPN|vpn-tunnel%% adecuado depende de tus prioridad
 | [IVPN](https://www.ivpn.net/en/), [OVPN](https://www.ovpn.com/en), [Windscribe](https://windscribe.com/) | Necesidades específicas            | Privacidad avanzada, opciones regionales                  | Buena             | Soportado por la comunidad                 |
 
 :::tip
+
 Elige un proveedor con soporte nativo para %%WireGuard|wireguard%% y políticas de privacidad sólidas. Evita proveedores que requieran clientes personalizados o protocolos propietarios.
-:::
 
-### Configurando acceso tunelizado de VPN para Docker
-
-Puedes enrutar contenedores Docker específicos a través de un túnel %%VPN|vpn-tunnel%% comercial - sin cambios en el router requeridos.
-
-1. Descarga el archivo de configuración de %%WireGuard|wireguard%% de tu proveedor elegido.
-2. En ***Ajustes → Administrador de VPN***, selecciona **Importar Configuración** y carga el archivo. Esto crea un nuevo túnel.
-3. El **Tipo de acceso de par** predeterminado es *Acceso tunelizado de VPN para Docker*. Opcionalmente, dale un nombre local.
-4. Haga clic en **Aplicar**.
-5. Establece el interruptor del túnel a **Activo**.
-
-:::tip
-Anota el nombre del túnel (p. ej., `wg0`, `wg1`, `wg2`). Lo necesitarás al configurar contenedores Docker.\
-Si tu proveedor especifica un servidor DNS en su configuración, anótalo para usarlo después. Si no, usa un DNS público como `8.8.8.8`.
 :::
 
 ### Prueba del túnel de Docker
@@ -144,6 +133,24 @@ Para verificar que tu túnel de Docker está funcionando y no está filtrando in
 1. Instala un contenedor Docker de [Firefox](https://unraid.net/community/apps?q=Firefox) a través de Community Applications.
 2. Establece su **Tipo de Red** en **Personalizado: wgX** (reemplaza X con el nombre de tu túnel).
 3. Cambia a la vista **Avanzado** y añade tu proveedor de DNS a **Parámetros Extra** (p.ej., `--dns=8.8.8.8`).
+4. Haga clic en **Aplicar**.
+5. Inicia Firefox y visita [whatismyipaddress.com](https://whatismyipaddress.com/) para verificar que tu dirección IP coincide con el país del servidor de VPN.
+
+:::tip
+
+Anota el nombre del túnel (p. ej., `wg0`, `wg1`, `wg2`). Lo necesitarás al configurar contenedores Docker.\
+Si tu proveedor especifica un servidor DNS en su configuración, anótalo para usarlo después. Si no, usa un DNS público como `8.8.8.8`.
+
+:::
+
+### Prueba del túnel de Docker
+
+Para verificar que tu túnel de Docker está funcionando y no está filtrando información de DNS o IP:
+
+1. Es posible que necesites desactivar el túnel temporalmente para actualizaciones de Unraid o instalaciones de complementos.
+2. Solo un túnel del sistema puede estar activo a la vez.
+3. Unraid ignora las configuraciones de DNS del archivo importado. Establece el DNS de Unraid en un servidor público confiable (p. ej., `8.8.8.8`, `8.8.4.4`).
+   :::
 4. Aplica los cambios y arranca el contenedor.
 5. Inicia Firefox y visita [whatismyipaddress.com](https://whatismyipaddress.com/) para verificar que tu dirección IP coincide con el país del servidor de VPN.
 6. Visita [dnsleaktest.com](https://www.dnsleaktest.com/) y confirma que solo se detectan los servidores DNS de tu VPN.
@@ -158,12 +165,14 @@ Para enrutar todo el tráfico de Unraid a través de un VPN comercial:
 2. En ***Ajustes → Administrador de VPN***, selecciona **Importar Configuración** y carga el archivo.
 3. Opcionalmente, renombra el túnel.
 4. Haga clic en **Aplicar**.
-5. Establece el interruptor del túnel a **Activo**.
+5. Inicia Firefox y visita [whatismyipaddress.com](https://whatismyipaddress.com/) para verificar que tu dirección IP coincide con el país del servidor de VPN.
 
 :::note
-- Es posible que necesites desactivar el túnel temporalmente para actualizaciones de Unraid o instalaciones de complementos.
-- Solo un túnel del sistema puede estar activo a la vez.
-- Unraid ignora las configuraciones de DNS del archivo importado. Establece el DNS de Unraid en un servidor público confiable (p. ej., `8.8.8.8`, `8.8.4.4`).
+
+- **[WireGuard VPN Tunneled Access](https://forums.unraid.net/topic/84316-wireguard-vpn-tunneled-access/)** - Esta discusión comunitaria se centra en enrutar contenedores Docker o tráfico del sistema a través de proveedores comerciales de VPN WireGuard. Incluye ejemplos de configuración en el mundo real, consejos para probar filtraciones de DNS y recomendaciones para solucionar problemas de túneles salientes.
+- **[Hilo de Plug-in de WireGuard de Dynamix](https://forums.unraid.net/topic/84229-dynamix-wireguard-vpn/)** - Este es el hilo oficial para el plugin de WireGuard de Dynamix. Cubre actualizaciones del plugin, solicitudes de funciones, informes de errores y preguntas y respuestas generales relacionadas con el soporte integrado de WireGuard en Unraid.
+- **[Inicio Rápido de WireGuard](https://forums.unraid.net/topic/84226-wireguard-quickstart/)** - Una guía paso a paso para configurar conexiones VPN WireGuard entrantes en Unraid. Este recurso incluye explicaciones de configuración, instrucciones para configurar pares y consejos para el acceso remoto.
+
 :::
 
 ### Prueba del túnel del sistema
