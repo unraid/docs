@@ -10,7 +10,7 @@ Las aplicaciones pueden solicitar acceso a la API de un servidor Unraid redirigi
 
 1. **La aplicación inicia la solicitud**: La aplicación redirige al usuario a:
 
-   ```
+   ```text
    https://[unraid-server]/ApiKeyAuthorize?name=MyApp&scopes=docker:read,vm:*&redirect_uri=https://myapp.com/callback&state=abc123
    ```
 
@@ -28,7 +28,8 @@ Las aplicaciones pueden solicitar acceso a la API de un servidor Unraid redirigi
    - Si se proporciona `redirect_uri`, el usuario es redirigido con la clave
 
 5. **Llamada de retorno**: La aplicación recibe la clave API:
-   ```
+
+   ```text
    https://myapp.com/callback?api_key=xxx&state=abc123
    ```
 
@@ -44,30 +45,11 @@ Las aplicaciones pueden solicitar acceso a la API de un servidor Unraid redirigi
 
 Los ámbitos siguen el patrón: `recurso:acción`
 
-### Ejemplos:
+Los recursos disponibles incluyen `docker`, `vm`, `system`, `share`, `user`, `network`, `disk`, y otros. Las acciones disponibles son `create`, `read`, `update`, `delete`, o `*` para todas.
 
-- `docker:read` - Acceso de lectura a Docker
-- `vm:*` - Acceso completo a las VMs
-- `system:update` - Acceso de actualización al sistema
-- `role:viewer` - Acceso como rol de espectador
-- `role:admin` - Acceso como rol de administrador
+Las URIs de redireccionamiento deben usar HTTPS (excepto localhost para desarrollo). Los usuarios aprueban explícitamente cada permiso, y el flujo utiliza sesiones de autenticación existentes de Unraid. Las claves API se muestran una vez y deben guardarse de manera segura.
 
-### Recursos Disponibles:
-
-- `docker`, `vm`, `system`, `share`, `user`, `network`, `disk`, etc.
-
-### Acciones Disponibles:
-
-- `create`, `read`, `update`, `delete` o `*` para todas
-
-## Consideraciones de Seguridad
-
-1. **Se requiere HTTPS**: Las URIs de redirección deben usar HTTPS (excepto localhost para desarrollo)
-2. **Consentimiento del usuario**: Los usuarios aprueban explícitamente cada permiso
-3. **Basado en sesión**: Utiliza la sesión de autenticación existente de Unraid
-4. **Visualización única**: Las claves API se muestran una vez y deben guardarse de forma segura
-
-## Ejemplo de Integración
+## Recursos Disponibles:
 
 ```javascript
 // JavaScript example
