@@ -1,118 +1,115 @@
 ---
-title: OIDC provider setup
+title: OIDC Provider Setup
 description: Configure OIDC (OpenID Connect) providers for SSO authentication in Unraid API
 sidebar_position: 3
 ---
 
-<!-- markdownlint-disable MD025 MD007 MD023 -->
+# OIDC Provider Setup
 
-# OIDC provider setup
+:::info[What is OIDC?]
 
-:::info
-
-OpenID Connect (OIDC) is an authentication protocol that allows users to sign in using their existing accounts from providers like Google, Microsoft, or your corporate identity provider. It enables Single Sign-On (%%SSO|sso%%) for seamless and secure authentication.
+OpenID Connect (OIDC) is an authentication protocol that allows users to sign in using their existing accounts from providers like Google, Microsoft, or your corporate identity provider. It enables Single Sign-On (SSO) for seamless and secure authentication.
 
 :::
 
-This guide walks you through configuring OIDC (OpenID Connect) providers for %%SSO|sso%% authentication in the Unraid API using the %%WebGUI|web-gui%%.
+This guide walks you through configuring OIDC (OpenID Connect) providers for SSO authentication in the Unraid API using the web interface.
 
-## Quick start
+## 🚀 Quick Start
 
 <details open>
   <summary><strong>Getting to OIDC Settings</strong></summary>
 
-1. Navigate to your Unraid server's %%WebGUI|web-gui%%.
-2. Go to ***Settings → Management Access → API → OIDC***.
-3. You'll see tabs for different providers - click the **+** button to add a new provider.
+  1. Navigate to your Unraid server's web interface
+  2. Go to **Settings** → **Management Access** → **API** → **OIDC**
+  3. You'll see tabs for different providers - click the **+** button to add a new provider
 
 </details>
 
-### OIDC providers interface overview
+### OIDC Providers Interface Overview
 
 ![Login Page with SSO Options](/img/api/sso-with-options.png)
-*Login page showing traditional login form with %%SSO|sso%% options - "Login With Unraid.net" and "Sign in with Google" buttons*
+*Login page showing traditional login form with SSO options - "Login With Unraid.net" and "Sign in with Google" buttons*
 
 The interface includes:
 
-- **Provider tabs**: Each configured provider (Unraid.net, Google, etc.) appears as a tab.
-- **Add Provider button**: Click the **+** button to add new providers.
-- **Authorization Mode dropdown**: Toggle between "simple" and "advanced" modes.
-- **Simple Authorization section**: Configure allowed email domains and specific addresses.
-- **Add Item buttons**: Click to add multiple authorization rules.
+- **Provider tabs**: Each configured provider (Unraid.net, Google, etc.) appears as a tab
+- **Add Provider button**: Click the **+** button to add new providers
+- **Authorization Mode dropdown**: Toggle between "simple" and "advanced" modes
+- **Simple Authorization section**: Configure allowed email domains and specific addresses
+- **Add Item buttons**: Click to add multiple authorization rules
 
-## Understanding authorization modes
+## Understanding Authorization Modes
 
 The interface provides two authorization modes:
 
-### Simple mode (recommended)
+### Simple Mode (Recommended)
 
 Simple mode is the easiest way to configure authorization. You can:
 
-- Allow specific email domains (e.g., @company.com).
-- Allow specific email addresses.
-- Configure who can access your Unraid server with minimal setup.
+- Allow specific email domains (e.g., @company.com)
+- Allow specific email addresses
+- Configure who can access your Unraid server with minimal setup
 
 **When to use Simple Mode:**
 
-- You want to allow all users from your company domain.
-- You have a small list of specific users.
-- You're new to OIDC configuration.
+- You want to allow all users from your company domain
+- You have a small list of specific users
+- You're new to OIDC configuration
 
 <details>
   <summary><strong>Advanced Mode</strong></summary>
 
   Advanced mode provides granular control using claim-based rules. You can:
 
-- Create complex authorization rules based on JWT claims.
-- Use operators like equals, contains, endsWith, startsWith.
-- Combine multiple conditions with OR/AND logic.
-- Choose whether ANY rule must pass (OR mode) or ALL rules must pass (AND mode).
+  - Create complex authorization rules based on JWT claims
+  - Use operators like equals, contains, endsWith, startsWith
+  - Combine multiple conditions with OR/AND logic
+  - Choose whether ANY rule must pass (OR mode) or ALL rules must pass (AND mode)
 
   **When to use Advanced Mode:**
 
-- You need to check group memberships.
-- You want to verify multiple claims (e.g., email domain AND verified status).
-- You have complex authorization requirements.
-- You need fine-grained control over how rules are evaluated.
+  - You need to check group memberships
+  - You want to verify multiple claims (e.g., email domain AND verified status)
+  - You have complex authorization requirements
+  - You need fine-grained control over how rules are evaluated
 
 </details>
 
-## Authorization rules
+## Authorization Rules
 
 ![Authorization Rules Configuration](/img/api/advanced-rules.png)
 *Advanced authorization rules showing JWT claim configuration with email endsWith operator for domain-based access control*
 
-### Simple mode examples
+### Simple Mode Examples
 
-#### Allow company domain
+#### Allow Company Domain
 
-In simple authorization:
+In Simple Authorization:
 
-- **Allowed Email Domains**: Enter `company.com`.
-- This allows anyone with @company.com email.
+- **Allowed Email Domains**: Enter `company.com`
+- This allows anyone with @company.com email
 
-#### Allow specific users
+#### Allow Specific Users
 
-- **Specific Email Addresses**: Add individual emails.
-- Click **Add Item** to add multiple addresses.
+- **Specific Email Addresses**: Add individual emails
+- Click **Add Item** to add multiple addresses
 
 <details>
   <summary><strong>Advanced Mode Examples</strong></summary>
 
-  <!-- markdownlint-disable-next-line MD023 -->
   #### Authorization Rule Mode
 
   When using multiple rules, you can choose how they're evaluated:
 
-- **OR Mode** (default): User is authorized if ANY rule passes.
-- **AND Mode**: User is authorized only if ALL rules pass.
+  - **OR Mode** (default): User is authorized if ANY rule passes
+  - **AND Mode**: User is authorized only if ALL rules pass
 
   #### Email Domain with Verification (AND Mode)
 
   To require both email domain AND verification:
 
-1. Set **Authorization Rule Mode** to `AND`.
-2. Add two rules:
+  1. Set **Authorization Rule Mode** to `AND`
+  2. Add two rules:
      - Rule 1:
        - **Claim**: `email`
        - **Operator**: `endsWith`
@@ -124,13 +121,12 @@ In simple authorization:
 
   This ensures users must have both a company email AND a verified email address.
 
-  <!-- markdownlint-disable-next-line MD023 -->
   #### Group-Based Access (OR Mode)
 
   To allow access to multiple groups:
 
-1. Set **Authorization Rule Mode** to `OR` (default).
-2. Add rules for each group:
+  1. Set **Authorization Rule Mode** to `OR` (default)
+  2. Add rules for each group:
      - **Claim**: `groups`
      - **Operator**: `contains`
      - **Value**: `admins`
@@ -141,23 +137,18 @@ In simple authorization:
 
   Users in either `admins` OR `developers` group will be authorized.
 
-  <!-- markdownlint-disable-next-line MD023 -->
   #### Multiple Domains
 
-  <!-- markdownlint-disable-next-line MD007 -->
   - **Claim**: `email`
-  <!-- markdownlint-disable-next-line MD007 -->
   - **Operator**: `endsWith`
-  <!-- markdownlint-disable-next-line MD007 -->
   - **Values**: Add multiple domains (e.g., `company.com`, `subsidiary.com`)
 
-  <!-- markdownlint-disable-next-line MD023 -->
   #### Complex Authorization (AND Mode)
 
   For strict security requiring multiple conditions:
 
-1. Set **Authorization Rule Mode** to `AND`.
-2. Add multiple rules that ALL must pass:
+  1. Set **Authorization Rule Mode** to `AND`
+  2. Add multiple rules that ALL must pass:
      - Email must be from company domain
      - Email must be verified
      - User must be in specific group
@@ -168,63 +159,51 @@ In simple authorization:
 <details>
   <summary><strong>Configuration Interface Details</strong></summary>
 
-  <!-- markdownlint-disable-next-line MD023 -->
   ### Provider Tabs
 
-- Each configured provider appears as a tab at the top.
-- Click a tab to switch between provider configurations.
-- The **+** button on the right adds a new provider.
+  - Each configured provider appears as a tab at the top
+  - Click a tab to switch between provider configurations
+  - The **+** button on the right adds a new provider
 
   ### Authorization Mode Dropdown
 
-- **Simple**: Best for email-based authorization (recommended for most users).
-- **Advanced**: For complex claim-based rules using JWT claims.
+  - **simple**: Best for email-based authorization (recommended for most users)
+  - **advanced**: For complex claim-based rules using JWT claims
 
-  <!-- markdownlint-disable-next-line MD023 -->
   ### Simple Authorization Fields
 
   When "simple" mode is selected, you'll see:
 
-  <!-- markdownlint-disable-next-line MD007 -->
-  - **Allowed Email Domains**: Enter domains without @ (e.g., `company.com`).
+  - **Allowed Email Domains**: Enter domains without @ (e.g., `company.com`)
     - Helper text: "Users with emails ending in these domains can login"
-  <!-- markdownlint-disable-next-line MD007 -->
-  - **Specific Email Addresses**: Add individual email addresses.
+  - **Specific Email Addresses**: Add individual email addresses
     - Helper text: "Only these exact email addresses can login"
-  <!-- markdownlint-disable-next-line MD007 -->
-  - **Add Item** buttons to add multiple entries.
+  - **Add Item** buttons to add multiple entries
 
-  <!-- markdownlint-disable-next-line MD023 -->
   ### Advanced Authorization Fields
 
   When "advanced" mode is selected, you'll see:
 
-  <!-- markdownlint-disable-next-line MD007 -->
-  - **Authorization Rule Mode**: Choose `OR` (any rule passes) or `AND` (all rules must pass).
-  <!-- markdownlint-disable-next-line MD007 -->
-  - **Authorization Rules**: Add multiple claim-based rules.
-  <!-- markdownlint-disable-next-line MD007 -->
+  - **Authorization Rule Mode**: Choose `OR` (any rule passes) or `AND` (all rules must pass)
+  - **Authorization Rules**: Add multiple claim-based rules
   - **For each rule**:
-    <!-- markdownlint-disable-next-line MD007 -->
-    - **Claim**: The JWT claim to check.
-    <!-- markdownlint-disable-next-line MD007 -->
-    - **Operator**: How to compare (equals, contains, endsWith, startsWith).
-    <!-- markdownlint-disable-next-line MD007 -->
-    - **Value**: What to match against.
+    - **Claim**: The JWT claim to check
+    - **Operator**: How to compare (equals, contains, endsWith, startsWith)
+    - **Value**: What to match against
 
   ### Additional Interface Elements
 
-- **Enable Developer Sandbox**: Toggle to enable %%GraphQL|graphql%% sandbox at `/graphql`.
-- The interface uses a dark theme for better visibility.
-- Field validation indicators help ensure correct configuration.
+  - **Enable Developer Sandbox**: Toggle to enable GraphQL sandbox at `/graphql`
+  - The interface uses a dark theme for better visibility
+  - Field validation indicators help ensure correct configuration
 
 </details>
 
-### Required redirect URI
+### Required Redirect URI
 
-:::caution
+:::caution[Important Configuration]
 
-All providers must be configured with this exact redirect URI format.
+All providers must be configured with this exact redirect URI format:
 
 :::
 
@@ -238,14 +217,14 @@ Replace `YOUR_UNRAID_IP` with your actual server IP address (e.g., `192.168.1.10
 
 :::
 
-### Issuer URL format
+### Issuer URL Format
 
 The **Issuer URL** field accepts both formats, but **base URL is strongly recommended** for security:
 
 - **Base URL** (recommended): `https://accounts.google.com`
 - **Full discovery URL**: `https://accounts.google.com/.well-known/openid-configuration`
 
-**Security Note**: Always use the base URL format when possible. The system automatically appends `/.well-known/openid-configuration` for OIDC discovery. Using the full discovery URL directly disables important issuer validation checks and is not recommended by the OpenID Connect specification.
+**⚠️ Security Note**: Always use the base URL format when possible. The system automatically appends `/.well-known/openid-configuration` for OIDC discovery. Using the full discovery URL directly disables important issuer validation checks and is not recommended by the OpenID Connect specification.
 
 **Examples of correct base URLs:**
 
@@ -254,30 +233,47 @@ The **Issuer URL** field accepts both formats, but **base URL is strongly recomm
 - Keycloak: `https://keycloak.example.com/realms/YOUR_REALM`
 - Authelia: `https://auth.yourdomain.com`
 
-## Testing your configuration
+## ✅ Testing Your Configuration
 
 ![Login Page with SSO Buttons](/img/api/sso-with-options.png)
-*Unraid login page displaying both traditional username/password authentication and %%SSO|sso%% options with customized provider buttons*
+*Unraid login page displaying both traditional username/password authentication and SSO options with customized provider buttons*
 
-1. Save your provider configuration.
-2. Log out (if logged in).
-3. Navigate to the login page.
-4. Your configured provider button should appear.
-5. Click to test the login flow.
+1. Save your provider configuration
+2. Log out (if logged in)
+3. Navigate to the login page
+4. Your configured provider button should appear
+5. Click to test the login flow
 
-## Troubleshooting
+## 🔧 Troubleshooting
 
-### Common issues
+### Common Issues
 
-**"Provider not found" error:** Ensure the issuer URL is correct and that the provider supports OIDC discovery (/.well-known/openid-configuration).
+#### "Provider not found" error
 
-**"Authorization failed":** In simple mode, check email domains are entered correctly (without @). In advanced mode, verify claim names match exactly what your provider sends, check if Authorization Rule Mode is set correctly (OR vs AND), and ensure all required claims are present in the token. Enable debug logging to see actual claims and rule evaluation.
+- Ensure the Issuer URL is correct
+- Check that the provider supports OIDC discovery (/.well-known/openid-configuration)
 
-**"Invalid redirect URI":** Ensure the redirect URI in your provider matches exactly, include the correct port if using a non-standard configuration, and verify the redirect URI protocol matches your server's configuration (HTTP or HTTPS).
+#### "Authorization failed"
 
-**Cannot see login button:** Check that at least one authorization rule is configured and verify the provider is enabled/saved.
+- In Simple Mode: Check email domains are entered correctly (without @)
+- In Advanced Mode:
+  - Verify claim names match exactly what your provider sends
+  - Check if Authorization Rule Mode is set correctly (OR vs AND)
+  - Ensure all required claims are present in the token
+- Enable debug logging to see actual claims and rule evaluation
 
-### Debug mode
+#### "Invalid redirect URI"
+
+- Ensure the redirect URI in your provider matches exactly
+- Include the correct port if using a non-standard configuration
+- Verify the redirect URI protocol matches your server's configuration (HTTP or HTTPS)
+
+#### Cannot see login button
+
+- Check that at least one authorization rule is configured
+- Verify the provider is enabled/saved
+
+### Debug Mode
 
 To troubleshoot issues:
 
@@ -287,19 +283,29 @@ To troubleshoot issues:
 LOG_LEVEL=debug unraid-api start --debug
 ```
 
-1. Check logs for:
+2. Check logs for:
 
-- Received claims from provider.
-- Authorization rule evaluation.
-- Token validation errors.
+- Received claims from provider
+- Authorization rule evaluation
+- Token validation errors
 
-Use Simple Mode for authorization to prevent overly accepting configurations and reduce misconfiguration risks. Be specific with authorization rules and avoid overly broad rules. Rotate secrets regularly by updating client secrets periodically. Test thoroughly to verify only intended users can access.
+## 🔐 Security Best Practices
 
-If you encounter issues, check your provider's OIDC documentation, review Unraid API logs for detailed error messages, ensure your provider supports standard OIDC discovery, and verify network connectivity between Unraid and provider. For additional help, visit the [Unraid forums](https://forums.unraid.net/).
+1. **Use Simple Mode for authorization** - Prevents overly accepting configurations and reduces misconfiguration risks
+2. **Be specific with authorization** - Don't use overly broad rules
+3. **Rotate secrets regularly** - Update client secrets periodically
+4. **Test thoroughly** - Verify only intended users can access
 
-## Provider-specific setup
+## 💡 Need Help?
 
-### Unraid.net provider
+- Check provider's OIDC documentation
+- Review Unraid API logs for detailed error messages
+- Ensure your provider supports standard OIDC discovery
+- Verify network connectivity between Unraid and provider
+
+## 🏢 Provider-Specific Setup
+
+### Unraid.net Provider
 
 The Unraid.net provider is built-in and pre-configured. You only need to configure authorization rules in the interface.
 
@@ -309,26 +315,26 @@ The Unraid.net provider is built-in and pre-configured. You only need to configu
 - **Client ID/Secret**: Pre-configured (built-in provider)
 - **Redirect URI**: `http://YOUR_UNRAID_IP/graphql/api/auth/oidc/callback`
 
-:::tip
+:::tip[Redirect URI Protocol]
 
-Match the protocol to your server setup. Use `http://` if accessing your Unraid server without %%SSL|ssl%%/%%TLS|tls%% (typical for local network access). Use `https://` if you've configured %%SSL|ssl%%/%%TLS|tls%% on your server. Some OIDC providers (like Google) require HTTPS and won't accept HTTP redirect URIs.
+**Match the protocol to your server setup:** Use `http://` if accessing your Unraid server without SSL/TLS (typical for local network access). Use `https://` if you've configured SSL/TLS on your server. Some OIDC providers (like Google) require HTTPS and won't accept HTTP redirect URIs.
 
 :::
 
-Configure authorization rules using simple mode (allowed email domains/addresses) or advanced mode for complex requirements.
+Configure authorization rules using Simple Mode (allowed email domains/addresses) or Advanced Mode for complex requirements.
 
 ### Google
 
 <details>
-  <summary><strong>Setup Steps</strong></summary>
+  <summary><strong>📋 Setup Steps</strong></summary>
 
   Set up OAuth 2.0 credentials in [Google Cloud Console](https://console.cloud.google.com/):
 
-1. Go to **APIs & Services** → **Credentials**.
-2. Click **Create Credentials** → **OAuth client ID**.
-3. Choose **Web application** as the application type.
-4. Add your redirect URI to **Authorized redirect URIs**.
-5. Configure the OAuth consent screen if prompted.
+  1. Go to **APIs & Services** → **Credentials**
+  2. Click **Create Credentials** → **OAuth client ID**
+  3. Choose **Web application** as the application type
+  4. Add your redirect URI to **Authorized redirect URIs**
+  5. Configure the OAuth consent screen if prompted
 
 </details>
 
@@ -339,19 +345,19 @@ Configure authorization rules using simple mode (allowed email domains/addresses
 - **Required Scopes**: `openid`, `profile`, `email`
 - **Redirect URI**: `http://YOUR_UNRAID_IP/graphql/api/auth/oidc/callback`
 
-:::warning
+:::warning[Google Domain Requirements]
 
-Google requires valid domain names for OAuth redirect URIs. Local IP addresses and `.local` domains are not accepted. To use Google OAuth with your Unraid server, you'll need:
+**Google requires valid domain names for OAuth redirect URIs.** Local IP addresses and `.local` domains are not accepted. To use Google OAuth with your Unraid server, you'll need:
 
-- **Option 1: Reverse Proxy** - Set up a reverse proxy (like NGINX Proxy Manager or Traefik) with a valid domain name pointing to your Unraid API.
-- **Option 2: %%Tailscale|tailscale%%** - Use %%Tailscale|tailscale%% to get a valid `*.ts.net` domain that Google will accept. For more information about %%Tailscale|tailscale%%, see [Remote access](../unraid-connect/remote-access.mdx).
-- **Option 3: Dynamic DNS** - Use a DDNS service to get a public domain name for your server.
+- **Option 1: Reverse Proxy** - Set up a reverse proxy (like NGINX Proxy Manager or Traefik) with a valid domain name pointing to your Unraid API
+- **Option 2: Tailscale** - Use Tailscale to get a valid `*.ts.net` domain that Google will accept
+- **Option 3: Dynamic DNS** - Use a DDNS service to get a public domain name for your server
 
 Remember to update your redirect URI in both Google Cloud Console and your Unraid OIDC configuration to use the valid domain.
 
 :::
 
-For Google Workspace domains, use advanced mode with the `hd` claim to restrict access to your organization's domain.
+For Google Workspace domains, use Advanced Mode with the `hd` claim to restrict access to your organization's domain.
 
 ### Authelia
 
@@ -365,7 +371,7 @@ Configure OIDC client in your Authelia `configuration.yml` with client ID `unrai
 - **Required Scopes**: `openid`, `profile`, `email`, `groups`
 - **Redirect URI**: `http://YOUR_UNRAID_IP/graphql/api/auth/oidc/callback`
 
-Use advanced mode with `groups` claim for group-based authorization.
+Use Advanced Mode with `groups` claim for group-based authorization.
 
 ### Microsoft/Azure AD
 

@@ -1,15 +1,18 @@
 Si te sientes cómodo con la línea de comandos, este método te ofrece más control y puede ser útil si la opción %%WebGUI|web-gui%% no está disponible. Para obtener más información sobre el uso de la interfaz de línea de comandos, consulta [Interfaz de línea de comandos](../../../system-administration/advanced-tools/command-line-interface.mdx).
 
 :::note[Before empiezas]
+
 - Asegúrate de que el perfil %%RAID|raid%% de tu agrupación permita la eliminación de dispositivos; no puedes eliminar un dispositivo de una agrupación %%RAID 1|raid1%% de 2 dispositivos sin cambiarlo primero a un perfil único.
 - Verifica que los dispositivos restantes tengan suficiente espacio para tus datos.
+  :::
+
 :::
 
 Para quitar un disco usando la línea de comandos:
 
-1. **Abre una sesión de terminal**: Asegúrate de que la %%array|array%% esté funcionando y abre tu interfaz de línea de comandos.
+1. Asegúrate de que el %%array|array%% esté ejecutándose y abre la interfaz de línea de comandos.
 
-2. **Quitar el dispositivo**: Escribe el comando de abajo, reemplazando `X` con la letra correspondiente al disco que deseas eliminar (como se muestra en la pestaña Principal):
+2. Escribe el siguiente comando, reemplazando `X` con la letra correspondiente a la unidad que deseas eliminar (como se muestra en la pestaña principal):
 
    ```bash
    btrfs device remove /dev/sdX1 /mnt/cache
@@ -18,17 +21,17 @@ Para quitar un disco usando la línea de comandos:
    - Para dispositivos cifrados, usa: `/dev/mapper/sdX1`.
    - Para dispositivos NVMe, usa: `nvmeXn1p1`.
 
-3. **Espera a la finalización**: El dispositivo se eliminará una vez que veas el cursor volver.
+3. Espera a que se complete: El dispositivo será eliminado una vez que veas que el cursor regresa.
 
-4. **Hacer que Unraid "olvide" el miembro eliminado**:
+4. Hacer que Unraid "olvide" el miembro eliminado:
    - Detenga el %%array|array%%.
    - Desasignar todos los dispositivos de la agrupación.
    - Iniciar la %%array|array%% (Unraid limpiará la configuración de la agrupación).
    - Si algún servicio de Docker/%%VM|vm%% usa esta agrupación, desactívalos antes de iniciar la %%array|array%% para evitar que Unraid recree imágenes en otro lugar.
 
-5. **Reasignar dispositivos**: Detén la %%array|array%% nuevamente, reasigna todos los miembros de la agrupación restantes excepto el dispositivo eliminado, y luego inicia la %%array|array%%.
+5. Detén el %%array|array%% nuevamente, reasigna todos los miembros del pool restantes excepto el dispositivo eliminado, y luego inicia el %%array|array%%.
 
-**Para eliminar varios dispositivos**:
+Puedes hacerlo en un solo comando:
 
 Puedes hacerlo en un solo comando:
 
@@ -45,5 +48,7 @@ Similar al método %%WebGUI|web-gui%%, quitar dispositivos y reequilibrar puede 
 :::
 
 :::important
+
 Si solo te queda un dispositivo en el pool, necesitarás convertir el perfil %%RAID|raid%% a **single** para asegurar que todo funcione correctamente. Para más instrucciones, consulta la sección sobre [Cambiar el Nivel de RAID del Pool a Single](#changing-pool-raid-levels).
+
 :::

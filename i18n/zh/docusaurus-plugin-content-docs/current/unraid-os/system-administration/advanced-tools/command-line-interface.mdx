@@ -3,32 +3,36 @@ sidebar_position: 1
 sidebar_label: 命令行界面
 ---
 
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
-import CliCpuInfo from './partials/command-line-interface/cpu-info.mdx';
-import CliMemoryInfo from './partials/command-line-interface/memory-info.mdx';
-import CliStorageInfo from './partials/command-line-interface/storage-info.mdx';
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import CliCpuInfo from "./partials/command-line-interface/cpu-info.mdx";
+import CliMemoryInfo from "./partials/command-line-interface/memory-info.mdx";
+import CliStorageInfo from "./partials/command-line-interface/storage-info.mdx";
 
 # 命令行界面
 
-While most tasks in Unraid can be performed through the %%WebGUI|web-gui%%, certain operations - especially those related to diagnostics, drive management, or scripting - require using the system console or %%SSH|ssh%% terminal. This page offers Unraid-specific command-line tools and examples that can be used without needing extensive Linux knowledge.
+虽然 Unraid 中的大多数任务可以通过 %%WebGUI|web-gui%% 完成，但某些操作——特别是与诊断、驱动器管理或脚本相关的操作——需要使用系统控制台或 %%SSH|ssh%% 终端。本页面提供特定于 Unraid 的命令行工具和示例，可以在不需要广泛的 Linux 知识的情况下使用。
 
 :::tip[Device 路径]
-Many disk-level Unraid operations depend on Linux device names, like `/dev/sdX`. You can find the device identifier for any drive in the **Main** tab of the %%WebGUI|web-gui%%. Look for the three-letter label `sdX` or `nvmeX` next to each disk. Use the appropriate identifier in all commands, replacing `sdX` with your specific disk.
+
+许多磁盘级别的 Unraid 操作依赖于 Linux 设备名称，如 `/dev/sdX`。您可以在 %%WebGUI|web-gui%% 的 **主** 选项卡中找到任何驱动器的设备标识符。寻找每个磁盘旁边的三字母标签 `sdX` 或 `nvmeX`。在所有命令中使用适当的标识符，替换 `sdX` 为您的特定磁盘。
+
 :::
 
 ## 访问终端
 
-Unraid includes a built-in web terminal that you can access directly from the %%WebGUI|web-gui%%. Simply use the top-right dropdown menu and select ">\_". This opens a command-line session as the %%root user|root-user%%, giving you full administrative access to your system.
+Unraid 包含一个内置的网页终端，您可以直接从 %%WebGUI|web-gui%% 访问。只需使用右上角的下拉菜单并选择 ">_"。这将以 %%root user|root-user%% 用户身份打开命令行会话，赋予您对系统的完全管理权限。
 
 您也可以使用 %SSH|ssh%（安全壳）与 %%PuTTY|putty%% 等客户端外部连接到 Unraid 服务器。
 
 :::tip[When 我应该使用终端吗？]
+
 如果您使用的是Windows，可能更喜欢使用%%PuTTY|putty%%进行%%SSH|ssh%%访问，而不是内置终端。这个软件轻量级、免费，并允许您保存会话以便日后轻松访问。
 
 - 运行例如 `smartctl`、`xfs_repair`、`tail` 或 `top` 等诊断和命令行工具
 - 执行不需要用户界面的插件脚本或工具
-- Troubleshooting issues related to connectivity, system services, or %%user shares|user-share%%
+- 诊断与连接性、系统服务或 %%user shares|user-share%% 相关的问题
+
 :::
 
 ### 驱动器测试和监控
@@ -37,46 +41,6 @@ Unraid includes a built-in web terminal that you can access directly from the %%
 
 <details>
   <summary><strong>如何安装和使用 PuTTY</strong> - 单击以展开/折叠</summary>
-
-  1. 从[官方网站](https://www.putty.software/)下载 %%PuTTY|putty%% 。
-  2. 启动 %%PuTTY|putty%% 应用程序。
-  3. 输入您的 Unraid 服务器的 IP 地址或主机名（如 `tower.local`）。
-  4. 将连接类型设置为 `%%SSH|ssh%%`。
-  5. （可选）保存会话名称以供将来使用。
-  6. 点击 **打开** 开始会话。
-  7. 遇到提示时，以 `root` 登录，然后输入您的密码。
-
-  登录后，您已进入 Unraid 的 shell 环境。完成后输入 `exit` 关闭会话。
-</details>
-
-:::note
-Unraid automatically configures the SSH server on the first boot. Ensure your networking is working properly and that your root password is set before attempting a remote connection.
-:::
-
-## 驱动器测试和监控
-
-这些工具有助于评估性能、检查驱动器健康情况以及解决%%array|array%%速度慢的问题。所有命令都应从终端或通过%%SSH|ssh%%执行。
-
-### `diskspeed.sh`
-
-此脚本允许进行全面的表面性能测试，并生成可视化报告。
-
-<details>
-  <summary><strong>查看 diskspeed.sh 用法</strong> - 单击以展开/折叠</summary>
-
-  以前这脚本需要从 Unraid 论坛下载。DiskSpeed 现在提供了一个更完善的软件包：
-
-  ```bash
-  hdparm -tT /dev/sdX
-  ```
-
-  `-t` 标志测试缓冲磁盘读取，而 `-T` 测试缓存读取。这主要衡量顺序读取性能，有助于识别异常缓慢的驱动器。
-
-  **运行多个测试以提高准确性：**
-
-  ```bash
-  for ((i=0;i<5;i++)); do hdparm -tT /dev/sdX; done
-  ```
 
   **查看驱动器信息：**
 
@@ -125,12 +89,12 @@ Unraid automatically configures the SSH server on the first boot. Ensure your ne
   这会将报告保存到您的 Unraid 闪存驱动器，以便稍后查看或在 [论坛](https://forums.unraid.net/) 上共享。
 </details>
 
-### `top`
+### `ps`
 
-此命令提供实时的进程和资源监控。
+使用此命令显示正在运行的进程及其详细信息。
 
 <details>
-  <summary><strong>查看 top 用法</strong> - 单击以展开/折叠</summary>
+  <summary><strong>查看 ps 选项</strong> - 单击以展开/折叠</summary>
 
   以前这脚本需要从 Unraid 论坛下载。DiskSpeed 现在提供了一个更完善的软件包：
 
@@ -143,12 +107,12 @@ Unraid automatically configures the SSH server on the first boot. Ensure your ne
 
 在 %%WebGUI|web-gui%% 不可用或需要更详细诊断时，使用这些命令监控内存、进程和系统性能。
 
-### `ps`
+### 系统监控
 
-使用此命令显示正在运行的进程及其详细信息。
+在 %%WebGUI|web-gui%% 不可用或需要更详细诊断时，使用这些命令监控内存、进程和系统性能。
 
 <details>
-  <summary><strong>查看 ps 选项</strong> - 单击以展开/折叠</summary>
+  <summary><strong>查看 df 用法</strong> - 单击以展开/折叠</summary>
 
   ```bash
   top
@@ -158,7 +122,9 @@ Unraid automatically configures the SSH server on the first boot. Ensure your ne
   - 按 `q` 退出。
   - 使用方向键滚动，按 `k` 终止进程。
 
-  **按内存使用排序：**
+    :::提示
+    可以考虑使用`htop`，它提供了更用户友好的界面和增强的控制功能。
+    :::
 </details>
 
 ### `free`
@@ -174,17 +140,17 @@ Unraid automatically configures the SSH server on the first boot. Ensure your ne
 
   这将以人类可读的格式显示 RAM 使用情况。`-h` 标志表示大小将以 KB、MB 或 GB 而非字节显示。
 
-  :::tip[理解输出]
-  "可用"内存读数低并不一定表示问题——Linux 积极缓存数据以提高性能。
+  :::提示[了解输出]
+  较低的“可用”内存读数不一定表示存在问题——Linux会积极地缓存数据以提高性能。
   :::
 </details>
 
-### `df`
+### `lsblk`
 
-此命令显示文件系统磁盘空间使用情况。
+以树形格式列出所有块设备。
 
 <details>
-  <summary><strong>查看 df 用法</strong> - 单击以展开/折叠</summary>
+  <summary><strong>查看 lsblk 用法</strong> - 单击以展开/折叠</summary>
 
   **列出所有进程的详细信息：**
 
@@ -213,12 +179,12 @@ Unraid automatically configures the SSH server on the first boot. Ensure your ne
 
 这些命令有助于检查磁盘使用情况、分区信息和识别存储设备。
 
-### `lsblk`
+### 存储工具
 
-以树形格式列出所有块设备。
+这些命令有助于检查磁盘使用情况、分区信息和识别存储设备。
 
 <details>
-  <summary><strong>查看 lsblk 用法</strong> - 单击以展开/折叠</summary>
+  <summary><strong>查看 blkid 用法</strong> - 单击以展开/折叠</summary>
 
   ```bash
   df -h
@@ -238,15 +204,15 @@ Unraid automatically configures the SSH server on the first boot. Ensure your ne
   fdisk -l /dev/sdX
   ```
 
-  此命令显示分区布局、大小和磁盘几何结构。它有助于解决磁盘大小不匹配的问题，特别是在[替换磁盘](../../using-unraid-to/manage-storage/array-configuration.mdx#replacing-disks)时。
+  此命令显示分区布局、大小和磁盘几何信息。它在排查磁盘大小不匹配的问题时尤其有用，特别是当[替换磁盘](../../using-unraid-to/manage-storage/array/replacing-disks-in-array.mdx)时。
 </details>
 
-### `blkid`
+### `ss`
 
-识别文件系统标签。
+显示套接字统计和网络连接。这是`netstat`的现代替代品。
 
 <details>
-  <summary><strong>查看 blkid 用法</strong> - 单击以展开/折叠</summary>
+  <summary><strong>查看 ss 选项</strong> - 单击以展开/折叠</summary>
 
   ```bash
   lsblk
@@ -264,23 +230,23 @@ Unraid automatically configures the SSH server on the first boot. Ensure your ne
 
   **语法：**
 
-  ```
+  ```bash
   blockdev --getsz /dev/sdX
   ```
 
   返回设备上 512 byte 扇区的原始数量 - 方便在重建前确认替换驱动器的大小。
 </details>
 
-### `ss`
+### `ping`
 
-显示套接字统计和网络连接。这是`netstat`的现代替代品。
+测试网络连接。
 
 <details>
-  <summary><strong>查看 ss 选项</strong> - 单击以展开/折叠</summary>
+  <summary><strong>查看 ping 用法</strong> - 单击以展开/折叠</summary>
 
   **语法：**
 
-  ```
+  ```bash
   blkid /dev/sdX1
   ```
 
@@ -293,9 +259,9 @@ Unraid automatically configures the SSH server on the first boot. Ensure your ne
 
 用于排除网络连接和接口配置问题的工具。
 
-### `ping`
+### 网络诊断
 
-测试网络连接。
+用于排除网络连接和接口配置问题的工具。
 
 <details>
   <summary><strong>查看 ping 用法</strong> - 单击以展开/折叠</summary>
@@ -311,13 +277,13 @@ Unraid automatically configures the SSH server on the first boot. Ensure your ne
   - `-l`：仅显示监听套接字
   - `-n`：显示端口号而不是服务名称
 
-  **显示已建立的连接：**
+    **显示已建立的连接：**
 
-  ```bash
-  ss -tup
-  ```
+    ```bash
+    ss -tup
+    ```
 
-  此命令显示活动连接及其过程信息。
+    此命令显示活动连接及其过程信息。
 </details>
 
 ### `ethtool`
@@ -373,7 +339,7 @@ Unraid automatically configures the SSH server on the first boot. Ensure your ne
 
   使用此命令获取网络接口驱动程序和固件信息：
 
-  ```
+  ```bash
   ethtool -i eth0
   ```
 
@@ -381,7 +347,7 @@ Unraid automatically configures the SSH server on the first boot. Ensure your ne
 
   **显示路由表：**
 
-  ```
+  ```bash
   ethtool eth0
   ```
 
@@ -389,7 +355,7 @@ Unraid automatically configures the SSH server on the first boot. Ensure your ne
 
   对于界面的扩展统计，请使用以下命令：
 
-  ```
+  ```bash
   ethtool -S eth0
   ```
 
@@ -422,9 +388,9 @@ Unraid automatically configures the SSH server on the first boot. Ensure your ne
 
 系统关闭、日志监控和服务管理的命令。
 
-### `尾`
+### 系统维护
 
-实时监控日志文件。
+系统关闭、日志监控和服务管理的命令。
 
 <details>
   <summary><strong>查看尾命令用法</strong> - 点击展开/折叠</summary>
@@ -455,3 +421,143 @@ Unraid automatically configures the SSH server on the first boot. Ensure your ne
 
   此命令利用 Unraid 内置的关机过程来停止 %%array|array%% 并安全地关闭系统。它优于手动关闭方法。
 </details>
+
+---
+
+## 文件传输操作
+
+这些方法帮助您使用命令行工具和内置工具，将文件从外部网络共享（Windows 或 Linux SMB/CIFS 共享）传输到您的 Unraid 服务器。
+
+### 使用 Midnight Commander (内置)
+
+Unraid 包括 **午夜指挥官** (`mc`)，它是一个基于文本的双窗格文件管理器，可以通过网络终端访问。
+
+1. 打开网络终端。您可以从 Unraid %%WebGUI|web-gui%% 的右上方菜单中找到此选项。
+
+2. 启动午夜指挥官：
+
+   ```bash
+   mc
+   ```
+
+   此界面提供在本地共享和挂载的网络路径之间拖放导航。
+
+3. 挂载网络共享（如果尚未挂载）：
+
+   ```bash
+   # Create a temporary mount point
+   mkdir /work
+   ```
+
+   ```bash
+   # 1) Interactive prompt (recommended for one-off mounts)
+   mount -t cifs //workstation/share /work -o username=youruser,iocharset=utf8
+   # You will be prompted for the password interactively.
+   ```
+
+   ```bash
+   # 2) Use a credentials file (recommended for scripts/automation)
+   # Create /root/.cifscredentials with the following content:
+   #   username=youruser
+   #   password=yourpassword
+   # Then protect the file and mount using:
+   chmod 600 /root/.cifscredentials
+   mount -t cifs //workstation/share /work -o credentials=/root/.cifscredentials,iocharset=utf8
+   ```
+
+   - 用适当的值替换 `workstation`、`share` 和 `youruser`。
+   - `iocharset=utf8` 选项有助于保持国际文件名。
+
+   **安全提示：** 不要在命令行上传递密码（如 `password=...`）。
+   命令参数可以记录在 shell 历史中，并且可通过进程列表让其他本地用户看到；
+   更推荐使用交互式提示或使用 `chmod 600` 保护的凭证文件。
+
+4. 使用 MC 窗格在 `/work`（网络共享）和任何 `/mnt/user/` 或 `/mnt/diskX` 共享之间传输文件。
+
+5. 之后清理工作：
+
+   ```bash
+   umount /work
+   rmdir /work
+   ```
+
+Midnight Commander 完全在内置系统中运行，无需额外安装。适合大多数传输需求，包括涉及 Unicode 文件名的情况，并在源和目标支持时保留文件属性。
+
+### 使用 Krusader
+
+如果您更喜欢图形用户界面，您可以使用 Docker 容器如 [Krusader](https://unraid.net/community/apps?q=krusader#r:~:text=batch%20renaming%2C%20etc.-,Krusader,-Productivity%2C%20Tools) 作为第三方解决方案。
+
+1. 安装 Krusader：
+   - 导航到 **应用** 选项卡（社区应用程序）。
+   - 搜索并安装 **Krusader** Docker 容器。
+2. 启动容器，并从 **Docker** 标签访问其 WebUI。
+3. 在 Krusader 内连接到远程共享，并使用拖放或复制粘贴在网络共享和您的 Unraid %%array|array%% 之间传输文件。
+
+:::info
+
+其他流行的文件管理器容器包括 [**Double Commander**](https://unraid.net/community/apps?q=double+commander#r:~:text=of%201%20App-,doublecommander,-Tools%20/%20Utilities%2C) 和 [**CloudCommander**](https://unraid.net/community/apps?q=cloudcommander#r:~:text=of%201%20App-,CloudCommander,-Tools%20/%20Utilities%2C)，通过社区应用程序提供。
+
+:::
+
+### 命令行方法
+
+对于高级用户或使用自动化的用户，您还可以使用命令行传输方法。
+
+<details>
+  <summary><strong>查看命令行传输指令</strong> - 点击展开/折叠</summary>
+
+  1. 打开终端（网络终端或 %%SSH|ssh%% 作为 `root`）。
+
+  2. 创建并挂载一个网络共享：
+
+  ```bash
+  mkdir /work
+  ```
+
+  ```bash
+  # 1) Interactive prompt (recommended for one-off mounts)
+  mount -t cifs //workstation/share /work -o username=youruser,iocharset=utf8
+  # You will be prompted for the password interactively.
+  ```
+
+  ```bash
+  # 2) Use a credentials file (recommended for scripts/automation)
+  # Create /root/.cifscredentials with the following content:
+  #   username=youruser
+  #   password=yourpassword
+  # Then protect the file and mount using:
+  chmod 600 /root/.cifscredentials
+  mount -t cifs //workstation/share /work -o credentials=/root/.cifscredentials,iocharset=utf8
+  ```
+
+  **安全提示：** 不要在命令行中传递密码。建议使用交互式提示符或权限严格的凭据文件代替。
+
+  1. 复制文件：
+
+     - 您可以使用 `cp`：
+
+       ```bash
+       cp -r /work/* /mnt/disk1
+       ```
+
+     - 或者，使用 `rsync` 以获取详细进度：
+
+       ```bash
+       rsync -av --progress /work/ /mnt/disk1/
+       ```
+
+  2. 卸载并删除临时目录：
+
+     ```bash
+     umount /work
+     rmdir /work
+     ```
+</details>
+
+:::caution
+
+在传输带有特殊或国际字符的文件时，请始终使用`iocharset=utf8`选项挂载共享。否则可能导致其他平台上的文件名不正确或文件不可读。
+
+此外，如果您通过终端以 `root` 身份复制文件，它们可能会具有限制性的权限。如果出现这种情况，请使用 %%WebGUI|web-gui%% 中的 **新权限** 工具或在涉及 Docker 的共享中使用 **Docker 安全新权限** 来重置权限，确保所有用户都有网络访问权限。
+
+:::

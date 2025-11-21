@@ -1,0 +1,75 @@
+---
+sidebar_position: 4
+sidebar_label: Entfernen von Festplatten aus dem Array
+---
+
+# Entfernen von Festplatten aus dem Array
+
+Es kann eine Zeit kommen, in der Sie eine Festplatte aus Ihrem Unraid-Array entfernen möchten. Ob Sie Energie sparen, ein altes oder unzuverlässiges Laufwerk außer Betrieb nehmen oder Hardware für eine andere Nutzung umfunktionieren möchten, der Prozess ist relativ einfach.
+
+## Entfernen von Paritätsplatten
+
+If you find that you no longer need the level of %%parity|parity%% protection in your setup, you can remove a %%parity disk|parity-drives%% whenever you want.
+
+So entfernen Sie ein Paritätslaufwerk:
+
+1. Stoppen Sie die Array.
+2. Weisen Sie dem Parität-Laufwerk den Slot nicht mehr zu und setzen Sie ihn auf "Unzugewiesen".
+3. Starten Sie das Array, um die Änderungen zu übernehmen.
+
+:::warning
+
+Before you make any changes, please keep this in mind: If you already have any failed data drives in your array, removing a %%parity disk|parity-drives%% can decrease the number of failures Unraid can handle without risking data loss.
+
+- Mit doppelter Parität können Sie von einem einzelnen ausgefallenen Laufwerk wiederherstellen, aber beachten Sie, dass Sie einen weiteren Ausfall während des Wiederherstellungsprozesses nicht überleben werden.
+- Mit einfacher Parität verlieren Sie jegliche Redundanz, was bedeutet, dass zusätzliche Laufwerkausfälle zum Datenverlust führen können.
+
+:::
+
+## Entfernen von Datenträgern
+
+Das Entfernen einer Datenplatte erfordert nachträglich einen Paritätssynchronisierungslauf. Bis dieser abgeschlossen ist, besteht bei weiterer Plattenausfall Gefahr eines Datenverlusts.
+
+### Standardmethode (Empfohlen)
+
+1. Stoppen Sie die Array.
+2. Dokumentieren Sie optional Ihre Festplattenzuweisungen mit einem Screenshot.
+3. Setzen Sie die Array-Konfiguration zurück, indem Sie **Tools → Neues Konfig** verwenden und die Option wählen, alle aktuellen Zuordnungen beizubehalten.
+4. Weisen Sie die Festplatte, die Sie entfernen möchten, ab.
+5. Starten Sie das Array, aber aktivieren Sie das Kontrollkästchen "Parität ist gültig" nicht.
+
+Eine Paritätssynchronisierung wird gestartet, wenn Sie eine Paritätsfestplatte zugewiesen haben. Das Array ist anfällig für Datenverlust, bis diese Synchronisation abgeschlossen ist.
+
+:::tip
+
+Verschieben Sie wichtige Daten von der Festplatte, bevor Sie mit der Entfernung fortfahren. Der Paritätssynchronisierungsprozess kann je nach Festplattengröße und Systemaktivität mehrere Stunden dauern.
+
+:::
+
+### Paritätserhaltende Methode (Fortgeschritten)
+
+Diese Methode ermöglicht es Ihnen, eine Datenplatte zu entfernen, während Ihre Parität gültig bleibt. Sie setzt die Datenplatte auf null und ermöglicht es Ihnen, Ihre Parität intakt zu halten. Dies wird nur erfahrenen Benutzern empfohlen.
+
+:::warning
+
+Diese Methode löscht alle Daten auf der ausgewählten Festplatte. Stellen Sie sicher, dass alle wichtigen Daten vor dem Fortfahren verschoben wurden. Es gibt keinen offiziellen Support von LimeTech für diesen Prozess.
+
+:::
+
+So verwenden Sie die Paritäts-PresErve-Methode:
+
+1. Starten Sie das Array im Wartungsmodus, klicken Sie auf das zu entfernende Laufwerk und klicken Sie dann auf **Löschen**. Dies löscht das Dateisystem vom Gerät, während die Parität erhalten bleibt, und stoppt das Array.
+2. Starten Sie das Array im Normalmodus. Die Platte wird nicht gemountet, aber die verbleibenden Platten sind online.
+3. Notieren Sie die Array-Zuweisungen, insbesondere das Parität-Laufwerk.
+4. Aktivieren Sie optional Reconstruct Write ("Turbo Write") in **Einstellungen → Festplatteneinstellungen** für schnelleres Nullsetzen, aber nur, wenn alle Laufwerke gesund sind.
+5. Dismount die Festplatte: `umount /mnt/diskX`
+6. Festplatte nullsetzen:
+   - Für Unraid 6.12 oder später: `dd bs=1M if=/dev/zero of=/dev/mdXp1 status=progress`
+   - Für Unraid 6.11 und früher: `dd bs=1M if=/dev/zero of=/dev/mdX status=progress`
+   Ersetzen Sie `X` durch die spezifische Nummer der Datenfestplatte, die Sie entfernen möchten.
+7. Stoppen Sie das Array, sobald das Nullsetzen abgeschlossen ist.
+8. Setzen Sie die Array-Konfiguration zurück, wobei alle aktuellen Zuweisungen beibehalten werden.
+9. Weisen Sie die Festplatte, die Sie entfernen möchten, ab und überprüfen Sie doppelt alle Zuweisungen, insbesondere die Paritätsfestplatte.
+10. Aktivieren Sie das Kontrollkästchen „Parität ist bereits gültig“.
+11. Starten Sie das Array, um die Entfernung abzuschließen.
+12. Optionally run a correcting %%parity check|parity-check%% afterward to ensure parity integrity.
