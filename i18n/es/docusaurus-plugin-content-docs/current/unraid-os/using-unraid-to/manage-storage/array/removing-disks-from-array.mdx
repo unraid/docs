@@ -1,0 +1,75 @@
+---
+sidebar_position: 4
+sidebar_label: Eliminando discos del array
+---
+
+# Eliminando discos del array
+
+Es posible que llegue un momento en que desee eliminar un disco de su arreglo Unraid. Ya sea que esté buscando ahorrar energía, retirar un disco viejo o poco confiable, o reutilizar hardware para un uso diferente, el proceso es bastante sencillo.
+
+## Removiendo discos de paridad
+
+Si encuentra que ya no necesita el nivel de protección de %%paridad|parity%% en su configuración, puede eliminar un disco de %%paridad|parity-drives%% cuando desee.
+
+Para eliminar un disco de paridad:
+
+1. Detenga el arreglo.
+2. Desasigne la ranura del disco de paridad y configúrelo como "No asignado."
+3. Inicie el array para confirmar los cambios.
+
+:::warning
+
+Antes de realizar cualquier cambio, tenga en cuenta lo siguiente: Si ya tiene algún disco de datos fallido en su matriz, eliminar un %%parity disk|parity-drives%% puede disminuir el número de fallos que Unraid puede manejar sin arriesgar pérdida de datos.
+
+- Con dual paridad, puedes recuperar de una sola unidad fallida, pero ten en cuenta que no podrás sobrevivir a otra falla durante el proceso de reconstrucción.
+- Con una sola paridad, pierdes toda la redundancia, lo que significa que cualquier falla adicional en las unidades podría resultar en pérdida de datos.
+
+:::
+
+## Eliminar discos de datos
+
+Quitar un disco de datos requiere una sincronización de paridad después. Hasta que esta sincronización se complete, existe el riesgo de pérdida de datos si falla otro disco.
+
+### Método estándar (Recomendado)
+
+1. Detenga el arreglo.
+2. Opcionalmente, documente sus asignaciones de disco con una captura de pantalla.
+3. Restablezca la configuración del array usando **Herramientas → Nueva Configuración**, eligiendo la opción para preservar todas las asignaciones actuales.
+4. Desasigne el disco que desea eliminar.
+5. Inicie el array, pero no marque la casilla "La paridad es válida".
+
+Una sincronización de paridad comienza si tiene un disco de paridad asignado. El array está vulnerable a la pérdida de datos hasta que esta sincronización se complete.
+
+:::tip
+
+Mueva datos importantes del disco antes de eliminarlo. El proceso de sincronización de paridad puede tardar varias horas, dependiendo del tamaño del disco y la actividad del sistema.
+
+:::
+
+### Método de conservación de paridad (Avanzado)
+
+Este método le permite eliminar un disco de datos mientras mantiene su paridad válida. Cero el disco de datos, permitiendo que su paridad se mantenga intacta. Solo se recomienda para usuarios avanzados.
+
+:::warning
+
+Este método borra todos los datos en el disco seleccionado. Verifique que todos los datos importantes se hayan movido antes de proceder. No hay soporte oficial de LimeTech para este proceso.
+
+:::
+
+Para usar el método de preservar la paridad:
+
+1. Inicie el grupo de discos en modo de mantenimiento, haga clic en el disco que desea eliminar y luego haga clic en **Borrar**. Esto borra el sistema de archivos del dispositivo mientras se mantiene la paridad, luego detenga el grupo de discos.
+2. Inicie el array en modo normal. El disco no se montará, pero los discos restantes estarán en línea.
+3. Registre las asignaciones del array, especialmente el disco de paridad.
+4. Opcionalmente, active Escribir Reconstruir ("Escritura Turbo") en **Configuración → Configuración de Disco** para un borrado más rápido, pero solo si todos los discos están en buen estado.
+5. Desmontar el disco: `umount /mnt/diskX`
+6. Borrar el disco:
+   - Para Unraid 6.12 o posterior: `dd bs=1M if=/dev/zero of=/dev/mdXp1 status=progress`
+   - Para Unraid 6.11 y versiones anteriores: `dd bs=1M if=/dev/zero of=/dev/mdX status=progress`
+   Reemplace `X` con el número específico del disco de datos que está eliminando.
+7. Detenga el array una vez que el borrado esté completo.
+8. Restablecer la configuración del array, reteniendo todas las asignaciones actuales.
+9. Desasigne el disco que desea eliminar, verificando todas las asignaciones, especialmente el disco de paridad.
+10. Marque la casilla que indica "La paridad ya es válida."
+11. Inicie el array para finalizar la eliminación.
+12. Optionally run a correcting %%parity check|parity-check%% afterward to ensure parity integrity.

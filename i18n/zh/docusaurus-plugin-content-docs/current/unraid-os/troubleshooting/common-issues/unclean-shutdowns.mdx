@@ -3,55 +3,36 @@ sidebar_position: 2
 sidebar_label: 非正常关机
 ---
 
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
-import UncleanShutdownsPower from './partials/unclean-shutdowns/unexpected-power-loss.mdx';
-import UncleanShutdownsFlash from './partials/unclean-shutdowns/flash-drive-failure.mdx';
-import UncleanShutdownsTerminal from './partials/unclean-shutdowns/open-terminal-sessions.mdx';
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
 
 # 非正常关机
 
 当 Unraid 检测到 %%array|array%% 没有在系统断电前正确停止时，就会出现不干净关机。这种情况可能会在下次启动时触发自动 %%parity check|parity-check%% 以确保数据完整性。
 
 :::important[Recommendations 防止不洁的关闭]
+
 采取一些主动的步骤可以帮助你避免或识别非正常关机：
 
 - \*\*使用不间断电源（UPS）：\*\*确保服务器连接到UPS并设置在电池电量不足时自动关闭。
 - \*\*尝试优雅关闭：\*\*如果您的服务器无响应，短按电源按钮以触发安全关闭。不要长按该按钮，因为这将强制硬关机并导致不洁关机。
-- **启用持久日志记录：**前往***设置 → 系统日志服务器***以激活在重新启动后持久存在的日志记录。详细信息请参阅[持久日志 (系统日志服务器)](../diagnostics/capture-diagnostics-and-logs.mdx#persistent-logs-syslog-server)。
+- **启用持久日志记录：** 前往 ***设置 → Syslog 服务器*** 以激活在重启后仍然存在的日志记录。查看 [持久日志 (Syslog 服务器)](../diagnostics/capture-diagnostics-and-logs.mdx#persistent-logs-syslog-server) 以了解更多详情。
 - **附加诊断信息以获得支持：** 如果发生非正常关机，Unraid 将尝试将诊断信息保存到您的闪存设备的 `/log/diagnostics.zip` 中。当您寻求帮助时，请将此文件附加到论坛帖子中。
+
 :::
 
 :::tip[UPS 配置最佳实践]
+
 配置良好的 UPS 是防止因掉电导致非正常关机的最佳防卫。
 
 - **通过 USB 连接 UPS 到 Unraid 服务器。**
 - **在设置中启用 UPS 支持。**
-- \*\*配置关机超时时间：\*\*设置UPS以便在电池电量不足之前触发受控关机。调整“剩余电池运行时间”或“电池充电电平”阈值，以提供足够的时间让Unraid [停止%%array|array%%](../../using-unraid-to/manage-storage/array-configuration.mdx#startstop-the-array) 并安全关机。
+- **配置关闭超时：** 设置不间断电源（UPS）在电池电量不足前触发自动关闭。调整"剩余电池运行时间"或"电池电量水平"阈值，确保Unraid有足够时间[停止%%array|array%%](../../using-unraid-to/manage-storage/array/overview.mdx#startstop-the-array)并安全关闭电源。
 - **测试配置：** 模拟掉电以确保 UPS 和 Unraid 的正确反应。
 
 了解 [NUT 插件](https://unraid.net/community/apps/c/plugins/p4?srsltid=AfmBOop675PrJQW4iqb4JBN3GyPpwDDiSmnZReq78t27XyxkFdMX8inO#:~:text=NUT%20%2D%20Network%20UPS%20Tools)，它可以更广泛地兼容更多高级 UPS 型号或未支持的硬件。
+
 :::
-
-## 导致非正常关机的事件
-
-了解导致不洁关机的主要触发因素有助于您防止此类事件发生。探索下方选项卡以获取每种情况的详细信息。
-
-<Tabs>
-  <TabItem value="电源" label="“意外的电源损失”" default>
-    <UncleanShutdownsPower />
-  </TabItem>
-
-  <TabItem value="闪存" label="“闪存驱动器故障”">
-    <UncleanShutdownsFlash />
-  </TabItem>
-
-  <TabItem value="终端" label="打开终端会话">
-    <UncleanShutdownsTerminal />
-  </TabItem>
-</Tabs>
-
----
 
 ## 配置关机超时
 
@@ -59,92 +40,282 @@ Properly configuring shutdown timeouts is essential to ensure your Unraid server
 
 ### 推荐的超时设置
 
-| 设置              | 默认值 | 推荐最小值                                  | 配置位置                         |
-| --------------- | --- | -------------------------------------- | ---------------------------- |
-| %%VM\|vm%% 关机超时 | 60秒 | 300秒（5 分钟）                             | ***设置 → 虚拟机管理 → 虚拟机关机（高级）*** |
-| Docker 容器停止超时时间 | 10秒 | 30–60秒                                 | ***设置 → Docker（高级）***        |
-| 通用关机超时时间        | 90秒 | 3 × %%VM\|vm%% 超时 + Docker 超时 + 15–30秒 | ***设置 → 磁盘设置 → 关机超时***       |
+电源中断是导致非清洁关机的主要原因之一。配置良好的 UPS 可以在电池耗尽前自动关闭 Unraid，从而保护您的系统。
 
-### 虚拟机超时时间
+:::note
 
-<details>
-  <summary><strong>点击展开/折叠</strong></summary>
+Unraid 支持大多数使用 %%apcupsd 协议|apcupsd%% 协议的 UPS 单元（APC 和 CyberPower 通常兼容）。如果您的 UPS 不受支持，建议使用来自社区应用程序的网络 UPS 工具（NUT）插件。
 
-  在停止 Docker 容器或 %%array|array%% 自身之前，Unraid 首先关闭所有配置的虚拟机 (%%VMs|vm%%)。 虚拟机关闭超时决定了 Unraid 等待每个 %%VM|vm%% 优雅关闭的时间。
+:::
 
-  <h4>设置位置</h4>
+### “闪存驱动器故障”
 
-  - ***设置 → 虚拟机管理 → 虚拟机关机（高级）***
+"%%array|array%% 状态存储在您的 USB 闪存设备上。如果闪存不可用或进入只读状态，Unraid 无法更新关机状态，即使 %%array|array%% 正确停止。这会导致在下次启动时检测出不干净关机。"
 
-  <h4>考虑</h4>
+### 打开终端会话
 
-  - Windows %%虚拟机|vm%% 可能需要更长时间关机，尤其是如果更新待处理或虚拟机处于睡眠/休眠中。
-  - 如果超时时间过短，%%虚拟机|vm%% 将被强制停止，有可能导致数据丢失或损坏。
+Unraid 在关闭期间会等待所有打开的终端或 SSH 会话关闭。如果这些会话保持活动状态并且关闭计时器到期，将发生强制关闭。
 
-  <h4>最佳做法</h4>
+:::tip
 
-  将超时设置为至少 300 秒（5 分钟），用于 Windows %%VMs|vm%%。计划更新在启动时运行，而不是在关闭时运行，以避免延迟。
-</details>
+[Dynamix 停止外壳](https://unraid.net/community/apps/c/tools-system/p2?srsltid=AfmBOoqBXyDNfHxRDCL7Fv9Gcfz8-8CdHmiJSX16PRZpZLLzgQtw2mVk#:~:text=the%20given%20interval.-,Dynamix%20Stop%20Shell,-Dynamix%20Repository) 插件可以自动关闭滞留的 bash 或 SSH 会话，帮助确保优雅关闭。然而，如果有正在进行的写操作到 %%array|阵列%%，请小心。
 
-### “Docker 容器超时时间”
+:::
 
-<details>
-  <summary><strong>点击展开/折叠</strong></summary>
+---
 
-  在虚拟机之后，Unraid 停止所有正在运行的 Docker 容器。容器停止超时控制 Unraid 等待每个容器干净退出的时间。
+## 虚拟机超时时间
 
-  <h4>设置位置</h4>
+正确配置停机超时时间对于确保您的 Unraid 服务器能有效地停止所有服务至关重要。这能防止不干净的关机，特别是在断电或者维护期间。最重要的步骤是配置你的虚拟机(%%VMs|vm%%)进入休眠状态，而不是完全关机。这种方式有助于消除许多与超时相关的问题。
 
-  - ***设置 → Docker*** （启用高级视图）
+### 虚拟机休眠设置
 
-  <h4>考虑</h4>
+:::tip[Use 虚拟机休眠]
 
-  - 容器是并行停止的。
-  - 复杂容器，或具有大型数据库的容器，可能需要超过默认的 10 秒时间进行安全关闭。
-  - 如果定时器到期，容器将被强制停止。
+为了获得最可靠和最快速的关机，配置你的虚拟机(%%VMs|vm%%)进入休眠状态而不是关机。虽然这对 Windows 虚拟机(%%VMs|vm%%)尤为重要，但对所有类型的虚拟机(%%VM|vm%%)都有好处。
 
-  <h4>最佳做法</h4>
-  如果运行需要额外关闭时间的 Docker 容器，请将超时增加到 30–60 秒。
-</details>
+我们建议使用休眠，因为它：
 
-### 通用关机计时器
+- **即时保存虚拟机状态** - 无需等待客户操作系统关闭。
+- **防止数据丢失** - 无需担心更新被中断或未保存的工作丢失风险。
+- **避免超时问题** - 休眠几乎是即时完成的。
+- **更快的恢复** - 虚拟机(%%VMs|vm%%)能准确的恢复到上次关闭时的状态。
 
-<details>
-  <summary><strong>点击展开/折叠</strong></summary>
+关机存在的问题在于：
 
-  The overall Shutdown time-out is the maximum time Unraid allows for all shutdown processes - %%VM|vm%%s, Docker, and disk operations - before forcing a shutdown.
+- Windows 可能会显示对话框（"是否保存此文档？"），这会导致关机被无限期中止。
+- Windows 更新可能会在关机过程中耗时 10 分钟以上。
+- 如果超时过期，Unraid 会强制关闭 %%VM|vm%%，这可能导致正在进行的 Windows 更新被破坏，未保存的文档、应用程序数据和客户端操作系统中的文件系统遭到破坏。
 
-  <h4>设置位置</h4>
+\*\*关键要求：\*\*确保在 %%VM|vm%% 中安装了 %%QEMU|qemu%% %%Guest Agent|guest-agent%% 以使休眠功能正常运行。
 
-  - ***设置 → 磁盘设置 → 关机超时***
+:::
 
-  <h4>如何计算</h4>
+要启用虚拟机(%%VM|vm%%)休眠：
 
-  加上 %%虚拟机|vm%% 和 Docker 超时时间，然后加上 15–30 秒用于磁盘卸载和其他进程。
+<Tabs>
+  <TabItem value="windows" label="Windows 虚拟机" default>
+    1. **下载 %%QEMU|qemu%% %%Guest Agent|guest-agent%%：**
+       - 前往 [VirtIO 驱动程序下载页面](https://fedorapeople.org/groups/virt/virtio-win/direct-downloads/)。
+       - 下载最新的 `virtio-win.iso` 文件。
 
-  - 示例：`3 × ***虚拟机关机超时*** + ***Docker 停止超时*** + 15–30 秒`
+    2. **在 Windows 虚拟机(%%VM|vm%%)中安装：**
+       - 将 `virtio-win.iso` 挂载到您的 %%VM|vm%%。
+       - 从挂载的 ISO 中运行安装程序。
+       - 安装 %%VirtIO|virtio%% 驱动程序和 %%QEMU|qemu%% %%Guest Agent|guest-agent%%。
+       - 重启虚拟机(%%VM|vm%%)。
 
-  <h4>最佳实践</h4>
-  设置这个计时器高于您最慢的关机场景，尤其当您有许多驱动器或大型 %%array|array%% 时。
-</details>
+    3. **在 Unraid 中配置：**
+       - 前往 ***虚拟机*** タブ中的您的虚拟机(%%VM|vm%%)设置。
+       - 将 **关机动作** 设置为 **休眠**。
+       - 点击 **应用**。
+  </TabItem>
 
-### UPS电池寿命
+  <TabItem value="linux" label="Linux 虚拟机">
+    1. **安装 %%QEMU|qemu%% %%Guest Agent|guest-agent%%：**
 
-<details>
-  <summary><strong>点击展开/折叠</strong></summary>
+    ```bash
+    # Ubuntu/Debian
+    sudo apt install qemu-guest-agent
 
-  您的 UPS 必须提供足够的运行时间，以允许所有关闭计时器在服务器失去电力前到期。
+    # CentOS/RHEL/Fedora
+    sudo yum install qemu-guest-agent
+    # or
+    sudo dnf install qemu-guest-agent
+    ```
 
-  <h4>设置位置</h4>
+    2. **启用服务：**
+       ```bash
+       sudo systemctl enable qemu-guest-agent
+       sudo systemctl start qemu-guest-agent
+       ```
 
-  - ***设置 → UPS 设置*** （查看 **剩余运行时间**，所有磁盘旋转起来）
+    3. **在 Unraid 中配置：**
+       - 在您的虚拟机(%%VM|vm%%)设置中将 **关机动作** 设置为 **休眠**。
+  </TabItem>
 
-  <h4>考虑</h4>
+  <TabItem value="设备" label="设备虚拟机">
+    一些虚拟机(%%VMs|vm%%)，如 Home Assistant，不允许安装额外的软件。对此类虚拟机：
 
-  - UPS 应该在关机序列完成前触发关闭。
-  - 如果电池在关闭完成之前耗尽，您将面临不完全关闭和可能的数据丢失的风险。
+    - 保持 **关机动作** 设定为 **关机**。
+    - 使用较长的超时值 (请参见下文的超时建议)。
+    - 考虑在更新期间强制关闭这些虚拟机(%%VMs|vm%%)的风险。
 
-  <h4>最佳做法</h4>
+    :::note[为什么设备虚拟机不同]
+    设备%%VMs|vm%%旨在运行特定软件，通常不允许安装其他软件包，例如%%QEMU|qemu%% %%Guest Agent|guest-agent%%。这意味着不支持休眠，因此需要依赖正确的超时配置。
+    :::
+  </TabItem>
+</Tabs>
 
-  通过模拟断电来测试您的 UPS，并确认 Unraid 可以在时间充裕的情况下干净关闭。
-</details>
+现在验证您的休眠功能，启动您的虚拟机(%%VM|vm%%)并打开一些应用程序。然后从 Unraid 停止它。当您再次启动它时，它应该恢复到应用程序仍然打开的状态。
+
+:::warning[Guest 代理是关键]
+
+没有安装 %%QEMU|qemu%% %%Guest Agent|guest-agent%% 时，休眠可能无法正常工作。在这种情况下，虚拟机(%%VM|vm%%)将退回到关机模式，耗尽整个超时时间。
+
+:::
+
+---
+
+### 超时配置
+
+在本节中，我们将介绍如何为不同的系统和过程配置超时信息。这对确保您的虚拟机(%%VMs|vm%%)和 Docker 容器能平滑关闭且无数据丢失至关重要。
+
+| 设置              | 默认值 | 何时增加                            | 配置位置                         |
+| --------------- | --- | ------------------------------- | ---------------------------- |
+| %%VM\|vm%% 关机超时 | 60秒 | 如果没有使用休眠且虚拟机崩溃则设置为 300s         | ***设置 → 虚拟机管理 → 虚拟机关机（高级）*** |
+| Docker 容器停止超时时间 | 10秒 | 如果任何容器在停止时崩溃则设置为 30s            | ***设置 → Docker（高级）***        |
+| 通用关机超时时间        | 90秒 | 如果出现不干净关机，设置为 180s，与虚拟机一起 300s+ | ***设置 → 磁盘设置 → 关机超时***       |
+
+:::tip[When 增加超时]
+
+如果您遇到不干净的关机或容器在关机时崩溃的情况，请考虑将通用关机超时时间增加到 **180 秒**（如果您有多个 %%VMs|vm%%，则为 **300+ 秒**）。这将为服务提供更多时间来优雅地关闭。
+
+:::
+
+### 停机顺序
+
+关机时，过程按以下顺序发生：
+
+1. **虚拟机(%%VM|vm%%)关闭：** 这涉及三个阶段，每个阶段可耗尽虚拟机关闭超时：
+
+   - 阶段 1：恢复任何暂停的虚拟机(%%VMs|vm%%)
+   - 阶段 2：让配置为休眠状态的虚拟机(%%VMs|vm%%)进入休眠
+   - 阶段 3：关闭任何剩余的虚拟机(%%VMs|vm%%)
+
+   每个阶段中的所有虚拟机(%%VMs|vm%%)同时进行处理，这意味着总关闭时间可以计算为：虚拟机关闭超时 × 3。
+
+2. Docker容器同时停止（总时间= Docker超时）。
+
+3. 其他服务包括LXC容器和第三方插件，通常只需几秒钟。
+
+4. 阵列关闭：驱动器需卸载并同步数据；这通常需要15-30秒。
+
+:::tip[Calculate 您的总体关机超时]
+
+**公式：** 您的总体关机超时值应大于：
+
+```
+(VM timeout × 3) + (Docker timeout) + (Other services) + 15-30 seconds
+```
+
+**示例：** 如果我们按照公式进行，结果如下：`(300 × 3) + 30 + 10 + 30 = 970 秒（超过 16 分钟）`。
+
+**建议：** 至少 **180 秒（3 分钟）** 至少，若您有多个虚拟机(%%VMs|vm%%)或复杂的容器则设置为 **300+ 秒（5+ 分钟）**。
+
+:::
+
+如果所有的%%VMs|vm%%设为休眠而不是关机，那么虚拟机超时不那么重要，因为休眠几乎是即时的。您可以为不支持休眠的%%VMs|vm%%使用较低的虚拟机超时（例如，60-120秒）作为备用。
+
+---
+
+### 详细配置指南
+
+本节提供有关不同系统组件的超时配置的深入信息。每个超时设置共同作用以确保您的服务器能平滑关闭且无数据丢失。
+
+#### 虚拟机超时
+
+在 ***设置 → 虚拟机管理器 → 虚拟机关机***（启用高级视图）中配置虚拟机关机超时。
+
+**原理:**
+
+- 虚拟机(%%VMs|vm%%)经过三个关闭阶段，每个阶段耗尽虚拟机关闭超时
+- 每个阶段中的所有虚拟机(%%VMs|vm%%)同时进行处理
+- 总虚拟机关闭时间 = 虚拟机关闭超时 × 3
+
+**常见问题：**
+
+- **Windows 更新中断：** 关机时的更新可能会在超时截止后损坏。
+- **未保存的工作：** 提示用户是否保存文档的对话框可能会导致关机无期限中止。
+- **休眠失败：** 在没有 %%QEMU|qemu%% %%Guest Agent|guest-agent%% 的情况下，虚拟机(%%VMs|vm%%)可能无法休眠并使用完整的超时时间。
+
+:::tip[VM 超时建议]
+
+- **主要建议：** 配置你的虚拟机(%%VMs|vm%%)为休眠状态而不是关机（需要 %%QEMU|qemu%% %%Guest Agent|guest-agent%%）。
+- **如果虚拟机在关机时崩溃：** 增加超时至 **300 秒（5 分钟）** 针对 Windows 虚拟机(%%VMs|vm%%)。
+- **Windows 更新：** 设定 Windows 在启动时执行更新而不是在关机时。
+- **测试您的配置：** 手动停止您的%%VMs|vm%%以确认它们在超时时间内关闭或休眠。
+
+:::
+
+:::warning[No 无休眠的安全超时]
+
+没有休眠和%%QEMU|qemu%% %%Guest Agent|guest-agent%%，对于Windows %%VMs|vm%%，没有真正安全的超时。对话框或正在进行的更新安装可能会使任何超时不足，导致强制关机和数据损坏风险。
+
+:::
+
+#### Docker 超时
+
+在 ***设置 → Docker***（启用高级视图）中配置 Docker 容器停止超时。
+
+**原理:**
+
+- 容器是并行停止的，因此总时间等于 Docker 停止超时。
+- 大多数容器会在 10 秒内停止，但有些可能需要更长时间。
+- 复杂的容器具有大型数据库或正在进行的操作，可能需要额外时间。
+- 如果定时器到期，容器将被强制停止。
+
+:::tip[Docker 超时建议]
+
+- **默认的 10 秒** 对大多数容器效果良好。
+- **如果容器在停止时崩溃**：将超时增加到 **30 秒**。
+- 在关机期间监控您的容器，以识别需要更多时间的容器。
+
+:::
+
+#### 通用超时
+
+在 ***设置 → 磁盘设置 → 关机超时*** 中配置通用关机超时。
+
+**UPS 使用注意事项（最关键因素）：**
+
+- 您的UPS必须提供足够的运行时间，以在电池耗尽之前完成完全关机过程。
+- 对于**手动关机**，您可以设置更长的超时时间，因为您可以控制何时开始关机。
+- 在 **停电关机** 时，您的超时受限于 UPS 电池寿命。
+- **测试您的UPS**，通过模拟停电确保服务器能在电池充分的情况下干净关机。
+
+:::tip[General 超时建议]
+
+- **如果遇到非干净关机**：对于没有%%虚拟机|vm%%的系统，将超时增至 **180 秒（3 分钟）**。
+- **对于有%%虚拟机|vm%%的系统**：在不使用休眠的情况下使用 **300+ 秒（5+ 分钟）**。
+- **如果使用休眠**：通常 **180-300 秒** 是足够的。
+- 确保超时不超过您的UPS在断电时能支持的时长。
+
+:::
+
+#### 第三方服务
+
+**LXC 容器：**
+LXC 插件有自己的容器停止超时设置。像 Docker 容器一样，LXC 容器通常在几秒钟内停止，但有些可能需要更多时间。检查 LXC 插件设置中的容器停止超时，并将此超时包括在您的通用关机超时计算中。
+
+**其他服务：**
+某些插件或自定义服务可能有自己的关机程序。请参阅插件文档中的特定超时设置，并将其纳入您的计算。
+
+**带有第三方服务的更新公式：**
+
+```
+(VM timeout × 3) + (Docker timeout) + (LXC/other timeouts) + 15-30 seconds
+```
+
+**Dynamix Stop Shell 插件：**
+如果您经常使用 SSH 或终端会话，打开的会话可能会阻止干净的关机，因为 Unraid 在关闭之前会等待它们关闭。
+
+[Dynamix Stop Shell](https://unraid.net/community/apps/c/tools-system/p2?srsltid=AfmBOoqBXyDNfHxRDCL7Fv9Gcfz8-8CdHmiJSX16PRZpZLLzgQtw2mVk#:~:text=the%20given%20interval.-,Dynamix%20Stop%20Shell,-Dynamix%20Repository) 插件通过在停止阵列时自动关闭剩余的 bash 或 SSH 会话以确保及时关机。
+
+您可以在 [Community Applications (搜索“Dynamix Stop Shell”)](https://unraid.net/community/apps/c/tools-system/p2?srsltid=AfmBOoqBXyDNfHxRDCL7Fv9Gcfz8-8CdHmiJSX16PRZpZLLzgQtw2mVk#:~:text=the%20given%20interval.-,Dynamix%20Stop%20Shell,-Dynamix%20Repository) 中安装它。
+
+:::tip[When 使用该插件]
+
+- 如果您定期打开终端会话。
+- 为了防止忘记的 SSH 会话延迟关机。
+- 用于关机期间自动清理。
+
+:::
+
+:::caution
+
+- 如果您在终端会话中运行脚本或进程，请保持谨慎。
+- 确保在关机前没有正在进行的重要写入操作。
+- 插件会强行关闭会话，这可能会中断工作。
+
+:::

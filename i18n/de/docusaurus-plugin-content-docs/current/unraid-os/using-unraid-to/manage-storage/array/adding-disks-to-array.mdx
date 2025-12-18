@@ -1,0 +1,169 @@
+---
+sidebar_position: 2
+sidebar_label: Hinzufügen von Festplatten zum Array
+---
+
+# Hinzufügen von Festplatten zum Array
+
+Das Hinzufügen von Datenfestplatten ist eine großartige Möglichkeit, den Speicherplatz Ihrer Unraid-Ablage zu vergrößern. Indem Sie mehr Festplatten hinzufügen, können Sie mehr Dateien, Anwendungen und Backups aufbewahren und gleichzeitig Ihre Daten schützen.
+
+:::important[Important Hinweis:]
+
+Beim Hinzufügen einer neuen Datenplatte muss sie die gleiche Größe wie Ihre aktuellen %%parity disks|parity-drives%% oder kleiner sein. Wenn Sie eine größere Festplatte verwenden möchten, müssen Sie zuerst die %%parity disks|parity-drives%% mit der größeren ersetzen und dann die alten %%parity disks|parity-drives%% als Datenplatte nutzen.
+
+:::
+
+:::tip[Hot-Swap Funktion]
+
+Wenn Sie moderne mit Unraid kompatible Hardware verwenden, können Sie Festplatten austauschen, ohne den Server herunterzufahren. Diese Funktion, bekannt als Hot-Swap, ist seit Anbeginn in LimeTech-Servern verfügbar.
+
+:::
+
+## Neue Festplatten einrichten
+
+1. Navigieren Sie zu ***Hauptmenü → Array-Geräte*** in der Schnittstelle.
+2. Wählen Sie den Steckplatz, an dem Sie die Festplatte hinzufügen möchten, und wählen Sie die Festplatte aus der Dropdown-Liste.
+3. Standardmäßig werden neue Festplatten der Ablage mit %%XFS|xfs%% formatiert. Wenn Sie stattdessen %%ZFS|zfs%% oder %%BTRFS|btrfs%% verwenden möchten, wählen Sie Ihr bevorzugtes Dateisystem aus dem Dropdown-Menü.
+
+## Clear vs. Pre-Clear
+
+Unraid benötigt Festplatten im gelöschten Zustand - vollständig mit Nullen gefüllt und mit einer speziellen Signatur versehen - bevor sie in eine Parity-geschützte Ablage aufgenommen werden. Dieser Prozess gewährleistet die Parity-Integrität und hält die Ablage während der Festplattenvorbereitung online.
+
+Clearance is mandatory when adding a data disk to a %%parity|parity%%-protected array. If you are adding a %%parity disk|parity-drives%% or working with an array that does not use %%parity|parity%%, clearance is not required.
+
+Der eingebaute Löschvorgang schreibt Nullen im Hintergrund auf die Festplatte, sodass die Ablage verfügbar bleibt. Sobald der Vorgang abgeschlossen ist, muss die Festplatte vor der Verwendung formatiert werden. Diese Methode ist effizient, erfordert keine Drittanbieter-Tools und eignet sich ideal für schnelle Erweiterungen.
+
+Für einen gründlicheren Ansatz führt das Pre-Clear-Verfahren - verfügbar über Plugins wie [Unassigned Devices Preclear](https://unraid.net/community/apps?q=unassigned+devices#r:~:text=enable%20destructive%20mode.-,Unassigned%20Devices%20Preclear,-dlandon) - ein Vorlesen zur Überprüfung auf fehlerhafte Sektoren durch, nullt die Festplatte und überprüft dann die Integrität mit einem Nachlesen. Dieser zusätzliche Schritt hilft, frühe Festplattendefekte zu erkennen, benötigt jedoch deutlich mehr Zeit und erfordert die manuelle Installation des Plugins.
+
+**Faustregel:** Verwenden Sie den integrierten Löschvorgang für schnelle Ergänzungen zu Ihrem Array oder wählen Sie Pre-Clear, wenn Sie umfangreiche Tests der Festplattengesundheit durchführen möchten, bevor Sie eine Festplatte in Betrieb nehmen.
+
+<h3>Clear vs. Pre-Clear Vergleich</h3>
+
+|                              | Löschen                                              | Pre-Clear                                                             |
+| ---------------------------- | ---------------------------------------------------- | --------------------------------------------------------------------- |
+| **Zweck**                    | Gewährleistet grundlegende Festplattenkompatibilität | Testet die Festplattengesundheit und bereitet sie für die Nutzung vor |
+| **Geschwindigkeit**          | Schnell                                              | Erheblich langsamer                                                   |
+| **Auswirkung auf das Array** | Hintergrundbetrieb                                   | Festplatte offline erforderlich                                       |
+| **Am besten geeignet für**   | Schnelle Erweiterungen                               | Vorbereitung/Überprüfung neuer Festplatten                            |
+
+%%Parity disks|parity-drives%% are a helpful feature that provide an extra layer of protection for your data. They allow your storage system to recover information if a hard drive fails. While using %%parity disks|parity-drives%% is optional, it's highly recommended to keep your data safe.
+
+**Pre-Clear** dauert länger, bietet aber einen gründlichen Test und stellt sicher, dass eine neue Festplatte zuverlässig ist, bevor sie Teil Ihres Arrays wird.
+
+:::caution[Critical Hinweis]
+
+Vermeiden Sie es, eine vorgeklärte Festplatte zu formatieren, bevor Sie sie dem Array hinzufügen, da dies die Clearance-Signatur entfernt.
+
+:::
+
+## Daten-Festplatten hinzufügen
+
+Das Hinzufügen einer neuen Datenfestplatte zu Ihrem Array erweitert die Speicherkapazität. Der Prozess variiert leicht, je nachdem, ob Sie Paritätsschutz aktiviert haben. Durch Parität geschützte Arrays leeren neue Festplatten, bevor sie verfügbar werden, während Arrays ohne Parität schneller Festplatten hinzufügen können.
+
+### Hinzufügen zu einem durch Parität geschützten Array
+
+1. Stoppen Sie die Array.
+2. Fahren Sie Ihren Server herunter.
+3. Installieren Sie die neue(n) Festplatte(n) physisch.
+4. Server wieder einschalten.
+5. Weisen Sie die neue(n) Festplatte(n) verfügbaren Datensteckplätzen zu.
+6. Starten Sie das Array. Unraid startet automatisch einen Clear-Vorgang auf der neuen Festplatte und füllt diese mit Nullen, um sicherzustellen, dass sie bereit ist, während die Datenintegrität erhalten bleibt. Der Clear-Vorgang läuft im Hintergrund, sodass Sie weiterhin auf Ihr Array zugreifen können. Die Festplatte ist erst verwendbar, wenn der Vorgang abgeschlossen ist. Wenn Sie die Festplatte vorab geleert haben, überspringt Unraid diesen Schritt.
+7. Nach Abschluss des Clearings zeigt sich die Festplatte als unmontierbar. Sie werden aufgefordert, sie zu formatieren.
+8. Überprüfen Sie das Bestätigungsfeld und klicken Sie auf die Schaltfläche **Formatieren**.
+9. Das Formatieren dauert ein paar Minuten. Sobald es abgeschlossen ist, wird die Festplatte als montiert und einsatzbereit angezeigt.
+
+:::important
+
+Überprüfen Sie immer die Seriennummer, um sicherzustellen, dass Sie die richtige Festplatte formatieren. Das Formatieren löscht alles auf dieser Festplatte und dieser Vorgang kann nicht rückgängig gemacht werden.
+
+:::
+
+:::note
+
+Sie können mehrere Festplatten hinzufügen, aber sie sind erst nutzbar, wenn alle gelöscht und formatiert wurden.
+
+:::
+
+### Hinzufügen zu einem Array ohne Paritätsschutz
+
+1. Stoppen Sie die Array.
+2. Fahren Sie Ihren Server herunter.
+3. Installieren Sie die neue(n) Festplatte(n) physisch.
+4. Server wieder einschalten.
+5. Weisen Sie die neue(n) Festplatte(n) verfügbaren Datensteckplätzen zu.
+6. Starten Sie das Array. Der Clearing-Schritt wird komplett übersprungen, wenn sich keine %%parity disk|parity-drives%% im Array befindet.
+7. Die neue Festplatte wird als unmontierbar angezeigt und Sie werden aufgefordert, sie zu formatieren.
+
+:::important
+
+Überprüfen Sie immer die Seriennummer, um sicherzustellen, dass Sie die richtige Festplatte formatieren. Das Formatieren löscht alles auf dieser Festplatte und dieser Vorgang kann nicht rückgängig gemacht werden.
+
+:::
+
+## Paritätsfestplatten hinzufügen
+
+%%Parity disks|parity-drives%% sind eine hilfreiche Funktion, die eine zusätzliche Schutzschicht für Ihre Daten bietet. Sie ermöglichen es Ihrem Speichersystem, Informationen wiederherzustellen, wenn eine Festplatte ausfällt. Die Verwendung von %%parity disks|parity-drives%% ist optional, wird jedoch dringend empfohlen, um Ihre Daten sicher zu halten.
+
+:::important\[Requirements]
+
+- **Einzelparität:** Die Festplatte muss mindestens so groß sein wie Ihre größte Datenfestplatte.
+- **Duale Parität:** Beide %%parity disks|parity-drives%% müssen mindestens die Größe Ihrer größten Datenplatte haben, können jedoch unterschiedliche Größen haben.
+
+:::
+
+Das Hinzufügen einer %%parity disk|parity-drives%% ist ähnlich wie das Hinzufügen einer Datenplatte:
+
+1. Wählen Sie die %%parity disk|parity-drives%% aus und starten Sie das Array. Unraid beginnt, die Parität zu berechnen.
+2. Sie können während dieses Vorgangs weiterhin auf Ihre Dateien zugreifen, aber das System kann langsamer laufen.
+
+### Verständnis der Parität
+
+**What is parity?** %%Parity|parity%% in Unraid protects your data by ensuring that you can recover from a drive failure. With the use of a %%parity disk|parity-drives%%, any single missing disk can be reconstructed by combining the information from all other data drives along with the %%parity|parity%% data.
+
+**Wie es funktioniert:** Unraid verwendet ein spezielles Bit, das *Paritätsbit*, das für jede Bitposition über alle Datenplatten hinweg gespeichert und von einer dedizierten %%parity disk|parity-drives%% verwaltet wird. Die %%parity|parity%% wird so berechnet, dass die Gesamtanzahl der Bits in jeder Position über alle Platten (einschließlich der %%parity disk|parity-drives%%) immer eine gerade Zahl (even parity) ist. Unraid verwendet die XOR (exklusives Oder) Operation für diese Berechnung.
+
+**How data is reconstructed:** Unraid reconstructs a missing drive or repairs a bad sector by reading all remaining drives, including the %%parity disk|parity-drives%%, and applying even %%parity|parity%% to solve for the missing data. The %%parity|parity%% feature allows Unraid to "simulate" the missing disk so you can continue using the array as if the drive were still functional. Once you install a new drive in the failed slot, Unraid recreates all the missing data based on the current state of %%parity|parity%% and the other disks.
+
+**Paritätsplattengröße:** Ihre %%parity disk|parity-drives%% muss gleich oder größer als Ihre größte Datenplatte sein. Zum Beispiel, wenn Ihre größte Datenplatte 10TB ist, sollte Ihre %%parity disk|parity-drives%% mindestens 10TB groß sein.
+
+**Performance impact:** Writing to a %%parity|parity%%-protected array involves four disk operations for each write: reading data, reading %%parity|parity%%, writing data, and writing %%parity|parity%%. This process requires a full rotation from each affected drive, so the overall write speed is limited by the slowest drive involved in the operation.
+
+**Dual Parity:** Dual %%parity|parity%% enables recovery from two simultaneous disk failures. The second %%parity disk|parity-drives%% doesn't simply mirror the first. Instead, Parity 1 uses standard XOR (even) %%parity|parity%% calculations, while Parity 2 implements Q-parity using Galois-field syndrome calculations (Reed-Solomon–style), comparable to %%RAID 6|raid6%%. This allows Unraid to rebuild from any two simultaneous disk failures, significantly boosting resilience for larger arrays.
+
+:::caution\[Remember]
+
+Beim Einrichten eines neuen Datenspeichersystems fügen Sie zuerst Ihre Datenplatten hinzu und stellen Sie sicher, dass sie alle ein kompatibles Dateisystem verwenden. **Nachdem** Sie Ihre Datenplatten platziert haben, können Sie eine %%parity disk|parity-drives%% hinzufügen, um sich gegen Festplattenausfälle zu schützen.
+
+Sobald Ihre %%parity disk|parity-drives%% hinzugefügt ist, denken Sie daran, dass jede neue Festplatte, die Sie in das Array aufnehmen möchten, vor der Integration gelöscht (nullgestellt) werden muss. Dies stellt sicher, dass die %%parity|parity%% gültig bleibt und Ihre Daten weiterhin schützt.
+
+:::
+
+## Laufwerke ersetzen
+
+Sie können Ihr %%parity disk|parity-drives%% Gerät auf ein größeres Gerät aufrüsten, um größere Festplatten im Array zu verwenden, oder ein zusätzliches %%parity disk|parity-drives%% hinzufügen.
+
+:::caution
+
+Wenn Sie vorhaben, die folgenden Schritte zu unternehmen und nur eine %%parity disk|parity-drives%% haben, beachten Sie diese Punkte:
+
+- Ihre Daten sind ungeschützt, bis der %%parity|parity%% Wiederherstellungsprozess abgeschlossen ist. Wenn während dieser Zeit eine Datenplatte ausfällt, könnten Sie die Informationen auf dieser Platte verlieren.
+- Wenn Sie bereits eine ausgefallene Festplatte im System haben, können Sie durch diese Schritte diese nicht mehr neu aufbauen. In diesem Fall sollten Sie das **Paritätstausch**-Verfahren befolgen.
+
+:::
+
+Um ein Paritätslaufwerk zu aktualisieren:
+
+1. Stoppen Sie die Array.
+2. Fahren Sie Ihren Server herunter (überspringen Sie diesen und Schritt 4, wenn Ihr Server Hot-Swap unterstützt).
+3. Installieren Sie die neue, größere %%parity disk|parity-drives%% in Ihrem Server.
+4. Schalten Sie Ihren Server ein.
+5. Weisen Sie die neue Festplatte dem Paritätsslot zu und ersetzen Sie die alte.
+6. Starten Sie das Array.
+
+Sobald das Array wieder läuft, beginnt Unraid mit dem Aufbau der Parität auf der neuen Festplatte. Sie können während dieser Zeit weiterhin auf Ihre Daten zugreifen, aber es könnte langsamer sein, bis der Vorgang abgeschlossen ist.
+
+:::tip[Planning Ihren Paritätsupgrade
+
+Halten Sie die alte %%parity disk|parity-drives%% installiert, bis der neue Paritätsaufbau abgeschlossen ist. Wenn während des Upgrades eine Datenplatte ausfällt, kann die alte %%parity disk|parity-drives%% Ihnen helfen, Ihre Daten wiederherzustellen. Nach erfolgreichem Abschluss des Upgrades können Sie die alte Platte bei Bedarf als Datenplatte umfunktionieren.
+
+:::

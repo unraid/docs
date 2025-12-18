@@ -10,7 +10,7 @@ Anwendungen können API-Zugriff auf einen Unraid-Server anfordern, indem sie Ben
 
 1. **Anwendung fordert an**: Die App leitet den Nutzer um zu:
 
-   ```
+   ```text
    https://[unraid-server]/ApiKeyAuthorize?name=MyApp&scopes=docker:read,vm:*&redirect_uri=https://myapp.com/callback&state=abc123
    ```
 
@@ -28,7 +28,8 @@ Anwendungen können API-Zugriff auf einen Unraid-Server anfordern, indem sie Ben
    - Wenn `redirect_uri` angegeben ist, wird der Benutzer mit dem Schlüssel zurückgeleitet
 
 5. **Rückruf**: App erhält den API-Schlüssel:
-   ```
+
+   ```text
    https://myapp.com/callback?api_key=xxx&state=abc123
    ```
 
@@ -44,30 +45,11 @@ Anwendungen können API-Zugriff auf einen Unraid-Server anfordern, indem sie Ben
 
 Bereiche folgen dem Muster: `resource:action`
 
-### **DD-WRT:** Wenn Sie "dnsmasq" mit aktiviertem DNS-Rebinding-Schutz verwenden, können Sie diese Zeile Ihrer Router
+Verfügbare Ressourcen sind `docker`, `vm`, `system`, `share`, `user`, `network`, `disk` und andere. Verfügbare Aktionen sind `create`, `read`, `update`, `delete` oder `*` für alle.
 
-- `docker:read` - Lesezugriff auf Docker
-- `vm:*` - Vollzugriff auf VMs
-- `system:update` - Update-Zugriff auf das System
-- `role:viewer` - Zugriffsrolle Betrachter
-- `role:admin` - Zugriffsrolle Administrator
+Umleitungs-URIs müssen HTTPS verwenden (außer localhost für die Entwicklung). Benutzer genehmigen ausdrücklich jede Berechtigung, und der Ablauf nutzt vorhandene Unraid-Authentifizierungssitzungen. API-Schlüssel werden einmal angezeigt und müssen sicher gespeichert werden.
 
-### Verfügbare Ressourcen:
-
-- `docker`, `vm`, `system`, `share`, `user`, `network`, `disk`, etc.
-
-### Verfügbare Aktionen:
-
-- `create`, `read`, `update`, `delete` oder `*` für alle
-
-## Sicherheitsaspekte
-
-1. **HTTPS erforderlich**: Umleitungs-URIs müssen HTTPS verwenden (außer localhost für die Entwicklung)
-2. **Benutzereinwilligung**: Benutzer genehmigen explizit jede Berechtigung
-3. **Sitzungsbasiert**: Verwendet bestehende Unraid-Authentifizierungssitzung
-4. **Einmalige Anzeige**: API-Schlüssel werden einmal gezeigt und müssen sicher gespeichert werden
-
-## Beispielintegration
+## Verfügbare Ressourcen:
 
 ```javascript
 // JavaScript example

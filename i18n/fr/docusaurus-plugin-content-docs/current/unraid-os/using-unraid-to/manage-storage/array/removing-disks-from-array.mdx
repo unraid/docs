@@ -1,0 +1,75 @@
+---
+sidebar_position: 4
+sidebar_label: Retirer des disques du tableau
+---
+
+# Retirer des disques du tableau
+
+Il peut arriver que vous souhaitiez retirer un disque de votre matrice Unraid. Que vous cherchiez à économiser de l'énergie, à retirer un disque ancien ou peu fiable, ou à réaffecter le matériel à un autre usage, le processus est assez simple.
+
+## Retirer des disques de parité
+
+Si vous constatez que vous n'avez plus besoin du niveau de protection %%parity|parity%% dans votre configuration, vous pouvez retirer un %%parity disk|parity-drives%% quand vous le souhaitez.
+
+Pour retirer un disque de parité :
+
+1. Arrêtez l'ensemble.
+2. Désattribuez l'emplacement du disque de parité et réglez-le sur "Non attribué."
+3. Démarrez le tableau pour valider les modifications.
+
+:::warning
+
+Avant d'apporter des modifications, gardez ceci à l'esprit : si vous avez déjà des disques de données défaillants dans votre tableau, retirer un disque de %%parité|parity-drives%% peut réduire le nombre de défaillances qu'Unraid peut gérer sans risque de perte de données.
+
+- Avec une double parité, vous pouvez récupérer d'un seul lecteur défaillant, mais soyez conscient que vous ne pourrez pas survivre à une autre défaillance pendant le processus de reconstruction.
+- Avec une seule parité, vous perdez toute redondance, ce qui signifie que toute défaillance supplémentaire pourrait entraîner une perte de données.
+
+:::
+
+## Retrait de disques de données
+
+Retirer un disque de données nécessite une synchronisation de parité par la suite. Jusqu'à ce que cette synchronisation soit terminée, il y a un risque de perte de données si un autre disque échoue.
+
+### Méthode standard (Recommandée)
+
+1. Arrêtez l'ensemble.
+2. Documentez éventuellement vos attributions de disques avec une capture d'écran.
+3. Réinitialisez la configuration du tableau avec **Outils → Nouvelle Config**, en choisissant l'option pour conserver toutes les attributions actuelles.
+4. Désattribuez le disque que vous souhaitez retirer.
+5. Démarrez le tableau, mais ne cochez pas la case "La parité est valide."
+
+Une synchronisation de parité démarre si vous avez attribué un disque de parité. Le tableau est vulnérable à la perte de données jusqu'à ce que cette synchronisation soit terminée.
+
+:::tip
+
+Déplacez les données importantes du disque avant de le retirer. Le processus de synchronisation de parité peut prendre plusieurs heures selon la taille du disque et l'activité du système.
+
+:::
+
+### Méthode de préservation de la parité (Avancé)
+
+Cette méthode vous permet de retirer un disque de données tout en gardant votre parité valide. Elle efface le disque de données, vous permettant de conserver votre parité intacte. Ceci est recommandé uniquement pour les utilisateurs avancés.
+
+:::warning
+
+Cette méthode efface toutes les données sur le disque sélectionné. Vérifiez que toutes les données importantes ont été déplacées avant de procéder. Il n'y a pas de support officiel de LimeTech pour ce processus.
+
+:::
+
+Pour utiliser la méthode de conservation de la parité :
+
+1. Démarrez le pool en mode maintenance, cliquez sur le disque que vous souhaitez enlever, puis cliquez sur **Effacer**. Cela efface le système de fichiers du dispositif tout en maintenant la parité, puis arrêtez le pool.
+2. Démarrez le tableau en mode normal. Le disque ne se montera pas, mais les disques restants sont en ligne.
+3. Notez les attributions du tableau, en particulier le disque de parité.
+4. Activez éventuellement l'écriture reconstruite ("Turbo Write") dans **Paramètres → Paramètres du disque** pour un effacement plus rapide, mais uniquement si tous les disques sont sains.
+5. Démontez le disque : `umount /mnt/diskX`
+6. Effacer le disque :
+   - Pour Unraid 6.12 ou version ultérieure : `dd bs=1M if=/dev/zero of=/dev/mdXp1 status=progress`
+   - Pour Unraid 6.11 et antérieur : `dd bs=1M if=/dev/zero of=/dev/mdX status=progress`
+   Remplacez `X` par le numéro spécifique du disque de données que vous supprimez.
+7. Arrêtez le tableau une fois le nettoyage terminé.
+8. Réinitialisez la configuration du tableau, en conservant toutes les attributions actuelles.
+9. Désattribuez le disque que vous souhaitez retirer, en vérifiant soigneusement toutes les attributions, en particulier le disque de parité.
+10. Cochez la case indiquant "La parité est déjà valide."
+11. Démarrez le tableau pour terminer la suppression.
+12. Lancez éventuellement une vérification de %%parité|parity-check%% corrective par la suite pour garantir l'intégrité de la parité.
