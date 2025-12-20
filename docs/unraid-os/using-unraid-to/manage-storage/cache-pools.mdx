@@ -81,7 +81,7 @@ To convert a pool to BTRFS or ZFS:
 
 ### Adding drives to create a multi-device pool
 
-Once your pool is formatted as %%BTRFS|btrfs%% or %%ZFS|zfs%%, you can add more drives for redundancy and to expand storage.
+Once your pool is formatted as %%BTRFS|btrfs%% or %%ZFS|zfs%%, you can add more drives for redundancy and to expand storage. For detailed instructions on adding disks to existing pools, see [Adding disks to a pool](#adding-disks-to-a-pool).
 
 To add more drives for redundancy:
 
@@ -110,13 +110,60 @@ If you want to add disks to your pool, make sure your pool is already formatted 
 
 :::
 
-To add a disk to a pool:
+### BTRFS pools
+
+To add a disk to a %%BTRFS|btrfs%% pool:
 
 1. Stop the %%array|array%%.
 2. In the **Main** tab, open the pool.
-3. In the Pool Devices section, set **Slots** to the exact number of additional devices.
+3. In the **Pool Devices** section, set **Slots** to the exact number of additional devices.
 4. Assign the new devices to the available slots.
 5. Start the %%array|array%% to enable the changes.
+
+:::note
+
+After starting the %%array|array%%, %%BTRFS|btrfs%% automatically begins a **Balance** operation to redistribute data across all devices in the pool. This process may take several hours or even days, depending on the size of your pool and the amount of data stored. During this time, your pool may appear busy, but you can continue using it normally. You can monitor the Balance progress in the **Main** tab by clicking the first pool device and checking **Balance Status**.
+
+:::
+
+### ZFS pools
+
+Expanding %%ZFS|zfs%% pools depends on your type of pool configuration:
+
+- **Single-vdev RAIDZ1/2/3 pools:** A pool with one group of drives in a RAIDZ configuration. Can be expanded one drive at a time. See [RAIDZ expansion](#raidz-expansion) below.
+- **Mirrored pools:** A pool where drives are paired together in mirrors. Can add additional mirror pairs to increase capacity.
+- **Multi-vdev pools:** A pool with multiple groups of drives (e.g., multiple RAIDZ groups or multiple mirror pairs). Cannot be expanded by adding individual drives to existing groups.
+
+:::important
+
+Not all %%ZFS|zfs%% pools can be expanded by adding devices. Only single-vdev RAIDZ1/2/3 pools allow for one-drive-at-a-time expansion. Other pool configurations require you to add complete vdevs, such as adding a new mirror pair to a mirrored pool or adding a new vdev of the same width to a RAIDZ pool.
+
+:::
+
+:::tip[Planning for future expansion]
+
+If you're creating a new two-device %%ZFS|zfs%% pool and plan to expand it later by adding drives one at a time, choose **RAIDZ1** during initial setup instead of the default mirrored configuration. While two-device pools default to mirrored (which provides redundancy), choosing RAIDZ1 allows you to expand the pool incrementally in the future without migrating your data. If you're not planning to expand beyond two drives, the default mirrored configuration is recommended for its simplicity and performance.
+
+:::
+
+#### RAIDZ expansion
+
+Starting with Unraid 7.2, you can expand single-vdev RAIDZ1/2/3 pools one drive at a time. This feature allows you to grow your pool capacity incrementally without rebuilding the entire pool.
+
+To expand a single-vdev RAIDZ pool:
+
+1. With the %%array|array%% running, on ***Main → Pool Devices***, select the pool name to view the details.
+2. In the **Pool Status** area, check for an **Upgrade Pool** button. If one exists, you'll need to click that before continuing. Note that upgrading the pool will limit your ability to downgrade to earlier releases of Unraid.
+3. Stop the %%array|array%%.
+4. On ***Main → Pool Devices***, add a slot to the pool.
+5. Select the appropriate drive (must be at least as large as the smallest drive in the pool).
+6. Start the %%array|array%%.
+
+:::caution
+
+If you see an "invalid expansion" warning, the pool needs to be upgraded first using the **Upgrade Pool** button mentioned in step 2.
+
+:::
 
 ---
 
@@ -134,7 +181,7 @@ Removing a disk from a %%BTRFS|btrfs%% or %%ZFS|zfs%% multi-device %%cache pool|
 
 ### Changing pool RAID levels
 
-%%BTRFS|btrfs%% provides the ability to change %%RAID|raid%% levels for %%cache pools|cache-pool%% dynamically, allowing you to adjust settings without stopping the %%array|array%% or losing any data. This flexibility lets you optimize for performance, redundancy, or storage efficiency as your requirements change.
+%%BTRFS|btrfs%% provides the ability to change %%RAID|raid%% levels for %%cache pools|cache-pool%% dynamically, allowing you to adjust settings without stopping the %%array|array%% or losing any data. This flexibility lets you optimize for performance, redundancy, or storage efficiency as your requirements change. For information on adding disks to %%BTRFS|btrfs%% pools, see [BTRFS pools](#btrfs-pools).
 
 <h4>Supported %%RAID|raid%% Levels</h4>
 
