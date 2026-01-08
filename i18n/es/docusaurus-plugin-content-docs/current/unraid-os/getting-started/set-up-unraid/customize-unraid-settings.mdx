@@ -77,13 +77,95 @@ Puedes configurar varias opciones de acceso para tu servidor Unraid, incluido ha
   ![Configuraciones - Acceso de Gestión](/img/settings-management-access.png)
 </div>
 
-### Configuraciones de Red
+### Configuraciones de red
 
 Por defecto, Unraid intenta obtener una dirección IP de un servidor DHCP en tu red local, generalmente proporcionada por tu router. En esta página, puedes configurar una dirección IP estática, configurar %%bonding|nic-bonding%%, %%bridging|nic-bridging%%, o explorar otras opciones. Aunque se recomienda establecer una IP estática, no es necesario para usar Unraid.
 
 <div style={{ margin: 'auto', maxWidth: '400px'}}>
   ![Configuraciones de Red](/img/settings-network.png)
 </div>
+
+#### Configuración de WiFi
+
+Unraid admite conectividad WiFi para situaciones en las que una conexión de red cableada no es práctica o no está disponible. Aunque se recomienda generalmente una conexión cableada para una mejor estabilidad y rendimiento, una configuración inalámbrica puede ser una alternativa adecuada cuando pasar un cable no es una opción.
+
+:::important[Initial requisitos de configuración]
+
+Para la configuración inicial de WiFi, necesitarás una de las siguientes opciones:
+
+- Un teclado local y monitor conectado a tu servidor (iniciar en modo GUI), o
+- Una conexión temporal por cable para acceder al %%WebGUI|web-gui%%
+
+Una vez que el WiFi está configurado, puedes eliminar la conexión cableada y gestionar tu servidor de manera inalámbrica.
+
+:::
+
+##### Configuración de WiFi
+
+1. Accede al %%WebGUI|web-gui%% y ve a ***Ajustes → Configuración de Red → Red Inalámbrica wlan0***.
+2. Habilita el WiFi activando la opción **Habilitar WiFi**.
+3. Configura la **Región Reglamentaria**:
+   - En la mayoría de los casos, es mejor dejarlo en **Automático**.
+   - Si tu red preferida no aparece en los resultados del escaneo, configúralo para tu ubicación específica (país/región).
+4. Escanear para redes disponibles:
+   - Las redes WiFi disponibles deberían listarse.
+   - Haz clic en el icono **Conectar a la red WiFi** (ᯤ) junto a tu red preferida.
+5. Introduce tus credenciales de red:
+   - Escribe tu contraseña de WiFi.
+   - Revisa y ajusta cualquier configuración adicional si es necesario.
+   - Haz clic en **Unirse a esta red** para conectar.
+
+:::tip[Docker contenedores y WiFi]
+
+Si planeas usar contenedores Docker con WiFi, asegúrate de desconectar cualquier conexión cableada **antes** de iniciar el servicio Docker. Esto ayuda a prevenir conflictos de configuración de red que pueden ocurrir cuando ambas interfaces están activas simultáneamente.
+
+:::
+
+##### Funciones de WiFi soportadas
+
+La implementación de WiFi de Unraid admite lo siguiente:
+
+- **Protocolos de seguridad WPA2 y WPA3**, incluyendo redes WPA2/WPA3 Enterprise. Si están disponibles ambos WPA2 y WPA3, Unraid utilizará automáticamente WPA3 para una mayor seguridad.
+- **Adaptadores WiFi modernos** que tienen soporte de controlador Linux en el núcleo. Los adaptadores más antiguos podrían no ser compatibles.
+
+:::info[USB Adaptadores WiFi ]
+
+Si utilizas un adaptador WiFi USB, revisa esta lista de [Adaptadores WiFi USB compatibles con controladores en núcleo de Linux](https://github.com/morrownr/USB-WiFi/blob/main/home/USB_WiFi_Adapters_that_are_supported_with_Linux_in-kernel_drivers.md) para garantizar la compatibilidad.
+
+Si no se detecta tu adaptador WiFi, por favor, inicia un nuevo hilo en los [foros de Unraid](https://forums.unraid.net/) y proporciona tus diagnósticos para investigación.
+
+:::
+
+##### Limitaciones de WiFi
+
+WiFi tiene algunas limitaciones en comparación con las redes cableadas:
+
+- Solo puedes conectarte a **una red WiFi** a la vez.
+- Solo se admite un NIC inalámbrico - `wlan0`. Si tu sistema tiene múltiples adaptadores inalámbricos (`wlan1`, `wlan2`, etc.), solo se usará `wlan0`.
+- A diferencia de las conexiones cableadas, **no puedes combinar múltiples conexiones inalámbricas** para mejorar la fiabilidad.
+- **`wlan0` no puede participar en un bonding**. No puedes combinar conexiones WiFi y Ethernet en una configuración bonding.
+- Es mejor utilizar o bien una conexión cableada o WiFi, pero **no ambas al mismo tiempo**. Si necesitas conectar o desconectar temporalmente un cable de red mientras usas WiFi, tu servidor debería ajustarse automáticamente para utilizar la conexión activa en aproximadamente un minuto. Para información importante sobre contenedores Docker al cambiar entre tipos de conexión, vea la sección **Consideraciones para Docker y máquinas virtuales** a continuación.
+
+##### Consideraciones para Docker y máquinas virtuales
+
+Al usar WiFi, hay consideraciones específicas para los contenedores Docker y %%máquinas virtuales|vm%%:
+
+###### Contenedores Docker
+
+- En ***Ajustes → Docker***, cuando el WiFi está activado, el sistema usa automáticamente **ipvlan** para redes personalizadas (macvlan no es compatible con WiFi).
+- El acceso del anfitrión a las redes personalizadas debe estar deshabilitado en ***Ajustes → Docker***.
+- El **Tipo de Red** de un Contenedor no puede utilizar `br0`, `bond0` o `eth0`.
+
+:::caution
+
+Docker no puede participar en dos redes que comparten el mismo subred. Si cambias entre conexiones cableadas e inalámbricas, necesitarás reiniciar Docker y reconfigurar todos los contenedores existentes para usar la nueva interfaz. Este cambio de configuración de red requiere la reconfiguración de contenedores. Se recomienda encarecidamente elegir entre cableado o inalámbrico y no alternar entre ellos.
+:::
+
+###### Máquinas virtuales
+
+Se recomienda configurar el %%origen de red|vm%% de la %%Máquina Virtual|vm%% a **virbr0** (NAT Privado). Este modo funciona con cualquier número de %%Máquinas Virtuales|vm%% y proporciona acceso a la red a través de %%NAT|nat%%. Tenga en cuenta que mDNS no funciona a través de NAT, por lo que la %%Máquina Virtual|vm%% necesitará acceder a otros dispositivos de red local por dirección IP, no por nombre de host. Puedes agregar direcciones IP y nombres de host al archivo de hosts en el sistema operativo de la %%Máquina Virtual|vm%% para permitir el acceso por nombre de host. Las %%Máquinas Virtuales|vm%% no serán directamente accesibles desde otros dispositivos en tu LAN, pero aún puedes acceder a ellas vía %%VNC|vnc-session%% a través del anfitrión.
+
+Para más información acerca del networking de %%Máquinas Virtuales|vm%%, ver [Descripción general y preparación del sistema](../../using-unraid-to/create-virtual-machines/overview-and-system-prep.mdx).
 
 ### Modo de Energía
 
@@ -113,13 +195,13 @@ Unraid se puede conectar a un UPS (Suministro Ininterrumpido de Energía) APC (o
 
 ### Gestor de VM
 
-Las **máquinas virtuales** (VMs) pueden convertir tu servidor en un escritorio o reproductor multimedia, y ejecutar aplicaciones no diseñadas para Linux. Para detalles sobre la gestión de %%VMs|vm%% en Unraid, consulta [VM setup](../../using-unraid-to/create-virtual-machines/vm-setup.mdx).
+**Máquinas Virtuales** pueden convertir tu servidor en un escritorio o reproductor multimedia, y ejecutar aplicaciones no diseñadas para Linux. Para obtener detalles sobre la gestión de %%Máquinas Virtuales|vm%% en Unraid, consulta [Configuración de Vm](../../using-unraid-to/create-virtual-machines/vm-setup.mdx).
 
 <div style={{ margin: 'auto', maxWidth: '400px'}}>
   ![Gestor de VM](/img/settings-vmmanager.png)
 </div>
 
-## NFS (Sistema de Archivos de Red)
+## Servicios de Red
 
 **Servicios de Red** le permiten configurar protocolos de comunicación de red en su servidor Unraid, que son esenciales para el uso compartido de usuarios y discos. También puede habilitar un servidor %%FTP|ftp%%, un servidor de registros, y establecer un %%VPN|vpn-tunnel%% para acceso remoto seguro.
 
@@ -255,11 +337,11 @@ Habilita las notificaciones en **Navegador** para visibilidad inmediata al usar 
 
 :::
 
-#### Configuración SMTP
+#### Configuraciones de SMTP
 
 Para recibir notificaciones por correo electrónico, necesitas configurar la configuración de tu servidor de correo. Unraid es compatible con muchos proveedores de correo electrónico, incluidos Gmail, Outlook y servidores SMTP personalizados.
 
-La Configuración SMTP se encuentra en ***Configuración → Preferencias del Usuario → Configuración de Notificaciones → Configuración SMTP***.
+Las configuraciones de SMTP se pueden encontrar en ***Ajustes → Preferencias del Usuario → Configuraciones de Notificaciones → Configuraciones de SMTP***.
 
 **Configuración básica:**
 
