@@ -85,6 +85,88 @@ By default, Unraid tries to obtain an IP address from a DHCP server on your loca
   ![Netzwerkeinstellungen](/img/settings-network.png)
 </div>
 
+#### WiFi setup
+
+Unraid unterstützt die WLAN-Konnektivität für Situationen, in denen eine kabelgebundene Netzwerkverbindung unpraktisch oder nicht verfügbar ist. Während eine kabelgebundene Verbindung im Allgemeinen für bessere Stabilität und Leistung empfohlen wird, kann eine drahtlose Einrichtung eine geeignete Alternative sein, wenn das Verlegen eines Kabels keine Option ist.
+
+:::important[Initial Einrichtungsanforderungen]
+
+Für die anfängliche WiFi-Einrichtung benötigen Sie entweder:
+
+- Eine lokale Tastatur und einen Monitor, die an Ihren Server angeschlossen sind (im GUI-Modus booten), oder
+- Eine temporäre kabelgebundene Verbindung, um auf die %%WebGUI|web-gui%% zuzugreifen
+
+Sobald WiFi konfiguriert ist, können Sie die kabelgebundene Verbindung entfernen und Ihren Server drahtlos verwalten.
+
+:::
+
+##### WiFi einrichten
+
+1. Greifen Sie auf das WebGUI zu und gehen Sie zu ***Einstellungen → Netzwerkeinstellungen → Drahtlos wlan0***.
+2. Aktivieren Sie WiFi, indem Sie die Option **WiFi aktivieren** umschalten.
+3. Konfigurieren Sie die **Regulierungsregion**:
+   - In den meisten Fällen ist es am besten, dies auf **Automatisch** eingestellt zu lassen.
+   - Wenn Ihr bevorzugtes Netzwerk nicht in den Scanergebnissen angezeigt wird, stellen Sie es auf Ihren spezifischen Standort (Land/Region) ein.
+4. Verfügbare Netzwerke durchsuchen:
+   - Verfügbare WiFi-Netzwerke sollten aufgelistet sein.
+   - Klicken Sie auf das **Mit WiFi-Netzwerk verbinden** (ᯤ) Symbol neben Ihrem bevorzugten Netzwerk.
+5. Geben Sie Ihre Netzwerk-Anmeldeinformationen ein:
+   - Geben Sie Ihr WiFi-Passwort ein.
+   - Überprüfen und passen Sie zusätzliche Einstellungen bei Bedarf an.
+   - Klicken Sie auf **Diesem Netzwerk beitreten**, um sich zu verbinden.
+
+:::tip[Docker Container und WiFi]
+
+Wenn Sie planen, Docker-Container mit WiFi zu verwenden, stellen Sie sicher, dass alle kabelgebundenen Verbindungen **vor** dem Starten des Docker-Dienstes getrennt sind. Dies hilft, Netzwerk-Konflikte zu vermeiden, die auftreten können, wenn beide Schnittstellen gleichzeitig aktiv sind.
+
+:::
+
+##### Unterstützte WiFi-Funktionen
+
+Die WiFi-Implementierung von Unraid unterstützt Folgendes:
+
+- **WPA2** und **WPA3 Sicherheitsprotokolle**, einschließlich WPA2/WPA3 Enterprise-Netzwerke. Wenn sowohl WPA2 als auch WPA3 verfügbar sind, wird Unraid automatisch WPA3 zur Verbesserung der Sicherheit verwenden.
+- **Moderne WiFi-Adapter**, die Linux-In-Kernel-Treiberunterstützung haben. Ältere Adapter sind möglicherweise nicht kompatibel.
+
+:::info[USB WiFi-Adapter]
+
+Wenn Sie einen USB-WiFi-Adapter verwenden, überprüfen Sie diese Liste der [USB-WiFi-Adapter, die mit Linux-In-Kernel-Treibern unterstützt werden](https://github.com/morrownr/USB-WiFi/blob/main/home/USB_WiFi_Adapters_that_are_supported_with_Linux_in-kernel_drivers.md), um die Kompatibilität sicherzustellen.
+
+Wenn Ihr WiFi-Adapter nicht erkannt wird, starten Sie bitte einen neuen Thread im [Unraid-Forum](https://forums.unraid.net/) und stellen Sie Ihre Diagnosen zur Verfügung, um eine Untersuchung zu ermöglichen.
+
+:::
+
+##### WiFi-Einschränkungen
+
+WiFi hat einige Einschränkungen im Vergleich zu kabelgebundenen Netzwerken:
+
+- Sie können jeweils nur mit **einem WiFi-Netzwerk** verbunden sein.
+- Es wird nur eine drahtlose NIC unterstützt - `wlan0`. Wenn Ihr System mehrere drahtlose Adapter hat (`wlan1`, `wlan2`, etc.), wird nur `wlan0` verwendet.
+- Im Gegensatz zu kabelgebundenen Verbindungen können Sie **nicht mehrere drahtlose Verbindungen kombinieren**, um die Zuverlässigkeit zu verbessern.
+- **`wlan0` kann nicht an einem Bond teilnehmen**. Sie können WiFi- und Ethernet-Verbindungen nicht in einer Bond-Konfiguration kombinieren.
+- Es ist am besten, entweder eine kabelgebundene Verbindung oder WiFi zu verwenden, aber **nicht beides gleichzeitig**. Wenn Sie ein Netzwerkkabel während der Verwendung von WiFi vorübergehend anschließen oder trennen müssen, sollte Ihr Server automatisch anpassen, um die aktive Verbindung innerhalb von etwa einer Minute zu nutzen. Für wichtige Informationen zu Docker-Containern beim Wechsel zwischen Verbindungstypen, siehe den Abschnitt **Docker und virtuelle Maschinen Überlegungen** unten.
+
+##### Docker und virtuelle Maschinen Überlegungen
+
+Beim Gebrauch von WiFi gibt es spezifische Überlegungen für Docker-Container und %%Virtuelle Maschinen|vm%%:
+
+###### Docker-Container
+
+- Auf ***Einstellungen → Docker***, wenn WiFi aktiviert ist, verwendet das System automatisch **ipvlan** für benutzerdefinierte Netzwerke (macvlan wird mit WiFi nicht unterstützt).
+- Host-Zugriff auf benutzerdefinierte Netzwerke muss in ***Einstellungen → Docker*** deaktiviert sein.
+- Der Container-**Netzwerktyp** kann nicht `br0`, `bond0` oder `eth0` verwenden.
+
+:::caution
+
+Docker kann nicht an zwei Netzwerken teilnehmen, die dasselbe Subnetz teilen. Wenn Sie zwischen kabelgebundenen und drahtlosen Verbindungen wechseln, müssen Sie Docker neu starten und alle vorhandenen Container neu konfigurieren, um die neue Schnittstelle zu verwenden. Diese Netzwerk-Konfigurationsänderung erfordert Container-Neukonfiguration. Es wird stark empfohlen, entweder kabelgebunden oder drahtlos zu wählen und nicht zwischen ihnen zu wechseln.
+:::
+
+###### Virtuelle Maschinen
+
+Es wird empfohlen, Ihre %%VM|vm%% **Netzwerkquelle** auf **virbr0** (Private NAT) einzurichten. Dieser Modus funktioniert mit einer beliebigen Anzahl von %%VMs|vm%% und stellt den Netzwerkzugang über %%NAT|nat%% bereit. Beachten Sie, dass mDNS nicht über NAT funktioniert, sodass die %%VM|vm%% auf andere lokale Netzwerkgeräte über die IP-Adresse und nicht über den Hostnamen zugreifen muss. Sie können IP-Adressen und Hostnamen zur Hosts-Datei im Betriebssystem der %%VM|vm%% hinzufügen, um den Zugriff über den Hostnamen zu ermöglichen. Die %%VMs|vm%% sind nicht direkt von anderen Geräten in Ihrem LAN erreichbar, aber Sie können dennoch über %%VNC|vnc-session%% über den Host auf sie zugreifen.
+
+Für weitere Informationen zur %%VM|vm%%-Vernetzung, siehe [Übersicht und Systemvorbereitung](../../using-unraid-to/create-virtual machines/overview-and-system-prep.mdx).
+
 ### Leistungsmodus
 
 Die Einstellung **Power Mode** ermöglicht es Ihnen, Ihren Unraid-Server für Energieeffizienz, ausgewogene Betriebsweise oder maximale Leistung zu optimieren. Sie können aus den verfügbaren Modi - **Beste Energieeffizienz**, **Ausgewogener Betrieb** oder **Beste Leistung** - wählen, um Ihren Arbeitslasten und Energiepräferenzen gerecht zu werden. Die Anpassung des Power Modes kann dazu beitragen, den Energieverbrauch zu senken, die Systemtemperaturen zu reduzieren oder zusätzliche Ressourcen für anspruchsvolle Aufgaben bereitzustellen.
@@ -113,13 +195,13 @@ Unraid kann mit einer APC (oder kompatiblen) USV (Unterbrechungsfreie Stromverso
 
 ### VM-Manager
 
-**Virtuelle Maschinen** (VMs) können Ihren Server in einen Desktop oder Medienplayer verwandeln und Anwendungen ausführen, die nicht für Linux konzipiert sind. Weitere Informationen zum Verwalten von %%VMs|vm%% auf Unraid finden Sie im Abschnitt [VM-Einrichtung](../../using-unraid-to/create-virtual-machines/vm-setup.mdx).
+**Virtuelle Maschinen** können Ihren Server in einen Desktop oder Media Player verwandeln und Anwendungen ausführen, die nicht für Linux entwickelt wurden. Für Details zur Verwaltung von %%VMs|vm%% auf Unraid, siehe [VM Einrichtung](../../using-unraid-to/create-virtual-machines/vm-setup.mdx).
 
 <div style={{ margin: 'auto', maxWidth: '400px'}}>
   ![VM-Manager](/img/settings-vmmanager.png)
 </div>
 
-## NFS (Network File System)
+## Netzwerkdienste
 
 **Network Services** let you configure network communication protocols on your Unraid server, which are essential for user and disk shares. You can also enable an %%FTP|ftp%% server, a logging server, and set up a %%VPN|vpn-tunnel%% for secure remote access.
 
@@ -199,7 +281,7 @@ Ermöglicht es Ihnen, die lokale Systemkonsole anzupassen. Sie können das Tasta
   ![Konsoleneinstellungen](/img/settings-console.png)
 </div>
 
-### Anzeigeneinstellungen
+### Anzeigeeinstellungen
 
 Passen Sie das Erscheinungsbild des Unraid %%WebGUI|web-gui%% auf dieser Seite an, indem Sie das Datums- und Zeitformat, das Zahlenformat anpassen und zwischen Registerkartensicht und nicht registerkartensicht umschalten. Sie können auch die Temperatureinheit auswählen und aus verschiedenen Themen für die Benutzeroberfläche wählen.
 
