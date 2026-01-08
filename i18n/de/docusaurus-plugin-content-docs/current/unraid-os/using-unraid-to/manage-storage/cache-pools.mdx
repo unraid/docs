@@ -82,7 +82,7 @@ Um einen Pool in BTRFS oder ZFS zu konvertieren:
 
 ### Hinzufügen von Laufwerken zur Erstellung eines Mehrgerätepools
 
-Sobald Ihr Pool als %%BTRFS&#124;btrfs%% oder %%ZFS&#124;zfs%% formatiert ist, können Sie weitere Laufwerke für Redundanz und zur Speichererweiterung hinzufügen.
+Sobald Ihr Pool als %%BTRFS|btrfs%% oder %%ZFS|zfs%% formatiert ist, können Sie weitere Laufwerke für mehr Redundanz und zur Erweiterung des Speichers hinzufügen. Für detaillierte Anweisungen zum Hinzufügen von Festplatten zu bestehenden Pools, siehe [Festplatten zu einem Pool hinzufügen](#adding-disks-to-a-pool).
 
 Die %%Cache-Pools|cache-pool%% in Unraid können von einem Einzelgerät auf mehrere Geräte erweitert werden, was eine erhöhte Kapazität und Redundanz ermöglicht. Um den Mehrgerätemodus zu nutzen, muss Ihr Pool als %%BTRFS|btrfs%% oder %%ZFS|zfs%% formatiert sein.
 
@@ -111,13 +111,60 @@ Wenn Sie Ihrem Pool Festplatten hinzufügen möchten, stellen Sie sicher, dass I
 
 :::
 
-Wenn Ihr Speicherbedarf wächst, möchten Sie vielleicht Ihren Cache-Pool durch das Hinzufügen zusätzlicher Festplatten erweitern. Dieser Prozess ermöglicht Ihnen, sowohl die Kapazität als auch die Leistung zu erhöhen und gleichzeitig den Datenschutz durch RAID-Konfigurationen zu gewährleisten.
+### BTRFS-Pools
+
+To add a disk to a %%BTRFS|btrfs%% pool:
 
 1. Stoppen Sie das %%array|array%%.
 2. Öffnen Sie im **Main**-Tab den Pool.
-3. Setzen Sie im Abschnitt Poolgeräte die **Slots** auf die genaue Anzahl weiterer Geräte.
+3. Im Abschnitt **Pool-Geräte** stellen Sie die **Slots** auf die genaue Anzahl zusätzlicher Geräte ein.
 4. Weisen Sie die neuen Geräte den verfügbaren Slots zu.
 5. Start the %%array|array%% to enable the changes.
+
+:::note
+
+Nach dem Starten des %%array|array%% beginnt %%BTRFS|btrfs%% automatisch mit einem **Balance**-Vorgang, um die Daten auf alle Geräte im Pool neu zu verteilen. Dieser Prozess kann mehrere Stunden oder sogar Tage dauern, je nach Größe Ihres Pools und der gespeicherten Datenmenge. Während dieser Zeit kann Ihr Pool beschäftigt erscheinen, aber Sie können ihn weiterhin normal verwenden. Sie können den Fortschritt des Balancing im **Main**-Tab überwachen, indem Sie auf das erste Pool-Gerät klicken und den **Balance-Status** überprüfen.
+
+:::
+
+### ZFS Pools
+
+Die Erweiterung von %%ZFS|zfs%%-Pools hängt von Ihrer Poolkonfiguration ab:
+
+- **Einzel-vdev RAIDZ1/2/3-Pools:** Ein Pool mit einer Gruppe von Laufwerken in einer RAIDZ-Konfiguration. Kann Laufwerk für Laufwerk erweitert werden. Siehe [RAIDZ-Erweiterung](#raidz-expansion) unten.
+- **Spiegel-Pools:** Ein Pool, in dem Laufwerke paarweise in Spiegeln angeordnet sind. Sie können zusätzliche Spiegelpaare hinzufügen, um die Kapazität zu erhöhen.
+- **Multi-vdev-Pools:** Ein Pool mit mehreren Laufwerksgruppen (z.B. mehrere RAIDZ-Gruppen oder mehrere Spiegelpaare). Kann nicht durch Hinzufügen einzelner Festplatten zu bestehenden Gruppen erweitert werden.
+
+:::important
+
+Nicht alle %%ZFS|zfs%%-Pools können durch Hinzufügen von Geräten erweitert werden. Nur Einzel-vdev RAIDZ1/2/3-Pools erlauben eine Erweiterung von Laufwerk zu Laufwerk. Andere Pool-Konfigurationen erfordern das Hinzufügen kompletter vdevs, wie das Hinzufügen eines neuen Spiegelpaars zu einem Spiegel-Pool oder das Hinzufügen eines neuen vdev mit derselben Breite zu einem RAIDZ-Pool.
+
+:::
+
+:::tip[Planning für zukünftige Erweiterung.
+
+Wenn Sie einen neuen Zwei-Geräte-%%ZFS|zfs%%-Pool erstellen und planen, ihn später durch Hinzufügen von Laufwerken zu erweitern, wählen Sie bei der Ersteinrichtung **RAIDZ1** anstelle der standardmäßigen Spiegelkonfiguration. Während Zwei-Geräte-Pools standardmäßig auf Spiegel eingestellt sind (was Redundanz bietet), ermöglicht Ihnen die Auswahl von RAIDZ1, den Pool künftig schrittweise zu erweitern, ohne Ihre Daten migrieren zu müssen. Wenn Sie nicht mehr als zwei Laufwerke erweitern möchten, wird die standardmäßige Spiegelkonfiguration aufgrund ihrer Einfachheit und Leistung empfohlen.
+
+:::
+
+#### RAIDZ-Erweiterung
+
+Ab Unraid 7.2 können Sie Einzel-vdev RAIDZ1/2/3-Pools Laufwerk für Laufwerk erweitern. Diese Funktion ermöglicht es Ihnen, die Kapazität Ihres Pools schrittweise zu erweitern, ohne den gesamten Pool neu aufzubauen.
+
+Um einen Einzel-vdev RAIDZ-Pool zu erweitern:
+
+1. Während das %%array|array%% läuft, wählen Sie auf ***Main → Pool-Geräte*** den Poolnamen aus, um die Details anzuzeigen.
+2. Im Bereich **Pool-Status** prüfen Sie, ob eine **Upgrade-Pool**-Schaltfläche vorhanden ist. Wenn ja, klicken Sie darauf, bevor Sie fortfahren. Beachten Sie, dass ein Upgrade des Pools Ihre Fähigkeit einschränkt, auf frühere Versionen von Unraid zurückzustufen.
+3. Stoppen Sie das %%array|array%%.
+4. Auf ***Main → Pool-Geräte*** einen Slot zum Pool hinzufügen.
+5. Das passende Laufwerk auswählen (muss mindestens so groß sein wie das kleinste Laufwerk im Pool).
+6. Starten Sie das %%array|array%%.
+
+:::caution
+
+Wenn Sie eine "ungültige Erweiterung"-Warnung sehen, muss der Pool zuerst mit der in Schritt 2 erwähnten **Upgrade-Pool**-Schaltfläche aktualisiert werden.
+
+:::
 
 ---
 
@@ -135,7 +182,7 @@ Removing a disk from a %%BTRFS|btrfs%% or %%ZFS|zfs%% multi-device %%cache pool|
 
 ### Ändern von Pool-RAID-Leveln
 
-%%BTRFS|btrfs%% provides the ability to change %%RAID|raid%% levels for %%cache pools|cache-pool%% dynamically, allowing you to adjust settings without stopping the %%array|array%% or losing any data. This flexibility lets you optimize for performance, redundancy, or storage efficiency as your requirements change.
+%%BTRFS|btrfs%% provides the ability to change %%RAID|raid%% levels for %%cache pools|cache-pool%% dynamically, allowing you to adjust settings without stopping the %%array|array%% or losing any data. This flexibility lets you optimize for performance, redundancy, or storage efficiency as your requirements change. For information on adding disks to %%BTRFS|btrfs%% pools, see [BTRFS pools](#btrfs-pools).
 
 <h4>Unterstützte %%RAID&#124;raid%% Level</h4>
 
