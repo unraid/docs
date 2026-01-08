@@ -82,7 +82,7 @@ If your %%cache pool|cache-pool%% isn't already formatted as %%BTRFS|btrfs%% or 
 
 ### 向多设备池中添加磁盘
 
-一旦您的池格式化为 %%BTRFS|btrfs%% 或 %%ZFS|zfs%%，您可以添加更多驱动器以增加冗余和扩展存储。
+一旦您的池格式化为 %%BTRFS|btrfs%% 或 %%ZFS|zfs%%，您可以添加更多磁盘来提高冗余度并扩展存储。有关向现有池添加磁盘的详细说明，请参阅[添加磁盘到池](#adding-disks-to-a-pool)。
 
 %%Cache pools|cache-pool%% in Unraid can be expanded from a single device to multiple devices, allowing for increased capacity and redundancy. To take advantage of multi-device mode, your pool must be formatted as %%BTRFS|btrfs%% or %%ZFS|zfs%%.
 
@@ -111,13 +111,60 @@ If your %%cache pool|cache-pool%% isn't already formatted as %%BTRFS|btrfs%% or 
 
 :::
 
-随着您的存储需求增长，您可能希望通过添加额外的硬盘来扩展您的缓存池。此过程使您能够在提高容量和性能的同时，通过 RAID 配置保持数据保护。
+### BTRFS 池
+
+要向 %%BTRFS|btrfs%% 池中添加磁盘：
 
 1. 停止%%array|array%%。
 2. 在**主**选项卡中，打开池。
-3. 在池设备部分，将**槽位**设置为额外设备的确切数量。
+3. 在**池设备**区域，将**插槽**设置为额外设备的确切数量。
 4. 将新设备分配到可用槽位上。
 5. Start the %%array|array%% to enable the changes.
+
+:::note
+
+启动 %%array|array%% 后，%%BTRFS|btrfs%% 会自动开始**平衡**操作，将数据重新分布到池中的所有设备上。根据池的大小和存储的数据量，这个过程可能需要几个小时甚至几天。在此期间，您的池可能会显得繁忙，但您可以正常使用它。您可以在**主**选项卡中点击第一个池设备并查看**平衡状态**以监控平衡进度。
+
+:::
+
+### ZFS 池
+
+扩展 %%ZFS|zfs%% 池取决于您的池配置类型：
+
+- **Single-vdev RAIDZ1/2/3 pools:** A pool with one group of drives in a RAIDZ configuration. Can be expanded one drive at a time. See [RAIDZ expansion](#raidz-expansion) below.
+- **镜像池：** 驱动器成对镜像的池。可以添加额外的镜像对以增加容量。
+- **Multi-vdev pools:** A pool with multiple groups of drives (e.g., multiple RAIDZ groups or multiple mirror pairs). Cannot be expanded by adding individual drives to existing groups.
+
+:::important
+
+并非所有 %%ZFS|zfs%% 池都可以通过添加设备进行扩展。只有单vdev RAIDZ1/2/3 池允许一次一个磁盘地扩展。其他池配置需要您添加完整的 vdev，例如向镜像池添加一个新的镜像对或向一个 RAIDZ 池添加一个相同宽度的新 vdev。
+
+:::
+
+:::tip[Planning 为未来扩展]
+
+如果您正在创建一个新的两设备%%ZFS|zfs%%池，并计划以后通过一次添加一个驱动器的方式进行扩展，请在初始设置时选择 **RAIDZ1**，而不是默认的镜像配置。 虽然两个设备池默认为镜像（提供冗余），选择 RAIDZ1 可以让您以后在不迁移数据的情况下逐步扩展池。如果您不打算扩展到两个以上的驱动器，建议使用默认的镜像配置以获得其简单性和性能。
+
+:::
+
+#### RAIDZ 扩展
+
+Starting with Unraid 7.2, you can expand single-vdev RAIDZ1/2/3 pools one drive at a time. This feature allows you to grow your pool capacity incrementally without rebuilding the entire pool.
+
+To expand a single-vdev RAIDZ pool:
+
+1. 当 %%array|array%% 运行时，在 ***主→池设备***中，选择池名称以查看详细信息。
+2. 在**池状态**区域，检查是否有**升级池**按钮。如果存在，在继续之前您需要点击此按钮。注意，升级池会限制您降级到 Unraid 的早期版本的能力。
+3. 停止%%array|array%%。
+4. 在 ***Main → Pool Devices*** 上，向池添加一个插槽。
+5. 选择合适的驱动器（至少要与池中最小的驱动器一样大）。
+6. 启动 %%array|array%%。
+
+:::caution
+
+如果看到"无效扩展"警告，则需要先使用第二步中提到的**升级池**按钮升级池。
+
+:::
 
 ---
 
@@ -135,7 +182,7 @@ Removing a disk from a %%BTRFS|btrfs%% or %%ZFS|zfs%% multi-device %%cache pool|
 
 ### 改变池的 RAID 级别
 
-%%BTRFS|btrfs%% provides the ability to change %%RAID|raid%% levels for %%cache pools|cache-pool%% dynamically, allowing you to adjust settings without stopping the %%array|array%% or losing any data. This flexibility lets you optimize for performance, redundancy, or storage efficiency as your requirements change.
+%%BTRFS|btrfs%% provides the ability to change %%RAID|raid%% levels for %%cache pools|cache-pool%% dynamically, allowing you to adjust settings without stopping the %%array|array%% or losing any data. This flexibility lets you optimize for performance, redundancy, or storage efficiency as your requirements change. For information on adding disks to %%BTRFS|btrfs%% pools, see [BTRFS pools](#btrfs-pools).
 
 <h4>支持的 %%RAID|raid%% 级别</h4>
 
