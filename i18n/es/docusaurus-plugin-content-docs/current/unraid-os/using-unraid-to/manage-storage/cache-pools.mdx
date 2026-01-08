@@ -82,7 +82,7 @@ Para convertir un grupo a BTRFS o ZFS:
 
 ### Agregar discos para crear una piscina multi-dispositivo
 
-Una vez que su piscina esté formateada como %%BTRFS|btrfs%% o %%ZFS|zfs%%, puede agregar más discos para aumentar la redundancia y ampliar el almacenamiento.
+Una vez que su grupo esté formateado como %%BTRFS|btrfs%% o %%ZFS|zfs%%, puede agregar más discos para redundancia y para expandir el almacenamiento. Para obtener instrucciones detalladas sobre cómo agregar discos a grupos existentes, consulte [Añadiendo discos a un grupo](#adding-disks-to-a-pool).
 
 %%Cache pools|cache-pool%% in Unraid can be expanded from a single device to multiple devices, allowing for increased capacity and redundancy. To take advantage of multi-device mode, your pool must be formatted as %%BTRFS|btrfs%% or %%ZFS|zfs%%.
 
@@ -111,13 +111,60 @@ Si desea agregar discos a su grupo, asegúrese de que su grupo ya esté formatea
 
 :::
 
-A medida que crescen tus necesidades de almacenamiento, es posible que quieras expandir tu pool de caché añadiendo discos adicionales. Este proceso te permite aumentar tanto la capacidad como el rendimiento mientras mantienes la protección de datos a través de configuraciones RAID.
+### Pools BTRFS
+
+Para añadir un disco a un pool %%BTRFS|btrfs%%:
 
 1. Detenga el %%array|array%%.
 2. En la pestaña **Principal**, abra el grupo.
-3. En la sección Dispositivos del Grupo, establezca **Ranuras** para el número exacto de dispositivos adicionales.
+3. En la sección **Dispositivos del Pool**, ajuste **Ranuras** al número exacto de dispositivos adicionales.
 4. Asigne los nuevos dispositivos a las ranuras disponibles.
 5. Inicie el %%arreglo|array%% para habilitar los cambios.
+
+:::note
+
+Después de comenzar el %%array|array%%, %%BTRFS|btrfs%% comienza automáticamente una operación de **Balance** para redistribuir los datos entre todos los dispositivos en el grupo. Este proceso puede tardar varias horas o incluso días, dependiendo del tamaño de su grupo y la cantidad de datos almacenados. Durante este tiempo, su grupo puede parecer ocupado, pero puede seguir usándolo normalmente. Puede monitorear el progreso del Balance en la pestaña **Principal** haciendo clic en el primer dispositivo del grupo y verificando **Estado del Balance**.
+
+:::
+
+### Pools ZFS
+
+La expansión de pools de %%ZFS|zfs%% depende de su tipo de configuración de pool:
+
+- **Pools RAIDZ1/2/3 de un solo vdev:** Un pool con un grupo de discos en una configuración RAIDZ. Se puede expandir un disco a la vez. Vea [expansión RAIDZ](#raidz-expansion) a continuación.
+- **Pools en espejo:** Un pool donde los discos están emparejados en espejos. Se pueden añadir pares de espejos adicionales para aumentar la capacidad.
+- **Pools multi-vdev:** Un pool con múltiples grupos de discos (e.g., múltiples grupos RAIDZ o múltiples pares en espejo). No se puede expandir añadiendo discos individuales a grupos existentes.
+
+:::important
+
+No todos los pools %%ZFS|zfs%% pueden expandirse añadiendo dispositivos. Solo los pools single-vdev RAIDZ1/2/3 permiten expansión disco a disco. Otras configuraciones de pool requieren agregar vdevs completos, como añadir un nuevo par en espejo a un pool espejado o añadir un nuevo vdev del mismo ancho a un pool RAIDZ.
+
+:::
+
+:::tip[Planning para futura expansión]
+
+Si está creando un nuevo pool %%ZFS|zfs%% de dos dispositivos y planea expandirlo más tarde añadiendo discos uno a la vez, elija **RAIDZ1** durante la configuración inicial en lugar de la configuración predefinida en espejo. Mientras que los pools de dos dispositivos tienen un espejo por defecto (que proporciona redundancia), elegir RAIDZ1 le permite expandir el pool de forma incremental en el futuro sin tener que migrar sus datos. Si no planea expandirse más allá de dos discos, se recomienda la configuración en espejo por su simplicidad y rendimiento.
+
+:::
+
+#### Expansión RAIDZ
+
+A partir de Unraid 7.2, puede expandir pools single-vdev RAIDZ1/2/3 un disco a la vez. Esta función le permite incrementar la capacidad de su pool de forma incremental sin reconstruir todo el pool.
+
+Para expandir un pool RAIDZ single-vdev:
+
+1. Con el %%array|array%% en ejecución, en ***Principal → Dispositivos del Pool***, seleccione el nombre del pool para ver los detalles.
+2. En el área de **Estado del Grupo**, verifique si hay un botón de **Actualizar Grupo**. Si existe, deberá hacer clic en él antes de continuar. Tenga en cuenta que actualizar el grupo limitará su capacidad para volver a versiones anteriores de Unraid.
+3. Detenga el %%array|array%%.
+4. En ***Principal → Dispositivos del Pool***, agregue una ranura al pool.
+5. Seleccione la unidad adecuada (debe ser al menos tan grande como la unidad más pequeña en el pool).
+6. Inicie el %%array|matriz%%.
+
+:::caution
+
+Si ve una advertencia de "expansión inválida", necesita actualizar primero el pool usando el botón **Actualizar Grupo** mencionado en el paso 2.
+
+:::
 
 ---
 
@@ -135,7 +182,7 @@ Remover un disco de un %%BTRFS|btrfs%% o %%ZFS|zfs%% multi-device %%cache pool|p
 
 ### Cambio de niveles RAID del grupo
 
-%%BTRFS|btrfs%% proporciona la capacidad de cambiar los niveles de %%RAID|raid%% para %%cache pools|pools de caché%% dinámicamente, permitiéndote ajustar configuraciones sin detener el %%array|array%% ni perder ningún dato. Esta flexibilidad te permite optimizar para rendimiento, redundancia o eficiencia de almacenamiento a medida que cambian tus requisitos.
+%%BTRFS|btrfs%% provides the ability to change %%RAID|raid%% levels for %%cache pools|cache-pool%% dynamically, allowing you to adjust settings without stopping the %%array|array%% or losing any data. This flexibility lets you optimize for performance, redundancy, or storage efficiency as your requirements change. For information on adding disks to %%BTRFS|btrfs%% pools, see [BTRFS pools](#btrfs-pools).
 
 <h4>Niveles %%RAID|raid%% Soportados</h4>
 
