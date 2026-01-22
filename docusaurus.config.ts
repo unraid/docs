@@ -55,7 +55,7 @@ const config: Config = {
   // to replace "en" with "zh-Hans".
   markdown: {
     hooks: {
-      onBrokenMarkdownLinks: "warn",
+      onBrokenMarkdownLinks: () => "warn",
     },
   },
   i18n: {
