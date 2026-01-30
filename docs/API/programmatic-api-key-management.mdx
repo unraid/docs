@@ -1,31 +1,22 @@
 ---
-title: Programmatic API Key Management
+title: Programmatic API key management
 description: Create, use, and delete API keys programmatically for automated workflows
 sidebar_position: 4
 ---
 
-# Programmatic API Key Management
+<!-- markdownlint-disable MD025 MD024 -->
+
+# Programmatic API key management
 
 This guide explains how to create, use, and delete API keys programmatically using the Unraid API CLI, enabling automated workflows and scripts.
 
 ## Overview
 
-The `unraid-api apikey` command supports both interactive and non-interactive modes, making it suitable for:
+The `unraid-api apikey` command supports both interactive and non-interactive modes, making it suitable for automated deployment scripts, CI/CD pipelines, temporary access provisioning, and infrastructure as code workflows.
 
-- Automated deployment scripts
-- CI/CD pipelines
-- Temporary access provisioning
-- Infrastructure as code workflows
+## Creating API keys
 
-:::tip[Quick Start]
-
-Jump to the [Complete Workflow Example](#complete-workflow-example) to see everything in action.
-
-:::
-
-## Creating API Keys Programmatically
-
-### Basic Creation with JSON Output
+**Basic creation with JSON output:**
 
 Use the `--json` flag to get machine-readable output:
 
@@ -43,7 +34,7 @@ unraid-api apikey --create --name "workflow key" --roles ADMIN --json
 }
 ```
 
-### Advanced Creation with Permissions
+**Advanced creation with permissions:**
 
 ```bash
 unraid-api apikey --create \
@@ -53,7 +44,7 @@ unraid-api apikey --create \
   --json
 ```
 
-### Handling Existing Keys
+**Handling existing keys:**
 
 If a key with the same name exists, use `--overwrite`:
 
@@ -61,15 +52,15 @@ If a key with the same name exists, use `--overwrite`:
 unraid-api apikey --create --name "existing key" --roles ADMIN --overwrite --json
 ```
 
-:::warning[Key Replacement]
+:::warning
 
 The `--overwrite` flag will permanently replace the existing key. The old key will be immediately invalidated.
 
 :::
 
-## Deleting API Keys Programmatically
+## Deleting API keys
 
-### Non-Interactive Deletion
+**Non-interactive deletion:**
 
 Delete a key by name without prompts:
 
@@ -79,11 +70,11 @@ unraid-api apikey --delete --name "workflow key"
 
 **Output:**
 
-```
+```text
 Successfully deleted 1 API key
 ```
 
-### JSON Output for Deletion
+**JSON output for deletion:**
 
 Use `--json` flag for machine-readable delete confirmation:
 
@@ -114,7 +105,7 @@ unraid-api apikey --delete --name "workflow key" --json
 }
 ```
 
-### Error Handling
+**Error handling:**
 
 When the specified key doesn't exist:
 
@@ -132,9 +123,9 @@ unraid-api apikey --delete --name "nonexistent key"
 }
 ```
 
-## Complete Workflow Example
+## Complete workflow example
 
-Here's a complete example for temporary access provisioning:
+This example demonstrates temporary access provisioning:
 
 ```bash
 #!/bin/bash
@@ -165,9 +156,9 @@ trap 'echo "Cleaning up..."; unraid-api apikey --delete --name "temp deployment 
 echo "Deployment completed successfully"
 ```
 
-## Command Reference
+## Command reference
 
-### Create Command Options
+**Create command options:**
 
 | Flag                    | Description             | Example                           |
 | ----------------------- | ----------------------- | --------------------------------- |
@@ -178,78 +169,32 @@ echo "Deployment completed successfully"
 | `--overwrite`           | Replace existing key    | `--overwrite`                     |
 | `--json`                | Machine-readable output | `--json`                          |
 
-### Available Roles
+**Available roles:** `ADMIN` (full system access), `CONNECT` (Unraid Connect features), `VIEWER` (read-only access), `GUEST` (limited access).
 
-- `ADMIN` - Full system access
-- `CONNECT` - Unraid Connect features
-- `VIEWER` - Read-only access
-- `GUEST` - Limited access
+**Available resources:** `ACTIVATION_CODE`, `API_KEY`, `ARRAY`, `CLOUD`, `CONFIG`, `CONNECT`, `CONNECT__REMOTE_ACCESS`, `CUSTOMIZATIONS`, `DASHBOARD`, `DISK`, `DISPLAY`, `DOCKER`, `FLASH`, `INFO`, `LOGS`, `ME`, `NETWORK`, `NOTIFICATIONS`, `ONLINE`, `OS`, `OWNER`, `PERMISSION`, `REGISTRATION`, `SERVERS`, `SERVICES`, `SHARE`, `VARS`, `VMS`, `WELCOME`.
 
-### Available Resources and Actions
+**Available actions:** `CREATE_ANY`, `CREATE_OWN`, `READ_ANY`, `READ_OWN`, `UPDATE_ANY`, `UPDATE_OWN`, `DELETE_ANY`, `DELETE_OWN`.
 
-**Resources:** `ACTIVATION_CODE`, `API_KEY`, `ARRAY`, `CLOUD`, `CONFIG`, `CONNECT`, `CONNECT__REMOTE_ACCESS`, `CUSTOMIZATIONS`, `DASHBOARD`, `DISK`, `DISPLAY`, `DOCKER`, `FLASH`, `INFO`, `LOGS`, `ME`, `NETWORK`, `NOTIFICATIONS`, `ONLINE`, `OS`, `OWNER`, `PERMISSION`, `REGISTRATION`, `SERVERS`, `SERVICES`, `SHARE`, `VARS`, `VMS`, `WELCOME`
-
-**Actions:** `CREATE_ANY`, `CREATE_OWN`, `READ_ANY`, `READ_OWN`, `UPDATE_ANY`, `UPDATE_OWN`, `DELETE_ANY`, `DELETE_OWN`
-
-### Delete Command Options
+**Delete command options:**
 
 | Flag            | Description              | Example           |
 | --------------- | ------------------------ | ----------------- |
 | `--delete`      | Enable delete mode       | `--delete`        |
 | `--name <name>` | Key to delete (optional) | `--name "my key"` |
 
-**Note:** If `--name` is omitted, the command runs interactively.
+If `--name` is omitted, the command runs interactively.
 
-## Best Practices
+Use specific permissions instead of ADMIN role when possible (for example, `--permissions "DOCKER:READ_ANY"` instead of `--roles ADMIN`). Always clean up temporary keys after use and store API keys securely (environment variables, secrets management). Use descriptive names that include purpose and date for audit trails. Note that names must contain only letters, numbers, and spaces (Unicode letters are supported).
 
-:::info[Security Best Practices]
-
-**Minimal Permissions**
-
-- Use specific permissions instead of ADMIN role when possible
-- Example: `--permissions "DOCKER:READ_ANY"` instead of `--roles ADMIN`
-
-**Key Lifecycle Management**
-
-- Always clean up temporary keys after use
-- Store API keys securely (environment variables, secrets management)
-- Use descriptive names and descriptions for audit trails
-
-:::
-
-### Error Handling
-
-- Check exit codes (`$?`) after each command
-- Use `set -e` in bash scripts to fail fast
-- Implement proper cleanup with `trap`
-
-### Key Naming
-
-- Use descriptive names that include purpose and date
-- Names must contain only letters, numbers, and spaces
-- Unicode letters are supported
+Check exit codes (`$?`) after each command. Use `set -e` in bash scripts to fail fast and implement proper cleanup with `trap`.
 
 ## Troubleshooting
 
-### Common Issues
+**Common error messages:**
 
-:::note[Common Error Messages]
-
-**"API key name must contain only letters, numbers, and spaces"**
-
-- **Solution:** Remove special characters like hyphens, underscores, or symbols
-
-**"API key with name 'x' already exists"**
-
-- **Solution:** Use `--overwrite` flag or choose a different name
-
-**"Please add at least one role or permission to the key"**
-
-- **Solution:** Specify either `--roles` or `--permissions` (or both)
-
-:::
-
-### Debug Mode
+- **"API key name must contain only letters, numbers, and spaces"**: Remove special characters like hyphens, underscores, or symbols.
+- **"API key with name 'x' already exists"**: Use `--overwrite` flag or choose a different name.
+- **"Please add at least one role or permission to the key"**: Specify either `--roles` or `--permissions` (or both).
 
 For troubleshooting, run with debug logging:
 
