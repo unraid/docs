@@ -181,6 +181,11 @@ const config: Config = {
       },
       items: [
         {
+          to: "/guides/",
+          label: "Guides",
+          position: "left",
+        },
+        {
           items: [
             { href: "https://unraid.net", label: "Unraid Home" },
             { href: "https://forums.unraid.net", label: "Forums" },
@@ -260,6 +265,22 @@ const config: Config = {
 
   plugins: [
     "docusaurus-plugin-image-zoom",
+    [
+      "@docusaurus/plugin-content-docs",
+      {
+        id: "guides",
+        path: "guides",
+        routeBasePath: "guides",
+        sidebarPath: "./sidebarsGuides.js",
+        editUrl: ({ locale, versionDocsDirPath, docPath }) => {
+          if (locale !== DEFAULT_LOCALE) {
+            return `https://translate.unraid.net/unraid-docs/${locale}`;
+          }
+          const branch = process.env.GITHUB_BRANCH || "main";
+          return `https://github.com/unraid/docs/edit/${branch}/${versionDocsDirPath}/${docPath}`;
+        },
+      },
+    ],
     [
       "@docusaurus/plugin-ideal-image",
       {
