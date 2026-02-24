@@ -8,7 +8,9 @@ sidebar_label: Personnaliser les paramètres d'Unraid
 Le système d'exploitation Unraid fonctionne automatiquement mais permet une personnalisation supplémentaire des paramètres tels que l'adresse IP, le nom d'hôte, les paramètres de disque et bien plus via l'onglet **Paramètres** dans le **%%WebGUI|web-gui%%** d'Unraid.
 
 :::tip[Tailscale intégration]
+
 **Tailscale** est un plugin optionnel que vous pouvez installer via l'onglet **Apps** en recherchant "Tailscale". Il fournit un accès distant sécurisé à votre réseau et ajoute une section **Tailscale** à vos **Paramètres** pour des capacités de gestion à distance améliorées.
+
 :::
 
 <div style={{ margin: 'auto', maxWidth: '700px'}}>
@@ -17,7 +19,7 @@ Le système d'exploitation Unraid fonctionne automatiquement mais permet une per
 
 N'oubliez pas - le %%WebGUI|web-gui%% inclut une aide intégrée. Pour accéder à l'aide pour un champ spécifique, cliquez sur l'invite à côté ou utilisez l'icône **Aide** ![Icône d'aide](/img/helpicon.png) en haut à droite de l'interface pour activer l'aide pour tous les champs.
 
-## Paramètres système
+## Ancrage du processeur
 
 Les **Paramètres système** vous permettent de configurer des fonctions clés telles que le réseau, le partage, les %%VM|vm%% et les paramètres de disque.
 
@@ -37,7 +39,7 @@ Sur cette page, vous pouvez définir votre fuseau horaire et activer jusqu'à qu
   ![Barre d'outils - Paramètres](/img/date-time.png)
 </div>
 
-### Paramètres du disque
+### Paramètres du disque {#disk-settings}
 
 Vous pouvez modifier des paramètres supplémentaires pour vos périphériques disque sur cette page. Activez votre %%array|array%% pour qu'il démarre automatiquement au démarrage, ajustez les %%spin-down timers|spin-down-timers%% du disque et même modifiez les paramètres avancés du pilote comme la %%SMART polling frequency|smart-polling%%.
 
@@ -75,13 +77,94 @@ Vous pouvez configurer divers paramètres d'accès pour votre serveur Unraid, y 
   ![Paramètres - Accès à la gestion](/img/settings-management-access.png)
 </div>
 
-### Paramètres réseau
+### Paramètres réseau {#network-settings}
 
 Par défaut, Unraid essaie d'obtenir une adresse IP d'un serveur DHCP sur votre réseau local, généralement fourni par votre routeur. Sur cette page, vous pouvez configurer une adresse IP statique, configurer le %%bonding|nic-bonding%%, le %%bridging|nic-bridging%%, ou explorer d'autres options. Alors que la définition d'une IP statique est recommandée, elle n'est pas nécessaire pour utiliser Unraid.
 
 <div style={{ margin: 'auto', maxWidth: '400px'}}>
   ![Paramètres réseau](/img/settings-network.png)
 </div>
+
+#### Configuration WiFi
+
+Unraid prend en charge la connectivité WiFi pour les situations où une connexion réseau filaire n'est pas pratique ou disponible. Bien qu'une connexion filaire soit généralement recommandée pour une meilleure stabilité et performance, une configuration sans fil peut être une alternative appropriée lorsqu'il n'est pas possible de faire passer un câble.
+
+:::important[Initial Exigences de configuration]
+
+%%User shares|user-share%% can greatly simplify the organization and access of content across multiple disks in the %%array|array%%. You have the option to specify which disks are allowed to participate in %%user shares|user-share%% through global inclusion or exclusion settings.
+
+- Un clavier et un moniteur locaux connectés à votre serveur (démarrer en mode GUI), ou
+- Une connexion filaire temporaire pour accéder au WebGUI
+
+Une fois le WiFi configuré, vous pouvez retirer la connexion filaire et gérer votre serveur sans fil.
+
+:::
+
+##### Configuration du WiFi
+
+1. Accédez au WebGUI et allez dans ***Réglages → Paramètres Réseau → Sans fil wlan0***.
+2. Activez le WiFi en basculant l'option **Activer le WiFi**.
+3. Configurer la **Région Réglementaire** :
+   - Dans la plupart des cas, il vaut mieux laisser sur **Automatique**.
+   - Si votre réseau préféré n'apparaît pas dans les résultats de l'analyse, réglez-le sur votre emplacement spécifique (pays/région).
+4. Analyser les réseaux disponibles :
+   - Les réseaux WiFi disponibles devraient être listés.
+   - Cliquez sur l'icône **Se connecter au réseau WiFi** (ᯤ) à côté de votre réseau préféré.
+5. Entrez vos identifiants réseau :
+   - Tapez votre mot de passe WiFi.
+   - Passez en revue et ajustez les paramètres supplémentaires si nécessaire.
+   - Cliquez sur **Rejoindre ce réseau** pour vous connecter.
+
+:::tip[Docker conteneurs et WiFi]
+
+Si vous prévoyez d'utiliser des conteneurs Docker avec le WiFi, assurez-vous de débrancher toute connexion filaire **avant** de démarrer le service Docker. Cela aide à prévenir les conflits de configuration réseau lorsque les deux interfaces sont actives simultanément.
+
+:::
+
+##### Fonctionnalités WiFi prises en charge
+
+La mise en œuvre du WiFi par Unraid prend en charge les éléments suivants :
+
+- **Protocoles de sécurité WPA2 et WPA3**, y compris les réseaux d'entreprise WPA2/WPA3. Si les deux sont disponibles, Unraid utilisera automatiquement WPA3 pour une sécurité renforcée.
+- **Adaptateurs WiFi modernes** ayant un support de pilote intégré au noyau Linux. Les anciens adaptateurs peuvent être incompatibles.
+
+:::info[USB [Adaptateurs WiFi]
+
+Si vous utilisez un adaptateur WiFi USB, vérifiez cette liste d'[adaptateurs WiFi USB qui sont pris en charge avec les pilotes intégrés au noyau Linux](https://github.com/morrownr/USB-WiFi/blob/main/home/USB_WiFi_Adapters_that_are_supported_with_Linux_in-kernel_drivers.md) pour assurer la compatibilité.
+
+Si votre adaptateur WiFi n'est pas détecté, veuillez commencer un nouveau fil de discussion sur les [forums Unraid](https://forums.unraid.net/) et fournir vos diagnostics pour enquête.
+
+:::
+
+##### FTP (File Transfer Protocol)
+
+Les utilisateurs peuvent se connecter via %%FTP|ftp%% uniquement s'ils sont ajoutés au champ **Utilisateurs FTP** sur cette page. Si aucun utilisateur n'est ajouté, le service %%FTP|ftp%% ne démarrera pas.
+
+- Vous ne pouvez vous connecter qu'à **un seul réseau WiFi** à la fois.
+- Un seul NIC sans fil est pris en charge - `wlan0`. Si votre système possède plusieurs adaptateurs sans fil (`wlan1`, `wlan2`, etc.), seul `wlan0` sera utilisé.
+- Contrairement aux connexions filaires, vous **ne pouvez pas combiner plusieurs connexions sans fil** pour améliorer la fiabilité.
+- **`wlan0` ne peut pas participer à un bond**. Vous ne pouvez pas combiner les connexions WiFi et Ethernet dans une configuration de bond.
+- Il est préférable d'utiliser soit une connexion filaire soit le WiFi, mais **pas les deux en même temps**. Si vous devez connecter ou déconnecter temporairement un câble réseau tout en utilisant le WiFi, votre serveur devrait s'adapter automatiquement à la connexion active dans environ une minute. Pour de plus amples informations concernant les conteneurs Docker lors du changement de type de connexion, consultez la section **Considérations sur Docker et les machines virtuelles** ci-dessous.
+
+##### Serveur Syslog
+
+Le %%Syslog server|serveur Syslog%% stocke en permanence votre journal système, ce qui est utile pour le dépannage car Unraid efface le journal après chaque redémarrage.
+
+###### Conteneurs Docker
+
+- Dans ***Paramètres → Docker***, lorsque le WiFi est activé, le système utilise automatiquement **ipvlan** pour les réseaux personnalisés (macvlan n'est pas pris en charge avec le WiFi).
+- L'accès hôte aux réseaux personnalisés doit être désactivé dans ***Paramètres → Docker***.
+- Le **Type de réseau** du conteneur ne peut pas utiliser `br0`, `bond0`, ou `eth0`.
+
+:::caution
+
+La section %%Tailscale|tailscale%% permet un accès distant sécurisé via le %%VPN|vpn-tunnel%% %%Tailscale|tailscale%%. Ici, vous pouvez vous connecter pour connecter votre serveur Unraid à votre %%Tailnet|tailnet%%, visualiser l'adresse IP et le nom d'hôte attribués, et activer ou désactiver la connectivité %%Tailscale|tailscale%%.
+
+###### Machines virtuelles
+
+Il est recommandé de régler la **Source du Réseau** de votre %%VM|vm%% sur **virbr0** (NAT privé). Ce mode fonctionne avec n'importe quel nombre de %%machines virtuelles|vm%% et offre un accès réseau via %%NAT|nat%%. Notez que mDNS ne fonctionne pas via NAT, donc la %%machine virtuelle|vm%% devra accéder aux autres appareils du réseau local par adresse IP, et non par nom de domaine. Vous pouvez ajouter des adresses IP et des noms de domaine au fichier hosts sur le système d'exploitation de la %%VM|vm%% pour permettre l'accès par nom de domaine. Les %%machines virtuelles|vm%% ne seront pas directement accessibles depuis les autres appareils sur votre LAN, mais vous pouvez toujours y accéder via %%VNC|vnc-session%% à travers l'hôte.
+
+Pour plus d'informations sur le réseau des %%machines virtuelles|vm%%, consultez [Vue d'ensemble et préparation du système](../../using-unraid-to/create-virtual-machines/overview-and-system-prep.mdx).
 
 ### Mode d'alimentation
 
@@ -93,35 +176,35 @@ Les changements prennent effet immédiatement et ne nécessitent pas de redémar
   ![Mode d'alimentation](/img/settings-powermode.png)
 </div>
 
-### Paramètres de partage global
+### Confirmations
 
-%%User shares|user-share%% can greatly simplify the organization and access of content across multiple disks in the %%array|array%%. You have the option to specify which disks are allowed to participate in %%user shares|user-share%% through global inclusion or exclusion settings.
-
-<div style={{ margin: 'auto', maxWidth: '400px'}}>
-  ![Paramètres de partage global](/img/settings-globalshare.png)
-</div>
-
-### Paramètres de l'onduleur
-
-Unraid peut être connecté à un UPS APC (ou compatible) pour permettre au système de s'arrêter en toute sécurité en cas de perte de puissance tout en recevant une alimentation par batterie. Vous pouvez configurer la connexion de l'UPS et définir des politiques pour la commande d'arrêt sur cette page.
+%%User shares|partage-utilisateur%% peuvent grandement simplifier l'organisation et l'accès au contenu à travers plusieurs disques dans l'%%array|tableau%%. Vous avez la possibilité de spécifier quels disques sont autorisés à participer aux %%user shares|partage-utilisateur%% via des paramètres d'inclusion ou d'exclusion globaux.
 
 <div style={{ margin: 'auto', maxWidth: '400px'}}>
-  ![Paramètres de l'onduleur](/img/settings-ups.png)
+  ![Confirmations](/img/settings-confirmations.png)
 </div>
 
-### Gestionnaire de VM
+### Paramètres de la console {#ups-settings}
 
-Les **machines virtuelles** (VMs) peuvent transformer votre serveur en un bureau ou un lecteur multimédia et exécuter des applications non conçues pour Linux. Pour plus de détails sur la gestion des %%VMs|vm%% sur Unraid, voir [Configuration des VMs](../../using-unraid-to/create-virtual-machines/vm-setup.mdx).
+Vous permet de personnaliser la console système locale. Vous pouvez sélectionner la disposition du clavier, ajuster le délai d'extinction de l'écran et activer ou désactiver l'historique persistant de Bash à travers les redémarrages. Ces options améliorent votre expérience lorsque vous utilisez Unraid avec un moniteur et un clavier connectés.
 
 <div style={{ margin: 'auto', maxWidth: '400px'}}>
-  ![Gestionnaire de VM](/img/settings-vmmanager.png)
+  ![Paramètres de la console](/img/settings-console.png)
 </div>
 
-## Services réseau
+### Paramètres d'affichage
+
+Personnalisez l'apparence du %%WebGUI|web-gui%% Unraid sur cette page en ajustant le format de la date et de l'heure, le format des nombres, et en basculant entre les vues à onglets et non à onglets. Vous pouvez également sélectionner l'unité de température et choisir parmi différents thèmes pour l'interface utilisateur.
+
+<div style={{ margin: 'auto', maxWidth: '400px'}}>
+  ![Paramètres d'affichage](/img/settings-display.png)
+</div>
+
+## Paramètres de notification
 
 Les **Services Réseau** vous permettent de configurer les protocoles de communication réseau sur votre serveur Unraid, qui sont essentiels pour les partages utilisateurs et disques. Vous pouvez également activer un serveur %%FTP|ftp%%, un serveur de journaux et configurer un %%VPN|vpn-tunnel%% pour un accès distant sécurisé.
 
-### NFS (Network File System)
+### NFS (Système de fichiers réseau)
 
 La prise en charge de NFSv4 est disponible dans Unraid. Vous pouvez l'activer ou désactiver pour les %%user shares|user-share%% et ajuster le réglage `fuse_remember` pour aider à résoudre les erreurs *NFS Stale File Handle*.
 
@@ -129,15 +212,15 @@ La prise en charge de NFSv4 est disponible dans Unraid. Vous pouvez l'activer ou
   ![NFS](/img/settings-nfs.png)
 </div>
 
-### SMB (Server Message Block)
+### Utilitaires utilisateur
 
-Le protocole SMB est utilisé par les clients Microsoft Windows. Depuis cette page, vous pouvez l'activer, définir un groupe de travail ou rejoindre un domaine Active Directory.
+Les plugins tiers sont affichés ici, améliorant la fonctionnalité d'Unraid et vous donnant plus de contrôle sur votre serveur. Par exemple, le [plugin Community Applications](../../using-unraid-to/run-docker-containers/community-applications.mdx) est inclus. D'autres plugins offrent des fonctionnalités pour la surveillance du système, la maintenance, la gestion du stockage et les sauvegardes `appdata`.
 
 <div style={{ margin: 'auto', maxWidth: '400px'}}>
   ![SMB](/img/settings-smb.png)
 </div>
 
-### FTP (File Transfer Protocol)
+### FTP (Protocole de transfert de fichiers)
 
 Les utilisateurs peuvent se connecter via %%FTP|ftp%% uniquement s'ils sont ajoutés au champ **Utilisateurs FTP** sur cette page. Si aucun utilisateur n'est ajouté, le service %%FTP|ftp%% ne démarrera pas.
 
@@ -156,12 +239,14 @@ Le %%Syslog server|serveur Syslog%% stocke en permanence votre journal système,
 ### Tailscale
 
 :::note
+
 La section Tailscale est uniquement disponible si vous avez installé le plugin Tailscale.
+
 :::
 
-La section %%Tailscale|tailscale%% permet un accès distant sécurisé via le %%VPN|vpn-tunnel%% %%Tailscale|tailscale%%. Ici, vous pouvez vous connecter pour connecter votre serveur Unraid à votre %%Tailnet|tailnet%%, visualiser l'adresse IP et le nom d'hôte attribués, et activer ou désactiver la connectivité %%Tailscale|tailscale%%.
+Vous pouvez établir une connexion %%VPN|vpn-tunnel%% à votre serveur Unraid en utilisant [%%Wireguard|wireguard%%](https://www.wireguard.com/) pour des connexions Internet sécurisées.
 
-You can also configure your server as a %%Subnet Router|subnet-routing%% for local devices or as an Exit Node to route internet traffic. This section enables management of advertised routes, exit node status, Docker container integration options, and connection status monitoring for troubleshooting.
+Vous pouvez également configurer votre serveur comme un %%Subnet Router|routeur-sous-réseau%% pour les appareils locaux ou comme un nœud de sortie pour router le trafic internet. Cette section permet la gestion des routes annoncées, du statut du nœud de sortie, des options d'intégration des conteneurs Docker, et de la surveillance du statut de connexion pour le dépannage.
 
 <div style={{ margin: 'auto', maxWidth: '400px'}}>
   ![Paramètres Tailscale](/img/settings-tailscale.png)
@@ -203,15 +288,166 @@ Personnalisez l'apparence du %%WebGUI|web-gui%% Unraid sur cette page en ajustan
   ![Paramètres d'affichage](/img/settings-display.png)
 </div>
 
-### Paramètres de notification
+### Paramètres de notification {#notification-settings}
 
-Vous pouvez configurer les notifications de navigateur et d'e-mail sur cette page, en vous abonnant à différents types et en définissant des alertes personnalisées pour les valeurs d'attribut %%SMART|smart%%.
+Unraid peut vous envoyer des notifications concernant des événements système importants, des mises à jour et des alertes via votre navigateur, votre email ou des services de notification tiers. La page des paramètres de notification vous permet de contrôler comment et quand vous recevez ces notifications.
+
+Les plugins tiers sont affichés ici, améliorant la fonctionnalité d'Unraid et vous donnant plus de contrôle sur votre serveur. Par exemple, le [plugin Community Applications](../../using-unraid-to/run-docker-containers/community-applications.mdx) est inclus. D'autres plugins offrent des fonctionnalités pour la surveillance du système, la maintenance, la gestion du stockage et les sauvegardes `appdata`.
 
 <div style={{ margin: 'auto', maxWidth: '400px'}}>
   ![Paramètres de notification](/img/settings-notifications.png)
 </div>
 
-### Planificateur
+#### Afficher et configurer les paramètres de comportement
+
+Configurez comment les notifications apparaissent dans votre navigateur :
+
+- **Affichage des notifications** : Choisissez entre des styles de notification *détaillés* ou *synthétisés*
+- **Position d'affichage** : Définir où les notifications apparaissent (*en haut à droite*, *en haut à gauche*, *en bas à droite*, *en bas à gauche* ou *au centre*)
+- **Fermeture automatique (secondes)** : Combien de temps les notifications restent visibles avant de se fermer automatiquement
+- **Format de date** : Choisissez votre format de date préféré pour les horodatages des notifications
+- **Format de l'heure** : Choisissez entre l'affichage sur *12 heures* ou sur *24 heures*
+- **Stocker les notifications sur le flash** : Sauvegarder l'historique des notifications sur votre clé USB (nécessite de l'espace de stockage sur le flash)
+
+#### Types de notification
+
+Contrôlez quels événements déclenchent des notifications :
+
+- **Notifications système** : Événements et messages système généraux
+- **Notification de mise à jour de l'OS Unraid** : Avertissements lorsque de nouvelles versions de l'OS Unraid sont disponibles
+- **Notification de mise à jour des plugins** : Avertissements lorsque des mises à jour des plugins sont disponibles
+- **Notification de mise à jour Docker** : Avertissements lorsque des mises à jour de conteneurs Docker sont disponibles
+- **Notification de mise à jour de langues** : Avertissements lorsque des mises à jour de packs de langues sont disponibles
+- **Notification d'état de l'array** : Avertissements concernant les événements et les changements de statut de l'%%array|array%%
+
+Pour chaque type de notification, vous pouvez définir la fréquence sur *Ne jamais vérifier*, vérification quotidienne, hebdomadaire, mensuelle, ou, dans certains cas, même plusieurs fois par jour.
+
+#### Méthodes de diffusion
+
+Choisissez comment vous souhaitez recevoir les notifications pour chaque catégorie (*Avis*, *Avertissements* et *Alertes*) :
+
+- **Navigateur** : Afficher les notifications dans le %%WebGUI|web-gui%% lorsque vous êtes connecté
+- **Email** : Envoyer les notifications par e-mail (nécessite la [configuration SMTP](#smtp-settings))
+- **Agents** : Envoyer les notifications via des services tiers configurés
+
+:::tip
+
+Activez les notifications **Navigateur** pour une visibilité immédiate lorsque vous utilisez le %%WebGUI|web-gui%%, et **Email** pour les alertes lorsque vous êtes loin de votre serveur. Utilisez des **Agents** pour l'intégration avec des applications mobiles et des services comme Discord ou Telegram.
+
+:::
+
+#### Paramètres SMTP {#smtp-settings}
+
+Pour recevoir des notifications par e-mail, vous devez configurer les paramètres de votre serveur de messagerie. Unraid prend en charge de nombreux fournisseurs de messagerie, y compris Gmail, Outlook et les serveurs SMTP personnalisés.
+
+Les paramètres SMTP se trouvent dans ***Réglages → Préférences Utilisateur → Paramètres de Notification → Paramètres SMTP***.
+
+**Configuration de base :**
+
+- **Service prédéfini** : Sélectionnez une configuration prédéfinie (*Gmail*, *Outlook/Hotmail* ou *Personnalisé*) pour remplir automatiquement les paramètres courants
+- **Adresse e-mail d'envoi** : L'adresse e-mail à partir de laquelle les notifications seront envoyées
+- **Destinataires d'e-mails** : Liste d'adresses e-mail séparées par des virgules pour recevoir les notifications
+- **Priorité dans l'en-tête** : Marquez les e-mails comme prioritaires (*Oui* ou *Non*)
+- **Préfixe du sujet d'e-mail** : Texte à ajouter à tous les sujets d'e-mails de notification (par défaut : *Statut d'Unraid :*)
+
+**Paramètres du serveur :**
+
+- **Serveur de messagerie** : Adresse du serveur SMTP (ex. : `smtp.gmail.com`)
+- **Port du serveur de messagerie** : Numéro de port SMTP (ports courants : `465` pour SSL/TLS, `587` pour STARTTLS, `25` pour non chiffré)
+- **Utiliser SSL/TLS** : Activer le chiffrement SSL/TLS (*Oui* ou *Non*)
+- **Utiliser STARTTLS** : Utiliser STARTTLS pour le chiffrement (*Oui* ou *Non*)
+- **Définir un certificat TLS** : Spécifiez un certificat TLS personnalisé si nécessaire (*Oui* ou *Non*)
+- **Emplacement du certificat TLS** : Chemin vers le fichier de certificat personnalisé (uniquement si *Définir un certificat TLS* est activé)
+
+**Authentification:**
+
+- **Méthode d'authentification** : Choisissez *Aucune*, *CRAM-MD5*, ou *Connexion* (nom d'utilisateur/mot de passe)
+- **Nom d'utilisateur** : Votre nom d'utilisateur de compte e-mail (généralement votre adresse e-mail complète)
+- **Mot de passe** : Votre mot de passe de compte e-mail ou mot de passe d'application spécifique
+
+Après avoir configuré vos paramètres, utilisez le bouton **TEST** pour vérifier que votre configuration d'e-mail fonctionne correctement.
+
+##### Configuration de Gmail avec mots de passe d'application
+
+Gmail nécessite des mots de passe d'application lors de l'utilisation de SMTP avec des comptes ayant la vérification en deux étapes activée (recommandé pour la sécurité).
+
+**Pour configurer les notifications Gmail :**
+
+1. Dans **Service prédéfini**, sélectionnez *Gmail* (cela remplira automatiquement le **serveur de messagerie** et le **port du serveur de messagerie**)
+2. Entrez votre adresse Gmail dans **Adresse e-mail d'envoi**
+3. Entrez les adresses e-mail des destinataires dans **Destinataires d'e-mails**
+4. Définissez **Nom d'utilisateur** sur votre adresse Gmail complète (par ex., `yourname@gmail.com`)
+5. Pour **Mot de passe**, vous devrez générer un mot de passe d'application :
+   - Allez à vos [paramètres de compte Google](https://myaccount.google.com/)
+   - Allez dans **Sécurité**
+   - Dans "Comment vous vous connectez à Google", assurez-vous que la **Vérification en deux étapes** est activée (nécessaire pour les mots de passe d'application)
+   - Dans la même section, trouvez et cliquez sur **Mots de passe d'application** (ou recherchez "Mots de passe d'application" dans la barre de recherche)
+   - Vous devrez peut-être vérifier votre identité
+   - Entrez un nom personnalisé pour le nom de l'application, tel que "Unraid Server".
+   - Cliquez sur **Créer**
+   - Google générera un mot de passe de 16 caractères.
+   - Copiez ce mot de passe et collez-le dans le champ **Mot de passe** dans Unraid
+6. Cliquez sur **TEST** pour vérifier la configuration
+7. Cliquez sur **TERMINÉ** pour enregistrer vos paramètres
+
+:::tip[Default Paramètres Gmail]
+
+- **Serveur de messagerie** : `smtp.gmail.com`
+- **Port du serveur de messagerie** : `465`
+- **Utiliser SSL/TLS** : `Oui`
+- **Utiliser STARTTLS** : `Non`
+- **Méthode d'authentification** : `Connexion`
+
+:::
+
+:::warning[Security recommandation]
+
+Utilisez toujours des mots de passe d'application au lieu de votre mot de passe principal de Gmail. Les mots de passe d'application peuvent être révoqués individuellement sans changer votre mot de passe de compte principal, offrant une meilleure sécurité si votre configuration Unraid est jamais compromise.
+
+:::
+
+#### Agents de notification
+
+Les agents de notification vous permettent d'envoyer des alertes à des services de tiers et à des applications mobiles. Unraid inclut une prise en charge intégrée pour de nombreux services de notification populaires.
+
+Pour accéder aux Agents de Notification, cliquez sur le lien **Agents de Notification** sur la page des Paramètres de Notification, ou allez à ***Paramètres → Préférences utilisateur → Paramètres de Notification → Agents de Notification***.
+
+**Agents intégrés incluent :**
+
+- <img src="/img/customize-unraid-settings/icons/icon-bark.png" alt="Bark" style={{height: '20px', verticalAlign: 'middle', marginRight: '8px'}} /> **Bark** : application de notification iOS
+- <img src="/img/customize-unraid-settings/icons/icon-boxcar.png" alt="Boxcar" style={{height: '20px', verticalAlign: 'middle', marginRight: '8px'}} /> **Boxcar** : service de notification push
+- <img src="/img/customize-unraid-settings/icons/icon-discord.png" alt="Discord" style={{height: '20px', verticalAlign: 'middle', marginRight: '8px'}} /> **Discord** : Envoyer des notifications aux chaînes Discord via un webhook
+- <img src="/img/customize-unraid-settings/icons/icon-gotify.png" alt="Gotify" style={{height: '20px', verticalAlign: 'middle', marginRight: '8px'}} /> **Gotify** : Serveur de notification auto-hébergé
+- <img src="/img/customize-unraid-settings/icons/icon-ntfy.png" alt="ntfy.sh" style={{height: '20px', verticalAlign: 'middle', marginRight: '8px'}} /> **ntfy.sh** : Service de notification simple basé sur HTTP
+- <img src="/img/customize-unraid-settings/icons/icon-prowl.png" alt="Prowl" style={{height: '20px', verticalAlign: 'middle', marginRight: '8px'}} /> **Prowl** : notifications push iOS
+- <img src="/img/customize-unraid-settings/icons/icon-pushbits.png" alt="Pushbits" style={{height: '20px', verticalAlign: 'middle', marginRight: '8px'}} /> **Pushbits** : Relais de notification auto-hébergé
+- <img src="/img/customize-unraid-settings/icons/icon-pushbullet.png" alt="Pushbullet" style={{height: '20px', verticalAlign: 'middle', marginRight: '8px'}} /> **Pushbullet** : Service de notification multiplateforme
+- <img src="/img/customize-unraid-settings/icons/icon-pushover.png" alt="Pushover" style={{height: '20px', verticalAlign: 'middle', marginRight: '8px'}} /> **Pushover** : Service de notification push pour iOS et Android
+- <img src="/img/customize-unraid-settings/icons/icon-pushplus.png" alt="Pushplus" style={{height: '20px', verticalAlign: 'middle', marginRight: '8px'}} /> **Pushplus** : Service de notification push chinois
+- <img src="/img/customize-unraid-settings/icons/icon-serverchan.png" alt="ServerChan" style={{height: '20px', verticalAlign: 'middle', marginRight: '8px'}} /> **ServerChan** : Service de surveillance et de notification de serveur chinois
+- <img src="/img/customize-unraid-settings/icons/icon-slack.png" alt="Slack" style={{height: '20px', verticalAlign: 'middle', marginRight: '8px'}} /> **Slack** : Envoyer des notifications aux chaînes Slack via un webhook
+- <img src="/img/customize-unraid-settings/icons/icon-telegram.png" alt="Telegram" style={{height: '20px', verticalAlign: 'middle', marginRight: '8px'}} /> **Telegram** : Envoyer des messages au bot Telegram
+
+**Configurer un agent :**
+
+1. Sélectionnez l'agent que vous souhaitez configurer de la liste
+2. Changez la **Fonction de l'agent** de *Désactivé* à *Activé*
+3. Remplissez les champs requis pour ce service :
+   - La plupart des agents nécessitent une **URL de webhook**, un **jeton API**, ou un **jeton d'accès**
+   - Certaines services nécessitent une configuration supplémentaire comme des IDs de chaînes ou des codes de groupe
+4. Configurer **Titre de notification** (généralement défini sur *Sujet* pour utiliser le sujet de la notification)
+5. Configurer **Message de notification** (généralement défini sur *Description* pour utiliser le texte intégral de la notification)
+6. Cliquez sur **TERMINÉ** pour enregistrer
+
+Chaque agent a des exigences différentes - consultez la documentation pour le service choisi pour obtenir les clés API nécessaires, les URL de webhook, ou les jetons.
+
+:::tip
+
+Vous pouvez activer plusieurs agents simultanément. Par exemple, vous pourriez utiliser Discord pour les notifications d'équipe et Pushover pour les alertes mobiles personnelles. Notez que **toutes les notifications** sont envoyées à **tous les agents activés**, donc l'utilisation de plusieurs agents peut entraîner la réception de notifications en double.
+
+:::
+
+### Planificateur {#scheduler}
 
 La page des paramètres du Planificateur vous permet de configurer facilement la fréquence des tâches automatisées, y compris les opérations %%parity checks|parity-check%%, %%Mover|mover%% pour le cache, et %%TRIM/Discard|trim-discard%% pour les SSD.
 

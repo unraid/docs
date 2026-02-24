@@ -1,0 +1,200 @@
+---
+sidebar_position: 5
+sidebar_label: Estado de salud y mantenimiento de la matriz
+---
+
+import ArrayCheckParity from "../partials/array-check-parity.mdx";
+import ArrayCheckRead from "../partials/array-check-read.mdx";
+import TroubleshootMissingDisks from "../partials/troubleshoot-missing-disks.mdx";
+import TroubleshootDeviceLimit from "../partials/troubleshoot-device-limit.mdx";
+import TroubleshootLicenseIssues from "../partials/troubleshoot-license-issues.mdx";
+import TroubleshootKeyServer from "../partials/troubleshoot-key-server.mdx";
+import TroubleshootWithdrawnRelease from "../partials/troubleshoot-withdrawn-release.mdx";
+
+# Estado de salud y mantenimiento de la matriz
+
+Revisar regularmente tu matriz Unraid es crucial para mantener la integridad de los datos e identificar posibles problemas antes de que resulten en pérdida de datos. Esta página cubre herramientas de monitoreo y procedimientos de solución de problemas para tu matriz.
+
+## Verificación de dispositivos del arreglo
+
+You can initiate a check using the **Check** button under ***Array Operations***. Depending on your array's configuration, this button allows you to conduct either a %%parity check|parity-check%% or a %%read check|read-check%%.
+
+<div
+  style={{
+   margin: "auto",
+   maxWidth: "400px",
+   display: "flex",
+   flexDirection: "column",
+   alignItems: "center",
+  }}
+>
+  ![El botón de verificación le permite realizar verificaciones de paridad y lectura](/img/Check_button.PNG)
+</div>
+
+Para mayor comodidad, puedes programar estas verificaciones para que se ejecuten automáticamente en intervalos que se adapten a ti navegando a ***Configuraciones → Programador***. Es aconsejable realizar verificaciones automáticas y correctivas mensual o trimestralmente para asegurar la salud continua de tus datos y corregir cualquier error de sincronización encontrado.
+
+### Verificación de paridad {#parity-checks}
+
+<ArrayCheckParity />
+
+### Verificación de lectura
+
+<ArrayCheckRead />
+
+### Historial de verificación
+
+Whenever the system performs a %%parity check|parity-check%% or a %%read check|read-check%%, it keeps a record of what happened. You can view these details easily by clicking the **History** button found under ***Array Operations*** in the interface.
+
+Unraid proporciona diversos modos de escritura para gestionar las operaciones del arreglo, cada uno con sus propias ventajas y desventajas en cuanto a velocidad, consumo de energía y desgaste de los discos. Conocer cómo funcionan estos modos, junto con el papel de una unidad de caché o pool, puede ayudarlo a afinar su servidor para que se adapte mejor a sus necesidades.
+
+## Apagar o encender discos
+
+Unraid allows you to control the power states of your hard drives. You can easily %%spin them up or down|spin-state%%, and manage SSDs to be active or in standby. This helps save energy, extend the life of your drives, and reduce noise when the disks are not being used.
+
+### ¿Por qué bajar o subir la velocidad?
+
+Poner en reposo discos que no se usan a menudo ahorra energía y ayuda a que duren más. Activar discos con anticipación reduce los tiempos de espera cuando necesitas archivos pronto.
+
+### Cómo controlar los estados de velocidad
+
+Controla el estado de giro de los discos a través de la pestaña **Principal**:
+
+1. Ve a la pestaña **Principal** y localiza tus dispositivos de la matriz.
+2. Cada disco muestra botones de control de giro:
+   - Botón 🔘 - **Activar** (si actualmente está en reposo)
+   - Botón 🟢 - **Desactivar** (si actualmente está girando)
+3. Haz clic en el botón apropiado para la acción que deseas.
+
+Recuerda que si un disco está siendo accedido (por ejemplo, si estás abriendo un archivo), permanecerá activo e ignorará cualquier solicitud de reducir velocidad.
+
+Cuando un disco está desactivado, su temperatura no se mostrará en el %%WebGUI|web-gui%%. Sin embargo, una vez que cualquier aplicación o usuario acceda a él, se activará automáticamente.
+
+:::tip
+
+Para cambiar el Modo de Escritura:
+
+:::
+
+## Restablecer la configuración del arreglo
+
+Restablecer la configuración de su arreglo es un paso importante que debe llevarse a cabo con cuidado. Este proceso suele ser necesario cuando se elimina un disco, se comienza desde cero con un nuevo diseño de arreglo o se resuelven problemas de asignación de discos. Tenga en cuenta que esta acción puede afectar la protección de datos y la paridad, así que asegurese de proceder solo cuando realmente lo necesite.
+
+Restablece tu matriz cuando:
+
+- Retires o reemplaces discos
+- Empieces de nuevo con un nuevo diseño de matriz
+- Corrijas errores de asignación de discos
+- Te recuperes de problemas de configuración
+
+<div
+  style={{
+   margin: "auto",
+   maxWidth: "650px",
+   display: "flex",
+   flexDirection: "column",
+   alignItems: "center",
+  }}
+>
+  ![Restablecer su configuración de disco puede hacerse a través de la nueva página de configuración](/img/Newconfig.png)
+</div>
+
+Para restablecer la configuración de tu arreglo:
+
+1. Ve a **Herramientas → Nueva Configuración**.
+2. Opcionalmente, mantén algunas asignaciones de discos existentes para ajustes menores.
+3. Marca la casilla de confirmación y haz clic en **Aplicar**.
+4. Vuelve a la pestaña **Principal**.
+5. Asigna o desasigna discos según sea necesario.
+6. Inicia la matriz en Modo Normal o %%Modo de Mantenimiento|maintenance-mode%%.
+
+:::important
+
+- Unraid intenta reconocer los discos utilizados previamente y preservar los datos cuando sea posible.
+- Quitar un disco de datos invalida la paridad a menos que ese disco haya sido limpiado antes de ser removido.
+- Cambiar el orden de los discos no afectará la paridad1, pero puede invalidar la paridad2.
+
+:::
+
+:::caution
+
+Cuando veas el botón **Iniciar**, hay una casilla de verificación etiquetada como **La paridad es válida**. Solo verifica esta casilla si estás seguro de que es correcto o si un usuario experimentado de Unraid te lo ha aconsejado durante la recuperación. Verificar incorrectamente esta opción puede conducir a la pérdida de datos.
+
+Los %%Cache pools|cache-pool%% en Unraid proporcionan ventajas significativas, particularmente para tareas intensivas en escrituras, máquinas virtuales (VMs) y contenedores Docker. Estos pools operan por separado del array principal y pueden configurarse con múltiples discos utilizando los sistemas de archivos %%BTRFS|btrfs%% o %%ZFS|zfs%%, soportando varias configuraciones de %%RAID|raid%% para velocidad y protección de datos.
+
+:::
+
+### Deshacer un restablecimiento
+
+Para revertir un restablecimiento:
+
+1. Accede a tu dispositivo flash a través de la red (SMB).
+2. Abre la carpeta `config`.
+3. Renombra `super.old` a `super.dat`.
+4. Reinicia tu servidor para restaurar la configuración anterior.
+
+## Informes de estado
+
+Unraid proporciona informes de estado que le ayudan a mantenerse al tanto de la salud de su arreglo de almacenamiento. Estos informes son una forma rápida de verificar si alguno de sus discos está deshabilitado o si tiene problemas de lectura o escritura de datos.
+
+- **Estado actual:** Los informes de estado muestran la condición actual de su arreglo. Es importante tener en cuenta que esta información se restablece después de reiniciar su sistema, por lo que no mantendrá un historial de problemas anteriores.
+
+- **Sin datos históricos:** Si deseas ver qué ha ocurrido antes de un reinicio, tendrás que buscar en otro lugar, ya que estos informes no guardan estados pasados.
+
+:::important
+
+Recuerde que los informes de estado no incluyen datos %%SMART|smart%%. Los informes %%SMART|smart-report%% le ofrecen una vista más detallada sobre la salud individual de los discos. Así que, incluso si su informe de estado muestra que todo está bien, revisar los informes %%SMART|smart-report%% regularmente sigue siendo una buena idea para detectar cualquier problema potencial a tiempo.
+
+:::
+
+## Solución de fallos de inicio del arreglo
+
+Si tu array no arranca, sigue estos pasos para identificar y solucionar problemas comunes. Busca mensajes de error bajo ***Principal → Operación de Array***.
+
+### Discos faltantes
+
+<TroubleshootMissingDisks />
+
+### Límite de dispositivo
+
+<TroubleshootDeviceLimit />
+
+### Problemas de licencia
+
+<TroubleshootLicenseIssues />
+
+### Conexión al servidor de claves
+
+<TroubleshootKeyServer />
+
+### Versión retirada
+
+<TroubleshootWithdrawnRelease />
+
+## Fallo de disco durante una reconstrucción
+
+Si un segundo disco falla mientras está reconstruyendo otro, lo que pueda hacer dependerá de su configuración de paridad.
+
+### Disco de paridad única
+
+Si un disco falla durante la reconstrucción de otro, la reconstrucción se detendrá porque los datos no se pueden restaurar con precisión. Lamentablemente, no podrás recuperar tus datos en esta situación.
+
+### Disco de paridad dual
+
+Si tiene dos discos de %%paridad|parity-drives%%, tiene más opciones:
+
+- Puedes esperar a que la primera reconstrucción termine y luego ocuparte del segundo disco fallido.
+- O puedes detener la reconstrucción actual, reemplazar el segundo disco fallido y luego iniciar el arreglo para reconstruir ambos discos al mismo tiempo.
+
+Si la primera reconstrucción está casi terminada, generalmente es mejor dejar que termine. Si recién comenzó, podría ser más rápido reconstruir ambos juntos.
+
+:::warning
+
+Reconstruir discos pone mucha tensión en todas las unidades, lo que aumenta la probabilidad de nuevas fallas. Siempre verifica la salud del disco usando informes %%SMART|smart-report%% antes de comenzar una reconstrucción.
+
+:::
+
+:::info[Rebuild Tiempo]
+
+Prepárate para que el proceso de reconstrucción tome varias horas. El tiempo puede variar según el tamaño del disco y qué tan ocupado esté tu sistema. Los discos más grandes y los sistemas ocupados pueden tardar más.
+
+:::

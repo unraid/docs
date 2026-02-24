@@ -1,0 +1,200 @@
+---
+sidebar_position: 5
+sidebar_label: Santé et maintenance de l'array
+---
+
+import ArrayCheckParity from "../partials/array-check-parity.mdx";
+import ArrayCheckRead from "../partials/array-check-read.mdx";
+import TroubleshootMissingDisks from "../partials/troubleshoot-missing-disks.mdx";
+import TroubleshootDeviceLimit from "../partials/troubleshoot-device-limit.mdx";
+import TroubleshootLicenseIssues from "../partials/troubleshoot-license-issues.mdx";
+import TroubleshootKeyServer from "../partials/troubleshoot-key-server.mdx";
+import TroubleshootWithdrawnRelease from "../partials/troubleshoot-withdrawn-release.mdx";
+
+# Santé et maintenance de l'array
+
+Vérifier régulièrement votre array Unraid est crucial pour maintenir l'intégrité des données et identifier les problèmes potentiels avant qu'ils ne conduisent à une perte de données. Cette page couvre les outils de surveillance et les procédures de dépannage pour votre array.
+
+## Vérification des appareils du tableau
+
+You can initiate a check using the **Check** button under ***Array Operations***. Depending on your array's configuration, this button allows you to conduct either a %%parity check|parity-check%% or a %%read check|read-check%%.
+
+<div
+  style={{
+   margin: "auto",
+   maxWidth: "400px",
+   display: "flex",
+   flexDirection: "column",
+   alignItems: "center",
+  }}
+>
+  ![Le bouton de vérification vous permet d'effectuer des vérifications de parité et de lecture](/img/Check_button.PNG)
+</div>
+
+Pour plus de commodité, vous pouvez programmer ces vérifications pour s'exécuter automatiquement à des intervalles qui vous conviennent en accédant à ***Paramètres → Planificateur***. Il est conseillé d'effectuer des vérifications correctrices automatisées chaque mois ou chaque trimestre pour garantir la bonne santé de vos données et corriger toute erreur de synchronisation détectée.
+
+### Vérifications de parité {#parity-checks}
+
+<ArrayCheckParity />
+
+### Vérifications de lecture
+
+<ArrayCheckRead />
+
+### Vérifiez l'historique
+
+Whenever the system performs a %%parity check|parity-check%% or a %%read check|read-check%%, it keeps a record of what happened. You can view these details easily by clicking the **History** button found under ***Array Operations*** in the interface.
+
+Unraid propose divers modes d'écriture pour gérer les opérations sur l'array, chacun ayant ses propres avantages et inconvénients en termes de vitesse, de consommation d'énergie et d'usure des disques. Savoir comment ces modes fonctionnent, ainsi que le rôle d'un disque ou d'un pool de cache, peut vous aider à affiner votre serveur pour répondre au mieux à vos besoins.
+
+## Arrêter ou démarrer les disques tournants
+
+Unraid allows you to control the power states of your hard drives. You can easily %%spin them up or down|spin-state%%, and manage SSDs to be active or in standby. This helps save energy, extend the life of your drives, and reduce noise when the disks are not being used.
+
+### Pourquoi activer ou désactiver ?
+
+Mettre en veille les disques peu utilisés économise de l'énergie et les aide à durer plus longtemps. Réveiller les disques à l'avance réduit les temps d'attente lorsque vous avez besoin de fichiers rapidement.
+
+### Comment contrôler les états d'activation
+
+Contrôlez les états de rotation des disques via l'onglet **Principal** :
+
+1. Allez à l'onglet **Principal** et localisez vos dispositifs d'array.
+2. Chaque disque affiche des boutons de contrôle de rotation :
+   - 🔘 bouton - **Démarrer la rotation** (si actuellement en veille)
+   - 🟢 bouton - **Arrêter la rotation** (si en cours de rotation)
+3. Cliquez sur le bouton approprié pour l'action souhaitée.
+
+N'oubliez pas que si un disque est en cours d'accès (par exemple si vous ouvrez un fichier), il restera actif et ignorera toute demande de désactivation.
+
+Lorsque un disque est désactivé, sa température ne s'affiche pas dans le %%WebGUI|web-gui%%. Cependant, dès qu'une application ou un utilisateur y accède, il se réactivera automatiquement.
+
+:::tip
+
+Pour changer le Mode d'Écriture :
+
+:::
+
+## Réinitialiser la configuration de la matrice
+
+Réinitialiser la configuration de votre array est une étape importante qui doit être entreprise avec soin. Ce processus est généralement nécessaire lors du retrait d'un disque, de la mise en place d'une nouvelle configuration de l'array, ou de la résolution de problèmes d'attribution de disque. Veuillez noter que cette action peut avoir un impact sur la protection des données et la parité, alors assurez-vous de n'y procéder que lorsque c'est réellement nécessaire.
+
+Réinitialisez votre array lorsque :
+
+- Retrait ou remplacement de disques
+- Démarrage avec une nouvelle disposition de l'array
+- Correction des erreurs d'assignation de disque
+- Récupération de problèmes de configuration
+
+<div
+  style={{
+   margin: "auto",
+   maxWidth: "650px",
+   display: "flex",
+   flexDirection: "column",
+   alignItems: "center",
+  }}
+>
+  ![Réinitialiser votre configuration de disque peut être effectué via la page de nouvelle config](/img/Newconfig.png)
+</div>
+
+Pour réinitialiser votre configuration de matrice :
+
+1. Allez à **Outils → Nouvelle configuration**.
+2. Conservez éventuellement certaines assignations de disque existantes pour des ajustements mineurs.
+3. Cochez la case de confirmation et cliquez sur **Appliquer**.
+4. Retournez à l'onglet **Principal**.
+5. Assignez ou désassignez les disques selon les besoins.
+6. Démarrez l'array en mode Normal ou %%Mode Maintenance|maintenance-mode%%.
+
+:::important
+
+- Unraid tente de reconnaître les lecteurs précédemment utilisés et de préserver les données autant que possible.
+- Retirer un disque de données invalide la parité à moins que ce disque ait été vidé avant le retrait.
+- Changer l'ordre des disques n'affectera pas la parité1, mais cela peut invalider la parité2.
+
+:::
+
+:::caution
+
+Lorsque vous voyez le bouton **Démarrer**, il y a une case à cocher étiquetée **Parité est valide**. Ne cochez cette case que si vous êtes certain qu'elle est correcte ou si un utilisateur expérimenté d'Unraid vous a conseillé de le faire lors de la récupération. Cocher cette option incorrectement peut entraîner une perte de données.
+
+N'utilisez pas **Nouvelle Config** si votre objectif est de reconstruire un disque. Effectuer une Nouvelle Config efface l'historique de la matrice requis pour une reconstruction, et Unraid ne proposera pas de reconstruire le disque par la suite. Suivez plutôt la procédure de reconstruction du disque.
+
+:::
+
+### Annuler une réinitialisation
+
+Pour annuler une réinitialisation :
+
+1. **Pas de protection par parité :** Les données ne sont pas protégées tant qu'elles ne sont pas déplacées vers l’ensemble.
+2. Ouvrez le dossier `config`.
+3. Renommez `super.old` en `super.dat`.
+4. Redémarrez votre serveur pour rétablir la configuration précédente.
+
+## Rapports d'état
+
+Unraid fournit des rapports de statut qui vous aident à suivre la santé de votre matrice de stockage. Ces rapports sont un moyen rapide de vérifier si l'un de vos disques est désactivé ou rencontre des problèmes de lecture ou d'écriture de données.
+
+- **Statut actuel :** Les rapports de statut affichent l'état actuel de votre array. Il est important de noter que ces informations sont réinitialisées après le redémarrage du système, elles ne conserveront donc pas un historique des problèmes passés.
+
+- **Aucune donnée historique :** Si vous souhaitez voir ce qui s'est passé avant un redémarrage, vous devrez chercher ailleurs, car ces rapports ne sauvegardent pas les états passés.
+
+:::important
+
+Rappelez-vous que les rapports de statut n'incluent pas les données %%SMART|smart%%. Les rapports %%SMART|smart-report%% vous offrent une vue plus détaillée de la santé de chaque disque. Ainsi, même si votre rapport de statut indique que tout est en ordre, il est toujours judicieux de vérifier régulièrement les rapports %%SMART|smart-report%% pour détecter tout problème potentiel dès le début.
+
+:::
+
+## Dépannage des échecs de démarrage de l'ensemble
+
+Si votre array ne démarre pas, suivez ces étapes pour identifier et résoudre les problèmes courants. Recherchez les messages d'erreur sous ***Principal → Opérations Array***.
+
+### Disques manquants
+
+<TroubleshootMissingDisks />
+
+### Limite de périphérique
+
+<TroubleshootDeviceLimit />
+
+### Problèmes de licence
+
+<TroubleshootLicenseIssues />
+
+### Connexion au serveur de clés
+
+<TroubleshootKeyServer />
+
+### Version retirée
+
+<TroubleshootWithdrawnRelease />
+
+## Échec de disque pendant une reconstruction
+
+Si un second disque échoue pendant que vous en reconstruisez un autre, ce que vous pouvez faire dépendra de votre configuration de parité.
+
+### Disque de parité unique
+
+Si un disque échoue pendant la reconstruction d’un autre, la reconstruction s’arrêtera car les données ne peuvent pas être restaurées avec précision. Malheureusement, vous ne pourrez pas récupérer vos données dans cette situation.
+
+### Double disque de parité
+
+If you have two %%parity drives|parity-drives%%, you have more options:
+
+- Vous pouvez attendre la fin de la première reconstruction puis gérer le deuxième disque défaillant.
+- Ou, vous pouvez arrêter la reconstruction actuelle, remplacer le second disque défaillant, puis démarrer l'ensemble pour reconstruire les deux disques en même temps.
+
+Si la première reconstruction est presque terminée, il est généralement préférable de la laisser se terminer. Si elle vient de commencer, il peut être plus rapide de reconstruire les deux en même temps.
+
+:::warning
+
+La reconstruction des disques sollicite beaucoup tous les disques, ce qui augmente le risque de nouvelles défaillances. Vérifiez toujours la santé des disques à l'aide des rapports %%SMART|smart-report%% avant de commencer une reconstruction.
+
+:::
+
+:::info[Rebuild Temps
+
+Préparez-vous à ce que le processus de reconstruction prenne plusieurs heures. Le temps peut varier en fonction de la taille du disque et de l'activité de votre système. Les disques plus grands et les systèmes occupés peuvent prendre plus de temps.
+
+:::

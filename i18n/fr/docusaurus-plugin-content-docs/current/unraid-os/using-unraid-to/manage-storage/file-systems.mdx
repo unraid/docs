@@ -5,23 +5,21 @@ sidebar_label: Systèmes de fichiers
 
 # Systèmes de fichiers
 
-### Sélection d'un type de système de fichiers
+## Sélection d'un type de système de fichiers
 
 Sélectionner le bon système de fichiers pour votre %%array|array%% Unraid ou %%cache pool|cache-pool%% est crucial. Cela vous aide à obtenir un équilibre entre performance, protection des données et fonctionnalités avancées. Unraid supporte plusieurs systèmes de fichiers modernes Linux, chacun avec ses propres forces uniques et cas d'utilisation spécifiques.
 
-| Système de fichiers | Protection des données                                                                | Efficacité de l'espace                  | Fonctionnalités avancées                                         | Meilleur cas d'utilisation                                       |
-| ------------------- | ------------------------------------------------------------------------------------- | --------------------------------------- | ---------------------------------------------------------------- | ---------------------------------------------------------------- |
-| %%XFS\|xfs%%        | Aucune redondance intégrée                                                            | 100 %                                   | Résistant à la corruption                                        | Par défaut pour les disques d'une baie ; haute fiabilité         |
-| %%ZFS\|zfs%%        | %%RAIDZ1\|raidz1%%/%%RAIDZ2\|raidz2%%/%%RAIDZ3\|raidz3%%, miroirs, etc.               | Varie selon le niveau de %%RAID\|raid%% | %%Checksums\|checksum%%, %%Snapshots\|snapshot%%, %%RAID\|raid%% | Baies multi-appareils, %%VMs\|vm%%, Docker, utilisateurs avancés |
-| %%BTRFS\|btrfs%%    | %%RAID 0\|raid0%%/%%RAID 1\|raid1%%/%%10\|raid10%%/%%5\|raid5%%/%%6\|raid6%%, miroirs | Varie selon le niveau de %%RAID\|raid%% | %%Checksums\|checksum%%, %%Snapshots\|snapshot%%, %%RAID\|raid%% | Baies multi-appareils, mélange SSD/HDD, baies flexibles          |
+| Système de fichiers | Protection des données                                                                | Efficacité de l'espace                  | Fonctionnalités avancées                                           | Meilleur cas d'utilisation                                        |
+| ------------------- | ------------------------------------------------------------------------------------- | --------------------------------------- | ------------------------------------------------------------------ | ----------------------------------------------------------------- |
+| %%XFS\|xfs%%        | Aucune redondance intégrée                                                            | 100 %                                   | Résistant à la corruption                                          | Par défaut pour les disques d'une baie ; haute fiabilité          |
+| %%ZFS\|zfs%%        | Aucune redondance intégrée                                                            | 100 %                                   | %%Checksums\|checksum%%, %%Snapshots\|snapshot%%, %%RAID\|raid%%   | Baies multi-appareils, %%VMs\|vm%%, Docker, utilisateurs avancés  |
+| %%ZFS\|zfs%%        | %%RAIDZ1\|raidz1%%/%%RAIDZ2\|raidz2%%/%%RAIDZ3\|raidz3%%, miroirs, etc.               | Varie selon le niveau de %%RAID\|raid%% | %%Checksums\|checksum%%, %%Snapshots\|instantané%%, %%RAID\|raid%% | Baies multi-appareils, mélange SSD/HDD, baies flexibles           |
+| %%BTRFS\|btrfs%%    | %%RAID 0\|raid0%%/%%RAID 1\|raid1%%/%%10\|raid10%%/%%5\|raid5%%/%%6\|raid6%%, miroirs | Varie selon le niveau de %%RAID\|raid%% | %%Checksums\|checksum%%, %%Snapshots\|instantané%%, %%RAID\|raid%% | Baies multi-appareils, mélange SSD/HDD, baies flexibles           |
+| NTFS                | Aucune redondance intégrée                                                            | 100 %                                   | Compatibilité Windows                                              | Ajouter des lecteurs Windows existants sans migration des données |
+| exFAT               | Aucune redondance intégrée                                                            | 100 %                                   | Compatibilité multiplateforme                                      | Ajout de lecteurs exFAT existants sans migration des données      |
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
-import FileSystemXfs from './partials/file-system-xfs.mdx';
-import FileSystemZfs from './partials/file-system-zfs.mdx';
-import FileSystemBtrfs from './partials/file-system-btrfs.mdx';
-import BtrfsBalance from './partials/btrfs-balance.mdx';
-import BtrfsScrub from './partials/btrfs-scrub.mdx';
 import FsCheckCliXfs from './partials/fs-check-cli-xfs.mdx';
 import FsCheckCliBtrfs from './partials/fs-check-cli-btrfs.mdx';
 import FsCheckCliZfs from './partials/fs-check-cli-zfs.mdx';
@@ -29,33 +27,79 @@ import FsRepairCliXfs from './partials/fs-repair-cli-xfs.mdx';
 import FsRepairCliBtrfs from './partials/fs-repair-cli-btrfs.mdx';
 import FsRepairCliZfs from './partials/fs-repair-cli-zfs.mdx';
 
-<Tabs>
-  <TabItem value="xfs" label="XFS" default>
-    <FileSystemXfs />
-  </TabItem>
+### XFS
 
-  <TabItem value="zfs" label="ZFS">
-    <FileSystemZfs />
-  </TabItem>
+%%XFS|xfs%% est le système de fichiers par défaut pour les lecteurs %%array|array%% dans Unraid. Il est reconnu pour sa robustesse et sa capacité à récupérer de la corruption après des arrêts imprévus ou des crashs. Chaque lecteur formaté avec %%XFS|xfs%% fonctionne comme un système de fichiers autonome, rendant la récupération de données directe sur tout système Linux.
 
-  <TabItem value="btrfs" label="BTRFS">
-    <FileSystemBtrfs />
-  </TabItem>
-</Tabs>
-
-:::note[Additional Notes]
 - Mélanger différents types de systèmes de fichiers dans votre système Unraid est tout à fait acceptable ; le système de %%parité|parity%% d'Unraid fonctionne indépendamment du système de fichiers utilisé.
 - Formatez toujours et partitionnez les disques dans Unraid pour assurer la compatibilité.
 - Les systèmes Linux peuvent lire ces systèmes de fichiers nativement ; cependant, Windows et macOS nécessitent des logiciels supplémentaires pour y accéder.
-- Vous pouvez <u>chiffrer</u> des disques pour une sécurité accrue, mais gardez à l'esprit que les disques chiffrés peuvent poser des défis pour la récupération en cas de corruption.
-- Pour les disques de transfert ou les appareils externes, il est recommandé d'utiliser le plugin **[Unassigned Devices](#using-the-unassigned-devices-plugins)**, qui prend en charge des systèmes de fichiers supplémentaires.
+
+### %%ZFS|zfs%%
+
+EXT4 est un système de fichiers mature et stable offrant une excellente compatibilité et fiabilité. Il est entièrement pris en charge et se mesure à %%XFS|xfs%%, %%BTRFS|btrfs%% et %%ZFS|zfs%%, ce qui en fait un excellent choix pour les lecteurs en réseau ou les pools à un seul disque.
+
+- **Protection des données :** Il ne dispose pas de redondance intégrée et dépend de la %%parity|parité%% d'Unraid pour la protection.
+- **Performance :** Il offre des performances constantes et fiables avec le journalisation pour garantir l'intégrité des données.
+- **Idéal pour :** les disques de %%Array|array%% ou les pools à un seul disque lorsque vous cherchez une alternative à %%XFS|xfs%%.
+
+### ZFS
+
+%%ZFS|zfs%% est un système de fichiers moderne doté de fonctionnalités avancées comme les %%checksums|somme de contrôle%% pour détecter la %%bit rot|bit-rot%%, les %%snapshots|instantanés%% pour les sauvegardes, et un support natif pour les options de %%RAID|raid%% telles que %%RAIDZ1|raidz1%%/%%RAIDZ2|raidz2%%/%%RAIDZ3|raidz3%% et miroirs. %%ZFS|zfs%% peut être utilisé pour des pools à un seul dispositif ou multidispositifs.
+
+- **Protection des données :** Supporte divers niveaux de %%RAID|raid%% pour la redondance.
+- **Performance :** Excellent, en particulier pour les pools multi-appareils.
+- **Idéal pour :** environnements haute performance, %%virtual machines|machines virtuelles%%, Docker, ou lorsqu'il est nécessaire d'utiliser des fonctionnalités avancées comme les %%snapshots|instantanés%%.
+
+Pour une orientation complète sur les fonctionnalités de %%ZFS|zfs%%, la configuration et les meilleures pratiques, consultez la page dédiée au [stockage ZFS](../../advanced-configurations/optimize-storage/zfs-storage.mdx).
+
+### BTRFS
+
+%%BTRFS|btrfs%% offre un support %%RAID|raid%% flexible, des %%checksums|checksum%% pour l'intégrité des données, et une gestion efficace des lecteurs de tailles mixtes dans les pools. Il sert de système de fichiers par défaut pour les %%cache pools|cache-pool%% et prend en charge les configurations à un ou plusieurs dispositifs.
+
+- **Protection des données :** Supporte %%RAID 0|raid0%%/%%1|raid1%%/%%10|raid10%%/%%5|raid5%%/%%6|raid6%% (notez que %%RAID 5|raid5%%/%%6|raid6%% sont encore expérimentaux).
+- **Performance :** Bonne, avec flexibilité pour l'expansion et la contraction.
+- **Meilleur pour :** %%Cache pools|cache-pool%%, surtout si vous prévoyez de mélanger des SSD et HDD ou avez besoin d'un moyen facile d'étendre.
+
+### Création d'un système de fichiers (formatage)
+
+Avant d'utiliser un nouveau disque dans Unraid, vous devez le formater avec le système de fichiers choisi. **Souvenez-vous, le formatage effacera tout le contenu existant sur le disque.**
+
+:::warning
+
+Les lecteurs formatés en NTFS ou exFAT doivent être ajoutés à l'%%array|array%% **avant** d'ajouter des lecteurs de parité. Une fois qu'un lecteur de parité est ajouté à votre %%array|array%%, tous les nouveaux lecteurs de données que vous ajoutez seront effacés, indépendamment du format de leur système de fichiers.
+
+Une fois le formatage terminé, le disque est prêt à stocker des fichiers.
+
+- Ajoutez-les d'abord à l'%%array|array%% (ou exécutez ***Outils → Nouvelle Config*** pour réinitialiser la configuration de votre array).
+- Après avoir ajouté vos lecteurs de données NTFS/exFAT, vous pouvez ensuite ajouter des lecteurs de parité.
+- Les données existantes sur ces lecteurs seront préservées et protégées par la parité.
+
 :::
 
-:::tip\[Still besoin d'aide pour choisir?
+- **Protection des données :** Ces lecteurs n'offrent pas de redondance intégrée ; ils dépendent de la %%parity|parité%% d'Unraid pour la protection dès que la parité est ajoutée.
+- **Performance :** Adéquat pour les besoins de stockage de base.
+- **Idéal pour :** Ajouter des lecteurs formatés pour Windows (NTFS) ou formatés multiplateformes (exFAT) sans besoin de migration des données. Ils peuvent également être utilisés pour des pools à un seul disque.
+- **Limitations :** Ces systèmes de fichiers ne sont pas recommandés pour une utilisation régulière ; ils sont principalement destinés à la migration de lecteurs existants. Pour de nouveaux lecteurs, envisagez d'utiliser %%XFS|xfs%%, EXT4, %%BTRFS|btrfs%% ou %%ZFS|zfs%% à la place.
 
-- **Pour les disques de baie :** %%XFS|xfs%% est généralement le meilleur choix pour la plupart des utilisateurs.
-- **Pour des performances élevées ou des fonctionnalités avancées :** Choisissez %%ZFS|zfs%% ou %%BTRFS|btrfs%% pour %%cache pools|cache-pool%% ou des configurations multi-appareils.
-- **Pour les baies mixtes ou en expansion :** %%BTRFS|btrfs%% est idéal si vous voulez utiliser différentes tailles de disques ou ajouter ou retirer facilement des appareils.
+Pour plus de détails sur l'ajout de lecteurs existants, consultez les [notes de version](../../release-notes/7.2.0.md#ext234-ntfs-and-exfat-support).
+
+:::note[Additional Notes]
+
+- Mélanger différents types de systèmes de fichiers dans votre système Unraid est tout à fait acceptable ; le système de %%parité|parity%% d'Unraid fonctionne indépendamment du système de fichiers utilisé.
+- Formatez toujours et partitionnez les disques dans Unraid pour assurer la compatibilité.
+- **Choisissez le nouveau système de fichiers** : Dans le menu déroulant, sélectionnez le format de système de fichiers souhaité. Si vous avez plusieurs disques à modifier, répétez cette étape pour chacun.
+- **Démarrez la baie** : Une fois que vous avez sélectionné les nouveaux systèmes de fichiers, redémarrez votre %%array|array%%.
+- **Formater les disques non montables** : L'onglet **Principal** affichera une option pour formater les disques non montables. Prenez un moment pour vérifier la liste et assurez-vous que seuls les disques que vous souhaitez modifier sont inclus.
+
+:::
+
+:::tip[Still besoin d'aide pour choisir?
+
+- **Pour les lecteurs array :** %%XFS|xfs%% est généralement le meilleur choix pour la plupart des utilisateurs. L'EXT4 est également une option solide si vous préférez un système de fichiers Linux plus traditionnel.
+- **Pour des performances élevées ou des fonctionnalités avancées :** Choisissez %%ZFS|zfs%% ou %%BTRFS|btrfs%% pour des %%cache pools|cache-pool%% ou des configurations multi-dispositifs. Consultez la page de [stockage ZFS](../../advanced-configurations/optimize-storage/zfs-storage.mdx) pour une orientation détaillée sur %%ZFS|zfs%%.
+- **Pour les pools mixtes ou extensibles :** %%BTRFS|btrfs%% est idéal si vous souhaitez utiliser différentes tailles de disque ou ajouter/retirer facilement des périphériques. Voir [pools BTRFS](/unraid-os/using-unraid-to/manage-storage/cache-pools#btrfs-pools) pour plus de détails sur l'ajout de disques aux pools %%BTRFS|btrfs%%.
+- **Pour les lecteurs existants :** Utilisez NTFS ou exFAT uniquement lors de l'ajout de lecteurs existants avec des données ; ajoutez-les avant d'ajouter la parité.
 
 Si vous êtes incertain, commencer avec les paramètres par défaut est une bonne approche : utilisez %%XFS|xfs%% pour les disques %%array|array%% et %%BTRFS|btrfs%% pour les %%cache pools|cache-pool%%.
 
@@ -67,92 +111,124 @@ Si vous êtes incertain, commencer avec les paramètres par défaut est une bonn
 
 Lors de l'ajout d'un nouveau disque à Unraid, vous pouvez sélectionner le type de système de fichiers qui correspond le mieux à vos besoins. Le système de fichiers détermine comment les données sont organisées et protégées sur le disque.
 
-Pour définir le type de système de fichiers :
+Pour définir le type de système de fichiers de manière globale, allez dans ***Paramètres → Paramètres des Disques*** pour définir le système de fichiers par défaut pour les nouveaux lecteurs %%array|array%% uniquement. Unraid utilise par défaut %%XFS|xfs%% pour les lecteurs %%array|array%%.
 
-1. **Définir le paramètre par défaut globalement** :
-   - Accédez à ***Settings → Disk Settings*** pour définir le système de fichiers par défaut pour les nouveaux disques %%array|array%% uniquement.
-   - Unraid utilise par défaut %%XFS|xfs%% pour les disques %%array|array%%.
-   - **Remarque :** Il n'y a actuellement aucun paramètre par défaut global pour les %%cache pools|cache-pool%%. Ils seront toujours par défaut sur %%BTRFS|btrfs%% si laissés sur « auto ».
+:::note
 
-2. **Définir le système de fichiers pour un disque individuel** :
-   - Arrêtez le %%array|array%%.
-   - Cliquez sur le lecteur dans l'onglet **Principal**.
-   - Choisissez le type de système de fichiers souhaité dans le menu déroulant.
-   - Si vous sélectionnez **auto**, Unraid utilisera le paramètre par défaut global.
-   - Pour les %%cache pools|cache-pool%% multi-appareils, seuls %%BTRFS|btrfs%% ou %%ZFS|zfs%% sont pris en charge.
+Il n'existe actuellement aucune configuration par défaut globale pour les %%cache pools|cache-pool%%. Ils sont toujours par défaut en %%BTRFS|btrfs%% si laissés sur "auto".
+
+:::
+
+:::important
+
+Si vous ajoutez des lecteurs contenant des données NTFS ou exFAT existantes, ils doivent être ajoutés à l'%%array|array%% avant tout ajout de lecteurs de parité. Une fois la parité présente, tous les nouveaux lecteurs de données ajoutés seront vidés, quelle que soit leur forme de système de fichiers.
+
+:::
+
+Pour définir le système de fichiers pour un lecteur individuel :
+
+1. Arrêtez l'%%array|array%% avant de procéder aux changements.
+2. Dans l'onglet **Principal**, cliquez sur le lecteur que vous souhaitez configurer.
+3. Sélectionnez le type de système de fichiers souhaité dans le menu déroulant.
+4. (Optionnel) Si vous sélectionnez **auto**, Unraid utilise le défaut global.
+5. Pour les %%cache pools|cache-pool%% multi-appareils, seuls %%BTRFS|btrfs%% ou %%ZFS|zfs%% sont pris en charge.
+6. Si vous ajoutez des lecteurs de données NTFS ou exFAT existants à l'%%array|array%%, ajoutez-les avant d'ajouter des lecteurs de parité.
 
 ---
 
-## Création d'un système de fichiers (formatage)
+## Création d'un système de fichiers (formatage) {#creating-a-file-system-formatting}
 
-Avant d'utiliser un nouveau disque dans Unraid, vous devez le formater avec le système de fichiers choisi. **Souvenez-vous, le formatage effacera tout le contenu existant sur le disque.**
+Avant d'utiliser un nouveau disque dans Unraid, vous devez le formater avec le système de fichiers sélectionné.
 
-Pour commencer avec le formatage :
+:::warning
 
-1. **Démarrez le %%array|array%%**.
-2. **Identifier les disques non montables** : Les disques qui ne sont pas reconnus apparaîtront comme **non montables**.
-3. **Vérifiez la sélection des disques** : Vérifiez que tous les disques non montables sont ceux que vous souhaitez formater.
-4. **Confirmez et formatez** : Cochez la case pour confirmer, lisez attentivement la boîte de dialogue d'avertissement, et cliquez sur **Formater**.
-5. **Surveillez le processus** : Le processus de formatage va démarrer. Pour les nouveaux disques, Unraid réécrira d'abord la table de partition.
-6. **Attendez la fin** : Le formatage prend généralement quelques minutes. Si vous ne voyez pas de progression, rafraîchissez l'onglet **Principal**.
+Le formatage effacera tout le contenu existant du lecteur. Assurez-vous d'avoir sauvegardé toutes les données importantes avant de continuer.
+
+:::
+
+Pour formater un lecteur :
+
+1. Démarrez l’%%array|array%%.
+2. Identifiez les lecteurs non montables (ils apparaissent comme **non montables**).
+3. Vérifiez que tous les lecteurs non montables sont ceux que vous souhaitez formater.
+4. Cochez la case de confirmation, lisez la boîte de dialogue d'avertissement, et cliquez sur **Format**.
+5. Surveillez le processus. Pour les nouveaux disques, Unraid réécrit d'abord la table de partitions.
+6. Attendez la fin du processus. Si le progrès stagne, rafraîchissez l'onglet **Principal**.
 
 Une fois le formatage terminé, le disque est prêt à stocker des fichiers.
 
 ---
 
-## Changer un type de système de fichiers
+## Changer un type de système de fichiers {#changing-a-file-system-type}
 
-Vous pourriez vouloir changer le type de système de fichiers sur un disque spécifique pour profiter de nouvelles fonctionnalités ou pour assurer la compatibilité avec vos autres disques.
+Pour restaurer les données et les paramètres :
 
 :::warning
+
 Changer le type de système de fichiers **effacera toutes les données existantes** sur le disque. Pensez toujours à sauvegarder les fichiers importants avant de commencer.
+
 :::
 
 Pour changer le type de système de fichiers sur un disque particulier :
 
-1. **Arrêtez la baie** : Commencez par arrêter votre %%array|array%% pour vous assurer qu'aucune opération n'est en cours pendant le changement.
-2. **Sélectionnez le disque** : Dans l'onglet **Principal**, cliquez sur le disque pour lequel vous voulez changer le format.
-3. **Choisissez le nouveau système de fichiers** : Dans le menu déroulant, sélectionnez le format de système de fichiers souhaité. Si vous avez plusieurs disques à modifier, répétez cette étape pour chacun.
-4. **Démarrez la baie** : Une fois que vous avez sélectionné les nouveaux systèmes de fichiers, redémarrez votre %%array|array%%.
-5. **Formater les disques non montables** : L'onglet **Principal** affichera une option pour formater les disques non montables. Prenez un moment pour vérifier la liste et assurez-vous que seuls les disques que vous souhaitez modifier sont inclus.
-6. **Confirmez et formatez** : Cochez la case pour confirmer le changement, puis cliquez sur le bouton **Formater** pour continuer.
-7. **Attendez la fin du processus** : Le formatage prend généralement juste quelques minutes. Si vous constatez que le statut ne se met pas à jour, vous pouvez rafraîchir l'onglet **Principal** pour vérifier la progression.
+1. Arrêtez le %%array|array%%.
+2. Dans l'onglet **Principal**, cliquez sur le lecteur que vous souhaitez modifier.
+3. Choisissez le nouveau système de fichiers dans la liste déroulante (répétez pour plusieurs lecteurs si nécessaire).
+4. Démarrez l’%%array|array%%.
+5. Dans l'onglet **Principal**, examinez la liste des lecteurs non montables et assurez-vous que seuls les lecteurs prévus sont inclus.
+6. Cochez la case de confirmation et cliquez sur **Format**.
+7. Attendez la fin du processus. Si le statut ne se met pas à jour, rafraîchissez l'onglet **Principal**.
 
 Si vous rencontrez des problèmes, n'hésitez pas à visiter les [forums Unraid](https://forums.unraid.net/). Joignez votre fichier de diagnostic système zip (trouvé sous ***Outils → Diagnostics***) pour obtenir de l'aide.
 
 ---
 
-## Conversion vers un nouveau type de système de fichiers
+## Conversion vers un nouveau type de système de fichiers {#converting-to-a-new-file-system-type}
 
 :::important
-À partir d'Unraid 7.2, la page ***Principale*** avertira si des disques de l'array ou du pool sont formatés dans des systèmes de fichiers obsolètes :
 
-- Tous les disques formatés en ReiserFS doivent être migrés vers un autre système de fichiers dès que possible, car ils ne seront plus utilisables dans une future version d'Unraid (probablement Unraid 7.3).
-- Tous les disques formatés dans une ancienne version de XFS doivent être migrés avant 2030.
+La page ***Principal*** avertira si des lecteurs array ou pool sont formatés avec des systèmes de fichiers hérités :
+
+- Tous les lecteurs formatés en ReiserFS doivent être migrés vers un autre système de fichiers dès que possible, car ils ne seront pas utilisables dans les versions futures d'Unraid.
+- Tous les lecteurs formatés avec des versions plus anciennes de XFS doivent être migrés avant 2030.
+
 :::
 
 Ce processus est particulièrement courant pour les utilisateurs passant du ReiserFS obsolète (utilisé dans les anciennes versions d'Unraid) au %%XFS|xfs%% ou au %%BTRFS|btrfs%%, mais il s'applique à toute conversion de système de fichiers.
 
 :::important
+
 Ce processus nécessite de déplacer temporairement vos données vers un autre emplacement. Assurez-vous d'avoir suffisamment d'espace libre ailleurs dans votre %%array|array%% ou sur un appareil externe avant de commencer.
+
 :::
 
-Pour convertir en toute sécurité vers un nouveau type de système de fichiers :
+Reformater un lecteur dans Unraid effacera toutes vos données et créera un nouveau système de fichiers vide. Ce processus est utile pour résoudre les erreurs de système de fichiers persistantes ou pour repartir à zéro avec un nouveau format.
 
-1. **Copiez toutes les données du lecteur :** Déplacez vos fichiers vers un autre emplacement. Cela pourrait être un autre lecteur dans votre %%array|array%%, un %%cache pool|cache-pool%%, ou une sauvegarde externe.
-   - Avant Unraid 7.0, vous devrez déplacer les fichiers manuellement.
-   - À partir de Unraid 7.0, vous pouvez déplacer des fichiers [utiliser 'mover' pour vider un disque de la matrice](../../release-notes/7.0.0.md#using-mover-to-empty-an-array-disk) vers d'autres disques de la matrice via la ligne de commande.
-   - À partir de Unraid 7.2, vous pouvez vider un disque de la matrice vers d'autres disques de la matrice via le WebGUI :
-     - Naviguez vers ***Principal → Opération de la matrice*** et arrêtez la matrice.
-     - Naviguez vers ***Paramètres → Paramètres de partage global***. Dans la zone **Vider disque(s)**, sélectionnez le(s) disque(s) à vider et **Appliquer**. Note : ce statut sera automatiquement supprimé lorsque la matrice est arrêtée.
-     - Naviguez vers ***Principal → Opération de la matrice*** et démarrez la matrice.
-     - Sur ***Principal → Opération de la matrice*** cliquez sur **Déplacer** (ou attendez que le mover s'exécute selon son calendrier normal).
-     - Mover vide le disque selon vos paramètres de partage. Notez que les fichiers à la racine du lecteur sont en dehors de tout partage et ne seront pas déplacés.
-     - Vérifiez ***Outils → Journal du système*** pour les messages concernant les fichiers qui n'ont pas pu être déplacés en raison d'une utilisation ou d'un manque d'espace libre.
-   - Naviguez vers ***Principal → Périphériques de la matrice*** et explorez le disque pour confirmer qu'il est vide. Ne continuez que lorsque vous êtes certain que le disque est vide.
-2. **Changez le type de système de fichiers :** Suivez la procédure pour [changer un type de système de fichiers](#changing-a-file-system-type). Cela formatera le lecteur et effacera tout le contenu, vous laissant avec un lecteur vierge dans le nouveau format.
-3. **Copiez vos données arrière** : (Facultatif) Selon l'endroit où vous avez déplacé les fichiers, vous voudrez peut-être les déplacer de nouveau sur le disque nouvellement formaté.
-4. **Répétez au besoin** : Si vous avez plus d'un disque à convertir, répétez ces étapes pour chaque disque, en transférant les données selon les besoins.
+1. Déplacez toutes les données du lecteur vers un autre emplacement (un autre lecteur %%array|array%%, %%cache pool|cache-pool%% ou une sauvegarde externe). Utilisez l'une de ces méthodes :
+
+   **Via le WebGUI (Unraid 7.2+):**
+
+   - Naviguez vers ***Principal → Opération de la matrice*** et arrêtez la matrice.
+   - Naviguez vers ***Paramètres → Paramètres de partage global***. Dans la zone **Vider disque(s)**, sélectionnez le(s) disque(s) à vider et **Appliquer**. Note : ce statut sera automatiquement supprimé lorsque la matrice est arrêtée.
+     - Dans Unraid 7.2.0, toutes les données sur ce disque seront masquées des partages utilisateurs jusqu'à ce que ce statut soit supprimé.
+     - À partir d'Unraid 7.2.1, les données restent disponibles pour les partages utilisateurs, mais aucun nouveau fichier ne sera écrit sur le disque tant que ce statut ne sera pas supprimé.
+   - Naviguez vers ***Principal → Opération de la matrice*** et démarrez la matrice.
+   - Sur ***Principal → Opération de la matrice*** cliquez sur **Déplacer** (ou attendez que le mover s'exécute selon son calendrier normal).
+   - Le Mover videra le disque, déplaçant les fichiers vers d'autres disques de la grappe selon vos paramètres de partage. Notez que les fichiers à la racine du disque sont en dehors de tout partage et ne seront pas déplacés.
+   - Vérifiez ***Outils → Journal du système*** pour les messages concernant les fichiers qui n'ont pas pu être déplacés en raison d'une utilisation ou d'un manque d'espace libre.
+
+   **Ou via la ligne de commande (Unraid 7.0 et 7.1 seulement):**
+
+   - Déplacer les fichiers [en utilisant le 'mover' pour vider un disque de la matrice](../../release-notes/7.0.0.md#using-mover-to-empty-an-array-disk) vers les autres lecteurs de la matrice
+
+   **Ou manuellement :**
+
+   - Déplacez les fichiers manuellement vers un autre emplacement
+
+   Une fois terminé, naviguez vers ***Principal → Appareils Array*** et parcourez le disque pour confirmer qu'il est vide. Continuez seulement lorsque vous êtes certain que le disque est vide.
+2. Suivez la procédure pour [changer un type de système de fichiers](#changing-a-file-system-type). Cela formate le disque et efface tout le contenu, laissant un disque vide dans le nouveau format.
+3. (Optionnel) Déplacez vos données vers le disque nouvellement formaté, selon où vous avez déplacé les fichiers.
+4. Si vous avez plusieurs lecteurs à convertir, répétez ces étapes pour chaque lecteur.
 
 :::note\[Timing]
 
@@ -167,7 +243,9 @@ Le processus peut prendre plusieurs heures, en fonction de la quantité de donn�
 Reformater un lecteur dans Unraid effacera toutes vos données et créera un nouveau système de fichiers vide. Ce processus est utile pour résoudre les erreurs de système de fichiers persistantes ou pour repartir à zéro avec un nouveau format.
 
 :::warning
+
 Le reformatage effacera définitivement toutes les données sur le lecteur. Sauvegardez toujours les fichiers importants avant de commencer.
+
 :::
 
 Pour reformater **en toute sécurité** votre disque :
@@ -183,7 +261,7 @@ Pour reformater **en toute sécurité** votre disque :
    - Changez le système de fichiers à votre type préféré.
    - Démarrez le %%array|array%% et formatez à nouveau le disque.
 
-Ce processus simple garantit que le lecteur est complètement effacé et formaté comme vous le souhaitez. Le processus de formatage prend généralement juste quelques minutes.
+Si votre disque est non montable :
 
 ### Reformatage d'un disque cache
 
@@ -193,37 +271,54 @@ Parfois, il est nécessaire de reformater un disque %%cache|cache%% pour les rai
 - Pour corriger des erreurs persistantes du système de fichiers
 - Pour démarrer à neuf pour de nouvelles charges de travail
 
-<h4>Procédure recommandée pour reformater un disque de cache</h4>
+#### Préparation
 
-1. **Arrêtez la matrice**.
-2. **Désactivez les services Docker et %%VM|vm%%** dans **Paramètres**.
-3. **Démarrez la baie** (cela empêchera les onglets Docker et %%VM|vm%% d'apparaître).
+Si vous n'êtes pas sûr :
+
+1. Arrêtez le %%array|array%%.
+2. Pour une assistance experte, postez votre problème ainsi que les diagnostics sur les [forums d'Unraid](https://forums.unraid.net/).
+   :::
+3. Démarrez de nouveau l'%%array|array%%.
+
+#### Déplacer les données hors du cache
 
 Pour déplacer les données hors du cache :
 
-4. **Définissez le stockage partagé et l'action du Mover (cache → array) :** Pour chaque partage ayant des fichiers dans le %%cache|cache%%, définissez le **Stockage principal** à la source %%cache|cache%% pool et le **Stockage secondaire** à l'%%array|array%%. Réglez l'**action du Mover** sur **cache → array**.
-   - Notez tout partage que vous modifiez et leurs réglages d'origine.
-5. **Exécutez le %%Mover|mover%% :** Exécutez le %%Mover|mover%% depuis l'onglet **Principal**. Attendez qu'il finisse et assurez-vous que le %%cache|cache%% est vide.
+1. Définir le stockage partagé et l'action du Mover (cache → matrice) :
+   - Allez dans l'onglet **Partages**.
+   - Pour chaque partage avec des fichiers dans le %%cache|cache%%, définissez le **stockage principal** sur la source du pool %%cache|cache%% et le **stockage secondaire** sur l'%%array|array%%.
+   - Définissez **Action du Mover** sur **cache → tableau**.
+   - Notez les partages que vous avez modifiés et leurs paramètres d'origine.
+2. Dans l'onglet **Principal**, cliquez sur **Déplacer maintenant** et attendez la fin du processus. Assurez-vous que le %%cache|cache%% est vide.
    - Si des fichiers restent, arrêtez et consultez les forums pour obtenir de l'aide.
 
-Pour reformater le disque cache :
+#### Vérifier un système de fichiers
 
-6. **Arrêtez la matrice**.
-7. **Définissez le format du disque de cache** (choisissez entre %%XFS|xfs%% ou %%BTRFS|btrfs%%).
-   - Pour un %%cache|cache%% à un seul disque, %%XFS|xfs%% est l'option recommandée.
-   - Notez que %%XFS|xfs%% est disponible uniquement si vous avez un seul emplacement de %%cache|cache%%.
-8. **Démarrez la matrice**.
-9. **Formatez le disque cache** :
-   - Confirmez que seul le disque du %%cache|cache%% est répertorié comme non montable.
-   - Procéder au formatage du disque.
+Si un disque qui montait sans problème auparavant montre maintenant comme **non montable**, cela indique généralement une corruption du système de fichiers. Cela peut résulter d'un arrêt inapproprié, d'une opération d'écriture échouée, ou du disque étant marqué comme désactivé dans le %%WebGUI|web-gui%%. Vérifier et réparer le système de fichiers est généralement plus rapide et plus sûr que de reconstruire, il est donc conseillé d'essayer cela avant de formater ou reconstruire le disque.
+
+1. Arrêtez le %%array|array%%.
+2. Définir le format du lecteur de cache :
+   - Dans l'onglet **Principal**, cliquez sur le lecteur de cache.
+   - Choisissez entre %%XFS|xfs%%, EXT4 ou %%BTRFS|btrfs%%.
+   - Pour un %%cache|cache%% à un seul disque, %%XFS|xfs%% ou EXT4 sont recommandés.
+   - Notez que %%XFS|xfs%% et EXT4 sont disponibles uniquement avec un seul emplacement %%cache|cache%%.
+3. Démarrez l’%%array|array%%.
+4. Formater le lecteur de cache :
+   - Confirmer que seul le lecteur %%cache|cache%% est listé comme non montable.
+   - Cochez la case de confirmation et cliquez sur **Format**.
+
+#### Restaurer les données et les paramètres
 
 Pour restaurer les données et les paramètres :
 
-10. **Restaurez les paramètres de partage** : Pour chaque partage que vous avez modifié, rétablissez les valeurs originales de **Stockage principal** et **Stockage secondaire**.
-11. **Déplacez les données (array → cache) :** Réglez le **Stockage principal** à la destination %%cache|cache%% pool et le **Stockage secondaire** à l'%%array|array%% pour chaque partage que vous avez changé. Réglez l'**action du Mover** sur **array → cache**, puis exécutez à nouveau le %%Mover|mover%% pour déplacer vos données de retour vers le %%cache|cache%%.
-12. **Arrêtez la matrice**.
-13. **Réactivez les services Docker et VM**.
-14. **Démarrez la matrice**.
+1. Pour chaque partage que vous avez modifié, réinitialisez le **stockage principal** et le **stockage secondaire** à leurs valeurs d'origine.
+2. Déplacez les données en retour (matrice → cache) :
+   - Pour chaque partage que vous avez modifié, réglez le **stockage principal** sur le pool de destination %%cache|cache%% et le **stockage secondaire** sur l'%%array|array%%.
+   - Définissez **Action du Mover** sur **array → cache**.
+   - Dans l'onglet **Principal**, cliquez sur **Déplacer maintenant** pour déplacer les données vers le %%cache|cache%%.
+3. Arrêtez le %%array|array%%.
+4. Allez dans **Paramètres** et réactivez les services Docker et %%VM|vm%%.
+5. Démarrez l'%%array|array%% pour terminer le processus.
 
 :::note\[Timing]
 
@@ -237,20 +332,61 @@ Le temps nécessaire pour déplacer les données avec le **Mover** et formater l
 
 Maintenir vos pools %%BTRFS|btrfs%% dans Unraid est essentiel pour assurer leur bon fonctionnement et la sécurité de vos données. Deux outils clés que vous voudrez utiliser régulièrement sont **Balance** et **Scrub**. Ces opérations aident à résoudre les problèmes d'allocation d'espace, à optimiser l'utilisation de votre stockage, et à protéger vos données contre la corruption cachée.
 
-Décomposons ce que fait chaque opération et quand les utiliser :
+Ce système automatisé élimine le besoin pour les utilisateurs d'entrer manuellement des options de réparation et garantit que la séquence de réparation correcte est suivie.
 
-<Tabs>
-  <TabItem value="équilibre" label="Équilibre" default>
-    <BtrfsBalance />
-  </TabItem>
+### Via la ligne de commande
 
-  <TabItem value="nettoyer" label="Nettoyer">
-    <BtrfsScrub />
-  </TabItem>
-</Tabs>
+L'opération **Balance** redistribue des morceaux de données et de métadonnées à travers votre pool %%BTRFS|btrfs%%. Ce processus aide à libérer de l'espace, résout les problèmes d'allocation et peut corriger les erreurs "plus d'espace disponible" même lorsque de l'espace semble être disponible.
+
+#### Quand exécuter le Balance
+
+- Les réparations du système de fichiers sont généralement plus rapides qu'une reconstruction complète et peuvent restaurer l'accès sans perte de données.
+- Reconstruire un disque ne résout **pas** la corruption du système de fichiers ; effectuez toujours une vérification ou une réparation d'abord.
+- Si vous avez des doutes, publiez vos diagnostics et messages d'erreur sur les [forums d'Unraid](https://forums.unraid.net/) pour obtenir de l'aide d'experts.
+  :::
+
+#### Comment exécuter le Balance
+
+1. Dans le %%WebGUI|web-gui%%, cliquez sur le pool dans l'onglet **Principal** et sélectionnez **Balance**.
+2. (Optionnel) Ajoutez des paramètres pour des usages avancés (reportez-vous à l'aide d'Unraid pour en savoir plus).
+3. Cliquez sur **Démarrer** pour commencer.
+
+:::note\[Timing]
+
+Les opérations de Balance peuvent prendre de quelques minutes à plusieurs heures, selon la taille du pool et la quantité de données.
+
+:::
+
+### Nettoyer
+
+L'opération **Scrub** lit toutes les données et métadonnées, vérifie l'intégrité des sommes de contrôle et répare les blocs corrompus en utilisant les copies redondantes disponibles. Le nettoyage aide à identifier et à corriger la corruption silencieuse des données, connue sous le nom de "bit rot", avant que cela ne devienne un problème important.
+
+#### Quand exécuter le Scrub
+
+- Dans le cadre de la maintenance régulière (voir le programme recommandé ci-dessous).
+- Après des arrêts imprévus ou si vous suspectez une corruption.
+- Plus fréquemment sur les pools à utilisation intensive.
+
+#### Calendrier recommandé
+
+- Pools à utilisation intensive : **Une fois par semaine**
+- Tous les autres pools : **Une fois par mois**
+
+#### Via la ligne de commande
+
+1. Dans le %%WebGUI|web-gui%%, cliquez sur le pool dans l'onglet **Principal** et sélectionnez **Scrub**.
+2. Cliquez sur **Démarrer** pour initier le processus.
+
+:::note\[Timing]
+
+Les opérations de vérification sont généralement plus rapides qu'une analyse complète du disque car elles ne vérifient que les données allouées. En fonction de la taille et de l'utilisation du pool, cela peut prendre de quelques minutes à quelques heures.
+
+:::
 
 :::tip
+
 Tant **Balance** que **Scrub** peuvent être effectués pendant que le système est en ligne, mais gardez à l'esprit que la performance peut être affectée pendant ces opérations. Vous pouvez surveiller l'avancement dans le %%WebGUI|web-gui%%.
+
 :::
 
 Pour plus de détails sur les fonctionnalités avancées %%BTRFS|btrfs%%, consultez [la documentation officielle BTRFS](https://btrfs.readthedocs.io/en/latest/Introduction.html).
@@ -262,15 +398,17 @@ Pour plus de détails sur les fonctionnalités avancées %%BTRFS|btrfs%%, consul
 Les lecteurs non assignés sont des dispositifs de stockage connectés à votre serveur Unraid qui ne font pas partie de l'%%array|array%% principal ou de tout %%cache pool|cache-pool%%. Vous pouvez utiliser ces lecteurs pour transférer des fichiers, créer des backups, ou fournir un stockage rapide pour des %%machines virtuelles|vm%%.
 
 :::note
-Tous les lecteurs connectés à votre serveur au démarrage de l'%%array|array%% comptent vers votre limite de licence de périphériques attachés Unraid, même s'ils ne sont pas assignés à l'%%array|array%% ou à un pool.
+
+Tous les disques connectés à votre serveur au démarrage de l'%%array|array%% comptent pour la limite de licence Unraid Attached Devices, même s'ils ne sont pas assignés à l'%%array|array%% ou à un pool.
+
 :::
 
-<h4>Utilisations courantes pour les disques non assignés</h4>
+### Utilisations courantes pour les disques non assignés
 
 - Connectez des disques amovibles pour des transferts de fichiers ou des sauvegardes faciles.
 - Utilisez des disques dédiés pour des tâches haute performance comme exécuter des machines virtuelles ou pour du stockage temporaire de données.
 
-### Utilisation des plugins Unassigned Devices
+### Utilisation des plugins Unassigned Devices {#using-the-unassigned-devices-plugins}
 
 Pour tirer le meilleur parti de vos disques non assignés, envisagez d'installer les plugins suivants depuis l'onglet **Apps** :
 
@@ -296,66 +434,76 @@ Pour plus de détails sur l'installation et la gestion des plugins, consultez [P
 
 Si vous voyez qu'un disque dans Unraid est **non montable**, cela peut être dû à deux raisons principales :
 
-1. **Nouveau lecteur ajouté :** Si vous venez d'ajouter un nouveau lecteur à votre configuration, il apparaîtra comme non montable jusqu'à ce que vous le formatiez. Le formatage crée un système de fichiers qui permet au disque de stocker des fichiers. Vous pouvez trouver les étapes pour formater un lecteur [ici](#creating-a-file-system-formatting).
+1. Si vous venez d'ajouter un nouveau lecteur à votre installation, il apparaîtra comme non montable jusqu'à ce que vous le formatiez. Le formatage crée un système de fichiers qui permet au lecteur de stocker des fichiers. Vous pouvez trouver les étapes pour formater un lecteur [ici](#creating-a-file-system-formatting).
 
-2. **Problèmes de système de fichiers :** Si un lecteur qui fonctionnait auparavant montre soudainement comme non montable, il a probablement un problème de système de fichiers. Cela peut arriver en raison d'arrêts inattendus, de problèmes lors de l'écriture de données, ou si le lecteur a été marqué comme désactivé (ce qui apparaît comme un 'x' rouge dans le %%WebGUI|web-gui%%).
+2. Si un lecteur qui fonctionnait précédemment montre soudainement un état non montable, il y a probablement un problème de système de fichiers. Cela peut se produire en raison d'arrêts inattendus, de problèmes d'écriture de données, ou si le lecteur a été marqué comme désactivé (ce qui apparaît comme un 'x' rouge dans le %%WebGUI|web-gui%%).
 
 :::important
-Do not format an unmountable drive unless you are okay with losing all the data on it. Formatting will erase everything and update the %%parity|parity%% information, making recovery impossible. Always try to fix the file system first.
+
+Ne formatez pas un disque non montable à moins d'être prêt à perdre toutes les données qu'il contient. Le formatage effacera tout et mettra à jour les informations de %%parité|parity%%, rendant la récupération impossible. Essayez toujours de réparer le système de fichiers en premier.
+
 :::
 
 Si votre disque est non montable :
 
-1. **Identifiez la situation** : Déterminez s'il s'agit d'un nouveau disque ou d'un disque fonctionnant précédemment.
-2. **Pour les nouveaux disques** : Formatez le disque pour créer un nouveau système de fichiers (consultez les [étapes de formatage](#creating-a-file-system-formatting)).
-3. **Pour les lecteurs qui fonctionnaient auparavant :** Effectuez une vérification ou une réparation du système de fichiers (voir [Vérification d'un système de fichiers](#checking-a-file-system)). Évitez de formater si vous souhaitez conserver les données.
+1. Déterminez s'il s'agit d'un nouveau lecteur ou d'un lecteur qui fonctionnait déjà.
+2. Pour les nouveaux lecteurs : formatez le lecteur pour créer un nouveau système de fichiers (voir [étapes de formatage](#creating-a-file-system-formatting)).
+3. Pour les lecteurs qui fonctionnaient déjà : effectuez une vérification ou une réparation du système de fichiers (voir [Vérification d'un système de fichiers](#checking-a-file-system)). Évitez le formatage si vous souhaitez conserver les données.
 
 :::note
+
 Si un lecteur est à la fois non montable et désactivé ('x' rouge), exécutez d'abord la vérification/réparation du système de fichiers sur le lecteur **émulé**. Si le lecteur émulé est également non montable et que vous tentez de le reconstruire, le nouveau lecteur sera également non montable.
+
 :::
 
-Réparer le système de fichiers prend généralement moins de temps que de reconstruire le lecteur, vous permettant d'accéder à vos données sans rien perdre. Rappelez-vous, reconstruire un lecteur ne résout **pas** les problèmes de système de fichiers ; il assure simplement que le lecteur physique correspond à celui émulé, en conservant les problèmes existants.
+À partir d'Unraid 7.0, la réparation du système de fichiers XFS est maintenant entièrement automatisée via le WebGUI :
 
 :::important[Why la parité n'est-elle pas suffisante?]
+
 Bien que la %%parité|parity%% aide à récupérer un disque défectueux, elle ne peut pas résoudre les problèmes de système de fichiers. Si le système de fichiers est corrompu, la %%parité|parity%% ne fera que reproduire cette corruption sur le nouveau disque.
 
 Si vous n'êtes pas sûr :
 
 - Téléchargez les journaux de votre système en naviguant vers **Outils → Diagnostiques**.
 - Pour une assistance experte, postez votre problème ainsi que les diagnostics sur les [forums d'Unraid](https://forums.unraid.net/).
+
 :::
 
 :::note[Just pour réitérer]
+
 - Ne formatez que les disques non montables s'ils sont neufs ou si vous souhaitez effacer toutes les données.
 - Utilisez la vérification/réparation du système de fichiers pour corriger les fichiers corrompus ; ne comptez pas sur la %%parité|parity%% pour résoudre ces problèmes.
 - Pour les %%cache pools|cache-pool%% avec plusieurs disques, envisagez d'utiliser soit le %%BTRFS|btrfs%% soit le %%ZFS|zfs%%.
 - Vérifiez toujours avant de formater ou de réparer des disques pour éviter la perte accidentelle de données.
+
 :::
 
 ---
 
-### Vérifier un système de fichiers
+### Vérifier un système de fichiers {#checking-a-file-system}
 
 Si un disque qui montait sans problème auparavant montre maintenant comme **non montable**, cela indique généralement une corruption du système de fichiers. Cela peut résulter d'un arrêt inapproprié, d'une opération d'écriture échouée, ou du disque étant marqué comme désactivé dans le %%WebGUI|web-gui%%. Vérifier et réparer le système de fichiers est généralement plus rapide et plus sûr que de reconstruire, il est donc conseillé d'essayer cela avant de formater ou reconstruire le disque.
 
 :::important
-Si le %%WebGUI|web-gui%% suggère de formater un lecteur non montable, <strong>ne formatez pas</strong> à moins que vous n'ayez l'intention d'effacer toutes les données. Le formatage détruira le contenu du lecteur et mettra à jour la %%parité|parity%%, rendant la récupération impossible.
+
+Si le %%WebGUI|web-gui%% suggère de formater un lecteur non montable, **ne formatez pas** sauf si vous avez l'intention d'effacer toutes les données. Le formatage détruira le contenu du lecteur et mettra à jour la %%parity|parité%%, rendant la récupération impossible.
+
 :::
 
-<h4>Préparation à la vérification ou à la réparation</h4>
+#### Préparer à vérifier ou réparer
 
-1. **Identifiez le type de système de fichiers** :
-   - Accédez à l'onglet **Principal** et sélectionnez votre disque (ex : Disque 3, Cache).
-   - Trouvez le **type de système de fichiers** (doit être %%XFS|xfs%%, %%BTRFS|btrfs%% ou %%ZFS|zfs%%).
+1. Identifiez le type de système de fichiers :
+   - Dans l'onglet **Principal**, sélectionnez votre disque (par exemple, Disque 3, Cache).
+   - Trouvez le **type de système de fichiers** (devrait être %%XFS|xfs%%, EXT4, %%BTRFS|btrfs%%, ou %%ZFS|zfs%%).
 
-2. **Démarrez le réseau en mode correct** :
-   - Pour **%%XFS|xfs%%**, démarrez la %%array|array%% en mode **%%maintenance|maintenance-mode%%**.
+2. Démarrez la matrice en mode correct :
+   - Pour **%%XFS|xfs%%** ou **EXT4**, démarrez l'%%array|array%% en **mode de maintenance**.
    - Pour **%%BTRFS|btrfs%%**, démarrez l'%%array|array%% en **mode normal** pour un %%scrub|scrub%% ou en **mode maintenance** pour une réparation.
    - Pour **ZFS**, référez-vous à la section **ZFS** ci-dessous.
 
-3. **Handle emulated disks**: If the disk is disabled and being emulated, run the check/repair on the %%emulated disk|emulated-disk%% before attempting a rebuild. If the %%emulated disk|emulated-disk%% is unmountable, the rebuilt disk will also be unmountable.
+3. Si le disque est désactivé et est émulé, exécutez la vérification/réparation sur le %%emulated disk|disque émulé%% avant de tenter une reconstruction. Si le %%emulated disk|disque émulé%% n'est pas montable, le disque reconstruit ne sera pas montable non plus.
 
-<h4>Messages d'erreur courants</h4>
+#### Messages d'erreur courants
 
 | Message                                                                 | Signification / Action                                                                |
 | ----------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
@@ -366,32 +514,32 @@ Si le %%WebGUI|web-gui%% suggère de formater un lecteur non montable, <strong>n
 | **Montage: mauvais type fs, mauvaise option, etc.**                     | Sélection incorrecte du système de fichiers ou disque non formaté.                    |
 | **Impossible de monter /dev/mdX: La structure a besoin d'un nettoyage** | Le système de fichiers est corrompu; effectuez une réparation.                        |
 
-#### Via le WebGUI
+#### Vérification via le WebGUI
 
-1. **Démarrez l'array :** Démarrez l'%%array|array%% en mode correct (reportez-vous aux étapes ci-dessus).
-2. **Sélectionnez le disque** : Allez à l'onglet **Principal** et sélectionnez le disque à vérifier.
-3. **Accédez aux options de vérification** : Faites défiler jusqu'à **Vérifier l'état du système de fichiers**.
-4. **Pour XFS (Unraid 7.0+) :** Vous verrez un bouton **VÉRIFIER** sans options à entrer. Le système détermine automatiquement les actions nécessaires en fonction des résultats de la vérification.
-5. **Pour d'autres systèmes de fichiers** : Entrez toute option nécessaire (pour les détails, consultez **Aide** en haut à droite).
-6. **Commencez la vérification** : Cliquez sur **Vérifier** pour lancer.
-7. **Surveillez les progrès :** Surveillez les progrès dans la boîte de sortie. Utilisez **Rafraîchir** si nécessaire.
-8. **Passez en revue les résultats :** Passez en revue les résultats. Si vous n'êtes pas sûr, copiez la sortie et postez-la sur les [forums](https://forums.unraid.net/) pour obtenir des conseils.
+1. Démarrez l'%%array|array%% dans le bon mode (reportez-vous aux étapes ci-dessus).
+2. Dans l'onglet **Principal**, sélectionnez le disque que vous souhaitez vérifier.
+3. Accédez à **Vérifier l'état du système de fichiers**.
+4. Pour XFS : Vous verrez un bouton **VÉRIFIER** sans options à entrer. Le système détermine automatiquement les actions nécessaires en fonction des résultats de la vérification.
+5. Pour les autres systèmes de fichiers : entrez les options nécessaires (pour plus de détails, consultez **Aide** en haut à droite).
+6. Cliquez sur **Vérifier** pour lancer le processus.
+7. Suivez l'avancement dans la boîte de sortie. Utilisez **Rafraîchir** si nécessaire.
+8. Examinez les résultats. En cas d'incertitude, copiez la sortie et postez-la sur les [forums](https://forums.unraid.net/) pour obtenir des conseils.
 
-#### Flux de travail de réparation automatique XFS (Unraid 7.0+)
+#### Workflow automatique de réparation du système de fichiers XFS
 
-À partir d'Unraid 7.0, la réparation du système de fichiers XFS est maintenant entièrement automatisée via le WebGUI :
+La réparation du système de fichiers XFS est entièrement automatisée via le WebGUI :
 
-1. **Vérification initiale** : Cliquez sur le bouton **VÉRIFIER** (aucune option à entrer)
+1. Cliquez sur le bouton **VÉRIFIER** (sans options à entrer)
 2. **Résultats de la vérification** :
    - **Aucune corruption détectée** : Affiche "aucune corruption du système de fichiers détectée" et le bouton **VÉRIFIER** reste
    - **Corruption détectée** : Affiche "corruption du système de fichiers détectée" et un bouton **RÉPARER** apparaît
-3. **Processus de réparation** : Cliquez sur **RÉPARER** pour réparer automatiquement le système de fichiers
-4. **Actions supplémentaires** : Si nécessaire, un bouton **ZERO LOG** peut apparaître
-5. **Achèvement** : Affiche "système de fichiers réparé" lorsque le processus est terminé
+3. Cliquez sur **RÉPARER** pour réparer automatiquement le système de fichiers
+4. Si nécessaire, un bouton **EFFACER LE JOURNAL** peut apparaître
+5. Montre "système de fichiers réparé" lorsque le processus est terminé
 
 Ce système automatisé élimine le besoin pour les utilisateurs d'entrer manuellement des options de réparation et garantit que la séquence de réparation correcte est suivie.
 
-#### Via la ligne de commande
+#### Vérification via la ligne de commande
 
 <Tabs>
   <TabItem value="xfs" label="XFS">
@@ -408,9 +556,11 @@ Ce système automatisé élimine le besoin pour les utilisateurs d'entrer manuel
 </Tabs>
 
 :::tip
+
 - Les réparations du système de fichiers sont généralement plus rapides qu'une reconstruction complète et peuvent restaurer l'accès sans perte de données.
 - Reconstruire un disque ne résout **pas** la corruption du système de fichiers ; effectuez toujours une vérification ou une réparation d'abord.
 - Si vous avez des doutes, publiez vos diagnostics et messages d'erreur sur les [forums d'Unraid](https://forums.unraid.net/) pour obtenir de l'aide d'experts.
+
 :::
 
 ---
@@ -425,35 +575,37 @@ Les réparations peuvent prendre de quelques minutes à plusieurs heures, surtou
 
 :::
 
-<h4>Préparation à la réparation</h4>
+#### Préparer la réparation
 
-1. **Identifier le type de système de fichiers** : Allez à l'onglet **Principal**, cliquez sur le disque, et découvrez de quel type de système de fichiers il s'agit (%%XFS|xfs%%, %%BTRFS|btrfs%%, ou %%ZFS|zfs%%).
+1. Dans l'onglet **Principal**, cliquez sur le disque et identifiez le type de système de fichiers (%%XFS|xfs%%, EXT4, %%BTRFS|btrfs%%, ou %%ZFS|zfs%%).
 
-2. **Démarrez le réseau en mode correct** :
+2. Démarrez la matrice en mode correct :
 
-   - **Pour %%XFS|xfs%% :** Utilisez **module de maintenance**.
+   - **Pour %%XFS|xfs%% ou EXT4 :** Utilisez le **mode de maintenance**.
    - **Pour %%BTRFS|btrfs%% :** Utilisez **mode normal** pour un %%scrub|scrub%% ; utilisez **module de maintenance** pour une réparation.
-   - **Pour %%ZFS|zfs%% :** Utilisez le **mode normal** et exécutez un %%scrub|scrub%% pour vérifier les erreurs. Consultez la [page de stockage ZFS](../../advanced-configurations/optimize-storage/zfs-storage.mdx) pour obtenir des conseils sur l'entretien et les procédures de réparation des pools %%ZFS|zfs%%.
+   - **Pour %%ZFS|zfs%% :** Utilisez le **mode normal** et effectuez un %%scrub|scrub%% pour vérifier les erreurs. Voir la page de [stockage ZFS](../../advanced-configurations/optimize-storage/zfs-storage.mdx) pour des conseils sur la maintenance et les procédures de réparation des pools %%ZFS|zfs%%.
 
-3. **Gérer les disques émulés** : Si le disque est désactivé et est en cours d'émulation, effectuez la réparation sur le %%emulated disk|disque émulé%% avant de tenter une reconstruction.
+3. Si le disque est désactivé et est émulé, exécutez la réparation sur le %%emulated disk|disque émulé%% avant de tenter une reconstruction.
 
-#### Via le WebGUI
+#### Réparation via le WebGUI
 
-1. **Démarrez le réseau**: Démarrez le %%array|array%% en mode correct (voir la section ci-dessus).
-2. **Sélectionnez le disque**: Allez à l'onglet **Principal** et cliquez sur le disque que vous souhaitez réparer.
-3. **Accéder aux options de réparation**: Faites défiler vers le bas jusqu'à **Vérification de l'état du système de fichiers**.
-4. **Pour XFS (Unraid 7.0+) :** Le processus de réparation est entièrement automatisé. Cliquez sur **VÉRIFIER**, puis **RÉPARER** si une corruption est détectée, et **ZERO LOG** si on vous le demande.
-5. **Pour d'autres systèmes de fichiers** : Supprimez toutes les options qui exécuteraient le processus en mode vérification seule (comme `--readonly` pour %%BTRFS|btrfs%%).
-6. **Ajoutez les options suggérées** : Si vous y êtes incité, ajoutez les options suggérées comme indiqué dans les résultats de vérification.
-7. **Commencer la réparation** : Cliquez sur **Vérifier** pour commencer la réparation.
-8. **Surveillez les progrès :** Gardez un œil sur les progrès dans la boîte de sortie. Utilisez **Rafraîchir** si nécessaire.
-9. **Vérifiez les fichiers perdus :** Si vous remarquez un dossier `lost+found` après la réparation, il peut contenir des fichiers ou dossiers qui n'ont pas pu être entièrement récupérés. Utilisez des sauvegardes ou la commande `file` de Linux pour identifier le contenu si nécessaire.
+1. Démarrez l'%%array|array%% dans le bon mode (reportez-vous à la section ci-dessus).
+2. Dans la rubrique **Principale**, cliquez sur le lecteur que vous souhaitez réparer.
+3. Faites défiler pour **Vérifier l'état du système de fichiers**.
+4. Pour XFS : Le processus de réparation est entièrement automatisé. Cliquez sur **VÉRIFIER**, puis sur **RÉPARER** si une corruption est détectée, et sur **ZÉRO LOG** si vous y êtes invité.
+5. Pour les autres systèmes de fichiers : Supprimez toute option qui exécuterait le processus en mode vérification uniquement (comme `--readonly` pour %%BTRFS|btrfs%%).
+6. Si vous y êtes invité, ajoutez les options suggérées comme indiqué dans le résultat de la vérification.
+7. Cliquez sur **Vérifier** pour commencer la réparation.
+8. Surveillez la progression dans la boîte de sortie. Utilisez **Actualiser** si nécessaire.
+9. Si vous remarquez un dossier `lost+found` après la réparation, il peut contenir des fichiers ou des dossiers qui n'ont pas pu être entièrement récupérés. Utilisez des sauvegardes ou la commande Linux `file` pour identifier le contenu si nécessaire.
 
 :::info
+
 Si vous n'êtes pas sûr de la sortie, copiez-la et partagez-la sur les [forums Unraid](https://forums.unraid.net/) pour une aide experte. Utilisez l'option de formatage de code pour la rendre lisible.
+
 :::
 
-#### Via la ligne de commande
+#### Réparation via la ligne de commande
 
 <Tabs>
   <TabItem value="xfs" label="XFS">
@@ -470,9 +622,11 @@ Si vous n'êtes pas sûr de la sortie, copiez-la et partagez-la sur les [forums 
 </Tabs>
 
 :::info[After la réparation]
+
 - Arrêtez et redémarrez le %%array|array%% en **mode normal**.
 - Le lecteur devrait maintenant être monté et accessible.
 - Si vous voyez un dossier `lost+found`, vérifiez son contenu pour d'éventuels fichiers importants.
+
 :::
 
 Si vous ne comprenez pas le résultat de la réparation ou si le processus échoue, partagez vos diagnostics et le journal de réparation sur les [forums d'Unraid](https://forums.unraid.net/) pour obtenir de l'aide supplémentaire.

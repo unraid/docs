@@ -17,15 +17,15 @@ El comando `unraid-api apikey` admite modos tanto interactivos como no interacti
 - Provisión de acceso temporal
 - Flujos de trabajo de infraestructura como código
 
-:::tip[Quick Iniciar]
+:::tip[Inicio Rápido]
+
 Salte a la [Ejemplo Completo del Flujo de Trabajo](#complete-workflow-example) para ver todo en acción.
+
 :::
 
 ## Creación Programática de Claves API
 
 ### Creación Básica con Salida en JSON
-
-Use la bandera `--json` para obtener una salida legible por máquina:
 
 ```bash
 unraid-api apikey --create --name "workflow key" --roles ADMIN --json
@@ -35,9 +35,9 @@ unraid-api apikey --create --name "workflow key" --roles ADMIN --json
 
 ```json
 {
-    "key": "your-generated-api-key-here",
-    "name": "workflow key",
-    "id": "generated-uuid"
+  "key": "your-generated-api-key-here",
+  "name": "workflow key",
+  "id": "generated-uuid"
 }
 ```
 
@@ -60,7 +60,13 @@ unraid-api apikey --create --name "existing key" --roles ADMIN --overwrite --jso
 ```
 
 :::warning[Key Reemplazo]
-La bandera `--overwrite` reemplazará permanentemente la clave existente. La clave antigua será invalidada inmediatamente.
+
+Eliminar una clave por nombre sin confirmaciones:
+
+:::warning[Reemplazar Clave Existente]
+
+Eliminar una clave por nombre sin confirmaciones:
+
 :::
 
 ## Eliminación Programática de Claves API
@@ -91,13 +97,13 @@ unraid-api apikey --delete --name "workflow key" --json
 
 ```json
 {
-    "deleted": 1,
-    "keys": [
-        {
-            "id": "generated-uuid",
-            "name": "workflow key"
-        }
-    ]
+  "deleted": 1,
+  "keys": [
+    {
+      "id": "generated-uuid",
+      "name": "workflow key"
+    }
+  ]
 }
 ```
 
@@ -105,8 +111,8 @@ unraid-api apikey --delete --name "workflow key" --json
 
 ```json
 {
-    "deleted": 0,
-    "error": "No API key found with name: nonexistent key"
+  "deleted": 0,
+  "error": "No API key found with name: nonexistent key"
 }
 ```
 
@@ -123,12 +129,12 @@ unraid-api apikey --delete --name "nonexistent key"
 
 ```json
 {
-    "deleted": 0,
-    "message": "No API keys found to delete"
+  "deleted": 0,
+  "message": "No API keys found to delete"
 }
 ```
 
-## Ejemplo Completo de Flujo de Trabajo
+## Ejemplo Completo de Flujo de Trabajo {#complete-workflow-example}
 
 Aquí hay un ejemplo completo para la provisión de acceso temporal:
 
@@ -199,6 +205,7 @@ echo "Deployment completed successfully"
 ## Mejores Prácticas
 
 :::info[Security Mejores Prácticas]
+
 **Permisos Mínimos**
 
 - Usar permisos específicos en lugar del rol ADMIN cuando sea posible
@@ -209,17 +216,20 @@ echo "Deployment completed successfully"
 - Siempre limpiar claves temporales después de su uso
 - Almacenar claves API de forma segura (variables de entorno, gestión de secretos)
 - Utilizar nombres y descripciones descriptivos para el rastro de auditoría
+
 :::
 
 ### Gestión de Errores
 
-- Verificar códigos de salida (`$?`) después de cada comando
+- **Problema:** El nombre de la clave contiene caracteres no permitidos.
+- **Solución:** Elimine caracteres especiales como guiones, guiones bajos o símbolos.
 - Usar `set -e` en scripts bash para fallar rápidamente
 - Implementar limpieza adecuada con `trap`
 
 ### Nomenclatura de Claves
 
-- Usar nombres descriptivos que incluyan propósito y fecha
+- **Problema:** La clave ya existe o no cumple con la convención.
+- **Solución:** Use la bandera `--overwrite` o elija un nombre diferente.
 - Los nombres deben contener solo letras, números y espacios
 - Se admiten letras Unicode
 
@@ -227,10 +237,10 @@ echo "Deployment completed successfully"
 
 ### Problemas Comunes
 
-:::note[Common Mensajes de Error]
-**"El nombre de la clave API debe contener solo letras, números y espacios"**
+:::note[Mensajes de Error Comunes]
 
-- **Solución:** Elimine caracteres especiales como guiones, guiones bajos o símbolos
+- **"Caracteres inválidos en el nombre"**
+- **Solución:** Elimine caracteres especiales como guiones, guiones bajos o símbolos.
 
 **"Una clave API con el nombre 'x' ya existe"**
 
@@ -239,11 +249,10 @@ echo "Deployment completed successfully"
 **"Por favor, añada al menos un rol o permiso a la clave"**
 
 - **Solución:** Especifique ya sea `--roles` o `--permissions` (o ambos)
+
 :::
 
 ### Modo de Depuración
-
-Para resolución de problemas, ejecute con registro de depuración:
 
 ```bash
 LOG_LEVEL=debug unraid-api apikey --create --name "debug key" --roles ADMIN

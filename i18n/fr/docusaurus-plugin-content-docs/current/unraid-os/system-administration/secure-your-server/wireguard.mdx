@@ -22,7 +22,9 @@ Bien que Tailscale offre une expérience conviviale pour la plupart des utilisat
 | **Tâches à forte bande passante** | Offre un minimum de surcharge de protocole pour un débit maximal                                                              |
 
 :::info
+
 Pour la plupart des utilisateurs, [**Tailscale**](../secure-your-server/tailscale.mdx) peut accomplir tout ce que %%WireGuard|wireguard%% peut faire, souvent plus facilement. Il ne nécessite généralement pas de redirection de port ni de configuration manuelle. Cependant, si vous avez besoin de configurations VPN avancées et personnalisées ou avez des exigences de compatibilité spécifiques, opter pour %%WireGuard|wireguard%% peut être une meilleure option pour certains.
+
 :::
 
 <h4>Types de connexion et cas d'utilisation</h4>
@@ -64,7 +66,9 @@ Connaître les types de connexion dans %%WireGuard|wireguard%% peut vous aider �
 3. Cliquez sur **Générer une paire de clés** pour créer des clés publiques/privées.
 
 :::warning
+
 Stockez la clé privée en toute sécurité car elle offre un accès complet au réseau.
+
 :::
 
 <h4>Étape 2 : Configurez votre point d'extrémité</h4>
@@ -99,10 +103,12 @@ Stockez la clé privée en toute sécurité car elle offre un accès complet au 
 </div>
 
 :::important[Security meilleures pratiques]
+
 - **Accès de confiance uniquement :** L'accès VPN est similaire à l'accès physique au réseau, autorisez donc uniquement les appareils de confiance.
 - **Gestion des clés :** Ne partagez jamais de clés privées ; traitez-les comme des mots de passe.
 - **Segmentation réseau :** Pour des configurations complexes (Docker/%%VM|vm%%s personnalisés), isolez le trafic VPN à l'aide de VLANs ou de sous-réseaux séparés.
 - **Audits réguliers :** Examinez les appareils connectés et les autorisations d'accès tous les trimestres.
+
 :::
 
 ### Définir un pair (client)
@@ -122,11 +128,15 @@ Un pair est un appareil client - comme un téléphone, un ordinateur portable ou
 6. Cliquez sur **Appliquer**.
 
 :::note
+
 Bien que les pairs puissent générer leurs propres clés, laisser Unraid générer les clés simplifie la configuration en fournissant des fichiers de configuration complets.
+
 :::
 
 :::caution
+
 Ajouter un nouveau pair peut temporairement désactiver le tunnel %%WireGuard|wireguard%%, ce qui peut interrompre votre connexion. Assurez-vous d'avoir accès local à votre serveur avant de faire des changements.
+
 :::
 
 ### Configuration d'un pair (client)
@@ -141,32 +151,36 @@ Ajouter un nouveau pair peut temporairement désactiver le tunnel %%WireGuard|wi
   </TabItem>
 </Tabs>
 
-### Configuration de votre DNS
+### Configurations à éviter
 
 1. Accédez aux appareils en utilisant des adresses IP ou des noms de domaine complets (par exemple, `yourpersonalhash.unraid.net`).
 
 :::note
-Les noms courts comme "tour" ou les entrées DNS gérées par le routeur peuvent ne pas fonctionner via le VPN.
+
+WireGuard est conçu pour être peu intrusif - si quelque chose ne fonctionne pas, il ne fournira pas de messages d'erreur. Pour dépanner efficacement, vous devriez vérifier systématiquement chaque aspect de votre configuration.
+
 :::
 
-2. Pour activer la résolution de noms courts :
+2. ✅ Le tunnel est actif à la fois sur Unraid et sur les appareils clients. *("Actif" signifie que le tunnel a démarré mais n'est pas nécessairement connecté.)*
    - Allez dans ***Paramètres → Gestion des VPN*** dans Unraid.
    - Basculer du mode **Basique** au mode **Avancé**.
    - Entrez l'adresse IP de votre serveur DNS préféré dans le champ **Serveur DNS pair**.
    - Sauvegardez les modifications et mettez à jour le fichier de configuration du client.
-3. Serveurs DNS recommandés :
+3. ✅ L'URL DDNS pointe vers votre IP publique actuelle et est définie dans **Point d'extrémité local**.
    - L'adresse IP de votre routeur LAN.
    - Serveurs DNS publics comme `8.8.8.8`.
 
 Cette configuration est particulièrement importante pour le mode **Accès en tunnel à distance**, où le serveur DNS d'origine du client peut être inaccessible.
 
 :::note
+
 Les adresses %%mDNS|mdns%% (par exemple, `tower.local`) ne fonctionnent que sur le réseau local et pas via le VPN %%WireGuard|wireguard%%.
+
 :::
 
-### Réseaux complexes
+### Réseaux complexes {#complex-networks}
 
-For most users, the default **Use NAT** setting works out of the box and allows access to Unraid and most LAN devices. However, if you use Docker containers with custom IPs or %%VM|vm%%s with strict networking requirements:
+Pour la plupart des utilisateurs, le réglage par défaut **Utiliser NAT** fonctionne dès le départ et permet l'accès à Unraid et à la plupart des appareils du réseau local. Cependant, si vous utilisez des conteneurs Docker avec des adresses IP personnalisées ou des %%VM|vm%%s avec des exigences réseau strictes,
 
 1. Dans votre configuration de tunnel %%WireGuard|wireguard%%, réglez **Utiliser NAT** sur **Non**.
 2. Sur votre routeur, ajoutez une route statique pour le réseau de tunnel WireGuard (par exemple, `10.253.0.0/24`) pointant vers l'IP de votre serveur Unraid.

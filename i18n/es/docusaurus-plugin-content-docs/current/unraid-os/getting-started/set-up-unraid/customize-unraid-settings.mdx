@@ -8,7 +8,9 @@ sidebar_label: Personalizar configuraciones de Unraid
 Unraid OS funciona automáticamente pero permite mayor personalización de configuraciones como dirección IP, nombre del host, ajustables de disco, y más a través de la pestaña **Configuraciones** en el **%%WebGUI|web-gui%%** de Unraid.
 
 :::tip[Tailscale integración]
+
 **Tailscale** es un complemento opcional que puedes instalar mediante la pestaña **Apps** buscando "Tailscale". Proporciona acceso remoto seguro a tu red y agrega una sección de **Tailscale** a tus **Settings** para mejorar las capacidades de gestión remota.
+
 :::
 
 <div style={{ margin: 'auto', maxWidth: '700px'}}>
@@ -17,7 +19,7 @@ Unraid OS funciona automáticamente pero permite mayor personalización de confi
 
 No olvides: el %%WebGUI|web-gui%% incluye ayuda integrada. Para acceder a la ayuda de un campo específico, haz clic en el aviso junto a él, o utiliza el ícono de **Help** ![Help icon](/img/helpicon.png) en la parte superior derecha de la interfaz para activar la ayuda en todos los campos.
 
-## Configuraciones del Sistema
+## Fijación de CPU
 
 **Configuraciones del Sistema** te permiten configurar funcionalidades clave como red, compartición, %%VM|vm%% y ajustes de disco.
 
@@ -37,7 +39,7 @@ En esta página, puedes configurar tu zona horaria y activar el uso de hasta cua
   ![Barra de herramientas - Configuraciones](/img/date-time.png)
 </div>
 
-### Configuraciones de Disco
+### Configuraciones de Disco {#disk-settings}
 
 Puedes modificar configuraciones adicionales para tus dispositivos de disco en esta página. Activa tu %%array|array%% para iniciarse automáticamente al encender, ajusta los %%spin-down timers|spin-down-timers%% de disco, e incluso cambia configuraciones avanzadas de controladores como la %%SMART polling frequency|smart-polling%%.
 
@@ -75,13 +77,94 @@ Puedes configurar varias opciones de acceso para tu servidor Unraid, incluido ha
   ![Configuraciones - Acceso de Gestión](/img/settings-management-access.png)
 </div>
 
-### Configuraciones de Red
+### Configuraciones de red {#network-settings}
 
 Por defecto, Unraid intenta obtener una dirección IP de un servidor DHCP en tu red local, generalmente proporcionada por tu router. En esta página, puedes configurar una dirección IP estática, configurar %%bonding|nic-bonding%%, %%bridging|nic-bridging%%, o explorar otras opciones. Aunque se recomienda establecer una IP estática, no es necesario para usar Unraid.
 
 <div style={{ margin: 'auto', maxWidth: '400px'}}>
   ![Configuraciones de Red](/img/settings-network.png)
 </div>
+
+#### Configuración de WiFi
+
+Unraid admite conectividad WiFi para situaciones en las que una conexión de red cableada no es práctica o no está disponible. Aunque se recomienda generalmente una conexión cableada para una mejor estabilidad y rendimiento, una configuración inalámbrica puede ser una alternativa adecuada cuando pasar un cable no es una opción.
+
+:::important[Initial requisitos de configuración]
+
+Las %%User shares|user-share%% pueden simplificar en gran medida la organización y el acceso de contenido a través de múltiples discos en el %%array|array%%. Tienes la opción de especificar qué discos están permitidos para participar en %%user shares|user-share%% a través de configuraciones globales de inclusión o exclusión.
+
+- Un teclado local y monitor conectado a tu servidor (iniciar en modo GUI), o
+- Una conexión temporal por cable para acceder al %%WebGUI|web-gui%%
+
+Una vez que el WiFi está configurado, puedes eliminar la conexión cableada y gestionar tu servidor de manera inalámbrica.
+
+:::
+
+##### Configuración de WiFi
+
+1. Accede al %%WebGUI|web-gui%% y ve a ***Ajustes → Configuración de Red → Red Inalámbrica wlan0***.
+2. Habilita el WiFi activando la opción **Habilitar WiFi**.
+3. Configura la **Región Reglamentaria**:
+   - En la mayoría de los casos, es mejor dejarlo en **Automático**.
+   - Si tu red preferida no aparece en los resultados del escaneo, configúralo para tu ubicación específica (país/región).
+4. Escanear para redes disponibles:
+   - Las redes WiFi disponibles deberían listarse.
+   - Haz clic en el icono **Conectar a la red WiFi** (ᯤ) junto a tu red preferida.
+5. Introduce tus credenciales de red:
+   - Escribe tu contraseña de WiFi.
+   - Revisa y ajusta cualquier configuración adicional si es necesario.
+   - Haz clic en **Unirse a esta red** para conectar.
+
+:::tip[Docker contenedores y WiFi]
+
+Si planeas usar contenedores Docker con WiFi, asegúrate de desconectar cualquier conexión cableada **antes** de iniciar el servicio Docker. Esto ayuda a prevenir conflictos de configuración de red que pueden ocurrir cuando ambas interfaces están activas simultáneamente.
+
+:::
+
+##### Funciones de WiFi soportadas
+
+La implementación de WiFi de Unraid admite lo siguiente:
+
+- **Protocolos de seguridad WPA2 y WPA3**, incluyendo redes WPA2/WPA3 Enterprise. Si están disponibles ambos WPA2 y WPA3, Unraid utilizará automáticamente WPA3 para una mayor seguridad.
+- **Adaptadores WiFi modernos** que tienen soporte de controlador Linux en el núcleo. Los adaptadores más antiguos podrían no ser compatibles.
+
+:::info[USB Adaptadores WiFi ]
+
+Si utilizas un adaptador WiFi USB, revisa esta lista de [Adaptadores WiFi USB compatibles con controladores en núcleo de Linux](https://github.com/morrownr/USB-WiFi/blob/main/home/USB_WiFi_Adapters_that_are_supported_with_Linux_in-kernel_drivers.md) para garantizar la compatibilidad.
+
+Si no se detecta tu adaptador WiFi, por favor, inicia un nuevo hilo en los [foros de Unraid](https://forums.unraid.net/) y proporciona tus diagnósticos para investigación.
+
+:::
+
+##### FTP (Protocolo de Transferencia de Archivos)
+
+Los usuarios pueden conectarse vía %%FTP|ftp%% solo si son agregados al campo de **FTP users** en esta página. Si no se agregan usuarios, el servicio %%FTP|ftp%% no iniciará.
+
+- Solo puedes conectarte a **una red WiFi** a la vez.
+- Solo se admite un NIC inalámbrico - `wlan0`. Si tu sistema tiene múltiples adaptadores inalámbricos (`wlan1`, `wlan2`, etc.), solo se usará `wlan0`.
+- A diferencia de las conexiones cableadas, **no puedes combinar múltiples conexiones inalámbricas** para mejorar la fiabilidad.
+- **`wlan0` no puede participar en un bonding**. No puedes combinar conexiones WiFi y Ethernet en una configuración bonding.
+- Es mejor utilizar o bien una conexión cableada o WiFi, pero **no ambas al mismo tiempo**. Si necesitas conectar o desconectar temporalmente un cable de red mientras usas WiFi, tu servidor debería ajustarse automáticamente para utilizar la conexión activa en aproximadamente un minuto. Para información importante sobre contenedores Docker al cambiar entre tipos de conexión, vea la sección **Consideraciones para Docker y máquinas virtuales** a continuación.
+
+##### Servidor Syslog
+
+El %%Syslog server|syslog-server%% almacena permanentemente tu registro del sistema, lo cual es útil para la resolución de problemas ya que Unraid borra el registro después de cada reinicio.
+
+###### Contenedores Docker
+
+- En ***Ajustes → Docker***, cuando el WiFi está activado, el sistema usa automáticamente **ipvlan** para redes personalizadas (macvlan no es compatible con WiFi).
+- El acceso del anfitrión a las redes personalizadas debe estar deshabilitado en ***Ajustes → Docker***.
+- El **Tipo de Red** de un Contenedor no puede utilizar `br0`, `bond0` o `eth0`.
+
+:::caution
+
+La sección %%Tailscale|tailscale%% permite el acceso remoto seguro mediante el %%VPN|vpn-tunnel%% %%Tailscale|tailscale%%. Aquí, puedes iniciar sesión para conectar tu servidor Unraid a tu %%Tailnet|tailnet%%, ver la dirección IP y nombre de host asignado, y habilitar o deshabilitar la conectividad %%Tailscale|tailscale%%.
+
+###### Máquinas virtuales
+
+Se recomienda configurar el %%origen de red|vm%% de la %%Máquina Virtual|vm%% a **virbr0** (NAT Privado). Este modo funciona con cualquier número de %%Máquinas Virtuales|vm%% y proporciona acceso a la red a través de %%NAT|nat%%. Tenga en cuenta que mDNS no funciona a través de NAT, por lo que la %%Máquina Virtual|vm%% necesitará acceder a otros dispositivos de red local por dirección IP, no por nombre de host. Puedes agregar direcciones IP y nombres de host al archivo de hosts en el sistema operativo de la %%Máquina Virtual|vm%% para permitir el acceso por nombre de host. Las %%Máquinas Virtuales|vm%% no serán directamente accesibles desde otros dispositivos en tu LAN, pero aún puedes acceder a ellas vía %%VNC|vnc-session%% a través del anfitrión.
+
+Para más información acerca del networking de %%Máquinas Virtuales|vm%%, ver [Descripción general y preparación del sistema](../../using-unraid-to/create-virtual-machines/overview-and-system-prep.mdx).
 
 ### Modo de Energía
 
@@ -93,33 +176,33 @@ Los cambios surten efecto inmediatamente y no requieren un reinicio del sistema.
   ![Modo de Energía](/img/settings-powermode.png)
 </div>
 
-### Configuraciones Globales de Compartición
+### Confirmaciones
 
 Las %%User shares|user-share%% pueden simplificar en gran medida la organización y el acceso de contenido a través de múltiples discos en el %%array|array%%. Tienes la opción de especificar qué discos están permitidos para participar en %%user shares|user-share%% a través de configuraciones globales de inclusión o exclusión.
 
 <div style={{ margin: 'auto', maxWidth: '400px'}}>
-  ![Configuraciones Globales de Compartición](/img/settings-globalshare.png)
+  ![Confirmaciones](/img/settings-confirmations.png)
 </div>
 
-### Configuraciones de UPS
+### Configuraciones de Consola {#ups-settings}
 
-Unraid se puede conectar a un UPS (Suministro Ininterrumpido de Energía) APC (o compatible) para permitir que el sistema se apague de forma segura durante una pérdida de energía mientras aún recibe energía de batería. Puedes configurar la conexión del UPS y establecer políticas para el comando de apagado en esta página.
+Te permite personalizar la consola del sistema local. Puedes seleccionar el diseño del teclado, ajustar el tiempo de espera de apagado de pantalla, y habilitar o deshabilitar el historial persistente de Bash a lo largo de los reinicios. Estas opciones mejoran tu experiencia al usar Unraid con un monitor y teclado conectados.
 
 <div style={{ margin: 'auto', maxWidth: '400px'}}>
-  ![Configuraciones de UPS](/img/settings-ups.png)
+  ![Configuraciones de Consola](/img/settings-console.png)
 </div>
 
-### Gestor de VM
+### Configuración de pantalla
 
-Las **máquinas virtuales** (VMs) pueden convertir tu servidor en un escritorio o reproductor multimedia, y ejecutar aplicaciones no diseñadas para Linux. Para detalles sobre la gestión de %%VMs|vm%% en Unraid, consulta [VM setup](../../using-unraid-to/create-virtual-machines/vm-setup.mdx).
+Personaliza la apariencia del %%WebGUI|web-gui%% de Unraid en esta página ajustando el formato de fecha y hora, formato numérico, y alternando entre vistas con pestañas y sin pestañas. También puedes seleccionar la unidad de temperatura y elegir entre diferentes temas para la interfaz de usuario.
 
 <div style={{ margin: 'auto', maxWidth: '400px'}}>
-  ![Gestor de VM](/img/settings-vmmanager.png)
+  ![Configuraciones de Pantalla](/img/settings-display.png)
 </div>
 
-## Servicios de Red
+## Configuraciones de Notificaciones
 
-**Network Services** let you configure network communication protocols on your Unraid server, which are essential for user and disk shares. You can also enable an %%FTP|ftp%% server, a logging server, and set up a %%VPN|vpn-tunnel%% for secure remote access.
+**Servicios de Red** le permiten configurar protocolos de comunicación de red en su servidor Unraid, que son esenciales para el uso compartido de usuarios y discos. También puede habilitar un servidor %%FTP|ftp%%, un servidor de registros, y establecer un %%VPN|vpn-tunnel%% para acceso remoto seguro.
 
 ### NFS (Sistema de Archivos de Red)
 
@@ -129,9 +212,9 @@ El soporte de NFSv4 está disponible en Unraid. Puedes habilitarlo o deshabilita
   ![NFS](/img/settings-nfs.png)
 </div>
 
-### SMB (Bloque de Mensajes del Servidor)
+### Utilidades del Usuario
 
-El protocolo SMB es usado por clientes de Microsoft Windows. Desde esta página, puedes habilitarlo, definir un grupo de trabajo, o unirte a un dominio de Active Directory.
+Los complementos de terceros se muestran aquí, ampliando la funcionalidad de Unraid y dándote más control sobre tu servidor. Por ejemplo, el [Complemento de Aplicaciones de la Comunidad](../../using-unraid-to/run-docker-containers/community-applications.mdx) está incluido. Otros complementos ofrecen características para monitoreo del sistema, mantenimiento, gestión de almacenamiento y copias de seguridad `appdata`.
 
 <div style={{ margin: 'auto', maxWidth: '400px'}}>
   ![SMB](/img/settings-smb.png)
@@ -156,10 +239,12 @@ El %%Syslog server|syslog-server%% almacena permanentemente tu registro del sist
 ### Tailscale
 
 :::note
+
 La sección Tailscale solo está disponible si has instalado el plugin Tailscale.
+
 :::
 
-La sección %%Tailscale|tailscale%% permite el acceso remoto seguro mediante el %%VPN|vpn-tunnel%% %%Tailscale|tailscale%%. Aquí, puedes iniciar sesión para conectar tu servidor Unraid a tu %%Tailnet|tailnet%%, ver la dirección IP y nombre de host asignado, y habilitar o deshabilitar la conectividad %%Tailscale|tailscale%%.
+Puedes establecer una conexión %%VPN|vpn-tunnel%% a tu servidor Unraid utilizando [%%Wireguard|wireguard%%](https://www.wireguard.com/) para conexiones de internet seguras.
 
 También puedes configurar tu servidor como un %%Subnet Router|subnet-routing%% para dispositivos locales o como un Nodo de Salida para redirigir el tráfico de Internet. Esta sección permite la gestión de rutas anunciadas, el estado del nodo de salida, opciones de integración con contenedores Docker, y el monitoreo del estado de conexión para la resolución de problemas.
 
@@ -203,15 +288,166 @@ Personaliza la apariencia del %%WebGUI|web-gui%% de Unraid en esta página ajust
   ![Configuraciones de Pantalla](/img/settings-display.png)
 </div>
 
-### Configuraciones de Notificaciones
+### Configuraciones de Notificaciones {#notification-settings}
 
-Puedes configurar notificaciones del navegador y por correo electrónico en esta página, suscribiéndote a distintos tipos y configurando alertas personalizadas para valores de atributo %%SMART|smart%%.
+Unraid puede enviarte notificaciones sobre eventos importantes del sistema, actualizaciones y alertas a través de tu navegador, correo electrónico o servicios de notificación de terceros. La página de Configuración de Notificaciones te permite controlar cómo y cuándo recibes estas notificaciones.
+
+Los complementos de terceros se muestran aquí, ampliando la funcionalidad de Unraid y dándote más control sobre tu servidor. Por ejemplo, el [Complemento de Aplicaciones de la Comunidad](../../using-unraid-to/run-docker-containers/community-applications.mdx) está incluido. Otros complementos ofrecen características para monitoreo del sistema, mantenimiento, gestión de almacenamiento y copias de seguridad `appdata`.
 
 <div style={{ margin: 'auto', maxWidth: '400px'}}>
   ![Configuraciones de Notificaciones](/img/settings-notifications.png)
 </div>
 
-### Programador
+#### Configuración de visualización y comportamiento
+
+Configura cómo aparecen las notificaciones en tu navegador:
+
+- **Visualización de notificaciones**: Elige entre estilos de notificación *Detallado* o *Resumido*
+- **Posición de visualización**: Establece dónde aparecen las notificaciones (*arriba a la derecha*, *arriba a la izquierda*, *abajo a la derecha*, *abajo a la izquierda* o *centro*)
+- **Cierre automático (segundos)**: Tiempo que las notificaciones permanecen visibles antes de cerrarse automáticamente
+- **Formato de fecha**: Elige tu formato de fecha preferido para las marcas de tiempo de las notificaciones
+- **Formato de hora**: Elige entre visualización de hora en formato *12 horas* o *24 horas*
+- **Almacenar notificaciones en flash**: Guarda el historial de notificaciones en tu dispositivo USB flash (requiere espacio de almacenamiento flash)
+
+#### Tipos de notificación
+
+Controla qué eventos desencadenan notificaciones:
+
+- **Notificaciones del sistema**: Eventos generales del sistema y mensajes
+- **Notificación de actualización del sistema operativo de Unraid**: Alertas cuando están disponibles nuevas versiones del sistema operativo de Unraid
+- **Notificación de actualización de complementos**: Alertas cuando hay actualizaciones de complementos disponibles
+- **Notificación de actualización de Docker**: Alertas cuando hay actualizaciones de contenedores Docker disponibles
+- **Notificación de actualización de idioma**: Alertas cuando hay actualizaciones de paquetes de idiomas disponibles
+- **Notificación de estado del array**: Alertas sobre eventos del %%array|array%% y cambios de estado
+
+Para cada tipo de notificación, puedes establecer la frecuencia en *Nunca comprobar*, o comprobar diariamente, semanalmente, mensualmente o, en algunos casos, incluso varias veces al día.
+
+#### Métodos de entrega
+
+Elige cómo deseas recibir notificaciones para cada categoría (*Avisos*, *Advertencias* y *Alertas*):
+
+- **Navegador**: Muestra notificaciones en el %%WebGUI|web-gui%% cuando hayas iniciado sesión
+- **Correo electrónico**: Envía notificaciones por correo electrónico (requiere [configuración SMTP](#smtp-settings))
+- **Agentes**: Envía notificaciones a través de servicios de terceros configurados
+
+:::tip
+
+Habilita las notificaciones en **Navegador** para visibilidad inmediata al usar el %%WebGUI|web-gui%%, y **Correo electrónico** para alertas cuando no estés frente a tu servidor. Usa **Agentes** para integrar con aplicaciones móviles y servicios como Discord o Telegram.
+
+:::
+
+#### Configuraciones de SMTP {#smtp-settings}
+
+Para recibir notificaciones por correo electrónico, necesitas configurar la configuración de tu servidor de correo. Unraid es compatible con muchos proveedores de correo electrónico, incluidos Gmail, Outlook y servidores SMTP personalizados.
+
+Las configuraciones de SMTP se pueden encontrar en ***Ajustes → Preferencias del Usuario → Configuraciones de Notificaciones → Configuraciones de SMTP***.
+
+**Configuración básica:**
+
+- **Servicio predefinido**: Selecciona una configuración predefinida (*Gmail*, *Outlook/Hotmail* o *Personalizado*) para rellenar automáticamente la configuración común
+- **Dirección de correo electrónico de envío**: La dirección de correo electrónico desde la que se enviarán las notificaciones
+- **Destinatarios de correo electrónico**: Lista de direcciones de correo electrónico separadas por comas que recibirán las notificaciones
+- **Prioridad en el encabezado**: Marca los correos electrónicos como alta prioridad (*Sí* o *No*)
+- **Prefijo del asunto del correo electrónico**: Texto para anteponer a todos los asuntos de correos electrónicos de notificación (predeterminado: *Estado de Unraid:*)
+
+**Configuración del servidor:**
+
+- **Servidor de correo**: Dirección del servidor SMTP (por ejemplo, `smtp.gmail.com`)
+- **Puerto del servidor de correo**: Número de puerto SMTP (puertos comunes: `465` para SSL/TLS, `587` para STARTTLS, `25` sin cifrado)
+- **Usar SSL/TLS**: Habilitar cifrado SSL/TLS (*Sí* o *No*)
+- **Usar STARTTLS**: Utilizar STARTTLS para cifrado (*Sí* o *No*)
+- **Definir un certificado TLS**: Especificar un certificado TLS personalizado si se necesita (*Sí* o *No*)
+- **Ubicación del certificado TLS**: Ruta al archivo de certificado personalizado (solo si *Definir un certificado TLS* está habilitado)
+
+**Autenticación:**
+
+- **Método de autenticación**: Elige *Ninguno*, *CRAM-MD5* o *Inicio de sesión* (nombre de usuario/contraseña)
+- **Nombre de usuario**: Nombre de usuario de tu cuenta de correo electrónico (generalmente tu dirección de correo electrónico completa)
+- **Contraseña**: La contraseña de tu cuenta de correo electrónico o contraseña específica de la aplicación
+
+Después de configurar tus ajustes, usa el botón **PRUEBA** para verificar que tu configuración de correo electrónico funcione correctamente.
+
+##### Configurando Gmail con contraseñas de aplicación
+
+Gmail requiere contraseñas específicas para aplicaciones cuando se utiliza SMTP con cuentas que tienen la verificación en dos pasos habilitada (lo cual se recomienda por seguridad).
+
+**Para configurar notificaciones de Gmail:**
+
+1. En **Servicio predefinido**, selecciona *Gmail* (esto rellenará automáticamente el **Servidor de correo** y el **Puerto del servidor de correo**)
+2. Introduce tu dirección de Gmail en **Dirección de correo electrónico de envío**
+3. Introduce la(s) dirección(es) de correo electrónico del destinatario en **Destinatarios de correo electrónico**
+4. Configura **Nombre de usuario** para que sea tu dirección de Gmail completa (por ejemplo, `tunombre@gmail.com`)
+5. Para **Contraseña**, necesitarás generar una contraseña de aplicación:
+   - Ve a la [configuración de tu cuenta de Google](https://myaccount.google.com/)
+   - Navega a **Seguridad**
+   - En "Cómo inicias sesión en Google", asegúrate de que la **Verificación en dos pasos** esté habilitada (requerida para contraseñas de aplicación)
+   - En la misma sección, encuentra y haz clic en **Contraseñas de aplicación** (o busca "Contraseñas de aplicación" en la barra de búsqueda)
+   - Puede que necesites verificar tu identidad
+   - Introduce un nombre personalizado para el nombre de la aplicación, como "Servidor Unraid".
+   - Haga clic en **Crear**
+   - Google generará una contraseña de 16 caracteres.
+   - Copia esta contraseña y pégala en el campo **Contraseña** en Unraid
+6. Haz clic en **PRUEBA** para verificar la configuración
+7. Haz clic en **HECHO** para guardar tus ajustes
+
+:::tip[Default Configuraciones de Gmail]
+
+- **Servidor de correo**: `smtp.gmail.com`
+- **Puerto del servidor de correo**: `465`
+- **Usar SSL/TLS**: `Sí`
+- **Usar STARTTLS**: `No`
+- **Método de autenticación**: `Inicio de sesión`
+
+:::
+
+:::warning[Recomendación de seguridad]
+
+Siempre usa contraseñas de aplicación en lugar de tu contraseña principal de Gmail. Las contraseñas de aplicación pueden revocarse individualmente sin cambiar tu contraseña principal de cuenta, brindando mejor seguridad si alguna vez se ve comprometida la configuración de tu Unraid.
+
+:::
+
+#### Agentes de Notificación
+
+Los agentes de notificación te permiten enviar alertas a servicios de terceros y aplicaciones móviles. Unraid incluye soporte integrado para muchos servicios de notificación populares.
+
+Para acceder a los Agentes de Notificación, haz clic en el enlace **Agentes de Notificación** en la página de Configuración de Notificaciones, o navega a ***Configuración → Preferencias del Usuario → Configuración de Notificaciones → Agentes de Notificación***.
+
+**Agentes integrados incluyen:**
+
+- <img src="/img/customize-unraid-settings/icons/icon-bark.png" alt="Bark" style={{height: '20px', verticalAlign: 'middle', marginRight: '8px'}} /> **Bark**: Aplicación de notificaciones para iOS
+- <img src="/img/customize-unraid-settings/icons/icon-boxcar.png" alt="Boxcar" style={{height: '20px', verticalAlign: 'middle', marginRight: '8px'}} /> **Boxcar**: Servicio de notificaciones push
+- <img src="/img/customize-unraid-settings/icons/icon-discord.png" alt="Discord" style={{height: '20px', verticalAlign: 'middle', marginRight: '8px'}} /> **Discord**: Envía notificaciones a canales de Discord por webhook
+- <img src="/img/customize-unraid-settings/icons/icon-gotify.png" alt="Gotify" style={{height: '20px', verticalAlign: 'middle', marginRight: '8px'}} /> **Gotify**: Servidor de notificaciones autohospedado
+- <img src="/img/customize-unraid-settings/icons/icon-ntfy.png" alt="ntfy.sh" style={{height: '20px', verticalAlign: 'middle', marginRight: '8px'}} /> **ntfy.sh**: Servicio de notificaciones basado en HTTP simple
+- <img src="/img/customize-unraid-settings/icons/icon-prowl.png" alt="Prowl" style={{height: '20px', verticalAlign: 'middle', marginRight: '8px'}} /> **Prowl**: Notificaciones push para iOS
+- <img src="/img/customize-unraid-settings/icons/icon-pushbits.png" alt="Pushbits" style={{height: '20px', verticalAlign: 'middle', marginRight: '8px'}} /> **Pushbits**: Relé de notificaciones autohospedado
+- <img src="/img/customize-unraid-settings/icons/icon-pushbullet.png" alt="Pushbullet" style={{height: '20px', verticalAlign: 'middle', marginRight: '8px'}} /> **Pushbullet**: Servicio de notificaciones multiplataforma
+- <img src="/img/customize-unraid-settings/icons/icon-pushover.png" alt="Pushover" style={{height: '20px', verticalAlign: 'middle', marginRight: '8px'}} /> **Pushover**: Servicio de notificaciones push para iOS y Android
+- <img src="/img/customize-unraid-settings/icons/icon-pushplus.png" alt="Pushplus" style={{height: '20px', verticalAlign: 'middle', marginRight: '8px'}} /> **Pushplus**: Servicio de notificaciones push en chino
+- <img src="/img/customize-unraid-settings/icons/icon-serverchan.png" alt="ServerChan" style={{height: '20px', verticalAlign: 'middle', marginRight: '8px'}} /> **ServerChan**: Servicio de monitoreo y notificaciones de servidor en chino
+- <img src="/img/customize-unraid-settings/icons/icon-slack.png" alt="Slack" style={{height: '20px', verticalAlign: 'middle', marginRight: '8px'}} /> **Slack**: Envía notificaciones a canales de Slack por webhook
+- <img src="/img/customize-unraid-settings/icons/icon-telegram.png" alt="Telegram" style={{height: '20px', verticalAlign: 'middle', marginRight: '8px'}} /> **Telegram**: Envía mensajes al bot de Telegram
+
+**Configurando un agente:**
+
+1. Selecciona el agente que deseas configurar de la lista
+2. Cambia **Función del agente** de *Deshabilitado* a *Habilitado*
+3. Rellena los campos necesarios para ese servicio:
+   - La mayoría de los agentes requieren una **URL de webhook**, **token de API** o **token de acceso**
+   - Algunos servicios requieren configuración adicional, como IDs de canales o códigos de grupo
+4. Configura **Título de la notificación** (usualmente configurado en *Asunto* para usar el asunto de la notificación)
+5. Configura **Mensaje de la notificación** (usualmente configurado en *Descripción* para usar el texto completo de la notificación)
+6. Haz clic en **HECHO** para guardar
+
+Cada agente tiene diferentes requisitos: consulta la documentación para el servicio elegido para obtener las claves API, URLs de webhook o tokens necesarios.
+
+:::tip
+
+Puedes habilitar múltiples agentes de manera simultánea. Por ejemplo, podrías usar Discord para notificaciones de equipo y Pushover para alertas personales en el móvil. Ten en cuenta que **todas las notificaciones** se envían a **todos los agentes habilitados**, por lo que usar múltiples agentes puede resultar en recibir notificaciones duplicadas.
+
+:::
+
+### Programador {#scheduler}
 
 The Scheduler settings page allows you to easily configure the frequency for automated tasks including %%parity checks|parity-check%%, the cache %%Mover|mover%%, and %%TRIM/Discard|trim-discard%% operations for SSDs.
 
@@ -221,4 +457,4 @@ Los complementos de terceros se muestran aquí, ampliando la funcionalidad de Un
 
 ---
 
-\* *"%%WireGuard|wireguard%%" y el logotipo de "%%WireGuard|wireguard%%" son marcas registradas de Jason A. Donenfeld.*
+\* *"%%WireGuard|wireguard%%" y el logo "%%WireGuard|wireguard%%" son marcas registradas de Jason A. Donenfeld.*
