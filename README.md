@@ -144,17 +144,10 @@ npm run start -- --locale zh
 npm run start -- --locale es
 ```
 
-Lint Markdown and MDX content with Remark (no auto-fixers run now):
+Run Docusaurus lint/build checks:
 
 ```bash
-npm run lint             # report issues
-npm run lint -- --frail  # optional: fail on warnings (CI default)
-```
-
-Normalize Crowdin-specific spacing (this is all `npm run format` does now):
-
-```bash
-npm run format
+npm run lint
 ```
 
 Additional project scripts:
@@ -176,7 +169,7 @@ Once you're comfortable with the guidelines, typical workflow looks like:
 
 1. Fork the project
 2. Create a feature branch (`git checkout -b docs/your-change`)
-3. Run `npm run lint` and `npm run format` before committing
+3. Run `npm run lint` before committing
 4. Commit with a clear message (`git commit -m "docs: describe change"`)
 5. Push to your fork and open a pull request against `main`
 
@@ -195,7 +188,7 @@ Help translate Unraid Docs for the global community.
 
 * Join the project on Crowdin: [unraid.crowdin.com/unraid-docs](https://unraid.crowdin.com/unraid-docs)
 * Follow the glossary and tone guidance in the [Style Guide](docs/contribute/style-guide.mdx)
-* Run Crowdin formatting before submitting source updates: `npm run format` (or `npm run format:crowdin`)
+* Run Crowdin exports/imports through the standard Crowdin workflow (no local MDX formatting pass is required)
 
 Crowdin suggestions are reviewed regularly by maintainers and native-language contributors.
 

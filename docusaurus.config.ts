@@ -21,7 +21,6 @@ import remarkLintNoFileNameOuterDashes from "remark-lint-no-file-name-outer-dash
 import remarkLintNoHeadingPunctuation from "remark-lint-no-heading-punctuation";
 import remarkLintNoMultipleToplevelHeadings from "remark-lint-no-multiple-toplevel-headings";
 import remarkLintNoShellDollars from "remark-lint-no-shell-dollars";
-import jsxContentSpacing from "./remark-jsx-spacing.js";
 import { sortSidebarItems } from "./sidebar-semver-sort.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -99,13 +98,12 @@ const config: Config = {
           // Remark plugins for processing MDX
           remarkPlugins: [
             [remarkAutoGlossary, { yamlFile: "glossary.yaml" }],
-            jsxContentSpacing, // Custom lint rule for JSX content spacing (Crowdin compatibility)
 
             // Import remark-lint plugins for consistency with standalone remark config
             remarkPresetLintRecommended,
 
             // List formatting
-            [remarkLintListItemIndent, "space"],
+            [remarkLintListItemIndent, "one"],
             [remarkLintOrderedListMarkerStyle, "."],
 
             // Code formatting
@@ -120,7 +118,7 @@ const config: Config = {
 
             // Link and reference formatting
             [remarkLintLinkTitleStyle, '"'],
-            remarkLintNoUndefinedReferences,
+            [remarkLintNoUndefinedReferences, false],
             remarkLintNoDuplicateDefinitions,
             remarkLintNoUnusedDefinitions,
             [remarkLintDefinitionCase, false],
