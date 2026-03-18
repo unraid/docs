@@ -506,7 +506,11 @@ const config: Config = {
           },
           {
             from: "/unraid-os/manual/security/flash-drive/",
-            to: "/unraid-os/system-administration/secure-your-server/secure-your-flash-drive/",
+            to: "/unraid-os/system-administration/secure-your-server/secure-your-boot-drive/",
+          },
+          {
+            from: "/unraid-os/system-administration/secure-your-server/secure-your-flash-drive/",
+            to: "/unraid-os/system-administration/secure-your-server/secure-your-boot-drive/",
           },
           {
             from: "/unraid-os/manual/security/good-practices/",
