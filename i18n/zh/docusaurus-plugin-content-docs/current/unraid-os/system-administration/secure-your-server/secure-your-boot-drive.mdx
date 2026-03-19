@@ -1,0 +1,83 @@
+---
+sidebar_position: 2
+sidebar_label: Securing your boot device
+---
+
+# Securing your boot device
+
+The boot device is essential to your Unraid server, as it stores all configuration data, licensing, and system settings. Due to its importance, it is crucial to keep its contents secure and accessible at all times.
+
+## 备份 {#backups}
+
+Having a recent backup of your boot device ensures you can quickly recover from hardware failures, accidental changes, or data corruption. Be sure to create backups in the following situations:
+
+- 在升级 Unraid 或安装插件之前
+- 添加或移除驱动器后
+- 更改网络、共享或安全设置后
+- 进行重大配置更改之前
+- 定期作为日常维护的一部分
+
+To back up your boot device using the Unraid %%WebGUI|web-gui%%, follow these steps:
+
+1. Select your boot device from the **Main** tab.
+2. In the **Boot Device** tab, click **Boot Device Backup**.
+
+<div
+style={{
+ margin: "auto",
+ maxWidth: "600px",
+ display: "flex",
+ flexDirection: "column",
+ alignItems: "center",
+}}
+>
+![选择闪存备份按钮](/img/flashbackup.png)
+</div>
+
+3. Unraid will create a ZIP file containing the boot device's contents.
+4. Save this ZIP file to a secure location outside your Unraid server (like a separate PC, NAS, or cloud storage).
+
+If you need to recreate your boot device, use this backup with the [USB Creator tool](https://unraid.net/download).
+
+:::tip
+
+在进行任何硬件更改后，建议保留 [磁盘分配](../../getting-started/set-up-unraid/configure-your-array.mdx#assign-parity-and-data-disks) 的屏幕截图。这确保了在需要从备份恢复时可以正确放置驱动器。
+
+:::
+
+---
+
+## 网络访问
+
+You can control whether your boot device is accessible over the network, similar to other shares in Unraid. However, network access should be restricted since the boot device contains sensitive configuration and licensing data. Consider the following:
+
+- **Network visibility:** Decide if your boot device should be visible or hidden on your network.
+- **访问权限：** 如果启用了网络访问，请设置权限以限制谁可以查看或修改其内容。
+
+:::important[Reducing 安全风险]
+
+- **Disable sharing:** Set the boot device's %%SMB|samba%% export to **No** to prevent network access entirely.
+- **Restrict access:** If you must share the boot device, set security to **Private** and grant access only to trusted users with strong passwords.
+- **Avoid public access:** Never leave the `flash` share set to **Public** or **Secure** with guest write access.
+
+这些步骤有助于防止未经授权的更改或关键文件的暴露。
+
+:::
+
+---
+
+## 权限
+
+To enhance system security, files on the boot device can no longer be given execute permission. This change prevents malicious or unintended code from running directly off the boot device, reducing the risk of exploitation or accidental system modification.
+
+If you have custom scripts or programs stored on the boot device, follow these steps:
+
+1. **复制脚本到可执行位置：**
+   - 如果您希望脚本位于默认系统路径，请使用`/usr/local/bin`。
+   - 通过向`config/go`文件添加复制命令来自动化这一过程。
+   - 复制后，为文件设置执行权限。
+
+2. **用解释器运行脚本：**
+   - 为脚本添加解释器前缀（例如，`bash /boot/config/scripts/myscript.sh`）。
+
+这种方法可以让系统保持安全，同时允许高级用户运行他们的脚本。
