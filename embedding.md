@@ -111,7 +111,7 @@ function setIframeTheme(frame, theme) {
 }
 ```
 
-Refer to `iframe-test.html` for a working example that exercises both outgoing and incoming messages.
+Refer to `iframe-test.html` for a working example that exercises both outgoing and incoming messages. The local docs dev server uses `http://localhost:3001` by default, and the example page assumes that port.
 
 ### Legacy compatibility
 
