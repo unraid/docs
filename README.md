@@ -137,6 +137,8 @@ Spin up a local Docusaurus dev server:
 npm run start
 ```
 
+The local docs dev server listens on `http://localhost:3001` by default. This keeps local iframe/embed testing aligned with [`iframe-test.html`](iframe-test.html) and other localhost examples in the repo.
+
 Preview specific locales (one at a time):
 
 ```bash
