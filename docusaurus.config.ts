@@ -155,7 +155,7 @@ const config: Config = {
     metadata: [
       {
         name: "theme-color",
-        content: "#242526",
+        content: "#171616",
         media: "(prefers-color-scheme: dark)",
       }, // matches docusaurus theme rather than unraid specific color
       {
