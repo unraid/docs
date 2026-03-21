@@ -1,7 +1,5 @@
 import React from "react";
 import Layout from "@theme-original/Layout";
-import { ThemeSync } from "./ThemeSync";
-import { IframeNavigation } from "./IframeNavigation";
 import { useIframe } from "../../hooks/useIframe";
 
 export default function LayoutWrapper(props) {
@@ -15,11 +13,7 @@ export default function LayoutWrapper(props) {
 
   return (
     <div {...dataAttributes}>
-      <Layout {...props}>
-        <ThemeSync />
-        <IframeNavigation />
-        {props.children}
-      </Layout>
+      <Layout {...props}>{props.children}</Layout>
     </div>
   );
 }

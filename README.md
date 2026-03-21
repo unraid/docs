@@ -100,8 +100,8 @@ Follow these steps to work on the docs locally.
 
 ### Prerequisites
 
-* Node.js 18 or newer (see the `package.json` `engines` field)
-* npm (ships with Node.js)
+* Node.js 22 or newer (see the `package.json` `engines` field)
+* pnpm via [Corepack](https://nodejs.org/api/corepack.html)
 * Recommended: [nvm](https://github.com/nvm-sh/nvm) for managing Node versions
 
 Install or update Node with nvm:
@@ -123,7 +123,8 @@ nvm use
 2. Install dependencies
 
    ```bash
-   npm install
+   corepack enable
+   pnpm install
    ```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -134,7 +135,7 @@ nvm use
 Spin up a local Docusaurus dev server:
 
 ```bash
-npm run start
+pnpm start
 ```
 
 The local docs dev server listens on `http://localhost:3001` by default. This keeps local iframe/embed testing aligned with [`iframe-test.html`](iframe-test.html) and other localhost examples in the repo.
@@ -142,23 +143,23 @@ The local docs dev server listens on `http://localhost:3001` by default. This ke
 Preview specific locales (one at a time):
 
 ```bash
-npm run start -- --locale zh
-npm run start -- --locale es
+pnpm start -- --locale zh
+pnpm start -- --locale es
 ```
 
 Run Docusaurus lint/build checks:
 
 ```bash
-npm run lint
+pnpm lint
 ```
 
 Additional project scripts:
 
-* Type check TypeScript: `npm run typecheck`
-* Unit tests (watch): `npm run test`
-* Single test run (CI): `npm run test:run`
-* Build production site: `npm run build`
-* Preview production build: `npm run serve`
+* Type check TypeScript: `pnpm typecheck`
+* Unit tests (watch): `pnpm test`
+* Single test run (CI): `pnpm test:run`
+* Build production site: `pnpm build`
+* Preview production build: `pnpm serve`
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -171,7 +172,7 @@ Once you're comfortable with the guidelines, typical workflow looks like:
 
 1. Fork the project
 2. Create a feature branch (`git checkout -b docs/your-change`)
-3. Run `npm run lint` before committing
+3. Run `pnpm lint` before committing
 4. Commit with a clear message (`git commit -m "docs: describe change"`)
 5. Push to your fork and open a pull request against `main`
 
