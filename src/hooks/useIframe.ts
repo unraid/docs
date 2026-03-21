@@ -9,10 +9,11 @@ import {
 
 /**
  * React hook that detects if the current page is displayed inside an iframe
- * @returns boolean indicating if the current page is in an iframe
+ * @returns boolean indicating if the current page is in an iframe,
+ * or undefined until the client-side check has completed
  */
-export function useIframe(): boolean {
-  const [isInIframeState, setIsInIframeState] = useState(false);
+export function useIframe(): boolean | undefined {
+  const [isInIframeState, setIsInIframeState] = useState<boolean | undefined>(undefined);
 
   useEffect(() => {
     if (typeof window === 'undefined') {
