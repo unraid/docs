@@ -104,7 +104,7 @@ export function IframeNavigation(): ReactElement | null {
     >
       <span aria-hidden="true" className="iframe-back-button__icon">
         <svg viewBox="0 0 24 24" focusable="false">
-          <path d="M12 4.5a1 1 0 0 1 .76 1.65L8.91 11H18a1 1 0 1 1 0 2H8.91l3.85 4.85a1 1 0 1 1-1.52 1.3l-5.5-6.9a1 1 0 0 1 0-1.3l5.5-6.9A1 1 0 0 1 12 4.5Z" />
+          <path d="M5 12h14M5 12l6 6M5 12l6-6" />
         </svg>
       </span>
     </Link>
