@@ -140,6 +140,9 @@ const config: Config = {
 
         theme: { customCss: "./src/css/custom.css" },
         gtag: { trackingID: "G-CZENQ1ZPEH", anonymizeIP: true },
+        sitemap: {
+          lastmod: "date",
+        },
       } satisfies Preset.Options,
     ],
   ],
@@ -265,6 +268,16 @@ const config: Config = {
   } satisfies Preset.ThemeConfig,
 
   plugins: [
+    [
+      path.resolve(__dirname, "./plugins/structured-data/index.mjs"),
+      {
+        organizationName: "Unraid",
+        organizationUrl: "https://unraid.net/",
+        logoPath: "/img/meta-unraid.png",
+        logoWidth: 1200,
+        logoHeight: 630,
+      },
+    ],
     "docusaurus-plugin-image-zoom",
     [
       "@docusaurus/plugin-content-docs",
