@@ -1,0 +1,83 @@
+---
+sidebar_position: 2
+sidebar_label: Securing your boot device
+---
+
+# Securing your boot device
+
+The boot device is essential to your Unraid server, as it stores all configuration data, licensing, and system settings. Due to its importance, it is crucial to keep its contents secure and accessible at all times.
+
+## Backups
+
+Having a recent backup of your boot device ensures you can quickly recover from hardware failures, accidental changes, or data corruption. Be sure to create backups in the following situations:
+
+- Vor dem Upgrade von Unraid oder der Installation von Plugins
+- Nach dem Hinzufügen oder Entfernen von Laufwerken
+- Nach Änderungen an Netzwerk-, Freigabe- oder Sicherheitseinstellungen
+- Vor wesentlichen Konfigurationsänderungen
+- Regelmäßig im Rahmen Ihrer Wartungsroutine
+
+To back up your boot device using the Unraid %%WebGUI|web-gui%%, follow these steps:
+
+1. Select your boot device from the **Main** tab.
+2. In the **Boot Device** tab, click **Boot Device Backup**.
+
+<div
+style={{
+ margin: "auto",
+ maxWidth: "600px",
+ display: "flex",
+ flexDirection: "column",
+ alignItems: "center",
+}}
+>
+![Wählen Sie die Flash-Backup-Schaltfläche](/img/flashbackup.png)
+</div>
+
+3. Unraid will create a ZIP file containing the boot device's contents.
+4. Speichern Sie diese ZIP-Datei an einem sicheren Ort außerhalb Ihres Unraid-Servers (z.B. auf einem separaten PC, NAS oder in einer Cloud).
+
+If you need to recreate your boot device, use this backup with the [USB Creator tool](https://unraid.net/download).
+
+:::tip
+
+Erwägen Sie, nach Hardware-Änderungen einen Screenshot Ihrer [Laufwerkszuweisungen](../../getting-started/set-up-unraid/configure-your-array.mdx#assign-parity-and-data-disks) zu speichern. Dies sorgt für eine korrekte Festplattenplatzierung, falls Sie von Ihrem Backup wiederherstellen müssen.
+
+:::
+
+---
+
+## Netzwerkzugriff
+
+You can control whether your boot device is accessible over the network, similar to other shares in Unraid. However, network access should be restricted since the boot device contains sensitive configuration and licensing data. Consider the following:
+
+- **Network visibility:** Decide if your boot device should be visible or hidden on your network.
+- **Zugriffsrechte:** Wenn der Netzwerkzugriff aktiviert ist, legen Sie Berechtigungen fest, um zu begrenzen, wer die Inhalte anzeigen oder ändern kann.
+
+:::important[Reducing Sicherheitsrisiken]
+
+- **Disable sharing:** Set the boot device's %%SMB|samba%% export to **No** to prevent network access entirely.
+- **Restrict access:** If you must share the boot device, set security to **Private** and grant access only to trusted users with strong passwords.
+- **Avoid public access:** Never leave the `flash` share set to **Public** or **Secure** with guest write access.
+
+Diese Schritte tragen dazu bei, unerlaubte Änderungen oder die Offenlegung kritischer Dateien zu verhindern.
+
+:::
+
+---
+
+## Berechtigungen
+
+To enhance system security, files on the boot device can no longer be given execute permission. This change prevents malicious or unintended code from running directly off the boot device, reducing the risk of exploitation or accidental system modification.
+
+If you have custom scripts or programs stored on the boot device, follow these steps:
+
+1. **Kopieren Sie Skripte an einen ausführbaren Ort:**
+   - Verwenden Sie `/usr/local/bin`, wenn Sie die Skripte im Standard-Systempfad wollen.
+   - Automatisieren Sie dies, indem Sie Kopierbefehle in Ihre `config/go`-Datei einfügen.
+   - Setzen Sie nach dem Kopieren die Ausführungsrechte auf die Dateien.
+
+2. **Skripte mit einem Interpreter ausführen:**
+   - Schließen Sie das Skript mit dem Interpreter ein (z.B. `bash /boot/config/scripts/myscript.sh`).
+
+Dieser Ansatz hält Ihr System sicher, während fortgeschrittene Benutzer ihre Skripte ausführen können.
