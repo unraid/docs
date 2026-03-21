@@ -1,14 +1,35 @@
+import Translate, { translate } from "@docusaurus/Translate";
 import type { ReactElement } from "react";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import ResponsiveEmbed from "../../components/ResponsiveEmbed";
 import { useIframe } from "../../hooks/useIframe";
 
 const FEEDBACK_EMBED_URL =
   "https://product.unraid.net/embed/f/docs-experience-survey";
+const FOCUSABLE_SELECTOR = [
+  'a[href]',
+  'button:not([disabled])',
+  'textarea:not([disabled])',
+  'input:not([disabled])',
+  'select:not([disabled])',
+  '[tabindex]:not([tabindex="-1"])',
+].join(", ");
+
+function getFocusableElements(container: HTMLElement): HTMLElement[] {
+  return Array.from(container.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR)).filter(
+    (element) =>
+      !element.hasAttribute("disabled") &&
+      element.getAttribute("aria-hidden") !== "true" &&
+      element.tabIndex !== -1,
+  );
+}
 
 export function FeedbackWidget(): ReactElement | null {
   const isInIframeState = useIframe();
   const [isOpen, setIsOpen] = useState(false);
+  const openerButtonRef = useRef<HTMLButtonElement | null>(null);
+  const dialogRef = useRef<HTMLElement | null>(null);
+  const previousFocusRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
     if (
@@ -19,9 +40,46 @@ export function FeedbackWidget(): ReactElement | null {
       return;
     }
 
+    previousFocusRef.current =
+      document.activeElement instanceof HTMLElement ? document.activeElement : null;
+
+    const dialogElement = dialogRef.current;
+    if (!dialogElement) {
+      return;
+    }
+
     const handleKeyDown = (event: KeyboardEvent): void => {
       if (event.key === "Escape") {
         setIsOpen(false);
+        return;
+      }
+
+      if (event.key !== "Tab") {
+        return;
+      }
+
+      const focusableElements = getFocusableElements(dialogElement);
+      if (focusableElements.length === 0) {
+        event.preventDefault();
+        dialogElement.focus();
+        return;
+      }
+
+      const firstElement = focusableElements[0];
+      const lastElement = focusableElements[focusableElements.length - 1];
+      const activeElement = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+
+      if (event.shiftKey) {
+        if (activeElement === firstElement || activeElement === dialogElement) {
+          event.preventDefault();
+          lastElement.focus();
+        }
+        return;
+      }
+
+      if (activeElement === lastElement) {
+        event.preventDefault();
+        firstElement.focus();
       }
     };
 
@@ -29,13 +87,18 @@ export function FeedbackWidget(): ReactElement | null {
     document.body.style.overflow = "hidden";
     window.addEventListener("keydown", handleKeyDown);
 
+    const focusableElements = getFocusableElements(dialogElement);
+    const focusTarget = focusableElements[0] ?? dialogElement;
+    focusTarget.focus();
+
     return () => {
       document.body.style.overflow = previousOverflow;
       window.removeEventListener("keydown", handleKeyDown);
+      previousFocusRef.current?.focus();
     };
   }, [isOpen]);
 
-  if (isInIframeState) {
+  if (isInIframeState !== false) {
     return null;
   }
 
@@ -44,8 +107,17 @@ export function FeedbackWidget(): ReactElement | null {
       <button
         type="button"
         className={`feedback-widget-button${isOpen ? " feedback-widget-button--hidden" : ""}`}
-        aria-label="Open feedback panel"
-        title="Share feedback"
+        ref={openerButtonRef}
+        aria-hidden={isOpen}
+        aria-label={translate({
+          message: "Open feedback panel",
+          description: "Aria label for the floating docs feedback button",
+        })}
+        tabIndex={isOpen ? -1 : 0}
+        title={translate({
+          message: "Share feedback",
+          description: "Tooltip for the floating docs feedback button",
+        })}
         onClick={() => setIsOpen(true)}
       >
         <span className="feedback-widget-button__icon" aria-hidden="true">
@@ -74,7 +146,8 @@ export function FeedbackWidget(): ReactElement | null {
           <button
             type="button"
             className="feedback-widget-backdrop"
-            aria-label="Close feedback panel"
+            aria-hidden="true"
+            tabIndex={-1}
             onClick={() => setIsOpen(false)}
           />
 
@@ -83,22 +156,39 @@ export function FeedbackWidget(): ReactElement | null {
             role="dialog"
             aria-modal="true"
             aria-labelledby="feedback-widget-title"
+            ref={dialogRef}
+            tabIndex={-1}
           >
             <div className="feedback-widget-panel__header">
               <div className="feedback-widget-panel__copy">
-                <p className="feedback-widget-panel__eyebrow">Docs feedback</p>
+                <p className="feedback-widget-panel__eyebrow">
+                  <Translate
+                    id="theme.Layout.FeedbackWidget.eyebrow"
+                    description="Eyebrow label above the docs feedback panel title"
+                  >
+                    Docs feedback
+                  </Translate>
+                </p>
                 <h2
                   id="feedback-widget-title"
                   className="feedback-widget-panel__title"
                 >
-                  Share your docs experience
+                  <Translate
+                    id="theme.Layout.FeedbackWidget.title"
+                    description="Title for the docs feedback modal panel"
+                  >
+                    Share your docs experience
+                  </Translate>
                 </h2>
               </div>
 
               <button
                 type="button"
                 className="feedback-widget-panel__close"
-                aria-label="Close feedback panel"
+                aria-label={translate({
+                  message: "Close feedback panel",
+                  description: "Aria label for the close button in the docs feedback modal",
+                })}
                 onClick={() => setIsOpen(false)}
               >
                 <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
@@ -117,7 +207,10 @@ export function FeedbackWidget(): ReactElement | null {
             <div className="feedback-widget-panel__frame">
               <ResponsiveEmbed
                 src={FEEDBACK_EMBED_URL}
-                title="Docs experience survey"
+                title={translate({
+                  message: "Docs experience survey",
+                  description: "Title attribute for the embedded docs feedback survey iframe",
+                })}
                 aspectRatio="1 / 1"
                 embedClassName="feedback-widget-panel__embed"
                 frameClassName="feedback-widget-panel__embed-frame"
