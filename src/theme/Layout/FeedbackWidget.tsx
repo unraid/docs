@@ -12,6 +12,7 @@ const FOCUSABLE_SELECTOR = [
   'textarea:not([disabled])',
   'input:not([disabled])',
   'select:not([disabled])',
+  'iframe',
   '[tabindex]:not([tabindex="-1"])',
 ].join(", ");
 
@@ -27,7 +28,6 @@ function getFocusableElements(container: HTMLElement): HTMLElement[] {
 export function FeedbackWidget(): ReactElement | null {
   const isInIframeState = useIframe();
   const [isOpen, setIsOpen] = useState(false);
-  const openerButtonRef = useRef<HTMLButtonElement | null>(null);
   const dialogRef = useRef<HTMLElement | null>(null);
   const previousFocusRef = useRef<HTMLElement | null>(null);
 
@@ -107,7 +107,6 @@ export function FeedbackWidget(): ReactElement | null {
       <button
         type="button"
         className={`feedback-widget-button${isOpen ? " feedback-widget-button--hidden" : ""}`}
-        ref={openerButtonRef}
         aria-hidden={isOpen}
         aria-label={translate({
           message: "Open feedback panel",
@@ -212,6 +211,7 @@ export function FeedbackWidget(): ReactElement | null {
                   description: "Title attribute for the embedded docs feedback survey iframe",
                 })}
                 aspectRatio="1 / 1"
+                disableMargin
                 embedClassName="feedback-widget-panel__embed"
                 frameClassName="feedback-widget-panel__embed-frame"
                 iframeClassName="feedback-widget-panel__iframe"
