@@ -1,6 +1,17 @@
 name: Algolia Reindex
 
 on:
+  push:
+    branches:
+      - main
+    paths:
+      - docs/**
+      - i18n/**
+      - src/**
+      - static/**
+      - docusaurus.config.ts
+      - sidebars.js
+      - sidebar-semver-sort.js
   workflow_dispatch:
   workflow_call:
     secrets:
@@ -8,20 +19,119 @@ on:
         required: true
       ALGOLIA_CRAWLER_API_KEY:
         required: true
-      ALGOLIA_API_KEY:
-        required: true
+
+concurrency:
+  group: algolia-reindex
+  cancel-in-progress: false
 
 jobs:
   algolia-reindex:
     name: Reindex Algolia Search
     runs-on: ubuntu-latest
+    env:
+      ALGOLIA_APP_ID: ${{ vars.ALGOLIA_APP_ID || 'JUYLFQHE7W' }}
+      ALGOLIA_CRAWLER_NAME: ${{ vars.ALGOLIA_CRAWLER_NAME || 'unraid' }}
+      ALGOLIA_REINDEX_DELAY_SECONDS: ${{ vars.ALGOLIA_REINDEX_DELAY_SECONDS || '300' }}
     steps:
-      - name: Run Algolia Crawler
-        uses: algolia/algoliasearch-crawler-github-actions@v1
-        with:
-          crawler-user-id: ${{ secrets.ALGOLIA_CRAWLER_USER_ID }}
-          crawler-api-key: ${{ secrets.ALGOLIA_CRAWLER_API_KEY }}
-          algolia-app-id: JUYLFQHE7W
-          algolia-api-key: ${{ secrets.ALGOLIA_API_KEY }}
-          site-url: https://docs.unraid.net
-          crawler-name: unraid
+      - name: Wait for docs deployment to propagate
+        if: github.event_name == 'push'
+        run: |
+          set -euo pipefail
+          echo "Waiting ${ALGOLIA_REINDEX_DELAY_SECONDS}s before reindexing ${ALGOLIA_CRAWLER_NAME}."
+          sleep "${ALGOLIA_REINDEX_DELAY_SECONDS}"
+
+      - name: Resolve crawler id
+        id: resolve
+        env:
+          ALGOLIA_CRAWLER_USER_ID: ${{ secrets.ALGOLIA_CRAWLER_USER_ID }}
+          ALGOLIA_CRAWLER_API_KEY: ${{ secrets.ALGOLIA_CRAWLER_API_KEY }}
+        run: |
+          set -euo pipefail
+
+          response="$(
+            curl --silent --show-error --fail \
+              --user "${ALGOLIA_CRAWLER_USER_ID}:${ALGOLIA_CRAWLER_API_KEY}" \
+              "https://crawler.algolia.com/api/user_configs?appId=${ALGOLIA_APP_ID}&limit=100"
+          )"
+
+          crawler_id="$(
+            jq -er \
+              --arg crawler_name "${ALGOLIA_CRAWLER_NAME}" \
+              '.data[] | select(.name == $crawler_name) | .id' \
+              <<<"${response}"
+          )"
+
+          crawler_status="$(
+            jq -er \
+              --arg crawler_name "${ALGOLIA_CRAWLER_NAME}" \
+              '.data[] | select(.name == $crawler_name) | .status' \
+              <<<"${response}"
+          )"
+
+          echo "crawler_id=${crawler_id}" >> "${GITHUB_OUTPUT}"
+          echo "crawler_status=${crawler_status}" >> "${GITHUB_OUTPUT}"
+          echo "Resolved crawler ${ALGOLIA_CRAWLER_NAME} (${crawler_id}) with current status ${crawler_status}."
+
+      - name: Trigger crawler reindex
+        id: reindex
+        env:
+          ALGOLIA_CRAWLER_USER_ID: ${{ secrets.ALGOLIA_CRAWLER_USER_ID }}
+          ALGOLIA_CRAWLER_API_KEY: ${{ secrets.ALGOLIA_CRAWLER_API_KEY }}
+        run: |
+          set -euo pipefail
+
+          response="$(
+            curl --silent --show-error --fail \
+              --user "${ALGOLIA_CRAWLER_USER_ID}:${ALGOLIA_CRAWLER_API_KEY}" \
+              --request POST \
+              --header "content-type: application/json" \
+              "https://crawler.algolia.com/api/user_configs/${{ steps.resolve.outputs.crawler_id }}/reindex"
+          )"
+
+          action_id="$(
+            jq -er \
+              '.data[] | select(.name == "reindex") | .id' \
+              <<<"${response}"
+          )"
+
+          echo "action_id=${action_id}" >> "${GITHUB_OUTPUT}"
+          echo "Queued Algolia reindex action ${action_id} for crawler ${ALGOLIA_CRAWLER_NAME}."
+
+      - name: Confirm crawler entered reindexing state
+        env:
+          ALGOLIA_CRAWLER_USER_ID: ${{ secrets.ALGOLIA_CRAWLER_USER_ID }}
+          ALGOLIA_CRAWLER_API_KEY: ${{ secrets.ALGOLIA_CRAWLER_API_KEY }}
+        run: |
+          set -euo pipefail
+
+          for attempt in 1 2 3 4 5; do
+            response="$(
+              curl --silent --show-error --fail \
+                --user "${ALGOLIA_CRAWLER_USER_ID}:${ALGOLIA_CRAWLER_API_KEY}" \
+                "https://crawler.algolia.com/api/user_configs?appId=${ALGOLIA_APP_ID}&limit=100"
+            )"
+
+            reindexing="$(
+              jq -er \
+                --arg crawler_name "${ALGOLIA_CRAWLER_NAME}" \
+                '.data[] | select(.name == $crawler_name) | .reindexing' \
+                <<<"${response}"
+            )"
+
+            if [ "${reindexing}" = "true" ]; then
+              status="$(
+                jq -er \
+                  --arg crawler_name "${ALGOLIA_CRAWLER_NAME}" \
+                  '.data[] | select(.name == $crawler_name) | .status' \
+                  <<<"${response}"
+              )"
+
+              echo "Crawler ${ALGOLIA_CRAWLER_NAME} is now ${status}."
+              exit 0
+            fi
+
+            sleep 5
+          done
+
+          echo "Crawler ${ALGOLIA_CRAWLER_NAME} did not report reindexing=true after the reindex request." >&2
+          exit 1
