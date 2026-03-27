@@ -10,13 +10,13 @@ import TabItem from '@theme/TabItem';
 
 当您的 Unraid 服务器未正确启动时，如果不清楚启动过程，可能很难找出原因。遵循本指南可让您快速诊断和解决大多数启动问题，确保您的 %%array|阵列%%、%%WebGUI|网页界面%% 和服务以最小的停机时间运行。
 
-## 准备闪存设备
+## 准备启动介质
 
 本主题在[准备你的USB设备](../../getting-started/set-up-unraid/create-your-bootable-media.mdx#prepare-your-usb-device)部分有详细介绍。
 
 :::caution
 
-在进行更改之前，请始终[备份您的闪存驱动器](../../system-administration/maintain-and-update/changing-the-flash-device.mdx#backing-up-your-flash-device)。所有用户特定的设置，包括您的许可证密钥，均存储在 `config` 文件夹中。重新准备闪存设备后恢复此文件夹将帮助保留您当前的配置。
+在进行更改之前，请始终[备份您的启动设备](../../system-administration/maintain-and-update/changing-the-flash-device.mdx#backing-up-your-flash-device)。所有用户特定的设置，包括您的许可证密钥，均存储在 `config` 文件夹中。重新准备启动设备后恢复此文件夹将有助于保留您当前的配置。
 
 :::
 
@@ -29,7 +29,7 @@ import TabItem from '@theme/TabItem';
 1. 在启动时进入主板的BIOS/%%UEFI|uefi%%设置（通常按F2、DEL或ESC键）
 2. 找到引导选项或引导模式设置
 3. 将引导模式设置为**UEFI**或**禁用CSM的UEFI**
-4. 确保选择 Unraid 闪存设备作为 UEFI 启动设备
+4. 确保将 Unraid 启动设备选为 UEFI 启动目标
 5. 保存更改并退出
 
 ## 理解启动顺序
@@ -41,10 +41,10 @@ Unraid 启动序列有多个阶段：
 
   Linux 内核初始化并开始硬件检测。在此阶段，操作系统从引导加载程序中接管控制。
 
-  - 主板 BIOS 识别出 Unraid 可启动的闪存设备。
-  - 您会看到控制台消息显示bz\*文件正在加载。
-  - 这一阶段的错误通常表示闪存设备问题。
-  - Linux在启动期间检测硬件。
+  - 主板 BIOS 可识别 Unraid 可启动设备（通常是 USB 闪存驱动器）。
+  - 将启动设备设置为默认启动目标的方式因 BIOS 而异；请查阅主板手册以获取指导。
+  - 启动卷同时支持 **legacy (CSM)** 和 **%%UEFI|uefi%%** 启动模式。
+  - 对于 %%UEFI|uefi%% 启动，请确保启动卷上的 `EFI` 文件夹名称末尾没有连字符 (`-`)。
 
 </details>
 
@@ -53,7 +53,7 @@ Unraid 启动序列有多个阶段：
 
   闪存设备变得可访问并开始加载基本服务。此阶段对于配置和网络访问至关重要。
 
-  - 闪存设备在`/boot`上挂载。
+  - 启动菜单项定义在启动卷上的 `syslinux/syslinux.cfg` 文件中。
   - 你可以通过%%WebGUI|web-gui%%下的***主 → Syslinux配置***编辑此文件。
   - **Memtest86+** 随同当前版本的 Unraid 提供，可在传统和 %%UEFI|uefi%% 模式下运行。对于旧版本的 Unraid，请从 [官方 Memtest 网站](https://www.memtest86.com/) 获取与 %%UEFI|uefi%% 兼容的版本。
   - 闪存设备必须标记为**UNRAID**（全部大写）以进行正确挂载。
@@ -65,22 +65,22 @@ Unraid 启动序列有多个阶段：
 
   加载第三方扩展和定制以增强系统功能。插件问题可能会阻止成功启动。
 
-  - 安装的插件在此步骤加载。
+  - **Syslinux** 将 Linux 内核从启动卷加载到 RAM 中。
   - 如果需要，**安全引导**选项可以抑制插件加载。
-  - 这一阶段的错误通常表示闪存设备问题。
+  - 此阶段出现的错误通常表明启动设备存在问题。
   - Linux在启动期间检测硬件。
 
 </details>
 
 <details>
-  <summary><strong>6. WebGUI</strong> - 点击展开/折叠</summary>
+  <summary><strong>4. 依赖启动卷的服务</strong> - 点击展开/折叠</summary>
 
-  基于web的管理接口变得可用，允许远程管理和配置你的服务器。
+  启动卷变得可访问，并且关键服务开始加载。此阶段对配置和网络访问至关重要。
 
-  - %%WebGUI|web-gui%%在此点启动。
+  - 启动卷挂载到 `/boot`。
   - 闪存设备上的`config/go`文件可以在%%WebGUI|web-gui%%启动之前或之后运行用户命令。
   - 使用`df`命令检查`/boot`是否已挂载。
-  - 闪存设备必须标记为**UNRAID**（全部大写）以进行正确挂载。
+  - 启动卷必须标记为 **UNRAID**（全部大写）才能正确挂载。
   - 此阶段将提供额外的驱动程序和固件。
   - 配置被加载到RAM中。
   - 标准Linux服务，包括网络和%%WireGuard|wireguard%% VPN（如果启用），在此阶段启动。
@@ -103,7 +103,7 @@ Unraid 启动序列有多个阶段：
   基于web的管理接口变得可用，允许远程管理和配置你的服务器。
 
   - %%WebGUI|web-gui%%在此点启动。
-  - 闪存设备上的`config/go`文件可以在%%WebGUI|web-gui%%启动之前或之后运行用户命令。
+  - 启动卷上的 `config/go` 文件可以在 %%WebGUI|web-gui%% 启动之前或之后运行用户命令。
 
 </details>
 
@@ -128,14 +128,14 @@ Unraid 启动序列有多个阶段：
 
 当您的服务器无法启动时，系统化的故障排除有助于快速识别和解决根本原因。按照这些步骤操作，以避免遗漏关键问题或进行不必要的更改。每一步都建立在前一步的基础上，即使某个步骤似乎与您的具体问题无关，也不要跳过。
 
-1. 如果可能，请为闪存设备使用 USB 2.0 端口。它通常比 USB 3.0 更可靠且问题更少。
-2. 检查你的BIOS/%%UEFI|uefi%%设置以确保闪存设备被设置为主引导设备。
-3. 在Windows或macOS计算机上检查闪存设备是否有物理或逻辑错误。
-4. 重新提取 Unraid 发布版本的 bz\* 文件到闪存设备上，以防止潜在的损坏。
-5. 通过从干净的 Unraid 副本开始重建闪存设备，然后恢复您的 `config` 文件夹。
+1. 如果可能，请为启动设备使用 USB 2.0 端口（当通过 USB 启动时）。与 USB 3.0 相比，它通常更可靠且更不容易出现问题。
+2. 检查您的 BIOS/%%UEFI|uefi%% 设置，以确保 Unraid 启动设备被设置为主要启动目标。
+3. 在 Windows 或 macOS 计算机上检查启动设备是否存在任何物理或逻辑错误。
+4. 将 Unraid 发布版本的 bz\* 文件重新解压到启动卷上，以防止任何潜在的损坏。
+5. 通过从干净的 Unraid 副本开始来重建启动介质，然后恢复您的 `config` 文件夹。
 6. 尝试在[安全模式](../../using-unraid-to/customize-your-experience/plugins.mdx#troubleshooting-with-safe-mode)下引导以检查是否有插件相关的问题。
-7. 使用新的闪存设备进行测试，并执行干净的 Unraid 安装。这有助于确定服务器硬件是否存在问题。
-8. 如有必要，将许可证转移到新的闪存设备上。
+7. 使用新的启动介质进行测试，并执行干净的 Unraid 安装。这有助于确定服务器硬件是否存在问题。
+8. 如有必要，请将您的许可证转移到新的启动设备。
 
 ---
 
@@ -155,14 +155,14 @@ If your Unraid boot drive fails and you don’t have a recent backup or knowledg
 
 如果您的 Unraid 启动驱动器出现故障且没有最近的备份或不知道哪个驱动器是校验盘，通过 Unraid 识别数据盘的文件系统来恢复您的系统。%%Parity drives|校验盘%% 没有有效的文件系统，这有助于区分它们。
 
-Unraid 通过检测现有的有效文件系统来识别数据盘。%%Parity drives|校验盘%% 缺乏文件系统，因此无法挂载。这一特性允许您在使用新闪存设备启动后区分 %%parity drives|校验盘%% 和数据盘。
+Unraid 通过检测现有的有效文件系统来识别数据驱动器。%%Parity drives|parity-drives%% 由于缺少文件系统，会显示为无法挂载。此特性使您能够在使用新的启动介质启动后，将 %%parity drives|parity-drives%% 与数据驱动器区分开来。
 
 ### 恢复程序
 
 该程序帮助您在丢失引导驱动器并记不清哪些是奇偶校验与数据驱动器时，恢复阵列配置。请小心谨慎地遵循每一步，以避免数据丢失。
 
-1. 创建一个新的 Unraid 启动驱动器。
-2. 从此新驱动器引导服务器(暂不分配任何驱动器)。
+1. 创建新的 Unraid 启动介质。
+2. 从这个新设备启动服务器（暂时不要分配任何驱动器）。
 3. 激活许可证，使用试用或转移现有许可证。
 4. 使用其中一个方法识别%%parity drives|parity-drives%%。
 5. 使用***工具 → 新配置***重置%%array|array%%，如果可能，保留以前的分配。
