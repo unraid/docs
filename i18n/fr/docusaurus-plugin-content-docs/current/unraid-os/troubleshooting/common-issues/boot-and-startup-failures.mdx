@@ -10,13 +10,13 @@ import TabItem from '@theme/TabItem';
 
 Lorsque votre serveur Unraid ne démarre pas correctement, il peut être difficile d'identifier la cause sans une compréhension claire du processus de démarrage. Suivre ce guide vous permet de diagnostiquer rapidement et de résoudre la plupart des problèmes de démarrage, assurant que votre %%array|array%%, votre %%WebGUI|web-gui%% et vos services soient opérationnels avec un minimum de temps d'arrêt.
 
-## Préparation du dispositif flash
+## Préparation du support de démarrage
 
 Ce sujet est couvert en détail dans la section [Préparer votre périphérique USB](../../getting-started/set-up-unraid/create-your-bootable-media.mdx#prepare-your-usb-device).
 
 :::caution
 
-Toujours [sauvegarder votre clé USB](../../system-administration/maintain-and-update/changing-the-flash-device.mdx#backing-up-your-flash-device) avant d'effectuer des modifications. Tous les paramètres spécifiques à l'utilisateur, y compris votre clé de licence, sont stockés dans le dossier `config`. Restaurer ce dossier après avoir préparé à nouveau votre clé USB aidera à préserver votre configuration actuelle.
+Toujours [sauvegarder votre périphérique de démarrage](../../system-administration/maintain-and-update/changing-the-flash-device.mdx#backing-up-your-flash-device) avant d'effectuer des modifications. Tous les paramètres spécifiques à l'utilisateur, y compris votre clé de licence, sont stockés dans le dossier `config`. Restaurer ce dossier après avoir recréé votre périphérique de démarrage aidera à préserver votre configuration actuelle.
 
 :::
 
@@ -29,7 +29,7 @@ Pour configurer le démarrage %%UEFI|uefi%% dans les paramètres BIOS/%%UEFI|uef
 1. Entrez dans la configuration BIOS/%%UEFI|uefi%% de votre carte mère au démarrage (généralement en appuyant sur F2, DEL ou ESC)
 2. Localiser les options de démarrage ou les paramètres de mode de démarrage
 3. Définissez le mode de démarrage sur **UEFI** ou **UEFI avec CSM désactivé**
-4. Assurez-vous que le dispositif flash Unraid est sélectionné comme périphérique de démarrage UEFI
+4. Assurez-vous que le périphérique de démarrage Unraid est sélectionné comme cible de démarrage UEFI
 5. Enregistrez vos modifications et quittez
 
 ## Comprendre la séquence de démarrage
@@ -41,10 +41,10 @@ La séquence de démarrage Unraid comporte plusieurs étapes :
 
   Le noyau Linux s'initialise et commence la détection du matériel. C'est ici que le système d'exploitation prend le contrôle du chargeur de démarrage.
 
-  - Le BIOS de la carte mère reconnaît le dispositif flash amorçable Unraid.
-  - Vous verrez des messages de console affichant le chargement des fichiers bz\*.
-  - Les erreurs à cette étape indiquent souvent des problèmes avec le dispositif flash.
-  - Linux détecte le matériel lors du démarrage.
+  - Le BIOS de la carte mère reconnaît le périphérique de démarrage Unraid (généralement une clé USB).
+  - La définition du périphérique de démarrage comme cible de démarrage par défaut varie selon votre BIOS ; consultez le manuel de votre carte mère pour obtenir des conseils.
+  - Le volume de démarrage prend en charge les modes de démarrage **legacy (CSM)** et **%%UEFI|uefi%%**.
+  - Pour le démarrage %%UEFI|uefi%%, assurez-vous que le dossier `EFI` sur le volume de démarrage ne se termine pas par un trait d'union (`-`).
 
 </details>
 
@@ -53,7 +53,7 @@ La séquence de démarrage Unraid comporte plusieurs étapes :
 
   Le périphérique flash devient accessible et des services essentiels commencent à se charger. Cette étape est cruciale pour la configuration et l'accès au réseau.
 
-  - Le dispositif flash est monté sur `/boot`.
+  - Les entrées du menu de démarrage sont définies dans le fichier `syslinux/syslinux.cfg` sur le volume de démarrage.
   - Vous pouvez modifier ce fichier via le %%WebGUI|web-gui%% sous ***Main → Configuration de Syslinux***.
   - **Memtest86+**, qui est inclus avec les versions actuelles d'Unraid, fonctionne en modes legacy et %%UEFI|uefi%%. Pour les anciennes versions d'Unraid, obtenez une version compatible sur [le site officiel de Memtest](https://www.memtest86.com/) pour %%UEFI|uefi%%.
   - Le dispositif flash doit être étiqueté **UNRAID** (en majuscules) pour un montage correct.
@@ -65,22 +65,22 @@ La séquence de démarrage Unraid comporte plusieurs étapes :
 
   Les extensions tierces et personnalisations sont chargées pour améliorer la fonctionnalité du système. Des problèmes de plugin peuvent empêcher un démarrage réussi.
 
-  - Les plugins installés sont chargés durant cette étape.
+  - **Syslinux** charge le cœur Linux depuis le volume de démarrage dans la RAM.
   - Les options de **démarrage en mode sans échec** peuvent supprimer le chargement des plugins si nécessaire.
-  - Les erreurs à cette étape indiquent souvent des problèmes avec le dispositif flash.
+  - Les erreurs à cette étape indiquent souvent des problèmes avec le périphérique de démarrage.
   - Linux détecte le matériel lors du démarrage.
 
 </details>
 
 <details>
-  <summary><strong>6. WebGUI</strong> - Cliquez pour développer/réduire</summary>
+  <summary><strong>4. Services dépendants du volume de démarrage</strong> - Cliquez pour développer/réduire</summary>
 
-  L'interface de gestion web devient disponible, permettant l'administration et la configuration à distance de votre serveur.
+  Le volume de démarrage devient accessible et les services essentiels commencent à se charger. Cette étape est critique pour la configuration et l'accès réseau.
 
-  - Le %%WebGUI|web-gui%% démarre à ce point.
+  - Le volume de démarrage est monté sur `/boot`.
   - Le fichier `config/go` sur le dispositif flash peut exécuter des commandes utilisateur avant ou après le démarrage du %%WebGUI|web-gui%%.
   - Utilisez la commande `df` pour vérifier si `/boot` est monté.
-  - Le dispositif flash doit être étiqueté **UNRAID** (en majuscules) pour un montage correct.
+  - Le volume de démarrage doit être étiqueté **UNRAID** (en majuscules) pour un montage correct.
   - Des pilotes et firmwares additionnels seront disponibles à cette étape.
   - La configuration est chargée dans la RAM.
   - Les services Linux standard, y compris la mise en réseau et %%WireGuard|wireguard%% VPN (si activé), démarrent ici.
@@ -103,7 +103,7 @@ La séquence de démarrage Unraid comporte plusieurs étapes :
   L'interface de gestion web devient disponible, permettant l'administration et la configuration à distance de votre serveur.
 
   - Le %%WebGUI|web-gui%% démarre à ce point.
-  - Le fichier `config/go` sur le dispositif flash peut exécuter des commandes utilisateur avant ou après le démarrage du %%WebGUI|web-gui%%.
+  - Le fichier `config/go` sur le volume de démarrage peut exécuter des commandes utilisateur avant ou après le démarrage du %%WebGUI|web-gui%%.
 
 </details>
 
@@ -128,14 +128,14 @@ La séquence de démarrage Unraid comporte plusieurs étapes :
 
 Quand votre serveur ne démarre pas, un dépannage systématique aide à identifier et résoudre rapidement la cause profonde. Suivez ces étapes dans l'ordre pour éviter de manquer des problèmes critiques ou de faire des changements inutiles. Chaque étape s'appuie sur la précédente, alors ne sautez pas même si une étape semble non liée à votre problème spécifique.
 
-1. Utilisez un port USB 2.0 pour la clé USB si possible. Il est généralement plus fiable et moins sujet aux problèmes que l'USB 3.0.
-2. Vérifiez vos paramètres BIOS/%%UEFI|uefi%% pour garantir que le dispositif flash est défini comme périphérique de démarrage principal.
-3. Inspectez le dispositif flash pour toute erreur physique ou logique sur un ordinateur Windows ou macOS.
-4. Réextraire les fichiers de la version Unraid bz\* sur le périphérique USB pour prévenir toute corruption potentielle.
-5. Reconstruisez l'appareil flash en commençant par une copie propre d'Unraid, puis restaurez votre dossier `config`.
+1. Utilisez un port USB 2.0 pour le périphérique de démarrage si possible (lors d'un démarrage depuis USB). Il est généralement plus fiable et moins sujet aux problèmes que l'USB 3.0.
+2. Vérifiez vos paramètres BIOS/%%UEFI|uefi%% pour vous assurer que le périphérique de démarrage Unraid est défini comme cible de démarrage principale.
+3. Inspectez le périphérique de démarrage pour détecter toute erreur physique ou logique sur un ordinateur Windows ou macOS.
+4. Réextrayez les fichiers bz\* de la version Unraid sur le volume de démarrage pour éviter toute corruption potentielle.
+5. Reconstruisez le support de démarrage en partant d'une copie propre de Unraid, puis restaurez votre dossier `config`.
 6. Essayez le démarrage en [mode sécurisé](../../using-unraid-to/customize-your-experience/plugins.mdx#troubleshooting-with-safe-mode) pour vérifier tout problème lié aux plugins.
-7. Testez avec une nouvelle clé USB et effectuez une installation propre de Unraid. Cela aide à déterminer s'il y a des problèmes avec le matériel du serveur.
-8. Si nécessaire, transférez votre licence sur un nouveau dispositif flash.
+7. Testez avec un nouveau support de démarrage et effectuez une installation propre de Unraid. Cela aide à déterminer s'il y a des problèmes avec le matériel du serveur.
+8. Si nécessaire, transférez votre licence vers un nouveau périphérique de démarrage.
 
 ---
 
@@ -155,14 +155,14 @@ Si vous avez des sauvegardes récentes ou une documentation de votre configurati
 
 Si votre disque de démarrage Unraid échoue et que vous n'avez pas de sauvegarde récente ou de connaissance des disques qui sont en parité, vous pouvez récupérer votre système en utilisant la capacité d'Unraid à reconnaître les disques de données par leurs systèmes de fichiers. Les %%parity-drives|parity-drives%% n'ont pas de système de fichiers valide, ce qui permet de les différencier.
 
-Unraid identifies data drives by detecting existing valid file systems. %%Parity drives|parity-drives%%, which lack a file system, appear unmountable. This characteristic allows you to distinguish %%parity drives|parity-drives%% from data drives after booting with a new flash device.
+Unraid identifie les disques de données en détectant les systèmes de fichiers valides existants. Les %%Parity drives|parity-drives%%, qui n'ont pas de système de fichiers, apparaissent comme non montables. Cette caractéristique vous permet de distinguer les %%parity drives|parity-drives%% des disques de données après avoir démarré avec un nouveau support de démarrage.
 
 ### Procédure de récupération
 
 Cette procédure vous aide à restaurer la configuration de votre array lorsque vous avez perdu votre disque de démarrage et que vous ne vous souvenez pas des disques qui étaient en parité vs. données. Suivez chaque étape avec soin pour éviter toute perte de données.
 
-1. Créez un nouveau lecteur de démarrage Unraid.
-2. Démarrez le serveur depuis ce nouveau lecteur (ne pas affecter de disques pour le moment).
+1. Créez un nouveau support de démarrage Unraid.
+2. Démarrez le serveur depuis ce nouveau périphérique (n'affectez encore aucun disque).
 3. Activez une licence, en utilisant soit un essai soit en transférant une existante.
 4. Identifiez les %%parity drives|parity-drives%% en utilisant l'une des méthodes mentionnées ci-dessous.
 5. Utilisez ***Outils → Nouvelle configuration*** pour réinitialiser l'%%array|array%% tout en conservant les affectations précédentes si possible.
