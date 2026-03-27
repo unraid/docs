@@ -163,6 +163,34 @@ Additional project scripts:
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
+## Algolia Reindex
+
+The docs search index is refreshed by the GitHub Actions workflow at [`.github/workflows/algolia-reindex.yml`](.github/workflows/algolia-reindex.yml).
+
+That workflow matches the Algolia dashboard flow for this site:
+
+* It looks up crawler `unraid` in Algolia app `JUYLFQHE7W`
+* It triggers `POST https://crawler.algolia.com/api/user_configs/<crawler_id>/reindex`
+
+The workflow runs automatically on `main` when published docs content changes, and it can also be started manually with **Actions > Algolia Reindex > Run workflow**.
+
+To enable it in GitHub, create these repository secrets:
+
+* `ALGOLIA_CRAWLER_USER_ID`
+* `ALGOLIA_CRAWLER_API_KEY`
+
+You can find both in the Algolia dashboard under **Data sources > Crawler > Settings**.
+
+Optional repository variables:
+
+* `ALGOLIA_APP_ID` defaults to `JUYLFQHE7W`
+* `ALGOLIA_CRAWLER_NAME` defaults to `unraid`
+* `ALGOLIA_REINDEX_DELAY_SECONDS` defaults to `300`
+
+The workflow does not need the standard `ALGOLIA_API_KEY` secret. Reindexing uses the crawler-specific credentials above.
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
 <!-- CONTRIBUTING -->
 ## Contributing
 
