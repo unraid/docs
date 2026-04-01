@@ -191,6 +191,29 @@ The workflow does not need the standard `ALGOLIA_API_KEY` secret. Reindexing use
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
+## Fork PR Previews
+
+Forked pull requests do not get native Cloudflare preview builds, so this repo uses a two-workflow GitHub Actions flow for untrusted contributions:
+
+* `.github/workflows/fork-preview-build.yml` runs on fork PRs, installs dependencies, builds the site, and uploads the static `build/` output as an artifact.
+* `.github/workflows/fork-preview-deploy.yml` runs after that build completes, downloads the artifact in a trusted workflow, and deploys it to a preview-only Cloudflare Pages project with `wrangler pages deploy --branch=pr-<number>`.
+
+This keeps Cloudflare secrets out of the untrusted PR build while still producing a stable preview URL at `https://pr-<number>.<project>.pages.dev`.
+
+Set these before enabling the workflows:
+
+* Repository variable: `CLOUDFLARE_PREVIEW_PAGES_PROJECT`
+* Repository secret: `CLOUDFLARE_ACCOUNT_ID`
+* Repository secret: `CLOUDFLARE_DEPLOY_TOKEN`
+
+Recommended setup:
+
+1. Create a separate Cloudflare Pages project dedicated to previews only.
+2. Keep production on the existing deployment path.
+3. Scope the Cloudflare deploy token to Pages edit access for the account that owns the preview project.
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
 <!-- CONTRIBUTING -->
 ## Contributing
 
