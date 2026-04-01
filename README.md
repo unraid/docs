@@ -167,10 +167,11 @@ Additional project scripts:
 
 The docs search index is refreshed by the GitHub Actions workflow at [`.github/workflows/algolia-reindex.yml`](.github/workflows/algolia-reindex.yml).
 
-That workflow matches the Algolia dashboard flow for this site:
+That workflow matches the current Algolia Crawler API flow for this site:
 
-* It looks up crawler `unraid` in Algolia app `JUYLFQHE7W`
-* It triggers `POST https://crawler.algolia.com/api/user_configs/<crawler_id>/reindex`
+* It looks up crawler `unraid` with `GET https://crawler.algolia.com/api/1/crawlers?name=unraid`
+* It checks crawler details with `GET https://crawler.algolia.com/api/1/crawlers/<crawler_id>`
+* It triggers `POST https://crawler.algolia.com/api/1/crawlers/<crawler_id>/reindex`
 
 The workflow runs automatically on `main` when published docs content changes, and it can also be started manually with **Actions > Algolia Reindex > Run workflow**.
 

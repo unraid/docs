@@ -51,21 +51,29 @@ jobs:
           response="$(
             curl --silent --show-error --fail \
               --user "${ALGOLIA_CRAWLER_USER_ID}:${ALGOLIA_CRAWLER_API_KEY}" \
-              "https://crawler.algolia.com/api/user_configs?appId=${ALGOLIA_APP_ID}&limit=100"
+              "https://crawler.algolia.com/api/1/crawlers?name=${ALGOLIA_CRAWLER_NAME}&itemsPerPage=100"
           )"
 
           crawler_id="$(
             jq -er \
-              --arg crawler_name "${ALGOLIA_CRAWLER_NAME}" \
-              '.data[] | select(.name == $crawler_name) | .id' \
+              '.items[0].id' \
               <<<"${response}"
+          )"
+
+          details="$(
+            curl --silent --show-error --fail \
+              --user "${ALGOLIA_CRAWLER_USER_ID}:${ALGOLIA_CRAWLER_API_KEY}" \
+              "https://crawler.algolia.com/api/1/crawlers/${crawler_id}"
           )"
 
           crawler_status="$(
             jq -er \
-              --arg crawler_name "${ALGOLIA_CRAWLER_NAME}" \
-              '.data[] | select(.name == $crawler_name) | .status' \
-              <<<"${response}"
+              'if .blocked then "blocked"
+               elif .reindexing then "reindexing"
+               elif .running then "running"
+               else "paused"
+               end' \
+              <<<"${details}"
           )"
 
           echo "crawler_id=${crawler_id}" >> "${GITHUB_OUTPUT}"
@@ -85,17 +93,17 @@ jobs:
               --user "${ALGOLIA_CRAWLER_USER_ID}:${ALGOLIA_CRAWLER_API_KEY}" \
               --request POST \
               --header "content-type: application/json" \
-              "https://crawler.algolia.com/api/user_configs/${{ steps.resolve.outputs.crawler_id }}/reindex"
+              "https://crawler.algolia.com/api/1/crawlers/${{ steps.resolve.outputs.crawler_id }}/reindex"
           )"
 
-          action_id="$(
+          task_id="$(
             jq -er \
-              '.data[] | select(.name == "reindex") | .id' \
+              '.taskId' \
               <<<"${response}"
           )"
 
-          echo "action_id=${action_id}" >> "${GITHUB_OUTPUT}"
-          echo "Queued Algolia reindex action ${action_id} for crawler ${ALGOLIA_CRAWLER_NAME}."
+          echo "task_id=${task_id}" >> "${GITHUB_OUTPUT}"
+          echo "Queued Algolia reindex task ${task_id} for crawler ${ALGOLIA_CRAWLER_NAME}."
 
       - name: Confirm crawler entered reindexing state
         env:
@@ -108,21 +116,23 @@ jobs:
             response="$(
               curl --silent --show-error --fail \
                 --user "${ALGOLIA_CRAWLER_USER_ID}:${ALGOLIA_CRAWLER_API_KEY}" \
-                "https://crawler.algolia.com/api/user_configs?appId=${ALGOLIA_APP_ID}&limit=100"
+                "https://crawler.algolia.com/api/1/crawlers/${{ steps.resolve.outputs.crawler_id }}"
             )"
 
             reindexing="$(
               jq -er \
-                --arg crawler_name "${ALGOLIA_CRAWLER_NAME}" \
-                '.data[] | select(.name == $crawler_name) | .reindexing' \
+                '.reindexing' \
                 <<<"${response}"
             )"
 
             if [ "${reindexing}" = "true" ]; then
               status="$(
                 jq -er \
-                  --arg crawler_name "${ALGOLIA_CRAWLER_NAME}" \
-                  '.data[] | select(.name == $crawler_name) | .status' \
+                  'if .blocked then "blocked"
+                   elif .reindexing then "reindexing"
+                   elif .running then "running"
+                   else "paused"
+                   end' \
                   <<<"${response}"
               )"
 
