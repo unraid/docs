@@ -53,14 +53,12 @@ jobs:
           head_sha="$(jq -r '.head_sha' "${metadata_file}")"
           head_ref="$(jq -r '.head_ref' "${metadata_file}")"
           preview_branch="pr-${pr_number}"
-          preview_url="https://${preview_branch}.${PREVIEW_PROJECT}.pages.dev"
 
           {
             echo "pr_number=${pr_number}"
             echo "head_sha=${head_sha}"
             echo "head_ref=${head_ref}"
             echo "preview_branch=${preview_branch}"
-            echo "preview_url=${preview_url}"
           } >> "${GITHUB_OUTPUT}"
 
       - name: Setup Node.js
@@ -69,13 +67,29 @@ jobs:
           node-version: 22
 
       - name: Deploy preview to Cloudflare Pages
+        id: deploy
         run: |
           set -euo pipefail
+
+          deploy_log="$(mktemp)"
+
           npx wrangler@4 pages deploy preview-artifact/build \
             --project-name "${PREVIEW_PROJECT}" \
             --branch "${{ steps.meta.outputs.preview_branch }}" \
             --commit-hash "${{ steps.meta.outputs.head_sha }}" \
-            --commit-message "PR #${{ steps.meta.outputs.pr_number }} preview deployment"
+            --commit-message "PR #${{ steps.meta.outputs.pr_number }} preview deployment" \
+            | tee "${deploy_log}"
+
+          preview_url="$(
+            sed -n 's/^.*Deployment alias URL: \(https:\/\/[^[:space:]]*\).*$/\1/p' "${deploy_log}" | tail -n 1
+          )"
+
+          if [ -z "${preview_url}" ]; then
+            echo "Unable to determine Cloudflare preview alias URL from Wrangler output." >&2
+            exit 1
+          fi
+
+          echo "preview_url=${preview_url}" >> "${GITHUB_OUTPUT}"
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_DEPLOY_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
@@ -83,7 +97,7 @@ jobs:
       - name: Upsert preview comment
         uses: actions/github-script@v7
         env:
-          PREVIEW_URL: ${{ steps.meta.outputs.preview_url }}
+          PREVIEW_URL: ${{ steps.deploy.outputs.preview_url }}
           HEAD_REF: ${{ steps.meta.outputs.head_ref }}
         with:
           script: |
