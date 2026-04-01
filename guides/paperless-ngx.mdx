@@ -156,8 +156,8 @@ We need to add 8 variables in total. Here's what we need to add.
 | Variable | PAPERLESS_DBUSER | paperless | Database user you set in Postgres |
 | Variable | PAPERLESS_DBPASS | your-secure-password | Database password you set in Postgres |
 | Variable | PAPERLESS_TIKA_ENABLED | 0 | Disable Tika for now (set to 1 later in this guide) |
-| Variable | PAPERLESS_TIKA_GOTENBERG_ENDPOINT | http://192.168.1.50:3000 | Gotenberg endpoint (used later in this guide) |
-| Variable | PAPERLESS_TIKA_ENDPOINT | http://192.168.1.50:9998 | Tika endpoint (used later in this guide) |
+| Variable | PAPERLESS_TIKA_GOTENBERG_ENDPOINT | <http://192.168.1.50:3000> | Gotenberg endpoint (used later in this guide) |
+| Variable | PAPERLESS_TIKA_ENDPOINT | <http://192.168.1.50:9998> | Tika endpoint (used later in this guide) |
 
 Make sure the database name, user, and password match exactly what you set when you installed the Postgres container earlier.
 
@@ -239,13 +239,17 @@ If you run into problems, here are the most common issues and how to fix them.
 
 #### Redis authentication error
 
-If you forgot to delete the password field in the Redis container template, you'll see this error in the Paperless logs.
+If Redis authentication is enabled but the Paperless Redis URL is missing the password (or has the wrong one), you'll see this error in the Paperless logs.
 
 ![](images/images/redis-authentication-error-in-logs.png)
 
 The error will say something like "Redis ping failed. Error: Authentication required" and "Failed to connect to redis using environment variable PAPERLESS_REDIS."
 
-To fix this, go back to the Redis container, edit it, delete the password so the field is completely blank, and apply. Then restart the Paperless container. That should clear the error.
+To fix this, verify your `PAPERLESS_REDIS` value uses this format:
+
+`redis://:your-redis-password@YOUR-UNRAID-IP:6379`
+
+Make sure the password matches what you set in the Redis container template. Then restart the Paperless container. That should clear the error.
 
 #### Postgres connection errors
 
@@ -472,7 +476,7 @@ Here's what to fill in.
 5. Action, set it to process attachments only
 6. Filter from, put in the email address you want to watch for
 
-So for example, if your energy company always sends bills from billing@energycompany.com, put that address in the from filter. Paperless will only grab attachments from emails sent by that address.
+So for example, if your energy company always sends bills from <mailto:billing@energycompany.com>, put that address in the from filter. Paperless will only grab attachments from emails sent by that address.
 
 You can also assign a tag to anything that comes in through this rule. I'd recommend creating an email tag first, then coming back to the rule and selecting it. That way everything imported via email gets tagged automatically and you can easily see what came in through email versus what you uploaded manually.
 
@@ -648,7 +652,7 @@ Head to the **Apps** tab, search for Paperless, and install Paperless GPT.
 
 The template might look a bit daunting because there are a lot of fields, but most of them we don't need to touch.
 
-The Paperless base URL is the IP address of your Paperless server along with the port. Mine looks like http://10.10.20.70:8000 but yours will be whatever address your Paperless server is on.
+The Paperless base URL is the IP address of your Paperless server along with the port. Mine looks like <http://10.10.20.70:8000> but yours will be whatever address your Paperless server is on.
 
 For the API token, use the same one we grabbed from the Django admin earlier. If you can't remember it, go back to Settings, Django admin, Authorisation Tokens, and it'll be there.
 

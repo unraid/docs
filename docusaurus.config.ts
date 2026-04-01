@@ -37,8 +37,11 @@ function createEditUrl({
   locale: string;
   versionDocsDirPath: string;
   docPath: string;
-}): string {
+}): string | undefined {
   if (locale !== DEFAULT_LOCALE) {
+    if (versionDocsDirPath === "guides") {
+      return undefined;
+    }
     return `https://translate.unraid.net/unraid-docs/${locale}`;
   }
   const branch = process.env.GITHUB_BRANCH || "main";

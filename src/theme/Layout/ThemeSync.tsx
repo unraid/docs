@@ -154,9 +154,17 @@ export function ThemeSync(): ReactElement | null {
     });
 
     const onStorage = (event: StorageEvent): void => {
-      if (event.key === DOCUSAURUS_THEME_STORAGE_KEY) {
-        syncThemeState();
+      if (event.key !== THEME_STORAGE_KEY) {
+        return;
       }
+
+      const nextTheme = normalizeTheme(event.newValue);
+      if (!nextTheme || nextTheme === currentThemeRef.current) {
+        return;
+      }
+
+      currentThemeRef.current = nextTheme;
+      setCurrentTheme(nextTheme);
     };
 
     window.addEventListener("storage", onStorage);

@@ -87,15 +87,18 @@ export function FeedbackWidget(): ReactElement | null {
     window.addEventListener("keydown", handleKeyDown);
 
     const handleFocusIn = (event: FocusEvent): void => {
-      if (!(event.target instanceof HTMLElement)) {
+      const target = event.target;
+      if (!(target instanceof HTMLElement) && !(target instanceof HTMLIFrameElement)) {
         return;
       }
 
-      if (!dialogElement.contains(event.target)) {
-        const focusableElements = getFocusableElements(dialogElement);
-        const focusTarget = focusableElements[0] ?? dialogElement;
-        focusTarget.focus();
+      if (dialogElement.contains(target as Node)) {
+        return;
       }
+
+      const focusableElements = getFocusableElements(dialogElement);
+      const focusTarget = focusableElements[0] ?? dialogElement;
+      focusTarget.focus();
     };
 
     document.addEventListener("focusin", handleFocusIn);
@@ -230,6 +233,22 @@ export function FeedbackWidget(): ReactElement | null {
                 frameClassName="feedback-widget-panel__embed-frame"
                 iframeClassName="feedback-widget-panel__iframe"
               />
+            </div>
+
+            <div className="feedback-widget-panel__fallback">
+              <a
+                href={FEEDBACK_EMBED_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="feedback-widget-panel__fallback-link"
+              >
+                <Translate
+                  id="theme.Layout.FeedbackWidget.openInNewTab"
+                  description="Keyboard-accessible link to open the feedback survey in a new tab"
+                >
+                  Open survey in a new tab
+                </Translate>
+              </a>
             </div>
           </section>
         </>
