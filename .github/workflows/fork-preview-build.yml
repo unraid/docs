@@ -61,18 +61,28 @@ jobs:
         run: pnpm build
 
       - name: Write preview metadata
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          HEAD_REF: ${{ github.event.pull_request.head.ref }}
+          HEAD_REPO: ${{ github.event.pull_request.head.repo.full_name }}
+          BASE_REPO: ${{ github.repository }}
         run: |
           set -euo pipefail
           mkdir -p .preview-artifact
-          cat > .preview-artifact/metadata.json <<'EOF'
-          {
-            "pr_number": ${{ github.event.pull_request.number }},
-            "head_sha": "${{ github.event.pull_request.head.sha }}",
-            "head_ref": "${{ github.event.pull_request.head.ref }}",
-            "head_repo": "${{ github.event.pull_request.head.repo.full_name }}",
-            "base_repo": "${{ github.repository }}"
-          }
-          EOF
+          jq -n \
+            --argjson pr_number "${PR_NUMBER}" \
+            --arg head_sha "${HEAD_SHA}" \
+            --arg head_ref "${HEAD_REF}" \
+            --arg head_repo "${HEAD_REPO}" \
+            --arg base_repo "${BASE_REPO}" \
+            '{
+              pr_number: $pr_number,
+              head_sha: $head_sha,
+              head_ref: $head_ref,
+              head_repo: $head_repo,
+              base_repo: $base_repo
+            }' > .preview-artifact/metadata.json
 
       - name: Upload preview artifact
         uses: actions/upload-artifact@v4
