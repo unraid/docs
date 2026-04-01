@@ -12,7 +12,6 @@ const FOCUSABLE_SELECTOR = [
   'textarea:not([disabled])',
   'input:not([disabled])',
   'select:not([disabled])',
-  'iframe',
   '[tabindex]:not([tabindex="-1"])',
 ].join(", ");
 
@@ -87,6 +86,20 @@ export function FeedbackWidget(): ReactElement | null {
     document.body.style.overflow = "hidden";
     window.addEventListener("keydown", handleKeyDown);
 
+    const handleFocusIn = (event: FocusEvent): void => {
+      if (!(event.target instanceof HTMLElement)) {
+        return;
+      }
+
+      if (!dialogElement.contains(event.target)) {
+        const focusableElements = getFocusableElements(dialogElement);
+        const focusTarget = focusableElements[0] ?? dialogElement;
+        focusTarget.focus();
+      }
+    };
+
+    document.addEventListener("focusin", handleFocusIn);
+
     const focusableElements = getFocusableElements(dialogElement);
     const focusTarget = focusableElements[0] ?? dialogElement;
     focusTarget.focus();
@@ -94,6 +107,7 @@ export function FeedbackWidget(): ReactElement | null {
     return () => {
       document.body.style.overflow = previousOverflow;
       window.removeEventListener("keydown", handleKeyDown);
+      document.removeEventListener("focusin", handleFocusIn);
       previousFocusRef.current?.focus();
     };
   }, [isOpen]);

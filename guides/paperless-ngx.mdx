@@ -90,7 +90,7 @@ Click **Apply** and let it pull down the container. Once it's running, set it to
 
 ### Installing Redis
 
-Back to the **Apps** tab. Search for Redis and install the Bitnami version in A75G's repository. The reason I use this particular version of Redis is because it allows empty passwords. The Paperless template doesn't have a variable for a Redis password, so rather than adding one manually, it's easier to just use Redis without a password.
+Back to the **Apps** tab. Search for Redis and install the Bitnami version in A75G's repository. This guide assumes you're securing Redis with a password rather than allowing empty passwords.
 
 ![](images/images/bitnami-redis-community-apps.png)
 
@@ -98,7 +98,7 @@ Once you've clicked install, you'll see the template.
 
 ![](images/images/redis-container-template-delete-password.png)
 
-To use no password, you need to have allow empty passwords set to yes, and you need to delete the password that's specified in the template. Just delete it out completely so it's blank. This is important, otherwise you'll get authentication errors later when Paperless tries to connect to Redis.
+Set a strong Redis password in the template and ensure authentication is enabled. You'll use this password in the Paperless configuration later. Treat this like any other application password: store it securely and don't reuse it elsewhere.
 
 The container won't start yet because we need to set permissions on the Redis folder. Open up the [Unraid terminal](/unraid-os/system-administration/advanced-tools/command-line-interface/) and run this command.
 
@@ -126,9 +126,9 @@ Now scroll down to the Redis URL.
 
 This is the IP address of where Redis is running, which is the same IP address as your Unraid server. If you're not sure what it is, go to [Settings, Network Settings](/unraid-os/getting-started/set-up-unraid/customize-unraid-settings/), and click the little info button on your network interface. You'll see your Unraid server's IP address there.
 
-The format looks like this: `redis://192.168.1.50:6379`
+The format looks like this: `redis://:your-redis-password@192.168.1.50:6379`
 
-That's redis:// followed by your Unraid server's IP address, then :6379 for the Redis port.
+That's `redis://` followed by `:your-redis-password@`, then your Unraid server's IP address, then `:6379` for the Redis port.
 
 Quick note. Your Unraid server needs a [static IP address](/unraid-os/getting-started/set-up-unraid/customize-unraid-settings/) for this to work. You can set that in Unraid itself under Settings, Network Settings, or you can reserve the IP address in your router's DHCP settings. If the IP address changes, Paperless won't be able to find Redis and everything will break.
 

@@ -2,7 +2,7 @@ import React, { type ReactNode } from "react";
 import type { Props } from "@theme/Footer/Copyright";
 
 const CURRENT_YEAR_TOKEN_PATTERN = /\{currentYear\}/g;
-const COPYRIGHT_YEAR_PATTERN = /2005-\d{4}/;
+const COPYRIGHT_YEAR_PATTERN = /2005-\d{4}/g;
 
 export default function FooterCopyright({ copyright }: Props): ReactNode {
   const currentYear = new Date().getFullYear().toString();
