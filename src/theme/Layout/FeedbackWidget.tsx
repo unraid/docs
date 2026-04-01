@@ -12,7 +12,6 @@ const FOCUSABLE_SELECTOR = [
   'textarea:not([disabled])',
   'input:not([disabled])',
   'select:not([disabled])',
-  'iframe',
   '[tabindex]:not([tabindex="-1"])',
 ].join(", ");
 
@@ -87,6 +86,23 @@ export function FeedbackWidget(): ReactElement | null {
     document.body.style.overflow = "hidden";
     window.addEventListener("keydown", handleKeyDown);
 
+    const handleFocusIn = (event: FocusEvent): void => {
+      const target = event.target;
+      if (!(target instanceof HTMLElement) && !(target instanceof HTMLIFrameElement)) {
+        return;
+      }
+
+      if (dialogElement.contains(target as Node)) {
+        return;
+      }
+
+      const focusableElements = getFocusableElements(dialogElement);
+      const focusTarget = focusableElements[0] ?? dialogElement;
+      focusTarget.focus();
+    };
+
+    document.addEventListener("focusin", handleFocusIn);
+
     const focusableElements = getFocusableElements(dialogElement);
     const focusTarget = focusableElements[0] ?? dialogElement;
     focusTarget.focus();
@@ -94,6 +110,7 @@ export function FeedbackWidget(): ReactElement | null {
     return () => {
       document.body.style.overflow = previousOverflow;
       window.removeEventListener("keydown", handleKeyDown);
+      document.removeEventListener("focusin", handleFocusIn);
       previousFocusRef.current?.focus();
     };
   }, [isOpen]);
@@ -216,6 +233,22 @@ export function FeedbackWidget(): ReactElement | null {
                 frameClassName="feedback-widget-panel__embed-frame"
                 iframeClassName="feedback-widget-panel__iframe"
               />
+            </div>
+
+            <div className="feedback-widget-panel__fallback">
+              <a
+                href={FEEDBACK_EMBED_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="feedback-widget-panel__fallback-link"
+              >
+                <Translate
+                  id="theme.Layout.FeedbackWidget.openInNewTab"
+                  description="Keyboard-accessible link to open the feedback survey in a new tab"
+                >
+                  Open survey in a new tab
+                </Translate>
+              </a>
             </div>
           </section>
         </>

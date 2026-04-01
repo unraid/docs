@@ -60,9 +60,11 @@ function setCurrentTheme(theme: SupportedTheme): void {
   }
 
   try {
-    const oldValue = window.localStorage.getItem(DOCUSAURUS_THEME_STORAGE_KEY);
-    window.localStorage.setItem(DOCUSAURUS_THEME_STORAGE_KEY, theme);
-    dispatchStorageChangeEvent(DOCUSAURUS_THEME_STORAGE_KEY, oldValue, theme);
+    const isEmbed = window.self !== window.top;
+    const storageKey = isEmbed ? THEME_STORAGE_KEY : DOCUSAURUS_THEME_STORAGE_KEY;
+    const oldValue = window.localStorage.getItem(storageKey);
+    window.localStorage.setItem(storageKey, theme);
+    dispatchStorageChangeEvent(storageKey, oldValue, theme);
   } catch (error) {
     // Best-effort only; theme sync should still work via DOM attributes.
   }
@@ -152,9 +154,17 @@ export function ThemeSync(): ReactElement | null {
     });
 
     const onStorage = (event: StorageEvent): void => {
-      if (event.key === DOCUSAURUS_THEME_STORAGE_KEY) {
-        syncThemeState();
+      if (event.key !== THEME_STORAGE_KEY) {
+        return;
       }
+
+      const nextTheme = normalizeTheme(event.newValue);
+      if (!nextTheme || nextTheme === currentThemeRef.current) {
+        return;
+      }
+
+      currentThemeRef.current = nextTheme;
+      setCurrentTheme(nextTheme);
     };
 
     window.addEventListener("storage", onStorage);

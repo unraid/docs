@@ -38,7 +38,8 @@ export default function ResponsiveEmbed({
     <div className={embedClasses}>
       <div className={frameClasses} style={frameStyle}>
         <iframe
-          {...{ credentialless: "" }}
+          credentialless
+          loading="lazy"
           className={iframeClasses}
           src={src}
           title={title}
