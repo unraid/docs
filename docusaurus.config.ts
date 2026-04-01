@@ -29,6 +29,25 @@ const lightCodeTheme = themes.github;
 const darkCodeTheme = themes.dracula;
 const DEFAULT_LOCALE = "en";
 
+function createEditUrl({
+  locale,
+  versionDocsDirPath,
+  docPath,
+}: {
+  locale: string;
+  versionDocsDirPath: string;
+  docPath: string;
+}): string | undefined {
+  if (locale !== DEFAULT_LOCALE) {
+    if (versionDocsDirPath === "guides") {
+      return undefined;
+    }
+    return `https://translate.unraid.net/unraid-docs/${locale}`;
+  }
+  const branch = process.env.GITHUB_BRANCH || "main";
+  return `https://github.com/unraid/docs/edit/${branch}/${versionDocsDirPath}/${docPath}`;
+}
+
 const config: Config = {
   title: "Unraid Docs",
   tagline: "Unraid Documentation",
@@ -49,14 +68,10 @@ const config: Config = {
   projectName: "docs", // Usually your repo name.
 
   onBrokenLinks: "warn",
+  onBrokenMarkdownLinks: "warn",
   // Even if you don't use internalization, you can use this field to set useful
   // metadata like html lang. For example, if your site is Chinese, you may want
   // to replace "en" with "zh-Hans".
-  markdown: {
-    hooks: {
-      onBrokenMarkdownLinks: () => "warn",
-    },
-  },
   i18n: {
     defaultLocale: DEFAULT_LOCALE,
     locales: ["en", "es", "fr", "de", "zh"],
@@ -76,16 +91,7 @@ const config: Config = {
           sidebarPath: "./sidebars.js",
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
-          editUrl: ({ locale, versionDocsDirPath, docPath }) => {
-            // Link to Crowdin for non-English docs
-            if (locale !== DEFAULT_LOCALE) {
-              return `https://translate.unraid.net/unraid-docs/${locale}`;
-            }
-            // Link to GitHub for English docs
-            // Use PR branch if available, otherwise default to main
-            const branch = process.env.GITHUB_BRANCH || "main";
-            return `https://github.com/unraid/docs/edit/${branch}/${versionDocsDirPath}/${docPath}`;
-          },
+          editUrl: createEditUrl,
           editLocalizedFiles: true,
           async sidebarItemsGenerator({
             defaultSidebarItemsGenerator,
@@ -182,6 +188,11 @@ const config: Config = {
       },
       items: [
         {
+          to: "/guides/",
+          label: "Community App Guides",
+          position: "left",
+        },
+        {
           items: [
             { href: "https://unraid.net", label: "Unraid Home" },
             { href: "https://forums.unraid.net", label: "Forums" },
@@ -271,6 +282,16 @@ const config: Config = {
       },
     ],
     "docusaurus-plugin-image-zoom",
+    [
+      "@docusaurus/plugin-content-docs",
+      {
+        id: "guides",
+        path: "guides",
+        routeBasePath: "guides",
+        sidebarPath: "./sidebarsGuides.js",
+        editUrl: createEditUrl,
+      },
+    ],
     [
       "@docusaurus/plugin-ideal-image",
       {
