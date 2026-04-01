@@ -76,6 +76,21 @@ const config: Config = {
     defaultLocale: DEFAULT_LOCALE,
     locales: ["en", "es", "fr", "de", "zh"],
   },
+  future: {
+    v4: {
+      removeLegacyPostBuildHeadAttribute: true,
+    },
+    experimental_faster: {
+      swcJsLoader: true,
+      swcJsMinimizer: true,
+      swcHtmlMinimizer: true,
+      lightningCssMinimizer: true,
+      mdxCrossCompilerCache: true,
+      rspackBundler: true,
+      rspackPersistentCache: true,
+      ssgWorkerThreads: true,
+    },
+  },
   scripts: [
     {
       src: "/js/redirects.js",
@@ -430,7 +445,7 @@ const config: Config = {
           },
           {
             from: "/unraid-os/faq/redeem-license-activation-code/",
-            to: "/unraid-account/redeem-activation-code/", 
+            to: "/unraid-account/redeem-activation-code/",
           },
           {
             from: "/unraid-os/faq/unraid-account/",
