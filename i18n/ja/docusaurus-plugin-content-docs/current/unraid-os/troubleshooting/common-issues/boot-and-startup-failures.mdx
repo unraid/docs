@@ -1,0 +1,219 @@
+---
+sidebar_position: 1
+sidebar_label: ブートと起動の失敗
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+# ブートと起動の失敗
+
+Unraid サーバーが正しく起動しない場合、起動プロセスを明確に理解していなければ原因の特定は困難です。このガイドに従えば、ほとんどの起動問題をすばやく診断して解決でき、%%array|array%%、%%WebGUI|web-gui%%、およびサービスを最小限の停止時間で稼働状態に保てます。
+
+## Preparing boot media
+
+このトピックの詳細は、[USB デバイスの準備](../../getting-started/set-up-unraid/create-your-bootable-media.mdx#prepare-your-usb-device) セクションで説明しています。
+
+:::caution
+
+Always [back up your boot device](../../system-administration/maintain-and-update/changing-the-flash-device.mdx#backing-up-your-flash-device) before making changes. All user-specific settings, including your license key, are stored in the `config` folder. Restoring this folder after re-prepping your boot device will help preserve your current configuration.
+
+:::
+
+## UEFI ブートを有効にする
+
+最新のシステムでは、強化されたセキュリティとより速い起動時間のために、通常 **UEFI ブートモード** が必要です。
+
+システム BIOS/%%UEFI|uefi%% 設定で %%UEFI|uefi%% ブートを構成するには:
+
+1. 起動時にマザーボードの BIOS/%%UEFI|uefi%% セットアップに入ります（通常は F2、DEL、または ESC を押します）
+2. ブートオプションまたはブートモードの設定を見つけます
+3. ブートモードを **UEFI** または **CSM 無効の UEFI** に設定します
+4. Ensure the Unraid boot device is selected as the UEFI boot target
+5. 変更を保存して終了します
+
+## 起動シーケンスを理解する
+
+Unraid の起動シーケンスにはいくつかの段階があります:
+
+<details>
+  <summary><strong>1. BIOS 起動</strong> - クリックして展開/折りたたみ</summary>
+
+  BIOS/UEFI ファームウェアがハードウェアを初期化し、起動可能なデバイスを見つけます。これが起動プロセス全体の基盤です。
+
+  - The motherboard BIOS recognizes the Unraid bootable device (typically a USB flash drive).
+  - Setting the boot device as the default startup target varies based on your BIOS; check your motherboard manual for guidance.
+  - The boot volume supports both **legacy (CSM)** and **%%UEFI|uefi%%** boot modes.
+  - For %%UEFI|uefi%% boot, ensure the `EFI` folder on the boot volume does not have a trailing hyphen (`-`).
+
+</details>
+
+<details>
+  <summary><strong>2. Syslinux ローダー</strong> - クリックして展開/折りたたみ</summary>
+
+  ブートローダーが起動オプションを表示し、Linux カーネルをメモリに読み込みます。この段階で、どのオペレーティングシステムまたは診断ツールを実行するかが決まります。
+
+  - Boot menu entries are defined in the `syslinux/syslinux.cfg` file on the boot volume.
+  - このファイルは、***Main → Syslinux configuration*** の %%WebGUI|web-gui%% から編集できます。
+  - 現在の Unraid ビルドに同梱されている **Memtest86+** は、従来モードと %%UEFI|uefi%% モードの両方で動作します。古い Unraid バージョンでは、%%UEFI|uefi%% 用に [公式 Memtest サイト](https://www.memtest86.com/) から互換版を入手してください。
+  - オプションが選択されていない場合、タイムアウト後に既定の起動が実行され、ヘッドレス運用に便利です。
+
+</details>
+
+<details>
+  <summary><strong>3. Linux コア</strong> - クリックして展開/折りたたみ</summary>
+
+  Linux カーネルが初期化され、ハードウェア検出を開始します。ここでオペレーティングシステムがブートローダーから制御を引き継ぎます。
+
+  - **Syslinux** loads the Linux core from the boot volume into RAM.
+  - bz\* ファイルが読み込まれていることを示すコンソールメッセージが表示されます。
+  - Errors at this stage often indicate issues with the boot device.
+  - Linux は起動中にハードウェアを検出します。
+
+</details>
+
+<details>
+  <summary><strong>4. Boot-volume dependent services</strong> - Click to expand/collapse</summary>
+
+  The boot volume becomes accessible and essential services begin loading. This stage is critical for configuration and network access.
+
+  - The boot volume mounts at `/boot`.
+  - マウントに失敗してもログインプロンプトが表示される場合がありますが、これは起動が完了していないことを示しています。
+  - `df` コマンドを使って `/boot` がマウントされているか確認します。
+  - The boot volume must be labeled **UNRAID** (all caps) for proper mounting.
+  - この段階で追加のドライバーとファームウェアが利用可能になります。
+  - 設定が RAM に読み込まれます。
+  - ネットワークや %%WireGuard|wireguard%% VPN（有効な場合）を含む標準的な Linux サービスがここで開始されます。
+
+</details>
+
+<details>
+  <summary><strong>5. プラグイン</strong> - クリックして展開/折りたたみ</summary>
+
+  サードパーティの拡張機能やカスタマイズが読み込まれて、システム機能が強化されます。プラグインの問題により、起動に失敗することがあります。
+
+  - インストール済みのプラグインはこの手順で読み込まれます。
+  - 必要に応じて、**Safe boot** オプションでプラグインの読み込みを抑制できます。
+
+</details>
+
+<details>
+  <summary><strong>6. WebGUI</strong> - クリックして展開/折りたたみ</summary>
+
+  Web ベースの管理インターフェースが利用可能になり、サーバーのリモート管理と設定ができるようになります。
+
+  - %%WebGUI|web-gui%% はこの時点で起動します。
+  - The `config/go` file on the boot volume can run user commands before or after the %%WebGUI|web-gui%% starts.
+
+</details>
+
+<details>
+  <summary><strong>7. Array</strong> - クリックして展開/折りたたみ</summary>
+
+  ストレージデバイスがマウントされて利用可能になり、起動プロセスが完了します。ここでデータにアクセスできるようになります。
+
+  - 自動起動が有効な場合、%%array|array%% はここで開始されます。そうでない場合は手動で開始する必要があります。
+  - ドライブは `/dev/diskX` および `/mnt/cache`（存在する場合）としてマウントされます。
+  - 共有はネットワーク上で `/mnt/user/sharename` として利用可能になります。
+  - Docker コンテナは Docker タブで指定された順序で、調整可能な遅延付きで起動します。
+  - 自動起動する仮想マシン（%%VMs|vm%%）も起動します。
+
+</details>
+
+この時点で、Unraid サーバーは完全に稼働しています。
+
+---
+
+## 起動失敗
+
+サーバーが起動しない場合、体系的なトラブルシューティングによって根本原因をすばやく特定し、解決できます。重要な問題を見落としたり不要な変更を加えたりしないよう、以下の手順を順番に実行してください。各手順は前の手順を基にしているため、特定の問題に関係ないように見えても飛ばさないでください。
+
+1. Use a USB 2.0 port for the boot device if possible (when booting from USB). It's generally more reliable and less prone to issues than USB 3.0.
+2. Check your BIOS/%%UEFI|uefi%% settings to ensure that the Unraid boot device is set as the primary boot target.
+3. Inspect the boot device for any physical or logical errors on a Windows or macOS computer.
+4. Re-extract the Unraid release bz\* files onto the boot volume to prevent any potential corruption.
+5. Rebuild boot media by starting with a clean Unraid copy, then restore your `config` folder.
+6. [セーフモード](../../using-unraid-to/customize-your-experience/plugins.mdx#troubleshooting-with-safe-mode) で起動して、プラグイン関連の問題がないか確認してください。
+7. Test with new boot media and perform a clean Unraid installation. This helps determine if there are issues with the server hardware.
+8. If necessary, transfer your license to a new boot device.
+
+---
+
+## ブートドライブの紛失と、パリティドライブ不明からの復旧
+
+:::important
+
+この復旧プロセスでは、ドライブの割り当てを誤るとデータ損失の危険があります。続行する前に:
+
+1. ドライブの割り当てに確信が持てるまでは、**array を開始しないでください**
+2. どのドライブが以前はパリティドライブで、どのドライブがデータドライブだったかを**記録してください**
+3. 不明な場合は、[Unraid フォーラム](https://forums.unraid.net/)で**助けを求めることを検討してください**
+
+最近のバックアップや array 構成の記録がある場合は、まずそれらを確認してください。
+
+:::
+
+Unraid のブートドライブが故障し、最近のバックアップやどのドライブがパリティかの情報がない場合でも、ファイルシステムによってデータドライブを識別できる Unraid の機能を使ってシステムを復旧できます。%%Parity drives|parity-drives%% には有効なファイルシステムがないため、それらを区別する手がかりになります。
+
+Unraid identifies data drives by detecting existing valid file systems. %%Parity drives|parity-drives%%, which lack a file system, appear unmountable. This characteristic allows you to distinguish %%parity drives|parity-drives%% from data drives after booting with new boot media.
+
+### 復旧手順
+
+この手順は、ブートドライブを失い、どのドライブがパリティかデータかを思い出せない場合に、array 構成を復元するのに役立ちます。データ損失を避けるため、各手順を慎重に実行してください。
+
+1. Create new Unraid boot media.
+2. Boot the server from this new device (do not assign any drives yet).
+3. 試用版を使うか、既存のライセンスを移行して、ライセンスを有効化します。
+4. 以下で説明する方法のいずれかを使って、%%parity drives|parity-drives%% を特定します。
+5. ***Tools → New Config*** を使って %%array|array%% をリセットし、可能であれば以前の割り当てを保持します。
+6. ***Main*** タブでドライブの割り当てを正しく設定し、%%parity|parity%% ドライブとデータドライブを区別してください。
+7. ドライブ割り当てを確定するために %%array|array%% を開始します。
+8. %%parity|parity%% が有効なら、***Parity is Already Valid*** にチェックを入れます。そうでない場合は、%%parity|parity%% の再構築を許可してください。
+
+:::warning[Multiple パリティドライブ]
+
+複数の%%parity drives|parity-drives%% があり、マウントできないドライブに基づいてそれらを特定した場合は、**Parity is Already Valid** オプションを**使用しないでください**。割り当てを誤る確率は 50:50 で、誤った場合、%%array|array%% は保護されているように見えても実際には保護されていません。このような場合は、適切な保護を確実にするため、常にパリティの再構築を許可してください。
+
+:::
+
+9. 新しい割り当てに基づいて、ユーザー共有の include/exclude 設定を確認し、必要に応じて調整します。
+10. 特に %%parity|parity%% が再構築されていない場合は、%%parity check|parity-check%% を実行して整合性を確認します。
+
+---
+
+### パリティドライブの特定
+
+<details>
+  <summary><strong>Unraid の組み込み機能を使用する（推奨方法）</strong> - クリックして展開/折りたたみ</summary>
+
+  この方法ではプラグインは不要ですが、%%parity|parity%% は無効になり、再構築が必要になります。
+
+  この方法を使うには:
+
+  1. すべてのドライブをデータドライブとして割り当てて開始します。
+  2. %%Parity drives|parity-drives%% には有効なファイルシステムがないため、マウント不可として表示されます。
+  3. マウント不可ドライブの数が %%parity|parity%% の数と一致することを確認します。
+  4. これらのドライブのシリアル番号を控えておきます。
+  5. 必要に応じて、マウント済みのデータドライブを確認して順番を特定できます。
+
+</details>
+
+<details>
+  <summary><strong>Unassigned Devices プラグインを使用する</strong> - クリックして展開/折りたたみ</summary>
+
+  このプラグインベースの方法では、ドライブを読み取り専用モードでマウントすることで %%parity|parity%% の有効性を維持できます。
+
+  この方法を使うには:
+
+  1. ***Apps*** タブから [**Unassigned Devices** プラグイン](https://unraid.net/community/apps?q=unassigned+devices#r:~:text=don%27t%20be%20carefull!!!-,Unassigned%20Devices,-dlandon) をインストールします。
+  2. 各ディスクを 1 つずつ、読み取り専用でマウントします。
+  3. マウントに失敗するドライブは %%parity drives|parity-drives%% である可能性が高いです（parity1 と parity2 を区別することはできません）。
+  4. 必要に応じて、マウント済みのデータドライブを確認して順番を特定します。
+
+</details>
+
+詳細は、Unraid フォーラムの [Unassigned Devices プラグインスレッド](https://forums.unraid.net/topic/55481-unassigned-devices-managing-unassigned-devices-without-rebooting/) を参照してください。
+
+---
+
+\* *"%%WireGuard|wireguard%%" and the "%%WireGuard|wireguard%%" logo are registered trademarks of Jason A. Donenfeld.*
