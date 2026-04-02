@@ -1,0 +1,231 @@
+---
+sidebar_position: 1
+sidebar_label: 概要とシステム準備
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import HvmSupport from './partials/hvm-support.mdx';
+import IommuSupport from './partials/iommu-support.mdx';
+import GpuNvidia from './partials/gpu-nvidia.mdx';
+import GpuAmd from './partials/gpu-amd.mdx';
+
+# 概要とシステム準備
+
+仮想マシン（VM）は、Windows、macOS、Linux などの完全なオペレーティングシステムを、Docker コンテナと並行して Unraid サーバー上で実行できるようにします。
+
+%%VMs|vm%% が最適なのは次のような場合です:
+
+- フル OS を必要とする、またはコンテナとして提供されていないアプリケーションの実行。
+- GPU や USB デバイスなどの専用ハードウェアをゲストシステムに割り当てる場合。
+- テスト、開発、ゲーム、またはレガシーソフトウェアの実行。
+- さまざまなワークロード向けに、複数の分離された環境をホストする場合。
+
+Unraid でテスト済みのオペレーティングシステム一覧については、[%%VM|vm%% のセットアップ](./vm-setup.mdx) ページを参照してください。
+
+<details>
+  <summary>**内部構造:** Unraid の仮想化を支える技術スタックについて詳しく知るには展開してください</summary>
+
+  Unraid の仮想化スタックは、柔軟性と高性能を重視して設計されており、いくつかのオープンソース技術を活用して効果的な %%仮想マシン（VM）|vm%% 管理を支えています。この概要では、主要な構成要素とその相互作用をわかりやすく説明します。
+
+  <h4>コア技術</h4>
+
+  | 技術                                | 役割                                                                  | 重要な理由                                                                   |
+  | --------------------------------- | ------------------------------------------------------------------- | ----------------------------------------------------------------------- |
+  | %%KVM\|kvm%%                      | Acts as the %%hypervisor\|hypervisor%% built into the Linux kernel. | Unraid がハードウェアアクセラレーションと最小限のオーバーヘッドで %%VMs\|vm%% をスムーズに実行できるようにします。     |
+  | %%QEMU\|qemu%%                    | %%VMs\|vm%% に必要な基本ハードウェア（マザーボード、CPU、コントローラーなど）をエミュレートします。           | %%KVM\|kvm%% と連携して、ゲスト OS 用の完全な仮想環境を作成します。                              |
+  | %%Libvirt\|libvirt%%              | %%VM\|vm%% 定義と、ストレージおよびネットワークインターフェースを管理します。                        | %%VM\|vm%% 構成を `libvirt.img` に保存し、一貫した管理 API を提供します。                    |
+  | %%VNC\|vnc-session%%              | %%VMs\|vm%% へのリモートグラフィカルアクセスを提供します。                                 | ブラウザまたは %%VNC\|vnc-session%% クライアントを使って、あらゆるデバイスから %%VMs\|vm%% を操作できます。 |
+  | %%VirtIO\|virtio%%                | ネットワークおよびディスクデバイス向けの高性能な準仮想化ドライバを提供します。                             | %%VM\|vm%% の速度と効率を向上させ、ゲスト OS に %%VirtIO\|virtio%% ドライバのインストールが必要です。    |
+  | %%VirtFS\|virtfs%%（`9p`）          | ホストと Linux ベースのゲスト間でファイルシステム共有を可能にします。                              | 開発や高度なファイル共有の要件に役立ちます。                                                  |
+  | %%HVM\|hvm%%                      | ハードウェア支援仮想化（%%Intel VT-x\|intel-vt-x%%、%%AMD-V\|amd-v%%）をサポートします。   | 完全なハードウェアアクセラレーションで %%VMs\|vm%% を実行するために必要です。                           |
+  | %%VFIO\|vfio%% と %%IOMMU\|iommu%% | %%VMs\|vm%% への PCI デバイスの直接パススルーを可能にします（GPU や USB デバイスなど）。           | ネイティブに近いパフォーマンスを実現し、セキュリティ分離を維持するために不可欠です。                              |
+
+  <h4>Unraid における %%VM|vm%% サポートの実装</h4>
+
+  - %%KVM|kvm%%/%%QEMU|qemu%%: Unraid の仮想化は本質的に %%KVM|kvm%% と %%QEMU|qemu%% を基盤としており、堅牢な %%VM|vm%% ホスティング機能を提供します。
+  - %%Libvirt|libvirt%%: %%VM|vm%% 定義は `libvirt.img` 内の XML ファイルとして保存されます（通常は `system` 共有にあります）。
+  - **デフォルト共有:**
+    - `domains`: %%VM|vm%% の %%仮想ディスクイメージ|virtual-disk-images%% を格納します。
+    - `isos`: インストール用 ISO とドライバイメージを含みます。
+    - `system`: `libvirt.img` とその他の重要なシステムファイルを保存します。
+    - 最適なパフォーマンスのため、すべて **Use %%Cache|cache%%: Prefer** が既定です。
+  - %%VNC|vnc-session%%: Unraid は組み込みの NoVNC クライアントを備えており、ブラウザから %%VMs|vm%% に簡単にアクセスできます。必要に応じて外部の %%VNC クライアント|vnc-session%% も使用できます。
+
+  :::tip
+  多くのユーザーはこれらの技術に直接触れる必要はありませんが、「内部構造」で何が起きているかを理解しておくことは、高度なトラブルシューティングやカスタマイズに非常に役立ちます。より詳しい情報は、[KVM](https://www.linux-kvm.org/page/Main_Page)、[QEMU](https://www.qemu.org/)、[Libvirt](https://libvirt.org/)、[VirtIO](https://www.linux-kvm.org/page/Virtio) の公式ドキュメントを参照してください。
+  :::
+
+</details>
+
+## 要件
+
+Unraid で %%VMs|vm%% を実行するには、システムが次の要件を満たしている必要があります:
+
+| コンポーネント    | 最低要件                                                          | %%VMs\|vm%% および %%GPU passthrough\|gpu-passthrough%% に推奨  |
+| ---------- | ------------------------------------------------------------- | --------------------------------------------------------- |
+| CPU        | 64 ビット、4 コア、2.4 GHz 以上（Intel/AMD）                             | 8 コア以上、3.0 GHz 以上（Intel Core i7/i9、AMD Ryzen 7/9、またはそれ以降） |
+| 仮想化        | %%HVM\|hvm%%（%%Intel VT-x\|intel-vt-x%% または %%AMD-V\|amd-v%%） | %%HVM\|hvm%% + %%IOMMU\|iommu%%（Intel VT-d または AMD-Vi）    |
+| RAM        | 8 GB                                                          | 16 GB 以上（アクティブな %%VM\|vm%% ごとに RAM を追加）                   |
+| ストレージ      | %%VM\|vm%% ディスク用 SSD/NVMe                                     | 最高のパフォーマンスには高性能 NVMe                                      |
+| ネットワーク     | ギガビット Ethernet（PCIe 推奨）                                       | 要求の厳しいワークロード向けの 2.5G/10G Ethernet                         |
+| GPU（オプション） | 最新の NVIDIA RTX（推奨）または AMD Radeon RX                           | RTX 3000/4000 シリーズ（より良いパススルー互換性のため NVIDIA を推奨）            |
+
+:::tip[GPU パススルー互換性]
+
+NVIDIA の GPU は、互換性と信頼性が高いため、%%VM|vm%% パススルーでは**一般的に推奨**されます。AMD の GPU はパススルーがより難しい場合があり、比較的新しいモデル（RX 7000/9000 シリーズを含む）の一部は %%VMs|vm%% で安定して動作しない、またはまったく動作しないことがあります。%%GPU passthrough|gpu-passthrough%% を使う予定なら、最良の体験のために NVIDIA 製品を検討してください。
+
+:::
+
+:::note
+
+マザーボードの BIOS では、ハードウェア支援仮想化と %%IOMMU|iommu%% サポートを有効にする必要があります。「%%Intel VT-x|intel-vt-x%%」「Intel VT-d」「%%AMD-V|amd-v%%」「AMD-Vi」などの表記を探してください。
+
+:::
+
+### VM リソース
+
+| %%VM\|vm%% の種類           | %%VM\|vm%% ごとの RAM | %%VM\|vm%% ごとの vCPU | 使用例                                              |
+| ------------------------ | ------------------ | ------------------- | ------------------------------------------------ |
+| Virtual server           | 1–2 GB             | 1–2                 | Lightweight Linux, utility %%VMs\|vm%%           |
+| Virtual desktop          | 4–8 GB             | 2–4                 | Windows 11, Ubuntu desktop, RDP                  |
+| Hybrid/gaming %%VM\|vm%% | 8–16 GB+           | 4–8+                | %%GPU passthrough\|gpu-passthrough%%, gaming, ML |
+
+- Memory and CPU are only consumed while %%VMs|vm%% are running.
+- Plan for peak usage if running multiple %%VMs|vm%% simultaneously.
+- Always allocate resources based on guest OS and workload requirements.
+
+### HVM & IOMMU: What they enable
+
+<Tabs>
+  <TabItem value="hvm" label="HVM support">
+    <HvmSupport />
+  </TabItem>
+
+  <TabItem value="iommu" label="IOMMU support">
+    <IommuSupport />
+  </TabItem>
+</Tabs>
+
+:::important[How to check support]
+
+In the %%WebGUI|web-gui%%, click **Info** in the top menu.
+
+- **HVM サポート:** ハードウェア仮想化が存在し、有効になっているかを示します。
+- **IOMMU support:** Shows if device passthrough is available and enabled.
+
+:::
+
+---
+
+### グラフィックデバイスのパススルー
+
+GPU を %%VM|vm%% にパススルーすると、ネイティブに近いグラフィック性能を実現でき、ゲーム、クリエイティブ作業、機械学習に最適です。
+
+<Tabs>
+  <TabItem value="nvidia" label="NVIDIA">
+    <GpuNvidia />
+  </TabItem>
+
+  <TabItem value="amd" label="AMD">
+    <GpuAmd />
+  </TabItem>
+</Tabs>
+
+:::tip[General ヒント]
+
+- 最新の GPU を搭載した %%VMs|vm%% では、%%OVMF|ovmf%%（%%UEFI|uefi%%）を使用してください。
+- ハードウェアサポートを改善するため、常に最新の Unraid バージョンを使用してください。
+- Technologies like NVIDIA Optimus may allow %%GPU passthrough|gpu-passthrough%% for laptops or advanced setups, but results vary.
+
+:::
+
+:::info[Always 変更]
+
+ハードウェアとドライバの互換性は急速に変化します。パススルー用の GPU を購入する前に、最新の報告やユーザー体験について [Unraid フォーラム](https://forums.unraid.net/) とベンダーのドキュメントを確認してください。
+
+:::
+
+---
+
+## システム準備
+
+仮想マシンを作成する前に、システムが準備できていることを確認するため、次の必須セットアップ作業を完了してください。
+
+### BIOS 設定を調整する
+
+Unraid の仮想化機能を最大限に活用するには、BIOS でハードウェア支援仮想化と I/O メモリ管理を有効にする必要があります。**Virtualization**、%%Intel VT-x|intel-vt-x%%、**Intel VT-d**、%%AMD-V|amd-v%%、または **AMD-Vi** と表記された設定を探し、**Enabled** に設定してください。
+
+:::note
+
+BIOS の画面はメーカーによって異なります。これらの設定の正確な場所はマザーボードのマニュアルで確認してください。
+
+:::
+
+### ネットワークブリッジを構成する
+
+%%仮想マシン|vm%% は、2 種類のブリッジのいずれかを使用してネットワークに接続できます。ニーズに最も合うものを選んでください:
+
+| ブリッジの種類                | 説明                                                                                                                                     | ユースケース                                                         |
+| ---------------------- | -------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------- |
+| **プライベート NAT（virbr0）** | %%libvirt\|libvirt%% によって管理されます。このオプションは内部 DHCP サーバーと分離されたサブネットを提供します。%%VMs\|vm%% はインターネットとホストのファイル共有にアクセスできますが、他のネットワークデバイスからは分離されます。 | インターネットとホストへのアクセスは必要だが、LAN からは見えない分離された %%VMs\|vm%% に最適です。     |
+| **パブリックブリッジ（br0）**     | Unraid によって管理されます。このオプションは %%VMs\|vm%% を LAN に直接接続し、IP はルーターによって割り当てられます。MAC アドレスは保持されるため、一貫した IP 割り当てが可能です。                           | ネットワーク上で通常のデバイスとして機能し、他のデバイスからアクセスできるようにしたい %%VMs\|vm%% に最適です。 |
+
+:::important
+
+Unraid サーバーが Wi-Fi に接続されている場合、%%virtual machines|vm%% には **プライベート NAT（virbr0）** ネットワークブリッジの使用が推奨されます。これは、Wi-Fi インターフェースが 1 つの MAC アドレスしかサポートせず、パブリックブリッジやカスタムネットワークタイプの使用が制限されるためです。**virbr0** ブリッジを利用すると、%%VMs|vm%% は %%NAT|nat%% を介して完全なネットワークアクセスを得られますが、ローカルエリアネットワーク（LAN）の他のデバイスから直接アクセスすることはできません。ただし、ホスト経由で %%VNC|vnc-session%% を使って %%VMs|vm%% にアクセスすることは引き続き可能です。
+
+:::
+
+- ***ネットワーク設定 → ブリッジを有効にする*** でパブリックブリッジを有効にします。
+- %%VM|vm%% 設定で、希望するブリッジを **デフォルトのネットワークブリッジ** に設定します。このオプションを表示するには、詳細表示を有効にする必要がある場合があります。
+
+---
+
+### 仮想化用ユーザー共有
+
+Unraid creates two default %%user shares|user-share%% for %%virtualization|virt%%:
+
+- `isos`: この共有には %%VMs|vm%% のインストールメディアファイルが保存されます。
+- `domains`: この共有には %%仮想マシン|vm%% の %%仮想ディスクイメージ|virtual-disk-images%% と設定ファイルが保存されます。
+
+データ保護のため、%%VM|vm%% バックアップ用に別の共有を作成することを検討してください。
+
+<h4>共有設定の推奨事項</h4>
+
+- Store active %%VM|vm%% %%virtual disk images|virtual-disk-images%% on a %%cache|cache%%-only share for the best performance.
+- %%cache pool|cache-pool%% に SSD を使用すると、%%VM|vm%% の応答性が大幅に向上します。
+- `isos` 共有での %%Cache|cache%% の使用は任意です。
+
+:::important
+
+アクティブな %%仮想マシン|vm%% を、**Use %%cache|cache%%** が **Yes** に設定された共有に保存しないでください。これにより、%%VMs|vm%% が %%Mover|mover%% の処理中に %%array|array%% へ移動され、パフォーマンスが低下する可能性があります。
+
+:::
+
+## 仮想化の設定を行う
+
+始める前に、システムが仮想化に対応していることを確認してください（[システム準備](#system-preparation) を参照）。Unraid で %%virtualization|virt%% の設定を行うことで、%%仮想マシン（VM）|vm%% が最適なパフォーマンスと互換性で構成されます。
+
+仮想化の設定を行うには:
+
+1. %%WebGUI|web-gui%% で、***Settings → VM Manager*** に移動します。
+2. **Windows VM の場合:**
+   - [公式リポジトリ](https://github.com/virtio-win/virtio-win-pkg-scripts/blob/master/README.md) から最新の安定版 %%VirtIO|virtio%% Windows ドライバ ISO をダウンロードします。
+   - %%VirtIO|virtio%% ISO ファイルを **isos** 共有にコピーします。
+   - **VM Manager** で、**VirtIO Windows Drivers ISO** のファイルピッカーを使って、コピーしたばかりの ISO を選択します。
+   - （任意）個々の %%VMs|vm%% ごとに、**Advanced View** で既定のドライバ ISO を上書きします。
+3. **既定のネットワークブリッジを選択:**
+   - プライベートネットワークブリッジには `virbr0` を選ぶか、**Network Settings** で作成したパブリックブリッジ（例: `br0`）を選択します。
+   - （任意）各 %%VM|vm%% の既定のネットワークブリッジを **Advanced View** で上書きします。
+4. **PCIe ACS オーバーライド（詳細）:**
+   - 複数の PCI デバイス（%%GPUs|gpu-passthrough%% や USB コントローラーなど）を異なる %%VMs|vm%% に割り当てる必要がある場合は、**PCIe ACS Override** を **On** に切り替えます。
+   - このオプションは %%IOMMU|iommu%% グループを分割し、より柔軟なデバイスパススルーを可能にします。
+
+:::warning
+
+この設定は実験的なものであり、システムの安定性に影響する可能性があります。注意して使用してください。
+
+:::
+
+5. **Apply** をクリックして設定を保存します。
