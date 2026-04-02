@@ -243,7 +243,10 @@ Help translate Unraid Docs for the global community.
 
 * Join the project on Crowdin: [unraid.crowdin.com/unraid-docs](https://unraid.crowdin.com/unraid-docs)
 * Follow the glossary and tone guidance in the [Style Guide](docs/contribute/style-guide.mdx)
-* Run Crowdin exports/imports through the standard Crowdin workflow (no local MDX formatting pass is required)
+* Use `pnpm crowdin:upload` or `pnpm crowdin:upload:sources` after changing English source docs
+* Use `pnpm crowdin:upload:translations -- --language <lang>` after manually fixing files under `i18n/` so those fixes are pushed back to Crowdin before the next download
+* Use `pnpm crowdin:download` to pull the latest exported translations after uploads
+* `pnpm crowdin:sync` updates source strings and downloads translations, but it does not replace `crowdin:upload:translations` when you need to preserve manual translation fixes
 
 Crowdin suggestions are reviewed regularly by maintainers and native-language contributors.
 
