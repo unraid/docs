@@ -1,0 +1,101 @@
+---
+sidebar_position: 1
+sidebar_label: 起動可能なメディアを作成する
+---
+
+import FlashDriveGuidance from '../../partials/flash-drive-selection-guidance.mdx';
+
+# 起動可能なメディアを作成する
+
+Unraid OS は USB フラッシュドライブにインストールされ、サーバーのブートデバイスとして機能します。推奨の [自動インストール方法](./create-your-bootable-media.mdx#automated-install-method) を [USB Flash Creator](https://unraid.net/download) ツールで使用するか、[手動インストール方法](./create-your-bootable-media.mdx#manual-install-method) に従うことで、この起動可能なメディアを作成できます。どちらの場合も、固有の %%GUID|guid%% を持つ高品質の USB フラッシュドライブ（4～32 GB）を用意する必要があります。
+
+:::tip[Choosing reliable boot media]
+
+For typical USB installs, that means a quality USB flash drive; licensing depends on a unique %%GUID|guid%% on the boot device. See [Choosing a boot device](#choosing-a-usb-flash-drive) in the manual install section for brand guidance and how to avoid counterfeits.
+
+:::
+
+## 自動インストール方法
+
+自動インストール方法は、Unraid OS をセットアップする最適な方法です。手順が簡単になり、エラーが減り、ほとんどのハードウェア構成で USB フラッシュドライブをすぐに使える状態にできます。この方法は、ほとんどのユーザーにとって、インストールを最も速く、最も確実に成功へ導く手段です。
+
+1. **USB デバイスを準備する:**
+   高品質の USB フラッシュドライブをコンピューターに挿入します。
+
+2. **Download the Unraid USB Flash Creator and install Unraid OS onto the drive.**
+   [Windows](https://releases.unraid.net/dl/stable/usb-creator.exe) | [Mac](https://releases.unraid.net/dl/stable/usb-creator.dmg) | [Linux](https://releases.unraid.net/dl/stable/usb-creator.appimage)
+
+3. **セットアップを完了する:**
+   サーバー名とネットワーク設定をカスタマイズします。
+
+4. **取り外してインストールする:**
+   USB ドライブを安全に取り外し、サーバーに挿入します。
+
+5. **サーバーの BIOS 設定を構成する**
+   - 起動デバイスを USB フラッシュドライブに設定します。
+   - %%IOMMU|iommu%% を含む %%hardware virtualization|hvm%% 機能を有効にします。（詳細は [HVM と IOMMU の設定](../../using-unraid-to/create-virtual-machines/overview-and-system-prep.mdx#hvm--iommu-what-they-enable) を参照してください。）
+
+6. **Unraid OS で起動する:**
+   BIOS 設定を保存して終了し、Unraid OS で起動します。
+
+## 手動インストール方法
+
+手動インストール方法は、USB Flash Creator ツールが利用できない場合や、お使いのハードウェアと互換性がない場合に向けて設計されています。この方法では、フォーマットとセットアップのプロセスを完全に制御できるため、上級ユーザーや USB デバイスの特定の問題をトラブルシューティングする場合に最適です。
+
+<a id="choosing-a-usb-flash-drive" />
+
+### Choosing a boot device
+
+<FlashDriveGuidance />
+
+### USB デバイスを準備する
+
+1. Plug in the USB drive you are preparing as the boot device.
+2. FAT32 にフォーマットします（**ex-FAT** や NTFS では**ありません**）。
+3. ボリュームラベルを `UNRAID` に設定します（大文字・小文字を区別し、すべて大文字）。
+
+:::important
+
+On Windows, drives larger than 32 GB cannot be formatted as FAT32 using the built-in formatting tools (they default to exFAT). For drives larger than 32 GB, you'll need to use a third-party tool like [Rufus](https://rufus.ie/en/) to format as FAT32.
+
+:::
+
+### Download and extract
+
+1. Go to the [Unraid Download Archive](../../download_list.mdx) and download the ZIP file of your chosen release.
+2. Extract the ZIP contents to the USB device.
+3. Confirm that the files have been copied.
+
+### Make the USB device bootable
+
+:::note
+
+This section is only needed to enable Legacy boot. If setting up for UEFI boot, there is no need to run these scripts.
+
+:::
+
+Run the appropriate script for your OS:
+
+**Windows 7 or later:**
+
+- Right-click `make_bootable` and select **Run as administrator**.
+
+**Mac:**
+
+- Double-click `make_bootable_mac` and enter your admin password.
+
+**Linux:**
+
+- Copy `make_bootable_linux` to your hard drive.
+- Unmount the USB drive.
+- In the terminal, run:
+
+  ```bash
+  sudo bash ./make_bootable_linux
+  ```
+
+:::note
+
+The USB drive may briefly disappear and reappear a few times during this process. This is normal.
+
+:::
