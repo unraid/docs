@@ -12,11 +12,7 @@ Esta guía le guía a través de la configuración de proveedores OIDC (OpenID C
 
 :::
 
-:::info[¿Qué es OIDC?]
-
 Esta guía le guía a través de la configuración de proveedores OIDC (OpenID Connect) para la autenticación SSO en la API de Unraid utilizando la interfaz web.
-
-:::
 
 ## 🚀 Inicio Rápido
 
@@ -26,9 +22,10 @@ Esta guía le guía a través de la configuración de proveedores OIDC (OpenID C
   1. Navega a la interfaz web de tu servidor Unraid
   2. Ve a **Configuración** → **Acceso de Gestión** → **API** → **OIDC**
   3. Verás pestañas para diferentes proveedores - haz clic en el botón **+** para añadir un nuevo proveedor
+
 </details>
 
-### Descripción general de la Interfaz de Proveedores OIDC
+### 🚀 Inicio Rápido
 
 ![Página de inicio de sesión con opciones SSO](/img/api/sso-with-options.png)
 *Página de inicio de sesión mostrando el formulario de inicio de sesión tradicional con opciones SSO - botones "Iniciar sesión con Unraid.net" e "Iniciar sesión con Google"*
@@ -45,9 +42,9 @@ La interfaz incluye:
 
 La interfaz ofrece dos modos de autorización:
 
-### Modo Simple (Recomendado)
+### Entendiendo los Modos de Autorización
 
-**Cuándo usar el Modo Simple:**
+La interfaz ofrece dos modos de autorización:
 
 - Permitir dominios de correo específicos (por ejemplo, @empresa.com)
 - Permitir direcciones de correo específicas
@@ -55,9 +52,9 @@ La interfaz ofrece dos modos de autorización:
 
 **Cuándo usar el Modo Simple:**
 
-- Deseas permitir a todos los usuarios de tu dominio corporativo
-- Tienes una lista pequeña de usuarios específicos
-- Eres nuevo en la configuración de OIDC
+- Permitir dominios de correo específicos (por ejemplo, @empresa.com)
+- Permitir direcciones de correo específicas
+- Configurar quién puede acceder a tu servidor Unraid con una configuración mínima
 
 <details>
   <summary><strong>Modo Avanzado</strong></summary>
@@ -75,6 +72,7 @@ La interfaz ofrece dos modos de autorización:
   - Deseas verificar múltiples claims (por ejemplo, dominio de correo Y estado verificado)
   - Tienes requisitos de autorización complejos
   - Necesitas un control detallado sobre cómo se evalúan las reglas
+
 </details>
 
 ## Ejemplos de Modo Simple
@@ -155,6 +153,7 @@ En Autorización Simple:
      - El correo debe estar verificado
      - El usuario debe estar en un grupo específico
      - La cuenta debe tener 2FA habilitado (si el claim está disponible)
+
 </details>
 
 <details>
@@ -197,11 +196,12 @@ En Autorización Simple:
   - **Habilitar Sandbox de Desarrollador**: Toggle para habilitar el sandbox de GraphQL en `/graphql`
   - La interfaz utiliza un tema oscuro para mejor visibilidad
   - Los indicadores de validación de campos ayudan a garantizar una configuración correcta
+
 </details>
 
 ### URI de Redirección Requerida
 
-:::caution[Configuración Importante]
+:::caution[Important Configuración]
 
 Todos los proveedores deben configurarse con este formato exacto de URI de redirección:
 
@@ -225,7 +225,8 @@ Reemplaza `TU_IP_UNRAID` con la dirección IP actual de tu servidor (por ejemplo
 - Guarda la configuración de tu proveedor
 - Cerrar sesión (si estás conectado)
 
-**⚠️ Nota de Seguridad**: Siempre use el formato de URL base cuando sea posible. El sistema agrega automáticamente `/.well-known/openid-configuration` para el descubrimiento OIDC. Usar la URL completa de descubrimiento directamente desactiva importantes verificaciones de validación del emisor y no es recomendable según la especificación de OpenID Connect.
+![Página de inicio de sesión con Botones SSO](/img/api/sso-with-options.png)
+*Página de inicio de sesión de Unraid mostrando tanto la autenticación de usuario/contraseña tradicional como opciones SSO con botones personalizados de proveedores*
 
 **Ejemplos de URLs base correctas:**
 
@@ -247,32 +248,32 @@ Reemplaza `TU_IP_UNRAID` con la dirección IP actual de tu servidor (por ejemplo
 
 ## "URI de redirección inválido"
 
-### Problemas Comunes
+### Solución de problemas
+
+#### "URI de redirección inválido"
+
+- Verifica que al menos una regla de autorización esté configurada
+- Verifica que el proveedor esté habilitado/guardado
 
 #### No se puede ver el botón de inicio de sesión
 
 - Verifica que al menos una regla de autorización esté configurada
 - Verifica que el proveedor esté habilitado/guardado
+  - Verifica que los nombres de claims coincidan exactamente con lo que tu proveedor envía
+  - Comprueba si el Modo de Reglas de Autorización está configurado correctamente (OR vs AND)
+  - Asegúrate de que todos los claims requeridos estén presentes en el token
+- Habilita el registro de depuración para ver los claims reales y la evaluación de reglas
 
 #### Modo de Depuración
 
 - En el Modo Simple: Verifica que los dominios de correo estén ingresados correctamente (sin @)
 - En el Modo Avanzado:
-  - Verifica que los nombres de claims coincidan exactamente con lo que tu proveedor envía
-  - Comprueba si el Modo de Reglas de Autorización está configurado correctamente (OR vs AND)
-  - Asegúrate de que todos los claims requeridos estén presentes en el token
 - Habilita el registro de depuración para ver los claims reales y la evaluación de reglas
 
 #### "URI de redirección inválido"
 
 - Asegúrate de que el URI de redirección en tu proveedor coincida exactamente
 - Incluye el puerto correcto si estás usando una configuración no estándar
-- Verifica que el protocolo de URI de redirección coincida con la configuración de tu servidor (HTTP o HTTPS)
-
-#### No se puede ver el botón de inicio de sesión
-
-- Claims recibidos del proveedor
-- Evaluación de reglas de autorización
 
 ### Modo de Depuración
 
@@ -284,7 +285,7 @@ Para solucionar problemas:
 LOG_LEVEL=debug unraid-api start --debug
 ```
 
-2. Verificar logs para:
+2. Habilitar registro de depuración:
 
 - Claims recibidos del proveedor
 - Evaluación de reglas de autorización
@@ -292,19 +293,19 @@ LOG_LEVEL=debug unraid-api start --debug
 
 ## 🔐 Mejores prácticas de seguridad
 
-1. **Usar Modo Simple para la autorización** - Previene configuraciones excesivamente permisivas y reduce el riesgo de errores de configuración
-2. **Ser específico con la autorización** - No uses reglas demasiado amplias
-3. **Rotar secretos regularmente** - Actualiza los secretos del cliente periódicamente
+1. Claims recibidos del proveedor
+2. Evaluación de reglas de autorización
+3. Errores de validación de tokens
 4. **Probar exhaustivamente** - Verifica que solo los usuarios autorizados puedan acceder
 
-## 💡 ¿Necesitas ayuda?
+## 🔐 Mejores prácticas de seguridad
 
-- Consulta la documentación OIDC del proveedor
+- **Usar Modo Simple para la autorización** - Previene configuraciones excesivamente permisivas y reduce el riesgo de errores de configuración
 - Revisa los registros de la API de Unraid para obtener mensajes de error detallados
-- Asegúrate de que tu proveedor soporte el descubrimiento estándar de OIDC
+- **Rotar secretos regularmente** - Actualiza los secretos del cliente periódicamente
 - Verifica la conectividad de red entre Unraid y el proveedor
 
-## 🏢 Configuración específica del proveedor
+## 💡 ¿Necesitas ayuda?
 
 ### Proveedor Unraid.net
 
@@ -320,13 +321,9 @@ El proveedor Unraid.net está integrado y preconfigurado. Solo necesita configur
 
 **Haga coincidir el protocolo con la configuración de su servidor:** Use `http://` si accede a su servidor Unraid sin SSL/TLS (típico para acceso a red local). Use `https://` si ha configurado SSL/TLS en su servidor. Algunos proveedores OIDC (como Google) requieren HTTPS y no aceptarán URIs de redirección HTTP.
 
-:::tip[Requisitos de Redirección de Dominio]
-
-**Haga coincidir el protocolo con la configuración de su servidor:** Use `http://` si accede a su servidor Unraid sin SSL/TLS (típico para acceso a red local). Use `https://` si ha configurado SSL/TLS en su servidor. Algunos proveedores OIDC (como Google) requieren HTTPS y no aceptarán URIs de redirección HTTP.
-
 :::
 
-Para los dominios de Google Workspace, usa Modo Avanzado con la propiedad `hd` para restringir el acceso al dominio de tu organización.
+**Haga coincidir el protocolo con la configuración de su servidor:** Use `http://` si accede a su servidor Unraid sin SSL/TLS (típico para acceso a red local). Use `https://` si ha configurado SSL/TLS en su servidor. Algunos proveedores OIDC (como Google) requieren HTTPS y no aceptarán URIs de redirección HTTP.
 
 ### Authelia
 
@@ -340,6 +337,7 @@ Para los dominios de Google Workspace, usa Modo Avanzado con la propiedad `hd` p
   3. Elige **Aplicación web** como el tipo de aplicación
   4. Agrega tu URI de redirección a **URIs de redirección autorizados**
   5. Configura la pantalla de consentimiento OAuth si se solicita
+
 </details>
 
 **Configuración:**
@@ -359,23 +357,13 @@ Para los dominios de Google Workspace, usa Modo Avanzado con la propiedad `hd` p
 
 Recuerda actualizar tu URI de redirección tanto en Google Cloud Console como en la configuración OIDC de tu Unraid para usar el dominio válido.
 
-:::warning[Requisitos de Dominio para Google]
+:::
 
 **Google requiere nombres de dominio válidos para los URIs de redirección OAuth.** No se aceptan direcciones IP locales y dominios `.local`. Para usar Google OAuth con su servidor Unraid, necesitará:
 
-- **Opción 1: Proxy inverso** - Configura un proxy inverso (como NGINX Proxy Manager o Traefik) con un nombre de dominio válido que apunte a tu API de Unraid
-- **Opción 2: Tailscale** - Usa Tailscale para obtener un dominio `*.ts.net` válido que Google aceptará
-- **Opción 3: DNS dinámico** - Usa un servicio de DNS dinámico para obtener un nombre de dominio público para tu servidor
-
-Recuerda actualizar tu URI de redirección tanto en Google Cloud Console como en la configuración OIDC de tu Unraid para usar el dominio válido.
-
-:::
-
-Las reglas de autorización pueden configurarse en la interfaz usando dominios de correo electrónico o propiedades avanzadas.
-
 ### Keycloak
 
-Configura el cliente OIDC en tu `configuration.yml` de Authelia con el ID de cliente `unraid-api` y genera un secreto con hash usando el comando hash-password de Authelia.
+Recuerda actualizar tu URI de redirección tanto en Google Cloud Console como en la configuración OIDC de tu Unraid para usar el dominio válido.
 
 **Configuración:**
 
@@ -399,7 +387,7 @@ Crea un nuevo Proveedor OAuth2/OpenID en Authentik, luego crea una aplicación y
 - **Ámbitos requeridos**: `openid`, `profile`, `email`
 - **URI de redirección**: `http://YOUR_UNRAID_IP/graphql/api/auth/oidc/callback`
 
-Las reglas de autorización pueden configurarse en la interfaz.
+Configura el cliente OIDC en tu `configuration.yml` de Authelia con el ID de cliente `unraid-api` y genera un secreto con hash usando el comando hash-password de Authelia.
 
 ### Okta
 
@@ -413,7 +401,7 @@ Crea una nueva aplicación web OIDC en el Console de Administración de Okta y a
 - **Ámbitos requeridos**: `openid`, `profile`, `email`
 - **URI de redirección**: `http://YOUR_UNRAID_IP/graphql/api/auth/oidc/callback`
 
-Las reglas de autorización pueden configurarse en la interfaz usando dominios de correo electrónico o propiedades avanzadas.
+Crea un nuevo Proveedor OAuth2/OpenID en Authentik, luego crea una aplicación y vincúlala al proveedor.
 
 ### Authentik
 
@@ -427,7 +415,7 @@ Crea un nuevo Proveedor OAuth2/OpenID en Authentik, luego crea una aplicación y
 - **Ámbitos requeridos**: `openid`, `profile`, `email`
 - **URI de redirección**: `http://YOUR_UNRAID_IP/graphql/api/auth/oidc/callback`
 
-Las reglas de autorización pueden configurarse en la interfaz.
+Crea una nueva aplicación web OIDC en el Console de Administración de Okta y asigna los usuarios o grupos apropiados.
 
 ### Okta
 
@@ -441,4 +429,4 @@ Crea una nueva aplicación web OIDC en el Console de Administración de Okta y a
 - **Ámbitos requeridos**: `openid`, `profile`, `email`
 - **URI de redirección**: `http://YOUR_UNRAID_IP/graphql/api/auth/oidc/callback`
 
-Las reglas de autorización pueden configurarse en la interfaz.
+Configura el cliente OIDC en tu `configuration.yml` de Authelia con el ID de cliente `unraid-api` y genera un secreto con hash usando el comando hash-password de Authelia.
