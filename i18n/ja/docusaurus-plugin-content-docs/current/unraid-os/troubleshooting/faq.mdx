@@ -1,0 +1,385 @@
+---
+sidebar_position: 3
+sidebar_label: FAQ
+toc_max_heading_level: 3
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+
+# よくある質問
+
+Unraid OS に関するヘルプが必要な場合は、いくつかのサポート方法があります:
+
+- **Unraidフォーラム:** [一般サポート](https://forums.unraid.net/forum/55-general-support/), [Compulsive Design](https://forums.unraid.net/forum/35-unraid-compulsive-design/)
+- **公式ドキュメント:** [Unraid Docs](../../docs-home.mdx)
+- **Discord:** [Unraid Discord コミュニティ](https://discord.unraid.net)
+- **サポートポータル:** [Unraid サポート](https://unraid.net/support)
+
+---
+
+## ビルドとハードウェア
+
+<a id="build-help" />
+
+### I need help with a build or system configuration. Where do I go?
+
+Unraid サーバーの構築やアップグレードのガイダンスについては、[Compulsive Designフォーラム](https://forums.unraid.net/forum/35-unraid-compulsive-design/)をご覧いただくか、[Unraid Discord](https://discord.unraid.net)に参加してください。経験にかかわらず、コミュニティは活発で、喜んでお手伝いします。
+
+<br />
+
+<a id="hardware-raid-support" />
+
+### What controllers are recommended for Unraid?
+
+Unraid は、%%RAID|raid%% ではない Host Bus Adapter (HBA) で最適に動作します。ドライブの状態情報を隠してメンテナンスを複雑にする可能性がある、ハードウェア %%RAID|raid%% コントローラーは避けるのが最善です。
+
+必ずファームウェアの更新を確認し、コントローラーが %%RAID|raid%% モードではなく HBA/IT モードに設定されていることを確認してください。コミュニティが正常にテストしたモデルについては、[Recommended Controllers スレッド](https://forums.unraid.net/topic/102010-recommended-controllers-for-unraid/)を参照してください。
+
+<br />
+
+<a id="add-more-storage" />
+
+### What's the best way to add more storage if my built-in controller is full?
+
+Unraid allows for the expansion of storage across multiple controllers. You can add a compatible HBA (as mentioned above). Ensure the controller operates in standard HBA (non-%%RAID|raid%%) mode and supports %%AHCI|ahci%%/SATA. Avoid using %%RAID|raid%%-only cards, as Unraid requires direct disk access for %%parity|parity%% and monitoring.
+
+<br />
+
+<a id="bad-sector-allocation" />
+
+### Does Unraid have an allocation feature that remembers bad sectors on drives to prevent writes to them?
+
+Unraid は、ドライブの %%SMART|smart%% データを利用して状態を監視し、不良セクタなどの問題を検出します。%%SMART|smart%% は最新のハードドライブや SSD に組み込まれており、再割り当て済みセクタや保留中セクタなどの属性を追跡します。
+
+Unraid には不良セクタを避けるための特定の割り当て機能はありませんが、%%SMART|smart%% データを使用して、ドライブに故障の兆候が見られる場合や不良セクタが増加している場合に通知します。この情報は、%%WebGUI|web-gui%% のドライブのヘルスステータスと %%SMART|smart%% 属性で確認できます。
+
+ドライブに再割り当て済みセクタまたは保留中セクタが多く見られる場合は、データ損失を防ぐため、早めに交換することを検討してください。
+
+ドライブの状態に不安がある場合は、支援を受けるために [一般サポートフォーラム](https://forums.unraid.net/forum/55-general-support/) で %%SMART|smart%% データを共有できます。
+
+<br />
+
+---
+
+## OS と設定
+
+<a id="hasp-key-vm" />
+
+### Can I use a HASP key within a VM on Unraid? How does that work with multiple VMs?
+
+If your HASP key is a USB dongle, you can assign it to only one %%VM|vm%% at a time. Note that two %%VM|vm%%s cannot use the same key simultaneously. You might need to pass through an entire USB controller for better compatibility. Always run tests with a Trial license to confirm that your hardware performs as expected.
+
+<br />
+
+<a id="usb-failed-restore" />
+
+### My USB flash has failed, and I don't have a backup. How do I restore my configuration?
+
+[Unraid Connect](../../unraid-connect/overview-and-setup.mdx) を Flash バックアップ用に有効にしていた場合は、それを使って復元できます。そうでない場合は、新しい高品質のフラッシュドライブを入手してその上に Unraid をインストールし、メールで受け取った登録キーを使用してください。ドライブの割り当てを元どおりに再設定してください。割り当てを思い出せない場合は、[一般サポートフォーラム](https://forums.unraid.net/forum/55-general-support/)で सहायताを求めて投稿してください。
+
+<br />
+
+<a id="forgot-root-password" />
+
+### What should I do if I have forgotten my root password?
+
+[パスワードをリセットする](../system-administration/secure-your-server/user-management.mdx#reset-your-password) を参照してください。
+
+:::note
+
+If you're using encrypted drives and forget the encryption password, data recovery isn't possible - there is no backdoor.
+
+:::
+
+<br />
+
+<a id="factory-reset" />
+
+### How do I completely start Unraid OS from scratch? (Factory reset procedure)
+
+1. Backup any data you wish to keep.
+2. Stop the %%array|array%% and shut down your server.
+3. Remove the USB flash device.
+4. Use the Unraid USB Flash Creator tool to reformat and reinstall Unraid onto the flash drive.
+5. Reinsert the flash device and boot your server.
+6. In the %%WebGUI|web-gui%%, open a terminal and run `lsblk` to list all drives (excluding the flash).
+7. Wipe existing filesystems from each data drive:
+
+:::danger[Critical: Destructive Operation]
+
+**This step will permanently erase ALL data on the specified drive(s) and is IRREVERSIBLE!**
+
+- **作業を始める前に、必要なデータのバックアップがあることを確認してください**
+
+- **このコマンドを実行する前に、WebGUI または `lsblk` でデバイス識別子を再確認してください**
+
+- **必ず正しいドライブを対象にしていることを確認してください** - 間違ったドライブのデータ損失は復旧できません
+
+各データドライブについて、次を実行します:
+
+```bash
+wipefs /dev/sdX
+```
+
+Replace `X` with the correct drive letter (e.g., sda, sdb, sdc)
+
+:::
+
+8. 通常の Unraid のセットアップと設定を続けてください。
+
+<br />
+
+<a id="change-hostname" />
+
+### How do I change the hostname of my server?
+
+To change your Unraid server's hostname, navigate the %%WebGUI|web-gui%% to ***Settings → System Settings → Identification***.
+
+**ホスト名を変更した場合の影響:**
+
+- 新しいホスト名は、ネットワーク識別に使用されます（例: `http://newname` でのアクセス）。
+- 新しいホスト名を使うように、マッピングされたネットワークドライブやショートカットを再接続する必要がある場合があります。
+- 一部のデバイスやサービスは古い名前をキャッシュしている場合があります。新しい名前を認識させるには、デバイス全体の再起動が必要になることがあります。
+
+<br />
+
+<a id="invalid-guid" />
+
+### My flash drive is reporting an invalid GUID. What do I do?
+
+Unraid requires a USB flash device with a unique hardware %%GUID|guid%% (serial number). Some manufacturers may reuse %%GUID|guid%%s or use generic values, making these drives incompatible with each other.
+
+**実機で検証済みのブランド:**
+
+- Samsung FIT Plus / Bar Plus
+- Kingston DataTraveler Exodia
+- Lexar JumpDrive M45
+- PNY Elite-X
+  (Avoid newer SanDisk Ultra Fit/Cruzer models unless you can confirm a unique %%GUID|guid%%.)
+
+It's best to avoid generic or unbranded drives, SSDs, USB card readers, and SD card adapters, as these often lack unique %%GUID|guid%%s and may not be supported for booting Unraid.
+
+<br />
+
+---
+
+## 仮想化とデバイス
+
+<a id="amd-gpu-vm-restart" />
+
+### Whenever I shut down my Windows VM with an AMD GPU assigned, it fails to restart. What can I do?
+
+多くの AMD GPU では機能レベルのリセットに問題があり、これがこの問題の原因となっています。回避策としては、シャットダウン前に Windows 内から GPU を取り外すか、通常この問題を回避できる NVIDIA GPU を使用します。
+
+<br />
+
+<a id="primary-gpu-passthrough" />
+
+### How do I pass through my primary GPU to a VM if my CPU has no integrated graphics?
+
+This is feasible but requires additional steps. Check out [SpaceInvaderOne's video guide](https://forums.unraid.net/topic/51230-video-guidehow-to-pass-through-an-nvidia-gpu-as-primary-or-only-gpu-in-unraid/) for detailed instructions on how to do this properly.
+
+<br />
+
+---
+
+## ストレージと RAID
+
+<a id="raid-types-support" />
+
+### Does Unraid support various RAID types such as RAID1/5/6/10?
+
+Unraid には、従来の %%RAID|raid%% システムとは異なる独自のストレージアーキテクチャがあります。以下は各ストレージオプションの比較です:
+
+<div style={{ display: 'flex', justifyContent: 'center', margin: '20px 0' }}>
+  | 機能 / 能力                               | Unraid %%parity\|parity%% %%array\|array%% (md)            | %%BTRFS\|btrfs%% プール (%%cache\|cache%%)                                                              | **%%ZFS\|zfs%% プール (7.x+)**          | 従来の %%RAID 1\|raid1%%/%%RAID 5\|raid5%%/%%RAID 6\|raid6%%/%%RAID 10\|raid10%%                |
+  | ------------------------------------- | ---------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- | ------------------------------------ | -------------------------------------------------------------------------------------------- |
+  | %%Parity\|parity%% / 冗長性モデル           | 専用の %%parity\|parity%% ディスク                                | %%BTRFS\|btrfs%% によるソフトウェア %%RAID 1\|raid1%%/%%RAID 10\|raid10%%/%%RAID 5\|raid5%%/%%RAID 6\|raid6%% | %%RAID 1\|raid1%%-Z1/Z2/Z3 またはミラー    | ストライプ化された %%parity\|parity%%（%%RAID 5\|raid5%%/%%RAID 6\|raid6%%）またはミラー（%%RAID 10\|raid10%%） |
+  | データのストライピング                           | いいえ                                                        | はい（%%RAID 1\|raid1%% を除く）                                                                            | はい                                   | はい                                                                                           |
+  | ディスクサイズの柔軟性                           | 任意のサイズを混在可能                                                | 同程度のサイズの場合に最適                                                                                        | 各 vdev ごとに同程度のサイズが最適                 | 一致したサイズが必要                                                                                   |
+  | 1 枚ずつディスクを拡張                          | はい                                                         | はい（デバイスの追加または交換）                                                                                     | はい（vdev ごと\*）                        | 通常は不可                                                                                        |
+  | ディスクごとのファイルシステム                       | はい                                                         | いいえ                                                                                                  | いいえ                                  | いいえ                                                                                          |
+  | 単一ディスクの読み取り速度                         | ネイティブなディスク速度                                               | 集約型（複数ディスク）                                                                                          | 集約型（複数ディスク）                          | 集約型                                                                                          |
+  | 再構築中の書き込み性能低下                         | 最小限（故障したドライブのみ）                                            | レベルによる                                                                                               | vdev の構成による                          | 大きい                                                                                          |
+  | %%Bit rot\|bit-rot%% の検出              | 任意（%%BTRFS\|btrfs%%/%%ZFS\|zfs%% の %%checksum\|checksum%%） | ✅ 組み込み                                                                                               | ✅ End-to-end %%checksum\|checksum%%s | ❌ 本質的には備えていない                                                                                |
+  | %%Snapshot\|snapshot%% / send-receive | ❌                                                          | ✅（%%BTRFS\|btrfs%%）                                                                                  | ✅ ネイティブ                              | ❌                                                                                            |
+  | 本番運用での推奨用途                            | 一般的なメディアストレージ                                              | %%RAID 1\|raid1%%/%%RAID 10\|raid10%%（%%RAID 5\|raid5%%/%%RAID 6\|raid6%% は避ける）\*\*                  | ✅ すべてのレベルで安定                         | Enterprise %%array\|array%%s                                                                 |
+</div>
+
+\* %%ZFS|zfs%% vdev は、vdev 内の **すべて** のドライブを交換するか、新しい vdev を追加することで拡張する必要があります。\
+\* %%BTRFS|btrfs%% %%RAID 5|raid5%%/%%RAID 6|raid6%% は、上流では引き続き「experimental（実験的）」として扱われています。注意して使用してください。
+
+- **Unraid %%parity|parity%% %%array|array%%** は段階的な拡張に優れており、サイズの異なるドライブを混在させても再構築の負荷を最小限に抑えられます。
+- **%%ZFS|zfs%% pools** (available in 7.x) provide enterprise-class redundancy, %%snapshot|snapshot%%s, and %%checksum|checksum%%s, making them ideal for %%VM|vm%%s and databases.
+- **%%BTRFS|btrfs%% pools** excel for fast SSD %%cache|cache%%s, especially in mirrored %%RAID 1|raid1%%/%%RAID 10|raid10%% mode.
+- Traditional hardware %%RAID|raid%% cards are *not* necessary; you can use simple HBAs to allow Unraid to manage drives directly.
+
+<br />
+
+<a id="mbr-to-gpt-conversion" />
+
+### I currently have an array of devices formatted with an MBR-style partition table and want to convert to GPT. How do I do that?
+
+<div
+style={{
+ fontSize: "1.1em",
+ fontWeight: 600,
+ marginBottom: "0.5rem",
+ marginTop: "1.5rem",
+}}
+>
+Why convert from MBR to GPT?
+</div>
+
+MBR (Master Boot Record) partitioning supports disks up to 2TB and only allows a maximum of four primary partitions. On the other hand, GPT (%%GUID|guid%% Partition Table) can handle much larger disks and nearly unlimited partitions. Converting to GPT is advisable if you work with larger drives or want better partition management.
+
+:::important[Use **メンテナンスモード**]
+
+Before starting the conversion process, put your %%array|array%% into **Maintenance Mode**. This step ensures no writes occur during the conversion, protecting your data.
+
+:::
+
+<div
+style={{
+ fontSize: "1.1em",
+ fontWeight: 600,
+ marginBottom: "0.5rem",
+ marginTop: "1.5rem",
+}}
+>
+Conversion process
+</div>
+
+1. 有効な %%parity|parity%% と、フラッシュドライブの最新バックアップがあることを確認してください。
+2. Enter **Maintenance Mode** from the ***Main*** tab.
+3. まず %%parity|parity%% ドライブを交換して再構築してください。
+4. 各データドライブを 1 台ずつ交換し、各交換後に %%array|array%% を再構築します。
+5. 新しいドライブは、そのサイズに応じた適切なパーティション方式でフォーマットされます:
+   - **2TB 以下**: MBR パーティションを使用
+   - **2TB 超**: GPT パーティションを使用
+6. すべてのドライブの交換と再構築が完了したら、**メンテナンスモード** を終了します。
+
+この手順により、パーティション方式を変更しながらデータを安全に保てます。
+
+:::note[Additional notes]
+
+- **パーティション設定は自動です**: Unraid はドライブサイズに基づいて自動的にパーティション方式を選択します:
+  - **2TB 以下**: 常に MBR パーティションを使用
+  - **2TB 超**: 常に GPT パーティションを使用
+
+- Starting with Unraid OS 6.9, partition 1 starts at 32KiB for rotational devices and 1MiB for non-rotational devices, regardless of the partition style.
+  \-- Always [back up your flash drive](../system-administration/secure-your-server/secure-your-flash-drive.mdx#backups) before starting this conversion process.
+
+:::
+
+<br />
+
+---
+
+## ネットワーク
+
+<a id="disable-br0-bridge" />
+
+### Is there any way to disable the br0 bridge?
+
+Yes. The **br0** bridge is a Linux network bridge allowing Docker containers and %%VM|vm%%s to connect directly to your local area network (LAN) with their IP addresses. It acts as a virtual network switch that connects your physical network interface to the virtual interfaces used by containers and %%VM|vm%%s.
+
+:::note
+
+Disabling br0 means that %%VMs|vm%% and Docker containers will not have direct access to the LAN and may lose some advanced networking features.
+
+:::
+
+<br />
+
+<a id="webgui-connection" />
+
+### I can't seem to connect to the WebGUI using `http://tower` or `http://tower.local`. What do I do?
+
+ホスト名で %%WebGUI|web-gui%% に接続できない場合、ローカル DNS がサーバー名を解決できていないのが原因かもしれません。代わりに、IP アドレスを使って直接接続してみてください。
+
+**サーバーの IP アドレスを見つける方法:**
+
+- ルーターまたはスイッチの DHCP クライアント一覧で、「Tower」またはそれに類似する名前のデバイスを確認してください。
+- フラッシュ作成時に静的 IP を割り当てた場合は、そのアドレスを使用してください。
+- サーバーにモニターとキーボードを接続すると、起動後にローカルコンソールに IP アドレスが表示されます。
+
+**この問題の一般的な原因:**
+
+- お使いのコンピューターとサーバーが異なるサブネットまたは VLAN 上にある可能性があります。
+- ルーターがローカルのホスト名解決をサポートしていない可能性があります。
+- Unraid サーバーがネットワークに接続されていないか、ネットワーク設定が誤っている可能性があります。
+- ファイアウォールまたはセキュリティソフトがアクセスをブロックしている可能性があります。
+
+接続できない場合は、サーバーとネットワーク機器を再起動し、すべてのケーブルがしっかり接続されていることを確認してください。
+
+<br />
+
+---
+
+## インストール
+
+<a id="usb-creator-issue" />
+
+### I can't get the USB flash creator to install Unraid on my flash device. What do I do?
+
+USB フラッシュ作成ツールがシステムまたはフラッシュドライブで動作しない場合は、[手動インストール方法](../getting-started/set-up-unraid/create-your-bootable-media.mdx#manual-install-method) を使って Unraid のブートデバイスを準備できます。この方法は Windows、macOS、Debian/Ubuntu Linux に対応しています。
+
+<br />
+
+<a id="uefi-boot-config" />
+
+### I need to configure my system to boot using UEFI. How do I do this?
+
+%%UEFI|uefi%% ブートモードは、いくつかの方法で設定できます:
+
+#### Option 1: During flash creation
+
+USB フラッシュ作成ツールを使う場合は、フラッシュドライブに Unraid を書き込む前に %%UEFI|uefi%% ブートモードを有効にするオプションを選択してください。
+
+#### Option 2: After booting in Legacy Mode
+
+In the %%WebGUI|web-gui%%, head to the Flash Device ***Settings → Flash Device*** page.
+
+%%UEFI|uefi%% ブートモードを有効にして、サーバーを再起動してください。
+
+#### Option 3: Manual folder rename
+
+フラッシュドライブ上で、`EFI-` フォルダーの名前を `EFI` に変更します（末尾のダッシュ `-` を削除）。
+
+フラッシュドライブをサーバーに挿入し、マザーボードの BIOS/%%UEFI|uefi%% 設定に入ってください。
+
+USB フラッシュを主要な起動デバイスに設定し、%%UEFI|uefi%% ブートモードを有効にします（利用可能であれば CSM/Legacy/Compatibility モードも必ず無効にしてください）。
+
+<br />
+
+<a id="webgui-browser-issues" />
+
+### I'm having issues using my web browser with the WebGUI. What can I do?
+
+%%WebGUI|web-gui%% で表示または機能上の問題が発生している場合は、次の点を確認してください:
+
+- **広告ブロッカーとコンテンツブロッカー:** これらのブラウザー拡張機能は %%WebGUI|web-gui%% に干渉する可能性があります。Unraid サーバーを広告ブロッカーのホワイトリストに追加するか、サーバーのアドレスに対してブロッカーを無効にしてみてください。
+- **ブラウザー拡張機能:** 一部の拡張機能はスクリプトをブロックしたり、ページ内容を変更したりすることがあります。拡張機能を無効にするか、プライベート/シークレットウィンドウを試してください。
+- **古いブラウザー:** 最新のブラウザー（Chrome、Firefox、Edge など）を使用していることを確認してください。古いブラウザーでは %%WebGUI|web-gui%% を十分にサポートできない場合があります。
+- **キャッシュの問題:** ブラウザーのキャッシュを削除するか、強制再読み込み（Ctrl+F5 または Cmd+Shift+R）を試してください。
+- **ネットワークの問題:** お使いのコンピューターとサーバーが同じネットワークとサブネットに接続されていることを確認してください。
+
+問題が解決しない場合は、別のブラウザーやデバイスから %%WebGUI|web-gui%% にアクセスしてみてください。
+
+<br />
+
+<a id="extend-trial" />
+
+### How do I extend my Unraid trial?
+
+Unraid の [30 日間無料トライアル](https://unraid.net/download) をもっと長く使いたい場合は、延長できます。元のトライアルの期限が切れたら、%%array|array%% を停止して **Registration** ページに移動してください。15 日間の延長を申請するボタンが表示されるはずです。これは 2 回まで行え、ライセンスを購入する前に合計 60 日間利用できます。
+
+:::important
+
+You must use the same USB flash device to continue your trial. Changing the flash device will require starting a new trial from scratch.
+
+:::
+
+<br />
