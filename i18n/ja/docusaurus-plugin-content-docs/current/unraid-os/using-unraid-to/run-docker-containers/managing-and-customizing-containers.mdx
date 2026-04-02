@@ -1,0 +1,248 @@
+---
+sidebar_position: 3
+sidebar_label: Managing & customizing containers
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import DockerNetworkType from './partials/managing-and-customizing-containers/network-type.mdx';
+import DockerVolumeMappings from './partials/managing-and-customizing-containers/volume-mappings.mdx';
+import DockerPortMappings from './partials/managing-and-customizing-containers/port-mappings.mdx';
+import DockerEnvironmentVariables from './partials/managing-and-customizing-containers/environment-variables.mdx';
+import DockerCommandStart from './partials/managing-and-customizing-containers/command-start.mdx';
+import DockerCommandStop from './partials/managing-and-customizing-containers/command-stop.mdx';
+import DockerCommandRestart from './partials/managing-and-customizing-containers/command-restart.mdx';
+import DockerCommandStatus from './partials/managing-and-customizing-containers/command-status.mdx';
+import DockerCommandLogs from './partials/managing-and-customizing-containers/command-logs.mdx';
+
+# Managing & customizing containers
+
+:::caution\[Disclaimer]
+
+This page is written to help users of all skill levels make the most out of Docker containers on Unraid OS. The tips and best practices come from the Unraid team, who ensure they are tailored to most users' needs. However, keep in mind that Docker is constantly evolving, so for the most up-to-date features, advanced configurations, or troubleshooting issues that go beyond what Unraid covers, it's always a good idea to check the [official Docker documentation](https://docs.docker.com/).
+
+:::
+
+Before customizing a Docker container in Unraid, it’s helpful to understand the basic configuration options. Each [container template](./community-applications.mdx) provides a user-friendly interface for setting up networking, storage, and environment variables, allowing you to tailor the container's behavior to your needs without using complex command-line tools.
+
+<Tabs>
+  <TabItem value="network-type" label="ネットワークタイプ" default>
+    <DockerNetworkType />
+  </TabItem>
+
+  <TabItem value="volume-mappings" label="Volume mappings">
+    <DockerVolumeMappings />
+  </TabItem>
+
+  <TabItem value="port-mappings" label="Port mappings">
+    <DockerPortMappings />
+  </TabItem>
+
+  <TabItem value="environment-variables" label="Environment variables">
+    <DockerEnvironmentVariables />
+  </TabItem>
+</Tabs>
+
+## Creating and starting containers
+
+Once you've configured your container’s network, volume mappings, port mappings, and environment variables, you're ready to create and launch your Docker container. This section will guide you through the creation process, explain how to manage startup order and dependencies, and provide tips for advanced startup customization.
+
+### Creating a container
+
+After reviewing your configuration settings in the container template:
+
+1. Click **Create** to begin downloading and setting up the container.
+   - Avoid closing your browser window or navigating away until the process completes.
+   - The initial download for a new repository may take longer than subsequent downloads.
+2. Once the process is finished, click **Done** to return to the Docker page, where you can manage or add more containers.
+
+### Planning your startup sequence
+
+Some containers depend on others to function correctly. For example, an application might need a database container running first, or a service might require a [%%VPN|vpn-tunnel%% container](../../system-administration/secure-your-server/tailscale.mdx) to be active before it starts.
+
+:::important[Plan your startup]
+
+- Identify containers that provide core services (like databases, %%VPNs|vpn-tunnel%%, or storage gateways).
+- Ensure dependent containers are started only after their prerequisites are running and ready.
+- Review documentation for each container to understand any specific startup requirements.
+
+:::
+
+---
+
+## Advanced container startup
+
+Unraid gives you flexible control over which containers start automatically and in what order. This is especially useful if you have containers that depend on others (such as a database or %%VPN|vpn-tunnel%% service).
+
+To ensure a container starts automatically when the %%array|array%% starts:
+
+1. Go to the **Docker** tab in the %%WebGUI|web-gui%%.
+2. Toggle the **Auto-Start** switch to **ON** for each container you want to launch automatically.
+
+### Customize startup order and delays
+
+By default, Unraid starts all auto-start containers as quickly as possible, in the order they appear on the Docker tab. You can customize this order and add wait times between container startups:
+
+1. On the **Docker** tab, unlock the container list using the padlock icon.
+2. Drag and drop containers to rearrange their order.
+3. Switch to **Advanced View** using the toggle at the top right.
+4. In the **AutoStart** column, enter a wait time (in seconds) in the **wait** field for any container that needs extra time before the next one starts.
+   - Use trial and error to determine the best wait times for your setup.
+
+:::tip
+
+Setting the correct order and wait times is especially important for containers that depend on services provided by others (for example, starting a database before an app that uses it, or a %%VPN|vpn-tunnel%% before dependent apps).
+
+:::
+
+### Testing your startup sequence
+
+While Unraid does not have a dedicated "test startup sequence" feature, you can simulate and verify your startup order:
+
+1. Stop all containers from the **Docker** tab.
+2. Start each container manually, in your planned order, using the **Start** button.
+3. Monitor container logs and application behavior to ensure dependencies are met and services initialize as expected.
+4. Adjust the startup order or wait times as needed.
+
+:::important
+
+Test your startup sequence after changing container dependencies or adding new services, especially if your setup relies on specific startup timing.
+
+:::
+
+---
+
+## Controlling your containers
+
+Once you've created and started your Docker container, managing it is easy through the %%WebGUI|web-gui%%. This guide will walk you through using the context menu, understanding container health indicators, and accessing volume mappings within your container.
+
+To access the container's context menu, go to the **Docker** or **Dashboard** tab and click on the container icon you want to manage. This menu offers straightforward access to common actions:
+
+<div style={{ margin: 'auto', maxWidth: '286px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+  ![Docker Guide - Controlling](/img/Dockerguide-controlling.png)
+</div>
+
+| Option        | 説明                                                                                                  |
+| ------------- | --------------------------------------------------------------------------------------------------- |
+| **WebUI**     | Opens the container's web interface in a new browser tab (if available).                            |
+| **Console**   | Opens a command-line interface to interact with the container directly.                             |
+| **Stop**      | Stops the running container.                                                                        |
+| **Pause**     | Pauses the container, temporarily halting all processes.                                            |
+| **Restart**   | Restarts the container, applying any configuration changes.                                         |
+| **Logs**      | Shows the container's log output for troubleshooting.                                               |
+| **Edit**      | Change container settings, such as port or volume mappings. Changes apply immediately after saving. |
+| **Remove**    | Deletes the container. You can choose to remove just the container or also delete its image.        |
+| **プロジェクトページ** | Opens the container's project page for documentation and support.                                   |
+| **Support**   | Provides access to support resources and help for the container.                                    |
+| **More Info** | Displays additional information about the container and its configuration.                          |
+
+### Health indicator
+
+You will find a colored health indicator next to each container’s icon:
+
+- 🟢 **Healthy**: Indicates that the container is running and responding as expected.
+- 🟡 **Unhealthy**: The container is running but has failed its health check. Investigate the logs or container settings for more information.
+- ⚪ **No health check**: This means no health check is configured for the container. It's common for many apps, and not necessarily a problem.
+
+:::note
+
+Health checks are defined by the container author and may not be present for all images.
+
+:::
+
+---
+
+## Volume mappings inside a container
+
+When configuring your application through its web interface, reference the **container path** you set up during configuration - not the host path.
+
+For instance, if you mapped `/mnt/user/media` on the host to `/unraid_media` in the container, you should use `/unraid_media` in the application’s settings.
+
+<h3>Example scenarios</h3>
+
+Here are some examples showing common path mapping configurations that users frequently need when setting up Docker containers. They demonstrate how to translate between Unraid's host file system paths and the container's internal paths, helping you configure applications correctly.
+
+- **Media server:**
+  Host path: `/mnt/user/media`\
+  Container path: `/unraid_media`
+
+  In the app, set your media library location to `/unraid_media`.
+
+- **Appdata storage:**
+  Host path: `/mnt/user/appdata/myapp`\
+  Container path: `/config`
+
+  In the app, use `/config` for configuration storage.
+
+- **Multiple %%user shares|user-share%%:**
+  Host path: `/mnt/user/media` → Container path: `/media`\
+  Host path: `/mnt/user/data` → Container path: `/data`
+
+  Reference `/media` or `/data` in the application as needed.
+
+:::important[Best practice]
+
+Always use the most restrictive [access mode](../manage-storage/shares.mdx) (read-only or read/write) that allows your container to function properly.
+
+:::
+
+---
+
+## Scheduling start and stop
+
+Unraid does not natively support scheduled start or stop actions for **Docker containers**, but you can easily automate this process using the [**User Scripts plugin**](../customize-your-experience/plugins.mdx). This powerful tool allows you to run custom scripts on a schedule, enabling automatic control of your containers.
+
+### User Scripts plugin
+
+The **User Scripts plugin** allows you to create, manage, and schedule custom shell scripts directly from the %%WebGUI|web-gui%%. You can use it for various automation tasks, such as starting or stopping containers, backing up data, or running maintenance routines.
+
+- Install the plugin from the **Apps** tab if you haven’t done so already.
+- Access it via ***Settings → User Scripts*** to create and manage your scripts.
+
+To learn more about plugins, check out [Plugins](../customize-your-experience/plugins.mdx).
+
+### Scheduling container actions
+
+To automate the start or stop of your containers on a schedule:
+
+1. Install the **User Scripts plugin** from the **Apps** tab.
+2. Navigate to ***Settings → User Scripts***.
+3. Create a new script for each unique schedule. You can include commands for multiple containers in a single script if they share the same schedule.
+4. Set the schedule using the dropdown menu or use a custom `cron` expression for more advanced timing options.
+5. Click **Apply** to save and activate your script.
+
+:::tip
+
+Cron expressions enable flexible scheduling beyond the built-in options. For example, `0 3 * * 1` runs your script at 3:00 AM every Monday.
+
+:::
+
+### Command examples
+
+<Tabs>
+  <TabItem value="開始" label="Start container" default>
+    <DockerCommandStart />
+  </TabItem>
+
+  <TabItem value="停止" label="Stop container">
+    <DockerCommandStop />
+  </TabItem>
+
+  <TabItem value="再起動" label="Restart container">
+    <DockerCommandRestart />
+  </TabItem>
+
+  <TabItem value="ステータス" label="Check container status">
+    <DockerCommandStatus />
+  </TabItem>
+
+  <TabItem value="ログ" label="Show container logs">
+    <DockerCommandLogs />
+  </TabItem>
+</Tabs>
+
+:::tip
+
+You can find the container name on the Docker tab or by viewing the `docker run` command in the container's configuration screen.
+
+:::
