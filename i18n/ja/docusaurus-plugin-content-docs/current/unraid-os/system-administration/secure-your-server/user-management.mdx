@@ -1,0 +1,145 @@
+---
+sidebar_position: 3
+sidebar_label: ユーザー管理
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import ResetPasswordBasic from './partials/reset-password-basic.mdx';
+import ResetPasswordAdvanced from './partials/reset-password-advanced.mdx';
+
+# ユーザー管理
+
+Unraid では、NAS 上のユーザー管理が簡単かつ安全に行え、初心者から上級者まで幅広く対応します。合理化されたアプローチにより混乱を抑えつつ、セキュリティとアクセス制御を堅牢に保てます。
+
+:::note[Simplified アプローチ]
+
+従来の Linux システムとは異なり、Unraid ではシンプルなユーザーモデルを提供しています:
+
+- **単一の管理者（%%root|root-user%%）**: メインユーザーは 1 人だけなので、権限設定が सरल化され、セキュリティも向上します。
+- **共有中心のアクセス**: データの共有に重点を置いているため、複数ユーザー環境の複雑さを必要としないユーザーにとって扱いやすくなっています。
+
+このように、Linux に詳しくなくても、NAS を安全に簡単に管理できます。
+
+:::
+
+## 概要
+
+### root ユーザー
+
+Unraid は、%%root|root-user%% と呼ばれる単一のスーパーユーザーで動作し、すべてを完全に制御できます。
+
+%%root ユーザー|root-user%%...
+
+- Have full access to the %%WebGUI|web-gui%%, %%SSH|ssh%%, and Telnet interfaces.
+- すべてのユーザーアカウントと設定の管理を担当します。
+- セキュリティ上の理由から、**%%SMB|samba%%**、**%%NFS|nfs%%**、または **%%FTP|ftp%%** を介してファイル共有に直接アクセスすることはできません。
+- [パスワードなしでログインするための%%SSH|ssh%%キー認証](../../system-administration/advanced-tools/command-line-interface.mdx#accessing-the-terminal) を利用できます。
+
+<div style={{ margin: 'auto', maxWidth: '359px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+  ![Root User](/img/rootuser.png)
+</div>
+
+:::important
+
+%%root user|root-user%% はセキュリティ維持に不可欠です。必ず [強力なパスワード](./security-fundamentals.mdx#set-a-strong-root-password) を設定し、システムの安全を保つために %%SSH|ssh%% アクセスを制限してください。
+
+:::
+
+### 共有ユーザー
+
+これらのアカウントは、システムレベルの制御なしで、特定の共有にアクセスするために設計されています。
+
+共有ユーザー...
+
+- %%root user|root-user%% によってのみ作成・管理できます。
+- （有効な場合）**%%SMB|samba%%**、**%%NFS|nfs%%**、または **%%FTP|ftp%%** を介して共有にアクセスできます。
+- Don't have access to the **%%WebGUI|web-gui%%**, **%%SSH|ssh%%**, or **Telnet**.
+
+<div style={{ margin: 'auto', maxWidth: '359px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+  ![Root User](/img/shareusers.png)
+</div>
+
+---
+
+## ユーザーを追加
+
+別のデバイスから Unraid 上の共有ファイルに接続するには、ユーザー名とパスワードが必要です。これらの認証情報は、コンテナ内で実行される特定のアプリケーションに使用するものとは別で、それらには独自のログイン情報があります。
+
+ユーザーを追加するには:
+
+1. **ユーザー管理を開く**
+   - ***Users → Shares Access***（または ***Settings → Users → Shares Access***） に移動します。
+   - **ユーザーを追加** をクリックします。
+
+2. **ユーザー資格情報を設定する**
+   - **ユーザー名**: 一意の名前を選択します（例: `john_media`）。競合を避けるため小文字のみを使用し、Windows の制限を考慮して 30 文字未満にしてください。
+
+   - **パスワード**: 文字、数字、記号を組み合わせて強力なパスワードを作成します。ガイドとしてパスワード強度メーターに従ってください。
+
+:::note\[Optionally]
+
+- **説明を追加**: 「Media Library Access」のようなメモを記入します。
+- **カスタム画像**: 視覚的に識別するために、PNG 画像（ユーザーのアバターなど）をアップロードします。
+
+:::
+
+<div style={{ margin: 'auto', maxWidth: '359px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+  ![Root User](/img/adduser.png)
+</div>
+
+3. **追加** を選択してユーザーを作成します。
+
+---
+
+## ユーザーを削除
+
+不要になったユーザーアカウントは、Unraid で簡単に削除できます。
+
+:::caution
+
+ユーザーアカウントの削除は完全に実行され、共有および共有リソースへのアクセスは直ちに失われます。
+
+:::
+
+ユーザーを削除するには:
+
+1. **Users** メニューに移動し、削除したいユーザーアカウント名をクリックします。
+2. **Delete** と表示されたチェックボックスをオンにします。**Apply** ボタンは **Delete** ボタンに変わります。
+3. **Delete** をクリックしてユーザーを削除します。削除を確認するメッセージが表示されます。
+4. **Done** を選択します。
+
+---
+
+## ユーザーを変更する
+
+ユーザーがパスワードを忘れた場合や、共有フォルダへのアクセスを変更する必要がある場合は、Unraid でユーザーアカウントを変更できます。
+
+ユーザーアカウントを変更するには:
+
+1. ***Users → Shares Access***（または ***Settings → Users → Shares Access***） に移動し、変更したいユーザーアカウントをクリックします。
+2. *(オプション)* **ユーザーの編集** 画面では、**ユーザー名** 以外の情報を更新できます。新しい **パスワード** を設定するには、入力してから同じ内容を再入力して確認します。
+3. *(オプション)* 下部に、そのユーザーがアクセスできるフォルダ（共有）の一覧が表示されます。これらの共有のアクセス設定は調整できますが、新しい共有を追加することはできません。
+4. **Apply** をクリックして変更を保存します。
+
+---
+
+## パスワードをリセットする
+
+If you've forgotten your %%root|root-user%% password, don't worry! Here are two simple methods to regain access to your Unraid server. You'll need physical access to your **[boot device](../../system-administration/maintain-and-update/changing-the-flash-device.mdx)** (for example the USB drive) and another computer.
+
+<Tabs>
+  <TabItem value="基本" label="基本" default>
+    <ResetPasswordBasic />
+  </TabItem>
+
+  <TabItem value="高度な設定" label="高度な設定">
+    <ResetPasswordAdvanced />
+  </TabItem>
+</Tabs>
+
+:::tip[Be 注意]
+
+USB に物理的にアクセスできる人であれば、この方法を使って %%root|root-user%% のパスワードをリセットし、完全な管理者アクセス権を取得できます。USB は必ず सुरक्षितに保管してください。
+
+:::
