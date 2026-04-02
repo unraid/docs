@@ -245,7 +245,7 @@ Help translate Unraid Docs for the global community.
 * Follow the glossary and tone guidance in the [Style Guide](docs/contribute/style-guide.mdx)
 * Use `pnpm crowdin:upload` or `pnpm crowdin:upload:sources` after changing English source docs
 * Use `pnpm crowdin:upload:translations -- --language <lang>` after manually fixing files under `i18n/` so those fixes are pushed back to Crowdin before the next download
-* Use Crowdin project language codes for `<lang>`: `de`, `es`, `fr`, and `zh-CN` for the `i18n/zh` locale
+* The upload wrapper accepts the repo locale codes directly: use `de`, `es`, `fr`, and `zh` for `i18n/zh`; it normalizes `zh` to Crowdin's `zh-CN` project language code automatically
 * Use `pnpm crowdin:download` to pull the latest exported translations after uploads
 * `pnpm crowdin:sync` updates source strings and downloads translations, but it does not replace `crowdin:upload:translations` when you need to preserve manual translation fixes
 
