@@ -1,0 +1,206 @@
+---
+sidebar_position: 1
+sidebar_label: 診断情報とログを取得する
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import SyslogMirror from './partials/syslog-server/mirror.mdx';
+import SyslogRemote from './partials/syslog-server/remote.mdx';
+import SyslogLocal from './partials/syslog-server/local.mdx';
+import DockerLogsViaWebGUI from './partials/docker-logs/via-webgui.mdx';
+import DockerLogsCommandLine from './partials/docker-logs/command-line.mdx';
+import DockerLogsPersistent from './partials/docker-logs/persistent.mdx';
+
+# 診断情報の取得
+
+Unraid サーバーで問題が発生した場合、効果的なトラブルシューティングのためには詳細な情報を収集することが重要です。こうした情報は、特にフォーラムに投稿する際に、他のユーザーが正確かつ迅速に支援するのに役立ちます。
+
+:::info[Diagnostics 含める...]
+
+診断 zip ファイルには、次の内容を含む、Unraid システムの詳細なスナップショットを作成するいくつかの匿名化されたテキストファイルが含まれます:
+
+- **システム構成**: %%array|array%%、共有、ネットワーク設定、インストール済みプラグインに関する情報。
+- **システムログ**: カーネル、%%WebGUI|web-gui%%、およびシステムサービスのログ。問題の原因につながった可能性のあるイベントを記録します。
+- **ハードウェア情報**: 接続されているドライブ、コントローラー、その他のハードウェアコンポーネントの詳細。
+- **Docker と %%VM|vm%% の情報**: Docker と仮想マシンの全体構成（個々のコンテナや %%VM%% に関する情報は含まれません）。
+
+:::
+
+---
+
+## システム診断
+
+Unraid では、トラブルシューティングのために包括的なシステム情報を取得できる **Diagnostics** ツールが、%%WebGUI|web-gui%% の ***Tools → Diagnostics*** にあります。このツールは zip ファイルを生成し、ダウンロードしてフォーラム投稿に添付してサポートを受けることができます。診断ファイルはすべてテキストベースで、含まれる情報をユーザー自身が確認できます。
+
+| シナリオ                         | 取得方法                                                                                                | 注記                                                                            |
+| ---------------------------- | --------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| %%WebGUI\|web-gui%% が利用可能    | %%WebGUI\|web-gui%% の ***Tools → Diagnostics*** を使用して、診断 zip ファイルを生成してダウンロードします。                    | 診断は、機密データを保護するために既定で匿名化されます。                                                  |
+| %%WebGUI\|web-gui%% が利用できない  | **%%SSH\|ssh%%**、telnet、または直接コンソールからアクセスして `diagnostics` コマンドを実行します。zip ファイルは `/boot/logs` に保存されます。 | 再起動する前に必ず診断を取得し、ログをそのまま保持してください。                                              |
+| %%Array\|array%% が通常モードで起動済み | これが診断を取得する推奨方法です。特にドライブの状態について、最も完全な情報を得られます。                                                       | これが不可能な場合は、代替の取得方法として [永続ログのセクション](#persistent-logs-syslog-server) を参照してください。 |
+
+<div style={{ margin: 'auto', maxWidth: '600px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+  ![ディスク選択ロジック](/img/Diagnostics.jpg)
+</div>
+
+:::important
+
+フォーラムに投稿する際は、展開したファイルを個別にアップロードせず、診断 zip ファイル 1 つを添付してください。
+
+:::
+
+### 診断データの匿名化
+
+By default, diagnostics are automatically anonymized. If you enable %%Mover|mover%% logging under ***Settings → Scheduler → Mover Settings***, the %%syslog|syslog%% will include details about files the %%Mover|mover%% processes. It's best to allow %%Mover|mover%% logging only when troubleshooting specific %%Mover|mover%%-related issues, as it may reveal file paths and names.
+
+When your system shuts down gracefully, the session log is saved automatically to the boot device. You can access it after rebooting by going to ***Tools → Syslog → syslog-previous***. This log is also included in diagnostics on the next boot. However, if the system crashes, the system log will be lost. In these cases, enabling %%syslog|syslog%% mirroring to the boot device or using a remote %%syslog server|syslog-server%% is recommended to preserve logs for troubleshooting.
+
+---
+
+## ドライブ読み取り性能のテスト
+
+組み込みの Linux ツールを使用して、ハードドライブの読み取り性能を評価できます。これは、%%array|array%% または %%cache|cache%% 内の %%parity|parity%% 同期が遅い、ディスク応答が鈍い、あるいはドライブ間の速度差がある場合の診断に役立ちます。
+
+:::important[When およびドライブ速度をテストする理由]
+
+次のような場合は、ディスク読み取りベンチマークの実行を検討してください:
+
+- Extremely slow %%parity|parity%% builds or %%parity check|parity-check%%s
+- 特定のディスクからのファイル転送が不自然に遅い
+- ディスクの追加や交換後のドライブ不一致、特に SSD と HDD を混在させる場合
+- 再割り当てされたセクターまたは %%UDMA|udma%% %%CRC errors|crc-errors%%。ドライブの故障を示している可能性があります
+
+これらのテストで実際のファイル転送速度を正確に再現できるわけではありませんが、性能の低いディスクやコントローラーのボトルネックを特定する手がかりになります。
+
+:::
+
+### クイックテスト (hdparm)
+
+`hdparm` ツールは、ディスクのキャッシュ読み取り速度とバッファ付き読み取り速度の両方を測定します。
+
+テストを実行するには、`X` をディスクデバイス名（`sdb` や `sdg` など）に置き換え、次のコマンドを入力します:
+
+```
+hdparm -tT /dev/sdX
+```
+
+- `-T` の結果はキャッシュ読み取り速度を示します。
+- `-t` の結果は、バッファ付き（連続）ディスク読み取り性能を示します。
+
+:::tip
+
+より信頼性の高いベンチマークを得るには、このテストを複数回実行してください。たとえば、次のワンライナーを使ってテストを 12 回実行できます:
+
+```
+for ((i=0;i<12;i++)); do hdparm -tT /dev/sdX; done
+```
+
+:::
+
+:::note
+
+必ず `/dev/sdX` を有効な物理デバイスに置き換えてください。`/dev/md1` のような論理 Unraid デバイスは避けてください。これらには %%parity|parity%% 処理が含まれ、生の性能測定値が歪む可能性があります。
+
+:::
+
+### 総合テスト (diskspeed.sh)
+
+%%parity|parity%% ドライブとデータドライブを含む、接続されているすべてのドライブをより詳細に評価するには、コミュニティスクリプト `diskspeed.sh` の使用を検討してください。
+
+このスクリプトは次のことを行います:
+
+- ディスク表面全体で複数の線形オフセットにおける読み取り速度をテストします
+- CSV データと性能ヒートマップ（画像）を生成します
+- 性能の低い領域を特定できます。これは、ハードウェアの故障や問題のある SMR ドライブの兆候である可能性があります
+
+`diskspeed.sh` を始めるには:
+
+1. スクリプトを [Unraid フォーラム](https://forums.unraid.net/topic/31073-disk-speed-test-graphs-disk-bottlenecks-identified-see-how-fast-your-disks-can-really-go/) からダウンロードします。
+2. `/boot/scripts/` のような永続パスに配置します。
+3. 実行可能にします:
+
+```
+chmod +x /boot/scripts/diskspeed.sh
+```
+
+4. スクリプトを実行します:
+
+```
+bash /boot/scripts/diskspeed.sh
+```
+
+:::note
+
+このスクリプトは読み取り専用の操作のみを行い、ドライブ上のデータを変更しません。ただし、ディスク I/O に影響し、%%array|array%% の性能に干渉する可能性があるため、テストはアイドル時間帯に実行するのが最善です。
+
+:::
+
+---
+
+## 永続ログ (syslog サーバー)
+
+永続ログは、再起動間のシステムイベントを記録するために不可欠です。システムの再起動時にリセットされる標準ログとは異なり、永続ログは Unraid の組み込み %%syslog server|syslog-server%% を使用して、時間の経過とともに発生するクラッシュや断続的な問題を診断できるようにします。
+
+### 適切なログ方法の選択
+
+永続ログを設定するには、***Settings → Syslog Server*** に移動します。各方法には長所と短所があります:
+
+| 方法                              | 利点                                                                                       | 欠点                                   | 最適な用途                 |
+| ------------------------------- | ---------------------------------------------------------------------------------------- | ------------------------------------ | --------------------- |
+| **Mirror syslog to boot drive** | 起動プロセスのイベントを記録します                                                                        | Can wear out the boot device quickly | 短期的な診断（数日）            |
+| **リモート %%syslog\|syslog%%**     | ログは別のデバイスに保存されます                                                                         | 常時稼働の別サーバーが必要です                      | 長期的な監視（数週間から数か月）      |
+| **ローカル %%syslog\|syslog%%**     | Keeps logs on the %%array\|array%% or %%cache\|cache%%, reducing wear on the boot device | システムがクラッシュするとアクセスしにくくなります            | 外部デバイスなしで継続的にログを記録します |
+
+:::tip
+
+詳細な設定方法については、WebGUI ツールバーの **ヘルプ** アイコンを確認してください。
+
+:::
+
+### syslog サーバーの有効化
+
+<Tabs>
+  <TabItem value="ミラー" label="Mirror syslog to boot drive" default>
+    <SyslogMirror />
+  </TabItem>
+
+  <TabItem value="remote" label="リモートsyslogサーバー">
+    <SyslogRemote />
+  </TabItem>
+
+  <TabItem value="local" label="ローカル syslog サーバー">
+    <SyslogLocal />
+  </TabItem>
+</Tabs>
+
+---
+
+## Docker コンテナログへのアクセス
+
+標準診断では Docker と %%VM|vm%% に関するデータは限定的ですが、より詳細にトラブルシューティングするためにコンテナのログへ直接アクセスできます。
+
+Docker ログを取得するには:
+
+<Tabs>
+  <TabItem value="via-webgui" label="WebGUI 経由" default>
+    <DockerLogsViaWebGUI />
+  </TabItem>
+
+  <TabItem value="commandline" label="コマンドライン経由">
+    <DockerLogsCommandLine />
+  </TabItem>
+
+  <TabItem value="persistent" label="永続ロギング">
+    <DockerLogsPersistent />
+  </TabItem>
+</Tabs>
+
+### 仮想マシンのログ
+
+%%VM|vm%% のログは、それぞれのハイパーバイザーを通じてアクセスできます（たとえば、%%QEMU|qemu%% のログは `/var/log/libvirt/` にあります）。詳細については、使用している %%VM|vm%% プラットフォームのドキュメントを確認してください。
+
+:::important
+
+アプリケーション固有の問題でサポートを求める際は、関連するコンテナまたは %%VM|vm%% のログを別途添付することを忘れないでください。
+
+:::
