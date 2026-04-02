@@ -1,0 +1,87 @@
+---
+sidebar_position: 2
+sidebar_label: Securing your boot device
+---
+
+import WebguiBootDeviceLabels from '../../partials/webgui-boot-device-labels.mdx';
+
+# Securing your boot device
+
+The boot device is essential to your Unraid server, as it stores all configuration data, licensing, and system settings. Due to its importance, it is crucial to keep its contents secure and accessible at all times.
+
+<WebguiBootDeviceLabels />
+
+## Backups
+
+Having a recent backup of your boot device ensures you can quickly recover from hardware failures, accidental changes, or data corruption. Be sure to create backups in the following situations:
+
+- Unraid をアップグレードする前、またはプラグインをインストールする前に
+- ドライブを追加または削除した後に
+- ネットワーク、共有、またはセキュリティ設定を変更した後に
+- 大きな構成変更を行う前に
+- 定期的に、通常のメンテナンス作業の一環として
+
+To back up your boot device using the Unraid %%WebGUI|web-gui%%, follow these steps:
+
+1. Select your boot device from the **Main** tab.
+2. In the **Boot Device** tab, click **Boot Device Backup**.
+
+<div
+style={{
+ margin: "auto",
+ maxWidth: "600px",
+ display: "flex",
+ flexDirection: "column",
+ alignItems: "center",
+}}
+>
+![Boot Device Backup control in the WebGUI](/img/flashbackup.png)
+</div>
+
+3. Unraid will create a ZIP file containing the boot device's contents.
+4. この ZIP ファイルは、Unraid サーバーの外にある安全な場所（別の PC、NAS、またはクラウドストレージなど）に保存してください。
+
+If you need to recreate your boot device, use this backup with the [USB Creator tool](https://unraid.net/download) via the **Use custom** option.
+
+:::tip
+
+Consider keeping a screenshot of your [disk assignments](../../getting-started/set-up-unraid/configure-your-array.mdx#assign-parity-and-data-disks) after any hardware changes. This ensures correct drive placement if you need to restore from your backup.
+
+:::
+
+---
+
+## ネットワークアクセス
+
+You can control whether your boot device is accessible over the network, similar to other shares in Unraid. However, network access should be restricted since the boot device contains sensitive configuration and licensing data. Consider the following:
+
+- **Network visibility:** Decide if your boot device should be visible or hidden on your network.
+- **アクセス権:** ネットワークアクセスが有効な場合は、内容の閲覧や変更ができるユーザーを制限するために権限を設定してください。
+
+:::important[Reducing セキュリティ上のリスク]
+
+- **Disable sharing:** Set the boot device's %%SMB|samba%% export to **No** to prevent network access entirely.
+- **Restrict access:** If you must share the boot device, set security to **Private** and grant access only to trusted users with strong passwords.
+- **Avoid public access:** Never leave the `flash` share set to **Public** or **Secure** with guest write access.
+
+これらの手順は、不正な変更や重要ファイルの露出を防ぐのに役立ちます。
+
+:::
+
+---
+
+## 権限
+
+To enhance system security, files on the boot device can no longer be given execute permission. This change prevents malicious or unintended code from running directly off the boot device, reducing the risk of exploitation or accidental system modification.
+
+If you have custom scripts or programs stored on the boot device, follow these steps:
+
+1. **スクリプトを実行可能な場所にコピーする:**
+   - スクリプトを既定のシステムパス上に置きたい場合は、`/usr/local/bin` を使用してください。
+   - `config/go` ファイルにコピーコマンドを追加してこれを自動化します。
+   - コピー後、ファイルに実行権限を設定してください。
+
+2. **インタープリターを使ってスクリプトを実行する:**
+   - スクリプトの前にインタープリターを付けます（例: `bash /boot/config/scripts/myscript.sh`）。
+
+この方法では、上級ユーザーがスクリプトを実行できるようにしつつ、システムの安全性を保てます。
