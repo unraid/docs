@@ -1,0 +1,255 @@
+---
+sidebar_position: 7
+sidebar_label: WireGuard
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import WireGuardConfigureMobile from './partials/wireguard-configure-mobile.mdx';
+import WireGuardConfigureOtherDevices from './partials/wireguard-configure-other-devices.mdx';
+
+# WireGuard
+
+Tailscaleは多くのユーザーにとって使いやすい体験を提供しますが、[WireGuard](https://www.wireguard.com/)はUnraidに組み込まれた堅牢なVPNソリューションで、特定の高度なネットワークシナリオで真価を発揮します。特に、VPNルーティングを細かく制御する必要がある場合や、サードパーティのサービスに依存せずにサーバー間またはLAN間の接続が必要な場合に有用です。以下では、WireGuardが優れている主なシナリオを紹介します。
+
+<h4>WireGuardを選ぶタイミング</h4>
+
+| シナリオ             | なぜ%%WireGuard\|wireguard%%を選ぶのか？                            |
+| ---------------- | ----------------------------------------------------------- |
+| **高度な構成**        | カスタム%%VPN Tunnel\|vpn-tunnel%%の設定や、既存のネットワークインフラとの統合を可能にします |
+| **サーバー間トンネル**    | Unraidサーバー間に永続的な暗号化リンクを作成できます                               |
+| **LAN間統合**       | 中間サービスを介さずにネットワーク全体を接続します                                   |
+| **帯域幅を大量に使うタスク** | 最大のスループットを実現するため、プロトコルのオーバーヘッドを最小限に抑えます                     |
+
+:::info
+
+多くのユーザーにとって、[**Tailscale**](../secure-your-server/tailscale.mdx)はWireGuardでできることをすべて、しかも多くの場合より簡単に実現できます。通常、ポートフォワーディングや手動設定は不要です。ただし、高度でカスタムなVPN設定が必要な場合や、特定の互換性要件がある場合には、WireGuardを選ぶほうがよい選択となることがあります。
+
+:::
+
+<h4>接続タイプと使用例</h4>
+
+%%WireGuard|wireguard%%の接続タイプを知っておくと、自分に合っているか判断しやすくなります:
+
+| 接続タイプ                            | 実際の使用例                                                                                                       |
+| :------------------------------- | :----------------------------------------------------------------------------------------------------------- |
+| サーバーへのリモートアクセス                   | Access Unraid %%WebGUI\|web-gui%%, Docker containers, %%VM\|vm%%s, and network shares remotely.              |
+| LANへのリモートアクセス                    | LAN上のすべてのデバイスに、あたかもローカルネットワーク上にいるかのようにリモートからアクセスする。                                                          |
+| サーバー間アクセス                        | データ共有やバックアップのために、2台のUnraidサーバーを安全に接続する。                                                                      |
+| LAN間アクセス                         | 2つのLAN全体をシームレスに接続し、ネットワーク間の円滑な通信を実現する。                                                                       |
+| サーバーハブ＆スポークアクセス                  | 複数の%%VPN\|vpn-tunnel%%クライアントがサーバーを介して互いに接続できるようにする。                                                          |
+| LAN ハブアンドスポーク アクセス               | 中央サーバーを介して複数のLAN間の通信を有効にする。                                                                                  |
+| %%VPN tunneled\|vpn-tunnel%%アクセス | Route specific Docker containers and %%VM\|vm%%s through a commercial %%WireGuard\|wireguard%% VPN provider. |
+| リモートトンネルアクセス                     | 信頼できないネットワーク上にいるときに、すべてのインターネットトラフィックをUnraidサーバー経由で安全にルーティングします。                                             |
+
+## UnraidでWireGuardを設定する
+
+:::note\[Prerequisites]
+
+- **動的DNS:** 公開IPが変わる場合に確実にアクセスできるよう、DDNSを設定します。一般的な選択肢には[Cloudflare](https://www.cloudflare.com/)（ドメイン所有が必要）、[No-IP](https://www.noip.com/)、または[DuckDNS](https://www.duckdns.org/)（無料ですが、時折停止が発生する場合があります）があります。
+- **ルーターの設定:**
+  - 自動ポートフォワーディングのために、***設定 → 管理アクセス***で%%UPnP|upnp%%を有効にします。
+  - %%UPnP|upnp%%が利用できない場合は、UDPポート51820を手動でUnraidサーバーのIPに転送します。
+- **クライアントソフトウェア:** デバイスに%%WireGuard|wireguard%%をインストールします（[Windows](https://www.wireguard.com/install/)、[macOS](https://apps.apple.com/us/app/wireguard/id1451685025)、[iOS](https://apps.apple.com/us/app/wireguard/id1441195209)、[Android](https://play.google.com/store/apps/details?id=com.wireguard.android)）。
+
+:::
+
+<h4>ステップ1: キーを生成する</h4>
+
+1. ***設定 → VPN Manager***に移動します。
+
+<div style={{ margin: 'auto', maxWidth: '600px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+  ![VPN Manager](/img/wg0.png)
+</div>
+
+2. トンネルに名前を付けます（例: "Home VPN"）。
+3. **Generate Keypair**をクリックして公開鍵と秘密鍵を作成します。
+
+:::warning
+
+秘密鍵はフルネットワークアクセスを提供するため、安全に保管してください。
+
+:::
+
+<h4>ステップ2: エンドポイントを設定する</h4>
+
+- **DDNSユーザー向け:** **Local endpoint**のIPをDDNSのURL（例: `myhome.duckdns.org`）に置き換えます。
+- 既定のポート（`51820`）は、既存のサービスと競合しない限りそのまま使用します。
+
+<h4>ステップ3: ポートフォワーディングを設定する</h4>
+
+- **%%UPnP|upnp%%ユーザー向け:** ***設定 → 管理アクセス***で有効になっていれば、Unraidがポートを自動的に転送します。
+
+<div style={{ margin: 'auto', maxWidth: '600px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+  ![UPnP enabled](/img/upnp-yes.png)
+</div>
+
+- **手動設定:** %%UPnP|upnp%%が利用できない場合:
+  1. ルーターにログインします。
+  2. UDPポート`51820`をUnraidサーバーのLAN IPに転送します。
+  3. 外部設定と内部設定には同じポートを使用します。
+
+<div style={{ margin: 'auto', maxWidth: '600px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+  ![UPnP disabled](/img/upnp-no.png)
+</div>
+
+<h4>ステップ4: トンネルを有効化する</h4>
+
+1. **Active**を切り替えて%%WireGuard|wireguard%%を有効にします。
+2. 起動時に%%WireGuard|wireguard%%を実行するには、**Autostart**を有効にします。
+
+<div style={{ margin: 'auto', maxWidth: '600px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+  ![Activation toggle](/img/activate.png)
+</div>
+
+:::important[Security best practices]
+
+- **信頼できるアクセスのみ:** VPNアクセスは物理的なネットワークアクセスに近いため、信頼できるデバイスのみを許可してください。
+- **キー管理:** 秘密鍵は絶対に共有しないでください。パスワードと同様に扱ってください。
+- **Network segmentation:** For complex setups (custom Docker/%%VM|vm%%s), isolate VPN traffic using VLANs or separate subnets.
+- **定期的な監査:** 接続されているデバイスとアクセス権限を四半期ごとに確認します。
+
+:::
+
+### ピア（クライアント）の定義
+
+ピアとは、スマートフォン、ノートパソコン、別のサーバーなど、Unraid %%WireGuard|wireguard%% VPNに接続するクライアントデバイスです。ピアを定義するとは、そのデバイスに固有の識別情報を作成し、キーを保護することを意味します。
+
+1. **Add Peer**を選択します。
+
+<div style={{ margin: 'auto', maxWidth: '600px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+  ![Add Peer](/img/peer-add.png)
+</div>
+
+2. ピアに名前を付けます（例: *MyAndroid*）。
+3. フルネットワークアクセス用の初期接続タイプを選択します。通常は*Remote access to LAN*です。
+4. **Generate Keypair**をクリックして公開鍵と秘密鍵を作成します。秘密鍵は安全に保管してください。
+5. 必要に応じて、追加のセキュリティのために事前共有鍵を生成します。
+6. **Apply** をクリックします。
+
+:::note
+
+ピアは自分でキーを生成できますが、Unraidにキーを生成させると完全な設定ファイルが提供されるため、セットアップが簡単になります。
+
+:::
+
+:::caution
+
+新しいピアを追加すると、%%WireGuard|wireguard%%トンネルが一時的に無効になることがあり、接続が中断される可能性があります。変更を行う前に、サーバーへローカルアクセスできることを確認してください。
+
+:::
+
+### ピア（クライアント）の設定
+
+<Tabs>
+  <TabItem value="mobile" label="モバイルデバイス" default>
+    <WireGuardConfigureMobile />
+  </TabItem>
+
+  <TabItem value="その他" label="その他のデバイス">
+    <WireGuardConfigureOtherDevices />
+  </TabItem>
+</Tabs>
+
+### DNSの設定
+
+1. IPアドレスまたは完全修飾ドメイン名（例: `yourpersonalhash.unraid.net`）でデバイスにアクセスします。
+
+:::note
+
+"tower"のような短い名前や、ルーター管理のDNSエントリは、VPN経由では機能しない場合があります。
+
+:::
+
+2. 短い名前の解決を有効にするには:
+   - Unraidの***設定 → VPN Manager***に移動します。
+   - **Basic**から**Advanced**モードに切り替えます。
+   - **Peer DNS Server**フィールドに、使用したいDNSサーバーのIPアドレスを入力します。
+   - 変更を保存し、クライアント設定ファイルを更新します。
+3. 推奨DNSサーバー:
+   - LANルーターのIPアドレス。
+   - `8.8.8.8`のようなパブリックDNSサーバー。
+
+この設定は、クライアントの元のDNSサーバーにアクセスできない場合がある**Remote tunneled access**モードで特に重要です。
+
+:::note
+
+%%mDNS|mdns%%アドレス（例: `tower.local`）はローカルネットワークでのみ機能し、%%WireGuard|wireguard%% VPN経由では機能しません。
+
+:::
+
+### 複雑なネットワーク
+
+For most users, the default **Use NAT** setting works out of the box and allows access to Unraid and most LAN devices. However, if you use Docker containers with custom IPs or %%VM|vm%%s with strict networking requirements:
+
+1. %%WireGuard|wireguard%%トンネルの設定で、**Use NAT**を**No**に設定します。
+2. ルーターで、WireGuardトンネルネットワーク（例: `10.253.0.0/24`）への静的ルートを追加し、UnraidサーバーのIPを指すようにします。
+3. ***設定 → Docker Settings***で、**Host access to custom networks**を**Enabled**に設定します。
+
+### 避けるべき構成
+
+| Use NAT 設定 | ホストがカスタムネットワークにアクセス | Server & Dockers (Bridge/Host) | %%VMs\|vm%% & その他のLANシステム | カスタムIPのDocker | 注記                                   |
+| ---------- | ------------------- | ------------------------------ | ------------------------- | ------------- | ------------------------------------ |
+| はい         | 無効（静的ルートは任意）        | アクセス可能                         | アクセス可能                    | アクセス不可        | シンプルなネットワーク設定。ほとんどのユーザーに推奨           |
+| はい         | 有効（静的ルートは任意）        | アクセス可能                         | アクセス不可                    | アクセス不可        | この構成は避けてください                         |
+| いいえ        | 無効（静的ルートなし）         | アクセス可能                         | アクセス不可                    | アクセス不可        | 避けるべきです。正しく機能させるには静的ルートが必要です         |
+| いいえ        | 無効（静的ルートあり）         | アクセス可能                         | アクセス可能                    | アクセス不可        | ほぼ正解です。カスタムネットワークへのホストアクセスを有効にしてください |
+| いいえ        | 有効（静的ルートあり）         | アクセス可能                         | アクセス可能                    | アクセス可能        | 複雑なネットワーク向けの推奨構成                     |
+
+## WireGuardのトラブルシューティング
+
+WireGuardは目立たないように設計されています。何かが動作していない場合でも、エラーメッセージは表示されません。効果的にトラブルシューティングするには、設定の各要素を体系的に確認してください。
+
+#### 接続チェックリスト
+
+- ✅ Unraidとクライアントデバイスの両方でトンネルがアクティブになっている。*("Active"はトンネルが開始されていることを意味しますが、必ずしも接続済みとは限りません。)*
+- ✅ DDNSのURLが現在の公開IPを指しており、**Local endpoint**に設定されている。
+- ✅ 正しいUDPポートがルーターからUnraidへ転送されており、**Local endpoint**のポートと一致している。
+- ✅ サーバー側で変更を行った後は、クライアントに最新の設定ファイルがある。
+- ✅ ピア設定（QRコード/ファイル）を表示または配布する前に変更が保存されている。
+
+#### 追加のトラブルシューティングのヒント
+
+<details>
+  <summary><strong>初回セットアップのヒント</strong> - クリックして展開/折りたたむ</summary>
+
+  WireGuardを初めて設定する場合、次のヒントでよくある落とし穴を回避できます:
+
+  - 最初のクライアントは、ローカルネットワークの問題を切り分けるために、Wi‑Fiではなくモバイル回線のモバイルデバイスで設定します。
+  - 最も簡単に設定を移行できるQRコード方式を使用します。
+
+</details>
+
+<details>
+  <summary><strong>ハンドシェイクと接続の問題</strong> - クリックして展開/折りたたむ</summary>
+
+  ハンドシェイクが表示されない、または接続できない場合は、次の重点チェックを試してください:
+
+  - ハンドシェイクが見えない場合は、トラフィックを生成して（たとえばサーバーへpingして）接続を発生させてみてください。
+  - モバイルクライアントでは、VPNの動作に干渉する可能性があるため、省電力、データセーバー、バッテリーセーバー機能を無効にしてください。
+  - クライアントとサーバーのネットワークが異なるサブネットを使用していることを確認します（たとえば、両方で`192.168.1.0/24`を使わないようにします）。
+  - DDNSにCloudflareを使用している場合は、**Proxy status**を**DNS only**（**Proxied**ではない）に設定します。DNS変更の伝播には時間がかかる場合があります。
+  - 一部の場所からは接続できるのに他ではできない場合、リモート側のネットワークがUDPトラフィックをブロックしている可能性があります。%%WireGuard|wireguard%%は現在、フォールバックとしてTCPをサポートしていません。
+
+</details>
+
+<details>
+  <summary><strong>高度なネットワーク競合</strong> - クリックして展開/折りたたむ</summary>
+
+  ネットワーク構成がより複雑な場合、またはIP競合が疑われる場合は、次の高度なトラブルシューティング手順を確認してください:
+
+  - **Advanced**モードでは、**Local tunnel network pool**がどちら側の既存ネットワークとも重複していないことを確認します。競合がある場合は、別のプライベートサブネット（例: `10.10.10.0/24`）に変更します。
+  - For Docker containers with custom IPs or %%VM|vm%%s with strict requirements, see the [Complex networks](#complex-networks) section.
+
+</details>
+
+<details>
+  <summary><strong>緊急時の復旧</strong> - クリックして展開/折りたたむ</summary>
+
+  Unraid %%WebGUI|web-gui%%にアクセスできなくなり、%%WireGuard|wireguard%%の自動起動を無効にする必要がある場合
+
+  - Delete `/boot/config/wireguard/autostart` from your boot drive and reboot.
+
+</details>
+
+\* *"%%WireGuard|wireguard%%" and the "%%WireGuard|wireguard%%" logo are registered trademarks of Jason A. Donenfeld.*
