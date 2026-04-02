@@ -1,0 +1,190 @@
+---
+sidebar_position: 1
+sidebar_label: Unraidとは何ですか?
+---
+
+# Unraidとは何ですか?
+
+Unraidは、ハードウェアを完全に制御できるように設計された組み込みオペレーティングシステムです。堅牢なネットワーク接続ストレージ（NAS）システム、%%application server|application-server%%、そして%%virtual machines (VMs)|vm%%のホストとして機能します。
+
+Unraid installs on a USB flash drive and boots from it, loading into a root RAM file system.  It uses a modern Linux kernel with updated hardware drivers, allowing it to run on nearly any 64-bit x86_64 system while maintaining a minimal memory footprint.  All configuration data for the operating system is stored on the boot drive and loads simultaneously with the operating system.
+
+Unraidには、簡単に管理できる[ユーザーフレンドリーなWebインターフェース](./explore-the-user-interface/tour-the-web-gui.mdx)があります。一般的な作業向けの基本操作と、経験豊富なユーザー向けの高度な設定を備えています。多くの人に適した設定を既定値として採用しつつ、カスタマイズも可能です。このシンプルさと柔軟性の組み合わせにより、コンテンツを効果的に保存、保護、共有、楽しむことができます。
+
+**Unraidの中核機能は、次の3つの主要分野にあります:**
+
+<details>
+  <summary><h3>ソフトウェア定義NAS</h3>ユーザーがネットワーク上でストレージ容量を効率的に共有できるようにします。</summary>
+
+  ### アレイとパリティ
+
+  Unraidは、64ビット対応のあらゆるシステムをネットワーク接続ストレージ（NAS）デバイスに変えるための、シンプルで柔軟なソリューションを提供します。IDE、SATA、SASのいずれで接続されたドライブでも扱うことができ、さまざまな容量のドライブに対応しています。つまり、ストレージの需要が増えたときに、新しいドライブを1台ずつ追加でき、構成を拡張しても既存データを再編成する必要はありません。
+
+  The main job of an Unraid %%array|array%% is to organize and protect the data stored across several drives. It does this by using up to two special drives called %%parity drive|parity-drives%%s. These %%parity drive|parity-drives%%s are important because they help reconstruct your data if one of the other drives fails. In fact, with just one %%parity drive|parity-drives%%, you can protect all the other drives in your %%array|array%%, keeping your data safe. Plus, you can mix different sized drives and easily expand your storage over time, making Unraid a user-friendly option for anyone looking to manage their data effectively.
+
+  <details>
+    <summary><strong>パリティの仕組み</strong> - クリックして展開/折りたたみ</summary>
+
+    Unraidでは、%%parity|parity%%情報がリアルタイムで更新されます。仕組みを理解するために、ハードドライブの内容を長いビット列と考えてみてください。各ビットは0か1のいずれかです。すべてのドライブにわたってn番目のビット値を合計し、その合計が偶数か奇数かを判定することで、対応するn番目の%%parity|parity%%ビットを適切に設定できます。データドライブが故障した場合、この%%parity|parity%%情報により正確なビット値を特定できるため、交換用ドライブ上で精密な再構築が可能になります。
+
+    たとえば:
+
+    <div style={{ maxWidth: '600px', margin: '1rem auto' }}>
+      ![パリティなし](/img/No_parity_500px.png)
+    </div>
+
+    In the image above, three drives contain streams of bits that vary by device size.  These drives are unprotected, so if one fails, data will be lost.  To protect against failure, we need a fourth disk as a %%parity disk|parity-drives%%, which must be equal to or larger than the largest data disk.
+
+    To set the %%parity|parity%% bits, we find the total for each column.  If the sum is even, the %%parity|parity%% bit is 0; if odd, the %%parity|parity%% bit is 1.
+
+    先ほどと同じ画像ですが、フレームごとに%%parity|parity%%を計算したものです:
+
+    <div style={{ maxWidth: '600px', margin: '1rem auto' }}>
+      ![パリティ](/img/Parity@500px.png)
+    </div>
+
+    例ではドライブ2が故障し、交換用の新しいドライブを購入したとします:
+
+    <div style={{ maxWidth: '600px', margin: '1rem auto' }}>
+      ![ドライブ障害](/img/Drive_failure@500px.png)
+    </div>
+
+    新しいディスク上のデータを再構築するには、%%parity|parity%%ビットを計算するのではなく、失われたビットを求めます。1列目の合計は0なので、失われたビットは0です。6列目の合計は1なので、失われたビットは1です。
+
+    %%parity|parity%%を使用したディスクの再構築は、データ損失を防ぎ、障害耐性を提供して、ドライブが故障してもシステムへ完全にアクセスできるようにします。
+
+  </details>
+
+  ### ユーザー共有
+
+  Unraidは、ほとんどの%%RAID|raid%%システムとは異なり、データを1つにまとめるのではなく、個々のドライブに保存します。%%root user|root-user%%として、%%user shares|user-share%%を作成できます。これは、%%array|array%%や%%cache pool|cache-pool%%内の複数のドライブからファイルを集める最上位フォルダーのようなものです。つまり、どの特定のドライブにファイルが保存されているかを気にする必要はなく、Unraidが整理してくれます。
+
+  これらの共有は、特定のドライブを含めたり除外したり、ストレージ全体でファイルをどのように分散するかを設定してカスタマイズすることもできます。さらに、%%SMB|samba%%や%%NFS|nfs%%などのネットワークオプションを設定し、セキュリティ設定を適用することで、ユーザーの共有アクセスを管理できます。プライベートなデータを安全に保つために、ユーザーアカウントを作成し、信頼できる相手にアクセス制限を設定できます。
+
+  ```mdx-code-block
+
+    <div className="flex-container">
+      <figure className="flex-figure">
+        <img src="/img/User_shares_-_distribution@500px.png" alt="User shares distribution example" />
+
+        <figcaption>User shares - Distribution</figcaption>
+      </figure>
+
+      <figure className="flex-figure">
+        <img src="/img/User_shares_-_access@500px.png" alt="User shares distribution example larger" />
+
+        <figcaption>User shares - Access</figcaption>
+      </figure>
+    </div>
+
+  ```
+
+  ### キャッシュドライブを理解する
+
+  Unraidの際立った機能の1つが%%cache drive|cache%%で、データ転送の高速化に役立ちます。%%cache drive|cache%%を3台以上のドライブと併用すると、書き込み速度は最大で**3倍**になります。%%cache drive|cache%%を使った%%user shares|user-share%%にファイルを保存すると、データはまず%%cache drive|cache%%に保存されます。これにより高速に書き込みでき、その後%%Mover|mover%%と呼ばれる処理が、通常は夜間にデータをメインのストレージ%%array|array%%へ移動し、%%cache drive|cache%%の空きを確保します。
+
+  データ保護をさらに強化するために、複数のドライブを使った%%cache pool|cache-pool%%を構成できます。この構成はストレージ容量を増やすだけでなく、%%ZFS|zfs%%や%%BTRFS|btrfs%%などの技術を使って、%%RAID 1|raid1%%に似た追加の保護をデータに提供します。総じて、Unraidによる共有と%%cache drives|cache%%の管理は、柔軟で効率的、かつ安全なストレージソリューションを実現します。
+
+  [Learn more about configuring shares and cache here.](../using-unraid-to/manage-storage/array/overview.mdx)
+
+  <div style={{ maxWidth: '600px', margin: '1rem auto' }}>
+    ![Cache Poolでのデータキャプチャの仕組み](/img/Cache-pool.gif)
+  </div>
+</details>
+
+<details>
+  <summary><h3>アプリケーションサーバー</h3>コンテナ化されたアプリケーションの実行を可能にします。</summary>
+
+  Unraidは、Dockerコンテナ化によってストレージソリューションを多用途な%%application server|application-server%%へと変えます。このアプローチは、システムの安定性と使いやすさを維持しながら、従来のNASの制限を克服します。
+
+  従来のNASソリューションには、アプリケーションホスティングに関して次の3つの主要な課題があります:
+
+  1. **OSの互換性問題** - 異なるオペレーティングシステム向けに設計されたアプリケーションを実行できないこと。
+  2. **Complex lifecycle management** - Difficult installation experiences can leave residual artifacts after removal.
+  3. **アプリケーションの競合** - ソフトウェアコンポーネント同士、またはシステム操作と干渉する可能性があります。
+
+  UnraidのDocker活用は、次の3つの重要な方法でこれらの課題に対処します:
+
+  1. **OSからの独立性** - 各コンテナは独自のLinux環境で実行されるため、ホストOSとの互換性問題がありません。
+  2. **イメージベースの展開** - 事前設定済みのアプリケーションパッケージにより、ワンクリックでインストールでき、アプリケーションを完全にアンインストールできます。
+  3. **プロセスの分離** - コンテナ化されたアプリケーションは別々のユーザー空間で動作するため、ソフトウェア間の競合を防ぎます。
+
+  Dockerコンテナを使うと、%%virtual machines|vm%%に伴うオーバーヘッドなしに、隔離された軽量な環境でアプリケーションを実行できます。Unraidは、[Docker Hub](https://hub.docker.com/)と[Community Applications](../using-unraid-to/run-docker-containers/community-applications.mdx)を通じて、事前設定済みの数千ものアプリにアクセスできるようにすることで、Dockerの利用を簡単にします。このコンテナ化アプローチにより、Unraidユーザーは互換性の問題なしに複数のアプリケーションを同時に実行できます。また、自己完結型のアプリケーションパッケージを使用することでシステムを整理しやすくし、Dockerのエコシステムを通じてサーバー機能を簡単に拡張できます。
+
+  :::note
+  Dockerの詳細設定については、[Dockerコンテナの実行](../using-unraid-to/run-docker-containers/managing-and-customizing-containers.mdx)を参照してください。
+  :::
+
+</details>
+
+<details>
+  <summary><h3>仮想化プラットフォーム</h3>ベアメタルに近い性能で仮想マシンを実行します。</summary>
+
+  Unraidは仮想化ホストとして機能し、%%hypervisor|hypervisor%%を使用して仮想ゲストに安全にリソースを割り当てます。これにより、ネットワーク接続ストレージにとどまらず、さまざまなアプリケーションを隔離された環境で実行できます。
+
+  :::tip
+  Unraidでハードウェア仮想化を使うには、CPU、チップセット、BIOS、デバイスドライバーが互換性を備えていることを確認してください。必要条件の全一覧は、[VMセットアップガイド](../using-unraid-to/create-virtual-machines/overview-and-system-prep.mdx)にあります。サーバーがこれらの要件を満たしていない場合、Unraidの%%WebGUI|web-gui%%では%%VMs|vm%%メニューが無効になります。
+  :::
+
+  <details>
+    <summary><strong>仮想マシン（VM）の利用による利点</strong> - クリックして展開/折りたたみ</summary>
+
+    DockerコンテナはLinuxベースのアプリケーションで人気ですが、%%VMs|vm%%はUnraidサーバー構成の柔軟性と効率を高め、Unraidサーバーで次のような明確な利点をもたらします:
+
+    - **分離:** %%VMs|vm%%は別々の環境で独立して実行されるため、1つが故障しても他に影響しません。
+
+    - **統合:** 複数の物理サーバーを1台のUnraidマシンに統合し、ハードウェア要件を減らして保守を簡素化できます。
+
+    - **リソース割り当て:** Unraidでは、各%%VM|vm%%にCPU、メモリ、ストレージ、ネットワークリソースを個別に割り当てることができ、重要なワークロードに必要なリソースを確保できます。
+
+    - **テストと開発:** %%VMs|vm%%を使うと、複数の物理マシンを用意しなくても、異なる環境でソフトウェアを簡単に作成・テストできます。
+
+    - **セキュリティ:** %%VMs|vm%%の分離によりセキュリティが強化され、マルウェアが相互に広がりにくくなります。
+
+    - **レガシーアプリケーションのサポート:** %%VMs|vm%%により、最新のハードウェアでは互換性がない可能性のあるレガシーアプリケーションやオペレーティングシステムを実行できます。
+
+    - **リソースの分離:** 各%%VM|vm%%に専用リソースを割り当てられるため、%%VMs|vm%%間での性能問題を防げます。
+
+    - **リソースの過剰割り当て:** 物理リソースで通常は許容される数より多くの%%VMs|vm%%を実行できますが、すべてが同時に割り当てられたリソースを完全に使うわけではないことを理解しておく必要があります。
+
+  </details>
+
+  <details>
+    <summary><strong>仮想化向けの割り当て可能デバイスのサポート</strong> - クリックして展開/折りたたみ</summary>
+
+    Unraid's %%KVM|kvm%%-based virtualization uses modern tools for flexible hardware assignment while maintaining host stability.
+
+    主な構成要素は次のとおりです:
+
+    **中核技術**
+
+    - %%QEMU|qemu%%と%%libvirt|libvirt%%: %%VM|vm%%のライフサイクルを管理します。
+    - %%VFIO|vfio%%デバイスパススルー: ハードウェアへ直接アクセスできます。
+    - %%VirtIO|virtio%%と%%VirtFS|virtfs%%: ストレージとネットワークの性能を最適化します。
+    - %%OVMF|ovmf%%: %%UEFI|uefi%%とセキュアブートをサポートします。
+
+    **割り当て済みリソース**
+
+    - **計算:** %%CPU pinning|cpu-pinning%%による専用CPUコア。
+    - **メモリ:** 分離されたRAM。
+    - **ストレージ:** %%VirtIO|virtio%%によるSSD最適化された%%virtual disks|vdisk%%。
+    - **周辺機器:** %%GPU passthrough|gpu-passthrough%%サポートを含む、PCI/USBデバイスの完全なパススルー。
+
+    **プラットフォームの柔軟性**
+
+    - %%i440fx|i440fx%%と%%Q35|q35%%のマシンタイプをサポートします。
+    - %%Xen HVM|xen-hvm%%および%%Xen PV|xen-pv%%のワークロードに対応しています。
+    - %%Intel VT-x|intel-vt-x%%と%%AMD-V|amd-v%%のハードウェア仮想化を有効にします。
+
+    <div style={{ maxWidth: '600px', margin: '1rem auto' }}>
+      ![割り当て可能なリソース](/img/KVM@2x.png)
+    </div>
+  </details>
+
+  %%VM|vm%%のセットアップ手順については、[仮想マシンの作成](../using-unraid-to/create-virtual-machines/overview-and-system-prep.mdx)を参照してください。
+
+  :::caution
+  %%GPU passthrough|gpu-passthrough%%には互換性のあるハードウェアが必要です（[VMセットアップ](../using-unraid-to/create-virtual-machines/vm-setup.mdx)を参照）。
+  :::
+
+</details>
