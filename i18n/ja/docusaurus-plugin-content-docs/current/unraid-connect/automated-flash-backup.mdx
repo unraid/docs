@@ -1,0 +1,135 @@
+---
+sidebar_position: 2
+sidebar_label: 自動フラッシュバックアップ
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+# 自動フラッシュバックアップ
+
+Unraid のフラッシュドライブをバックアップしておくことは、ハードウェア障害、誤削除、データ破損などの問題から迅速に復旧するために非常に重要です。ローカルバックアップ（たとえば、フラッシュドライブを別の USB デバイスやネットワーク共有にコピーする方法）なら、簡単にアクセスでき、管理もしやすい一方で、盗難、火災、あるいはシステム全体に影響を及ぼす可能性のあるハードウェア障害に対して脆弱です。これに対して、クラウドバックアップは構成を安全にオフサイト保管できるため、ローカルでの災害から保護し、どこからでも復旧できるようにします。
+
+ユーザーデータ、%%VMs|vm%%、または Docker コンテナに重点を置く従来のバックアップとは異なり、フラッシュバックアップは Unraid OS の構成、ライセンス、およびシステム設定を特に保持します。この重点により、最初からやり直すことなくサーバーの動作をすばやく復元できます。Unraid Connect では、OS 構成の自動クラウドベースバックアップが可能です。フラッシュデバイスに障害が発生した場合は、[Unraid USB Flash Creator tool](https://unraid.net/download) を使って最新のバックアップをすばやく復元できます。
+
+Unraid Connect を使用する場合、フラッシュバックアップは完全に任意です。
+
+:::tip
+
+Use both local and cloud backup methods for maximum protection. Cloud backups provide an additional layer of resilience that local-only solutions cannot offer.
+
+:::
+
+## データ収集とプライバシー
+
+<details>
+  <summary><strong>Click to see what data is collected and how we handle it</strong></summary>
+
+  Unraid Connect takes your privacy and data seriously when using flash backup:
+
+  <h4>Purpose</h4>
+
+  Flash backup keeps only the configuration files needed to restore your Unraid OS environment. This helps you recover quickly and maintain service continuity in the event that your flash device encounters a failure.
+
+  <h4>Data collected</h4>
+
+  The backup includes only configuration files, ensuring that sensitive information, such as passwords and %%WireGuard|wireguard%% keys, is excluded. Docker template XML files might be part of the backup and could contain application-specific credentials.
+
+  <h4>Data retention</h4>
+
+  Only the latest backup is kept. If a backup exceeds certain limits—specifically, if individual files exceed 10 MB or the total repository size exceeds 100 MB—it will be deleted and recreated. Backups are also removed when you deactivate the flash backup feature or after a specific period of inactivity.
+
+  <h4>Data sharing</h4>
+
+  Flash backup data is never shared with third parties. It's stored exclusively to provide you with backup and restore services.
+
+</details>
+
+## Enabling flash backup
+
+Unraid Connect excludes sensitive data - like account passwords and %%WireGuard|wireguard%% keys - from backups until full encryption is available. However, Docker template XML files (which might contain application credentials) are included. Encryption solutions are in development.
+
+To activate flash backup:
+
+1. Go to ***Settings → Management Access → Unraid API***.
+
+<div style={{ margin: 'auto', maxWidth: '600px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+  ![Flash backup activate](/img/flashbackupbutton.png)
+</div>
+
+2. Under **Flash backup**, click **Activate**.
+3. Wait for activation and the initial backup to complete. The status will show **Activated: Up-to-date** when finished.
+
+After activation, any configuration changes are automatically backed up to the cloud within 1–2 minutes.
+
+:::important
+
+Backups do not include `config/shadow` or `config/smbpasswd` files. User accounts are preserved, but passwords are not. You will need to reset all user passwords, including the root password, after restoration. %%WireGuard|wireguard%% keys are also excluded.
+
+:::
+
+Flash backup is designed to store essential configuration files, not a full copy of your flash drive. It does not back up transient files (such as logs) or application binaries. Plugin configurations are included, but application files will need to be redownloaded at boot. Individual files up to 10 MB are backed up; if the total backup exceeds 100 MB, it will be deleted and recreated.
+
+## Restoring a flash backup
+
+To restore your configuration:
+
+1. Log in to Unraid Connect.
+2. Select **Details** on the Dashboard.
+3. Click **Generate flash backup** from the Flash backup tile.
+4. The system creates a zip file containing your OS configuration and release version.
+5. Click **Download flash backup** to get the zip file.
+6. Use the [Unraid USB Flash Creator](https://unraid.net/download) to restore the backup to a new flash drive.
+
+### Restoring to internal boot
+
+If your server uses internal boot, restore the flash backup to a USB flash drive first.
+
+Then:
+
+1. Boot the server from that restored USB flash drive.
+2. Go to ***Settings → Onboarding Wizard***.
+3. Choose **internal boot**, select the target device(s), and complete the switch.
+
+Unraid copies the restored boot configuration to the new internal boot device as part of the internal boot setup flow. You do not manually extract the flash backup zip into the internal boot partition.
+
+For more details about internal boot, see the [Internal Boot FAQ (7.3+)](/unraid-os/getting-started/set-up-unraid/internal-boot-faq/).
+
+### Post-restoration steps
+
+After booting with the restored flash drive:
+
+- Re-activate flash backup in ***Settings → Management Access → Unraid API***.
+- Reset passwords for all users (including root) on the Users page.
+- For each %%VPN Tunnel|vpn-tunnel%% and peer in ***Settings → VPN Manager***, generate new keys and download updated client configurations.
+- If Internet access is not available immediately after booting, reinstall plugins via ***Apps → Previous Apps*** once connectivity is restored. Configuration files will be ready for use.
+
+## Disabling flash backup
+
+To turn off flash backup:
+
+1. In ***Settings → Management Access → Unraid API***, click **Deactivate** for Flash Backup.
+2. In the confirmation dialog, check **Also delete cloud backup** if you want to remove your backup immediately. Otherwise, backups will be automatically deleted after a period of inactivity.
+
+## Privacy and security
+
+### Backup encryption
+
+Currently, flash backups are stored in the cloud without encryption. As a precaution, sensitive data - including all user and root passwords, as well as all %%WireGuard|wireguard%% keys - is never included in the backup.
+
+### Sensitive data policy
+
+To protect your privacy, the following are **never** stored in cloud backups:
+
+- Unraid root or user account passwords
+- Public, private, or shared %%WireGuard|wireguard%% keys
+
+:::note\[Reminder]
+
+Flash backup is for configuration recovery only. Always incorporate additional backup strategies for your data and critical secrets.
+
+:::
+
+---
+
+\* *"%%WireGuard|wireguard%%" and the "%%WireGuard|wireguard%%" logo are registered trademarks of Jason A. Donenfeld.*
