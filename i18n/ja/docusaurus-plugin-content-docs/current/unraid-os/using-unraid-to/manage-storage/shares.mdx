@@ -14,267 +14,267 @@ import SharesArrayToCache611 from './partials/shares-array-to-cache-611.mdx';
 
 # 共有
 
-A key feature of Unraid is the management of shares. Shares are folders or drives on your Unraid server that can be accessed over a network. You can create as many shares as you want on your Unraid server. These shares can be secured, and their configuration determines how data is written and distributed across your %%array|array%% or named %%pool|cache-pool%% of drives.
+Unraid の重要な機能の 1 つは、共有の管理です。共有とは、Unraid サーバー上のフォルダーまたはドライブで、ネットワーク経由でアクセスできます。Unraid サーバー上では、必要な数だけ共有を作成できます。これらの共有は保護でき、その設定によって、データがドライブの %%array|array%% または名前付き %%pool|cache-pool%% にどのように書き込まれ、分散されるかが決まります。
 
-Unraid offers two types of shares to optimize your data management:
+Unraid では、データ管理を最適化するために 2 種類の共有を提供しています:
 
-- [**User Shares**](#user-shares): These utilize **Linux FUSE** and represent folders within the broader file system.
-- [**Disk Shares**](#disk-shares): These share the entire disk using the drive’s [file system](./file-systems.mdx).
+- [**ユーザー共有**](#user-shares): これらは **Linux FUSE** を利用し、より広いファイルシステム内のフォルダーを表します。
+- [**ディスク共有**](#disk-shares): これらは、ドライブの [ファイルシステム](./file-systems.mdx) を使用してディスク全体を共有します。
 
 <div style={{ margin: 'auto', maxWidth: '500px'}}>
-  ![User Shares vs. Disk Shares](/img/usersharesvsdiskshares.png)
+  ![ユーザー共有とディスク共有](/img/usersharesvsdiskshares.png)
 </div>
 
-It's important to remember that both share types present different views of the same underlying file system; any file or folder visible in a %%user share|user-share%% will also appear under the disk share for its respective physical drive.
+覚えておくべき重要な点として、どちらの共有タイプも同じ基盤となるファイルシステムの異なる見え方を提供します。%%user share|user-share%% に表示されるファイルやフォルダーは、その物理ドライブに対応するディスク共有にも表示されます。
 
-When you start services like Docker or %%VM|vm%% Manager, Unraid automatically creates a [set of default user shares](#default-shares) designed to support common plugins, Docker containers, and %%virtual machines (VMs)|vm%%. You can conveniently create additional shares for your personal data as needed.
+Docker や %%VM|vm%% Manager などのサービスを起動すると、Unraid は一般的なプラグイン、Docker コンテナ、%%virtual machines (VMs)|vm%% をサポートするために設計された [既定のユーザー共有セット](#default-shares) を自動的に作成します。必要に応じて、個人データ用の追加共有を簡単に作成できます。
 
 :::note
 
-To manage your shares, simply navigate to the **Shares** tab in %%WebGUI|web-gui%%. Here, you can easily enable or disable shares through ***Settings → Global Share Settings***. By default, %%user shares|user-share%% are enabled, providing a straightforward starting point for your file organization.
+共有を管理するには、%%WebGUI|web-gui%% の **Shares** タブに移動します。ここでは、***Settings → Global Share Settings*** から共有を簡単に有効または無効にできます。既定では %%user shares|user-share%% が有効になっており、ファイル整理のための分かりやすい出発点になります。
 
 :::
 
 ---
 
-## User shares
+## ユーザー共有
 
-%%User shares|user-share%% provide an aggregated view of top-level folders with the same name across %%cache|cache%% and array drives. The share name corresponds to the folder name, creating a unified network-accessible view that spans multiple drives. It's important to note that while directories appear merged, individual files remain stored on a single drive.
+%%User shares|user-share%% は、%%cache|cache%% と array ドライブにまたがる同名の最上位フォルダーを集約して表示します。共有名はフォルダー名に対応し、複数のドライブにまたがる統合されたネットワークアクセス可能な表示を作成します。ディレクトリは統合されて見えますが、個々のファイルは単一のドライブに保存されたままです。
 
-### Managing user shares
+### ユーザー共有の管理
 
-You can access and manage %%User shares|user-share%% from the **Shares** tab in the %%WebGUI|web-gui%%. This interface allows you to:
+%%WebGUI|web-gui%% の **Shares** タブから %%User shares|user-share%% にアクセスして管理できます。このインターフェースでは、次のことができます:
 
-- Review all existing shares
-- Create new shares
-- Modify or delete existing shares
+- 既存の共有をすべて確認する
+- 新しい共有を作成する
+- 既存の共有を変更または削除する
 
-Any top-level folder that is manually created on a drive is automatically recognized as a User Share and assigned default attributes.
+ドライブ上で手動で作成された最上位フォルダーは、すべて自動的にユーザー共有として認識され、既定の属性が割り当てられます。
 
-### File system structure
+### ファイルシステム構造
 
-At the Linux level, %%User shares|user-share%% are accessible under `/mnt/user`, which combines files from both the %%array|array%% and %%pools|cache-pool%%. This logical view overlays the physical file system, meaning files are also visible through **Disk Shares** at the drive level.
+Linux レベルでは、%%User shares|user-share%% は `/mnt/user` からアクセスでき、%%array|array%% と %%pools|cache-pool%% の両方のファイルをまとめます。この論理ビューは物理ファイルシステムの上に重ねられており、ファイルはドライブレベルの **Disk Shares** からも表示されます。
 
 :::warning
 
-The deprecated `/mnt/user0` mount point (which excludes %%pool|cache-pool%% files) may be removed in future Unraid releases.
+非推奨の `/mnt/user0` マウントポイント（%%pool|cache-pool%% ファイルを除外する）は、将来の Unraid リリースで削除される可能性があります。
 
 :::
 
-### Storage allocation
+### ストレージの割り当て
 
-The physical drive that stores a file is determined by share settings such as %%Allocation Method|allocation-method%%, %%Included/Excluded Disks|included-or-excluded-disks%%, and %%Split Level|split-level%%. Changes to these settings will affect only new files; existing files will remain untouched unless moved manually.
+ファイルを保存する物理ドライブは、%%Allocation Method|allocation-method%%、%%Included/Excluded Disks|included-or-excluded-disks%%、%%Split Level|split-level%% などの共有設定によって決まります。これらの設定を変更しても新しいファイルにのみ影響し、既存のファイルは手動で移動しない限りそのまま残ります。
 
 :::caution\[Critical]
 
-**Do not mix User Shares and Disk Shares**
+**ユーザー共有とディスク共有を混在させないでください**
 
-Never copy or move files directly between a **user share** and a **disk share** (for example, between `/mnt/user/share` and `/mnt/disk1/share`) - especially if the folder names are the same. This can cause file corruption or permanent data loss.
+**ユーザー共有** と **ディスク共有** の間でファイルを直接コピーまたは移動しないでください（たとえば、`/mnt/user/share` と `/mnt/disk1/share` の間）。特にフォルダー名が同じ場合は危険です。ファイル破損や永続的なデータ損失を引き起こす可能性があります。
 
-For safe file management practices and more details, see the [Disk share guidelines](#disk-share-guidelines) below.
-
-:::
-
-### Add a share
-
-Before creating a share, consider how you'll use it, your performance needs, security, and where files should be stored.
-
-:::important[Share names]
-
-Even though network shares (%%SMB|samba%%) don't care about capitalization (e.g., `MEDIA` is the same as `media`), Linux file systems do. Avoid using names that are identical but only differ in case to prevent issues.
+安全なファイル管理の実践と詳細については、以下の [Disk share guidelines](#disk-share-guidelines) を参照してください。
 
 :::
 
-To add a share:
+### 共有を追加する
 
-1. Go to the **Shares** tab and click **Add Share**.
-2. Pick a unique name for your share, like `Media` or `Documents`.
-3. Configure optional settings:
-   - **Comments**: Write a short description to identify your share (e.g., "Family Photos").
-   - **Minimum Free Space**: Decide on a minimum amount of free space (e.g., `50GB` for large files). For more details, see [Minimum free space](#minimum-free-space).
-4. Select storage locations:
-   - **Primary Storage**: Choose where the share will initially be stored (e.g., %%cache|cache%%, %%array|array%%, or a specific %%pool|cache-pool%%).
-   - **Secondary Storage**: Set an overflow location that can be used when primary storage is full, and also serves as the final destination for the share once the %%Mover|mover%% runs.
-   - For more details, see [Primary and secondary storage](#primary-and-secondary-storage).
-5. Set data rules:
-   - **%%Allocation Method|allocation-method%%**: Pick how data will be stored - options include high-water, fill-up, or most-free. For more details, see [Allocation method](#allocation-method).
-   - **%%Split Level|split-level%%**: Determine how folders should be organized. For more details, see [Split level](#split-level).
-6. Manage drives:
-   - **Included Disks**: Choose specific drives to include (e.g., `disk1,disk2`).
-   - **Excluded Disks**: Specify any drives you want to exclude (like older drives).
-   - For more details, see [Included or excluded disks](#included-or-excluded-disks).
-7. (Optional) Configure Mover settings:
-   - **Mover Action**: Decide the direction of data movement (either *Primary → Secondary* or *Secondary → Primary*).
-   - For more details, see [Moving files between cache and array](#moving-files-between-cache-and-array).
-8. Click **Add Share** to finish setting up your new share.
+共有を作成する前に、その用途、必要なパフォーマンス、セキュリティ、およびファイルをどこに保存するかを検討してください。
+
+:::important[Share 名前]
+
+ネットワーク共有（%%SMB|samba%%）は大文字小文字を区別しませんが（例: `MEDIA` は `media` と同じです）、Linux ファイルシステムは区別します。問題を避けるため、大文字小文字だけが異なる同一の名前は使用しないでください。
+
+:::
+
+共有を追加するには:
+
+1. **Shares** タブに移動し、**Add Share** をクリックします。
+2. `Media` や `Documents` のように、共有に一意の名前を付けます。
+3. 任意の設定を構成します:
+   - **Comments**: 共有を識別するための短い説明を記入します（例: "Family Photos"）。
+   - **Minimum Free Space**: 最低限残しておく空き容量を決めます（例: 大きなファイル向けに `50GB`）。詳細は [Minimum free space](#minimum-free-space) を参照してください。
+4. 保存先を選択します:
+   - **Primary Storage**: 共有を最初に保存する場所を選択します（例: %%cache|cache%%、%%array|array%%、または特定の %%pool|cache-pool%%）。
+   - **Secondary Storage**: 主ストレージがいっぱいになったときに使用できるオーバーフロー先を設定します。また、%%Mover|mover%% 実行後に共有の最終保存先としても機能します。
+   - 詳細は [Primary and secondary storage](#primary-and-secondary-storage) を参照してください。
+5. データ規則を設定します:
+   - **%%Allocation Method|allocation-method%%**: データの保存方法を選択します。オプションには high-water、fill-up、most-free があります。詳細は [Allocation method](#allocation-method) を参照してください。
+   - **%%Split Level|split-level%%**: フォルダーの整理方法を決定します。詳細は [Split level](#split-level) を参照してください。
+6. ドライブを管理します:
+   - **Included Disks**: 含める特定のドライブを選択します（例: `disk1,disk2`）。
+   - **Excluded Disks**: 除外したいドライブを指定します（古いドライブなど）。
+   - 詳細は [Included or excluded disks](#included-or-excluded-disks) を参照してください。
+7. （オプション）Mover 設定を構成します:
+   - **Mover Action**: データ移動の方向を決定します（*Primary → Secondary* または *Secondary → Primary*）。
+   - 詳細は [Moving files between cache and array](#moving-files-between-cache-and-array) を参照してください。
+8. **Add Share** をクリックして、新しい共有の設定を完了します。
 
 :::important
 
-By default, a new share will not be shared over the network. You must configure [network access](../../system-administration/secure-your-server/security-fundamentals.mdx#managing-network-visibility-of-shares) after the share is created.
+既定では、新しい共有はネットワーク経由で共有されません。共有を作成した後で、[ネットワークアクセス](../../system-administration/secure-your-server/security-fundamentals.mdx#managing-network-visibility-of-shares) を設定する必要があります。
 
 :::
 
 :::tip
 
-You can configure either **Included** or **Excluded Disks**, but not both at the same time.
+**含めるディスク** または **除外するディスク** のどちらか一方を設定できますが、両方を同時に設定することはできません。
 
 :::
 
-### Delete a share
+### 共有を削除する
 
 :::important
 
-To prevent any potential data loss, shares that contain data cannot be deleted. You must either delete or relocate all contents within the share first. Always double-check to confirm that the share is empty before proceeding with its removal.
+データ損失の可能性を防ぐため、データを含む共有は削除できません。まず共有内のすべての内容を削除するか、別の場所へ移動する必要があります。削除を進める前に、共有が空であることを必ず再確認してください。
 
 :::
 
-#### Delete a share containing data
+#### データを含む共有を削除する
 
-For shares containing data:
+データを含む共有の場合:
 
-1. Empty the share:
+1. 共有を空にする:
 
-   - Use the built-in **File Manager** accessible through ***Tools → File Manager*** or click the ![File Manager](/img/filemanager.png) icon in the top-right corner.
-   - Find your share in **Shares** and click the **Browse** icon.
-   - Delete or move all files using the file manager.
+   - ***Tools → File Manager*** からアクセスできる組み込みの **File Manager** を使用するか、右上隅の ![File Manager](/img/filemanager.png) アイコンをクリックします。
+   - **Shares** で共有を見つけ、**Browse** アイコンをクリックします。
+   - ファイルマネージャーを使用して、すべてのファイルを削除または移動します。
 
-   ::::note[Alternative methods]
-   You can also:
+   ::::note[代替方法]
+   次の方法もあります:
 
-   - **Use the command line**: Open the **Web Terminal** (***Tools → Terminal***) or connect via %%SSH|ssh%%, then run `rm -rf /mnt/user/[share_name]/*` (replace `[share_name]` with your share's name).
+   - **コマンドラインを使用する**: **Web Terminal**（***Tools → Terminal***）を開くか、%%SSH|ssh%% で接続し、`rm -rf /mnt/user/[share_name]/*` を実行します（`[share_name]` は共有名に置き換えてください）。
 
-   - **Use network access**: Connect via **Windows Explorer** (%%SMB|samba%%) or **macOS Finder** (%%AFP|AFP%%/%%SMB|samba%%) and manually delete the files.
+   - **ネットワークアクセスを使用する**: **Windows Explorer**（%%SMB|samba%%）または **macOS Finder**（%%AFP|AFP%%/%%SMB|samba%%）で接続し、手動でファイルを削除します。
      :::caution
-     The `rm -rf` command will permanently delete files. Double-check before using it. Make sure no Docker or %%VM|vm%% services are using the share before you delete it.
+     `rm -rf` コマンドはファイルを完全に削除します。使用する前に必ず確認してください。削除する前に、Docker または %%VM|vm%% サービスがその共有を使用していないことを確認してください。
      :::
      ::::
 
-2. Delete the share:
-   - Go back to **Shares** and click the now-empty share.
-   - Check the **Delete** box and click **Delete**.
-   - Confirm and click **Done**.
+2. 共有を削除する:
+   - **Shares** に戻り、今は空になっている共有をクリックします。
+   - **Delete** ボックスにチェックを入れ、**Delete** をクリックします。
+   - 確認して **Done** をクリックします。
 
-#### Delete an empty share
+#### 空の共有を削除する
 
-To delete a share that's already empty:
+すでに空の共有を削除するには:
 
-1. Go to the **Shares** tab.
-2. Click the share you want to delete.
-3. Check the box next to **Delete**. The button changes to **Delete**.
-4. Click **Delete**.
-5. Confirm and click **Done**.
+1. **Shares** タブに移動します。
+2. 削除したい共有をクリックします。
+3. **Delete** の横のチェックボックスをオンにします。ボタンが **Delete** に変わります。
+4. **Delete** をクリックします。
+5. 確認して **Done** をクリックします。
 
 ---
 
-## Share settings
+## 共有設定
 
 ### 最低限の空き容量
 
-The **Minimum Free Space** setting works in conjunction with the %%allocation method|allocation-method%% and %%split level|split-level%% to determine where new files are stored. This setting specifies the amount of free space that must remain on a drive for it to be considered eligible for new file writes. If a drive's free space falls below this threshold, Unraid will stop placing new data on that drive, provided that the %%split level|split-level%% permits splitting to another disk.
+**Minimum Free Space** 設定は、%%allocation method|allocation-method%% および %%split level|split-level%% と連動して、新しいファイルをどこに保存するかを決定します。この設定は、新しいファイルを書き込む対象として適格とみなすために、ドライブに残しておく必要がある空き容量を指定します。ドライブの空き容量がこのしきい値を下回ると、%%split level|split-level%% によって別のディスクへの分割が許可されている場合に限り、Unraid はそのドライブへの新しいデータの配置を停止します。
 
-#### How it works
+#### 仕組み
 
-When transferring a file (e.g., `file.eg`), Unraid selects a disk based on available settings but cannot predict the final size of the file. If the chosen disk runs out of space during the transfer, the operation will fail with a "disk full" error. To prevent this, set the **Minimum Free Space** to a value that is larger than your largest file. This ensures that Unraid avoids disks that cannot accommodate the entire file.
+ファイル（たとえば `file.eg`）を転送する場合、Unraid は利用可能な設定に基づいてディスクを選択しますが、ファイルの最終サイズは予測できません。選択したディスクが転送中に空き容量不足になると、操作は "disk full" エラーで失敗します。これを防ぐには、**Minimum Free Space** を最大ファイルより大きい値に設定してください。これにより、Unraid はファイル全体を収められないディスクを回避できます。
 
 #### 推奨
 
-Set this value to **twice the size of your largest file**. For example:
+この値は **最大ファイルサイズの 2 倍** に設定してください。たとえば:
 
-- If your largest file is 8GB, then set Minimum Free Space to 16GB.
+- 最大ファイルが 8GB の場合、Minimum Free Space を 16GB に設定します。
 
-This buffer accounts for variations in file sizes and helps prevent transfer failures.
+この余裕はファイルサイズの変動を考慮し、転送失敗の防止に役立ちます。
 
-#### Configuration
+#### 構成
 
-- Enter the value in KB, MB, GB, or TB (e.g., `50GB`).
-- New %%user shares|user-share%% default to 10% of the disk’s total capacity.
+- 値は KB、MB、GB、または TB で入力します（例: `50GB`）。
+- 新しい %%user shares|user-share%% は、既定でディスク総容量の 10% に設定されます。
 
 :::warning
 
-Always configure **Minimum Free Space** when using the *fill-up* %%allocation method|allocation-method%%. If you do not set it, you may encounter "disk full" errors during write operations.
+*fill-up* %%allocation method|allocation-method%% を使用する場合は、必ず **Minimum Free Space** を設定してください。設定しないと、書き込み操作中に "disk full" エラーが発生する可能性があります。
 
 :::
 
 :::caution
 
-There is a separate **Minimum Free Space** setting for %%cache pools|cache-pool%%. You can access this by going to the **Main** tab and clicking on a %%pool|cache-pool%%. Make sure to set this value higher than your largest file to avoid overfilling, especially for shares configured with *Yes* or *Prefer* cache modes.
+%%cache pools|cache-pool%% には別個の **Minimum Free Space** 設定があります。これは **Main** タブに移動して %%pool|cache-pool%% をクリックすると確認できます。特に *Yes* または *Prefer* のキャッシュモードで構成された共有では、過剰な容量超過を避けるため、この値を最大ファイルサイズより大きく設定してください。
 
 :::
 
-#### Limitations
+#### 制限事項
 
-- Unraid prioritizes %%split level|split-level%% rules over free space settings. If splitting is not allowed, files may still fill up a disk regardless of the free space threshold.
-- Updating existing files (for example, when growing backup files) does not trigger redistribution, which can lead to "disk full" errors as time goes on.
+- Unraid は空き容量設定よりも %%split level|split-level%% ルールを優先します。分割が許可されていない場合、空き容量のしきい値に関係なく、ファイルによってはディスクがいっぱいになることがあります。
+- 既存ファイルの更新（たとえばバックアップファイルの拡張時）では再配分はトリガーされないため、時間の経過とともに "disk full" エラーにつながる可能性があります。
 
-For more detailed guidance, use the **Help** icon in the %%WebGUI|web-gui%% while configuring your shares.
+より詳しい案内については、共有を構成する際に %%WebGUI|web-gui%% の **Help** アイコンを使用してください。
 
 ---
 
-## Primary and secondary storage
+## プライマリストレージとセカンダリストレージ
 
-Unraid’s storage management lets you control where new files are written and how data moves between %%pools|cache-pool%%, %%cache|cache%%, and the %%array|array%%. The options and terminology differ between Unraid 6.12+ and earlier versions.
+Unraid のストレージ管理では、新しいファイルを書き込む場所や、%%pools|cache-pool%%、%%cache|cache%%、%%array|array%% 間でデータがどのように移動するかを制御できます。オプションと用語は、Unraid 6.12 以降とそれ以前のバージョンで異なります。
 
 <Tabs>
-  <TabItem value="6.12" label="Unraid 6.12 and later" default>
+  <TabItem value="6.12" label="Unraid 6.12 以降" default>
     <SharesPrimaryStorage612 />
   </TabItem>
 
-  <TabItem value="6.11" label="Unraid 6.11 and earlier">
+  <TabItem value="6.11" label="Unraid 6.11 以前">
     <SharesPrimaryStorage611 />
   </TabItem>
 </Tabs>
 
 ---
 
-### Moving files between cache and array
+### cache と array 間でファイルを移動する
 
-Unraid provides a straightforward way to manage file placement between %%cache pools|cache-pool%% and %%array|array%%, allowing you to optimize performance and manage your data effectively. The key is to set up your share settings based on your preferred data flow and let the %%Mover|mover%% handle file transfers automatically according to its schedule.
+Unraid は %%cache pools|cache-pool%% と %%array|array%% 間のファイル配置を簡単に管理でき、パフォーマンスの最適化とデータの効果的な管理を可能にします。重要なのは、好みのデータフローに基づいて共有設定を行い、%%Mover|mover%% にスケジュールに従って自動的にファイル転送を任せることです。
 
-:::tip[Scheduling the Mover]
+:::tip[Scheduling Mover]
 
-You can configure the [%%Mover|mover%% schedule](../../getting-started/set-up-unraid/customize-unraid-settings.mdx#scheduler) by going to **Settings → Scheduler → Mover Settings**. Running it automatically during off-peak hours helps move files between the %%cache|cache%% and %%array|array%% without requiring manual action.
+**Settings → Scheduler → Mover Settings** に移動することで、[%%Mover|mover%% のスケジュール](../../getting-started/set-up-unraid/customize-unraid-settings.mdx#scheduler) を設定できます。アイドル時間帯に自動実行することで、手動操作なしで %%cache|cache%% と %%array|array%% 間のファイル移動を行えます。
 
 :::
 
-#### Cache to array
+#### cache から array へ
 
-*Use case:* Moving files from your high-speed %%cache|cache%% to the %%array|array%% for long-term storage.
+*使用例:* 高速な %%cache|cache%% から長期保存用に %%array|array%% へファイルを移動します。
 
 <Tabs>
   <TabItem value="6.12+" label="Unraid 6.12+" default>
     <SharesCacheToArray612 />
   </TabItem>
 
-  <TabItem value="6.11" label="Unraid 6.11 or below">
+  <TabItem value="6.11" label="Unraid 6.11 以下">
     <SharesCacheToArray611 />
   </TabItem>
 </Tabs>
 
-#### Array to cache
+#### array から cache へ
 
-*Use case:* Improving performance for Docker containers and %%VMs|vm%% by moving files to the %%cache|cache%%.
+*使用例:* ファイルを %%cache|cache%% に移動して、Docker コンテナと %%VMs|vm%% のパフォーマンスを向上させる。
 
 <Tabs>
   <TabItem value="6.12+" label="Unraid 6.12+" default>
     <SharesArrayToCache612 />
   </TabItem>
 
-  <TabItem value="6.11+" label="Unraid 6.11 or below">
+  <TabItem value="6.11+" label="Unraid 6.11 以下">
     <SharesArrayToCache611 />
   </TabItem>
 </Tabs>
 
-:::tip[Enabling Mover logging for troubleshooting]
+:::tip[Enabling Mover のトラブルシューティング用ログ]
 
-If you run into issues with file movement, you can enable **Mover logging** through the ***Settings → Scheduler → Mover Settings*** page. This logs every file moved and can be viewed in ***Tools → System Log***.
+ファイル移動で問題が発生した場合は、***Settings → Scheduler → Mover Settings*** ページから **Mover logging** を有効にできます。移動された各ファイルが記録され、***Tools → System Log*** で確認できます。
 
 :::
 
-:::caution[Critical steps for both directions]
+:::caution[Critical 両方向の手順]
 
-- Make sure your %%parity|parity%% is valid before moving files from the %%array|array%% to the %%cache|cache%%.
-- If dealing with large datasets, keep an eye on %%Mover|mover%% activity via the logs.
-- If files appear to be "stuck," consider temporarily disabling Docker and the %%VM|vm%% Manager, then running the %%Mover|mover%% manually via ***Main → Array Operation → Move***.
+- %%parity|parity%% が有効であることを確認してから、%%array|array%% から %%cache|cache%% へファイルを移動してください。
+- 大きなデータセットを扱う場合は、ログで %%Mover|mover%% の動作を監視してください。
+- ファイルが「動かない」ように見える場合は、一時的に Docker と %%VM|vm%% Manager を無効にしてから、***Main → Array Operation → Move*** から %%Mover|mover%% を手動で実行してみてください。
 
 :::
 
@@ -282,77 +282,77 @@ If you run into issues with file movement, you can enable **Mover logging** thro
 
 ### アロケーションメソッド
 
-When you create a new user share or add any file or folder inside it, the system needs to decide where to store this data. Usually, it will choose the data disk that has the most free space available. However, you can adjust how this decision is made using certain settings.
+新しいユーザー共有を作成するか、その中にファイルやフォルダーを追加すると、システムはそのデータをどこに保存するかを決定する必要があります。通常は、利用可能な空き容量が最も多いデータディスクが選ばれます。ただし、特定の設定を使用して、この決定方法を調整できます。
 
-There are three straightforward options you can select for how the system allocates storage for your user share:
+ユーザー共有のストレージ割り当て方法として、選べるわかりやすいオプションは 3 つあります:
 
-#### High-Water (Recommended)
+#### ハイウォーター（推奨）
 
-**How it works**
+**仕組み**
 
-The **High-water** method progressively fills disks using "switch points" based on half the largest drive's capacity. This balances disk usage while keeping related files together and minimizing drive spin-ups.
+**High-water** 方式は、最大ドライブ容量の半分を基準にした「切り替え点」に従って、ディスクを段階的に埋めていきます。これにより、関連ファイルをまとめたままにしつつ、ディスク使用量を分散し、ドライブのスピンアップ回数を最小限に抑えられます。
 
-**Example with 8TB, 3TB, and 2TB drives**
+**8TB、3TB、2TB ドライブの例**
 
-1. **First pass:** Fill 8TB drive until 4TB free remains (half of 8TB).
-2. **Second pass:** Fill 8TB/3TB drives until 2TB free remains.
-3. **Third pass:** Fill all drives until 1TB free remains.
+1. **1 回目:** 8TB ドライブを、4TB の空きが残るまで埋めます（8TB の半分）。
+2. **2 回目:** 8TB/3TB ドライブを、2TB の空きが残るまで埋めます。
+3. **3 回目:** すべてのドライブを、1TB の空きが残るまで埋めます。
 
-**Best for:**
+**最適な用途:**
 
-- Media servers (e.g., Plex)
-- Scenarios where keeping files on fewer disks improves spin-down efficiency
-- Arrays with mixed drive sizes
+- メディアサーバー（例: Plex）
+- 少ないディスクにファイルをまとめることでスピンダウン効率が向上するシナリオ
+- 容量の異なるドライブが混在する array
 
 :::note
 
-High-water is the default method and works well for most users. It reduces drive thrashing compared to "Most-free."
+High-water は既定の方法で、多くのユーザーに適しています。"Most-free." よりもドライブの行き来が少なくなります。
 
 :::
 
-#### Most-Free
+#### 最も空き容量の多い
 
-**How it works**
+**仕組み**
 
-The **Most-free** method selects the disk with the most free space for each new file. This maximizes storage efficiency but increases drive thrashing.
+**Most-free** 方式は、新しいファイルごとに最も空き容量の多いディスクを選択します。これによりストレージ効率は最大化されますが、ドライブの頻繁な切り替えが増えます。
 
-**Performance impact**
+**パフォーマンスへの影響**
 
-- Frequent disk switches keep multiple drives spun up
-- May reduce %%parity|parity%% write speeds due to overlapping operations
+- ディスクの切り替えが頻繁になると、複数のドライブが回転したままになります
+- 処理の重なりにより %%parity|parity%% の書き込み速度が低下する可能性があります
 
-**Best for:**
+**最適な用途:**
 
-- High-throughput workflows (e.g., video editing)
+- 高スループットのワークフロー（例: 動画編集）
 - Temporary or %%cache|cache%%-like data
-- Arrays where performance outweighs power savings
+- パフォーマンスが省電力より重要な array
 
 :::tip
 
-Combine with %%split level|split-level%% settings to group related files despite frequent disk switching.
+%%split level|split-level%% 設定と組み合わせて、ディスクの切り替えが頻繁でも関連ファイルをまとめます。
 
 :::
 
 #### Fill-Up
 
-**How it works**
+**仕組み**
 
-The **Fill-up** method writes to disks in numeric order until they reach the **Minimum Free Space** threshold, then moves to the next disk.
+**Fill-up** 方式は、ディスク番号順に書き込み、**Minimum Free Space** のしきい値に達するまで使い、その後次のディスクに移ります。
 
-**Requirements**
+**要件**
 
-- Always set **Minimum Free Space** (e.g., 2x largest file size)
-- Configure **Split Level** to control file grouping
+- 常に **Minimum Free Space** を設定します（例: 最大ファイルサイズの 2 倍）
+- ファイルのグループ化を制御するために **Split Level** を設定します
 
-**Best for:**
+**最適な用途:**
 
-- Static data archives
-- Users who prefer manual disk management
-- Arrays with identical drive sizes
+- 静的データアーカイブ
+- 手動でのディスク管理を好むユーザー
+- 同じ容量のドライブで構成された array
 
 :::caution
 
-Without **Minimum Free Space** configured, "disk full" errors will occur when a drive nears capacity.
+**Minimum Free Space** を設定しないと、ドライブが容量に近づいたときに「ディスクがいっぱいです」エラーが発生します。
 
 :::
 
@@ -360,172 +360,172 @@ Without **Minimum Free Space** configured, "disk full" errors will occur when a 
 
 ### スプリットレベル
 
-The **Split Level** setting in Unraid helps manage how files and folders are organized across multiple disks. It determines how deep folder structures can go on different disks while keeping certain files together. The %%split level|split-level%% is numbered starting from 1, where the top level (the main share) is considered level 1.
+Unraid の **Split Level** 設定は、ファイルやフォルダーを複数のディスクにわたってどのように整理するかを管理するのに役立ちます。特定のファイルをまとめたまま、異なるディスク上でどの深さまでフォルダー構造を許可するかを決定します。%%split level|split-level%% は 1 から番号が始まり、最上位（メイン共有）がレベル 1 と見なされます。
 
-#### Automatically Split Any Directory (Default)
+#### ディレクトリを自動的に分割する（既定）
 
-**Behavior**
+**動作**
 
-Unraid creates any required folders on the selected disk, regardless of folder depth. New files and folders are placed based on %%allocation method|allocation-method%% and available space, even if their parent directories do not already exist on that disk.
+Unraid は、フォルダーの深さに関係なく、選択したディスクに必要なフォルダーを作成します。新しいファイルとフォルダーは、親ディレクトリがそのディスク上にまだ存在していなくても、%%allocation method|allocation-method%% と空き容量に基づいて配置されます。
 
-**Use Case**
+**使用例**
 
-Best for general data shares where folder structure is not critical, such as downloads or mixed media libraries. Allows maximum flexibility for file placement and disk utilization.
+フォルダー構造が重要でない一般的なデータ共有、たとえばダウンロードや混在メディアライブラリに最適です。ファイル配置とディスク利用の柔軟性を最大限に高めます。
 
-#### Automatically Split Only Top Level
+#### 最上位のみを自動的に分割
 
-**Behavior**
+**動作**
 
-Unraid will only create first-level subfolders on a disk if they don't already exist. For deeper folders, new files and folders are placed on the disk where the parent directory exists.
+Unraid は、ディスク上に最上位のサブフォルダーがまだ存在しない場合にのみ作成します。より深いフォルダーについては、新しいファイルとフォルダーは親ディレクトリが存在するディスクに配置されます。
 
-**Use Case**
+**使用例**
 
-Ideal for media libraries (e.g., Movies/Title) where you want all files for a specific subfolder (like a movie or TV show) to remain together on the same disk.
+特定のサブフォルダー（映画やテレビ番組など）のすべてのファイルを同じディスク上にまとめておきたいメディアライブラリ（例: Movies/Title）に最適です。
 
-#### Automatically Split Top 'N' Levels
+#### 最上位の 'N' レベルまでを自動的に分割
 
-**Behavior**
+**動作**
 
-You specify how many directory levels (N) Unraid will manage automatically. For folders at or above level N, Unraid can create them as needed. For deeper levels, new files are placed on the disk where the parent directory exists.
+Unraid が自動的に管理するディレクトリ階層の数（N）を指定します。レベル N 以上のフォルダーについては、必要に応じて Unraid が作成できます。より深い階層では、新しいファイルは親ディレクトリが存在するディスク上に配置されます。
 
-**Use Case**
+**使用例**
 
-Useful for complex folder structures, such as nested project directories, where you want to keep related content grouped together beyond just the top level.
+ネストされたプロジェクトディレクトリのような複雑なフォルダー構造に便利で、最上位だけでなく関連コンテンツをまとめておきたい場合に適しています。
 
-#### Manual (No Automatic Splitting)
+#### 手動（自動分割なし）
 
-**Behavior**
+**動作**
 
-Unraid only places new files or folders on disks where the parent directory already exists. No new directories are created automatically.
+Unraid は、親ディレクトリがすでに存在するディスクにのみ新しいファイルやフォルダーを配置します。新しいディレクトリは自動では作成されません。
 
-**Use Case**
+**使用例**
 
-Best for advanced users who want full manual control over file placement, or for archival data where folder structure must remain fixed.
+ファイル配置を完全に手動で制御したい上級ユーザー、またはフォルダー構造を固定したままにする必要があるアーカイブデータに最適です。
 
 :::important
 
-If there are conflicts between **Minimum Free Space**, **Split Level**, and %%Allocation Method|allocation-method%%, the **Split Level** setting takes priority. This may result in "out of space" errors, even if other drives have available space.
+**Minimum Free Space**、**Split Level**、%%Allocation Method|allocation-method%% の間に競合がある場合、**Split Level** 設定が優先されます。これにより、他のドライブに空き容量があっても「空き容量不足」エラーが発生することがあります。
 
 :::
 
 ---
 
-### Included or excluded disks
+### 含めるディスクまたは除外するディスク
 
-These settings help you manage which drives can hold files for your share. You can either include specific disks or exclude certain ones - just don’t do both at the same time! If you don’t choose any specific disks, all drives allowed in ***Settings → Global Share Settings*** will be used.
+これらの設定は、共有のファイルを保持できるドライブを管理するのに役立ちます。特定のディスクを含めることも、特定のディスクを除外することもできますが、同時に両方を行うことはできません。特定のディスクを何も選択しない場合は、***Settings → Global Share Settings*** で許可されたすべてのドライブが使用されます。
 
-Unraid first checks any included disks, then looks at excluded disks to determine where to store a file. After that, it uses the %%split level|split-level%% and %%allocation method|allocation-method%% to select an appropriate disk.
+Unraid はまず含めるディスクを確認し、次に除外するディスクを確認して、ファイルの保存先を決定します。その後、%%split level|split-level%% と %%allocation method|allocation-method%% を使用して適切なディスクを選択します。
 
 <div style={{ margin: 'auto', maxWidth: '272px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-  ![Disk selection logic](/img/diskselectionlogic.png)
+  ![ディスク選択ロジック](/img/diskselectionlogic.png)
 </div>
 
 :::important
 
-The settings for %%included and excluded disks|included-or-excluded-disks%% only affect where new files can be saved. Any existing files in folders that match your share name will still be accessible for reading, even if they’re on a different disk.
+%%included and excluded disks|included-or-excluded-disks%% の設定は、新しいファイルを保存できる場所にのみ影響します。共有名と一致するフォルダー内にすでに存在するファイルは、別のディスク上にあっても読み取り可能なままです。
 
 :::
 
-#### Included Disks
+#### 含めるディスク
 
-**Behavior**
+**動作**
 
-Unraid will only consider the listed disks when deciding where to place new files for the share. All other disks are ignored for new writes, but files already present on other disks remain accessible for reading.
+Unraid は、新しいファイルを共有に配置する際、一覧にあるディスクのみを考慮します。ほかのすべてのディスクは新規書き込みの対象外になりますが、他のディスクにすでにあるファイルは読み取り可能なままです。
 
-**Use Case**
+**使用例**
 
-Use this setting if you want to restrict a share to certain disks, such as keeping important documents on newer or higher-capacity drives, or isolating a media library to specific disks for performance or organizational reasons.
+この設定は、共有を特定のディスクに制限したい場合、たとえば重要な文書を新しいドライブや大容量ドライブに置く場合、あるいはメディアライブラリを性能や整理の都合で特定のディスクに分離したい場合に使用します。
 
-#### Excluded Disks
+#### 除外するディスク
 
-**Behavior**
+**動作**
 
-Unraid will use all eligible disks except those listed here when placing new files for the share. As with included disks, files already present on excluded disks remain accessible for reading.
+Unraid は、共有の新しいファイルを配置する際に、ここに一覧表示されたものを除くすべての適格なディスクを使用します。含めるディスクの場合と同様に、除外したディスクにすでにあるファイルは読み取り可能なままです。
 
-**Use Case**
+**使用例**
 
-Use this setting to prevent a share from using certain disks, such as excluding older drives, slower disks, or drives reserved for other data types.
+この設定は、古いドライブ、遅いディスク、または他のデータ種類のために予約されたドライブを除外するなど、共有が特定のディスクを使用しないようにするために使います。
 
 ---
 
-### Default shares
+### 既定の共有
 
-When you use Unraid with **Docker** or %%Virtual Machines (VMs)|vm%%, it automatically creates some default shares.
+Unraid を **Docker** や %%Virtual Machines (VMs)|vm%% と併用すると、既定の共有がいくつか自動的に作成されます。
 
 :::important
 
-These shares are only created after you start their respective services (Docker or %%VM|vm%% Manager). If you don't see these shares, make sure Docker and/or %%VM|vm%% Manager are enabled and running.
+これらの共有は、それぞれのサービス（Docker または %%VM|vm%% Manager）を起動した後にのみ作成されます。これらの共有が表示されない場合は、Docker および/または %%VM|vm%% Manager が有効で実行中であることを確認してください。
 
 :::
 
-You don’t have to use these shares if you don’t want to, and you can remove them if you prefer, but we usually recommend keeping them for convenience. These shares help keep things organized and make it easier for everyone to get support if they run into issues.
+使いたくない場合はこれらの共有を使う必要はなく、好みに応じて削除してもかまいませんが、利便性のために残しておくことを通常は推奨します。これらの共有は整理を助け、問題が発生した際にサポートを受けやすくします。
 
-Here’s a quick overview of what each default share is for:
+各既定共有の用途を簡単にまとめると次のとおりです:
 
-- `appdata`: This is where all the working files for your Docker containers are stored. Each Docker container usually has its own folder here.
-- `system`: This share holds the essential files for your Docker applications and the XML templates for your %%VMs|vm%%.
-- `domains`: This share is designated for storing virtual disk images (vdisks) that your %%VMs|vm%% use.
-- `isos`: This is where you can save CD ISO images that you want to use with your %%VMs|vm%%.
+- `appdata`: Docker コンテナのすべての作業ファイルが保存される場所です。通常、各 Docker コンテナごとにここに専用フォルダーがあります。
+- `system`: この共有には、Docker アプリケーションに必要なファイルと、%%VMs|vm%% 用の XML テンプレートが保存されます。
+- `domains`: この共有は、%%VMs|vm%% が使用する仮想ディスクイメージ（vdisks）の保存先です。
+- `isos`: ここには、%%VMs|vm%% で使用したい CD ISO イメージを保存できます。
 
 :::important
 
-It's best not to change the permissions on most of these default shares because doing so might cause issues with how Docker containers and %%VMs|vm%% work. The only share where changing permissions is recommended is the `isos` share, as this one can be accessed over the network for adding new ISO files for %%virtual machines|vm%%.
+これらの既定共有の大半では、権限を変更しないことをお勧めします。変更すると、Docker コンテナや %%VMs|vm%% の動作に問題が生じる可能性があるためです。権限の変更が推奨される共有は `isos` のみで、これはネットワーク経由でアクセスでき、新しい ISO ファイルを %%virtual machines|vm%% に追加するために使用できます。
 
 :::
 
 ---
 
-## Disk shares
+## ディスク共有
 
-Disk shares are simply individual drives or %%pools|cache-pool%% of drives within your Unraid system that can be accessed over the network. By default, these shares are turned off, but you can easily enable them in the ***Settings → Global Share Settings*** section.
+ディスク共有は、Unraid システム内の個々のドライブ、または %%pools|cache-pool%% にネットワーク経由でアクセスできるようにしたものです。既定ではこれらの共有は無効ですが、***Settings → Global Share Settings*** で簡単に有効にできます。
 
-To keep things secure, make sure to set [user access permissions](../../system-administration/secure-your-server/user-management.mdx) for these shares appropriately. This is especially important if you have multiple users accessing your network.
+セキュリティを保つため、これらの共有には [ユーザーアクセス権限](../../system-administration/secure-your-server/user-management.mdx) を適切に設定してください。これは、複数のユーザーがネットワークにアクセスする場合に特に重要です。
 
-To enable disk shares:
+ディスク共有を有効にするには:
 
-1. Navigate to **Settings**.
-2. Click on **Global Share Settings**.
-3. Turn on disk shares to make them visible in your network.
+1. **Settings** に移動します。
+2. **Global Share Settings** をクリックします。
+3. ディスク共有をオンにして、ネットワーク上で表示されるようにします。
 
-Once you enable them, you'll notice disk shares in the Unraid GUI under a section labeled **Disk Shares** in the **Shares** tab. Each drive in your %%array|array%% can be accessed like this:
+有効にすると、Unraid GUI の **Shares** タブ内の **Disk Shares** セクションにディスク共有が表示されます。%%array|array%% 内の各ドライブには次のようにアクセスできます:
 
-- **Individual drives:** These appear as `/mnt/diskX` where X is the disk number (e.g., `disk1`, `disk2`, etc.).
-- **Pools of drives:** If you have multiple drives grouped together, they will show up as `/mnt/pool-name`. The most common %%pools|cache-pool%% is called `cache`, but you can name your %%pools|cache-pool%% however you like.
+- **個別のドライブ:** これらは `/mnt/diskX` として表示され、X はディスク番号です（例: `disk1`、`disk2` など）。
+- **ドライブのプール:** 複数のドライブをまとめている場合は、`/mnt/pool-name` として表示されます。最も一般的な %%pools|cache-pool%% は `cache` と呼ばれますが、%%pools|cache-pool%% の名前は自由に付けられます。
 
 :::important
 
-The Unraid boot device, which stores your Unraid settings, is not treated as a disk share. If you want it to be accessible over the network, you can set it up as a share named 'flash'. This device is mounted at `/boot` in Linux.
+Unraid の設定を保存する Unraid ブートデバイスは、ディスク共有として扱われません。ネットワーク経由でアクセスできるようにしたい場合は、`flash` という名前の共有として設定できます。このデバイスは Linux では `/boot` にマウントされます。
 
-For security, it's best to keep your shares in *Private* mode and only grant access to trusted users.
-
-:::
-
-### Disk share guidelines
-
-:::danger[Important Reminder]
-
-**Never copy files directly between a user share and a disk share** if their folder names are the same. This could lead to files being corrupted or deleted, resulting in permanent data loss.
+セキュリティのため、共有は *Private* モードにしておき、信頼できるユーザーのみにアクセスを許可するのが最善です。
 
 :::
 
-**User shares** and **disk shares** may look different in the interface but can point to the same files on the disk. Linux commands like `cp` or `rsync` cannot always tell the difference, which can accidentally lead to overwriting or deleting files.
+### ディスク共有のガイドライン
 
-**Safe copying tips**
+:::danger[Important 注意
 
-1. **Stick to one type of share:**
-   - Only copy files between either %%user shares|user-share%% OR disk shares, not both at the same time.
-   - *Example:* To copy a file from one user share to another: `cp /mnt/user/share1/file /mnt/user/share2/file`
+フォルダー名が同じ場合は、**ユーザー共有とディスク共有の間でファイルを直接コピーしないでください**。ファイルが破損または削除され、永続的なデータ損失につながる可能性があります。
 
-2. **Use external drives safely:**
+:::
+
+**ユーザー共有** と **ディスク共有** は、インターフェース上は異なって見えても、ディスク上の同じファイルを指している場合があります。`cp` や `rsync` のような Linux コマンドはその違いを常に判別できるわけではなく、意図せずファイルの上書きや削除につながることがあります。
+
+**安全なコピーのヒント**
+
+1. **1 種類の共有に統一する:**
+   - ファイルは %%user shares|user-share%% 同士またはディスク共有のどちらか一方でのみコピーし、両方を同時に使わないでください。
+   - *例:* あるユーザー共有から別のユーザー共有へファイルをコピーする場合: `cp /mnt/user/share1/file /mnt/user/share2/file`
+
+2. **外部ドライブを安全に使う:**
    - Connect external drives using the **[Unassigned Devices plugin](https://unraid.net/community/apps?q=unassigned+devices#r:~:text=don%27t%20be%20carefull!!!-,Unassigned%20Devices,-dlandon)** to prevent issues.
-   - Copy files from `/mnt/disks/` instead of from the main %%array|array%% or %%cache|cache%% paths.
+   - メインの %%array|array%% や %%cache|cache%% のパスではなく、`/mnt/disks/` からファイルをコピーしてください。
 
-3. **Verify your copies:** When moving files locally, you can use `rsync -c` to check that the files copied over correctly.
+3. **コピーを確認する:** ローカルでファイルを移動する際は、`rsync -c` を使って正しくコピーされたことを確認できます。
 
-4. **Don't mix share types:** Avoid using paths that mix %%user shares|user-share%% and disk shares, such as `/mnt/user/share/` with `/mnt/disk1/share/` in the same command.
+4. **共有の種類を混在させないでください:** 同じコマンド内で `/mnt/user/share/` と `/mnt/disk1/share/` のように %%user shares|user-share%% とディスク共有が混ざるパスの使用は避けてください。
 
-:::tip[Transferring files from external network shares]
+:::tip[Transferring 外部ネットワーク共有からのファイル]
 
-If you need to transfer files from external Windows or Linux network shares (SMB/CIFS) to your Unraid server using command-line tools, see [File transfer operations](../../system-administration/advanced-tools/command-line-interface.mdx#file-transfer-operations) in the Command line interface documentation.
+コマンドラインツールを使って外部の Windows または Linux ネットワーク共有（SMB/CIFS）から Unraid サーバーへファイルを転送する必要がある場合は、コマンドラインインターフェースのドキュメント内の [File transfer operations](../../system-administration/advanced-tools/command-line-interface.mdx#file-transfer-operations) を参照してください。
 
 :::
