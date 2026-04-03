@@ -1,51 +1,51 @@
 ---
 sidebar_position: 4
-sidebar_label: Unraid as a VM
+sidebar_label: VMとしてのUnraid
 ---
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# Unraid as a VM
+# VMとしてのUnraid
 
-Running Unraid as a virtual machine on your primary Unraid server can be very helpful for development, testing, and evaluation. This configuration allows you to:
+メインのUnraidサーバー上でUnraidを仮想マシンとして実行すると、開発、テスト、評価に非常に役立ちます。この構成では、次のことが可能になります:
 
-- Develop and test plugins or Docker containers without putting your production server at risk.
-- Evaluate new Unraid releases before upgrading your main system.
-- Create isolated environments for troubleshooting or training.
+- 本番サーバーを危険にさらすことなく、プラグインやDockerコンテナを開発・テストできます。
+- メインシステムをアップグレードする前に、新しいUnraidリリースを評価できます。
+- トラブルシューティングやトレーニング用に、分離された環境を作成できます。
 
-:::caution[Important considerations]
+:::caution[Important 考慮事項]
 
-- Lime Technology does not officially support this configuration for production data.
-- Virtualization introduces some overhead; expect reduced performance compared to running directly on hardware.
-- You need a separate, valid license key for the %%VM|vm%%.
+- Lime Technologyは、この構成を本番データ用として公式にはサポートしていません。
+- 仮想化によってある程度のオーバーヘッドが発生します。ハードウェア上で直接実行する場合と比べて、パフォーマンスが低下することを想定してください。
+- %%VM|vm%% に対しては、別途有効なライセンスキーが必要です。
 
 :::
 
 :::note\[Prerequisites]
 
-- A valid Unraid license key for the %%VM|vm%%
-- A dedicated USB flash drive (use a different manufacturer than your host's boot drive)
-- Unraid version 6.4.0 or higher for the %%VM|vm%% (older versions require manual setup)
+- %%VM|vm%% 用の有効な Unraid ライセンスキー
+- 専用の USB フラッシュドライブ（ホストの起動ドライブとは別のメーカーのものを使用してください）
+- %%VM|vm%% 用の Unraid バージョン 6.4.0 以上（それ以前のバージョンでは手動設定が必要です）
 
 :::
 
-To get Unraid up and running as a %%VM|vm%%:
+Unraid を %%VM|vm%% として動作させるには:
 
 <details>
-  <summary><strong>1. Prepare the flash drive for the VM</strong> - Click to expand/collapse</summary>
+  <summary><strong>1. VM 用にフラッシュドライブを準備する</strong> - クリックして展開/折りたたみ</summary>
 
-  Getting your flash drive ready is crucial for a seamless and dependable %%VM|vm%% boot process. Here's how to set up your %%VM|vm%% environment with a unique and properly configured boot device.
+  フラッシュドライブを適切に準備することは、%%VM|vm%% をスムーズかつ安定して起動するうえで非常に重要です。ここでは、一意で正しく構成された起動デバイスを使って %%VM|vm%% 環境をセットアップする方法を説明します。
 
-  1. Use the [Unraid USB Creator](https://unraid.net/download) tool on your desktop to prepare the flash drive:
-     - Select **Allow EFI boot**.
-     - Set a unique server name (like `TowerVM` if your host is `Tower`).
-     - Write the image to the flash drive.
+  1. デスクトップで [Unraid USB Creator](https://unraid.net/download) ツールを使って、フラッシュドライブを準備します:
+     - **Allow EFI boot** を選択します。
+     - 一意のサーバー名を設定します（ホストが `Tower` なら、たとえば `TowerVM`）。
+     - イメージをフラッシュドライブに書き込みます。
 
-  2. Modify configuration files:
-     - Rename the flash drive label from `UNRAID` to a unique name (e.g., `UNRAID-VM`).
+  2. 設定ファイルを変更します:
+     - フラッシュドライブのラベルを `UNRAID` から一意の名前に変更します（例: `UNRAID-VM`）。
 
-     - Edit the `syslinux/syslinux.cfg` file on the flash drive:
+     - フラッシュドライブ上の `syslinux/syslinux.cfg` ファイルを編集します:
 
        ```
        label Unraid OS
@@ -54,93 +54,93 @@ To get Unraid up and running as a %%VM|vm%%:
          append unraidlabel=UNRAID-VM initrd=/bzroot
        ```
 
-     - Make this change in all boot modes (GUI/Safe Mode) within the file.
+     - ファイル内のすべての起動モード（GUI/Safe Mode）でこの変更を行います。
 
-     - Copy the updated `syslinux.cfg` file to `EFI/boot/syslinux.cfg`
+     - 更新した `syslinux.cfg` ファイルを `EFI/boot/syslinux.cfg` にコピーします
 
-  3. Create a file named `startup.nsh` in the root of the flash drive with this content:
+  3. フラッシュドライブのルートに `startup.nsh` という名前のファイルを作成し、次の内容を入れます:
 
      ```
      \EFI\boot\bootx64.efi
      ```
 
-  4. Note the manufacturer of the flash drive (you'll need this for %%VM|vm%% setup later).
+  4. フラッシュドライブのメーカーを確認しておきます（後で %%VM|vm%% のセットアップで必要になります）。
 
 </details>
 
 <details>
-  <summary><strong>2. Set up the VM on the host</strong> - Click to expand/collapse</summary>
+  <summary><strong>2. ホスト上で VM をセットアップする</strong> - クリックして展開/折りたたみ</summary>
 
-  Configuring the Unraid %%VM|vm%% requires some specific settings to ensure proper operation.
+  Unraid の %%VM|vm%% を適切に動作させるには、いくつか特定の設定が必要です。
 
-  To create the %%VM|vm%% template:
+  %%VM|vm%% テンプレートを作成するには:
 
-  1. On the host Unraid server, go to ***Settings → VM Manager*** and ensure that %%VM|vm%% are enabled.
-  2. Navigate to the **VMs** tab and click **Add VM**.
-  3. Select the **Slackware** template, as it's the closest match to Unraid.
-  4. (Optional) If available, replace the Slackware icon with the Unraid icon.
-  5. Name the %%VM|vm%% (e.g., `UNRAID-VM`).
-  6. (Optional) Add a description, such as *"Unraid test environment - vX.XX.X."*
-  7. Assign resources:
-     - CPUs: 2-4 cores
-     - RAM: 4-8 GB (set Initial and Max to the same value)
-  8. Set **Machine type** to **Q35 (latest)**.
-  9. Set **BIOS** to **OVMF** and **USB controller** to **3.0 (QEMU XHCI)**.
-  10. Configure virtual disks:
-      - Add %%vDisks|vdisk%% for cache/data using **RAW** format and **SATA** bus.
-      - Size disks differently for easy identification (e.g., %%parity|parity%% > data > %%cache|cache%%).
-  11. Leave graphics, sound, and network at their default settings.
-  12. Under **USB devices**, select the flash drive by **manufacturer**, not label.
+  1. ホストの Unraid サーバーで ***Settings → VM Manager*** に移動し、%%VM|vm%% が有効になっていることを確認します。
+  2. **VMs** タブに移動して **Add VM** をクリックします。
+  3. **Slackware** テンプレートを選択します。Unraid に最も近いものだからです。
+  4. （任意）利用できる場合は、Slackware のアイコンを Unraid のアイコンに置き換えます。
+  5. %%VM|vm%% に名前を付けます（例: `UNRAID-VM`）。
+  6. （任意）*"Unraid test environment - vX.XX.X."* のような説明を追加します。
+  7. リソースを割り当てます:
+     - CPU: 2～4 コア
+     - RAM: 4～8 GB（Initial と Max を同じ値に設定します）
+  8. **Machine type** を **Q35 (latest)** に設定します。
+  9. **BIOS** を **OVMF** に、**USB controller** を **3.0 (QEMU XHCI)** に設定します。
+  10. 仮想ディスクを構成します:
+      - キャッシュ/データ用に、**RAW** 形式と **SATA** バスで %%vDisks|vdisk%% を追加します。
+      - 判別しやすいようにディスクのサイズを変えます（例: %%parity|parity%% > data > %%cache|cache%%）。
+  11. グラフィックス、サウンド、ネットワークは既定の設定のままにします。
+  12. **USB devices** では、ラベルではなく **manufacturer** でフラッシュドライブを選択します。
 
   :::important
-  The %%VM|vm%%'s flash drive must be from a different manufacturer than the host's boot drive. If they match, the %%VM|vm%% drive won't be visible.
+  %%VM|vm%% のフラッシュドライブは、ホストの起動ドライブとは異なるメーカーのものでなければなりません。メーカーが同じ場合、%%VM|vm%% のドライブは表示されません。
   :::
 
 </details>
 
 <details>
-  <summary><strong>3. Create and start the VM</strong> - Click to expand/collapse</summary>
+  <summary><strong>3. VM を作成して起動する</strong> - クリックして展開/折りたたみ</summary>
 
-  To launch the %%VM|vm%% after configuration:
+  設定後に %%VM|vm%% を起動するには:
 
-  1. Uncheck **Start VM after creation** if you want manual control.
-  2. Click **Create**.
-  3. On the **VMs** tab, click the Unraid %%VM|vm%% icon and select **Start with console (%%VNC|vnc-session%%)**.
-  4. Watch the boot process in the %%VNC|vnc-session%% console and note the %%VM|vm%%'s IP address displayed before login.
+  1. 手動で制御したい場合は、**Start VM after creation** のチェックを外します。
+  2. **Create** をクリックします。
+  3. **VMs** タブで Unraid の %%VM|vm%% アイコンをクリックし、**Start with console (%%VNC|vnc-session%%)** を選択します。
+  4. %%VNC|vnc-session%% コンソールで起動プロセスを確認し、ログイン前に表示される %%VM|vm%% の IP アドレスを控えます。
 
 </details>
 
 <details>
-  <summary><strong>4. Configure the VM</strong> - Click to expand/collapse</summary>
+  <summary><strong>4. VM を設定する</strong> - クリックして展開/折りたたみ</summary>
 
-  Once the %%VM|vm%% is running, set it up like a physical Unraid server:
+  %%VM|vm%% が起動したら、物理的な Unraid サーバーと同じように設定します:
 
-  1. Access the %%VM|vm%%'s **%%WebGUI|web-gui%%** at `http://[VM-IP]`.
-  2. Go to ***Settings → Identification***:
-     - Set a unique **Server name** (e.g., `Unraid-VM`).
-     - Add a description like "Development instance."
-  3. (Optional) Go to ***Settings → Display settings*** and choose a different color theme to distinguish it from the host.
-  4. Go to ***Settings → %%SMB|samba%% settings → Workgroup settings*** and set **Local master** to *No* to avoid conflicts.
-  5. For UPS passthrough (if the host has UPS):
-     - Go to ***Settings → UPS*** on the %%VM|vm%%.
-     - Set **UPS cable** to *Ether*.
-     - Set **UPS type** to *net*.
-     - Enter the host's IP in **Device**.
-     - Configure **Runtime** to shut down the %%VM|vm%% before the host.
-  6. Start the %%array|array%% with your configured devices.
-  7. Install [**Community Applications**](https://unraid.net/community/apps) for plugin/Docker testing.
-  8. Update the %%VM|vm%% via ***Tools → Update OS***, just like a physical server.
+  1. %%VM|vm%% の **%%WebGUI|web-gui%%** に `http://[VM-IP]` でアクセスします。
+  2. ***Settings → Identification*** に移動します:
+     - 一意の **Server name** を設定します（例: `Unraid-VM`）。
+     - "Development instance." のような説明を追加します。
+  3. （任意）***Settings → Display settings*** に移動し、ホストと区別できるよう別のカラーテーマを選択します。
+  4. ***Settings → %%SMB|samba%% settings → Workgroup settings*** に移動し、競合を避けるため **Local master** を *No* に設定します。
+  5. UPS パススルーを行う場合（ホストに UPS がある場合）:
+     - %%VM|vm%% の ***Settings → UPS*** に移動します。
+     - **UPS cable** を *Ether* に設定します。
+     - **UPS type** を *net* に設定します。
+     - **Device** にホストの IP を入力します。
+     - **Runtime** を、ホストより先に %%VM|vm%% をシャットダウンするように設定します。
+  6. 設定したデバイスで %%array|array%% を起動します。
+  7. プラグイン/Docker のテスト用に [**Community Applications**](https://unraid.net/community/apps) をインストールします。
+  8. 物理サーバーと同じように、***Tools → Update OS*** から %%VM|vm%% を更新します。
 
 </details>
 
 ### トラブルシューティング
 
-If you encounter an *Execution Error* related to the USB flash device after editing %%VM|vm%% settings:
+%%VM|vm%% の設定を編集した後に USB フラッシュデバイスに関連する *Execution Error* が発生した場合:
 
-1. Edit the %%VM|vm%% and switch to **XML view**.
-2. Locate the `<hostdev>` node that defines the flash device (usually near the end).
-3. Delete the entire `<hostdev>...</hostdev>` block.
-4. Click **Update**.
-5. Re-edit the %%VM|vm%% in **Form view**.
-6. Re-select the flash drive under **USB devices**.
-7. Click **Update** again. The %%VM|vm%% should now start normally.
+1. %%VM|vm%% を編集し、**XML view** に切り替えます。
+2. フラッシュデバイスを定義している `<hostdev>` ノード（通常は末尾付近）を見つけます。
+3. `<hostdev>...</hostdev>` ブロック全体を削除します。
+4. **Update** をクリックします。
+5. **Form view** で %%VM|vm%% を再編集します。
+6. **USB devices** でフラッシュドライブを再選択します。
+7. もう一度 **Update** をクリックします。これで %%VM|vm%% は通常どおり起動するはずです。
