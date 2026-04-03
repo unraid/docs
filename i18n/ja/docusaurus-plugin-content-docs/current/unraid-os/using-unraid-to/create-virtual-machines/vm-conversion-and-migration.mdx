@@ -1,90 +1,90 @@
 ---
 sidebar_position: 5
-sidebar_label: VM conversion & migration
+sidebar_label: VM変換と移行
 ---
 
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
 
-# VM conversion and migration
+# VM変換と移行
 
-When consolidating hardware, preserving legacy systems, or testing upgrades in a virtual environment, you may need to convert a physical disk or migrate an existing system into a %%virtual machine|vm%% on Unraid. This process applies to both Linux and Windows systems, enabling you to run your installation as a %%VM|vm%% within your Unraid server.
+ハードウェアの統合、レガシーシステムの保存、または仮想環境でのアップグレードのテストを行う場合、Unraid 上で物理ディスクを変換したり、既存のシステムを %%virtual machine|vm%% に移行したりする必要があることがあります。この手順は Linux と Windows の両方のシステムに適用され、インストールを Unraid サーバー内の %%VM|vm%% として実行できるようにします。
 
 :::note\[Prerequisites]
 
-- Your Unraid server should meet the minimum [hardware requirements for virtualization](./overview-and-system-prep.mdx#requirements) (see table below).
-- The source disk must be connected to your Unraid server (via SATA, USB, or as an unassigned device).
-- Ensure you have enough free space in your **%%array|array%%** or **%%cache pool|cache-pool%%** to accommodate the new virtual disk image.
-- Backup any critical data before starting the conversion or migration process.
+- Unraid サーバーが仮想化のための最小 [ハードウェア要件](./overview-and-system-prep.mdx#requirements) を満たしている必要があります（下の表を参照）。
+- ソースディスクは、Unraid サーバーに接続されている必要があります（SATA、USB、または未割り当てデバイスとして）。
+- 新しい仮想ディスクイメージを収容できるだけの空き容量が **%%array|array%%** または **%%cache pool|cache-pool%%** にあることを確認してください。
+- 変換または移行プロセスを開始する前に、重要なデータを必ずバックアップしてください。
 
 :::
 
-## Hardware requirements
+## ハードウェア要件
 
-| コンポーネント              | 最低要件                                                                              | Recommended for best performance                                 |
-| -------------------- | --------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
-| **CPU**              | 64-bit with hardware virtualization (%%Intel VT-X\|intel-vt-x%%/%%AMD-V\|amd-v%%) | Multi-core CPU with VT-d/AMD-Vi for passthrough                  |
-| **RAM**              | 8 GB                                                                              | 16 GB or more                                                    |
-| **Storage**          | SSD or NVMe %%cache pool\|cache-pool%% with sufficient space                      | Dedicated NVMe %%cache pool\|cache-pool%% for %%VM\|vm%% storage |
-| **Motherboard/BIOS** | %%UEFI\|uefi%% with virtualization enabled                                        | %%UEFI\|uefi%% with %%IOMMU\|iommu%%/VT-d/AMD-Vi enabled         |
+| コンポーネント         | 最低要件                                                           | 最高のパフォーマンスのために推奨                                     |
+| --------------- | -------------------------------------------------------------- | ---------------------------------------------------- |
+| **CPU**         | ハードウェア仮想化対応の64ビット（%%Intel VT-X\|intel-vt-x%%/%%AMD-V\|amd-v%%） | パススルー用のVT-d/AMD-Vi対応マルチコアCPU                         |
+| **RAM**         | 8 GB                                                           | 16 GB以上                                              |
+| **ストレージ**       | 十分な空き容量のあるSSDまたはNVMe %%cache pool\|cache-pool%%                | %%VM\|vm%% ストレージ用の専用 NVMe %%cache pool\|cache-pool%% |
+| **マザーボード/BIOS** | 仮想化を有効にした %%UEFI\|uefi%%                                       | %%IOMMU\|iommu%%/VT-d/AMD-Vi を有効にした %%UEFI\|uefi%%   |
 
 ---
 
-## Convert a physical disk to a VM
+## 物理ディスクをVMに変換する
 
-Migrating an existing Linux or Windows system into a %%virtual machine|vm%% on your Unraid server can be a great way to save hardware space, keep legacy systems running, or test new upgrades safely.
+Unraid サーバー上の %%virtual machine|vm%% に既存の Linux または Windows システムを移行することは、ハードウェアの占有を減らし、レガシーシステムを稼働し続けたり、新しいアップグレードを安全にテストしたりするのに最適な方法です。
 
-To convert a physical disk to a %%VM|vm%%:
+物理ディスクを %%VM|vm%% に変換するには:
 
 <Tabs>
   <TabItem value="Linux" label="Linux" default>
-    <h4>Step 1: Prepare the physical disk</h4>
+    <h4>ステップ 1: 物理ディスクを準備する</h4>
 
-    1. Connect the source disk to your Unraid server (using SATA or USB).
-    2. Log in to the %%WebGUI|web-gui%% (`http://tower` or `http://tower.local`).
-    3. Click on the **Main** tab.
+    1. ソースディスクを Unraid サーバーに接続します（SATA または USB を使用）。
+    2. %%WebGUI|web-gui%%（`http://tower` または `http://tower.local`）にログインします。
+    3. **Main** タブをクリックします。
     4. Start the **%%array|array%%** if it isn’t already running.
-    5. Find your disk under **Unassigned Devices**.
+    5. **Unassigned Devices** の下でディスクを見つけます。
     6. Take note of the device letter (e.g., `sdb`, `sdc`) and disk size. You’ll need at least this free space on your **%%array|array%%** or **%%cache pool|cache-pool%%** for the new %%virtual disk|vdisk%%.
 
-    <h4>Step 2: Create a new virtual machine</h4>
+    <h4>ステップ 2: 新しい仮想マシンを作成する</h4>
 
-    Refer to the [Creating your own virtual machines](../create-virtual-machines/vm-setup.mdx#creating-your-own-virtual-machines) guide, with the following exceptions:
+    次の例外を除いて、[仮想マシンを自分で作成する](../create-virtual-machines/vm-setup.mdx#creating-your-own-virtual-machines) ガイドを参照してください:
 
-    - Set the **BIOS** to **OVMF**.
-      Make sure to specify the **VirtIO Drivers ISO** for [optimal performance](./overview-and-system-prep.mdx#set-up-virtualization-preferences).
+    - **BIOS** を **OVMF** に設定します。
+      [最適なパフォーマンス](./overview-and-system-prep.mdx#set-up-virtualization-preferences) のために、必ず **VirtIO Drivers ISO** を指定してください。
     - Store %%VM|vm%% images on a **%%cache pool|cache-pool%%** instead of an %%array|array%% for the [best performance](./overview-and-system-prep.mdx#user-shares-for-virtualization).
 
-    <h4>Step 3: Convert the physical disk to a %%virtual disk|vdisk%% image</h4>
+    <h4>ステップ 3: 物理ディスクを %%virtual disk|vdisk%% イメージに変換する</h4>
 
-    Open a terminal ([%%SSH|ssh%%](../../system-administration/advanced-tools/command-line-interface.mdx) or local console) and log in as `root`.
+    ターミナル（[%%SSH|ssh%%](../../system-administration/advanced-tools/command-line-interface.mdx) またはローカルコンソール）を開き、`root` としてログインします。
 
-    Use the following command to convert the physical disk into a %%virtual disk|vdisk%% image:
+    次のコマンドを使用して、物理ディスクを %%virtual disk|vdisk%% イメージに変換します:
 
     ```
     qemu-img convert -p -O raw /dev/sdX /mnt/user/[vdisk_share]/[vmname]/vdisk1.img
     ```
 
-    - **/dev/sdX**: Replace with the device letter from step 1 (e.g., `/dev/sdb`)
-    - **[vdisk_share]**: The share where you save your %%VM|vm%% images
-    - **[vmname]**: The name you want for your %%VM|vm%%
+    - **/dev/sdX**: ステップ 1 でのデバイス文字に置き換えます（例: `/dev/sdb`）
+    - **[vdisk_share]**: %%VM|vm%% イメージを保存する共有
+    - **[vmname]**: %%VM|vm%% に付ける名前
 
-    **Command breakdown:**
+    **コマンドの内訳:**
 
-    - `qemu-img convert`: This tool is used for disk image conversion.
-    - `-p`: Shows progress as a percentage.
-    - `-O raw`: Sets the output format to raw (Unraid's default).
-    - `/dev/sdX`: Source is your physical disk.
-    - `/mnt/user/[vdisk_share]/[vmname]/vdisk1.img`: Destination for the %%virtual disk|vdisk%% image.
+    - `qemu-img convert`: ディスクイメージの変換に使用するツールです。
+    - `-p`: 進行状況をパーセンテージで表示します。
+    - `-O raw`: 出力形式を raw に設定します（Unraid の既定値）。
+    - `/dev/sdX`: ソースは物理ディスクです。
+    - `/mnt/user/[vdisk_share]/[vmname]/vdisk1.img`: %%virtual disk|vdisk%% イメージの保存先です。
 
-    Wait for the operation to complete. The resulting `.img` file will be the primary disk for your %%VM|vm%%.
+    処理が完了するまで待ちます。生成される `.img` ファイルが、%%VM|vm%% のプライマリディスクになります。
 
   </TabItem>
 
   <TabItem value="Windows" label="Windows">
-    <h4>Step 1: Edit the XML for your virtual machine</h4>
+    <h4>ステップ 1: 仮想マシンの XML を編集する</h4>
 
-    - In the %%VMs|vm%% tab, click the %%VM|vm%% icon and select **Edit XML** from the context menu.
+    - %%VMs|vm%% タブで %%VM|vm%% アイコンをクリックし、コンテキストメニューから **Edit XML** を選択します。
 
     - Next, scroll down the XML and find the `<target>` tag for the `<disk>` that has a `<source>` file set to `vdisk1.img`. It should look like this:
 
@@ -101,11 +101,11 @@ To convert a physical disk to a %%VM|vm%%:
       </disk>
       ```
 
-    - To modify it, change the **bus** attribute in the `<target>` tag from `virtio` to `ide`.
+    - 変更するには、`<target>` タグの **bus** 属性を `virtio` から `ide` に変更します。
 
     - Then, remove the entire `<address>` line for that `<disk>`.
 
-    - Your updated XML should look like this:
+    - 更新後の XML は次のようになります:
 
       ```xml
 
@@ -118,141 +118,141 @@ To convert a physical disk to a %%VM|vm%%:
       </disk>
       ```
 
-    - Finally, click **Update** to save your changes to the %%virtual machine|vm%%'s XML.
+    - 最後に、**Update** をクリックして、%%virtual machine|vm%% の XML への変更を保存します。
 
-    <h4>Step 2: Install the VirtIO drivers from inside the VM (Windows guests only)</h4>
+    <h4>ステップ 2: VM 内から VirtIO ドライバーをインストールする（Windows ゲストのみ）</h4>
 
-    - Open **Windows File Explorer** and go to the %%VirtIO|virtio%% virtual CD-ROM to explore its contents.
-      - Navigate to the **Balloon** folder.
-      - Inside that folder, find the subfolder for your **Windows OS version** (for example, `w8.1`).
-      - Go to the **amd64** subfolder.
-      - Right-click on the **balloon.inf** file and select **Install** from the context menu. (You need to enable file extension visibility to do this.)
-    - Repeat these steps for each of the following folders:
+    - **Windows ファイル エクスプローラー** を開き、%%VirtIO|virtio%% 仮想 CD-ROM に移動して内容を表示します。
+      - **Balloon** フォルダーに移動します。
+      - そのフォルダー内で、**Windows OS のバージョン** 用のサブフォルダー（例: `w8.1`）を見つけます。
+      - **amd64** サブフォルダーに移動します。
+      - **balloon.inf** ファイルを右クリックし、コンテキストメニューから **Install** を選択します。（これを行うには、ファイル拡張子の表示を有効にする必要があります。）
+    - 次の各フォルダーについて、この手順を繰り返します:
       - **NetKVM**
       - **vioserial**
       - **viostor**
-    - After you've installed the drivers, navigate back into the virtual CD-ROM and open the **guest-agent** folder.
-    - Double-click on **qemu-ga-x64.msi** to install the %%QEMU|qemu%%/%%KVM|kvm%% guest agent.
+    - ドライバーをインストールしたら、仮想 CD-ROM に戻って **guest-agent** フォルダーを開きます。
+    - **qemu-ga-x64.msi** をダブルクリックして、%%QEMU|qemu%%/%%KVM|kvm%% ゲストエージェントをインストールします。
 
-    <h4>Step 3: Convert the disk bus back to VirtIO</h4>
+    <h4>ステップ 3: ディスクバスを VirtIO に戻す</h4>
 
-    - If your %%VM|vm%% is running, go ahead and **shut it down**.
-    - In the **VMs** tab, click the %%VM|vm%% icon and select **Edit XML** from the context menu.
-    - Locate the `<disk>` section for `vdisk1.img` and change `bus='ide'` back to `bus='virtio'` in the `<target>` tag.
-    - Click **Update** to save your changes to the %%VM|vm%%.
-    - Now you can start your converted %%virtual machine|vm%%!
+    - %%VM|vm%% が実行中の場合は、そのまま **シャットダウン** します。
+    - **VMs** タブで %%VM|vm%% アイコンをクリックし、コンテキストメニューから **Edit XML** を選択します。
+    - `vdisk1.img` の `<disk>` セクションを見つけ、`<target>` タグ内の `bus='ide'` を `bus='virtio'` に戻します。
+    - **Update** をクリックして、%%VM|vm%% への変更を保存します。
+    - これで変換した %%virtual machine|vm%% を起動できます!
 
   </TabItem>
 </Tabs>
 
 ---
 
-## Migrating a physical disk to a VM
+## 物理ディスクをVMに移行する
 
-You can run a Windows installation directly from a physical disk in an Unraid virtual machine (VM). This method helps migrate an existing Windows system without converting it to a virtual disk image. For a visual walkthrough, check out Spaceinvader One’s tutorial:\
-[How to pass through hard drives, convert disks, and test performance in Unraid VMs (YouTube)](https://www.youtube.com/watch?v=QaB9HhpbDAI).
+Unraid の仮想マシン（VM）上で、物理ディスクから直接 Windows インストールを実行できます。この方法は、仮想ディスクイメージに変換せずに既存の Windows システムを移行するのに役立ちます。図解付きの手順については、Spaceinvader One のチュートリアルをご覧ください:\
+[ハードドライブのパススルー、ディスクの変換、および Unraid VM でのパフォーマンス テストの方法（YouTube）](https://www.youtube.com/watch?v=QaB9HhpbDAI)。
 
-:::important[Choosing your migration approach]
+:::important[Choosing あなたの移行方法]
 
-There are two common ways to migrate a Windows installation to a %%VM|vm%% in Unraid:
+Unraid で Windows インストールを %%VM|vm%% に移行する一般的な方法は 2 つあります:
 
-**Physical disk passthrough:** This uses the original disk directly in the %%VM|vm%%.
+**物理ディスクパススルー:** これは元のディスクをそのまま %%VM|vm%% で直接使用します。
 
-- Pros: Fastest method, no image conversion required.
-- Cons: Takes up a SATA port; Unraid cannot use the disk for other purposes when it's attached to the VM.
+- 利点: 最も高速な方法で、イメージ変換は不要です。
+- 欠点: SATA ポートを 1 つ使用します。VM に接続されている間、Unraid はそのディスクを他の用途に使用できません。
 
-**Disk image conversion:** This converts the physical disk to a %%virtual disk|vdisk%% image (`.img`) for use in the %%VM|vm%%.
+**ディスクイメージ変換:** 物理ディスクを %%VM|vm%% で使用するための %%virtual disk|vdisk%% イメージ（`.img`）に変換します。
 
-- Pros: More flexibility, allows the disk to be used as an Unraid share or for [%%VM|vm%% snapshots](./vm-setup.mdx#vm-snapshots).
-- Cons: Requires time and free space for the conversion process.
+- 利点: より柔軟で、ディスクを Unraid 共有として使用したり、[%%VM|vm%% スナップショット](./vm-setup.mdx#vm-snapshots) に利用したりできます。
+- 欠点: 変換処理に時間と空き容量が必要です。
 
-Choose passthrough if you want a simple migration or plan to dual-boot the disk. Opt for image conversion for better portability and backup options.
+簡単な移行をしたい場合や、ディスクをデュアルブートで使う予定がある場合はパススルーを選びます。移植性とバックアップの選択肢を重視するなら、イメージ変換を選びます。
 
 :::
 
 :::note\[Prerequisites]
 
-- Back up your Windows installation before starting.
-- Have a spare USB flash drive ready for recovery tools.
-- Select a hardware preparation tool that enables Windows to boot on virtualized hardware by modifying drivers and the hardware abstraction layer (HAL):
-  - **Microsoft Sysprep** (free and built into Windows 8.1 and later)
-  - **Acronis True Image 2025** (commercial solution with advanced migration capabilities)
-- Ensure your Unraid server has a free SATA or NVMe port for the physical disk.
+- 開始する前に Windows のインストールをバックアップしてください。
+- 復旧ツール用の予備の USB フラッシュドライブを用意してください。
+- ドライバーとハードウェア抽象化レイヤー（HAL）を変更して、仮想化されたハードウェアで Windows が起動できるようにするハードウェア準備ツールを選択します:
+  - **Microsoft Sysprep**（無料で、Windows 8.1 以降に組み込み済み）
+  - **Acronis True Image 2025**（高度な移行機能を備えた商用ソリューション）
+- Unraid サーバーに、物理ディスク用の空き SATA または NVMe ポートがあることを確認してください。
 
 :::
 
-<h4>Step 1: Prepare the Windows disk for migration</h4>
+<h4>手順 1: 移行用に Windows ディスクを準備する</h4>
 
-Moving a Windows installation to new hardware, whether physical or virtual, can result in boot failures due to hardware differences. Follow one of the methods below to prepare your Windows system:
+物理または仮想を問わず、Windows のインストールを新しいハードウェアへ移行すると、ハードウェアの違いにより起動に失敗することがあります。以下のいずれかの方法に従って Windows システムを準備してください:
 
-<h5>Option A: Microsoft sysprep (recommended - free)</h5>
+<h5>オプション A: Microsoft sysprep（推奨 - 無料）</h5>
 
-Sysprep is built into Windows and eliminates unique system information, preparing Windows for different hardware.
+Sysprep は Windows に組み込まれており、システム固有の情報を削除して、Windows を異なるハードウェア向けに準備します。
 
-:::note[Before running sysprep]
+:::note[Before sysprep 実行中]
 
-- Temporarily disable any antivirus software.
-- Clean up unnecessary user profiles and temporary files.
-- Fix or remove any problematic Microsoft Store apps that may block sysprep from running.
+- ウイルス対策ソフトウェアを一時的に無効にします。
+- 不要なユーザープロファイルと一時ファイルを整理します。
+- sysprep の実行を妨げる可能性のある問題のある Microsoft Store アプリは修復または削除してください。
 
 :::
 
-1. **Run sysprep:**
-   - Open Command Prompt as an administrator.
+1. **sysprep を実行:**
+   - 管理者としてコマンドプロンプトを開きます。
 
-   - Navigate to the sysprep directory:
+   - sysprep ディレクトリに移動します:
 
      ```bash
      cd C:\Windows\System32\Sysprep
      ```
 
-   - Execute sysprep with generalization:
+   - 一般化オプション付きで sysprep を実行します:
      ```bash
      sysprep.exe /generalize /shutdown /oobe
      ```
 
-   - The system will generalize the installation and then shut down.
+   - システムはインストールを一般化し、その後シャットダウンします。
 
-2. **Install the disk in your Unraid server** after the shutdown.
+2. シャットダウン後、**Unraid サーバーにディスクを取り付けます**。
 
-<h5>Option B: Acronis True Image 2025 (commercial)</h5>
+<h5>オプション B: Acronis True Image 2025（商用）</h5>
 
-Acronis True Image 2025 features Universal Restore, which assists with hardware migration.
+Acronis True Image 2025 には Universal Restore が搭載されており、ハードウェア移行を支援します。
 
-1. Download and install [Acronis True Image 2025](https://www.acronis.com/en-us/products/true-image/).
-2. Create bootable recovery media using the included tools:
-   - Choose the Windows-like interface.
-   - Select the architecture that matches your Windows (32-bit or 64-bit).
-3. Boot your Windows system from the Acronis recovery media.
-4. Follow the on-screen instructions to apply Universal Restore to your Windows disk. This will update drivers and the HAL for better compatibility with virtualized hardware.
-5. Shut down the system and install the disk in your Unraid server.
+1. [Acronis True Image 2025](https://www.acronis.com/en-us/products/true-image/) をダウンロードしてインストールします。
+2. 付属のツールを使ってブータブル復旧メディアを作成します:
+   - Windows 風のインターフェースを選択します。
+   - お使いの Windows に一致するアーキテクチャ（32 ビットまたは 64 ビット）を選択します。
+3. Acronis の復旧メディアから Windows システムを起動します。
+4. 画面の指示に従って、Windows ディスクに Universal Restore を適用します。これにより、仮想化されたハードウェアとの互換性を高めるためにドライバーと HAL が更新されます。
+5. システムをシャットダウンし、ディスクを Unraid サーバーに取り付けます。
 
-<h4>Step 2: Identify the physical disk in Unraid</h4>
+<h4>手順 2: Unraid で物理ディスクを特定する</h4>
 
-1. Log in to the %%WebGUI|web-gui%% (`http://tower` or `http://tower.local`).
-2. Go to the **Main** tab.
+1. %%WebGUI|web-gui%%（`http://tower` または `http://tower.local`）にログインします。
+2. **Main** タブに移動します。
 3. Start the %%array|array%% if it’s not already running.
-4. Locate your disk under **Unassigned Devices**.
-5. Note the device letter (for example, `sdb`, `sdc`) for use in the %%VM|vm%% configuration.
+4. **Unassigned Devices** の下でディスクを見つけます。
+5. %%VM|vm%% 設定で使用するために、デバイス名（例: `sdb`、`sdc`）を控えておきます。
 
-<h4>Step 3: Create a new virtual machine</h4>
+<h4>手順 3: 新しい仮想マシンを作成する</h4>
 
-1. Go to the **%%VMs|vm%%** tab in the %%WebGUI|web-gui%%. If the tab is missing, ensure that virtualization is enabled and that hardware requirements are met.
-2. Click **Add VM**.
-3. Follow the [Creating your own virtual machines](../create-virtual-machines/vm-setup.mdx#creating-your-own-virtual-machines) guide, using these settings:
-   - Set **BIOS** to %%SeaBIOS|seabios%% (try %%OVMF|ovmf%% if %%SeaBIOS|seabios%% fails to boot).
-   - Leave **OS Install ISO** blank.
-   - Specify the **VirtIO Drivers ISO** for optimal performance after boot.
-   - For the primary %%virtual disk|vdisk%%, select any location and size (this will be replaced in the next step).
-   - Uncheck **Start VM after creation**.
+1. %%WebGUI|web-gui%% の **%%VMs|vm%%** タブに移動します。タブが表示されない場合は、仮想化が有効になっており、ハードウェア要件を満たしていることを確認してください。
+2. **Add VM** をクリックします。
+3. [独自の仮想マシンの作成](../create-virtual-machines/vm-setup.mdx#creating-your-own-virtual-machines) ガイドに従い、次の設定を使用します:
+   - **BIOS** を %%SeaBIOS|seabios%% に設定します（%%SeaBIOS|seabios%% で起動しない場合は %%OVMF|ovmf%% を試してください）。
+   - **OS Install ISO** は空欄のままにします。
+   - 起動後の最適なパフォーマンスのために、**VirtIO Drivers ISO** を指定します。
+   - メインの %%virtual disk|vdisk%% には、任意の場所とサイズを選択します（これは次の手順で置き換えられます）。
+   - **Start VM after creation** のチェックを外します。
 
-<h4>Step 4: Edit the XML for your virtual machine</h4>
+<h4>手順 4: 仮想マシンの XML を編集する</h4>
 
-You'll need to modify the %%VM|vm%%'s XML configuration to connect your physical disk to the %%virtual machine|vm%%.
+物理ディスクを %%virtual machine|vm%% に接続するために、%%VM|vm%% の XML 設定を変更する必要があります。
 
-1. From the **VMs** tab, click the %%VM|vm%% icon, then select **Edit XML** from the context menu.
+1. **VMs** タブで %%VM|vm%% アイコンをクリックし、コンテキストメニューから **Edit XML** を選択します。
 
-2. Scroll down in the XML and find the existing `<disk>` entry for your primary %%virtual disk|vdisk%%. This usually points to a `.img` file and will look something like this:
+2. XML を下へスクロールし、メインの %%virtual disk|vdisk%% の既存の `<disk>` エントリを見つけます。通常は `.img` ファイルを指しており、次のような形になっています:
 
    ```xml
 
@@ -267,7 +267,7 @@ You'll need to modify the %%VM|vm%%'s XML configuration to connect your physical
    </disk>
    ```
 
-   Replace this block with the following, where `sdX` is the device letter or, better yet, use `/dev/disk/by-id/[your-disk-id]` for a more reliable device assignment (refer to the [Unraid Docs: Using a physical disk in a VM]):
+   このブロックを次の内容に置き換えます。ここで `sdX` はデバイス名です。より確実なデバイス割り当てのために、可能であれば `/dev/disk/by-id/[your-disk-id]` を使用してください（[Unraid Docs: Using a physical disk in a VM] を参照）:
 
    ```xml
 
@@ -278,184 +278,184 @@ You'll need to modify the %%VM|vm%%'s XML configuration to connect your physical
    </disk>
    ```
 
-   If your disk is IDE, change the bus from "SATA" to "IDE" and the target device from "hdd" to "hda".
+   ディスクが IDE の場合は、バスを "SATA" から "IDE" に、ターゲットデバイスを "hdd" から "hda" に変更します。
 
-   Using `/dev/disk/by-id/` is preferred over `/dev/sdX` to ensure the disk assignment stays consistent after reboots or hardware changes.
+   再起動やハードウェア変更後もディスク割り当てを一貫させるため、`/dev/sdX` よりも `/dev/disk/by-id/` の使用が推奨されます。
 
-3. Click **Update** to save your XML changes.
+3. **Update** をクリックして XML の変更を保存します。
 
-<h4>Step 5: Install drivers</h4>
+<h4>手順 5: ドライバーをインストールする</h4>
 
-1. Start your %%VM|vm%%.
-2. Once in Windows, open Device Manager by right-clicking the Start menu and selecting **Device Manager**.
-3. Look for devices marked with a yellow exclamation mark (indicating missing drivers). Right-click on each and select **Update driver**.
-4. Choose **Browse my computer for drivers**.
-5. Direct it to the drive where the %%VirtIO|virtio%% Drivers ISO is mounted (usually D: or E:).
-6. Make sure **Include subfolders** is checked, then click **Next**.
-7. Repeat this process for each device with missing drivers, commonly including: SCSI Controller, Ethernet, Balloon, and Serial devices.
+1. %%VM|vm%% を起動します。
+2. Windows で、スタートメニューを右クリックして **Device Manager** を選択し、デバイス マネージャーを開きます。
+3. 黄色の感嘆符が付いているデバイス（ドライバーが見つからないことを示します）を探します。それぞれを右クリックして **Update driver** を選択します。
+4. **Browse my computer for drivers** を選択します。
+5. %%VirtIO|virtio%% Drivers ISO がマウントされているドライブに指定します（通常は D: または E:）。
+6. **Include subfolders** にチェックが入っていることを確認し、**Next** をクリックします。
+7. ドライバーが不足している各デバイスについて、この手順を繰り返します。一般的には、SCSI Controller、Ethernet、Balloon、Serial デバイスが含まれます。
 
-Remember to reinstall those applications after migration if you use software that installs its own drivers (such as antivirus programs).
+ウイルス対策プログラムなど、独自のドライバーをインストールするソフトウェアを使用している場合は、移行後にそれらのアプリケーションを再インストールすることを忘れないでください。
 
 :::tip
 
-If you are stuck at %%SeaBIOS|seabios%% with a "Booting from Hard Disk" message, it’s likely because your Windows OS was installed using %%UEFI|uefi%% instead of the traditional BIOS. In this case, recreate the VM using %%OVMF|ovmf%% as the BIOS type rather than %%SeaBIOS|seabios%%. Most modern Windows installations (Windows 8.1, 10, and 11) support %%UEFI|uefi%% and may need %%OVMF|ovmf%% to boot successfully. The rest of the conversion process will remain the same.
+%%SeaBIOS|seabios%% で "Booting from Hard Disk" メッセージのまま止まる場合、Windows OS が従来の BIOS ではなく %%UEFI|uefi%% を使ってインストールされていた可能性が高いです。この場合は、%%SeaBIOS|seabios%% ではなく %%OVMF|ovmf%% を BIOS タイプとして VM を再作成してください。最近の Windows インストールのほとんど（Windows 8.1、10、11）は %%UEFI|uefi%% をサポートしており、正常に起動するには %%OVMF|ovmf%% が必要な場合があります。変換手順の残りは同じです。
 
 :::
 
 ---
 
-## Xen to KVM migration
+## Xen から KVM への移行
 
-:::info[Historical Context]
+:::info[Historical コンテキスト]
 
-Unraid supported %%Xen|xen-hvm%% from early 6.x versions until it was deprecated in 6.2 (September 2016) and later removed entirely. This migration guide is relevant for users upgrading from very old Unraid installations (pre-2017) to modern versions.
-
-:::
-
-A %%Xen|xen-hvm%% hypervisor is a virtualization platform that allows multiple operating systems to run on the same hardware. In Unraid, %%Xen|xen-hvm%% was historically used for %%virtual machines|vm%%, but %%KVM|kvm%% is now the standard. Migrating from %%Xen|xen-hvm%% to %%KVM|kvm%% is essential for utilizing modern Unraid features, enabling hardware passthrough, and ensuring compatibility with current releases.
-
-The process of migrating a %%VM|vm%% from %%Xen|xen-hvm%% to %%KVM|kvm%% varies depending on whether your %%VM|vm%% is set up as a paravirtualized (PV) or hardware-virtualized (%%HVM|hvm%%) guest. This guide focuses specifically on converting Windows VMs that utilize Xen’s GPLPV drivers, as they require special handling.
-
-Always create a backup of your %%Xen|xen-hvm%% virtual disk before starting this process. And test your migration on the backup to prevent data loss.
-
-:::info[Why migrate?]
-
-Unraid no longer supports %%Xen|xen-hvm%% from version 6.2 onward. %%KVM|kvm%% is now mandatory for VM management, hardware passthrough, and ongoing updates. Migrating ensures your VMs remain secure and compatible with new features.
+Unraid は初期の 6.x バージョンから %%Xen|xen-hvm%% をサポートしていましたが、6.2（2016 年 9 月）で非推奨となり、その後完全に削除されました。この移行ガイドは、非常に古い Unraid インストール（2017 年以前）から最新バージョンへアップグレードするユーザーに関連します。
 
 :::
 
-### Windows conversion procedure
+%%Xen|xen-hvm%% ハイパーバイザーは、複数のオペレーティングシステムを同じハードウェア上で実行できる仮想化プラットフォームです。Unraid では、%%Xen|xen-hvm%% は歴史的に %%virtual machines|vm%% に使用されていましたが、現在は %%KVM|kvm%% が標準です。%%Xen|xen-hvm%% から %%KVM|kvm%% へ移行することは、最新の Unraid 機能を利用し、ハードウェアパススルーを有効にし、現在のリリースとの互換性を確保するために不可欠です。
 
-To convert a Windows VM from %%Xen|xen-hvm%% to %%KVM|kvm%%, follow these steps. Remember to **remove any PCI device passthrough from your %%Xen|xen-hvm%% domain configuration** before you begin. These devices can be added back after the migration is complete.
+%%Xen|xen-hvm%% から %%KVM|kvm%% への %%VM|vm%% の移行手順は、%%VM|vm%% が準仮想化（PV）ゲストとして構成されているか、ハードウェア仮想化（%%HVM|hvm%%）ゲストとして構成されているかによって異なります。このガイドでは、特別な対応が必要な Xen の GPLPV ドライバーを使用している Windows VM の変換に特に焦点を当てています。
+
+この手順を始める前に、必ず %%Xen|xen-hvm%% の仮想ディスクをバックアップしてください。また、データ損失を防ぐため、バックアップ上で移行をテストしてください。
+
+:::info[Why 移行可能?]
+
+Unraid はバージョン 6.2 以降、%%Xen|xen-hvm%% をサポートしていません。%%KVM|kvm%% は現在、VM 管理、ハードウェアパススルー、継続的なアップデートに必須です。移行することで、VM の安全性と新機能との互換性が維持されます。
+
+:::
+
+### Windows 変換手順
+
+%%Xen|xen-hvm%% から %%KVM|kvm%% に Windows VM を変換するには、以下の手順に従います。始める前に、%%Xen|xen-hvm%% ドメイン設定から **PCI デバイスのパススルーをすべて削除する** ことを忘れないでください。これらのデバイスは、移行完了後に再度追加できます。
 
 <details>
-  <summary><strong>Step 1: Determine if your VM uses Xen's GPLPV drivers</strong> - Click to expand/collapse</summary>
+  <summary><strong>手順 1: VM が Xen の GPLPV ドライバーを使用しているか確認する</strong> - クリックして展開/折りたたみ</summary>
 
-  1. Inside your %%Xen|xen-hvm%% VM, open **Windows Device Manager** (press *Windows key + X*, then select **Device Manager**).
-  2. Expand **Network adapters** and check the device name.
-     - If the name contains "Xen," you are using GPLPV drivers.
-     - If it doesn't, skip to the step about rebooting into %%KVM|kvm%% mode.
+  1. %%Xen|xen-hvm%% VM 内で、**Windows デバイス マネージャー** を開きます（*Windows キー + X* を押してから、**Device Manager** を選択します）。
+  2. **Network adapters** を展開し、デバイス名を確認します。
+     - 名前に "Xen" が含まれていれば、GPLPV ドライバーを使用しています。
+     - 含まれていない場合は、%%KVM|kvm%% モードで再起動する手順へ進みます。
 
   :::tip
-  If you are not using GPLPV drivers, you can skip the next several steps and continue from the rebooting into %%KVM|kvm%% mode section.
+  GPLPV ドライバーを使用していない場合は、次のいくつかの手順を省略して、%%KVM|kvm%% モードへの再起動のセクションへ進めます。
   :::
 
 </details>
 
 <details>
-  <summary><strong>Step 2: Prepare Windows for GPLPV driver removal</strong> - Click to expand/collapse</summary>
+  <summary><strong>手順 2: GPLPV ドライバー削除のために Windows を準備する</strong> - クリックして展開/折りたたみ</summary>
 
-  1. Open a command prompt as Administrator (**Start menu** → type `cmd` → right-click **Command Prompt** → select **Run as administrator**).
-  2. Enter the following command:
+  1. 管理者としてコマンドプロンプトを開きます（**Start menu** → `cmd` と入力 → **Command Prompt** を右クリック → **Run as administrator** を選択）。
+  2. 次のコマンドを入力します:
      ```
      bcdedit -set loadoptions nogplpv
      ```
-  3. Reboot your VM.
+  3. VM を再起動します。
 
 </details>
 
 <details>
-  <summary><strong>Step 3: Uninstall GPLPV drivers</strong> - Click to expand/collapse</summary>
+  <summary><strong>手順 3: GPLPV ドライバーをアンインストールする</strong> - クリックして展開/折りたたみ</summary>
 
-  After the reboot, purge all %%Xen|xen-hvm%% GPLPV drivers from your system using the comprehensive manual removal process documented in the [Xen Project Wiki](https://wiki.xenproject.org/wiki/Xen_Windows_GPLPV).
+  再起動後、[Xen Project Wiki](https://wiki.xenproject.org/wiki/Xen_Windows_GPLPV) に記載された包括的な手動削除手順を使用して、システムからすべての %%Xen|xen-hvm%% GPLPV ドライバーを削除します。
 
   :::caution
-  GPLPV removal requires extensive registry editing and manual file deletion. Follow the Xen Project Wiki instructions **exactly** as written, as errors can cause system instability or boot failures.
+  GPLPV の削除には、レジストリの大規模な編集と手動でのファイル削除が必要です。エラーはシステムの不安定化や起動失敗の原因となるため、Xen Project Wiki の手順を記載どおりに **正確に** 実行してください。
   :::
 
 </details>
 
 <details>
-  <summary><strong>Step 4: Create a new KVM virtual machine</strong> - Click to expand/collapse</summary>
+  <summary><strong>手順 4: 新しい KVM 仮想マシンを作成する</strong> - クリックして展開/折りたたみ</summary>
 
-  1. Ensure the **VM manager** is enabled:
-     - Go to ***Settings → VM manager***.
-     - Set **Enable VMs** to **Yes**.
-     - Download the latest **VirtIO drivers ISO** for Windows by selecting it from the dropdown menu and clicking **Download**.
+  1. **VM manager** が有効になっていることを確認します:
+     - ***Settings → VM manager*** に移動します。
+     - **Enable VMs** を **Yes** に設定します。
+     - ドロップダウンメニューから選択して **Download** をクリックし、Windows 用の最新の **VirtIO drivers ISO** をダウンロードします。
 
-  2. Navigate to the **VMs** tab and click **Add VM**.
+  2. **VMs** タブに移動して **Add VM** をクリックします。
 
-  3. Select the Windows version that matches your original %%Xen|xen-hvm%% virtual machine.
+  3. 元の %%Xen|xen-hvm%% 仮想マシンに一致する Windows バージョンを選択します。
 
-  4. Configure the basic settings:
-     - **Name**: Assign a descriptive name to your VM.
-     - **VirtIO drivers ISO**: Choose the version you just downloaded.
+  4. 基本設定を構成します:
+     - **Name**: VM にわかりやすい名前を付けます。
+     - **VirtIO drivers ISO**: 先ほどダウンロードしたバージョンを選択します。
 
-  5. Under **Primary vDisk Location**:
-     - Browse and select your existing %%Xen|xen-hvm%% virtual disk.
+  5. **Primary vDisk Location** の下で:
+     - 既存の %%Xen|xen-hvm%% 仮想ディスクを参照して選択します。
 
-  6. Add a **temporary secondary vDisk**:
-     - Click the green plus sign.
-     - Set the size to **1M** (this will enforce IDE bus compatibility during the initial boot).
-     - Choose any temporary directory for the location (this will be removed later).
+  6. **一時的なセカンダリ vDisk** を追加します:
+     - 緑のプラス記号をクリックします。
+     - サイズを **1M** に設定します（これにより初回起動時に IDE バス互換性が強制されます）。
+     - 場所には任意の一時ディレクトリを選択します（後で削除されます）。
 
-  7. Leave the other settings for graphics and sound at their default values, then click **Create**.
+  7. グラフィックスとサウンドの他の設定は既定値のままにして、**Create** をクリックします。
 
-  8. If the VM started automatically, stop it:
-     - Prefer **Stop** (avoid **Force stop** unless the VM is unresponsive).
-     - Alternatively, uncheck **Start VM after creation** when creating the VM.
+  8. VM が自動的に起動した場合は、停止します:
+     - **Force stop** は、VM が応答しない場合を除き使わず、**Stop** を推奨します。
+     - あるいは、VM 作成時に **Start VM after creation** のチェックを外します。
 
-  9. Edit the VM configuration:
-     - Click the VM icon and select **Edit**.
-     - Switch to **XML view** using the toggle in the top-right corner.
+  9. VM の設定を編集します:
+     - VM アイコンをクリックして **Edit** を選択します。
+     - 右上の切り替えを使って **XML view** に切り替えます。
 
-  10. Modify the primary disk XML:
-      - Locate the `<disk>` section for your primary virtual disk.
-      - Remove the entire `<address>` line.
-      - Change `bus='virtio'` to `bus='ide'` in the `<target>` tag.
-      - Click **Update**.
+  10. メインディスクの XML を変更します:
+      - メインの仮想ディスクの `<disk>` セクションを見つけます。
+      - `<address>` 行をすべて削除します。
+      - `<target>` タグ内の `bus='virtio'` を `bus='ide'` に変更します。
+      - **Update** をクリックします。
 
-  :::tip[Why the temporary disk?]
-  The 1MB temporary disk forces Unraid to assign the primary disk as `hda` (IDE) instead of `vda` (%%VirtIO|virtio%%), allowing Windows to boot without %%VirtIO|virtio%% drivers initially. This temporary disk will be removed after the driver installation.
+  :::tip[一時ディスクが必要な理由]
+  1 MB の一時ディスクにより、Unraid はプライマリディスクを `vda`（%%VirtIO|virtio%%）ではなく `hda`（IDE）として割り当てるため、最初は %%VirtIO|virtio%% ドライバーなしで Windows を起動できます。この一時ディスクは、ドライバーのインストール後に削除します。
   :::
 
 </details>
 
 <details>
-  <summary><strong>Step 5: Install VirtIO drivers</strong> - Click to expand/collapse</summary>
+  <summary><strong>手順 5: VirtIO ドライバーをインストールする</strong> - クリックして展開/折りたたみ</summary>
 
-  1. Start the VM from the **VMs** tab.
-  2. Connect via %%VNC|vnc-session%% by clicking the VM icon and select **Start with console (VNC)**.
-  3. During boot:
-     - Windows will detect new hardware but might fail to install drivers.
-     - Choose **Reboot later** when prompted.
-  4. Open **Device Manager** (press Win+X and choose Device Manager):
-     - Install drivers for each device listed under **Other devices** (like Ethernet Controller, PCI Device, etc.):
-       1. Right-click the device and select **Update driver**.
-       2. Choose **Browse my computer for drivers**.
-       3. Point to the %%VirtIO|virtio%% ISO drive (for example, `D:\`).
-       4. Check **Include subfolders**.
-       5. If prompted, accept **Always trust Red Hat**.
-  5. Install the %%QEMU|qemu%% %%guest agent|guest-agent%%:
-     - Open File Explorer and navigate to `D:\guest-agent\`.
-     - Double-click `qemu-ga-x64.msi`.
-  6. Shut down the VM.
+  1. **VMs** タブから VM を起動します。
+  2. VM アイコンをクリックして **Start with console (VNC)** を選択し、%%VNC|vnc-session%% で接続します。
+  3. 起動中:
+     - Windows は新しいハードウェアを検出しますが、ドライバーのインストールに失敗する場合があります。
+     - プロンプトが表示されたら **Reboot later** を選択します。
+  4. **Device Manager** を開きます（Win+X を押して Device Manager を選択します）:
+     - **Other devices** の下にある各デバイス（Ethernet Controller、PCI Device など）用のドライバーをインストールします:
+       1. デバイスを右クリックして **Update driver** を選択します。
+       2. **Browse my computer for drivers** を選択します。
+       3. %%VirtIO|virtio%% ISO ドライブを指定します（例: `D:\`）。
+       4. **Include subfolders** を確認します。
+       5. 表示された場合は **Always trust Red Hat** を承諾します。
+  5. %%QEMU|qemu%% %%guest agent|guest-agent%% をインストールします:
+     - ファイル エクスプローラーを開き、`D:\guest-agent\` に移動します。
+     - `qemu-ga-x64.msi` をダブルクリックします。
+  6. VM をシャットダウンします。
 
 </details>
 
 <details>
-  <summary><strong>Step 6: Finalize the VM configuration</strong> - Click to expand/collapse</summary>
+  <summary><strong>手順 6: VM 設定を最終調整する</strong> - クリックして展開/折りたたみ</summary>
 
-  1. Edit the VM:
-     - Remove the temporary secondary %%vDisk|vdisk%% by clicking the red minus icon.
-     - Confirm that the primary %%vDisk|vdisk%% points to your original %%Xen|xen-hvm%% disk.
-  2. Update the VM:
-     - Click **Update** to save your changes.
-  3. Start the VM normally.
-  4. Verify in **Device Manager** that:
-     - No warning icons appear.
-     - All devices utilize %%VirtIO|virtio%% drivers (for example, "Red Hat %%VirtIO|virtio%% Ethernet Adapter").
-  5. (Optional) Enable %%VirtIO|virtio%% for better performance:
-     - Edit the VM and switch to XML view.
-     - Change the primary disk's `bus` from `ide` to `virtio`.
-     - Click **Update** and reboot the VM.
+  1. VM を編集します:
+     - 赤いマイナスアイコンをクリックして、一時的なセカンダリ %%vDisk|vdisk%% を削除します。
+     - プライマリ %%vDisk|vdisk%% が元の %%Xen|xen-hvm%% ディスクを指していることを確認します。
+  2. VM を更新します:
+     - **Update** をクリックして変更を保存します。
+  3. 通常どおり VM を起動します。
+  4. **Device Manager** で次の点を確認します:
+     - 警告アイコンが表示されないこと。
+     - すべてのデバイスが %%VirtIO|virtio%% ドライバーを使用していること（例: "Red Hat %%VirtIO|virtio%% Ethernet Adapter"）。
+  5. （任意）パフォーマンス向上のために %%VirtIO|virtio%% を有効にします:
+     - VM を編集して XML view に切り替えます。
+     - プライマリディスクの `bus` を `ide` から `virtio` に変更します。
+     - **Update** をクリックして VM を再起動します。
 
-  :::tip[Driver troubleshooting]
-  If you notice errors on devices after migration:
+  :::tip[ドライバーのトラブルシューティング]
+  移行後にデバイスでエラーに気づいた場合:
 
-  1. Reinstall the %%VirtIO|virtio%% drivers from the ISO.
-  2. Check for Windows updates, which may provide newer drivers.
-  3. Visit the [Red Hat VirtIO Drivers](https://docs.fedoraproject.org/en-US/quick-docs/creating-windows-virtual-machines-using-virtio-drivers/) page for the latest versions.
+  1. ISO から %%VirtIO|virtio%% ドライバーを再インストールします。
+  2. Windows Update を確認してください。より新しいドライバーが提供される場合があります。
+  3. 最新バージョンについては [Red Hat VirtIO Drivers](https://docs.fedoraproject.org/en-US/quick-docs/creating-windows-virtual-machines-using-virtio-drivers/) のページを参照してください。
      :::
 
 </details>
