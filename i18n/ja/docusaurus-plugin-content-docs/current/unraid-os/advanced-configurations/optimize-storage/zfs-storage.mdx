@@ -10,31 +10,31 @@ import TabItem from '@theme/TabItem';
 
 :::important[Special ありがとうございます]
 
-We’d like to express our thanks to Ed Rawlings ([Spaceinvader One](https://www.youtube.com/c/SpaceinvaderOne)) for the expertise and guidance that this %%ZFS|zfs%% storage documentation has been adapted from. His tutorials and insights have assisted countless Unraid users in mastering advanced storage techniques. We appreciate his continued contributions to the Unraid community.
+この %%ZFS|zfs%% ストレージのドキュメントは、Ed Rawlings（[Spaceinvader One](https://www.youtube.com/c/SpaceinvaderOne)）の専門知識と案内をもとに作成されたものです。彼のチュートリアルと洞察は、数え切れないほどの Unraid ユーザーが高度なストレージ技術を習得する助けとなってきました。Unraid コミュニティへの継続的な貢献に感謝します。
 
 :::
 
-%%ZFS|zfs%% brings advanced data integrity, flexible storage configurations, and high performance to your Unraid system. This guide explains %%ZFS|zfs%% core concepts and walks you through managing %%ZFS|zfs%% pools directly from the Unraid %%WebGUI|web-gui%%. Whether you're setting up new %%ZFS|zfs%% storage or integrating an existing pool, you’ll find the steps and context you need to get started confidently.
+%%ZFS|zfs%% は、データ整合性、柔軟なストレージ構成、高いパフォーマンスを Unraid システムにもたらします。このガイドでは %%ZFS|zfs%% の基本概念を説明し、Unraid の %%WebGUI|web-gui%% から %%ZFS|zfs%% プールを直接管理する方法を案内します。新しく %%ZFS|zfs%% ストレージをセットアップする場合でも、既存のプールを取り込む場合でも、自信を持って始めるために必要な手順と背景知識が得られます。
 
 ---
 
-## Why ZFS?
+## なぜ ZFS なのか？
 
-%%ZFS|zfs%% is a modern file system and volume manager designed to protect your data, prevent corruption, and simplify storage management.
+%%ZFS|zfs%% は、データを保護し、破損を防ぎ、ストレージ管理を簡素化するよう設計された、最新のファイルシステム兼ボリュームマネージャーです。
 
-With %%ZFS|zfs%%, you gain:
+%%ZFS|zfs%% では、次の利点があります:
 
-- Automatic data integrity checks and self-healing
-- Built-in %%RAID|raid%% support (mirrors, RAIDZ)
-- %%Snapshots|snapshot%% and clones for easy backups and rollbacks
-- %%ZFS|zfs%% send/receive for efficient replication
-- On-the-fly compression
+- 自動データ整合性チェックと自己修復
+- 標準搭載の %%RAID|raid%% サポート（ミラー、RAIDZ）
+- 簡単なバックアップとロールバックのための %%Snapshots|snapshot%% とクローン
+- 効率的なレプリケーションのための %%ZFS|zfs%% send/receive
+- オン・ザ・フライの圧縮
 
 Unraid supports %%ZFS|zfs%% for any storage pool. You can create a new %%ZFS|zfs%% pool, import one from another system, or use Unraid’s unique hybrid %%ZFS|zfs%% setup: add a %%ZFS|zfs%%-formatted disk directly to the Unraid %%array|array%% (not a pool) and combine %%ZFS|zfs%% features with Unraid’s %%parity|parity%% protection.
 
 :::info\[Example]
 
-You can use %%ZFS|zfs%% %%snapshots|snapshot%% and replication on a single disk as a backup target, or replicate a fast SSD %%ZFS|zfs%% pool to a %%ZFS|zfs%% disk in the %%array|array%% protected by Unraid %%parity|parity%% - getting the best of both worlds.
+%%ZFS|zfs%% の %%snapshots|snapshot%% とレプリケーションを 1 台のディスク上でバックアップ先として使うことも、または高速な SSD %%ZFS|zfs%% プールを Unraid の %%parity|parity%% で保護された %%array|array%% 上の %%ZFS|zfs%% ディスクへレプリケートすることもできます。両方の長所を活かせます。
 
 :::
 
@@ -44,17 +44,17 @@ You can use %%ZFS|zfs%% %%snapshots|snapshot%% and replication on a single disk 
 
 :::note
 
-The hybrid %%ZFS|zfs%%-in-array approach is helpful for specific backup or replication scenarios but is not a replacement for a full %%ZFS|zfs%% pool. %%ZFS|zfs%% disks in the %%array|array%% are managed individually; you do not get the combined performance, redundancy, or self-healing of a true multi-disk %%ZFS|zfs%% pool. For full %%ZFS|zfs%% functionality, always use dedicated %%ZFS|zfs%% pools.
+ハイブリッドな %%ZFS|zfs%%-in-array 方式は、特定のバックアップやレプリケーションの用途には有用ですが、完全な %%ZFS|zfs%% プールの代わりにはなりません。%%array|array%% 内の %%ZFS|zfs%% ディスクは個別に管理されるため、真の複数ディスク構成の %%ZFS|zfs%% プールが持つ統合されたパフォーマンス、冗長性、自己修復は得られません。%%ZFS|zfs%% の完全な機能を使うには、必ず専用の %%ZFS|zfs%% プールを使用してください。
 
 :::
 
-### Pools, vdevs, and redundancy
+### プール、vdev、冗長性
 
-A %%ZFS|zfs%% pool (called a "zpool") is made up of one or more vdevs (virtual devices). Each vdev is a group of physical disks with its own redundancy level. %%ZFS|zfs%% writes data across vdevs, but each vdev is responsible for its fault tolerance.
+%%ZFS|zfs%% プール（「zpool」と呼ばれます）は、1 つ以上の vdev（仮想デバイス）で構成されます。各 vdev は独自の冗長性レベルを持つ物理ディスクの समूहです。%%ZFS|zfs%% は vdev 間にデータを書き込みますが、障害耐性は各 vdev が担います。
 
 :::caution
 
-Redundancy is always per vdev. If any vdev fails, the entire pool fails, even if other vdevs are healthy. Plan your vdevs with care!
+冗長性は常に vdev 単位です。どれか 1 つの vdev が故障すると、他の vdev が正常でもプール全体が失われます。vdev の構成は慎重に計画してください！
 
 :::
 
@@ -64,23 +64,23 @@ Redundancy is always per vdev. If any vdev fails, the entire pool fails, even if
 
 ---
 
-## Creating a ZFS pool
+## ZFS プールの作成
 
-To create a %%ZFS|zfs%% pool using the %%WebGUI|web-gui%%:
+%%WebGUI|web-gui%% で %%ZFS|zfs%% プールを作成するには:
 
 1. %%array|array%% を停止します。
-2. Click **Add Pool**.
+2. **Poolを追加** をクリックします。
 
 <div style={{ margin: 'auto', maxWidth: '600px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
   ![](/img/zfs3.png)
 </div>
 
-3. Choose a name for your pool (for example, `raptor`).
-4. Set the number of slots to match the number of disks you want in your primary data vdev(s).
+3. プールの名前を決めます（例: `raptor`）。
+4. プライマリデータ vdev のディスク数に合わせてスロット数を設定します。
 
 :::note
 
-This initial slot count is for data vdevs only. Support vdevs (such as log or cache drives) can be added separately after creating the pool.
+この初期スロット数はデータ vdev のみを対象としています。サポート vdev（log や cache ドライブなど）は、プール作成後に別途追加できます。
 
 :::
 
@@ -88,24 +88,24 @@ This initial slot count is for data vdevs only. Support vdevs (such as log or ca
   ![](/img/zfs4.png)
 </div>
 
-5. Assign disks to the pool (disk order does not matter).
+5. ディスクをプールに割り当てます（ディスクの順序は関係ありません）。
 
 <div style={{ margin: 'auto', maxWidth: '600px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
   ![](/img/zfs5.png)
 </div>
 
-6. Click the pool name (e.g., `raptor`) to open its configuration screen.
-7. Set the file system type to `zfs` or `zfs-encrypted` (for LUKS encryption).
+6. プール名（例: `raptor`）をクリックして、設定画面を開きます。
+7. ファイルシステムの種類を `zfs` または `zfs-encrypted`（LUKS 暗号化用）に設定します。
 
 <div style={{ margin: 'auto', maxWidth: '600px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
   ![](/img/zfs6.png)
 </div>
 
-8. Choose your allocation profile - this determines your pool's redundancy and performance.
+8. アロケーションプロファイルを選択します。これによってプールの冗長性とパフォーマンスが決まります。
 
 :::tip
 
-Before finalizing, review the sections on allocation profiles and topology to make an informed choice.
+確定する前に、アロケーションプロファイルとトポロジーの項目を確認し、最適な選択を行ってください。
 
 :::
 
@@ -117,118 +117,118 @@ Before finalizing, review the sections on allocation profiles and topology to ma
   ![](/img/zfs8.png)
 </div>
 
-9. Enable compression if desired (recommended for most workloads).
-10. Click **Done**, then start the %%array|array%%.
+9. 必要に応じて圧縮を有効にします（ほとんどのワークロードで推奨）。
+10. **Done** をクリックしてから、%%array|array%% を開始します。
 
 ---
 
-## Adding a ZFS disk to the array (Hybrid setup)
+## アレイに ZFS ディスクを追加する（ハイブリッド構成）
 
-You can add a standalone %%ZFS|zfs%% disk to your Unraid %%array|array%% (not a %%ZFS|zfs%% pool) to combine %%ZFS|zfs%% features with Unraid's %%parity|parity%% protection.
+スタンドアロンの %%ZFS|zfs%% ディスクを Unraid の %%array|array%%（%%ZFS|zfs%% プールではありません）に追加して、%%ZFS|zfs%% の機能と Unraid の %%parity|parity%% 保護を組み合わせることができます。
 
-:::info[What this enables]
+:::info[What これにより有効になります]
 
-- **Parity protection:** The ZFS disk is protected by Unraid’s %%array|array%% %%parity|parity%%, ensuring your data is safe from single (or multiple, depending on your %%parity drives|parity-drives%%) disk failures.
+- **Parity protection:** ZFS ディスクは Unraid の %%array|array%% の %%parity|parity%% によって保護され、1 台（または、%%parity drives|parity-drives%% に応じて複数台）のディスク障害からデータを安全に守ります。
 
-- **Data integrity:** %%ZFS|zfs%% provides block-level integrity checks (checksums). While a single disk can’t self-heal bit rot, %%ZFS|zfs%% will detect corruption and alert you, allowing you to restore from backup before silent data loss occurs.
+- **Data integrity:** %%ZFS|zfs%% はブロック単位の整合性チェック（チェックサム）を提供します。単一ディスクではビット腐敗を自己修復できませんが、%%ZFS|zfs%% は破損を検出して通知するため、静かにデータが失われる前にバックアップから復元できます。
 
-- **%%ZFS|zfs%% features:** You can utilize %%ZFS|zfs%% %%snapshots|snapshot%% and replication on this disk, making it ideal for backup targets, specific datasets, or scenarios where you want %%ZFS|zfs%% features alongside traditional Unraid storage.
+- **%%ZFS|zfs%% features:** このディスクでは %%ZFS|zfs%% の %%snapshots|snapshot%% とレプリケーションを利用でき、バックアップ先、特定のデータセット、または従来の Unraid ストレージと併用して %%ZFS|zfs%% 機能を使いたい場合に最適です。
 
 :::
 
-To add a %%ZFS|zfs%% disk to the %%array|array%%:
+%%ZFS|zfs%% ディスクを %%array|array%% に追加するには:
 
-1. Go to the **Main** tab in the %%WebGUI|web-gui%%.
+1. %%WebGUI|web-gui%% の **Main** タブに移動します。
 2. %%array|array%% を停止します。
-3. Click on an empty slot under **Array Devices**.
-4. Select the disk you want to add.
+3. **Array Devices** の下にある空きスロットをクリックします。
+4. 追加したいディスクを選択します。
 
 <div style={{ margin: 'auto', maxWidth: '600px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
   ![](/img/zfs9.png)
 </div>
 
-5. Under **File system**, choose `zfs` or `zfs-encrypted`.
+5. **File system** で `zfs` または `zfs-encrypted` を選択します。
 
 <div style={{ margin: 'auto', maxWidth: '600px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
   ![](/img/zfs10.png)
 </div>
 
 6. **Apply** をクリックします。
-7. Start the %%array|array%% and let the disk be formatted if needed.
+7. %%array|array%% を開始し、必要であればディスクをフォーマットします。
 
 ---
 
-## Choosing an allocation profile
+## アロケーションプロファイルの選択
 
-When you set up a %%ZFS|zfs%% pool, your allocation profile determines how your data is protected, how your pool performs, and how you can expand it. Here’s a simple comparison to help you decide which profile fits your needs:
+%%ZFS|zfs%% プールをセットアップすると、アロケーションプロファイルによってデータの保護方法、プールの性能、拡張方法が決まります。どのプロファイルが要件に合うかを判断するため、簡単な比較を以下に示します。
 
 <div style={{ margin: 'auto', maxWidth: '600px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
   ![](/img/zfs11.png)
 </div>
 
-| Profile | Redundancy                    | Performance                                               | Expansion        | Space Efficiency | Typical Use Case                         | Recommended Drive Count Per vdev |
-| ------- | ----------------------------- | --------------------------------------------------------- | ---------------- | ---------------- | ---------------------------------------- | -------------------------------- |
-| Stripe  | なし                            | Fast, but risky                                           | Add more disks   | 100%             | Temporary/scratch storage                | Any number                       |
-| Mirror  | 1:1 (%%RAID 1\|raid1%% style) | Excellent for random I/O                                  | Add more mirrors | 50%              | High performance, easy expansion         | 2 drives (can add more mirrors)  |
-| RAIDZ1  | 1 disk per vdev               | Fast for big files. Not ideal for small or random writes. | Add new vdevs    | High             | General use, 1-disk fault tolerance      | 3-6 drives (max 8)               |
-| RAIDZ2  | 2 disks per vdev              | Like Z1 but slightly slower writes (extra parity)         | Add new vdevs    | Moderate         | Important data, 2-disk fault tolerance   | 6-12 drives (max 14)             |
-| RAIDZ3  | 3 disks per vdev              | Like Z2, with more write overhead (for maximum safety)    | Add new vdevs    | Lower            | Mission-critical, 3-disk fault tolerance | 10-16 drives (max 20)            |
+| プロファイル | 冗長性                       | パフォーマンス                                      | 拡張           | 容量効率 | 一般的な用途                 | vdevごとの推奨ドライブ数       |
+| ------ | ------------------------- | -------------------------------------------- | ------------ | ---- | ---------------------- | -------------------- |
+| Stripe | なし                        | 高速だが危険                                       | ディスクを追加      | 100% | 一時的なデータ／スクラッチストレージ     | 任意の数                 |
+| ミラー    | 1:1（%%RAID 1\|raid1%% 形式） | ランダム I/O に最適                                 | ミラーを追加       | 50%  | 高性能、拡張しやすい             | 2台のドライブ（さらにミラーを追加可能） |
+| RAIDZ1 | vdev あたり 1 台のディスク         | 大きなファイルに高速。小さな書き込みやランダム書き込みには不向き。            | 新しい vdev を追加 | 高    | 一般用途、1 ディスク故障耐性        | 3～6台のドライブ（最大8台）      |
+| RAIDZ2 | vdev あたり 2 台のディスク         | Z1 に似ていますが、書き込みオーバーヘッドが少し大きくなります（追加のパリティのため） | 新しい vdev を追加 | 中程度  | 重要なデータ、2 ディスク故障耐性      | 6～12台のドライブ（最大14台）    |
+| RAIDZ3 | vdev あたり 3 台のディスク         | Z2 に似ていますが、書き込みオーバーヘッドがさらに増えます（最大限の安全性のため）   | 新しい vdev を追加 | 低    | ミッションクリティカル、3 ディスク故障耐性 | 10～16台のドライブ（最大20台）   |
 
-:::tip[Optimizing drive counts]
+:::tip[Optimizing ドライブ数]
 
-The recommended drive counts in the table above work well for most users. For even better performance, you can optimize within those ranges by choosing configurations where the number of data disks (total disks minus parity disks) is a **power of 2** (e.g., 2, 4, 8, 16). This helps align data stripes correctly, preventing wasted space and uneven I/O.
+上の表に示した推奨ドライブ数は、ほとんどのユーザーに適しています。さらに性能を高めたい場合は、データディスク数（総ディスク数からパリティディスク数を引いた数）が **2の累乗**（例: 2、4、8、16）になる構成を選ぶことで、これらの範囲内で最適化できます。これにより、データストライプの配置が正しくそろい、無駄な空き容量や不均一な I/O を防げます。
 
-**Examples of optimized configurations:**
+**最適化された構成の例:**
 
-- **RAIDZ1**: 3, 5, or 9 drives (data disks = 2, 4, or 8)
-- **RAIDZ2**: 4, 6, or 10 drives (data disks = 2, 4, or 8)
-- **RAIDZ3**: 5, 9, or 17 drives (data disks = 2, 6, or 14)
+- **RAIDZ1**: 3、5、または9台のドライブ（データディスク = 2、4、または8）
+- **RAIDZ2**: 4、6、または10台のドライブ（データディスク = 2、4、または8）
+- **RAIDZ3**: 5、9、または17台のドライブ（データディスク = 2、6、または14）
 
-Note that these optimizations are optional - the recommendations above should work well for most use cases.
+これらの最適化は任意です。上記の推奨は、ほとんどの用途で問題なく機能するはずです。
 
 :::
 
-:::important[How to choose]
+:::important[How を選ぶ]
 
-- Use **Mirror** if you want the best performance and easy, flexible expansion, and are okay with using more disk space for redundancy.
-- Choose **RAIDZ1/2/3** if you want to maximize usable space and store large files, but keep in mind that expansion is less flexible, and random write performance is lower.
-- **Stripe** is only suitable for non-critical, temporary data - if any disk fails, you lose everything.
+- 最高のパフォーマンスと、簡単で柔軟な拡張を重視し、冗長性のためにより多くのディスク容量を使ってもよいなら、**Mirror** を使用してください。
+- 使用可能容量を最大化して大きなファイルを保存したいなら **RAIDZ1/2/3** を選びましょう。ただし、拡張の柔軟性は低く、ランダム書き込み性能も低めです。
+- **Stripe** は、重要でない一時データにのみ適しています。いずれか 1 台でもディスクが故障すると、すべて失われます。
 
 :::
 
 ---
 
-## Topology and expansion
+## トポロジーと拡張
 
-How you group disks into vdevs affects both data safety and speed.
+ディスクを vdev にどうまとめるかは、データ保護と速度の両方に影響します。
 
 <div style={{ margin: 'auto', maxWidth: '600px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
   ![](/img/zfs12.png)
 </div>
 
-- If you put all your disks into a large RAIDZ2 vdev, you can lose any two disks without losing data. However, expansion means adding another full vdev.
-- You'll gain better parallel performance if you split disks into multiple smaller RAIDZ1 vdevs. Be cautious; if two disks fail in the same vdev, you will lose the whole pool.
-- %%ZFS|zfs%% stripes data across vdevs, not individual disks, so more vdevs can lead to better performance for workloads with many small files or random I/O.
-- Expanding a %%ZFS|zfs%% pool usually means adding a new vdev of the same layout, not just a single disk.
+- すべてのディスクを大きな RAIDZ2 vdev にまとめれば、2 台までのディスク障害であればデータを失わずに済みます。ただし、拡張するには別の完全な vdev を追加する必要があります。
+- 複数の小さな RAIDZ1 vdev に分けると、並列性能は向上します。ただし注意が必要です。同じ vdev 内で 2 台のディスクが故障すると、プール全体を失います。
+- %%ZFS|zfs%% は個々のディスクではなく vdev 間でデータをストライプするため、vdev が多いほど、小さなファイルが多いワークロードやランダム I/O でより高いパフォーマンスを発揮することがあります。
+- %%ZFS|zfs%% プールの拡張は、通常、単一ディスクを追加するのではなく、同じ構成の新しい vdev を追加することを意味します。
 
 :::tip
 
-Plan your pool’s layout to fit your needs and future growth. Unlike the Unraid %%array|array%%, you can’t add a single disk to an existing vdev using the %%WebGUI|web-gui%%.
+将来の拡張も見据えて、プールのレイアウトを計画してください。Unraid の %%array|array%% とは異なり、%%WebGUI|web-gui%% から既存の vdev に 1 台のディスクを追加することはできません。
 
 :::
 
 ---
 
-## Compression and RAM
+## 圧縮と RAM
 
-%%ZFS|zfs%% offers advanced features that can significantly improve Unraid's storage efficiency and performance. Two common topics of interest are compression and memory requirements.
+%%ZFS|zfs%% は、Unraid のストレージ効率とパフォーマンスを大幅に向上させる高度な機能を備えています。よく話題になるのは、圧縮とメモリ要件です。
 
-%%ZFS|zfs%% compression is transparent - it operates in the background, shrinking data before it reaches the disk.
+%%ZFS|zfs%% の圧縮は透過的です。バックグラウンドで動作し、ディスクに到達する前にデータを圧縮します。
 
-This offers two major benefits:
+これには 2 つの大きな利点があります:
 
-- **Reduced disk usage:** Less storage space is consumed.
-- **Improved performance:** Writing and reading less data can lead to faster operations, especially on modern CPUs.
+- **ディスク使用量の削減:** 消費するストレージ容量が少なくなります。
+- **パフォーマンスの向上:** 書き込み・読み込みするデータ量が減るため、特に最新 CPU では処理が高速になることがあります。
 
 <div style={{ margin: 'auto', maxWidth: '600px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
   ![](/img/zfs13.png)
@@ -236,16 +236,16 @@ This offers two major benefits:
 
 :::tip
 
-Enable %%ZFS|zfs%% compression for most Unraid %%ZFS|zfs%% pools. It's safe, efficient, and rarely impacts compatibility or stability.
+ほとんどの Unraid %%ZFS|zfs%% プールでは %%ZFS|zfs%% 圧縮を有効にしてください。安全で効率が良く、互換性や安定性への影響もほとんどありません。
 
 :::
 
 <details>
-  <summary><strong>The ZFS RAM Myth</strong> - Click to expand/collapse</summary>
+  <summary><strong>ZFS の RAM 神話</strong> - クリックして展開/折りたたみ</summary>
 
-  You might have come across the outdated advice: “%%ZFS|zfs%% requires 1 GB of RAM per 1 TB of storage.” This is no longer applicable for most users. %%ZFS|zfs%% utilizes RAM for its Adaptive Replacement Cache (ARC), which speeds up frequently accessed reads.
+  古い情報として、「%%ZFS|zfs%% にはストレージ 1 TB あたり 1 GB の RAM が必要」という話を見聞きしたかもしれません。これは現在のほとんどのユーザーには当てはまりません。%%ZFS|zfs%% は RAM を Adaptive Replacement Cache（ARC）に利用し、頻繁にアクセスされる読み取りを高速化します。
 
-  Unraid automatically limits %%ZFS|zfs%% to using a reasonable portion of your system's RAM (usually 1/8th of total RAM). This allows %%ZFS|zfs%% to perform well without affecting Docker containers, %%VMs|vm%%, or the Unraid OS.
+  Unraid は、%%ZFS|zfs%% がシステム RAM の適切な割合（通常は総 RAM の 1/8）だけを使うよう自動的に制限します。これにより、Docker コンテナ、%%VMs|vm%%、または Unraid OS に影響を与えることなく、%%ZFS|zfs%% を高い性能で動作させることができます。
 
   <div style={{ margin: 'auto', maxWidth: '600px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
     ![](/img/zfs14.png)
@@ -254,36 +254,36 @@ Enable %%ZFS|zfs%% compression for most Unraid %%ZFS|zfs%% pools. It's safe, eff
 
 :::info
 
-%%ZFS|zfs%% scales well with available memory. More RAM can enhance cache performance, but %%ZFS|zfs%% functions reliably with modest hardware. Don’t let old recommendations prevent you from using %%ZFS|zfs%% on Unraid.
+%%ZFS|zfs%% は利用可能なメモリに応じてよくスケールします。RAM が多いほどキャッシュ性能は向上しますが、%%ZFS|zfs%% は少ないハードウェアでも安定して動作します。古い推奨事項に惑わされて、Unraid で %%ZFS|zfs%% を使うのをためらう必要はありません。
 
 :::
 
 ---
 
-## Importing ZFS pools created on other systems
+## 他のシステムで作成された ZFS プールのインポート
 
-Unraid can import %%ZFS|zfs%% pools created on other platforms with minimal hassle.
+Unraid は、他のプラットフォームで作成された %%ZFS|zfs%% プールを最小限の手間でインポートできます。
 
 <details>
-  <summary><strong>How to import a ZFS pool</strong> - Click to expand/collapse</summary>
+  <summary><strong>ZFS プールをインポートする方法</strong> - クリックして展開/折りたたみ</summary>
 
-  1. **Stop the array:** Ensure your Unraid %%array|array%% is stopped.
-  2. **Add new pool:** Click **Add Pool**.
-  3. **Assign all drives:**
-     - Set **Number of Data Slots** to the total number of drives in your %%ZFS|zfs%% pool (including data vdevs and support vdevs).
-     - Assign each drive to the correct slot.
-     - *Example:* For a pool with a 4-drive mirrored vdev and a 2-drive L2ARC vdev, set 6 slots and assign all six drives.
-  4. **Set file system to "Auto":** Click the pool name (e.g., `raptor`) and set **File System** to **Auto**.
-  5. **Finish and start array:** Click **Done**, then start the %%array|array%%.
+  1. **Array を停止:** Unraid の %%array|array%% が停止していることを確認します。
+  2. **新しいプールを追加:** **Add Pool** をクリックします。
+  3. **すべてのドライブを割り当てる:**
+     - **Number of Data Slots** を、%%ZFS|zfs%% プール内の総ドライブ数（データ vdev とサポート vdev を含む）に設定します。
+     - 各ドライブを正しいスロットに割り当てます。
+     - *例:* 4 台構成のミラー vdev と 2 台構成の L2ARC vdev を持つプールでは、6 スロットに設定して 6 台すべてのドライブを割り当てます。
+  4. **ファイルシステムを「Auto」に設定:** プール名（例: `raptor`）をクリックし、**File System** を **Auto** に設定します。
+  5. **完了して array を開始:** **Done** をクリックしてから、%%array|array%% を開始します。
 
-  :::info[Automatic detection]
-  Unraid will automatically detect and import the %%ZFS|zfs%% pool. Support vdevs (like log, cache/L2ARC, special/dedup) are listed under **Subpools** in the %%WebGUI|web-gui%%. There is no need to add subpools separately after initiating the import. Unraid will automatically import them alongside the main data disks when all required drives are assigned.
+  :::info[自動検出]
+  Unraid は %%ZFS|zfs%% プールを自動的に検出してインポートします。サポート vdev（log、cache/L2ARC、special/dedup など）は、%%WebGUI|web-gui%% の **Subpools** に表示されます。インポートを開始した後で、サブプールを別途追加する必要はありません。必要なドライブがすべて割り当てられていれば、Unraid がメインのデータディスクと一緒に自動で取り込みます。
   :::
 
-  After importing, running a %%scrub|scrub%% is highly recommended to verify data integrity.
+  インポート後は、データ整合性を確認するために %%scrub|scrub%% を実行することを強く推奨します。
 
-  - Click the pool name (e.g., `raptor`) to open its configuration.
-  - Under **Pool Status**, check the status and click **Scrub**.
+  - プール名（例: `raptor`）をクリックして、設定を開きます。
+  - **Pool Status** で状態を確認し、**Scrub** をクリックします。
 
   <div style={{ margin: 'auto', maxWidth: '600px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
     ![](/img/zfs15.png)
@@ -292,91 +292,91 @@ Unraid can import %%ZFS|zfs%% pools created on other platforms with minimal hass
 
 ---
 
-## Support vdevs (subpools)
+## サポート vdev（サブプール）
 
-Unraid refers to %%ZFS|zfs%% support vdevs as subpools. Most users do **not** need these, but advanced users may encounter them:
+Unraid では、%%ZFS|zfs%% のサポート vdev をサブプールと呼びます。ほとんどのユーザーには**不要**ですが、高度なユーザーはこれらに遭遇することがあります:
 
 <div style={{ margin: 'auto', maxWidth: '600px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
   ![](/img/zfs16.png)
 </div>
 
-| Support vdev (subpool) | Purpose                               | Risk/Notes                                                                              |
-| ---------------------- | ------------------------------------- | --------------------------------------------------------------------------------------- |
-| Special vdev           | Stores metadata and small files       | The pool becomes unreadable if lost.                                                    |
-| Dedup vdev             | Enables deduplication                 | Requires vast amounts of RAM; risky for most users. Avoid unless you have expert needs. |
-| Log vdev (SLOG)        | Improves sync write performance       | Optional. Only beneficial for certain workloads.                                        |
-| Cache vdev (L2ARC)     | Provides SSD-based read cache         | Optional. Can improve read speeds for large working sets.                               |
-| Spare vdev             | Not supported in Unraid (as of 7.1.2) |                                                                                         |
+| サポート vdev（サブプール）  | 目的                             | リスク/注意点                                           |
+| ----------------- | ------------------------------ | ------------------------------------------------- |
+| Special vdev      | メタデータと小さなファイルを保存               | 失われるとプールは読み取れなくなります。                              |
+| Dedup vdev        | 重複排除を有効化                       | 大量の RAM を必要とし、ほとんどのユーザーには危険です。専門的な用途がない限り避けてください。 |
+| Log vdev（SLOG）    | 同期書き込み性能を改善                    | オプション。特定のワークロードでのみ有効です。                           |
+| Cache vdev（L2ARC） | SSD ベースの読み取りキャッシュを提供           | オプション。大きな作業セットでは読み取り速度を改善できます。                    |
+| Spare vdev        | Unraid ではサポートされていません（7.1.2 時点） |                                                   |
 
 :::caution
 
-Most Unraid users should avoid support vdevs/subpools unless you have a specific and well-understood need. They are designed for specialized workloads and can introduce complexity or risk if misused.
+ほとんどの Unraid ユーザーは、特定の目的を十分理解している場合を除き、サポート vdev／サブプールを避けるべきです。これらは特殊なワークロード向けに設計されており、誤用すると複雑さやリスクを招くことがあります。
 
 :::
 
 ---
 
-## Critical support vdev drives not assigned during import
+## インポート時に割り当てられなかった重要なサポート vdev ドライブ
 
-When you import a %%ZFS|zfs%% pool into Unraid, you need to assign every drive from your original pool, including those used for support vdevs, to the pool slots. Unraid will automatically recognize each drive’s role (data, log, cache, special, or dedup) once the %%array|array%% starts. You don’t need to specify which drive serves what purpose manually.
+%%ZFS|zfs%% プールを Unraid にインポートする際は、サポート vdev に使用されていたものも含め、元のプールのすべてのドライブをプールのスロットに割り当てる必要があります。%%array|array%% が開始されると、Unraid は各ドライブの役割（data、log、cache、special、dedup）を自動的に認識します。どのドライブが何の役割かを手動で指定する必要はありません。
 
-If you forget to include a drive that was part of a support vdev during the import, the outcome will depend on the vdev’s function:
+インポート時にサポート vdev の一部だったドライブを割り当て忘れた場合、結果はその vdev の機能によって異なります:
 
-| Vdev type                  | If drive is missing during import               | Result                                                                                                                |
-| -------------------------- | ----------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
-| Special vdev or dedup vdev | Pool will not import or will be unusable        | These vdevs store critical metadata or deduplication tables. Without them, %%ZFS\|zfs%% cannot safely mount the pool. |
-| Log (SLOG) vdev            | Pool imports, but sync write performance drops. | The pool remains accessible, but you may notice slower performance for workloads that rely on sync writes.            |
-| Cache (L2ARC) vdev         | Pool imports, but read cache is lost            | The pool works normally, but you lose the performance boost from the L2ARC cache. No data is lost.                    |
+| vdev の種類                    | インポート時にドライブが欠けている場合            | 結果                                                                           |
+| --------------------------- | ------------------------------ | ---------------------------------------------------------------------------- |
+| Special vdev または dedup vdev | プールはインポートされないか、使用できなくなります      | これらの vdev は重要なメタデータまたは重複排除テーブルを保存します。これらがないと、%%ZFS\|zfs%% は安全にプールをマウントできません。 |
+| Log（SLOG）vdev               | プールはインポートされますが、同期書き込み性能は低下します。 | プール自体は引き続き利用できますが、同期書き込みに依存するワークロードでは性能低下が見られる場合があります。                       |
+| Cache（L2ARC）vdev            | プールはインポートされますが、読み取りキャッシュは失われます | プールは通常どおり動作しますが、L2ARC キャッシュによる性能向上は失われます。データは失われません。                         |
 
 :::tip
 
-Always assign every physical drive from your original %%ZFS|zfs%% pool, including all support vdevs, when importing into Unraid. This ensures smooth detection and integration. For new pools created in Unraid, support vdevs are optional and generally not needed for most users.
+Unraid にインポートする際は、元の %%ZFS|zfs%% プールのすべての物理ドライブ（すべてのサポート vdev を含む）を必ず割り当ててください。これにより、検出と統合がスムーズになります。Unraid で新しく作成するプールでは、サポート vdev は任意であり、通常はほとんどのユーザーに必要ありません。
 
 :::
 
 ---
 
-## Expanding storage
+## ストレージの拡張
 
-%%ZFS|zfs%% is powerful, but it's important to understand how its storage expansion works - especially if you’re planning for future growth.
+%%ZFS|zfs%% は強力ですが、そのストレージ拡張の仕組みを理解しておくことが重要です。特に将来の増設を見据えている場合はなおさらです。
 
-Historically, %%ZFS|zfs%% vdevs have a fixed width. You can’t add a disk to an existing RAIDZ vdev to make it larger.
+従来、%%ZFS|zfs%% の vdev は固定幅です。既存の RAIDZ vdev にディスクを 1 台追加して大きくすることはできません。
 
-Ways to expand your pool include:
+プールを拡張する方法には次のようなものがあります:
 
-- **Adding a new vdev:** Grow your pool by adding another vdev (like a new mirror or RAIDZ group). This increases capacity, but you must add disks in sets that match the vdev’s configuration.
-- **Replacing drives with larger ones:** Swap each drive in a vdev, one at a time, for a larger disk. See [drive replacement](../../using-unraid-to/manage-storage/array/replacing-disks-in-array.mdx#replacing-faileddisabled-disks) for detailed procedures. After all drives are replaced and the pool resolves, the vdev's capacity increases.
-- **Creating a new pool:** Starting a new %%ZFS|zfs%% pool keeps things organized and independent for different data types or workloads.
+- **新しい vdev を追加する:** 別の vdev（新しいミラーや RAIDZ グループなど）を追加してプールを拡張します。これにより容量は増えますが、vdev の構成に合った単位でディスクを追加する必要があります。
+- **より大容量のドライブに交換する:** vdev 内の各ドライブを、1台ずつより大きいディスクに交換します。詳細な手順は[ドライブ交換](../../using-unraid-to/manage-storage/array/replacing-disks-in-array.mdx#replacing-faileddisabled-disks)を参照してください。すべてのドライブを交換してプールが再計算されると、vdev の容量が増加します。
+- **新しいプールを作成する:** 新しい %%ZFS|zfs%% プールを用意すると、異なるデータ種別やワークロードを整理して独立して管理できます。
 
-:::tip[Planning ahead]
+:::tip[Planning 先を見据えて
 
-Before building your pool, consider how much storage you’ll need - not just today, but in the future. %%ZFS|zfs%% rewards good planning, especially if you want to avoid disruptive upgrades later.
+プールを構築する前に、今だけでなく将来に必要になるストレージ容量を考えてください。%%ZFS|zfs%% は、特に後から大掛かりなアップグレードを避けたい場合に、綿密な計画に応えてくれます。
 
 :::
 
 ---
 
-## Using ZFS pools on an existing Unraid server
+## 既存の Unraid サーバーで ZFS プールを使う
 
-If you're running a traditional Unraid %%array|array%% and want to add %%ZFS|zfs%% pools, here are some effective ways to integrate them:
+従来の Unraid %%array|array%% を運用していて %%ZFS|zfs%% プールを追加したい場合、統合するための効果的な方法をいくつか紹介します:
 
-| ユースケース                                     | 説明                                                                                                                                                                                                 | Details / Examples                                                                                             |
-| ------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
-| Fast SSD/NVMe pool for appdata & Docker    | Store the appdata share for fast, responsive containers and databases. This supports %%snapshot\|snapshot%%s for easy rollbacks and can also host %%VM\|vm%%s for high I/O.                        | Many users choose a 2-drive %%ZFS\|zfs%% mirror for this. It's easy to expand and delivers strong performance. |
-| %%ZFS\|zfs%% pool for important data       | Use a %%ZFS\|zfs%% mirror or RAIDZ2 pool for irreplaceable files like photos, tax records, and %%user share\|user-share%% data. %%ZFS\|zfs%% checks for corruption and self-heals with redundancy. | This setup protects critical data with automatic integrity checks and self-healing capabilities.               |
-| Daily backup or replication target         | Use a %%ZFS\|zfs%% disk (even within the Unraid %%array\|array%%) as a replication target. You can replicate other pools locally or from another Unraid server.                                    | Utilize `zfs send/receive` or tools like Syncoid for fast and reliable backups and restores.                   |
-| %%Snapshot\|snapshot%%-based recovery pool | Keep point-in-time %%snapshot\|snapshot%%s of critical data or containers. %%snapshot\|snapshot%%s can be auto-scheduled and are space-efficient.                                                  | This feature enables quick recovery from accidental deletions or misconfigurations.                            |
+| ユースケース                                     | 説明                                                                                                                                                                          | 詳細 / 例                                                           |
+| ------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
+| appdata と Docker 用の高速 SSD/NVMe プール         | Store the appdata share for fast, responsive containers and databases. This supports %%snapshot\|snapshot%%s for easy rollbacks and can also host %%VM\|vm%%s for high I/O. | 多くのユーザーはこれに 2 台構成の %%ZFS\|zfs%% ミラーを選びます。拡張しやすく、優れた性能を発揮します。     |
+| 重要なデータ用の %%ZFS\|zfs%% プール                  | 写真、税務記録、%%user share\|user-share%% データのような代替のきかないファイルには、%%ZFS\|zfs%% ミラーまたは RAIDZ2 プールを使用します。%%ZFS\|zfs%% は破損を検出し、冗長性によって自己修復します。                                           | この構成は、自動整合性チェックと自己修復機能で重要なデータを保護します。                             |
+| 日次バックアップまたはレプリケーション先                       | %%ZFS\|zfs%% ディスク（Unraid の %%array\|array%% 内でも可）をレプリケーション先として使用します。別のプールや他の Unraid サーバーからローカルにレプリケートできます。                                                                  | `zfs send/receive` や Syncoid などのツールを使って、高速で信頼性の高いバックアップと復元を行えます。 |
+| %%Snapshot\|snapshot%%-based recovery pool | Keep point-in-time %%snapshot\|snapshot%%s of critical data or containers. %%snapshot\|snapshot%%s can be auto-scheduled and are space-efficient.                           | この機能により、誤削除や設定ミスからすばやく復旧できます。                                    |
 
-## Avoiding common ZFS mistakes
+## よくある ZFS のミスを避ける
 
-%%ZFS|zfs%% is a powerful file system, but there are several common pitfalls that can undermine its benefits. It’s important to keep the following points in mind before configuring your pool for a smoother experience:
+%%ZFS|zfs%% は強力なファイルシステムですが、その利点を損なう一般的な落とし穴がいくつかあります。より快適に使うため、プールを構成する前に次の点を押さえておくことが重要です:
 
-- **Drive size mismatch in RAIDZ:** %%ZFS|zfs%% treats all disks in a RAIDZ vdev as the size of the smallest one. To ensure the best efficiency, always use identically sized drives within each vdev.
+- **RAIDZ におけるドライブ容量の不一致:** %%ZFS|zfs%% は、RAIDZ vdev 内のすべてのディスクを最小容量のディスクに合わせて扱います。最も効率よく使うには、各 vdev 内で同じ容量のドライブを必ず使用してください。
 
-- **Expanding RAIDZ vdevs via the %%WebGUI|web-gui%%:** While Unraid 7.1.x and newer support RAIDZ expansion via the command line, this feature isn't yet available in the %%WebGUI|web-gui%%. For the time being, expand via the CLI or add new vdevs through the GUI.
+- **%%WebGUI|web-gui%% での RAIDZ vdev の拡張:** Unraid 7.1.x 以降ではコマンドライン経由で RAIDZ の拡張がサポートされていますが、この機能はまだ %%WebGUI|web-gui%% では利用できません。現時点では CLI で拡張するか、GUI で新しい vdev を追加してください。
 
 - **%%ZFS|zfs%% disk vs. full zpool:** A single %%ZFS|zfs%%-formatted disk in the Unraid %%array|array%% does not offer the redundancy or features of a dedicated %%ZFS|zfs%% pool. To leverage advanced functionality, use standalone pools.
 
-- **Deduplication without adequate RAM:** Deduplication requires significant memory, and enabling it without enough RAM can severely impact performance. Only enable deduplication if you fully understand the requirements.
+- **十分な RAM がない状態での重複排除:** 重複排除には大量のメモリが必要で、十分な RAM がないまま有効にするとパフォーマンスに深刻な影響を与える可能性があります。要件を十分理解している場合にのみ重複排除を有効にしてください。
 
-- **Vdev redundancy is local:** Redundancy in %%ZFS|zfs%% is local to each vdev and not shared across the pool. Make sure to plan your vdev layout to achieve the level of resilience you need.
+- **vdev の冗長性はローカル:** %%ZFS|zfs%% の冗長性は各 vdev 内に限定され、プール全体で共有されるわけではありません。必要な耐障害性を得られるよう、vdev のレイアウトを計画してください。
