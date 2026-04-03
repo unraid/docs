@@ -1,6 +1,6 @@
 ---
 sidebar_position: 3
-sidebar_label: Windows on a VM
+sidebar_label: VM上のWindows
 ---
 
 import Tabs from '@theme/Tabs';
@@ -10,37 +10,37 @@ import WindowsVirtioManual from './partials/windows-virtio-manual.mdx';
 import WindowsUpgradeInPlace from './partials/windows-upgrade-in-place.mdx';
 import WindowsUpgradeCleanInstall from './partials/windows-upgrade-clean-install.mdx';
 
-# Windows on a VM
+# VM上のWindows
 
-Windows is one of the most popular guest operating systems for Unraid users, especially for gaming, productivity, and support for legacy applications. Here are essential considerations for running Windows %%VM|vm%%.
+Windowsは、Unraidユーザーにとって最も人気のあるゲストオペレーティングシステムの1つであり、特にゲーム、作業効率、生産終了アプリケーションのサポートで利用されています。Windows %%VM|vm%% を実行する際の重要な考慮事項を以下に示します。
 
 :::caution[Before 始める]
 
-- Microsoft ended support for Windows 7 in Jan. 2020, Windows 8.1 in January 2023, and Windows 10 in October 2025. Use Windows 11 (or later) or Server 2022 (or later) for ongoing security updates.
-- Always test %%VM|vm%% stability before activating your Windows license.
-- For %%GPU passthrough|gpu-passthrough%%, use %%OVMF|ovmf%% (%%UEFI|uefi%%) BIOS with Windows 11 or newer.
+- Microsoftは、Windows 7のサポートを2020年1月に、Windows 8.1のサポートを2023年1月に、Windows 10のサポートを2025年10月に終了しました。継続的なセキュリティ更新を受けるには、Windows 11（またはそれ以降）か Server 2022（またはそれ以降）を使用してください。
+- Windowsライセンスを有効化する前に、必ず %%VM|vm%% の安定性をテストしてください。
+- %%GPU passthrough|gpu-passthrough%% には、Windows 11 以降で %%OVMF|ovmf%%（%%UEFI|uefi%%）BIOS を使用してください。
 
 :::
 
-### Supported configurations
+### 対応構成
 
-| Windows edition     | Recommended BIOS   | Machine type                    | 注記                             |
-| ------------------- | ------------------ | ------------------------------- | ------------------------------ |
-| Windows 11          | %%OVMF\|ovmf%% TPM | %%Q35\|q35%%                    | Requires TPM 2.0 emulation     |
-| Windows Server 2022 | %%OVMF\|ovmf%%     | %%Q35\|q35%%                    | Ideal for enterprise workloads |
-| Windows 10          | %%OVMF\|ovmf%%     | %%Q35\|q35%%                    | Deprecated (EOL Oct 2025)      |
-| Windows Server 2019 | %%OVMF\|ovmf%%     | %%i440fx\|i440fx%%/%%Q35\|q35%% | Compatible but not recommended |
+| Windows エディション      | 推奨 BIOS            | マシンタイプ                          | 注記                    |
+| ------------------- | ------------------ | ------------------------------- | --------------------- |
+| Windows 11          | %%OVMF\|ovmf%% TPM | %%Q35\|q35%%                    | TPM 2.0 エミュレーションが必要です |
+| Windows Server 2022 | %%OVMF\|ovmf%%     | %%Q35\|q35%%                    | エンタープライズ ワークロードに最適    |
+| Windows 10          | %%OVMF\|ovmf%%     | %%Q35\|q35%%                    | 非推奨（EOL 2025年10月）     |
+| Windows Server 2019 | %%OVMF\|ovmf%%     | %%i440fx\|i440fx%%/%%Q35\|q35%% | 互換性はありますが、推奨されません     |
 
 ---
 
-### VirtIO driver management
+### VirtIO ドライバー管理
 
-Windows requires paravirtualized drivers for optimal performance with Unraid’s virtualization stack.
+Windows は、Unraid の仮想化スタックで最適なパフォーマンスを得るために、準仮想化ドライバーを必要とします。
 
-To install or update drivers:
+ドライバーをインストールまたは更新するには:
 
 <Tabs>
-  <TabItem value="自動化" label="Automatic installation">
+  <TabItem value="自動化" label="自動インストール">
     <WindowsVirtioAutomatic />
   </TabItem>
 
@@ -51,264 +51,264 @@ To install or update drivers:
 
 :::tip
 
-Using Unraid 7 or later, you can automatically inject %%VirtIO|virtio%% drivers during the Windows installation. Enable this in ***VM Settings → Advanced Options***.
+Unraid 7 以降では、Windows のインストール中に %%VirtIO|virtio%% ドライバーを自動的に組み込めます。***VM 設定 → 詳細オプション*** で有効にしてください。
 
 :::
 
 ---
 
-### Setting up hibernation
+### 休止状態の設定
 
-Hibernation lets you save your entire Windows %%VM|vm%% state - including open applications and documents - to disk. This allows you to power off the %%VM|vm%% without losing any work. When you resume, Windows restores everything exactly as you left it, skipping the normal boot process. This feature is handy when you need to reboot or power down your Unraid host or want to save energy while keeping your %%VM|vm%%'s state intact.
+休止状態を使うと、開いているアプリケーションやドキュメントを含む Windows %%VM|vm%% 全体の状態をディスクに保存できます。これにより、作業を失うことなく %%VM|vm%% の電源を切ることができます。再開すると、通常の起動 प्रक्रियाを省略して、Windows は前回の状態をそのまま復元します。この機能は、Unraid ホストを再起動またはシャットダウンする必要がある場合や、%%VM|vm%% の状態を維持したまま省電力にしたい場合に便利です。
 
-:::note[Benefits of hibernation]
+:::note[Benefits 休止状態について]
 
-- Save energy by powering down idle %%VM|vm%% without losing progress
-- Quickly resume work after host maintenance or updates
-- Reduce wear on SSDs compared to frequent complete shutdowns and reboots
+- アイドル状態の %%VM|vm%% を進行状況を失わずに電源オフして節電
+- ホストのメンテナンスや更新後にすばやく作業を再開
+- 頻繁な完全シャットダウンや再起動と比べて SSD の摩耗を軽減
 
 :::
 
-To use hibernation reliably, you must install the %%QEMU|qemu%% %%Guest Agent|guest-agent%% in your Windows %%VM|vm%%. This agent allows Unraid to communicate with the %%VM|vm%% for advanced operations like hibernation, shutdown, and live statistics reporting.
+休止状態を確実に使うには、Windows %%VM|vm%% に %%QEMU|qemu%% %%Guest Agent|guest-agent%% をインストールする必要があります。このエージェントにより、Unraid は %%VM|vm%% と通信し、休止状態、シャットダウン、ライブ統計レポートなどの高度な操作を行えます。
 
 <details>
-  <summary><strong>How to install the %%QEMU|qemu%% %%Guest Agent|guest-agent%%</strong> - Click to expand/collapse</summary>
+  <summary><strong>%%QEMU|qemu%% %%Guest Agent|guest-agent%% のインストール方法</strong> - クリックで展開/折りたたみ</summary>
 
-  1. Start your Windows %%VM|vm%% with the %%VirtIO|virtio%% drivers ISO mounted.
-  2. Open **File Explorer** and navigate to the %%VirtIO|virtio%% drivers media.
-  3. Open the `guest-agent` folder.
-  4. Run `qemu-ga-x64.msi` to install the agent. (You may briefly see a command box; no confirmation dialog will appear.)
+  1. %%VirtIO|virtio%% ドライバー ISO をマウントした状態で Windows %%VM|vm%% を起動します。
+  2. **エクスプローラー** を開き、%%VirtIO|virtio%% ドライバー メディアへ移動します。
+  3. `guest-agent` フォルダーを開きます。
+  4. `qemu-ga-x64.msi` を実行してエージェントをインストールします。（一時的にコマンドボックスが表示されることがありますが、確認ダイアログは表示されません。）
 
 </details>
 
 <details>
-  <summary><strong>How to enable hibernation in Windows</strong> - Click to expand/collapse</summary>
+  <summary><strong>Windows で休止状態を有効にする方法</strong> - クリックで展開/折りたたみ</summary>
 
-  1. Open **Control Panel** and search for **Power Options**.
-  2. Click on **Choose what the power buttons do**.
-  3. Click **Change settings that are currently unavailable** to unlock shutdown settings.
-  4. Check the **Hibernate** option.
-  5. Click **Save changes**.
+  1. **コントロール パネル** を開き、**電源オプション** を検索します。
+  2. **電源ボタンの動作を選択する** をクリックします。
+  3. **現在利用可能ではない設定を変更します** をクリックして、シャットダウン設定を有効にします。
+  4. **休止状態** オプションにチェックを入れます。
+  5. **変更の保存** をクリックします。
 
-  The **Hibernate** option will now appear in the Windows Power menu.
+  これで、Windows の電源メニューに **休止状態** オプションが表示されます。
 
 </details>
 
-:::important[What if hibernation fails?]
+:::important[What 休止状態に失敗した場合は]
 
-If your %%VM|vm%% fails to hibernate or resume properly, you may lose unsaved work or face a failed restore. Always save important data before hibernating. If issues persist, ensure the %%QEMU|qemu%% %%Guest Agent|guest-agent%% is installed and updated, and check the Windows event log for errors.
+%%VM|vm%% が正しく休止状態にならない、または再開できない場合、未保存の作業が失われたり、復元に失敗したりすることがあります。休止状態を実行する前に、重要なデータは必ず保存してください。問題が続く場合は、%%QEMU|qemu%% %%Guest Agent|guest-agent%% がインストール済みで更新されていることを確認し、Windows のイベント ログでエラーを確認してください。
 
 :::
 
 ---
 
-### Performance tuning
+### パフォーマンスの調整
 
-Optimizing your Windows %%VM|vm%% can improve responsiveness, reduce disk usage, and avoid common issues with device passthrough or shutdown. These adjustments are optional and can be applied as needed.
+Windows %%VM|vm%% を最適化すると、応答性の向上、ディスク使用量の削減、デバイス パススルーやシャットダウンに関する一般的な問題の回避に役立ちます。これらの調整は任意で、必要に応じて適用できます。
 
-#### Disable fast startup
+#### 高速スタートアップを無効にする
 
-Disabling fast startup can help prevent issues with device passthrough. It ensures your %%VM|vm%% hardware initializes correctly every time it boots. While this setting is designed for physical PCs, in a virtual environment, it can often cause more problems than benefits.
+高速スタートアップを無効にすると、デバイス パススルーの問題を防ぐのに役立ちます。これにより、%%VM|vm%% のハードウェアは起動のたびに正しく初期化されます。この設定は物理 PC 向けに設計されていますが、仮想環境では利点よりも問題のほうが多くなることがあります。
 
 <details>
-  <summary><strong>How to disable Fast Startup</strong> - Click to expand/collapse</summary>
+  <summary><strong>高速スタートアップを無効にする方法</strong> - クリックで展開/折りたたみ</summary>
 
-  1. Open **Control Panel** and search for **Power**.
-  2. Click on **Choose what the power buttons do**.
-  3. Click **Change settings that are currently unavailable**.
-  4. Uncheck **Turn on fast startup** under **Shutdown settings**.
-  5. Click **Save changes**.
+  1. **コントロール パネル** を開き、**電源** を検索します。
+  2. **電源ボタンの動作を選択する** をクリックします。
+  3. **現在利用可能ではない設定を変更します** をクリックします。
+  4. **シャットダウン設定** の **高速スタートアップを有効にする** のチェックを外します。
+  5. **変更の保存** をクリックします。
 
 </details>
 
-#### Disable hiberfil.sys
+#### hiberfil.sys を無効にする
 
-Hibernation in Windows creates a large hidden file called `hiberfil.sys`. This file can consume significant disk space and increase disk activity in your %%VM|vm%%. If you don't rely on hibernation, disabling it will free up storage and reduce unnecessary I/O activity.
+Windows の休止状態では、`hiberfil.sys` という大きな隠しファイルが作成されます。このファイルはかなりのディスク容量を消費し、%%VM|vm%% のディスクアクティビティを増やすことがあります。休止状態を使わない場合は、無効化することでストレージを解放し、不要な I/O アクティビティを減らせます。
 
 <details>
-  <summary><strong>How to disable hibernation and remove hiberfil.sys</strong> - Click to expand/collapse</summary>
+  <summary><strong>休止状態を無効にして hiberfil.sys を削除する方法</strong> - クリックで展開/折りたたみ</summary>
 
-  1. Right-click the **Start** button and select **Windows Terminal (Admin)** or **Command Prompt (Admin)**.
-  2. Type: `powercfg /h off`
-  3. Press Enter and reboot your %%VM|vm%%. The `hiberfil.sys` file will be removed from your C:\ drive.
+  1. **スタート** ボタンを右クリックし、**Windows ターミナル（管理者）** または **コマンド プロンプト（管理者）** を選択します。
+  2. 入力: `powercfg /h off`
+  3. Enter キーを押して %%VM|vm%% を再起動します。`hiberfil.sys` ファイルは C:\ ドライブから削除されます。
 
 </details>
 
-#### Disable Windows indexing
+#### Windows のインデックス作成を無効にする
 
-Windows Search indexing continuously scans your %%virtual machine|vm%%'s storage to catalog files for faster search results. However, on a %%virtual machine|vm%%, this can cause unnecessary disk I/O, slow down performance, and increase wear on your physical storage, especially SSDs in your [%%cache pool|cache-pool%%](../manage-storage/cache-pools.mdx).
+Windows Search のインデックス作成は、検索結果を高速化するためにファイルをカタログ化する目的で、%%virtual machine|vm%% のストレージを継続的にスキャンします。しかし、%%virtual machine|vm%% では、不要なディスク I/O を引き起こし、パフォーマンスを低下させ、物理ストレージ、特に [%%cache pool|cache-pool%%](../manage-storage/cache-pools.mdx) の SSD を摩耗させる可能性があります。
 
 <details>
-  <summary><strong>How to disable Windows indexing</strong> - Click to expand/collapse</summary>
+  <summary><strong>Windows のインデックス作成を無効にする方法</strong> - クリックで展開/折りたたみ</summary>
 
-  1. Press **Windows + R** to open the Run dialog, type `services.msc`, and press Enter.
-  2. In the Services window, scroll down and right-click **Windows Search**, then select **Stop**.
-  3. Double-click **Windows Search**, change **Startup type** to **Disabled**, and click **OK**.
+  1. **Windows + R** を押して「ファイル名を指定して実行」ダイアログを開き、`services.msc` と入力して Enter キーを押します。
+  2. サービス ウィンドウで下にスクロールし、**Windows Search** を右クリックして **停止** を選択します。
+  3. **Windows Search** をダブルクリックし、**スタートアップの種類** を **無効** に変更して、**OK** をクリックします。
 
 </details>
 
-#### Disable automatic disk defragmenting
+#### 自動ディスク デフラグを無効にする
 
-Windows is designed to defrag physical hard drives on a regular schedule automatically. On a %%VM|vm%% - especially when using SSD storage or thin-provisioned %%vDisks|vdisk%% - automatic defragmenting is unnecessary and can also reduce disk lifespan and degrade performance.
+Windows は、物理ハードドライブを定期的なスケジュールで自動的にデフラグするよう設計されています。%%VM|vm%% では、特に SSD ストレージや thin provisioning の %%vDisks|vdisk%% を使用している場合、自動デフラグは不要であり、ディスク寿命を縮め、パフォーマンスを低下させる可能性もあります。
 
 <details>
-  <summary><strong>How to disable automatic disk defragmenting</strong> - Click to expand/collapse</summary>
+  <summary><strong>自動ディスク デフラグを無効にする方法</strong> - クリックで展開/折りたたみ</summary>
 
-  1. Open **File Explorer**, right-click the C: drive, and select **Properties**.
-  2. Go to the **Tools** tab and click **Optimize**.
-  3. Click **Change settings**.
-  4. Uncheck **Run on a schedule** and click **OK**.
+  1. **エクスプローラー** を開き、C: ドライブを右クリックして **プロパティ** を選択します。
+  2. **ツール** タブに移動し、**最適化** をクリックします。
+  3. **設定の変更** をクリックします。
+  4. **スケジュール実行** のチェックを外し、**OK** をクリックします。
 
 </details>
 
-#### Enable high-performance power mode
+#### 高パフォーマンス電源モードを有効にする
 
-Power management features in Windows are designed for laptops and desktops to save energy. In a %%VM|vm%% environment, these features can unnecessarily throttle performance or suspend your %%VM|vm%%, making it less responsive and harder to manage.
+Windows の電源管理機能は、ノート PC やデスクトップで省電力を目的に設計されています。%%VM|vm%% 環境では、これらの機能が不要にパフォーマンスを抑制したり、%%VM|vm%% をサスペンドしたりして、応答性を低下させ、管理しづらくすることがあります。
 
-Enabling **High Performance** mode ensures your %%VM|vm%% always runs at full speed and is less likely to pause or suspend unexpectedly.
+**高パフォーマンス** モードを有効にすると、%%VM|vm%% は常に最高速度で動作し、予期せず一時停止やサスペンドする可能性が低くなります。
 
 <details>
-  <summary><strong>How to enable high performance power mode</strong> - Click to expand/collapse</summary>
+  <summary><strong>高パフォーマンス電源モードを有効にする方法</strong> - クリックで展開/折りたたみ</summary>
 
-  1. Open **Control Panel** and search for "power."
-  2. Click **Choose a power plan**.
-  3. Select **High performance** under **Preferred plans**.
+  1. **コントロール パネル** を開き、「power」を検索します。
+  2. **電源プランの選択** をクリックします。
+  3. **優先プラン** の下で **高パフォーマンス** を選択します。
 
 </details>
 
-#### Enable remote desktop access
+#### リモート デスクトップ アクセスを有効にする
 
-Remote desktop protocol (RDP) allows you to access your Windows %%VM|vm%% from another device. It offers better performance and compatibility compared to %%VNC|vnc-session%%. Note that RDP is supported only on Windows Professional and Enterprise editions. Also, your Windows user account **must** have a password set.
+リモート デスクトップ プロトコル（RDP）を使用すると、別のデバイスから Windows %%VM|vm%% にアクセスできます。%%VNC|vnc-session%% と比べて、パフォーマンスと互換性に優れています。RDP は Windows Professional および Enterprise エディションでのみサポートされる点に注意してください。また、Windows のユーザー アカウントには**必ず**パスワードを設定してください。
 
 :::caution
 
-RDP is not available on Windows Home editions. Always set a secure password for your Windows user account before enabling RDP.
+RDP は Windows Home エディションでは利用できません。RDP を有効にする前に、Windows のユーザー アカウントに必ず安全なパスワードを設定してください。
 
 :::
 
 <details>
-  <summary><strong>How to enable remote desktop (RDP) access</strong> - Click to expand/collapse</summary>
+  <summary><strong>リモート デスクトップ（RDP）アクセスを有効にする方法</strong> - クリックで展開/折りたたみ</summary>
 
-  To enable RDP access, follow these steps:
+  RDP アクセスを有効にするには、次の手順に従います:
 
-  1. Press **Windows + I** to open Settings, then navigate to ***System → About*** and click **Advanced system settings**.
-  2. In the System Properties window, click the **Remote** tab, then select **Enable Remote Desktop**.
-  3. Click **OK** to confirm the changes.
-  4. From your client device, use a Microsoft RDP client to connect to the **IP address of the %%VM|vm%%** (not the Unraid server).
+  1. **Windows + I** を押して設定を開き、***システム → 詳細情報*** に移動して **システムの詳細設定** をクリックします。
+  2. システムのプロパティ ウィンドウで **リモート** タブをクリックし、**リモート デスクトップを有効にする** を選択します。
+  3. **OK** をクリックして変更を確定します。
+  4. クライアント デバイスから、Microsoft RDP クライアントを使用して **%%VM|vm%% の IP アドレス**（Unraid サーバーではありません）に接続します。
 
   :::tip
-  Official Microsoft RDP clients are available for Windows, Mac, Android, and iOS. Make sure your %%VM|vm%% is on a network bridge that allows LAN access.
+  Microsoft 公式 RDP クライアントは Windows、Mac、Android、iOS で利用できます。%%VM|vm%% が LAN アクセスを許可するネットワーク ブリッジ上にあることを確認してください。
   :::
 
 </details>
 
-#### Fix HDMI audio with MSI interrupts
+#### MSI 割り込みで HDMI オーディオを修正する
 
-If you're having trouble with HDMI audio in a Windows %%VM|vm%% that uses %%GPU passthrough|gpu-passthrough%% (which often occurs with NVIDIA graphics cards), enabling Message Signaled Interrupts (MSI) might help. MSI enhances the way interrupts are managed for passed-through devices.
+%%GPU passthrough|gpu-passthrough%% を使用する Windows %%VM|vm%% で HDMI オーディオに問題がある場合（NVIDIA グラフィックス カードでよく発生します）、Message Signaled Interrupts（MSI）を有効にすると改善することがあります。MSI により、パススルーされたデバイスの割り込み処理が改善されます。
 
 <details>
-  <summary><strong>How to enable MSI interrupts</strong> - Click to expand/collapse</summary>
+  <summary><strong>MSI 割り込みを有効にする方法</strong> - クリックで展開/折りたたみ</summary>
 
   :::caution
-  Back up your %%VM|vm%% before making any registry changes. Incorrect modifications can cause system instability.
+  レジストリに変更を加える前に、%%VM|vm%% をバックアップしてください。誤った変更はシステムの不安定化を招く可能性があります。
   :::
 
-  1. **Verify MSI capability:**
-     - Start your %%VM|vm%% with %%GPU passthrough|gpu-passthrough%% enabled.
-     - Access Unraid via [WebTerminal or SSH](../../system-administration/advanced-tools/command-line-interface.mdx).
-     - Run the command `lspci -v -s 01:00.0` (replace `01:00.0` with your GPU's PCI address).
-     - Look for the line: `Capabilities: [68] MSI: Enable+ Count=1/1 Maskable- 64bit+`.
+  1. **MSI 対応を確認:**
+     - %%GPU passthrough|gpu-passthrough%% を有効にして %%VM|vm%% を起動します。
+     - [WebTerminal または SSH](../../system-administration/advanced-tools/command-line-interface.mdx) で Unraid にアクセスします。
+     - コマンド `lspci -v -s 01:00.0` を実行します（`01:00.0` は GPU の PCI アドレスに置き換えてください）。
+     - 次の行を探します: `Capabilities: [68] MSI: Enable+ Count=1/1 Maskable- 64bit+`.
 
-  2. **Enable MSI in Windows:**
-     - If MSI shows `Enable-`, follow [Microsoft's guide](https://learn.microsoft.com/en-us/windows-hardware/drivers/kernel/enabling-message-signaled-interrupts-in-the-registry) or use the [MSI Mode Utility](https://forums.guru3d.com/threads/windows-line-based-vs-message-signaled-based-interrupts-msi-tool.378044/) to modify your Windows registry settings.
-     - Reboot the %%VM|vm%% after making the changes.
+  2. **Windows で MSI を有効にする:**
+     - MSI が `Enable-` と表示される場合は、[Microsoft のガイド](https://learn.microsoft.com/en-us/windows-hardware/drivers/kernel/enabling-message-signaled-interrupts-in-the-registry) に従うか、[MSI Mode Utility](https://forums.guru3d.com/threads/windows-line-based-vs-message-signaled-based-interrupts-msi-tool.378044/) を使用して Windows のレジストリ設定を変更します。
+     - 変更後、%%VM|vm%% を再起動します。
 
-  For more technical details, see [VFIO interrupts explained](https://vfio.blogspot.com/2014/09/vfio-interrupts-and-how-to-coax-windows.html).
+  より技術的な詳細については、[VFIO interrupts explained](https://vfio.blogspot.com/2014/09/vfio-interrupts-and-how-to-coax-windows.html) を参照してください。
 
 </details>
 
 ---
 
-### Upgrading to Windows 11
+### Windows 11 へのアップグレード
 
-Windows 11 requires TPM 2.0 and Secure Boot. Unraid's **OVMF-TPM** BIOS provides the virtual TPM support needed for these requirements.
+Windows 11 には TPM 2.0 と Secure Boot が必要です。Unraid の **OVMF-TPM** BIOS は、これらの要件に必要な仮想 TPM サポートを提供します。
 
-:::important[Before upgrading]
+:::important[Before アップグレードについて]
 
-- Create a complete backup of your %%VM|vm%%.
-- Ensure that Unraid is running version 6.10 or later.
-- Verify that your Windows 10 %%VM|vm%% meets the [Windows 11 system requirements](https://www.microsoft.com/en-us/windows/windows-11-specifications).
+- %%VM|vm%% の完全なバックアップを作成します。
+- Unraid が 6.10 以降で実行されていることを確認します。
+- Windows 10 %%VM|vm%% が [Windows 11 のシステム要件](https://www.microsoft.com/en-us/windows/windows-11-specifications) を満たしていることを確認します。
 
 :::
 
-To add TPM support:
+TPM サポートを追加するには:
 
-1. Shut down your Windows 10 %%VM|vm%%.
-2. Edit the %%VM|vm%% settings.
-3. Change **BIOS** from *%%OVMF|ovmf%%* to *%%OVMF|ovmf%%-TPM*.
-4. Save the changes and start the %%VM|vm%%.
+1. Windows 10 %%VM|vm%% をシャットダウンします。
+2. %%VM|vm%% の設定を編集します。
+3. **BIOS** を *%%OVMF|ovmf%%* から *%%OVMF|ovmf%%-TPM* に変更します。
+4. 変更を保存して %%VM|vm%% を起動します。
 
-#### Upgrade methods
+#### アップグレード方法
 
 <Tabs>
-  <TabItem value="In-place upgrade" label="In-place upgrade">
+  <TabItem value="インプレース アップグレード" label="インプレース アップグレード">
     <WindowsUpgradeInPlace />
   </TabItem>
 
-  <TabItem value="Clean install" label="Clean install">
+  <TabItem value="クリーン インストール" label="クリーン インストール">
     <WindowsUpgradeCleanInstall />
   </TabItem>
 </Tabs>
 
-## Expanding Windows VM vDisk partitions
+## Windows VM の vDisk パーティションを拡張する
 
-:::caution[Data loss risk]
+:::caution[Data 損失のリスク]
 
-Expanding or modifying %%vDisk|vdisk%% and partition layouts can lead to irreversible data loss if not done carefully. Always create a full backup or [%%snapshot|snapshot%%](./vm-setup.mdx#vm-snapshots) of your %%VM|vm%% before proceeding.
+%%vDisk|vdisk%% やパーティションのレイアウトを拡張または変更する場合、慎重に行わないと取り返しのつかないデータ損失につながる可能性があります。作業を進める前に、必ず %%VM|vm%% の完全なバックアップまたは [%%snapshot|snapshot%%](./vm-setup.mdx#vm-snapshots) を作成してください。
 
 :::
 
-After you expand your %%vDisk|vdisk%% following the steps in [Expand a vDisk](../create-virtual-machines/vm-setup.mdx#expand-a-vdisk), you may encounter an issue where Windows’ default recovery partition blocks you from easily expanding your system (C:) partition to utilize the new space. To resolve this issue, you need to delete the recovery partition and then use Windows Disk Management to expand the partition.
+[vDisk の拡張](../create-virtual-machines/vm-setup.mdx#expand-a-vdisk) の手順に従って %%vDisk|vdisk%% を拡張した後、Windows の既定の回復パーティションが原因で、新しい領域を使ってシステム（C:）パーティションを簡単に拡張できない場合があります。この問題を解決するには、回復パーティションを削除してから、Windows のディスクの管理を使ってパーティションを拡張する必要があります。
 
 <div style={{ margin: 'auto', maxWidth: '600px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-  ![Resize vDisk 2](/img/Resize_vdisk_2.png)
+  ![vDisk のサイズ変更 2](/img/Resize_vdisk_2.png)
 </div>
 
-After you complete the initial %%vDisk|vdisk%% expansion:
+最初の %%vDisk|vdisk%% 拡張が完了したら:
 
-1. Start your Windows VM.
-2. **Open command prompt:** Press the Windows key, type `cmd`, and hit Enter.
-3. **Launch diskpart:** Type `diskpart` and press Enter.
-4. **List disks:** Type `list disk` and press Enter.
-5. **Select the expanded disk:** Type `select disk #`, replacing `#` with the correct disk number.
-6. **List partitions:** Type `list partition` and press Enter.
-7. **Identify the recovery partition:** Look for the recovery partition that comes after your primary partition.
-8. **Select and delete the recovery partition:**
-   - Type `select partition #`, replacing `#` with the number of the recovery partition.
-   - Type `delete partition override` and press Enter.
-9. Expand the C: partition:
-   - Right-click the Start menu and select **Disk Management**.
-   - Right-click the partition you want to extend (usually C:) and choose **Extend Volume...**.
-   - Follow the prompts to use the unallocated space.
+1. Windows VM を起動します。
+2. **コマンド プロンプトを開く:** Windows キーを押し、`cmd` と入力して Enter キーを押します。
+3. **diskpart を起動:** `diskpart` と入力して Enter キーを押します。
+4. **ディスクを一覧表示:** `list disk` と入力して Enter キーを押します。
+5. **拡張したディスクを選択:** `select disk #` と入力し、`#` を正しいディスク番号に置き換えます。
+6. **パーティションを一覧表示:** `list partition` と入力して Enter キーを押します。
+7. **回復パーティションを特定:** プライマリ パーティションの後にある回復パーティションを探します。
+8. **回復パーティションを選択して削除:**
+   - `select partition #` と入力し、`#` を回復パーティションの番号に置き換えます。
+   - `delete partition override` と入力して Enter キーを押します。
+9. C: パーティションを拡張:
+   - スタート メニューを右クリックし、**ディスクの管理** を選択します。
+   - 拡張したいパーティション（通常は C:）を右クリックし、**ボリュームの拡張...** を選択します。
+   - 画面の指示に従って未割り当て領域を使用します。
 
 <div className="flex-container" style={{ margin: 'auto', maxWidth: '800px'}}>
   <figure className="flex-figure">
-    <img src="/img/Resize_vdisk_3.png" alt="Resize vDisk 3" />
+    <img src="/img/Resize_vdisk_3.png" alt="vDisk のサイズ変更 3" />
   </figure>
 
   <figure className="flex-figure">
-    <img src="/img/Resize_vdisk_4.png" alt="Resize vDisk 4" />
+    <img src="/img/Resize_vdisk_4.png" alt="vDisk のサイズ変更 4" />
   </figure>
 </div>
 
 :::tip
 
-You only need to remove the recovery partition if it blocks access to adjacent free space. If the unallocated space is already next to your C: partition, you can extend it without deleting anything.
+回復パーティションは、隣接する空き領域へのアクセスを妨げている場合にのみ削除する必要があります。未割り当て領域がすでに C: パーティションの隣にある場合は、何も削除せずに拡張できます。
 
 :::
 
 :::warning
 
-Changes made to disk partitions are permanent and cannot be undone. Ensure that your data is securely backed up before deleting any partitions.
+ディスク パーティションに加えた変更は永続的で、元に戻せません。パーティションを削除する前に、データが安全にバックアップされていることを確認してください。
 
 :::
