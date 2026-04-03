@@ -3,189 +3,189 @@ sidebar_position: 1
 sidebar_label: 概要
 ---
 
-# Arrays
+# 配列
 
-Unraid's storage system combines flexibility with data protection through its %%array|array%% and %%cache|cache%% architecture. The %%array|array%% manages your primary storage with optional %%parity|parity%% protection, while cache pools accelerate performance.
+Unraid のストレージシステムは、%%array|array%% と %%cache|cache%% のアーキテクチャにより、柔軟性とデータ保護を両立します。%%array|array%% はオプションの %%parity|parity%% 保護付きで主ストレージを管理し、cache pool はパフォーマンスを向上させます。
 
-## Driving principles
+## 基本方針
 
-1. **Use your largest drives for parity** - Data disks can't be larger than your %%parity disks|parity-drives%%, so use your biggest drives for parity to avoid future expansion limits. If you use dual parity, both drives should be at least the size of your largest data disk, but they can be different sizes from each other. No disk can be larger than your smallest parity drive.
+1. **パリティには最も大容量のドライブを使う** - データディスクは %%parity disks|parity-drives%% より大きくできないため、将来の拡張制限を避けるには最も大きいドライブをパリティに使いましょう。デュアルパリティを使う場合、2 台のドライブはいずれも最大のデータディスク以上の容量である必要がありますが、互いのサイズは異なっていてもかまいません。どのディスクも、最小のパリティドライブより大きくすることはできません。
 
-2. **Save SSDs for cache pools** - Unraid doesn't support TRIM/Discard for SSDs in the main array, which causes performance degradation over time. Use SSDs in %%cache pools|cache-pool%% or as unassigned devices instead, where these features work properly.
+2. **SSD は cache pool 用に取っておく** - Unraid はメイン array の SSD に対する TRIM/Discard をサポートしていないため、時間の経過とともにパフォーマンスが低下します。代わりに、SSD は %%cache pools|cache-pool%% または未割り当てデバイスとして使用してください。これらの環境では、これらの機能が正常に動作します。
 
-3. **Add a cache for better write performance** - A cache dramatically speeds up writes by temporarily storing data on fast drives before the %%Mover|mover%% transfers it to the array (typically at 3:40 AM). Cached data still appears in your shares, so access feels instant while the transfer happens in the background.
+3. **より良い書き込み性能のためにキャッシュを追加する** - キャッシュは、高速ドライブにデータを一時保存してから %%Mover|mover%% がそれを array に転送することで、書き込みを大幅に高速化します（通常は午前 3:40 に実行されます）。キャッシュされたデータは共有内にそのまま表示されるため、転送はバックグラウンドで行われてもアクセスは即時のように感じられます。
 
-4. **Use a cache pool for data protection** - A single cache device puts your cached data at risk until the %%Mover|mover%% runs. Multiple devices in a %%cache pool|cache-pool%% provide redundancy and protect your data from cache device failures.
+4. **データ保護のために cache pool を使う** - キャッシュデバイスが 1 台だけだと、%%Mover|mover%% が実行されるまでキャッシュデータが危険にさらされます。%%cache pool|cache-pool%% に複数のデバイスを入れることで冗長性が確保され、キャッシュデバイス障害からデータを保護できます。
 
-5. **SSDs excel for apps and VMs** - Applications and virtual machines benefit significantly from SSD speed. A %%cache pool|cache-pool%% with SSDs provides the perfect balance of speed, efficiency, and data protection for these workloads.
+5. **SSD はアプリと VM に最適** - アプリケーションと仮想マシンは SSD の速度の恩恵を大きく受けます。SSD を使った %%cache pool|cache-pool%% は、これらのワークロードに対して速度、効率、データ保護の最適なバランスを提供します。
 
-6. **Encryption is optional** - Encryption is disabled by default and requires reformatting drives (which erases data). If you need it, move data off the disk, change to an encrypted file system, format, then move data back. See [How to encrypt a drive in Unraid](../../../system-administration/secure-your-server/securing-your-data.mdx#how-to-encrypt-a-drive-in-unraid) for details. Be aware that encryption complicates data recovery if something goes wrong.
+6. **暗号化は任意** - 暗号化は既定で無効で、ドライブの再フォーマットが必要です（これによりデータは消去されます）。必要な場合は、ディスクからデータを移動し、暗号化ファイルシステムへ変更してからフォーマットし、最後にデータを戻してください。詳細は [Unraid でドライブを暗号化する方法](../../../system-administration/secure-your-server/securing-your-data.mdx#how-to-encrypt-a-drive-in-unraid) を参照してください。万一問題が起きた場合、暗号化はデータ復旧を複雑にする点に注意してください。
 
-:::info[Disk Recognition and Port Flexibility]
+:::info[Disk 認識とポートの柔軟性]
 
-Unraid identifies disks based on their serial numbers and sizes, not the specific SATA ports they're connected to. This means you can switch drives between different SATA ports without affecting their assignments in Unraid. This feature is particularly useful for troubleshooting hardware problems, like finding a faulty port or replacing unreliable power or SATA cables.
+Unraid は、接続先の特定の SATA ポートではなく、シリアル番号とサイズに基づいてディスクを識別します。そのため、Unraid の割り当てに影響を与えずに、ドライブを別の SATA ポート間で入れ替えることができます。この機能は、故障したポートの特定や、不安定な電源ケーブルや SATA ケーブルの交換など、ハードウェア問題のトラブルシューティングに特に役立ちます。
 
 :::
 
 :::caution
 
-Your array will not start if you assign or attach more devices than your license key allows.
+ライセンスキーで許可されている数を超えるデバイスを割り当てたり接続したりすると、array は起動しません。
 
 :::
 
-## Start/Stop the array
+## array の開始/停止
 
-When your system starts up, it usually powers up the array of disks automatically. However, if you've recently changed the disk setup, such as adding a new disk, the array will remain off to allow you to check your configuration.
+システムの起動時、通常はディスク array が自動的に起動します。ただし、新しいディスクを追加するなど、最近ディスク構成を変更した場合は、設定を確認できるように array はオフのままになります。
 
 :::caution
 
-Keep in mind that you'll need to stop the array first to make any adjustments. Stopping it will fully stop all Docker containers and network shares, shut down or hibernate VMs, and your storage devices will be unmounted, making your data and applications inaccessible until you restart the array.
+変更を行うには、まず array を停止する必要があることを覚えておいてください。停止すると、すべての Docker コンテナとネットワーク共有が完全に停止し、VM はシャットダウンまたは休止状態になり、ストレージデバイスはアンマウントされるため、array を再起動するまでデータやアプリケーションにはアクセスできなくなります。
 
 :::
 
-To start or stop the array:
+array を開始または停止するには:
 
-1. Click on the **Main** tab.
-2. Navigate to the **Array Operation** section.
-3. Click **Start** or **Stop**. You may need to check the box that says "Yes, I want to do this" before proceeding.
+1. **Main** タブをクリックします。
+2. **Array Operation** セクションに移動します。
+3. **Start** または **Stop** をクリックします。続行する前に、「Yes, I want to do this」というチェックボックスにチェックする必要がある場合があります。
 
-## File system selection
+## ファイルシステムの選択
 
-By default, new array drives will be formatted with %%XFS|xfs%%. If you want to use %%ZFS|zfs%% or %%BTRFS|btrfs%% instead, select your preferred file system from the drop-down menu.
+既定では、新しい配列ドライブは%%XFS|xfs%%でフォーマットされます。代わりに%%ZFS|zfs%%または%%BTRFS|btrfs%%を使用したい場合は、ドロップダウンメニューから希望のファイルシステムを選択してください。
 
-For detailed information about file system options, see [File systems](../file-systems.mdx).
+ファイルシステムのオプションの詳細については、[File systems](../file-systems.mdx) を参照してください。
 
-## Array operations
+## array の操作
 
-Unraid provides several maintenance and configuration options for your storage array. Operations include:
+Unraid は、ストレージ array のためのいくつかのメンテナンスおよび設定オプションを提供します。操作には次のものがあります:
 
-- [Adding disks to array](./adding-disks-to-array.mdx) - Expand storage capacity
-- [Replacing disks in array](./replacing-disks-in-array.mdx) - Upgrade or swap failed drives
-- [Removing disks from array](./removing-disks-from-array.mdx) - Decommission or reduce array size
-- [Array health and maintenance](./array-health-and-maintenance.mdx) - Monitor and maintain your array
+- [array にディスクを追加する](./adding-disks-to-array.mdx) - ストレージ容量を拡張
+- [array 内のディスクを交換する](./replacing-disks-in-array.mdx) - 失敗したドライブをアップグレードまたは交換
+- [array からディスクを削除する](./removing-disks-from-array.mdx) - 廃止または array サイズを縮小
+- [array のヘルスとメンテナンス](./array-health-and-maintenance.mdx) - array を監視・保守する
 
-## Array write modes
+## array の書き込みモード
 
-Unraid provides various write modes for managing array operations, each with its own pros and cons regarding speed, power consumption, and drive wear. Knowing how these modes work, along with the role of a cache drive or pool, can help you fine-tune your server to best suit your needs.
+Unraid には、array の操作を管理するためのさまざまな書き込みモードがあり、それぞれ速度、消費電力、ドライブの摩耗に関して長所と短所があります。これらのモードの仕組みと、キャッシュドライブまたは pool の役割を理解することで、ニーズに最適なようにサーバーを調整できます。
 
-**Write modes at a glance**
+**書き込みモードの概要**
 
-| Write Mode                | Speed (Typical)                          | Power usage | When drives spin up          | Data protection  | Best use case                                                         |
-| ------------------------- | ---------------------------------------- | ----------- | ---------------------------- | ---------------- | --------------------------------------------------------------------- |
-| Read/Modify/Write         | 20–40 MB/s                               | Low         | Only parity and target drive | はい               | Most workloads, energy savings, small writes                          |
-| Turbo Write (Reconstruct) | 40–120 MB/s                              | High        | All drives                   | はい               | Large file transfers, array rebuilds, %%parity checks\|parity-check%% |
-| Cache Write (SSD/NVMe)    | 50–110 MB/s (SSD), 250–900 MB/s (NVMe)\* | Varies      | Cache drives only            | No (until moved) | Apps, VMs, frequent writes, maximizing speed                          |
+| 書き込みモード                  | 速度（典型値）                               | 消費電力 | ドライブがスピンアップするタイミング | データ保護        | 最適な用途                                                |
+| ------------------------ | ------------------------------------- | ---- | ------------------ | ------------ | ---------------------------------------------------- |
+| Read/Modify/Write        | 20–40 MB/s                            | 低    | パリティドライブと対象ドライブのみ  | はい           | ほとんどのワークロード、省電力、小さな書き込み                              |
+| Turbo Write（Reconstruct） | 40–120 MB/s                           | 高    | すべてのドライブ           | はい           | 大容量ファイル転送、array の再構築、%%parity checks\|parity-check%% |
+| Cache Write（SSD/NVMe）    | 50–110 MB/s（SSD）、250–900 MB/s（NVMe）\* | 変動あり | キャッシュドライブのみ        | いいえ（移動されるまで） | アプリ、VM、頻繁な書き込み、速度の最大化                                |
 
 ### Read/Modify/Write
 
-This is the default write mode. It reads the existing data and the parity, calculates the new parity, and then writes the updated data. Only the %%parity drive|parity-drives%% and the target data drive spin up, which results in lower power usage and less wear on the drives. However, it can be slower due to the additional read/write cycles.
+これは既定の書き込みモードです。既存のデータとパリティを読み取り、新しいパリティを計算してから、更新されたデータを書き込みます。スピンアップするのは %%parity drive|parity-drives%% と対象のデータドライブのみなので、消費電力が低く、ドライブの摩耗も少なくなります。ただし、読み取り/書き込みサイクルが増えるため、速度は遅くなることがあります。
 
-Use this mode anytime, especially if you want energy savings and idle drives to spin down. It's great for small or infrequent writes.
+このモードはいつでも使えますが、特に省電力を重視し、アイドル中のドライブをスピンダウンさせたい場合に適しています。小さな書き込みやまれな書き込みに最適です。
 
-### Turbo Write (Reconstruct write)
+### Turbo Write（Reconstruct Write）
 
-Turbo write, also known as reconstruct write, is a feature designed to boost the writing speed of your Unraid array. It works by reading all data drives and updating the parity simultaneously. This process eliminates the delays caused by waiting for the platters to rotate, as seen in the default write mode. However, all array drives need to be spinning and functioning properly for this to work effectively.
+Turbo write は reconstruct write とも呼ばれ、Unraid array の書き込み速度を向上させるために設計された機能です。すべてのデータドライブを読み取りながら、同時にパリティを更新します。この処理により、既定の書き込みモードで発生する、プラッタの回転待ちによる遅延がなくなります。ただし、これを効果的に機能させるには、array 内のすべてのドライブが回転して正常に動作している必要があります。
 
-**How it works:** When you write new data, Unraid reads from all the other data drives and recalculates the parity at the same time. Both the new data and the updated parity get written together. All drives in the array must be operational and actively spinning.
+**仕組み:** 新しいデータを書き込むと、Unraid は他のすべてのデータドライブから読み取りながら、同時にパリティを再計算します。新しいデータと更新されたパリティはまとめて書き込まれます。array 内のすべてのドライブが稼働しており、かつ回転している必要があります。
 
-**When to use:** Transferring large, sequential files to the array. During array rebuilds or %%parity checks|parity-check%%, as all drives are already spinning. When minimizing write time is a priority and you can confirm all drives are healthy.
+**使用する場面:** 大きく連続したファイルを array に転送する場合。array の再構築中や %%parity checks|parity-check%% 中は、すべてのドライブがすでに回転しているため有効です。書き込み時間を最小限にすることが重要で、すべてのドライブが正常であることを確認できる場合。
 
-**When to avoid:** If you want your drives to spin down during idle times to conserve energy. For small or infrequent write operations since it causes all drives to spin up for every write, increasing power usage and wear. If you suspect any drive is failing or unreliable, since it relies on every drive being operational.
+**避ける場面:** 待機中にドライブをスピンダウンさせて省エネしたい場合。小さな書き込みやまれな書き込みでは、書き込みのたびにすべてのドライブがスピンアップするため、消費電力と摩耗が増えます。1 台でも故障している、または不安定なドライブが疑われる場合も避けてください。すべてのドライブが正常に動作していることが前提だからです。
 
 :::info
 
-Turbo write is best suited for bulk operations and scenarios requiring high throughput. However, it might not be the best choice for everyday tasks if you're focused on energy savings and minimizing drive wear.
+Turbo write は、一括処理や高スループットが必要なシナリオに最適です。ただし、省電力とドライブの摩耗低減を重視する日常的な作業では、最良の選択ではないかもしれません。
 
 :::
 
 ### Cache Write
 
-Data is written first to a fast SSD or NVMe %%cache|cache%% and can then be moved to the main array later by a process called the %%Mover|mover%%. The speeds vary: SSD: 50–110 MB/s; NVMe: 250–900 MB/s (which can utilize 10GbE networks). Once data is moved to the array, it is protected by parity.
+データはまず高速な SSD または NVMe %%cache|cache%% に書き込まれ、その後 %%Mover|mover%% と呼ばれる処理によって後でメイン array に移動できます。速度は、SSD では 50–110 MB/s、NVMe では 250–900 MB/s です（10GbE ネットワークを活用できる場合があります）。データが array に移動された後は、パリティによって保護されます。
 
-**When to use:** For shares with frequent write operations like applications, virtual machines, or downloads. To enhance performance and reduce perceived write latency.
+**使用する場面:** アプリケーション、仮想マシン、ダウンロードなど、書き込みが頻繁な共有に。性能を向上させ、書き込み遅延の体感を減らしたい場合。
 
-**Performance expectations:**
+**性能の目安:**
 
-- Without a cache drive: Average 20–30 MB/s, with peaks up to 40 MB/s
-- With SSD cache: 50–110 MB/s
-- With NVMe cache: 250–900 MB/s depending on network or drive constraints
+- キャッシュドライブなし: 平均 20–30 MB/s、最大 40 MB/s まで
+- SSD キャッシュあり: 50–110 MB/s
+- NVMe キャッシュあり: ネットワークまたはドライブの制約に応じて 250–900 MB/s
 
 :::tip
 
-Consider using a cache pool (multiple devices) for added redundancy and data protection before the %%Mover|mover%% runs.
+%%Mover|mover%% が実行される前に、追加の冗長性とデータ保護のために cache pool（複数デバイス）の使用を検討してください。
 
 :::
 
-:::info[Automated Solutions]
+:::info[Automated ソリューション]
 
-- The **Auto** mode (a future feature) will engage turbo write only when all drives are already spinning.
-- Community plugins (search for "Turbo Write" in the Apps tab) may offer enhanced automation or scheduling options.
-
-:::
-
-To change Write Mode:
-
-1. Navigate to ***Settings → Disk Settings***.
-2. Locate **Tunable (md_write_method)**.
-3. Choose your preferred mode:
-   - **Read/Modify/Write** (default)
-   - **Reconstruct Write** (Turbo Write)
-   - **Auto** (future feature)
-4. Click **Apply** to confirm your choice.
-
-:::important[Quick recap]
-
-- Use **Turbo Write** when you need speed, but be aware of increased power consumption and drive spin-up.
-- Utilize **Cache Write** for optimal performance, particularly with SSD or NVMe drives.
-- For most users, the default write mode offers the best balance unless you specifically need higher speeds.
+- **Auto** モード（将来の機能）は、すべてのドライブがすでに回転している場合にのみ turbo write を有効にします。
+- コミュニティプラグイン（Apps タブで "Turbo Write" を検索）で、より高度な自動化やスケジュール設定オプションを利用できる場合があります。
 
 :::
 
-## Read modes
+書き込みモードを変更するには:
 
-When using Unraid, the speed at which you can read files is mainly determined by the individual drive that holds each file. Unlike traditional %%RAID|raid%% systems, which combine multiple drives to improve performance, Unraid stores each file on a single disk. This means read speeds won't be boosted by the combined speeds of multiple drives.
+1. ***Settings → Disk Settings*** に移動します。
+2. **Tunable (md_write_method)** を見つけます。
+3. 使用したいモードを選択します:
+   - **Read/Modify/Write**（既定）
+   - **Reconstruct Write**（Turbo Write）
+   - **Auto**（将来の機能）
+4. **Apply** をクリックして選択を確定します。
 
-### Performance expectations
+:::important[Quick 要点のまとめ]
 
-- **Typical single HDD:** 70–250 MB/s (depends on drive model, age, and data location)
-- **Typical SATA SSD:** 400–550 MB/s
-- **NVMe SSD (in a pool):** 250–7,000 MB/s (PCIe generation and network/PCIe limitations apply; e.g., 10GbE network caps at ~1,100 MB/s)
-
-:::note[Special cases]
-
-- If a disk is disabled and its data is being reconstructed, Unraid will use the remaining drives along with parity information to recreate the data. During this process, the read speed may slow down to 30–60 MB/s or even lower, depending on the slowest drive in your system.
-- Any ongoing operations in the array, such as a %%parity check|parity-check%% or rebuilding a drive, can also affect read performance. This is due to increased movement of the drive heads and overall contention for resources.
+- 速度が必要なときは **Turbo Write** を使いますが、消費電力の増加とドライブのスピンアップには注意してください。
+- 特に SSD や NVMe ドライブでは、最適な性能を得るために **Cache Write** を活用してください。
+- ほとんどのユーザーにとっては、より高い速度が特に必要でない限り、既定の書き込みモードが最もバランスに優れています。
 
 :::
 
-## Cache pools
+## 読み取りモード
+
+Unraid では、ファイルを読み取る速度は主に、そのファイルを保持している個々のドライブによって決まります。パフォーマンス向上のために複数のドライブを組み合わせる従来の %%RAID|raid%% システムとは異なり、Unraid は各ファイルを 1 台のディスクに保存します。つまり、複数ドライブの合算速度によって読み取り速度が上がることはありません。
+
+### 性能の目安
+
+- **一般的な単体 HDD:** 70–250 MB/s（ドライブのモデル、使用年数、データの場所に依存）
+- **一般的な SATA SSD:** 400–550 MB/s
+- **NVMe SSD（pool 内）:** 250–7,000 MB/s（PCIe 世代とネットワーク/PCIe の制約が適用されます。例: 10GbE ネットワークでは上限は約 1,100 MB/s）
+
+:::note[Special ケース]
+
+- ディスクが無効化され、そのデータが再構築されている場合、Unraid は残りのドライブとパリティ情報を使ってデータを再作成します。この処理中は、システム内で最も遅いドライブに応じて、読み取り速度が 30–60 MB/s あるいはそれ以下に低下することがあります。
+- %%parity check|parity-check%% やドライブの再構築など、array で進行中の操作も読み取り性能に影響する場合があります。これは、ヘッドの移動が増えることと、リソース競合が全体的に増えるためです。
+
+:::
+
+## キャッシュプール
 
 %%Cache pools|cache-pool%% in Unraid provide significant advantages, particularly for write-heavy tasks, virtual machines (VMs), and Docker containers. These pools operate separately from the main array and can be set up with multiple drives using either the %%BTRFS|btrfs%% or %%ZFS|zfs%% file system, supporting various %%RAID|raid%% configurations for speed and data protection.
 
-### Cache pools vs. the main array
+### cache pool とメイン array の比較
 
-| 機能                      | Cache pool (BTRFS)                                                                                               | Cache pool (ZFS)                                                                                                           | Main array (Unraid)                                |
-| ----------------------- | ---------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------- |
-| **Read speed**          | SSD: 400–550 MB/s, NVMe: 250–7,000 MB/s\*                                                                        | SSD: 400–550 MB/s, NVMe: 250–7,000 MB/s\*                                                                                  | HDD: 70–250 MB/s (per disk)                        |
-| **Write speed**         | SSD: 400–550 MB/s, NVMe: 250–7,000 MB/s\*                                                                        | SSD: 400–550 MB/s, NVMe: 250–7,000 MB/s\*                                                                                  | 20–120 MB/s (parity mode dependent)                |
-| **Data protection**     | %%RAID 1\|raid1%%/%%RAID 10\|raid10%%; %%RAID 5\|raid5%%/%%RAID 6\|raid6%% (experimental, not for critical data) | %%RAID 1\|raid1%%/%%RAID 10\|raid10%%; %%RAIDZ1\|raidz1%%/%%RAIDZ2\|raidz2%%/%%RAIDZ3\|raidz3%% (stable, production-ready) | Parity-based, file system agnostic                 |
-| **Expansion**           | Mix drive sizes; add/remove devices dynamically                                                                  | Limited add/remove device support; cannot remove from RAIDZ; single-device add to expand single-vdev RAIDZ in Unraid 7.2   | Add drives, but no striping or performance scaling |
-| **Recovery complexity** | Higher risk of data loss; %%BTRFS\|btrfs%% tools required                                                        | Higher risk of data loss; %%ZFS\|zfs%% tools required                                                                      | Easier parity-based rebuilds                       |
-| **Best for**            | Apps, VMs, frequent writes                                                                                       | Apps, VMs, frequent writes, enterprise workloads                                                                           | Bulk storage, media libraries                      |
+| 機能         | cache pool（BTRFS）                                                                          | cache pool（ZFS）                                                                                             | メイン array（Unraid）                |
+| ---------- | ------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------- | -------------------------------- |
+| **読み取り速度** | SSD: 400–550 MB/s、NVMe: 250–7,000 MB/s\*                                                   | SSD: 400–550 MB/s、NVMe: 250–7,000 MB/s\*                                                                    | HDD: 70–250 MB/s（ディスクごと）         |
+| **書き込み速度** | SSD: 400–550 MB/s、NVMe: 250–7,000 MB/s\*                                                   | SSD: 400–550 MB/s、NVMe: 250–7,000 MB/s\*                                                                    | 20–120 MB/s（パリティモードに依存）          |
+| **データ保護**  | %%RAID 1\|raid1%%/%%RAID 10\|raid10%%; %%RAID 5\|raid5%%/%%RAID 6\|raid6%%（実験的、重要データには非推奨） | %%RAID 1\|raid1%%/%%RAID 10\|raid10%%; %%RAIDZ1\|raidz1%%/%%RAIDZ2\|raidz2%%/%%RAIDZ3\|raidz3%%（安定版、本番運用向け） | パリティベース、ファイルシステム非依存              |
+| **拡張**     | ドライブサイズを混在可能。デバイスの追加/削除を動的に実行可能                                                            | デバイスの追加/削除のサポートは限定的。RAIDZ からは削除不可。Unraid 7.2 では単一デバイス追加で単一 vdev RAIDZ を拡張可能                                 | ドライブは追加できるが、ストライピングや性能のスケーリングはなし |
+| **復旧の複雑さ** | データ損失のリスクが高い; %%BTRFS\|btrfs%% ツールが必要                                                      | データ損失のリスクが高い; %%ZFS\|zfs%% ツールが必要                                                                           | パリティベースで再構築しやすい                  |
+| **最適な用途**  | アプリ、VM、頻繁な書き込み                                                                             | アプリ、VM、頻繁な書き込み、エンタープライズワークロード                                                                               | 大量保存、メディアライブラリ                   |
 
-\**Actual NVMe speeds depend on PCIe generation, cooling, and network bandwidth (e.g., 10GbE caps at ~1,100 MB/s).*
+\**実際の NVMe 速度は、PCIe 世代、冷却、ネットワーク帯域幅に依存します（例: 10GbE の上限は約 1,100 MB/s）。*
 
-### Pros of cache pools
+### cache pool の利点
 
-- **Higher performance:** NVMe pools can saturate 10GbE/40GbE networks (1,100–3,500 MB/s).
-- **Flexible RAID:** Both %%BTRFS|btrfs%% and %%ZFS|zfs%% support %%RAID 1|raid1%%/%%RAID 10|raid10%% for redundancy without matching drive sizes.
-- **Low latency:** Ideal for databases, VMs, and Docker containers.
-- **ZFS advantages:** %%ZFS|zfs%% provides enterprise-grade features like data integrity checking, compression, and snapshots.
+- **高い性能:** NVMe pool は 10GbE/40GbE ネットワーク（1,100–3,500 MB/s）を飽和させることができます。
+- **柔軟な RAID:** %%BTRFS|btrfs%% と %%ZFS|zfs%% の両方が、サイズの一致しないドライブでも冗長性のために %%RAID 1|raid1%%/%%RAID 10|raid10%% をサポートします。
+- **低レイテンシ:** データベース、VM、Docker コンテナに最適です。
+- **ZFS の利点:** %%ZFS|zfs%% は、データ整合性チェック、圧縮、スナップショットなどのエンタープライズグレードの機能を提供します。
 
-### Cons of cache pools
+### cache pool の欠点
 
-- **No parity protection:** Data is unprotected until moved to the array.
-- **Recovery risks:** %%BTRFS|btrfs%% %%RAID 5|raid5%%/%%RAID 6|raid6%% is unstable; single-drive pools lack redundancy.
-- **ZFS considerations:** %%ZFS|zfs%% requires more RAM and has stricter hardware requirements than %%BTRFS|btrfs%%.
+- **パリティ保護なし:** データは array に移動されるまで保護されません。
+- **復旧リスク:** %%BTRFS|btrfs%% の %%RAID 5|raid5%%/%%RAID 6|raid6%% は不安定です。単一ドライブの pool には冗長性がありません。
+- **ZFS に関する注意:** %%ZFS|zfs%% は %%BTRFS|btrfs%% よりも多くの RAM を必要とし、ハードウェア要件も厳格です。
 
-For more detailed information about %%cache pools|cache-pool%%, including how to set them up, manage them, and advanced features, check the [Cache pools](../cache-pools.mdx) page.
+%%cache pools|cache-pool%% の設定方法、管理方法、高度な機能を含む詳細については、[Cache pools](../cache-pools.mdx) ページを参照してください。
