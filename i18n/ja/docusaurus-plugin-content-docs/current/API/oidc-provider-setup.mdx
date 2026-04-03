@@ -8,202 +8,202 @@ sidebar_position: 3
 
 :::info[What OIDCですか？]
 
-OpenID Connect (OIDC) is an authentication protocol that allows users to sign in using their existing accounts from providers like Google, Microsoft, or your corporate identity provider. It enables Single Sign-On (SSO) for seamless and secure authentication.
+OpenID Connect（OIDC）は、Google、Microsoft、またはお使いの社内アイデンティティプロバイダーなどの既存アカウントを使ってユーザーがサインインできる認証プロトコルです。シングルサインオン（SSO）を可能にし、シームレスで安全な認証を実現します。
 
 :::
 
-This guide walks you through configuring OIDC (OpenID Connect) providers for SSO authentication in the Unraid API using the web interface.
+このガイドでは、Webインターフェースを使用して、Unraid APIでSSO認証用のOIDC（OpenID Connect）プロバイダーを設定する手順を説明します。
 
-## 🚀 Quick Start
+## 🚀 クイックスタート
 
 <details open>
-  <summary><strong>Getting to OIDC Settings</strong></summary>
+  <summary><strong>OIDC設定へのアクセス</strong></summary>
 
-  1. Navigate to your Unraid server's web interface
-  2. Go to **Settings** → **Management Access** → **API** → **OIDC**
-  3. You'll see tabs for different providers - click the **+** button to add a new provider
+  1. UnraidサーバーのWebインターフェースに移動します
+  2. **Settings** → **Management Access** → **API** → **OIDC** に移動します
+  3. 異なるプロバイダー用のタブが表示されます。新しいプロバイダーを追加するには **+** ボタンをクリックします
 
 </details>
 
-### OIDC Providers Interface Overview
+### OIDCプロバイダーインターフェースの概要
 
-![Login Page with SSO Options](/img/api/sso-with-options.png)
-*Login page showing traditional login form with SSO options - "Login With Unraid.net" and "Sign in with Google" buttons*
+![SSOオプション付きログインページ](/img/api/sso-with-options.png)
+*従来のログインフォームとSSOオプション（「Login With Unraid.net」および「Sign in with Google」ボタン）を表示するログインページ*
 
-The interface includes:
+このインターフェースには次のものが含まれます:
 
-- **Provider tabs**: Each configured provider (Unraid.net, Google, etc.) appears as a tab
-- **Add Provider button**: Click the **+** button to add new providers
-- **Authorization Mode dropdown**: Toggle between "simple" and "advanced" modes
-- **Simple Authorization section**: Configure allowed email domains and specific addresses
-- **Add Item buttons**: Click to add multiple authorization rules
+- **プロバイダータブ**: 設定済みの各プロバイダー（Unraid.net、Google など）がタブとして表示されます
+- **プロバイダー追加ボタン**: **+** ボタンをクリックして新しいプロバイダーを追加します
+- **認可モードのドロップダウン**: 「simple」と「advanced」を切り替えます
+- **シンプル認可セクション**: 許可するメールドメインと特定のアドレスを設定します
+- **項目追加ボタン**: 複数の認可ルールを追加するにはクリックします
 
-## Understanding Authorization Modes
+## 認可モードの理解
 
-The interface provides two authorization modes:
+このインターフェースでは2つの認可モードを提供します:
 
-### Simple Mode (Recommended)
+### シンプルモード（推奨）
 
-Simple mode is the easiest way to configure authorization. You can:
+シンプルモードは、認可を設定する最も簡単な方法です。次のことができます:
 
-- Allow specific email domains (e.g., @company.com)
-- Allow specific email addresses
-- Configure who can access your Unraid server with minimal setup
+- 特定のメールドメインを許可する（例: @company.com）
+- 特定のメールアドレスを許可する
+- 最小限の設定でUnraidサーバーへのアクセス対象を構成する
 
-**When to use Simple Mode:**
+**シンプルモードを使う場合:**
 
-- You want to allow all users from your company domain
-- You have a small list of specific users
-- You're new to OIDC configuration
+- 会社ドメインのすべてのユーザーを許可したい
+- 特定ユーザーのリストが少ない
+- OIDC設定が初めてである
 
 <details>
-  <summary><strong>Advanced Mode</strong></summary>
+  <summary><strong>アドバンスモード</strong></summary>
 
-  Advanced mode provides granular control using claim-based rules. You can:
+  アドバンスモードでは、クレームベースのルールを使ってきめ細かな制御ができます。次のことができます:
 
-  - Create complex authorization rules based on JWT claims
-  - Use operators like equals, contains, endsWith, startsWith
-  - Combine multiple conditions with OR/AND logic
-  - Choose whether ANY rule must pass (OR mode) or ALL rules must pass (AND mode)
+  - JWTクレームに基づく複雑な認可ルールを作成する
+  - equals、contains、endsWith、startsWith などの演算子を使用する
+  - 複数の条件をOR/ANDロジックで組み合わせる
+  - 任意のルールが通ればよい（ORモード）のか、すべてのルールが通る必要がある（ANDモード）のかを選択します
 
-  **When to use Advanced Mode:**
+  **アドバンスモードを使う場合:**
 
-  - You need to check group memberships
-  - You want to verify multiple claims (e.g., email domain AND verified status)
-  - You have complex authorization requirements
-  - You need fine-grained control over how rules are evaluated
+  - グループメンバーシップを確認する必要がある
+  - 複数のクレームを検証したい（例: メールドメイン AND 確認済みステータス）
+  - 複雑な認可要件がある
+  - ルールの評価方法を細かく制御する必要がある
 
 </details>
 
-## Authorization Rules
+## 認可ルール
 
-![Authorization Rules Configuration](/img/api/advanced-rules.png)
-*Advanced authorization rules showing JWT claim configuration with email endsWith operator for domain-based access control*
+![認可ルールの設定](/img/api/advanced-rules.png)
+*ドメインベースのアクセス制御のために email endsWith 演算子を使用したJWTクレーム設定を示すアドバンス認可ルール*
 
-### Simple Mode Examples
+### シンプルモードの例
 
-#### Allow Company Domain
+#### 会社ドメインを許可
 
-In Simple Authorization:
+シンプル認可では:
 
-- **Allowed Email Domains**: Enter `company.com`
-- This allows anyone with @company.com email
+- **許可されたメールドメイン**: `company.com` を入力します
+- これにより、@company.com のメールアドレスを持つすべてのユーザーが許可されます
 
-#### Allow Specific Users
+#### 特定ユーザーを許可
 
-- **Specific Email Addresses**: Add individual emails
-- Click **Add Item** to add multiple addresses
+- **特定のメールアドレス**: 個別のメールアドレスを追加します
+- **項目を追加** をクリックして複数のアドレスを追加します
 
 <details>
-  <summary><strong>Advanced Mode Examples</strong></summary>
+  <summary><strong>アドバンスモードの例</strong></summary>
 
-  #### Authorization Rule Mode
+  #### 認可ルールモード
 
-  When using multiple rules, you can choose how they're evaluated:
+  複数のルールを使用する場合、どのように評価するかを選択できます:
 
-  - **OR Mode** (default): User is authorized if ANY rule passes
-  - **AND Mode**: User is authorized only if ALL rules pass
+  - **ORモード**（既定）: いずれかのルールが通ればユーザーは認可されます
+  - **ANDモード**: すべてのルールが通った場合にのみユーザーは認可されます
 
-  #### Email Domain with Verification (AND Mode)
+  #### 確認済みのメールドメイン（ANDモード）
 
-  To require both email domain AND verification:
+  メールドメインと確認の両方を必須にするには:
 
-  1. Set **Authorization Rule Mode** to `AND`
-  2. Add two rules:
-     - Rule 1:
-       - **Claim**: `email`
-       - **Operator**: `endsWith`
-       - **Value**: `@company.com`
-     - Rule 2:
-       - **Claim**: `email_verified`
-       - **Operator**: `equals`
-       - **Value**: `true`
+  1. **認可ルールモード**を `AND` に設定します
+  2. 2つのルールを追加します:
+     - ルール 1:
+       - **クレーム**: `email`
+       - **演算子**: `endsWith`
+       - **値**: `@company.com`
+     - ルール 2:
+       - **クレーム**: `email_verified`
+       - **演算子**: `equals`
+       - **値**: `true`
 
-  This ensures users must have both a company email AND a verified email address.
+  これにより、ユーザーは会社のメールアドレスと確認済みメールアドレスの両方を持つ必要があります。
 
-  #### Group-Based Access (OR Mode)
+  #### グループベースのアクセス（ORモード）
 
-  To allow access to multiple groups:
+  複数のグループへのアクセスを許可するには:
 
-  1. Set **Authorization Rule Mode** to `OR` (default)
-  2. Add rules for each group:
-     - **Claim**: `groups`
-     - **Operator**: `contains`
-     - **Value**: `admins`
-       Or add another rule:
-     - **Claim**: `groups`
-     - **Operator**: `contains`
-     - **Value**: `developers`
+  1. **認可ルールモード**を `OR`（既定）に設定します
+  2. 各グループのルールを追加します:
+     - **クレーム**: `groups`
+     - **演算子**: `contains`
+     - **値**: `admins`
+       または別のルールを追加:
+     - **クレーム**: `groups`
+     - **演算子**: `contains`
+     - **値**: `developers`
 
-  Users in either `admins` OR `developers` group will be authorized.
+  `admins` または `developers` グループのユーザーが認可されます。
 
-  #### Multiple Domains
+  #### 複数のドメイン
 
-  - **Claim**: `email`
-  - **Operator**: `endsWith`
-  - **Values**: Add multiple domains (e.g., `company.com`, `subsidiary.com`)
+  - **クレーム**: `email`
+  - **演算子**: `endsWith`
+  - **値**: 複数のドメインを追加します（例: `company.com`、`subsidiary.com`）
 
-  #### Complex Authorization (AND Mode)
+  #### 複雑な認可（ANDモード）
 
-  For strict security requiring multiple conditions:
+  複数の条件を必要とする厳格なセキュリティの場合:
 
-  1. Set **Authorization Rule Mode** to `AND`
-  2. Add multiple rules that ALL must pass:
-     - Email must be from company domain
-     - Email must be verified
-     - User must be in specific group
-     - Account must have 2FA enabled (if claim available)
+  1. **認可ルールモード**を `AND` に設定します
+  2. すべてが通過する必要がある複数のルールを追加します:
+     - メールは会社ドメインのものでなければなりません
+     - メールは確認済みでなければなりません
+     - ユーザーは特定のグループに所属している必要があります
+     - アカウントで2FAが有効になっている必要があります（該当するクレームがある場合）
 
 </details>
 
 <details>
-  <summary><strong>Configuration Interface Details</strong></summary>
+  <summary><strong>設定インターフェースの詳細</strong></summary>
 
-  ### Provider Tabs
+  ### プロバイダータブ
 
-  - Each configured provider appears as a tab at the top
-  - Click a tab to switch between provider configurations
-  - The **+** button on the right adds a new provider
+  - 設定済みの各プロバイダーは上部にタブとして表示されます
+  - タブをクリックするとプロバイダー設定を切り替えられます
+  - 右側の **+** ボタンで新しいプロバイダーを追加します
 
-  ### Authorization Mode Dropdown
+  ### 認可モードのドロップダウン
 
-  - **simple**: Best for email-based authorization (recommended for most users)
-  - **advanced**: For complex claim-based rules using JWT claims
+  - **simple**: メールベースの認可に最適（ほとんどのユーザーに推奨）
+  - **advanced**: JWTクレームを使った複雑なクレームベースのルール向け
 
-  ### Simple Authorization Fields
+  ### シンプル認可フィールド
 
-  When "simple" mode is selected, you'll see:
+  「simple」モードを選択すると、次の項目が表示されます:
 
-  - **Allowed Email Domains**: Enter domains without @ (e.g., `company.com`)
-    - Helper text: "Users with emails ending in these domains can login"
-  - **Specific Email Addresses**: Add individual email addresses
-    - Helper text: "Only these exact email addresses can login"
-  - **Add Item** buttons to add multiple entries
+  - **許可されたメールドメイン**: @ を付けずにドメインを入力します（例: `company.com`）
+    - ヘルプテキスト: 「これらのドメインで終わるメールアドレスのユーザーはログインできます」
+  - **特定のメールアドレス**: 個別のメールアドレスを追加します
+    - ヘルプテキスト: 「これらの正確なメールアドレスだけがログインできます」
+  - 複数の項目を追加するための **項目を追加** ボタン
 
-  ### Advanced Authorization Fields
+  ### アドバンス認可フィールド
 
-  When "advanced" mode is selected, you'll see:
+  「advanced」モードを選択すると、次の項目が表示されます:
 
-  - **Authorization Rule Mode**: Choose `OR` (any rule passes) or `AND` (all rules must pass)
-  - **Authorization Rules**: Add multiple claim-based rules
-  - **For each rule**:
-    - **Claim**: The JWT claim to check
-    - **Operator**: How to compare (equals, contains, endsWith, startsWith)
-    - **Value**: What to match against
+  - **認可ルールモード**: `OR`（どれか1つのルールが通る）または `AND`（すべてのルールが通る）を選択します
+  - **認可ルール**: 複数のクレームベースのルールを追加します
+  - **各ルールごとに**:
+    - **クレーム**: 確認するJWTクレーム
+    - **演算子**: 比較方法（equals、contains、endsWith、startsWith）
+    - **値**: 照合対象
 
-  ### Additional Interface Elements
+  ### その他のインターフェース要素
 
-  - **Enable Developer Sandbox**: Toggle to enable GraphQL sandbox at `/graphql`
-  - The interface uses a dark theme for better visibility
-  - Field validation indicators help ensure correct configuration
+  - **開発者サンドボックスを有効にする**: `/graphql` でGraphQLサンドボックスを有効化する切り替え
+  - このインターフェースは視認性向上のためダークテーマを使用しています
+  - フィールド検証インジケーターは正しい設定の確認に役立ちます
 
 </details>
 
-### Required Redirect URI
+### 必須のリダイレクトURI
 
-:::caution[Important Configuration]
+:::caution[Important 構成]
 
-All providers must be configured with this exact redirect URI format:
+すべてのプロバイダーは、この正確なリダイレクトURI形式で設定する必要があります:
 
 :::
 
@@ -213,147 +213,147 @@ http://YOUR_UNRAID_IP/graphql/api/auth/oidc/callback
 
 :::tip
 
-Replace `YOUR_UNRAID_IP` with your actual server IP address (e.g., `192.168.1.100` or `tower.local`).
+`YOUR_UNRAID_IP` を実際のサーバーIPアドレス（例: `192.168.1.100` または `tower.local`）に置き換えてください。
 
 :::
 
-### Issuer URL Format
+### Issuer URLの形式
 
-The **Issuer URL** field accepts both formats, but **base URL is strongly recommended** for security:
+**Issuer URL** フィールドは両方の形式を受け付けますが、セキュリティ上は**ベースURL**の使用を強く推奨します:
 
-- **Base URL** (recommended): `https://accounts.google.com`
-- **Full discovery URL**: `https://accounts.google.com/.well-known/openid-configuration`
+- **ベースURL**（推奨）: `https://accounts.google.com`
+- **完全な検出URL**: `https://accounts.google.com/.well-known/openid-configuration`
 
-**⚠️ Security Note**: Always use the base URL format when possible. The system automatically appends `/.well-known/openid-configuration` for OIDC discovery. Using the full discovery URL directly disables important issuer validation checks and is not recommended by the OpenID Connect specification.
+**⚠️ セキュリティ नोट**: 可能な限りベースURL形式を使用してください。システムはOIDC検出のために `/.well-known/openid-configuration` を自動的に追加します。完全な検出URLを直接使用すると、重要なIssuer検証チェックが無効になり、OpenID Connect仕様でも推奨されません。
 
-**Examples of correct base URLs:**
+**正しいベースURLの例:**
 
 - Google: `https://accounts.google.com`
 - Microsoft/Azure: `https://login.microsoftonline.com/YOUR_TENANT_ID/v2.0`
 - Keycloak: `https://keycloak.example.com/realms/YOUR_REALM`
 - Authelia: `https://auth.yourdomain.com`
 
-## ✅ Testing Your Configuration
+## ✅ 設定のテスト
 
-![Login Page with SSO Buttons](/img/api/sso-with-options.png)
-*Unraid login page displaying both traditional username/password authentication and SSO options with customized provider buttons*
+![SSOボタン付きログインページ](/img/api/sso-with-options.png)
+*カスタマイズされたプロバイダーボタンを含む、従来のユーザー名/パスワード認証とSSOオプションの両方を表示するUnraidログインページ*
 
-1. Save your provider configuration
-2. Log out (if logged in)
-3. Navigate to the login page
-4. Your configured provider button should appear
-5. Click to test the login flow
+1. プロバイダー設定を保存します
+2. ログアウトします（ログインしている場合）
+3. ログインページに移動します
+4. 設定したプロバイダーボタンが表示されるはずです
+5. クリックしてログインフローをテストします
 
-## 🔧 Troubleshooting
+## 🔧 トラブルシューティング
 
 ### よくある問題
 
-#### "Provider not found" error
+#### "Provider not found" エラー
 
-- Ensure the Issuer URL is correct
-- Check that the provider supports OIDC discovery (/.well-known/openid-configuration)
+- Issuer URLが正しいことを確認します
+- プロバイダーがOIDCディスカバリー（/.well-known/openid-configuration）をサポートしていることを確認します
 
 #### "Authorization failed"
 
-- In Simple Mode: Check email domains are entered correctly (without @)
-- In Advanced Mode:
-  - Verify claim names match exactly what your provider sends
-  - Check if Authorization Rule Mode is set correctly (OR vs AND)
-  - Ensure all required claims are present in the token
-- Enable debug logging to see actual claims and rule evaluation
+- シンプルモードでは: メールドメインが正しく入力されていることを確認します（@なし）
+- アドバンスモードでは:
+  - クレーム名がプロバイダーが送信する内容と完全に一致していることを確認します
+  - 認可ルールモードが正しく設定されているか確認します（OR と AND）
+  - 必要なすべてのクレームがトークンに含まれていることを確認します
+- デバッグログを有効にして、実際のクレームとルール評価を確認します
 
 #### "Invalid redirect URI"
 
-- Ensure the redirect URI in your provider matches exactly
-- Include the correct port if using a non-standard configuration
-- Verify the redirect URI protocol matches your server's configuration (HTTP or HTTPS)
+- プロバイダー側のリダイレクトURIが完全に一致していることを確認します
+- 標準外の構成を使用している場合は、正しいポートを含めてください
+- リダイレクトURIのプロトコルがサーバーの構成（HTTPまたはHTTPS）と一致していることを確認します
 
-#### Cannot see login button
+#### ログインボタンが表示されない
 
-- Check that at least one authorization rule is configured
-- Verify the provider is enabled/saved
+- 少なくとも1つの認可ルールが設定されていることを確認します
+- プロバイダーが有効で保存されていることを確認します
 
 ### デバッグモード
 
-To troubleshoot issues:
+問題をトラブルシューティングするには:
 
-1. Enable debug logging:
+1. デバッグログを有効にします:
 
 ```bash
 LOG_LEVEL=debug unraid-api start --debug
 ```
 
-2. Check logs for:
+2. 次の内容をログで確認します:
 
-- Received claims from provider
-- Authorization rule evaluation
-- Token validation errors
+- プロバイダーから受信したクレーム
+- 認可ルールの評価
+- トークン検証エラー
 
-## 🔐 Security Best Practices
+## 🔐 セキュリティのベストプラクティス
 
-1. **Use Simple Mode for authorization** - Prevents overly accepting configurations and reduces misconfiguration risks
-2. **Be specific with authorization** - Don't use overly broad rules
-3. **Rotate secrets regularly** - Update client secrets periodically
-4. **Test thoroughly** - Verify only intended users can access
+1. **認可にはシンプルモードを使用する** - 過度に許可しすぎる設定を防ぎ、誤設定のリスクを減らします
+2. **認可は具体的に設定する** - 広すぎるルールは使用しないでください
+3. **シークレットを定期的にローテーションする** - クライアントシークレットを定期的に更新します
+4. **十分にテストする** - 意図したユーザーのみがアクセスできることを確認します
 
-## 💡 Need Help?
+## 💡 ヘルプが必要ですか?
 
-- Check provider's OIDC documentation
-- Review Unraid API logs for detailed error messages
-- Ensure your provider supports standard OIDC discovery
-- Verify network connectivity between Unraid and provider
+- プロバイダーのOIDCドキュメントを確認します
+- 詳細なエラーメッセージについてはUnraid APIのログを確認します
+- プロバイダーが標準のOIDCディスカバリーをサポートしていることを確認します
+- Unraidとプロバイダー間のネットワーク接続を確認します
 
-## 🏢 Provider-Specific Setup
+## 🏢 プロバイダー別セットアップ
 
-### Unraid.net Provider
+### Unraid.netプロバイダー
 
-The Unraid.net provider is built-in and pre-configured. You only need to configure authorization rules in the interface.
+Unraid.netプロバイダーは組み込み済みで事前設定されています。インターフェースで認可ルールを設定するだけで済みます。
 
 **構成:**
 
-- **Issuer URL**: Pre-configured (built-in provider)
-- **Client ID/Secret**: Pre-configured (built-in provider)
+- **Issuer URL**: 事前設定済み（組み込みプロバイダー）
+- **Client ID/Secret**: 事前設定済み（組み込みプロバイダー）
 - **Redirect URI**: `http://YOUR_UNRAID_IP/graphql/api/auth/oidc/callback`
 
-:::tip[Redirect URI Protocol]
+:::tip[Redirect URIプロトコル]
 
-**Match the protocol to your server setup:** Use `http://` if accessing your Unraid server without SSL/TLS (typical for local network access). Use `https://` if you've configured SSL/TLS on your server. Some OIDC providers (like Google) require HTTPS and won't accept HTTP redirect URIs.
+**プロトコルをサーバー構成に合わせます:** SSL/TLSなしでUnraidサーバーにアクセスする場合は `http://` を使用します（通常はローカルネットワークアクセス）。サーバーにSSL/TLSを設定している場合は `https://` を使用します。一部のOIDCプロバイダー（Googleなど）はHTTPSを必須とし、HTTPのリダイレクトURIは受け付けません。
 
 :::
 
-Configure authorization rules using Simple Mode (allowed email domains/addresses) or Advanced Mode for complex requirements.
+シンプルモード（許可されたメールドメイン/アドレス）またはアドバンスモードを使用して、複雑な要件向けに認可ルールを設定します。
 
 ### Google
 
 <details>
-  <summary><strong>📋 Setup Steps</strong></summary>
+  <summary><strong>📋 セットアップ手順</strong></summary>
 
-  Set up OAuth 2.0 credentials in [Google Cloud Console](https://console.cloud.google.com/):
+  [Google Cloud Console](https://console.cloud.google.com/) で OAuth 2.0 認証情報を設定します:
 
-  1. Go to **APIs & Services** → **Credentials**
-  2. Click **Create Credentials** → **OAuth client ID**
-  3. Choose **Web application** as the application type
-  4. Add your redirect URI to **Authorized redirect URIs**
-  5. Configure the OAuth consent screen if prompted
+  1. **APIs & Services** → **Credentials** に移動します
+  2. **Create Credentials** → **OAuth client ID** をクリックします
+  3. アプリケーションタイプとして **Web application** を選択します
+  4. リダイレクトURIを **Authorized redirect URIs** に追加します
+  5. 求められた場合は OAuth 同意画面を設定します
 
 </details>
 
 **構成:**
 
 - **Issuer URL**: `https://accounts.google.com`
-- **Client ID/Secret**: From your OAuth 2.0 client credentials
+- **Client ID/Secret**: OAuth 2.0 クライアント認証情報から取得します
 - **Required Scopes**: `openid`, `profile`, `email`
 - **Redirect URI**: `http://YOUR_UNRAID_IP/graphql/api/auth/oidc/callback`
 
-:::warning[Google Domain Requirements]
+:::warning[Google ドメイン要件]
 
-**Google requires valid domain names for OAuth redirect URIs.** Local IP addresses and `.local` domains are not accepted. To use Google OAuth with your Unraid server, you'll need:
+**Google では、OAuthリダイレクトURIに有効なドメイン名が必要です。** ローカルIPアドレスや `.local` ドメインは受け付けられません。Google OAuth を Unraid サーバーで使用するには、次が必要です:
 
 - **オプション 1: リバースプロキシ** - 有効なドメイン名をUnraid APIに向けて設定したリバースプロキシ（NGINX Proxy ManagerやTraefikなど）を用意します
 - **オプション 2: Tailscale** - Tailscaleを使って、Googleが受け入れる有効な`*.ts.net`ドメインを取得します
 - **オプション 3: 動的DNS** - DDNSサービスを使って、サーバー用の公開ドメイン名を取得します
 
-Remember to update your redirect URI in both Google Cloud Console and your Unraid OIDC configuration to use the valid domain.
+Google Cloud Console と Unraid のOIDC設定の両方でリダイレクトURIを有効なドメインに更新することを忘れないでください。
 
 :::
 
