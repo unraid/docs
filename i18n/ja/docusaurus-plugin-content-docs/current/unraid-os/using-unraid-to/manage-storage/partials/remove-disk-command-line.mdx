@@ -1,53 +1,53 @@
-If you're comfortable with the command line, this method gives you more control and can be useful if the %%WebGUI|web-gui%% option isn't available. For more information on using the command line interface, see [Command line interface](../../../system-administration/advanced-tools/command-line-interface.mdx).
+コマンドラインに慣れている場合、この方法のほうがより細かく制御でき、%%WebGUI|web-gui%% オプションが利用できないときに役立ちます。コマンドラインインターフェースの使用方法について詳しくは、[コマンドラインインターフェース](../../../system-administration/advanced-tools/command-line-interface.mdx)を参照してください。
 
-:::note[Before you start]
+:::note[Before 開始前]
 
-- Ensure that your pool's %%RAID|raid%% profile allows device removal; you can't remove a device from a 2-device %%RAID 1|raid1%% pool without changing it to a single profile first.
-- Check that remaining devices will have enough space for your data.
+- プールの%%RAID|raid%%プロファイルでデバイスの削除が許可されていることを確認してください。2台構成の%%RAID 1|raid1%%プールからは、まずシングルプロファイルに変更しない限りデバイスを削除できません。
+- 残りのデバイスに、データ用の十分な空き容量があることを確認してください。
 
 :::
 
-To remove a disk using the command line:
+コマンドラインを使用してディスクを削除するには:
 
-1. Make sure the %%array|array%% is running and open your command line interface.
+1. %%array|array%% が起動していることを確認し、コマンドラインインターフェースを開きます。
 
-2. Type the command below, replacing `X` with the letter corresponding to the drive you want to remove (as shown in the Main tab):
+2. 下のコマンドを入力し、`X` を削除したいドライブに対応する文字に置き換えます（Main タブに表示されているとおりです）:
 
    ```bash
    btrfs device remove /dev/sdX1 /mnt/cache
    ```
 
-   - For encrypted devices, use: `/dev/mapper/sdX1`.
-   - For NVMe devices, use: `nvmeXn1p1`.
+   - 暗号化されたデバイスの場合は、`/dev/mapper/sdX1` を使用します。
+   - NVMe デバイスの場合は、`nvmeXn1p1` を使用します。
 
-3. Wait for completion: The device will be removed once you see the cursor return.
+3. 完了を待ちます: カーソルが戻ったら、デバイスの削除は完了です。
 
-4. Make Unraid "forget" the deleted member:
+4. 削除したメンバーを Unraid に「忘れさせる」:
    - %%array|array%% を停止します。
-   - Unassign all pool devices.
-   - Start the %%array|array%% (Unraid will clear the pool configuration).
-   - If any Docker/%%VM|vm%% services use this pool, disable them before starting the %%array|array%% to prevent Unraid from recreating images elsewhere.
+   - すべてのプールデバイスの割り当てを解除します。
+   - %%array|array%% を開始します（Unraid がプール設定を消去します）。
+   - このプールを使用している Docker/%%VM|vm%% サービスがある場合は、%%array|array%% を開始する前にそれらを無効にして、Unraid が別の場所にイメージを再作成しないようにします。
 
-5. Stop the %%array|array%% again, reassign all remaining pool members except the removed device, and then start the %%array|array%%.
+5. 再び %%array|array%% を停止し、削除したデバイスを除く残りのすべてのプールメンバーを再割り当てしてから、%%array|array%% を開始します。
 
-**To remove multiple devices**:
+**複数のデバイスを削除するには**:
 
-You can do so in one command:
+1 つのコマンドで実行できます:
 
 ```bash
 btrfs device remove /dev/sdX1 /dev/sdY1 /mnt/cache
 ```
 
-However, keep in mind that the removal will still occur one at a time.
+ただし、削除は引き続き 1 台ずつ順番に行われることに注意してください。
 
 :::note\[Timing]
 
-Similar to the %%WebGUI|web-gui%% method, removing devices and rebalancing may take several hours depending on data volume and device speed.
+WebGUI の方法と同様に、データ量とデバイス速度によっては、デバイスの削除とリバランスに数時間かかる場合があります。
 
 :::
 
 :::important
 
-If you have only one device left in the pool, you will need to convert the %%RAID|raid%% profile to **single** to ensure everything functions correctly. For further instructions, refer to the section on [Switching the Pool RAID Level to Single](#changing-pool-raid-levels).
+プールにデバイスが 1 台だけ残っている場合は、すべてが正しく動作するように、%%RAID|raid%% プロファイルを **single** に変換する必要があります。詳細な手順については、[プールの RAID レベルを single に変更する](#changing-pool-raid-levels) のセクションを参照してください。
 
 :::
