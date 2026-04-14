@@ -59,9 +59,9 @@ Bei Verwendung von Unraid 7 oder später können Sie %%VirtIO|virtio%%-Treiber a
 
 ### Einrichten des Ruhemodus
 
-Um den Ruhezustand zuverlässig zu nutzen, müssen Sie den %%QEMU|qemu%%-%%Guest-Agent|guest-agent%% in Ihrer Windows-%%VM|vm%% installieren. Dieser Agent ermöglicht es Unraid, mit der %%VM|vm%% für erweiterte Vorgänge wie Ruhezustand, Herunterfahren und Live-Statistikberichterstattung zu kommunizieren.
+Der Ruhezustand speichert den gesamten Zustand Ihrer Windows-%%VM|vm%% auf die Festplatte, einschließlich geöffneter Anwendungen und Dokumente. Dadurch können Sie die %%VM|vm%% ausschalten, ohne Arbeit zu verlieren. Beim Fortsetzen stellt Windows alles genau so wieder her, wie Sie es verlassen haben, und überspringt den normalen Startvorgang. Diese Funktion ist praktisch, wenn Sie Ihren Unraid-Host neu starten oder herunterfahren müssen oder Energie sparen möchten, während der Zustand der %%VM|vm%% erhalten bleibt.
 
-:::note[Benefits des Ruhezustands]
+:::note[Vorteile des Ruhezustands]
 
 - Energie sparen, indem inaktive %%VM|vm%% ausgeschaltet werden, ohne Fortschritte zu verlieren
 - Arbeit schnell nach Wartung oder Updates am Host wieder aufnehmen
@@ -106,58 +106,44 @@ Falls Ihre %%VM|vm%% beim Ruhezustand oder beim Fortsetzen nicht ordnungsgemäß
 
 Die Optimierung Ihrer Windows-%%VM|vm%% kann die Reaktionsfähigkeit verbessern, die Festplattennutzung reduzieren und häufig auftretende Probleme mit Gerätepasseinstellungen oder dem Herunterfahren vermeiden. Diese Anpassungen sind optional und können bei Bedarf vorgenommen werden.
 
-#### Windows-Indizierung deaktivieren
+#### Schnellstart deaktivieren
 
-Windows Search indiziert kontinuierlich den %%Virtual Machine|vm%%-Speicher, um Dateien für schnellere Suchergebnisse zu katalogisieren. Auf einer %%Virtual Machine|vm%% kann dies jedoch unnötigen Festplatten-I/O verursachen, zu Leistungsproblemen führen und den Verschleiß Ihres physischen Speichers erhöhen, besonders bei SSDs in Ihrem [%%Cache Pool|cache-pool%%](../manage-storage/cache-pools.mdx).
+Das Deaktivieren des Schnellstarts kann Probleme mit Geräte-Passthrough vermeiden. Dadurch wird sichergestellt, dass die Hardware Ihrer %%VM|vm%% bei jedem Start korrekt initialisiert wird. Diese Einstellung ist zwar für physische PCs gedacht, kann in einer virtuellen Umgebung jedoch oft mehr Probleme verursachen als Vorteile bringen.
 
 <details>
-  <summary><strong>Wie man die Windows-Indizierung deaktiviert</strong> – Klicken zum Ein-/Ausklappen</summary>
+  <summary><strong>Wie man den Schnellstart deaktiviert</strong> – Klicken zum Ein-/Ausklappen</summary>
 
-  1. Drücken Sie **Windows + R**, um den Ausführen-Dialog zu öffnen, geben Sie `services.msc` ein und drücken Sie Enter.
+  1. Öffnen Sie die **Systemsteuerung** und suchen Sie nach **Energie**.
   2. Klicken Sie auf **Funktion des Ein-/Ausschalters festlegen**.
-  3. Doppelklicken Sie auf **Windows Search**, ändern Sie den **Starttyp** auf **Deaktiviert** und klicken Sie auf **OK**.
-  4. Deaktivieren Sie unter **Ausschaltoptionen** die Option **Schnellstart aktivieren**.
+  3. Klicken Sie auf **Einstellungen ändern, die momentan nicht verfügbar sind**.
+  4. Deaktivieren Sie unter **Einstellungen für das Herunterfahren** die Option **Schnellstart aktivieren**.
   5. Klicken Sie auf **Änderungen speichern**.
 
 </details>
 
+#### hiberfil.sys deaktivieren
+
+Der Ruhezustand in Windows erstellt eine große versteckte Datei namens `hiberfil.sys`. Diese Datei kann viel Speicherplatz belegen und die Festplattenaktivität in Ihrer %%VM|vm%% erhöhen. Wenn Sie den Ruhezustand nicht verwenden, gibt das Deaktivieren Speicher frei und reduziert unnötige I/O-Aktivität.
+
+<details>
+  <summary><strong>Wie man den Ruhezustand deaktiviert und hiberfil.sys entfernt</strong> – Klicken zum Ein-/Ausklappen</summary>
+
+  1. Klicken Sie mit der rechten Maustaste auf **Start** und wählen Sie **Windows Terminal (Administrator)** oder **Eingabeaufforderung (Administrator)**.
+  2. Geben Sie ein: `powercfg /h off`
+  3. Drücken Sie Enter und starten Sie Ihre %%VM|vm%% neu. Die Datei `hiberfil.sys` wird vom Laufwerk C:\ entfernt.
+
+</details>
+
 #### Windows-Indizierung deaktivieren
 
-Windows Search indiziert kontinuierlich Ihre %%Virtual Machine|vm%%'s Speicher, um Dateien für schnellere Suchergebnisse zu katalogisieren. Jedoch kann dies auf einer %%Virtual Machine|vm%% zu unnötigem Disk I/O, Leistungseinbußen und erhöhtem Verschleiß Ihres physischen Speichers führen, besonders bei SSDs in Ihrem [%%Cache Pool|cache-pool%%](../manage-storage/cache-pools.mdx).
+Windows Search durchsucht fortlaufend den Speicher Ihrer %%Virtual Machine|vm%%, um Dateien für schnellere Suchergebnisse zu katalogisieren. Auf einer %%Virtual Machine|vm%% kann dies jedoch unnötigen Festplatten-I/O verursachen, die Leistung verringern und den Verschleiß Ihres physischen Speichers erhöhen, besonders bei SSDs in Ihrem [%%Cache Pool|cache-pool%%](../manage-storage/cache-pools.mdx).
 
 <details>
   <summary><strong>Wie man die Windows-Indizierung deaktiviert</strong> – Klicken zum Ein-/Ausklappen</summary>
 
   1. Drücken Sie **Windows + R**, um den Ausführen-Dialog zu öffnen, geben Sie `services.msc` ein und drücken Sie Enter.
-  2. Klicken Sie auf **Funktion des Ein-/Ausschalters festlegen**.
+  2. Scrollen Sie im Dienste-Fenster nach unten, klicken Sie mit der rechten Maustaste auf **Windows Search** und wählen Sie **Beenden**.
   3. Doppelklicken Sie auf **Windows Search**, ändern Sie den **Starttyp** auf **Deaktiviert** und klicken Sie auf **OK**.
-
-</details>
-
-#### Automatische Festplattendefragmentierung deaktivieren
-
-Windows Search indexing continuously scans your %%virtual machine|vm%%'s storage to catalog files for faster search results. However, on a %%virtual machine|vm%%, this can cause unnecessary disk I/O, slow down performance, and increase wear on your physical storage, especially SSDs in your [%%cache pool|cache-pool%%](../manage-storage/cache-pools.mdx).
-
-<details>
-  <summary><strong>Wie man die automatische Festplattendefragmentierung deaktiviert</strong> – Klicken zum Ein-/Ausklappen</summary>
-
-  1. Öffnen Sie den **Datei-Explorer**, klicken Sie mit der rechten Maustaste auf das C:-Laufwerk und wählen Sie **Eigenschaften**.
-  2. Gehen Sie auf die Registerkarte **Tools** und klicken Sie auf **Optimieren**.
-  3. Klicken Sie auf **Einstellungen ändern**.
-
-</details>
-
-#### Hochleistungsmodus aktivieren
-
-Windows Search indiziert kontinuierlich den %%Virtual Machine|vm%%-Speicher, um Dateien für schnellere Suchergebnisse zu katalogisieren. Auf einer %%Virtual Machine|vm%% kann dies jedoch unnötigen Festplatten-I/O verursachen, zu Leistungsproblemen führen und den Verschleiß Ihres physischen Speichers erhöhen, besonders bei SSDs in Ihrem [%%Cache Pool|cache-pool%%](../manage-storage/cache-pools.mdx).
-
-<details>
-  <summary><strong>Wie man die Windows-Indizierung deaktiviert</strong> – Klicken zum Ein-/Ausklappen</summary>
-
-  1. Drücken Sie **Windows + R**, um den Ausführen-Dialog zu öffnen, geben Sie `services.msc` ein und drücken Sie Enter.
-  2. Im Dienstefenster scrollen Sie nach unten und klicken mit der rechten Maustaste auf **Windows Search**, dann wählen Sie **Beenden**.
-  3. Doppelklicken Sie auf **Windows Search**, ändern Sie den **Starttyp** auf **Deaktiviert** und klicken Sie auf **OK**.
-  4. Deaktivieren Sie **Planmäßig ausführen** und klicken Sie auf **OK**.
 
 </details>
 
@@ -165,7 +151,21 @@ Windows Search indiziert kontinuierlich den %%Virtual Machine|vm%%-Speicher, um 
 
 Windows ist so konzipiert, dass physische Festplatten regelmäßig automatisch defragmentiert werden. Auf einer %%VM|vm%% - insbesondere bei Verwendung von SSD-Speicher oder dünnprovisionierten %%vDisks|vdisk%% - ist eine automatische Defragmentierung unnötig und kann zudem die Festplattenlebensdauer verringern und die Leistung beeinträchtigen.
 
-Die Aktivierung des Modus **Hochleistung** stellt sicher, dass Ihre %%VM|vm%% jederzeit mit voller Geschwindigkeit läuft und weniger wahrscheinlich Pausen oder unerwartete Aussetzungen auftreten.
+<details>
+  <summary><strong>Wie man die automatische Festplattendefragmentierung deaktiviert</strong> – Klicken zum Ein-/Ausklappen</summary>
+
+  1. Öffnen Sie den **Datei-Explorer**, klicken Sie mit der rechten Maustaste auf das C:-Laufwerk und wählen Sie **Eigenschaften**.
+  2. Gehen Sie auf die Registerkarte **Tools** und klicken Sie auf **Optimieren**.
+  3. Klicken Sie auf **Einstellungen ändern**.
+  4. Deaktivieren Sie **Planmäßig ausführen** und klicken Sie auf **OK**.
+
+</details>
+
+#### Hochleistungsmodus aktivieren
+
+Die Energieverwaltungsfunktionen in Windows sind für Laptops und Desktops gedacht, um Energie zu sparen. In einer %%VM|vm%%-Umgebung können diese Funktionen die Leistung unnötig drosseln oder Ihre %%VM|vm%% in den Ruhezustand versetzen, wodurch sie weniger reaktionsschnell und schwieriger zu verwalten ist.
+
+Die Aktivierung des Modus **Hochleistung** stellt sicher, dass Ihre %%VM|vm%% jederzeit mit voller Geschwindigkeit läuft und weniger wahrscheinlich pausiert oder unerwartet ausgesetzt wird.
 
 <details>
   <summary><strong>Wie man den Hochleistungsmodus aktiviert</strong> – Klicken zum Ein-/Ausklappen</summary>
@@ -178,11 +178,11 @@ Die Aktivierung des Modus **Hochleistung** stellt sicher, dass Ihre %%VM|vm%% je
 
 #### Zugriff auf Remote-Desktop aktivieren
 
-Die Aktivierung des Modus **Hochleistung** stellt sicher, dass Ihre %%VM|vm%% jederzeit mit voller Geschwindigkeit läuft und weniger wahrscheinlich Pausen oder unerwartete Aussetzungen auftreten.
+Das Remote Desktop Protocol (RDP) ermöglicht den Zugriff auf Ihre Windows-%%VM|vm%% von einem anderen Gerät aus. Es bietet im Vergleich zu %%VNC|vnc-session%% bessere Leistung und Kompatibilität. Beachten Sie, dass RDP nur in Windows Professional- und Enterprise-Editionen unterstützt wird. Außerdem muss für Ihr Windows-Benutzerkonto **ein Passwort festgelegt** sein.
 
 :::caution
 
-Windows 11 erfordert TPM 2.0 und sicheren Start. Das **OVMF-TPM-BIOS** von Unraid bietet den virtuellen TPM-Support, der für diese Anforderungen benötigt wird.
+RDP ist in Windows Home-Editionen nicht verfügbar. Legen Sie immer ein sicheres Passwort für Ihr Windows-Benutzerkonto fest, bevor Sie RDP aktivieren.
 
 :::
 
@@ -207,23 +207,23 @@ Windows 11 erfordert TPM 2.0 und sicheren Start. Das **OVMF-TPM-BIOS** von Unrai
 Wenn Sie Probleme mit HDMI-Audio in einer Windows-%%VM|vm%% haben, die %%GPU Passthrough|gpu-passthrough%% verwendet (was häufig bei NVIDIA-Grafikkarten auftritt), kann die Aktivierung von Message Signaled Interrupts (MSI) hilfreich sein. MSI verbessert die Art und Weise, wie Interrupts für durchgereichte Geräte verwaltet werden.
 
 <details>
-  <summary><strong>Wie man den Remote-Desktop-Zugriff (RDP) aktiviert</strong> – Klicken zum Ein-/Ausklappen</summary>
+  <summary><strong>Wie man MSI-Interrupts aktiviert</strong> – Klicken zum Ein-/Ausklappen</summary>
 
-  Um RDP-Zugriff zu aktivieren, folgen Sie diesen Schritten:
+  :::caution
+  Sichern Sie Ihre %%VM|vm%%, bevor Sie Änderungen an der Registrierung vornehmen. Falsche Änderungen können zu Systeminstabilität führen.
+  :::
 
-  1. Drücken Sie **Windows + I**, um die Einstellungen zu öffnen, navigieren Sie dann zu ***System → Info*** und klicken Sie auf **Erweiterte Systemeinstellungen**.
+  1. **MSI-Fähigkeit prüfen:**
      - Starten Sie Ihre %%VM|vm%% mit aktiviertem %%GPU-Passthrough|gpu-passthrough%%.
      - Greifen Sie über [Webterminal oder SSH](../../system-administration/advanced-tools/command-line-interface.mdx) auf Unraid zu.
      - Führen Sie den Befehl `lspci -v -s 01:00.0` aus (ersetzen Sie `01:00.0` durch die PCI-Adresse Ihrer GPU).
      - Suchen Sie nach der Zeile: `Capabilities: [68] MSI: Enable+ Count=1/1 Maskable- 64bit+`.
 
-  2. Im Fenster Systemeigenschaften klicken Sie auf die Registerkarte **Remote**, dann wählen Sie **Remote Desktop aktivieren**.
+  2. **MSI in Windows aktivieren:**
      - Wenn MSI `Enable-` anzeigt, folgen Sie [Microsofts Anleitung](https://learn.microsoft.com/de-de/windows-hardware/drivers/kernel/enabling-message-signaled-interrupts-in-the-registry) oder nutzen Sie das [MSI Mode Utility](https://forums.guru3d.com/threads/windows-line-based-vs-message-signaled-based-interrupts-msi-tool.378044/), um die Windows-Registrierungseinstellungen zu ändern.
      - Starten Sie die %%VM|vm%% nach den Änderungen neu.
 
-  :::tip
-  Offizielle Microsoft RDP-Clients sind für Windows, Mac, Android und iOS verfügbar. Stellen Sie sicher, dass Ihr %%VM|vm%% in einem Netzwerkbridge ist, das LAN-Zugriff ermöglicht.
-  :::
+  Weitere technische Details finden Sie unter [VFIO interrupts explained](https://vfio.blogspot.com/2014/09/vfio-interrupts-and-how-to-coax-windows.html).
 
 </details>
 
