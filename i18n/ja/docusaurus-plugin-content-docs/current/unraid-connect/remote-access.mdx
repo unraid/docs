@@ -1,0 +1,161 @@
+---
+sidebar_position: 3
+sidebar_label: リモートアクセス
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import RemoteAccessDynamic from './partials/remote-access/dynamic.mdx';
+import RemoteAccessStatic from './partials/remote-access/static.mdx';
+
+# リモートアクセス
+
+リモートアクセスを使用して、どこからでもUnraid %%WebGUI|web-gui%%への安全なブラウザベースのアクセスを解除できます。この機能は、自宅を離れているときにサーバーを管理するのに最適で、複雑なネットワーク設定や%%VPN Tunnel|vpn-tunnel%%のセットアップは不要です。Dockerコンテナへの接続やネットワークドライブへのアクセスなど、より高度な要件には、%%VPN Tunnel|vpn-tunnel%%の使用が引き続き推奨される解決策です。
+
+:::important[Security 注意]
+
+リモートアクセスを有効にする前に、root パスワードが強力で一意であることを確認してください。必要に応じて、**ユーザー** ページで更新してください。さらに、セキュリティ上の脆弱性から保護するため、Unraid OS を最新バージョンに更新しておいてください。[ここで Unraid の更新について詳しく見る](../unraid-os/system-administration/maintain-and-update/upgrading-unraid.mdx)
+
+:::
+
+Unraid Connect を通じたリモートアクセスでは、以下が利用できます。
+
+- **利便性** - 安全なクラウド管理接続を使用して、どこからでもサーバーの管理インターフェースにすばやくアクセスできます。
+- **セキュリティ** - 動的アクセスモードでは、必要なときにのみインターネットからのアクセスを許可するため、露出を抑え、自動化された攻撃によるリスクの軽減に役立ちます。
+- **シンプルさ** - 基本的な管理作業に手動のポートフォワーディングや VPN クライアントの設定は必要ありません。
+
+:::tip
+
+フルネットワークアクセスや高度な用途については、[Tailscale](../unraid-os/system-administration/secure-your-server/tailscale.mdx) または VPN ソリューションの導入を検討してください。
+
+:::
+
+---
+
+## 初期設定
+
+リモートアクセスを有効にするには:
+
+1. Unraid %%WebGUI|web-gui%% で ***Settings → Management Access*** に移動します。
+2. **HTTPS ポート** を確認します（既定値: 443）。このポートが使用中の場合（たとえば Docker による使用など）、1000 より大きい未使用のポート（3443、4443、5443 など）を選択してください。
+3. 設定を変更した場合は、**Apply** をクリックします。
+4. **CA 署名付き証明書ファイル** の下で、**Provision** をクリックして信頼された証明書を生成します。
+
+設定したポートと信頼された証明書を使用して、Unraid サーバーは %%WebGUI|web-gui%% 経由で安全なリモート接続を受け入れる準備が整います。
+
+---
+
+## リモートアクセスの種類を選択する
+
+Unraid Connect には 2 つのモードがあります。
+
+<Tabs>
+  <TabItem value="dynamic" label="動的リモートアクセス" default>
+    <RemoteAccessDynamic />
+  </TabItem>
+
+  <TabItem value="static" label="静的リモートアクセス">
+    <RemoteAccessStatic />
+  </TabItem>
+</Tabs>
+
+| 機能                              | 動的リモートアクセス             | 静的リモートアクセス  |
+| ------------------------------- | ---------------------- | ----------- |
+| %%WebGUI\|web-gui%% をインターネットに公開 | 有効時のみ                  | 常に          |
+| 攻撃対象領域                          | 最小化                    | 最大化         |
+| 自動化                             | Connect による自動オープン/クローズ | 手動設定、常時オープン |
+| %%UPnP\|upnp%% サポート             | はい                     | はい          |
+|                                 | **ほとんどのユーザーに推奨**       |             |
+
+## 動的リモートアクセスの設定
+
+動的リモートアクセスを設定するには:
+
+1. ***Settings → Management Access → Unraid API*** で、Remote Access のドロップダウンから動的オプションを選択します。
+   - **Dynamic - UPnP:** %%UPnP|upnp%% を使用してランダムなポートを自動的に開閉します（ルーターで %%UPnP|upnp%% が有効になっている必要があります）。
+   - **Dynamic - Manual port forward:** ルーターで選択したポートを手動で転送する必要があります。
+
+2. [Unraid Connect](https://connect.myunraid.net/) に移動し、管理ページまたはサーバー詳細ページを開きます。
+
+3. サーバーが現在あなたの場所からアクセスできない場合、**Dynamic remote access** カードにボタンが表示されます。
+
+4. ボタンをクリックして WAN アクセスを有効にします。%%UPnP|upnp%% を使用している場合、新しいポート転送リースが作成され（通常 30 分間）、有効な間は自動更新されます。
+
+5. カードには現在の状態と %%UPnP|upnp%% の状態が表示されます。
+
+6. 10 分間操作がない場合、または **Disable remote access** をクリックした場合、インターネットアクセスは自動的に取り消されます。%%UPnP|upnp%% のリースも削除されます。
+
+---
+
+## UPnP（Universal Plug and Play）の使用
+
+%%UPnP|upnp%% はポートフォワーディングを自動化し、ルーターの手動設定を必要とせずにリモートアクセスを簡素化します。
+
+%%UPnP|upnp%% を設定するには:
+
+1. **ルーターで %%UPnP|upnp%% を有効にします。**
+   ルーターが %%UPnP|upnp%% をサポートしていることを確認し、ルーター設定で有効になっていることを確認してください。
+
+2. **Unraid で %%UPnP|upnp%% を有効にします。**
+   ***Settings → Management Access*** に移動し、**Use %%UPnP|upnp%%** を **Yes** に変更します。
+
+3. **Unraid Connect で %%UPnP|upnp%% を選択します。**
+   Unraid Connect の設定ページで、リモートアクセスオプションとして %%UPnP|upnp%%（Dynamic または Always On のいずれかを選択）を選び、**Apply** をクリックします。
+
+4. **ポートフォワーディングを確認します（Always On のみ）。**
+   **Check** ボタンを押します。成功すると、「Your Unraid Server is reachable from the Internet.」というメッセージが表示されます。
+
+   Dynamic フォワーディングの場合は、アクセスを許可するために [Unraid Connect](https://connect.myunraid.net/) で **Enable Dynamic Remote Access** をクリックする必要があります。
+
+:::caution\[Troubleshooting]
+
+再読み込み後に設定が %%UPnP|upnp%% から Manual Port Forward に変わる場合、Unraid がルーターと通信できていない可能性があります。%%UPnP|upnp%% が有効であることを再確認し、ルーターのファームウェアの更新を検討してください。
+
+:::
+
+---
+
+## 手動ポートフォワーディングの使用
+
+手動ポートフォワーディングはより高い制御性を提供し、ほとんどのルーターと互換性があります。
+
+手動ポートフォワーディングを設定するには:
+
+1. **WAN ポートを選択します:** 既定の 443 ではなく、1000 より大きいランダムなポート番号（たとえば 13856 や 48653）を選択します。
+
+2. **Unraid で設定を適用します:** 選択したポートを保存するには、**Apply** をクリックします。
+
+3. **ルーターを設定します:** ルーターでポートフォワーディング ルールを設定し、選択した WAN ポートをサーバーの HTTPS ポートに転送します。Unraid インターフェースには正しいポートと IP アドレスが表示されます。
+
+   一部のルーターでは、WAN ポートと HTTPS ポートを一致させる必要がある場合があります。その場合は、両方に同じ大きなランダム番号を使用してください。
+
+4. **ポートフォワーディングを確認します（Always On のみ）:** **Check** ボタンを押します。すべてが正しければ、「Your Unraid Server is reachable from the Internet.」と表示されます。
+
+   動的フォワーディングの場合は、アクセスを有効にするために [Unraid Connect](https://connect.myunraid.net/) で **Enable Dynamic Remote Access** をクリックしてください。
+
+5. **サーバーにアクセスします:** [Unraid Connect](https://connect.myunraid.net/) にログインし、**Manage** リンクをクリックしてサーバーへリモート接続します。
+
+---
+
+## 安全なローカルアクセスを有効にする
+
+安全なローカルアクセスにより、自宅やオフィスのネットワーク内であっても、Unraid %%WebGUI|web-gui%% へのすべての接続が HTTPS で暗号化され、ログイン認証情報や設定データなどの機密情報が保護されます。
+
+安全なローカルアクセスの利点は次のとおりです。
+
+- **暗号化** - ブラウザーとサーバー間で交換されるすべてのデータが保護されます。
+- **一貫性** - ローカルアクセスとリモートアクセスの両方で同じ安全な URL を使用します。
+- **準拠** - 管理インターフェースを保護するためのセキュリティのベストプラクティスに従います。
+
+安全なローカルアクセスを有効にするには:
+
+1. ***Settings → Management Access*** に移動します。
+2. **CA 署名付き証明書** セクションで、DNS リバインド警告を確認します。
+   - 警告が表示されない場合は、**Use SSL/TLS** を **Strict** に設定します。
+   - 警告がある場合は、[DNS Rebinding Protection](../unraid-os/system-administration/secure-your-server/securing-your-connection.mdx#dns-rebinding-protection) を確認してください。
+
+:::important
+
+%%SSL|ssl%%/%%TLS|tls%% を Strict に設定すると、クライアント デバイスはサーバーの DNS 名を解決する必要があります。インターネット接続に障害が発生すると、%%WebGUI|web-gui%% へのアクセスが失われる場合があります。復旧手順については、[DNS がダウンしているときにサーバーへアクセスする](../unraid-os/system-administration/secure-your-server/securing-your-connection.mdx#accessing-your-server-when-dns-is-down) を参照してください。
+
+:::

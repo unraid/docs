@@ -1,0 +1,461 @@
+---
+sidebar_position: 6
+sidebar_label: Unraid 設定をカスタマイズする
+---
+
+# Unraid 設定をカスタマイズする
+
+Unraid OS は自動的に機能しますが、**Settings** タブの Unraid **%%WebGUI|web-gui%%** から、IP アドレス、ホスト名、ディスクのチューナブル設定などをさらにカスタマイズできます。
+
+:::tip[Tailscale 統合]
+
+**Tailscale**は、**Apps**タブで「Tailscale」を検索してインストールできるオプションのプラグインです。ネットワークへの安全なリモートアクセスを提供し、拡張されたリモート管理機能のために**Settings**に**Tailscale**セクションを追加します。
+
+:::
+
+<div style={{ margin: 'auto', maxWidth: '700px'}}>
+  ![ツールバー - 設定](/img/toolbar_settings.png)
+</div>
+
+忘れないでください - %%WebGUI|web-gui%%には組み込みのヘルプがあります。特定の項目のヘルプを表示するには、その横のプロンプトをクリックするか、インターフェース右上の**Help**アイコン ![ヘルプアイコン](/img/helpicon.png) を使用して、すべての項目のヘルプを切り替えてください。
+
+## システム設定
+
+**システム設定**では、ネットワーク、共有、%%VM|vm%%、ディスク設定などの主要な機能を構成できます。
+
+### CPU ピニング
+
+%%CPU Pinning|cpu-pinning%%を使用すると、特定のCPUコアを%%VMs|vm%%（仮想マシン）またはDockerコンテナに割り当てられます。これは、ゲーム用%%VMs|vm%%のようなパフォーマンス重視のワークロードでは特に重要です。競合を避けるためにゲーム用%%VM|vm%%と共存するDockerコンテナを手動で割り当てた場合でも、ホストOSは%%WebGUI|web-gui%%の管理、%%parity check|parity-check%%の実行、%%BTRFS|btrfs%%操作の実行などのタスクでそれらのコアを使用することがあります。
+
+- コアを%%VM|vm%%またはDockerコンテナにピン留めすると、そのコアは%%VM|vm%%またはコンテナに割り当てられます。ただし、Unraid OSは通常のタスクのためにそのコアへ引き続きアクセスする場合があります。
+- コアを分離すると、そのコアは%%VM|vm%%またはコンテナ専用となり、Unraid OSからはアクセスできなくなります。
+- コアのピン留めにはサーバーの再起動は必要ありませんが、CPU分離の変更を適用するにはシステムの再起動が必要です。
+
+### 日付と時刻
+
+このページでは、タイムゾーンを設定し、最大4台のNTPサーバーの使用を切り替えられます。正確な時刻管理のため、Unraidをタイムゾーンに合わせて調整してください。
+
+<div style={{ margin: 'auto', maxWidth: '400px'}}>
+  ![ツールバー - 設定](/img/date-time.png)
+</div>
+
+### ディスク設定 {#disk-settings}
+
+このページでは、ディスクデバイスの追加設定を変更できます。%%array|array%%を起動時に自動開始するよう有効化したり、ディスクの%%spin-down timers|spin-down-timers%%を調整したり、%%SMART polling frequency|smart-polling%%のような高度なドライバー設定を変更したりできます。
+
+<div className="flex-container" style={{ margin: 'auto', maxWidth: '800px'}}>
+  <figure className="flex-figure">
+    <img src="/img/disk-settings1.png" alt="ディスク設定" />
+  </figure>
+
+  <figure className="flex-figure">
+    <img src="/img/disk-settings2.png" alt="グローバルSMART設定" />
+  </figure>
+</div>
+
+### Docker
+
+Dockerコンテナを使用すると、事前設定済みのLinuxアプリケーションをUnraidサーバーに統合できます。詳細は[Docker Management](../../using-unraid-to/run-docker-containers/managing-and-customizing-containers.mdx)ページを参照してください。
+
+<div style={{ margin: 'auto', maxWidth: '400px'}}>
+  ![設定 - Docker](/img/settings-docker.png)
+</div>
+
+### 識別
+
+Unraidのデフォルトのホスト名は`tower`ですが、ここで変更できます。システムの説明やモデル番号も追加できます。
+
+<div style={{ margin: 'auto', maxWidth: '400px'}}>
+  ![設定 - 識別](/img/settings-identification.png)
+</div>
+
+### 管理アクセス
+
+Telnetや%%SSH|ssh%%の有効化、%%SSL|ssl%%/%%TLS|tls%%、HTTP、HTTPSのポート設定、Unraidのデフォルトのランディングページの指定など、Unraidサーバーのさまざまなアクセス設定を構成できます。%%SSL|ssl%%証明書を使用して%%WebGUI|web-gui%%を保護する方法の詳細については、[接続の保護](../../system-administration/secure-your-server/securing-your-connection.mdx)を参照してください。
+
+<div style={{ margin: 'auto', maxWidth: '400px'}}>
+  ![設定 - 管理アクセス](/img/settings-management-access.png)
+</div>
+
+### ネットワーク設定 {#network-settings}
+
+デフォルトでは、Unraidは通常ルーターから提供されるローカルネットワーク上のDHCPサーバーからIPアドレスを取得しようとします。このページでは、静的IPアドレスを構成したり、%%bonding|nic-bonding%%や%%bridging|nic-bridging%%を設定したり、その他のオプションを確認したりできます。静的IPの設定は推奨されますが、Unraidの使用に必須ではありません。
+
+<div style={{ margin: 'auto', maxWidth: '400px'}}>
+  ![ネットワーク設定](/img/settings-network.png)
+</div>
+
+#### WiFi セットアップ
+
+Unraid は、有線ネットワーク接続が実用的でない、または利用できない場合のために WiFi 接続をサポートしています。安定性とパフォーマンスを向上させるには有線接続が一般に推奨されますが、ケーブルを引けない場合には無線構成が適切な代替手段になります。
+
+:::important[初期セットアップ要件]
+
+初期 WiFi セットアップには、次のいずれかが必要です:
+
+- サーバーに接続されたローカルのキーボードとモニター（GUI モードで起動）、または
+- %%WebGUI|web-gui%% にアクセスするための一時的な有線接続
+
+WiFi を構成したら、有線接続を取り外して、サーバーを無線で管理できます。
+
+:::
+
+##### WiFi の設定
+
+1. %%WebGUI|web-gui%% にアクセスし、***Settings → Network Settings → Wireless wlan0*** に移動します。
+2. **Enable WiFi** オプションを切り替えて WiFi を有効にします。
+3. **Regulatory Region** を構成します:
+   - ほとんどの場合、これを **Automatic** のままにしておくのが最善です。
+   - スキャン結果に希望のネットワークが表示されない場合は、特定の場所（国/地域）に設定してください。
+4. 利用可能なネットワークをスキャンします:
+   - 利用可能な WiFi ネットワークが一覧表示されるはずです。
+   - 希望のネットワークの横にある **WiFi ネットワークに接続** (ᯤ) アイコンをクリックします。
+5. ネットワーク認証情報を入力します:
+   - WiFi パスワードを入力します。
+   - 必要に応じて、追加設定を確認して調整します。
+   - **このネットワークに参加** をクリックして接続します。
+
+:::tip[Docker コンテナーと WiFi]
+
+Docker コンテナーで WiFi を使用する予定の場合は、Docker サービスを開始する**前に**、有線接続があれば必ず取り外してください。これにより、両方のインターフェースが同時に有効なときに発生する可能性のあるネットワーク構成の競合を防げます。
+
+:::
+
+##### サポートされる WiFi 機能
+
+Unraid の WiFi 実装は、次の機能をサポートしています:
+
+- **WPA2** および **WPA3 セキュリティ プロトコル**。WPA2/WPA3 Enterprise ネットワークも含まれます。WPA2 と WPA3 の両方が利用可能な場合、Unraid はより高いセキュリティのために自動的に WPA3 を使用します。
+- Linux カーネル内ドライバーのサポートがある **最新の WiFi アダプター**。古いアダプターは互換性がない場合があります。
+
+:::info[USB WiFi アダプター]
+
+USB WiFi アダプターを使用している場合は、互換性を確認するために、[Linux カーネル内ドライバーでサポートされる USB WiFi アダプターの一覧](https://github.com/morrownr/USB-WiFi/blob/main/home/USB_WiFi_Adapters_that_are_supported_with_Linux_in-kernel_drivers.md) を確認してください。
+
+WiFi アダプターが検出されない場合は、[Unraid フォーラム](https://forums.unraid.net/) で新しいスレッドを開始し、調査用の診断情報を提供してください。
+
+:::
+
+##### WiFi の制限
+
+WiFi には、有線ネットワークに比べていくつかの制限があります:
+
+- 一度に接続できるのは **1 つの WiFi ネットワーク** のみです。
+- サポートされる無線 NIC は 1 つだけです - `wlan0`。システムに複数の無線アダプター（`wlan1`、`wlan2` など）がある場合、`wlan0` のみが使用されます。
+- 有線接続とは異なり、信頼性を向上させるために **複数の無線接続を組み合わせることはできません**。
+- **`wlan0` は bond に参加できません**。WiFi と Ethernet 接続を bond 構成で組み合わせることはできません。
+- 有線接続か WiFi のどちらかを使用するのが最適で、**同時に両方を使わない** でください。WiFi 使用中に一時的にネットワーク ケーブルを接続または切断する必要がある場合、サーバーは約 1 分以内に自動的にアクティブな接続を使うよう調整されます。接続タイプを切り替える際の Docker コンテナーに関する重要な情報については、以下の **Docker と仮想マシンに関する考慮事項** を参照してください。
+
+##### Docker と仮想マシンに関する考慮事項
+
+WiFi を使用する場合、Docker コンテナーと %%virtual machines|vm%% には特有の考慮事項があります:
+
+###### Dockerコンテナ
+
+- ***Settings → Docker*** では、WiFi が有効な場合、システムはカスタム ネットワークに **ipvlan** を自動的に使用します（macvlan は WiFi ではサポートされていません）。
+- カスタム ネットワークへのホスト アクセスは ***Settings → Docker*** で無効にする必要があります。
+- コンテナーの **Network Type** は `br0`、`bond0`、または `eth0` を使用できません。
+
+:::caution
+
+Docker は、同じサブネットを共有する 2 つのネットワークに参加できません。有線接続と無線接続を切り替える場合は、Docker を再起動し、既存のすべてのコンテナーを新しいインターフェースに使用するよう再構成する必要があります。このネットワーク構成の変更にはコンテナーの再構成が必要です。有線と無線のどちらか一方を選び、切り替えないことを強く推奨します。
+:::
+
+###### 仮想マシン
+
+%%VM|vm%% の **Network Source** を **virbr0**（Private NAT）に設定することを推奨します。このモードは任意の数の %%VMs|vm%% で動作し、%%NAT|nat%% を介してネットワーク アクセスを提供します。mDNS は NAT 経由では機能しないため、%%VM|vm%% は他のローカル ネットワーク デバイスにホスト名ではなく IP アドレスでアクセスする必要があります。ホスト名によるアクセスを可能にするには、%%VM|vm%% のオペレーティング システムの hosts ファイルに IP アドレスとホスト名を追加できます。%%VMs|vm%% は LAN 上の他のデバイスから直接アクセスできませんが、ホスト経由で %%VNC|vnc-session%% によって引き続きアクセスできます。
+
+%%VM|vm%% ネットワークの詳細については、[概要とシステム準備](../../using-unraid-to/create-virtual-machines/overview-and-system-prep.mdx) を参照してください。
+
+### 電源モード
+
+**電源モード**設定では、Unraidサーバーを省電力、バランス、または最大性能向けに最適化できます。利用可能なモードとして、**Best power efficiency**、**Balanced operation**、**Best performance**からワークロードと省電力の好みに合わせて選択できます。電源モードを調整すると、消費電力の削減、システム温度の低下、または負荷の高いタスク向けの追加リソースの確保に役立ちます。
+
+変更は直ちに反映され、システムの再起動は必要ありません。
+
+<div style={{ margin: 'auto', maxWidth: '400px'}}>
+  ![Power Mode](/img/settings-powermode.png)
+</div>
+
+### グローバル共有設定
+
+%%User shares|user-share%%を使うと、%%array|array%%内の複数ディスクにまたがるコンテンツの整理とアクセスを大幅に簡単にできます。グローバルな含める設定または除外設定により、%%user shares|user-share%%に参加できるディスクを指定できます。
+
+<div style={{ margin: 'auto', maxWidth: '400px'}}>
+  ![グローバル共有設定](/img/settings-globalshare.png)
+</div>
+
+### UPS 設定 {#ups-settings}
+
+UnraidはAPC（または互換性のある）UPS（無停電電源装置）に接続でき、停電時にバッテリー電源を受けながらシステムを安全にシャットダウンできます。このページでは、UPS接続を構成し、シャットダウンコマンドのポリシーを設定できます。
+
+<div style={{ margin: 'auto', maxWidth: '400px'}}>
+  ![UPS設定](/img/settings-ups.png)
+</div>
+
+### VMマネージャー
+
+**仮想マシン** を使うと、サーバーをデスクトップやメディア プレーヤーに変えたり、Linux 向けに設計されていないアプリケーションを実行したりできます。Unraid での %%VMs|vm%% の管理については、[VM のセットアップ](../../using-unraid-to/create-virtual-machines/vm-setup.mdx) を参照してください。
+
+<div style={{ margin: 'auto', maxWidth: '400px'}}>
+  ![VMマネージャー](/img/settings-vmmanager.png)
+</div>
+
+## ネットワークサービス
+
+**ネットワークサービス**では、Unraidサーバー上のネットワーク通信プロトコルを構成できます。これはユーザー共有とディスク共有に不可欠です。%%FTP|ftp%%サーバー、ログサーバーを有効にしたり、安全なリモートアクセスのために%%VPN|vpn-tunnel%%を設定したりすることもできます。
+
+### NFS（Network File System）
+
+NFSv4のサポートはUnraidで利用できます。%%user shares|user-share%%に対して有効/無効を切り替えたり、*NFS Stale File Handle* エラーの解決に役立つよう `fuse_remember` のチューナブル設定を調整したりできます。
+
+<div style={{ margin: 'auto', maxWidth: '400px'}}>
+  ![NFS](/img/settings-nfs.png)
+</div>
+
+### SMB（Server Message Block）
+
+SMBプロトコルはMicrosoft Windowsクライアントで使用されます。このページでは、これを有効にしたり、ワークグループを定義したり、Active Directoryドメインに参加したりできます。
+
+<div style={{ margin: 'auto', maxWidth: '400px'}}>
+  ![SMB](/img/settings-smb.png)
+</div>
+
+### FTP（File Transfer Protocol）
+
+ユーザーは、このページの**FTP users**フィールドに追加されている場合にのみ%%FTP|ftp%%で接続できます。ユーザーが追加されていない場合、%%FTP|ftp%%サービスは開始されません。
+
+<div style={{ margin: 'auto', maxWidth: '400px'}}>
+  ![FTP](/img/settings-ftp.png)
+</div>
+
+### Syslog サーバー
+
+%%Syslog server|syslog-server%%はシステムログを永続的に保存します。Unraidは再起動のたびにログを消去するため、トラブルシューティングに役立ちます。
+
+<div style={{ margin: 'auto', maxWidth: '400px'}}>
+  ![Syslog Server](/img/settings-syslog.png)
+</div>
+
+### Tailscale
+
+:::note
+
+Tailscaleセクションは、Tailscaleプラグインをインストールしている場合にのみ利用できます。
+
+:::
+
+%%Tailscale|tailscale%%セクションでは、%%Tailscale|tailscale%% %%VPN|vpn-tunnel%%経由で安全なリモートアクセスを行えます。ここでは、ログインしてUnraidサーバーを%%Tailnet|tailnet%%に接続したり、割り当てられたIPアドレスとホスト名を表示したり、%%Tailscale|tailscale%%接続を有効/無効にしたりできます。
+
+ローカルデバイス向けの%%Subnet Router|subnet-routing%%、またはインターネットトラフィックをルーティングするExit Nodeとしてサーバーを構成することもできます。このセクションでは、公開済みルート、Exit Nodeの状態、Dockerコンテナ統合オプション、およびトラブルシューティング用の接続状態監視を管理できます。
+
+<div style={{ margin: 'auto', maxWidth: '400px'}}>
+  ![Tailscale設定](/img/settings-tailscale.png)
+</div>
+
+### VPN マネージャー
+
+[%%Wireguard|wireguard%%](https://www.wireguard.com/)を使用してUnraidサーバーへの%%VPN|vpn-tunnel%%接続を確立し、安全なインターネット接続を実現できます。
+
+<div style={{ margin: 'auto', maxWidth: '400px'}}>
+  ![VPNマネージャー](/img/settings-vpnmanager.png)
+</div>
+
+## ユーザー設定
+
+**ユーザー設定**では、通知、表示設定、UIのカスタマイズ、%%Mover|mover%%スケジュールなど、Unraid OSとのやり取りに関するさまざまな側面を構成できます。
+
+### 確認
+
+この場所では、さまざまなタスクを実行する際の確認要求を有効/無効にできます。
+
+<div style={{ margin: 'auto', maxWidth: '400px'}}>
+  ![確認](/img/settings-confirmations.png)
+</div>
+
+### コンソール設定
+
+ローカルシステムコンソールをカスタマイズできます。キーボードレイアウトの選択、画面の消灯タイムアウトの調整、再起動をまたいだ永続的なBash履歴の有効/無効を設定できます。これらのオプションにより、モニターとキーボードを接続してUnraidを使用する際の操作性が向上します。
+
+<div style={{ margin: 'auto', maxWidth: '400px'}}>
+  ![コンソール設定](/img/settings-console.png)
+</div>
+
+### 表示設定
+
+このページでは、日付と時刻の形式、数値形式を調整し、タブ表示と非タブ表示を切り替えることで、Unraid %%WebGUI|web-gui%%の外観をカスタマイズできます。温度単位を選択したり、UIのテーマを変更したりすることもできます。
+
+<div style={{ margin: 'auto', maxWidth: '400px'}}>
+  ![表示設定](/img/settings-display.png)
+</div>
+
+### 通知設定 {#notification-settings}
+
+Unraid は、重要なシステムイベント、更新、アラートについて、ブラウザー、メール、またはサードパーティの通知サービスを通じて通知を送信できます。通知設定ページでは、これらの通知をいつ、どのように受け取るかを制御できます。
+
+通知設定にアクセスするには、***Settings → User Preferences → Notification Settings*** に移動します。
+
+<div style={{ margin: 'auto', maxWidth: '400px'}}>
+  ![通知設定](/img/settings-notifications.png)
+</div>
+
+#### 表示と動作の設定
+
+ブラウザーで通知がどのように表示されるかを構成します:
+
+- **通知の表示**: *詳細* または *要約* の通知スタイルを選択します
+- **表示位置**: 通知を表示する場所を設定します（*右上*、*左上*、*右下*、*左下*、または *中央*）
+- **自動クローズ（秒）**: 通知が自動的に閉じられるまでの表示時間
+- **日付形式**: 通知のタイムスタンプに使用する日付形式を選択します
+- **時刻形式**: *12時間* または *24時間* 表示を選択します
+- **ブートドライブに通知を保存**: 通知履歴をブートデバイスに保存します（ブートデバイスに利用可能なストレージ容量が必要です）
+
+#### 通知タイプ
+
+どのイベントで通知をトリガーするかを制御します:
+
+- **システム通知**: 一般的なシステムイベントとメッセージ
+- **Unraid OS 更新通知**: 新しい Unraid OS バージョンが利用可能になるとアラートします
+- **プラグイン更新通知**: プラグインの更新が利用可能になるとアラートします
+- **Docker 更新通知**: Docker コンテナーの更新が利用可能になるとアラートします
+- **言語更新通知**: 言語パックの更新が利用可能になるとアラートします
+- **Array ステータス通知**: %%array|array%% のイベントとステータス変更についてアラートします
+
+各通知タイプについて、頻度を *確認しない*、または毎日、毎週、毎月、場合によっては 1 日に複数回確認するように設定できます。
+
+#### 配信方法
+
+各カテゴリ（*通知*、*警告*、*アラート*）ごとに、通知の受け取り方法を選択します:
+
+- **ブラウザー**: ログイン中に %%WebGUI|web-gui%% で通知を表示します
+- **メール**: メールで通知を送信します（[SMTP 設定](#smtp-settings) が必要です）
+- **エージェント**: 構成済みのサードパーティサービスを通じて通知を送信します
+
+:::tip
+
+%%WebGUI|web-gui%% 使用中に即座に確認できるよう **ブラウザー** 通知を有効にし、サーバーから離れているときのアラート用に **メール** を使用します。**エージェント** を使って、Discord や Telegram などのモバイルアプリやサービスと連携できます。
+
+:::
+
+#### SMTP 設定 {#smtp-settings}
+
+メール通知を受け取るには、メールサーバー設定を構成する必要があります。Unraid は、Gmail、Outlook、およびカスタム SMTP サーバーを含む多くのメールプロバイダーをサポートしています。
+
+SMTP 設定は ***Settings → User Preferences → Notification Settings → SMTP Settings*** にあります。
+
+**基本構成:**
+
+- **プリセットサービス**: 一般的な設定を自動入力するために、プリセット構成（*Gmail*、*Outlook/Hotmail*、または *カスタム*）を選択します
+- **送信元メールアドレス**: 通知の送信元となるメールアドレス
+- **メール受信者**: 通知を受け取るメールアドレスのカンマ区切りリスト
+- **ヘッダー内の優先度**: メールを高優先度としてマークします（*はい* または *いいえ*）
+- **メール件名のプレフィックス**: すべての通知メールの件名の先頭に追加するテキスト（既定値: *Unraid Status:*）
+
+**サーバー設定:**
+
+- **メールサーバー**: SMTP サーバーのアドレス（例: `smtp.gmail.com`）
+- **メールサーバーのポート**: SMTP ポート番号（一般的なポート: SSL/TLS は `465`、STARTTLS は `587`、暗号化なしは `25`）
+- **SSL/TLS を使用**: SSL/TLS 暗号化を有効にします（*はい* または *いいえ*）
+- **STARTTLS を使用**: 暗号化に STARTTLS を使用します（*はい* または *いいえ*）
+- **TLS 証明書を定義**: 必要に応じてカスタム TLS 証明書を指定します（*はい* または *いいえ*）
+- **TLS 証明書の場所**: カスタム証明書ファイルへのパス（*TLS 証明書を定義* が有効な場合のみ）
+
+**認証:**
+
+- **認証方法**: *なし*、*CRAM-MD5*、または *ログイン*（ユーザー名/パスワード）を選択します
+- **ユーザー名**: メールアカウントのユーザー名（通常はメールアドレス全体）
+- **パスワード**: メールアカウントのパスワード、またはアプリ固有のパスワード
+
+設定を構成した後、**TEST** ボタンを使用して、メール設定が正しく動作していることを確認します。
+
+##### アプリ パスワードを使った Gmail の構成
+
+Gmail では、2 段階認証が有効なアカウントで SMTP を使用する場合、アプリ固有のパスワードが必要です（セキュリティのため推奨されています）。
+
+**Gmail 通知を設定するには:**
+
+1. **プリセットサービス** で *Gmail* を選択します（これにより **メールサーバー** と **メールサーバーのポート** が自動入力されます）
+2. **送信元メールアドレス** に Gmail アドレスを入力します
+3. **メール受信者** に受信者のメールアドレスを入力します
+4. **ユーザー名** を Gmail の完全なメールアドレス（例: `yourname@gmail.com`）に設定します
+5. **パスワード** には、アプリ パスワードを生成する必要があります:
+   - [Google アカウントの設定](https://myaccount.google.com/) に移動します
+   - **セキュリティ** に移動します
+   - "Google へのログイン方法" で、**2 段階認証** が有効になっていることを確認します（アプリ パスワードに必要です）
+   - 同じセクションで **アプリ パスワード** を見つけてクリックするか、検索バーで "App passwords" を検索します
+   - 本人確認が必要になる場合があります
+   - アプリ名には、"Unraid Server" のような任意の名前を入力します。
+   - **作成** をクリックします
+   - Google により 16 文字のパスワードが生成されます。
+   - このパスワードをコピーし、Unraid の **パスワード** フィールドに貼り付けます
+6. **TEST** をクリックして構成を確認します
+7. **DONE** をクリックして設定を保存します
+
+:::tip[Gmail の既定設定]
+
+- **メールサーバー**: `smtp.gmail.com`
+- **メールサーバーのポート**: `465`
+- **SSL/TLS を使用**: `Yes`
+- **STARTTLS を使用**: `No`
+- **認証方法**: `Login`
+
+:::
+
+:::warning[セキュリティ推奨事項]
+
+メインの Gmail パスワードの代わりに、必ずアプリ パスワードを使用してください。アプリ パスワードは個別に取り消せ、メインのアカウント パスワードを変更せずに済むため、Unraid の構成が侵害された場合でもより安全です。
+
+:::
+
+#### 通知エージェント
+
+通知エージェントを使用すると、サードパーティサービスやモバイルアプリにアラートを送信できます。Unraid には、多くの一般的な通知サービスへの組み込みサポートが含まれています。
+
+通知エージェントにアクセスするには、通知設定ページの **Notification Agents** リンクをクリックするか、***Settings → User Preferences → Notification Settings → Notification Agents*** に移動します。
+
+**組み込みエージェントには以下が含まれます:**
+
+- <img src="/img/customize-unraid-settings/icons/icon-bark.png" alt="Bark" style={{height: '20px', verticalAlign: 'middle', marginRight: '8px'}} /> **Bark**: iOS 通知アプリ
+- <img src="/img/customize-unraid-settings/icons/icon-boxcar.png" alt="Boxcar" style={{height: '20px', verticalAlign: 'middle', marginRight: '8px'}} /> **Boxcar**: プッシュ通知サービス
+- <img src="/img/customize-unraid-settings/icons/icon-discord.png" alt="Discord" style={{height: '20px', verticalAlign: 'middle', marginRight: '8px'}} /> **Discord**: webhook 経由で Discord チャンネルに通知を送信します
+- <img src="/img/customize-unraid-settings/icons/icon-gotify.png" alt="Gotify" style={{height: '20px', verticalAlign: 'middle', marginRight: '8px'}} /> **Gotify**: 自己ホスト型通知サーバー
+- <img src="/img/customize-unraid-settings/icons/icon-ntfy.png" alt="ntfy.sh" style={{height: '20px', verticalAlign: 'middle', marginRight: '8px'}} /> **ntfy.sh**: シンプルな HTTP ベースの通知サービス
+- <img src="/img/customize-unraid-settings/icons/icon-prowl.png" alt="Prowl" style={{height: '20px', verticalAlign: 'middle', marginRight: '8px'}} /> **Prowl**: iOS プッシュ通知
+- <img src="/img/customize-unraid-settings/icons/icon-pushbits.png" alt="Pushbits" style={{height: '20px', verticalAlign: 'middle', marginRight: '8px'}} /> **Pushbits**: 自己ホスト型通知リレー
+- <img src="/img/customize-unraid-settings/icons/icon-pushbullet.png" alt="Pushbullet" style={{height: '20px', verticalAlign: 'middle', marginRight: '8px'}} /> **Pushbullet**: クロスプラットフォーム通知サービス
+- <img src="/img/customize-unraid-settings/icons/icon-pushover.png" alt="Pushover" style={{height: '20px', verticalAlign: 'middle', marginRight: '8px'}} /> **Pushover**: iOS および Android 向けのプッシュ通知サービス
+- <img src="/img/customize-unraid-settings/icons/icon-pushplus.png" alt="Pushplus" style={{height: '20px', verticalAlign: 'middle', marginRight: '8px'}} /> **Pushplus**: 中国のプッシュ通知サービス
+- <img src="/img/customize-unraid-settings/icons/icon-serverchan.png" alt="ServerChan" style={{height: '20px', verticalAlign: 'middle', marginRight: '8px'}} /> **ServerChan**: 中国のサーバー監視および通知サービス
+- <img src="/img/customize-unraid-settings/icons/icon-slack.png" alt="Slack" style={{height: '20px', verticalAlign: 'middle', marginRight: '8px'}} /> **Slack**: webhook 経由で Slack チャンネルに通知を送信します
+- <img src="/img/customize-unraid-settings/icons/icon-telegram.png" alt="Telegram" style={{height: '20px', verticalAlign: 'middle', marginRight: '8px'}} /> **Telegram**: Telegram ボットにメッセージを送信します
+
+**エージェントの構成:**
+
+1. 一覧から構成したいエージェントを選択します
+2. **Agent function** を *Disabled* から *Enabled* に変更します
+3. そのサービスに必要なフィールドを入力します:
+   - ほとんどのエージェントには **webhook URL**、**API トークン**、または **アクセストークン** が必要です
+   - 一部のサービスでは、チャンネル ID やグループコードなどの追加設定が必要です
+4. **通知タイトル** を構成します（通常は通知の件名を使うために *Subject* に設定します）
+5. **通知メッセージ** を構成します（通常は通知全文を使うために *Description* に設定します）
+6. **DONE** をクリックして保存します
+
+各エージェントには異なる要件があります。必要な API キー、webhook URL、またはトークンを取得するには、選択したサービスのドキュメントを参照してください。
+
+:::tip
+
+複数のエージェントを同時に有効化できます。たとえば、チーム通知には Discord を、個人のモバイル アラートには Pushover を使えます。**すべての通知** は **有効になっているすべてのエージェント** に送信されるため、複数のエージェントを使うと重複した通知を受け取る場合があります。
+
+:::
+
+### スケジューラー {#scheduler}
+
+Scheduler設定ページでは、%%parity checks|parity-check%%、キャッシュ%%Mover|mover%%、SSDの%%TRIM/Discard|trim-discard%%操作など、自動タスクの実行頻度を簡単に構成できます。
+
+## ユーザー ユーティリティ
+
+サードパーティプラグインがここに表示され、Unraidの機能を拡張してサーバーの制御性を高めます。たとえば、[Community Applicationsプラグイン](../../using-unraid-to/run-docker-containers/community-applications.mdx)が含まれます。その他のプラグインには、システム監視、メンテナンス、ストレージ管理、`appdata`バックアップの機能があります。
+
+---
+
+\* *"%%WireGuard|wireguard%%" と "%%WireGuard|wireguard%%" のロゴは Jason A. Donenfeld の登録商標です。*

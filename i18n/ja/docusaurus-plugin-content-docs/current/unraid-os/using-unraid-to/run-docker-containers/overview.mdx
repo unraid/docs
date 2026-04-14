@@ -1,0 +1,51 @@
+---
+sidebar_position: 1
+sidebar_label: 概要
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+# 概要
+
+Docker を使うと、"コンテナ"と呼ばれる隔離された環境で Linux アプリケーションを実行できます。Unraid では、Docker は互換性やシステムの競合を心配することなく、さまざまなアプリケーションをデプロイして管理するための理想的な方法です。このアプローチにより、Unraid サーバーは柔軟な %%application server|application-server%% へと変わり、**Plex** や **Home Assistant** などの人気アプリをシステム上で直接実行できるようになります。
+
+Docker の基盤技術についてさらに学びたい場合や、より高度な使い方を探りたい場合は、[公式 Docker ドキュメント](https://docs.docker.com/)をご覧ください。
+
+## Unraid における Docker の使い方
+
+Unraid の Docker 統合は、誰にとっても使いやすいように設計されています。各アプリケーションはそれぞれ独自のコンテナ内で実行されるため、更新や変更が Unraid OS や他のアプリケーションに影響しません。Unraid は専用の `appdata` 共有を使用して、各コンテナの設定と作業ファイルを保存します。これにより、アプリケーションデータが整理され、バックアップや移行が簡単になります。
+
+<details>
+  <summary>**内部の仕組み:** Unraid における Docker コンテナの実装について詳しく知るには展開してください</summary>
+
+  Unraid は Docker を使用して、Linux ベースのアプリケーションを実行するための分離された環境を作成します。各 Docker コンテナは Unraid オペレーティングシステムや他のコンテナとは独立して動作するため、安定性と互換性の両方が向上します。
+
+  <h4>実装の詳細</h4>
+
+  - **ストレージ:** 各コンテナのすべてのデータとプログラムは、`docker.img` という単一の %%virtual disk image|virtual-disk-images%% ファイルに保存されます。既定では、このファイルは `system` %%user share|user-share%% にあり、通常はより高速にするため %%cache pool|cache-pool%% を利用します。
+  - **ファイルシステム:** `docker.img` ファイルは %%BTRFS|btrfs%% ファイルシステムを使用し、Unraid によって内部的にマウントされます。ファイルシステムの詳細については、[ファイルシステム](../manage-storage/file-systems.mdx)を参照してください。
+  - **設定:** コンテナを設定すると、Unraid は設定を起動デバイス上の %%VM XML テンプレート|vm-xml-templates%% として保存します。これにより、好みの設定でコンテナを簡単に再インストールまたは復元できます。
+  - **テンプレート:** 多くの人気コンテナにはすぐに使えるテンプレートが付属しており、初期設定がより簡単になります。
+  - **パフォーマンス:** 最高のパフォーマンスを得るために、`docker.img` は %%cache pool|cache-pool%%（ある場合）に保存することをお勧めします。
+  - **制限:** Unraid は Docker Compose をネイティブにはサポートしていません。より複雑な構成については、[公式 Docker Compose ドキュメント](https://docs.docker.com/compose/)をご覧ください。
+
+  :::tip
+  ほとんどのユーザーは `docker.img` ファイルを直接操作する必要はありません。ただし、その役割を知っておくと、トラブルシューティングやログメッセージの理解に役立つことがあります。
+  :::
+
+</details>
+
+## Community Applications（プラグイン）
+
+Community Applications プラグインは、Unraid サーバー上で Docker コンテナとプラグインの両方を見つけ、インストールし、管理するための、最も簡単で最も人気のある方法です。Unraid %%WebGUI|web-gui%% 内でアプリストアのような体験を提供し、コミュニティによって保守されているさまざまなアプリケーションを簡単に閲覧・導入できます。
+
+高度な機能やトラブルシューティングを含む Community Applications プラグインのインストールと使用方法の完全なガイドについては、[Community Applications](./community-applications.mdx) をご覧ください。
+
+:::note[Notes およびサポート]
+
+- Community Applications のほとんどのコンテナは、より広い Unraid および Docker コミュニティによって保守されています。
+- 特定のコンテナについて सहायताが必要な場合は、**Apps** タブにリンクされているそのコンテナのドキュメントまたはサポートスレッドを確認してください。
+- Lime Technology は Docker サブシステム自体はサポートしていますが、個々のコミュニティコンテナはサポートしていません。
+
+:::

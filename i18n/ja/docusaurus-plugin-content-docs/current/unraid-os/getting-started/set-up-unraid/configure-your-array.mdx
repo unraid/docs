@@ -1,0 +1,98 @@
+---
+sidebar_position: 4
+sidebar_label: アレイを設定する
+---
+
+# アレイを設定する
+
+登録キーをインストールした後、次のステップは、%%array|array%%と**pool devices**にデバイスを割り当ててストレージを設定することです。この設定によって、Unraid OSがデータをどのように管理し、%%parity|parity%%で保護し、%%cache pools|cache-pool%%でパフォーマンスを最適化するかが決まります。
+
+:::important
+
+Unraid のインストールのいずれかの部分で困っている場合は、ぜひ [インストール FAQ](../../troubleshooting/faq.mdx#installation) をご確認ください！
+
+:::
+
+## Parity とデータ ディスクの割り当て {#assign-parity-and-data-disks}
+
+Unraid %%WebGUI|web-gui%% の **Main** タブを使って、%%array|array%% やプールの割り当て、未割り当てのデバイス、そして起動デバイス（多くの場合 USB フラッシュ ドライブ）を含む各デバイスの割り当てと確認を行います。
+
+![配列の設定](/img/configuringarray1.png)
+
+### デバイスの役割
+
+Unraid OS では、ドライブはさまざまな目的で使用されます:
+
+- **配列デバイス**は、次の 2 つのカテゴリに分かれます:
+  - **パリティデバイス:** 障害耐性を提供し、データドライブに障害が発生した場合でもデータを復旧できるようにします。パリティドライブは最大 2 台まで割り当てられます。
+  - **データデバイス:** カスタム共有やフォルダー、そこに追加したファイル（メディアファイルなど）を保存します。
+
+- **プールデバイス:** 主に **キャッシュ** として使用される高性能ドライブで、ファイルを一時的に保存してパフォーマンスを向上させ、その後 %%array|array%% に転送します。
+
+- **Boot Device:** Unraid OS が入っており、サーバーを起動するデバイスです。
+
+<details>
+  <summary>ディスク割り当ての推奨事項</summary>
+
+  これらのディスク割り当ての推奨事項は、Unraid %%array|array%% を最適化し、パフォーマンス、データ保護、将来の拡張性を高めるように作成されています。これらに従うことで、ストレージデバイスを効果的に最大活用し、よくあるセットアップの問題を回避できます。
+
+  1. **Select the largest %%parity device|parity-drives%%:**
+     Always choose the largest available storage device as your %%parity device|parity-drives%%(s). When expanding your %%array|array%%, data disks must be equal to or smaller than your %%parity device|parity-drives%%(s). You should purchase the largest **HDD** for your initial %%parity device|parity-drives%% to avoid future limitations. For dual %%parity disks|parity-drives%%, each parity disk must be greater than or equal to the largest data disk.
+
+  2. **%%array|array%% には HDD を、プールには SSD/NVMe ドライブを使用する:**
+     最適なパフォーマンスのため、一般的な保存用途と %%parity|parity%% 保護のために、%%array|array%% の主要ストレージデバイスとして **HDD** を使用します。高速な読み書き操作を強化するために、**SSD** または **NVMe** ドライブを %%cache pool|cache-pool%% または専用プールに割り当てます。この構成は、各ドライブ種別の長所を活かすことで、全体的なパフォーマンスを向上させます。
+
+  3. **Protect cached data with a %%multi-device pool|multi-device-pool%%:**
+     To safeguard cached data, assign more than one device to the %%cache pool|cache-pool%%. A single device does not offer protection from data loss. %%Cache pools|cache-pool%% can be expanded on demand.
+
+  :::warning
+  %%array|array%% での SSD サポートは実験段階です。%%TRIM/Discard|trim-discard%% の実装差異により、一部の SSD は期待どおりに動作しない場合があり、望ましくない結果につながることがあります。これは %%cache pools|cache-pool%% には適用されません。[ファイルシステムのオプションについて詳しくはこちら](../../using-unraid-to/manage-storage/file-systems.mdx) をご覧ください。
+  :::
+
+  :::note
+  SSD ベースのプールは、アプリケーションや仮想マシンに最適で、SSD の性能を活かしてより高速な操作を実現します。[アプリケーションの実行について詳しくはこちら](../../using-unraid-to/run-docker-containers/overview.mdx) をご覧ください。
+  :::
+
+</details>
+
+:::important
+
+ライセンスキーで許可されているストレージデバイス数を超えると、%%array|array%% は起動しません。
+
+:::
+
+## 配列を開始してフォーマットする
+
+すべてのデバイスを割り当てたら、**Main** タブの **Array Operation** の下にある **Start** ボタンをクリックしてマウントし、%%array|array%% を開始します。
+
+<div style={{ margin: 'auto', maxWidth: '500px'}}>
+  ![配列の開始操作](/img/arrayoperation_start.png)
+</div>
+
+新しいデバイスは *Unformatted* と表示され、フォーマットするまで使用できません。Unraid では、配列デバイスの既定のファイルシステムは %%XFS|xfs%% です。%%cache pools|cache-pool%% では、自動モード使用時に既定で常に %%BTRFS|btrfs%% が使用されますが、プールにデバイスを追加する際に希望するファイルシステムを選択できます。配列の既定のファイルシステムは、***Settings → System Settings → Disk Settings*** で変更できます。
+
+デバイスをフォーマットするには、**Array Operation** の下にある **Format** ボックスにチェックを入れ、表示されるメッセージをよく読んでから、**Format** ボタンをクリックします。
+
+パリティ同期は、フォーマットが完了する前でも %%array|array%% を保護するためにバックグラウンドで実行されます。同期が完了するまでは %%array|array%% は保護されていない状態で動作するため、データを追加する前に待つことをおすすめします。
+
+### 既存ドライブのファイルシステムを変更する
+
+既存ドライブのファイルシステムを変更するには:
+
+1. **データをバックアップする**: 再フォーマットすると、ドライブ上のすべてのデータが消去されます。
+2. **array を停止する**。
+3. **ドライブをクリック**し、ファイルシステムの種類を変更します（例: %%XFS|xfs%%、%%BTRFS|btrfs%%）。
+4. **配列を開始**し、**Array Operation** の下にある **Format** ボックスにチェックを入れます。
+5. **Format** をクリックして新しいファイルシステムを適用します。
+
+:::caution
+
+ドライブを再フォーマットすると、すべてのデータが消去されます。%%RAID|raid%% 構成では、再構築中のデータ損失を避けるために %%parity|parity%% を確認してください。再フォーマット前にファイルをバックアップするには、[Unassigned Devices プラグイン](https://unraid.net/community/apps?q=unassigned+devices#r:~:text=don%27t%20be%20carefull!!!-,Unassigned%20Devices,-dlandon) を使用してください。
+
+:::
+
+:::info
+
+同じ **Main** タブ内の **Array Operation** セクションにある各ボタンから、配列の停止、シャットダウン、または再起動を行えます。
+
+:::

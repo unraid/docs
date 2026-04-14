@@ -1,0 +1,112 @@
+---
+sidebar_position: 2
+sidebar_label: Wake-on-LAN（WoL）
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import WakeOnLanWindows from './partials/wake-on-lan/windows.mdx';
+import WakeOnLanMacos from './partials/wake-on-lan/macos.mdx';
+import WakeOnLanLinux from './partials/wake-on-lan/linux.mdx';
+
+# Wake-on-LAN（WoL）
+
+%%Wake-on-LAN (WOL)|wake-on-lan%% を使用すると、ネットワーク経由で「マジックパケット」を送信して、シャットダウン状態またはスリープ状態の Unraid サーバーをリモートで起動できます。このページでは、ローカルネットワークで WoL を設定する方法を説明します。
+
+## 要件
+
+WoL を正しく動作させるには、次の要件を満たしていることを確認してください。
+
+- **NIC のサポート**: ネットワークインターフェースコントローラーが WoL をサポートしている必要があります。最近の NIC のほとんどは対応しています。
+
+- **BIOS/UEFI 設定**: マザーボードの BIOS/%%UEFI|uefi%% で、電源管理の下にある WoL を有効にします。一般的な設定名は次のとおりです。
+
+  | 設定名                  | 説明                           |
+  | -------------------- | ---------------------------- |
+  | Wake on LAN          | 汎用 WoL 設定                    |
+  | PME イベントによるウェイクアップ   | PCIe のウェイクイベント用              |
+  | PCI/PCIe デバイスによる電源投入 | WoL の別名                      |
+  | ErP 対応               | WoL を機能させるには *無効* にする必要があります |
+
+- **電源接続**: サーバーが電源に接続されていることを確認してください。
+
+- **ネットワーク接続**: サーバーを Ethernet ケーブルで LAN に接続します（WiFi WoL はサポートされていません）。
+
+:::caution[Hardware 互換性]
+
+すべてのハードウェアが S3 スリープや WoL を確実にサポートしているわけではありません。システムによっては、スリープへの移行で問題が発生したり、正しく復帰できなかったり、追加の BIOS/%%UEFI|uefi%% 設定が必要になったりする場合があります。これらの機能に依存する前に、必ず十分にテストしてください。
+
+:::
+
+## Unraid サーバーをスリープさせる
+
+Unraid でスリープを管理する最も推奨される使いやすい方法は、[**Dynamix S3 Sleep プラグイン**](https://unraid.net/community/apps/c/plugins/p3?srsltid=AfmBOorpfP2Psw_bCorklf-QVCUHvADYGsdbsAH-4CldU4V2hWgoO-09#r:~:text=%3E%3E-,Dynamix%20S3%20Sleep,-Dynamix%20Repository) を使用することです。このプラグインは、スリープ、ウェイク、アイドル動作のスケジュール設定を支援するグラフィカルインターフェースを提供し、さまざまなハードウェア構成で発生しがちな一般的な問題にも対処します。
+
+インストールと設定の手順:
+
+1. Unraid %%WebGUI|web-gui%% の ***Apps タブ*** を開きます。
+2. "Dynamix S3 Sleep" を検索して、プラグインをインストールします。
+3. ***Settings → Sleep Settings*** に移動して、スリープおよびウェイクのオプションを設定します。
+
+このプラグインは、ほとんどのスリープ設定オプションを管理します。
+
+<details>
+  <summary><strong>手動による代替方法</strong> - クリックして展開/折りたたみ</summary>
+
+  より細かい制御が必要な場合や高度なカスタマイズが必要な場合は、コマンドラインからスリープと WoL の設定を行えます。この方法は上級ユーザーに推奨されます。
+
+  スリープを手動で設定するには:
+
+  1. %%WebGUI|web-gui%% のターミナルまたは [%%SSH|ssh%%](../../system-administration/advanced-tools/command-line-interface.mdx#accessing-the-terminal) を使用してサーバーに接続します。
+
+  2. 次のコマンドを実行して、主なネットワークインターフェース（通常は `eth0`）を特定します:
+
+     ```
+     ifconfig
+     ```
+
+     MAC アドレス（`ether` と表示されています）を控えます。
+
+  3. 次のコマンドで、そのインターフェースで WoL を有効にします:
+
+     ```
+     ethtool -s eth0 wol g
+     ```
+
+  4. 次のコマンドを入力して、サーバーをスリープさせます:
+
+     ```
+     echo -n mem > /sys/power/state
+     ```
+
+  :::caution[永続性]
+  手動で設定した WoL 設定は、デフォルトでは再起動後に**保持されません**。永続化するには:
+
+  1. 起動ドライブの `/boot/config/go` に `go` ファイルを作成します。
+
+  2. 次の行を追加します:
+
+  ```
+  /sbin/ethtool -s eth0 wol g
+  ```
+  :::
+
+</details>
+
+## Unraid サーバーを起動する
+
+Unraid サーバーをリモートで起動するには、ローカルネットワーク上で特別な「マジックパケット」を送信する必要があります。このパケットにはサーバーの MAC アドレスが含まれ、ネットワークインターフェースに対してスリープ状態またはシャットダウン状態からシステムの電源を入れるよう指示します。オペレーティングシステムごとに、このパケットを送信するためのさまざまなツールや方法が用意されています。以下に、Windows、macOS、Linux それぞれの手順を示します。
+
+<Tabs>
+  <TabItem value="Windows" label="Windows">
+    <WakeOnLanWindows />
+  </TabItem>
+
+  <TabItem value="macOS" label="macOS">
+    <WakeOnLanMacos />
+  </TabItem>
+
+  <TabItem value="Linux" label="Linux">
+    <WakeOnLanLinux />
+  </TabItem>
+</Tabs>

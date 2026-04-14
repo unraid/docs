@@ -1,0 +1,152 @@
+---
+sidebar_position: 2
+sidebar_label: Unraid のアップグレード
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import UpgradeModern from "./partials/upgrade-modern.mdx";
+import UpgradeLegacy611612 from "./partials/upgrade-legacy-611-612.mdx";
+import ManualDowngradeSimplest from "./partials/manual-downgrade-simplest.mdx";
+import ManualDowngradeCommandLine from "./partials/manual-downgrade-command-line.mdx";
+
+# Unraid のアップグレード
+
+Unraid OS をアップグレードすると、最新の機能、セキュリティ更新、およびハードウェアサポートを利用できます。このページでは、標準的なアップグレード手順と、トラブルシューティングのヒントおよび手動アップグレードのオプションについて説明します。
+
+:::note\[Prerequisites]
+
+アップグレードを始める前に、USB フラッシュデバイスの完全なバックアップを作成してください。詳細は、[フラッシュデバイスのバックアップ](../maintain-and-update/changing-the-flash-device.mdx#backing-up-your-flash-device) を参照してください。
+
+:::
+
+:::tip[Best アップグレード前の手順]
+
+1. フラッシュドライブと重要なデータを**バックアップ**します。
+2. インストール予定のバージョンの**リリースノートを確認**します。
+3. すべてのプラグインを**最新バージョンに更新**します。
+4. 必要に応じて、次に進む前に**アレイを停止**します。
+5. ***Tools → Update OS*** ページを使用して **Unraid OS を更新** します。
+6. アップグレードを完了するには、サーバーを**再起動**します。
+
+:::
+
+## 標準アップグレード手順
+
+<Tabs>
+  <TabItem value="modern-7x" label="Unraid 7.x 以降" default>
+    <UpgradeModern />
+  </TabItem>
+
+  <TabItem value="legacy-611-612" label="Unraid 6.11 から 6.12">
+    <UpgradeLegacy611612 />
+  </TabItem>
+</Tabs>
+
+:::caution[ZFS プールのアップグレードに関する警告]
+
+Unraid 7.x にアップグレードすると、起動時または %%WebGUI|web-gui%% で [%%ZFS|zfs%%](../../advanced-configurations/optimize-storage/zfs-storage.mdx) プール機能のアップグレードに関する警告が表示される場合があります。これらの警告は問題を示すものではなく、%%ZFS|zfs%% プールが古いバージョンの ZFS の機能を使用していることを示しているだけです。
+
+プールのアップグレードは緊急ではありませんが、アップグレードする場合は、以前の Unraid バージョンでは動作しない可能性があることに注意してください。つまり、アップグレード後に以前の Unraid バージョンへ戻せない場合があります。
+
+いつもどおり、%%ZFS|zfs%% プールをアップグレードする前にデータをバックアップすることを忘れないでください。
+
+:::
+
+---
+
+## アップグレードの問題のトラブルシューティング
+
+アップグレード後に問題が発生した場合は、以下の該当する項目を参照してください。
+
+<details>
+  <summary><strong>アップグレード後にアレイまたは Docker コンテナの起動が遅い</strong> - クリックして展開/折りたたむ</summary>
+
+  特定のアップグレード後には、Docker コンテナの一度限りの移行が必要になる場合があります。この処理には時間がかかることがあり、特にイメージが多数ある場合はなおさらです。この処理中はしばらくお待ちください。最初の起動後にパフォーマンスは通常どおりに戻ります。
+
+</details>
+
+<details>
+  <summary><strong>アップグレード後に Docker コンテナが正しく動作しない</strong> - クリックして展開/折りたたむ</summary>
+
+  *「layers from manifest don't match image configuration」* のようなエラーが発生した場合は、Docker イメージファイルを再構築する必要があるかもしれません。手順は次のとおりです:
+
+  1. ***Settings → Docker*** に移動し、Docker サービスを停止します。
+  2. チェックボックスをオンにして Docker イメージを削除し、削除ボタンをクリックします。
+  3. Docker を再起動してイメージを再作成します。
+  4. **Apps** タブの **Previous Apps** に移動し、再インストールしたい項目にチェックを入れて、**"Install xx Applications"** をクリックします。
+
+</details>
+
+<details>
+  <summary><strong>VM に "cannot get interface MTU" またはネットワークエラーが表示される</strong> - クリックして展開/折りたたむ</summary>
+
+  %%VM|vm%% ネットワークにカスタムのブリッジ名を使用している場合は、次の手順に従ってすべての %%VMs|vm%% をデフォルトの `br0` ブリッジに更新してください。
+
+  1. **VMs** タブに移動し、各 %%VM|vm%% を編集します（**Advanced View** を有効にしてください）。
+  2. ネットワークブリッジを `br0` に設定し、**Apply** をクリックします。
+  3. ***Settings → VM Manager***（**Advanced View** で）に移動し、既定のブリッジを `br0` に設定します。
+
+</details>
+
+<details>
+  <summary><strong>VM への VNC アクセスが機能しない、または遅い</strong> - クリックして展開/折りたたむ</summary>
+
+  古い %%VMs|vm%% では、%%VNC|vnc-session%% のビデオドライバを更新する必要がある場合があります。
+
+  1. **VMs** タブから %%VM|vm%% を編集します（**Advanced View** を選択）。
+  2. **%%VNC|vnc-session%% Video Driver** を **QXL**（推奨）に設定します。QXL で十分な結果が得られない場合は、**Cirrus** または **vmvga** を試してください。
+  3. **Apply** をクリックして変更を保存します。
+
+</details>
+
+<details>
+  <summary><strong>VM が起動しない（EFI シェルが表示される）</strong> - クリックして展開/折りたたむ</summary>
+
+  If you have %%OVMF|ovmf%%-based %%VMs|vm%% created in older Unraid versions, you might encounter an EFI shell. You can boot the %%VM|vm%% by entering the following commands:
+
+  1. `fs0:` と入力します。
+  2. 次に `cd efi/boot` と入力します。
+  3. 最後に `bootx64.efi` と入力します。
+
+  `fs0:` で動作しない場合は、代わりに `fs1:` を試してください。問題が続く場合は、[Unraid forums](https://forums.unraid.net/) で सहायताを求めてください。
+
+</details>
+
+<details>
+  <summary><strong>VM の起動を試みると "Invalid machine type" エラーが表示される</strong> - クリックして展開/折りたたむ</summary>
+
+  これを解決するには、%%WebGUI|web-gui%% で %%VM|vm%% を編集し、変更を加えずに **Apply** をクリックします。この操作により、マシンタイプが最新のサポート版に更新されます。
+
+</details>
+
+<details>
+  <summary><strong>アップグレード後の VM のパフォーマンスが低い</strong> - クリックして展開/折りたたむ</summary>
+
+  アップグレード後に %%VM|vm%% が遅い場合は、%%VM|vm%% の設定（**Advanced View**）を開き、**Machine** タイプのバージョンを最新のリビジョンに更新してください（例: `i440fx-2.5` から `i440fx-2.7` に変更）。接頭辞は変更しないでください（たとえば、`i440fx` から `Q35` に切り替えないでください）。
+
+</details>
+
+---
+
+## Unraid のダウングレード
+
+ダウングレードする前に、ダウングレード元のバージョンのリリースノートを必ず読んでください。"Rolling back" という見出しのセクションを探し、必要な重要な手順を確認してください。
+
+WebGUI にアクセスできる場合は、**Tools → Downgrade OS** に移動できます。このオプションを使うと、Version History ページから zip ファイルをダウンロードしなくても、以前にインストールしていたバージョンにダウングレードできます。
+
+**Tools → Downgrade OS** にダウングレードのオプションが表示されない場合は、以下に説明する手動の方法を使用してください。これは通常、前のバージョンのファイルがフラッシュドライブにないことを意味します。
+
+### 手動ダウングレード
+
+手動ダウングレードが必要なのは、%%WebGUI|web-gui%% にアクセスできない場合、またはダウングレードのオプションが利用できない場合だけです。続行する前に、USB フラッシュデバイスをバックアップすることが重要です。詳細については、[フラッシュデバイスのバックアップ](../maintain-and-update/changing-the-flash-device.mdx#backing-up-your-flash-device) を参照してください。
+
+<Tabs>
+  <TabItem value="最も簡単な方法" label="最も簡単な方法">
+    <ManualDowngradeSimplest />
+  </TabItem>
+
+  <TabItem value="コマンドライン方式" label="コマンドライン方式">
+    <ManualDowngradeCommandLine />
+  </TabItem>
+</Tabs>

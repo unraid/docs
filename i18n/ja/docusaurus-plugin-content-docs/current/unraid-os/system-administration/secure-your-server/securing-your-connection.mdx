@@ -1,0 +1,310 @@
+---
+sidebar_position: 4
+sidebar_label: 接続を保護しています
+---
+
+# 接続を保護しています
+
+%%SSL|ssl%% 暗号化を使用して Unraid %%WebGUI|web-gui%% を保護すると、ログイン認証情報や設定情報などの機密データが、ローカルネットワークやインターネット上で傍受されたり改ざんされたりするのを防げます。ローカル環境でも [Let's Encrypt](https://letsencrypt.org/) によって発行されたワイルドカード %%SSL|ssl%% 証明書を使用でき、[Unraid Connect リモートアクセス](../../../unraid-connect/remote-access.mdx) のシナリオにも対応します。
+
+:::important[The SSL の重要性
+
+%%SSL|ssl%% (Secure Sockets Layer) は、ブラウザーと Unraid サーバー間のすべての通信を暗号化し、盗聴や中間者攻撃を防ぎます。%%SSL|ssl%% を使用しない場合、ネットワークにアクセスできる人なら誰でも機密データを傍受したり、セッションを乗っ取ったりする可能性があります。Unraid サーバーのローカル管理とリモート管理の両方で、%%SSL|ssl%% の使用を強く推奨します。
+
+:::
+
+---
+
+## SSL パラメーター
+
+Unraid には、%%SSL|ssl%% の設定方法や使用方法に影響するいくつかのパラメーターがあります。これらを理解すると、必要に応じて適切な証明書と接続方法を選択できます。
+
+| パラメーター             | 説明                                                      |
+| ------------------ | ------------------------------------------------------- |
+| **サーバー名**          | ***設定 → 識別*** で設定します。既定値は `tower` です。                   |
+| **ローカル TLD**       | ***設定 → 管理アクセス*** で設定します。既定値は `local` です。               |
+| **SSL/TLS を使用**    | ***設定 → 管理アクセス*** で設定します。%%SSL\|ssl%% を有効にするかどうかを制御します。 |
+| **HTTP ポート**       | ***設定 → 管理アクセス*** で設定します。既定値は `80` です。                  |
+| **HTTPS ポート**      | ***設定 → 管理アクセス*** で設定します。既定値は `443` です。                 |
+| **証明書**            | 使用する %%SSL\|ssl%% 証明書の種類（以下を参照）。                        |
+| **LAN IP**         | サーバーの LAN IP アドレス。URL で使用できる形式にします。                     |
+| **WAN IP**         | サーバーのパブリック IP アドレス。URL で使用できる形式にします。                    |
+| **%%Hash\|hash%%** | サーバーの証明書に割り当てられる一意の 40 文字の識別子。                          |
+
+### SSL 証明書の種類
+
+| 種類               | 使用場面                                                                  | 長所/短所                                                       |
+| ---------------- | --------------------------------------------------------------------- | ----------------------------------------------------------- |
+| **自己署名**         | 信頼された証明書が不要で、ローカルのみでアクセスする場合。                                         | 設定は簡単ですが、ブラウザーに警告が表示されます。警告を承諾すれば通信は暗号化されます。                |
+| **Myunraid.net** | 安全なローカルアクセスとリモートアクセス向け。特に Unraid Connect を使う場合や、信頼された証明書が必要な場合。       | ブラウザーに信頼され、警告は表示されません。Unraid Connect 経由の安全なリモートアクセスを有効にします。 |
+| **カスタム**         | ワイルドカード証明書や独自ドメインの証明書を使いたい上級者向け（%%DNS\|dns-name-resolution%% の設定が必要）。 | 信頼性があり柔軟ですが、追加の設定が必要です。                                     |
+
+---
+
+## WebGUI へのアクセス方法
+
+%%SSL|ssl%% の設定に応じて、Unraid %%WebGUI|web-gui%% にアクセスする主な方法は次のとおりです:
+
+#### HTTP のみ（暗号化なし）
+
+<details>
+  <summary><strong>クリックして展開/折りたたむ</strong></summary>
+
+  HTTP のみの場合、ブラウザーとサーバー間の通信は暗号化されません。
+
+  1. ***Settings → Management Access*** に移動します。
+  2. **SSL/TLS を使用** を *No* に設定します。
+  3. 独自の DNS がない限り、**Local TLD** は `local` のままにしてください。
+  4. アクセス URL:
+     - `http://[server name].[local TLD]`（例: `http://tower.local`）
+     - `http://[ip address]`（例: `http://192.168.100.1`）
+  5. **Apply** をクリックします。
+
+  :::warning
+  ネットワーク上の誰でも HTTP で送信されたデータを傍受できます。可能な限り HTTPS を使用してください。
+  :::
+
+</details>
+
+---
+
+#### 自己署名証明書を使用した HTTPS {#https-with-self-signed-certificate}
+
+<details>
+  <summary><strong>クリックして展開/折りたたむ</strong></summary>
+
+  通信は暗号化されますが、証明書が信頼された認証局によって署名されていないため、ブラウザーに警告が表示されます。
+
+  1. ***Settings → Management Access*** に移動します。
+  2. **SSL/TLS を使用** を *Yes* に設定します。
+  3. 独自の DNS がない限り、**Local TLD** は `local` のままにしてください。
+  4. アクセス URL:
+     - `https://[server name].[local TLD]`（例: `https://tower.local`）
+     - `https://[ip address]`（例: `https://192.168.100.1`）
+  5. **Apply** をクリックします。
+
+  :::important
+  ブラウザーに証明書エラーが表示されます。警告を承諾した後は、すべての通信が引き続き暗号化されます。
+  :::
+
+</details>
+
+---
+
+#### Myunraid.net 証明書とフォールバック URL を使用した HTTPS
+
+<details>
+  <summary><strong>クリックして展開/折りたたむ</strong></summary>
+
+  Myunraid.net 証明書を使用して %%WebGUI|web-gui%% 経由でサーバーに安全にアクセスでき、%%DNS|dns-name-resolution%% が利用できない場合に備えてフォールバック URL を設定できます。すべての通信は暗号化され、%%DNS|dns-name-resolution%% が利用できない場合はサーバーが予備の方法に切り替えるよう設定されます。
+
+  1. ***Settings → Management Access*** に移動します。
+  2. 独自の DNS 名前解決を提供できる場合を除き、**Local TLD** は既定値の `local` のままにしてください（これはフォールバック証明書に使用されます）。
+  3. **SSL/TLS を使用** は *No* または *Yes* のどちらかにしておいてください。
+  4. **Provision** を押して myunraid.net 証明書を生成します。
+
+  **SSL/TLS を使用** が *No* に設定されている場合の主な URL:
+
+  - `http://[servername].[localTLD]`（例: `http://tower.local`）
+  - `http://[ipaddress]`（例: `http://192.168.100.1`）
+
+  **SSL/TLS を使用** が *Yes* に設定されている場合の主な URL（自己署名証明書を使用）:
+
+  - `https://[servername].[localTLD]`（例: `https://tower.local`）
+  - `https://[ipaddress]`（例: `https://192.168.100.1`）
+
+  **代替の myunraid.net URL:**
+
+  - `https://[lan-ip].[hash].myunraid.net`（例: `https://192-168-100-1.a1b2c3d4e5.myunraid.net`）
+  - この URL は、**管理アクセス** ページの **ローカルアクセス URL** フィールドに表示されます。
+  - [Unraid Connect プラグイン](../../../unraid-connect/overview-and-setup.mdx) をインストールすると、Connect ダッシュボードにも表示されます。
+
+  :::info
+  myunraid.net 証明書はブラウザーに信頼され、警告は表示されません。URL では、LAN IP アドレスのドットがハイフンに置き換えられ、サーバーに割り当てられた一意の 40 文字の %%hash|hash%% が末尾に追加されます。
+  :::
+
+  :::tip[フォールバックアクセス]
+  %%DNS|dns-name-resolution%% が利用できなくなった場合（たとえばインターネットが停止した場合）、サーバー名または IP アドレスを使ったローカル URL を代替のアクセス方法として使用できます。
+  :::
+
+</details>
+
+#### フォールバック URL なしの Myunraid.net 証明書を使用した HTTPS {#https-with-myunraidnet-certificate-and-with-no-fallback-url}
+
+<details>
+  <summary><strong>クリックして展開/折りたたむ</strong></summary>
+
+  この方法では、すべての %%WebGUI|web-gui%% アクセスを Myunraid.net 証明書と URL の使用に強制することで、最も高いレベルの %%SSL|ssl%% 強制を実現します。最大限のセキュリティを求め、%%DNS|dns-name-resolution%% が利用できない場合にローカル IP やホスト名でサーバーへアクセスする必要がないユーザーに最適です。
+
+  1. %%WebGUI|web-gui%% の ***設定 → 管理アクセス*** に移動します。
+  2. 独自の %%DNS|dns-name-resolution%% 名前解決がない限り、**LocalTLD** は `local` のままにしてください（後で `use_ssl` コマンドを実行する場合のフォールバック証明書に使用されます）。
+  3. **Provision** をクリックして Myunraid.net 証明書を生成します。
+  4. ネットワークに %%DNS|dns-name-resolution%% リバインディングの問題がなければ、**SSL/TLS を使用** の *Strict* オプションを利用できます。
+  5. **SSL/TLS を使用** を *Strict* に設定します（古い Unraid バージョンでは *Auto*）。
+  6. アクセス URL は次のようになります:
+     `https://[lan-ip].[hash].myunraid.net`（例: `https://192-168-100-1.a1b2c3d4e5.myunraid.net`）
+
+     [Unraid Connect プラグイン](../../../unraid-connect/overview-and-setup.mdx) をインストールすると、Connect ダッシュボードにも表示されます。
+
+  :::caution
+  %%DNS|dns-name-resolution%% が利用できなくなった場合（たとえばインターネット接続が切れた場合）、Myunraid.net の URL を使って %%WebGUI|web-gui%% にアクセスできなくなります。
+  :::
+
+  アクセスを回復するには:
+
+  - Telnet、%%SSH|ssh%%、またはローカルに接続したキーボード/モニターを使ってログインします。
+  - `use_ssl no` を実行して HTTP に切り替えます（`http://[servername].[localTLD]` または `http://[ipaddress]`）。
+  - `use_ssl yes` を実行して、自己署名証明書を使用した HTTPS に切り替えます（`https://[servername].[localTLD]` または `https://[ipaddress]`）。詳細は上の [自己署名証明書を使用した HTTPS](#https-with-self-signed-certificate) を参照してください。
+  - %%DNS|dns-name-resolution%% が復旧したら、完全なセキュリティのために **SSL/TLS を使用** を再び *Strict* に設定してください。
+    :::
+
+</details>
+
+---
+
+## リダイレクト
+
+`http://[servername].[localTLD]` にアクセスしたときのリダイレクト動作は、**SSL/TLS を使用** の設定によって異なります:
+
+- **Strict**: `https://[lan-ip].[hash].myunraid.net` にリダイレクトされます。
+  :::note
+  %%DNS|dns-name-resolution%% が利用できない場合、ローカルアクセスが難しくなることがあります。[フォールバック URL なしの Myunraid.net 証明書を使用した HTTPS](#https-with-myunraidnet-certificate-and-with-no-fallback-url) の注意事項を参照してください。
+  :::
+
+- **Yes**: `https://[servername].[localTLD]` にリダイレクトされます。インターネット接続が切れていても動作します。
+
+- **No**: HTTP URL が直接読み込まれ、リダイレクトも暗号化もありません。
+
+:::tip
+
+リダイレクトは HTTPS URL ではなく、HTTP URL から開始した場合にのみ機能します。
+
+:::
+
+---
+
+## カスタム証明書
+
+カスタム証明書を使用すると、商用の認証局によって発行された証明書や、ドメイン用のワイルドカード証明書など、独自の %%SSL|ssl%% 証明書で Unraid %%WebGUI|web-gui%% を保護できます。
+
+カスタム証明書とは、Unraid や Let's Encrypt が生成したものではなく、自分で提供して管理する %%SSL|ssl%% 証明書のことです。これは、独自のドメイン名やワイルドカード証明書を使いたい場合、または組織の PKI インフラストラクチャと統合したい場合に便利です。
+
+:::info[When カスタム証明書を使用する場合、責任は...
+
+- 信頼された認証局（CA）から証明書を取得する
+- 選択したドメインの %%DNS|dns-name-resolution%% レコードを管理する
+- 必要に応じて証明書をアップロードし、更新する
+- 証明書がサーバーのドメイン名と一致していることを確認する（Subject または Subject Alternative Name フィールド）
+
+:::
+
+証明書が無効であるか、サーバーの URL と一致しない場合、Unraid はそれを削除して既定の証明書に戻します。
+
+### カスタム証明書を使用した HTTPS（Unraid Connect リモートアクセスを任意で使用）
+
+<details>
+  <summary><strong>カスタム証明書を使用した HTTPS でアクセス</strong> - クリックして展開/折りたたむ</summary>
+
+  1. ***Settings → Management Access*** に移動します。
+  2. **SSL/TLS を使用** を *Yes* に設定します。
+  3. **Local TLD** を、証明書の Subject で使用されているドメイン名に設定します。
+  4. `https://[servername].[localTLD]`（例: `https://tower.mydomain.com`）でサーバーにアクセスします。この URL の DNS は自分で管理する必要があります。
+  5. 証明書を `/boot/config/ssl/certs/[servername]_unraid_bundle.pem` にアップロードします。
+  6. 証明書は `[servername].[localTLD]` に対して有効であるか、ワイルドカード `*.[localTLD]` でなければなりません（`[localTLD]` は **Local TLD** フィールドに入力した値と完全に一致する必要があります）。
+     - ドメインは Subject または Subject Alternative Name フィールドに含まれている必要があります（Unraid 6.10.3 以降は SAN をサポートします）。
+     - 証明書が一致しない場合、Unraid はそれを削除します。
+  7. 必要に応じて、[Unraid Connect リモートアクセス](../../../unraid-connect/remote-access.mdx) を有効にして、安全でブラウザーに信頼されるリモート管理を行えます。
+
+  :::tip
+  ワイルドカード証明書の場合は、証明書の Subject Alternative Name または Subject フィールドに `*.[localTLD]` が含まれていることを確認してください。ここでの `[localTLD]` は、**管理アクセス** の **Local TLD** フィールドに入力した値と完全に一致している必要があります。
+  :::
+
+</details>
+
+---
+
+## SSL のトラブルシューティングと詳細設定
+
+このセクションでは、myunraid.net 証明書を使用する際に発生しがちな SSL 関連の問題と詳細設定オプションを扱います。Unraid Connect をインストールしているかどうかは関係ありません。
+
+### DNS リバインディング保護 {#dns-rebinding-protection}
+
+DNS リバインディング保護は、多くのルーターに備わっているセキュリティ機能で、パブリック DNS エントリがローカル IP アドレスに解決されるのを防ぎます。これは、ネットワークを特定の攻撃から保護するのに役立ちますが、Unraid %%WebGUI|web-gui%% のローカルアクセスに %%SSL|ssl%% 証明書を使用しようとすると問題が発生することがあります。
+
+%%SSL|ssl%% 証明書をプロビジョニングしようとして DNS リバインディング エラーが発生した場合（たとえば、**Provision** ボタンをクリックした後）、次の手順を試してください:
+
+- エラーメッセージで **OK** をクリックし、2〜5 分待ってから再試行します。
+- エラーが続く場合は、ルーターの設定で「DNS リバインディング保護」またはそれに類する項目を確認してください。
+- `myunraid.net` ドメインに対する DNS リバインディングを許可します。
+- DNS の変更が反映されるまで時間がかかることがあるため、更新後に再びエラーが表示される場合があります。
+
+具体的な手順は、ルーターの機種やファームウェアによって異なる場合があります。
+
+### DNS が停止しているときのサーバーへのアクセス {#accessing-your-server-when-dns-is-down}
+
+myunraid.net 証明書で %%SSL|ssl%% が有効になっている場合、通常は次のような完全修飾ドメイン名（FQDN）を使って Unraid サーバーにアクセスします:
+
+```
+https://ip.yourpersonalhash.myunraid.net
+```
+
+または、カスタム HTTPS ポートを使用している場合は:
+
+```
+https://ip.yourpersonalhash.myunraid.net:<https_port>
+```
+
+これにより、安全なアクセスに有効な %%SSL|ssl%% 証明書が使われます。ただし、インターネット接続が切れ、ブラウザーに DNS エントリがキャッシュされていない場合は、%%WebGUI|web-gui%% へのアクセスを失う可能性があります。
+
+DNS またはインターネットへのアクセスを失った場合:
+
+- **SSL/TLS を使用** が **Yes** に設定されている場合は、次の URL でサーバーへのアクセスを試してください:
+  ```
+  https://[servername].[localTLD]
+  ```
+  またはカスタムポートを使用している場合は:
+  ```
+  https://servername.[localTLD]:<https_port>
+  ```
+
+- これでも動作しない場合、または **SSL/TLS を使用** が **Strict** に設定されている場合:
+  1. telnet、%%SSH|ssh%%、または直接接続したキーボード/モニターを使ってサーバーにログインします。
+  2. 次のコマンドを実行します:
+     ```bash
+     use_ssl no
+     ```
+  3. これで %%WebGUI|web-gui%% に次の URL でアクセスできます:
+     ```
+     http://<ip_address>
+     ```
+     または、カスタムポートを使用している場合:
+     ```
+     http://<server_ip>:<http_port>
+     ```
+     （注: これは HTTP であり、HTTPS ではありません。）
+
+インターネット接続が復旧したら、***設定 → 管理アクセス*** に移動し、**SSL/TLS を使用** を **Strict** に戻してローカル SSL を再有効化します。
+
+### ローカルアクセス用の SSL を無効にする {#disabling-ssl-for-local-access}
+
+信頼できるホームネットワークでシンプルな HTTP 接続を使いたい場合や、%%SSL|ssl%% 証明書のプロビジョニング、DNS リバインディング、ブラウザー互換性に継続的な問題がある場合は、ローカルアクセス用の %%SSL|ssl%% を無効にすべきです。
+
+ローカルアクセス用の %%SSL|ssl%% を無効にするには:
+
+1. WebGUI の ***設定 → 管理アクセス*** に移動します。
+2. **SSL/TLS を使用** を **No** に設定します。
+3. **Apply** をクリックします。
+
+安全なリモート接続には %%SSL|ssl%% が必要なため、この変更により Remote Access 機能も無効になります。
+
+:::caution
+
+%%SSL|ssl%% を無効にすると、%%WebGUI|web-gui%% は暗号化されていない HTTP でアクセス可能になります。これにより、ログイン認証情報とセッションデータがローカルネットワーク上の誰にも見えてしまうため、ネットワークが安全でリモートアクセスが不要だと確信できる場合を除き、推奨されません。最高のセキュリティのため、可能な限り %%SSL|ssl%% は有効のままにしてください。
+
+:::
+
+:::note
+
+%%SSL|ssl%% の管理は Unraid の中核機能であり、Unraid Connect プラグインに依存しません。%%SSL|ssl%% を無効にしても、他の Unraid 機能には影響しません。
+
+:::

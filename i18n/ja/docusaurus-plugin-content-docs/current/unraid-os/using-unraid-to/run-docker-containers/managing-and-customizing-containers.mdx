@@ -1,0 +1,248 @@
+---
+sidebar_position: 3
+sidebar_label: コンテナの管理とカスタマイズ
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import DockerNetworkType from './partials/managing-and-customizing-containers/network-type.mdx';
+import DockerVolumeMappings from './partials/managing-and-customizing-containers/volume-mappings.mdx';
+import DockerPortMappings from './partials/managing-and-customizing-containers/port-mappings.mdx';
+import DockerEnvironmentVariables from './partials/managing-and-customizing-containers/environment-variables.mdx';
+import DockerCommandStart from './partials/managing-and-customizing-containers/command-start.mdx';
+import DockerCommandStop from './partials/managing-and-customizing-containers/command-stop.mdx';
+import DockerCommandRestart from './partials/managing-and-customizing-containers/command-restart.mdx';
+import DockerCommandStatus from './partials/managing-and-customizing-containers/command-status.mdx';
+import DockerCommandLogs from './partials/managing-and-customizing-containers/command-logs.mdx';
+
+# コンテナの管理とカスタマイズ
+
+:::caution\[Disclaimer]
+
+このページは、あらゆるスキルレベルのユーザーが Unraid OS 上の Docker コンテナを最大限に活用できるように作成されています。ヒントやベストプラクティスは Unraid チームによるもので、多くのユーザーのニーズに合うよう調整されています。ただし、Docker は常に進化しているため、Unraid で扱っている範囲を超える最新機能、より高度な設定、またはトラブルシューティングについては、[公式 Docker ドキュメント](https://docs.docker.com/)を確認することを常におすすめします。
+
+:::
+
+Unraid で Docker コンテナをカスタマイズする前に、基本的な設定オプションを理解しておくと便利です。各 [コンテナテンプレート](./community-applications.mdx) には、ネットワーク、ストレージ、環境変数を設定するための使いやすいインターフェースが用意されており、複雑なコマンドラインツールを使わずにコンテナの動作をニーズに合わせて調整できます。
+
+<Tabs>
+  <TabItem value="network-type" label="ネットワークタイプ" default>
+    <DockerNetworkType />
+  </TabItem>
+
+  <TabItem value="volume-mappings" label="ボリュームマッピング">
+    <DockerVolumeMappings />
+  </TabItem>
+
+  <TabItem value="port-mappings" label="ポートマッピング">
+    <DockerPortMappings />
+  </TabItem>
+
+  <TabItem value="environment-variables" label="環境変数">
+    <DockerEnvironmentVariables />
+  </TabItem>
+</Tabs>
+
+## コンテナの作成と起動
+
+コンテナのネットワーク、ボリュームマッピング、ポートマッピング、環境変数を設定したら、Docker コンテナを作成して起動する準備が整います。このセクションでは作成手順を案内し、起動順序や依存関係の管理方法を説明するとともに、高度な起動カスタマイズのヒントも紹介します。
+
+### コンテナを作成する
+
+コンテナテンプレートで設定内容を確認したら:
+
+1. **Create** をクリックして、コンテナのダウンロードとセットアップを開始します。
+   - 処理が完了するまで、ブラウザウィンドウを閉じたり別のページへ移動したりしないでください。
+   - 新しいリポジトリの初回ダウンロードは、以降のダウンロードより時間がかかる場合があります。
+2. 処理が完了したら **Done** をクリックして Docker ページに戻ります。そこで、コンテナの管理や追加を行えます。
+
+### 起動順序を計画する
+
+一部のコンテナは、正しく動作するために他のコンテナに依存しています。たとえば、アプリケーションは先にデータベースコンテナの起動を必要とする場合があり、サービスによっては起動前に [%%VPN|vpn-tunnel%% コンテナ](../../system-administration/secure-your-server/tailscale.mdx) が有効になっている必要があります。
+
+:::important[Plan 起動順序
+
+- データベース、%%VPNs|vpn-tunnel%%、ストレージゲートウェイなど、コアサービスを提供するコンテナを特定します。
+- 依存するコンテナは、前提条件となるものが起動して準備完了になってから開始するようにします。
+- 各コンテナのドキュメントを確認し、特別な起動要件を把握します。
+
+:::
+
+---
+
+## 高度なコンテナ起動
+
+Unraid では、どのコンテナを自動起動するか、またどの順序で起動するかを柔軟に制御できます。これは、他のコンテナに依存するコンテナがある場合（たとえば、データベースや %%VPN|vpn-tunnel%% サービス）に特に便利です。
+
+%%array|array%% の起動時にコンテナを自動起動するには:
+
+1. %%WebGUI|web-gui%% の **Docker** タブに移動します。
+2. 自動起動したい各コンテナの **Auto-Start** スイッチを **ON** に切り替えます。
+
+### 起動順序と遅延をカスタマイズする
+
+デフォルトでは、Unraid はすべての自動起動コンテナを、Docker タブに表示される順序で、できるだけ速く起動します。この順序はカスタマイズでき、コンテナの起動間に待機時間を追加することもできます:
+
+1. **Docker** タブで、南京錠アイコンを使ってコンテナ一覧のロックを解除します。
+2. コンテナをドラッグ＆ドロップして順序を並べ替えます。
+3. 右上の切り替えで **Advanced View** に変更します。
+4. **AutoStart** 列で、次のコンテナが起動する前に追加の時間が必要なコンテナの **wait** 欄に待機時間（秒）を入力します。
+   - 試行錯誤しながら、構成に最適な待機時間を見つけます。
+
+:::tip
+
+正しい順序と待機時間の設定は、他のサービスに依存するコンテナでは特に重要です（たとえば、アプリより先にデータベースを起動する場合や、依存するアプリより先に %%VPN|vpn-tunnel%% を起動する場合など）。
+
+:::
+
+### 起動順序をテストする
+
+Unraid には専用の「起動順序テスト」機能はありませんが、起動順序を模擬して確認することはできます:
+
+1. **Docker** タブからすべてのコンテナを停止します。
+2. 計画した順序で、各コンテナを **Start** ボタンを使って手動で起動します。
+3. コンテナのログとアプリケーションの動作を監視し、依存関係が満たされていることと、サービスが期待どおりに初期化されていることを確認します。
+4. 必要に応じて起動順序や待機時間を調整します。
+
+:::important
+
+コンテナの依存関係を変更したり新しいサービスを追加したりした後は、特に起動タイミングに依存する構成では、起動順序をテストしてください。
+
+:::
+
+---
+
+## コンテナの操作
+
+Docker コンテナを作成して起動したら、%%WebGUI|web-gui%% から簡単に管理できます。このガイドでは、コンテキストメニューの使い方、コンテナのヘルスインジケーターの見方、コンテナ内でのボリュームマッピングへのアクセス方法を説明します。
+
+コンテナのコンテキストメニューを開くには、**Docker** タブまたは **Dashboard** タブに移動し、管理したいコンテナのアイコンをクリックします。このメニューから、よく使う操作へ簡単にアクセスできます:
+
+<div style={{ margin: 'auto', maxWidth: '286px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+  ![Docker Guide - Controlling](/img/Dockerguide-controlling.png)
+</div>
+
+| オプション         | 説明                                              |
+| ------------- | ----------------------------------------------- |
+| **WebUI**     | コンテナの Web インターフェースを新しいブラウザタブで開きます（利用可能な場合）。     |
+| **コンソール**     | コンテナと直接やり取りするためのコマンドラインインターフェースを開きます。           |
+| **停止**        | 実行中のコンテナを停止します。                                 |
+| **一時停止**      | コンテナを一時停止し、すべてのプロセスを一時的に停止します。                  |
+| **再起動**       | コンテナを再起動し、設定変更を適用します。                           |
+| **ログ**        | トラブルシューティング用にコンテナのログ出力を表示します。                   |
+| **編集**        | ポートやボリュームのマッピングなど、コンテナ設定を変更します。変更は保存後すぐに適用されます。 |
+| **削除**        | コンテナを削除します。コンテナだけを削除することも、イメージも削除することもできます。     |
+| **プロジェクトページ** | ドキュメントやサポートのために、コンテナのプロジェクトページを開きます。            |
+| **サポート**      | コンテナのサポートリソースとヘルプにアクセスします。                      |
+| **詳細情報**      | コンテナとその設定に関する追加情報を表示します。                        |
+
+### ヘルスインジケーター
+
+各コンテナのアイコンの横に色付きのヘルスインジケーターが表示されます:
+
+- 🟢 **Healthy**: コンテナが稼働中で、期待どおりに応答していることを示します。
+- 🟡 **Unhealthy**: コンテナは稼働していますが、ヘルスチェックに失敗しています。詳細についてはログまたはコンテナ設定を確認してください。
+- ⚪ **No health check**: このコンテナにはヘルスチェックが設定されていません。多くのアプリではよくあることで、必ずしも問題ではありません。
+
+:::note
+
+ヘルスチェックはコンテナ作者によって定義されており、すべてのイメージに存在するとは限りません。
+
+:::
+
+---
+
+## コンテナ内のボリュームマッピング
+
+アプリケーションを Web インターフェースで設定する際は、ホストパスではなく、設定時に指定した **container path** を参照してください。
+
+たとえば、ホスト上の `/mnt/user/media` をコンテナ内の `/unraid_media` にマッピングした場合、アプリケーション設定では `/unraid_media` を使用します。
+
+<h3>使用例</h3>
+
+以下は、Docker コンテナを設定するときにユーザーがよく必要とする一般的なパスマッピング構成の例です。これらは、Unraid のホストファイルシステムのパスとコンテナ内部のパスをどのように対応付けるかを示しており、アプリケーションを正しく設定するのに役立ちます。
+
+- **メディアサーバー:**
+  ホストパス: `/mnt/user/media`\
+  コンテナパス: `/unraid_media`
+
+  アプリでは、メディアライブラリの場所を `/unraid_media` に設定します。
+
+- **Appdata ストレージ:**
+  ホストパス: `/mnt/user/appdata/myapp`\
+  コンテナパス: `/config`
+
+  アプリでは、設定保存先として `/config` を使用します。
+
+- **複数の %%user shares|user-share%%:**
+  ホストパス: `/mnt/user/media` → コンテナパス: `/media`\
+  ホストパス: `/mnt/user/data` → コンテナパス: `/data`
+
+  必要に応じて、アプリケーション内で `/media` または `/data` を参照します。
+
+:::important[Best 実践]
+
+コンテナが適切に動作するために必要な、最も制限の厳しい [アクセスモード](../manage-storage/shares.mdx)（読み取り専用または読み書き可能）を必ず使用してください。
+
+:::
+
+---
+
+## 開始と停止のスケジュール設定
+
+Unraid は **Docker コンテナ** の開始・停止をネイティブにはスケジュールできませんが、[**User Scripts プラグイン**](../customize-your-experience/plugins.mdx) を使えばこの処理を簡単に自動化できます。この強力なツールを使うと、スケジュールに従ってカスタムスクリプトを実行でき、コンテナを自動制御できます。
+
+### User Scripts プラグイン
+
+**User Scripts プラグイン** を使うと、%%WebGUI|web-gui%% から直接、カスタムシェルスクリプトの作成、管理、スケジュール設定ができます。コンテナの開始・停止、データのバックアップ、メンテナンス作業の実行など、さまざまな自動化タスクに利用できます。
+
+- まだインストールしていない場合は、**Apps** タブからプラグインをインストールしてください。
+- ***Settings → User Scripts*** からアクセスして、スクリプトを作成・管理します。
+
+プラグインの詳細については、[Plugins](../customize-your-experience/plugins.mdx) をご覧ください。
+
+### コンテナ操作のスケジュール設定
+
+スケジュールに従ってコンテナの開始または停止を自動化するには:
+
+1. **Apps** タブから **User Scripts プラグイン** をインストールします。
+2. ***Settings → User Scripts*** に移動します。
+3. スケジュールごとに新しいスクリプトを作成します。同じスケジュールであれば、1 つのスクリプトに複数のコンテナ用コマンドを含めることもできます。
+4. ドロップダウンメニューでスケジュールを設定するか、より高度なタイミング制御のためにカスタム `cron` 式を使用します。
+5. **Apply** をクリックしてスクリプトを保存し、有効化します。
+
+:::tip
+
+cron 式を使うと、組み込みオプションを超えた柔軟なスケジュール設定ができます。たとえば、`0 3 * * 1` は毎週月曜日の午前 3:00 にスクリプトを実行します。
+
+:::
+
+### コマンド例
+
+<Tabs>
+  <TabItem value="開始" label="コンテナを開始" default>
+    <DockerCommandStart />
+  </TabItem>
+
+  <TabItem value="停止" label="コンテナを停止">
+    <DockerCommandStop />
+  </TabItem>
+
+  <TabItem value="再起動" label="コンテナを再起動">
+    <DockerCommandRestart />
+  </TabItem>
+
+  <TabItem value="ステータス" label="コンテナの状態を確認">
+    <DockerCommandStatus />
+  </TabItem>
+
+  <TabItem value="ログ" label="コンテナのログを表示">
+    <DockerCommandLogs />
+  </TabItem>
+</Tabs>
+
+:::tip
+
+コンテナ名は、Docker タブまたはコンテナの設定画面にある `docker run` コマンドで確認できます。
+
+:::

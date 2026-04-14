@@ -1,0 +1,218 @@
+---
+title: CLIリファレンス
+description: すべてのUnraid API CLIコマンドの完全なリファレンス
+sidebar_position: 4
+---
+
+# CLIコマンド
+
+:::info[Command 構造]
+
+すべてのコマンドは次のパターンに従います: `unraid-api <command> [options]`
+
+:::
+
+## 🚀 サービス管理
+
+### 開始
+
+```bash
+unraid-api start [--log-level <level>]
+```
+
+Unraid API サービスを開始します。
+
+オプション:
+
+- `--log-level`: ログレベルを設定します (trace|debug|info|warn|error|fatal)
+
+代替: `LOG_LEVEL` 環境変数を使用してログレベルを設定することもできます:
+
+```bash
+LOG_LEVEL=trace unraid-api start
+```
+
+### 停止
+
+```bash
+unraid-api stop [--delete]
+```
+
+Unraid API サービスを停止します。
+
+- `--delete`: 任意。PM2 ホームディレクトリを削除します
+
+### 再起動
+
+```bash
+unraid-api restart [--log-level <level>]
+```
+
+Unraid API サービスを再起動します。
+
+オプション:
+
+- `--log-level`: ログレベルを設定します (trace|debug|info|warn|error|fatal)
+
+代替: `LOG_LEVEL` 環境変数を使用してログレベルを設定することもできます:
+
+```bash
+LOG_LEVEL=trace unraid-api restart
+```
+
+### ログ
+
+```bash
+unraid-api logs [-l <lines>]
+```
+
+API ログを表示します。
+
+- `-l, --lines`: 任意。追跡する行数 (既定値: 100)
+
+## ⚙️ 構成コマンド
+
+### 構成
+
+```bash
+unraid-api config
+```
+
+現在の構成値を表示します。
+
+### 環境を切り替え
+
+```bash
+unraid-api switch-env [-e <environment>]
+```
+
+production と staging の環境を切り替えます。
+
+- `-e, --environment`: 任意。対象の環境 (production|staging)
+
+### 開発者モード
+
+:::tip[Web GUI 管理]
+
+Web インターフェースの **Settings** → **Management Access** → **Developer Options** からも開発者オプションを管理できます
+
+:::
+
+```bash
+unraid-api developer                       # Interactive prompt for tools
+unraid-api developer --sandbox true        # Enable GraphQL sandbox
+unraid-api developer --sandbox false       # Disable GraphQL sandbox
+unraid-api developer --enable-modal        # Enable modal testing tool
+unraid-api developer --disable-modal       # Disable modal testing tool
+```
+
+API 用の開発者機能を設定します:
+
+- **GraphQL サンドボックス**: `/graphql` で Apollo GraphQL サンドボックスを有効/無効にします
+- **モーダルテストツール**: Unraid メニューで UI モーダルのテストを有効/無効にします
+
+## API キー管理
+
+:::tip[Web GUI 管理]
+
+Web インターフェースの **Settings** → **Management Access** → **API Keys** からも API キーを管理できます
+
+:::
+
+### API キーコマンド
+
+```bash
+unraid-api apikey [options]
+```
+
+CLI を使って API キーを作成および管理します。
+
+オプション:
+
+- `--name <name>`: キーの名前
+- `--create`: 新しいキーを作成します
+- `-r, --roles <roles>`: カンマ区切りのロール一覧
+- `-p, --permissions <permissions>`: カンマ区切りの権限一覧
+- `-d, --description <description>`: キーの説明
+
+## SSO (シングルサインオン) 管理
+
+:::info[OIDC 構成]
+
+OIDC/SSO プロバイダーの構成については、Web インターフェースの **Settings** → **Management Access** → **API** → **OIDC** を参照するか、[OIDC Provider Setup](./oidc-provider-setup.mdx) ガイドを参照してください。
+
+:::
+
+### SSO ベースコマンド
+
+```bash
+unraid-api sso
+```
+
+#### SSO ユーザーを追加
+
+```bash
+unraid-api sso add-user
+# or
+unraid-api sso add
+# or
+unraid-api sso a
+```
+
+SSO 認証用の新しいユーザーを追加します。
+
+#### SSO ユーザーを削除
+
+```bash
+unraid-api sso remove-user
+# or
+unraid-api sso remove
+# or
+unraid-api sso r
+```
+
+SSO からユーザー（またはすべてのユーザー）を削除します。
+
+#### SSO ユーザーを一覧表示
+
+```bash
+unraid-api sso list-users
+# or
+unraid-api sso list
+# or
+unraid-api sso l
+```
+
+設定済みの SSO ユーザーをすべて一覧表示します。
+
+#### SSO トークンを検証
+
+```bash
+unraid-api sso validate-token <token>
+# or
+unraid-api sso validate
+# or
+unraid-api sso v
+```
+
+SSO トークンを検証し、その状態を返します。
+
+## レポート生成
+
+### レポートを生成
+
+```bash
+unraid-api report [-r] [-j]
+```
+
+システムレポートを生成します。
+
+- `-r, --raw`: 生のコマンド出力を表示します
+- `-j, --json`: 出力を JSON 形式で表示します
+
+## 注記
+
+1. ほとんどのコマンドは、システム状態を変更するために適切な権限が必要です
+2. 一部のコマンドでは、API が実行中または停止中である必要があります
+3. API キーはシステムアクセスを提供するため、安全に保管してください
+4. SSO 構成の変更にはサービスの再起動が必要になる場合があります

@@ -1,0 +1,591 @@
+---
+sidebar_position: 2
+sidebar_label: VMセットアップ
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+
+# VMセットアップ
+
+Unraid上で%%VM|vm%%をセットアップすると、Windows、Linux、その他のプラットフォームなどのフルOSを、コンテナーやネイティブアプリと並行して実行する柔軟な方法になります。新しいソフトウェアを試したい場合、レガシーアプリケーションを実行したい場合、デスクトップ環境をホストしたい場合、あるいはゲームやクリエイティブ作業のためにハードウェアパススルーを活用したい場合でも、Unraidの**VM Manager**なら、あらゆるスキルレベルの人が取り組みやすくなります。
+
+:::tip[New Unraid 7.0 の
+
+Unraid 7.xでは、%%VMs|vm%%に次のような大幅な強化が加わります:
+
+- %%VM|vm%% のクローンとスナップショット
+- ユーザー作成の %%VM|vm%% テンプレート
+- XML のインライン編集/表示
+- 高度な GPU 共有およびパススルー機能
+
+詳細は[%%VM|vm%% マネージャーの機能](#new-in-unraid-7x-vm-manager)のセクションをご覧ください。
+
+:::
+
+まだ行っていない場合は、[概要とシステム準備](./overview-and-system-prep.mdx) の手順を確認し、ハードウェアと共有が仮想化に対応していることを確認してください。
+
+## 独自の仮想マシンを作成する {#creating-your-own-virtual-machines}
+
+システムの準備と設定が完了したら、%%WebGUI|web-gui%%を使って新しい%%VM|vm%%を作成できます。
+
+:::note[Before 始める]
+
+- `isos` と `domains` の共有が正しく設定され、アクセス可能であることを確認してください。共有の管理については、こちらの [共有管理](../manage-storage/shares.mdx) を参照してください。
+- OS のインストール ISO と、Windows %%VMs|vm%% の場合は最新の %%VirtIO|virtio%% ドライバー ISO を `isos` 共有にアップロードします。
+- グラフィックスには%%GPU passthrough|gpu-passthrough%%を使用するか%%VNC|vnc-session%%を使用するかを決めます。
+
+:::
+
+基本的な %%VM|vm%% を作成するには:
+
+1. **Virtual Machines** ページで **Add VM** をクリックします。
+2. **Template** を **Custom** に設定するか、一般的なディストリビューション用の事前定義済み OS テンプレートを選択します。
+3. %%VM|vm%% の **Name** を入力し、必要に応じて **Description** も入力します。
+4. %%VM|vm%% を %%array|array%% と一緒に自動的に起動したい場合は、**Autostart** をオンにします。
+5. **Operating System** の種類を選択します。これにより %%VM|vm%% のアイコンも調整されます。
+6. %%VM|vm%% に **CPU cores** を割り当てます。ホストで使用可能な物理コア数まで割り当てられます。
+7. %%VM|vm%% の **Initial Memory**（RAM）を指定します。推奨値についてはゲスト OS のドキュメントを参照してください。
+8. **isos** 共有から **OS Install ISO** を選択します。
+9. **Primary vDisk**（場所、サイズ、種類）を設定します。
+   - プライマリ %%vDisk|vdisk%% は VM のオペレーティングシステムを保存します。
+   - 必要に応じて、プラス記号を使って追加の %%vDisks|vdisk%% を追加します。
+10. **Graphics Card** を選択します:
+    - リモートアクセスには %%VNC|vnc-session%% を選ぶか、パススルー用に物理 GPU を選択します。
+    - 物理 GPU を使用する場合は、USB キーボード/マウスを割り当てます。
+    - 必要に応じて %%VNC|vnc-session%% パスワードを設定します。
+11. **Sound Card** を割り当てます（任意ですが、GPU 経由の HDMI オーディオには必要です）。
+12. 必要に応じて **USB Devices** を割り当てます。
+    - デバイスは %%VM|vm%% を起動する前に接続しておく必要があります（USB のホットプラグはサポートされていません）。
+    - Unraidの起動デバイス（USB）は割り当て対象にできません。
+13. **Create VM** をクリックします。**Start VM after creation** のチェックを外さない限り、%%VM|vm%% は自動的に起動します。
+
+---
+
+## ユーザー VM テンプレート
+
+Unraid 7.1 以降ではユーザー %%VM|vm%% テンプレートが導入され、独自の %%VM|vm%% 設定を簡単に保存して再利用できます。ユーザーテンプレートにより %%VM|vm%% の展開が効率化され、セットアップ全体で一貫性を確保できます。
+
+ユーザー テンプレートを作成するには:
+
+1. テンプレート化したい %%VM|vm%% を編集します。
+2. **Create/Modify template** を選択し、名前を入力します。
+3. テンプレートは **Add VM** 画面のユーザーテンプレート領域で利用できるようになります。
+
+ユーザー テンプレートを使用するには:
+
+- **VMs**ページで**Add VM**をクリックし、**User Templates**セクションからテンプレートを選択します。
+
+インポート/エクスポート:
+
+- ユーザーテンプレートにカーソルを合わせ、矢印をクリックしてサーバーにエクスポートするか、ダウンロードします。
+- 別の Unraid システムでは、**Import from file** または **Upload** を使ってテンプレートを追加します。
+
+---
+
+## Unraid 7.x の新機能: VM Manager {#new-in-unraid-7x-vm-manager}
+
+Unraid 7.xでは、強力な機能拡張が多数追加された\*\*%%VM|vm%% Manager\*\*により、%%VMs|vm%%の実行と管理がより効率化されます。これらの機能は初心者から上級者まで対応しており、%%VMs|vm%%の展開、カスタマイズ、最適化がより簡単になります。
+
+:::tip\[Highlights]
+
+- %%VM|vm%% のクローン、スナップショット、再利用可能なテンプレートで時間を節約
+- 高度なパススルーとストレージオプションで、パフォーマンスと互換性を微調整
+- 使用状況統計とインラインの`XML`編集により、可視性と制御性が向上します
+
+:::
+
+<details>
+  <summary><strong>ワークフローの強化</strong></summary>
+
+- **%%VM|vm%%クローンと[snapshots](#vm-snapshots):** %%VMs|vm%%を複製したり、テストやバックアップのために状態をすばやく保存・復元できます。
+- **ユーザー%%VM|vm%%テンプレート:** 独自の%%VM|vm%%設定を保存し、数回のクリックで新しい%%VMs|vm%%を展開できます。
+- **インライン XML 表示/編集:** %%WebGUI|web-gui%% が生成した `XML` を即座に表示またはコピーできます。高度な編集のために `XML` モードに切り替えます。
+- **Autostart 無効化:** %%array|array%% と一緒に自動起動する %%VMs|vm%% を選択できます。
+- **VM 使用統計:** ダッシュボードから直接、%%VM|vm%% ごとのリソース使用量を追跡します。
+
+</details>
+
+<details>
+  <summary><strong>高度なハードウェアとストレージのオプション</strong></summary>
+
+- **PCI multifunction/other:** 高度なパススルーシナリオ向けに、複雑な PCI デバイスまたはグループを割り当てます。
+- **%%QEMU|qemu%% コマンドラインパススルー:** 上級者向けの %%VM|vm%% 調整のために、カスタム %%QEMU|qemu%% 引数を追加します。
+- **Storage override:** 各 VM の %%virtual disk|vdisk%% の保存場所を指定します。
+- **SSD flag & unmap:** SSD 向けに %%vDisk|vdisk%% のパフォーマンスを最適化し、discard/unmap サポートを有効にします。
+- **`SR-IOV` for Intel iGPU:** 統合 Intel グラフィックスを複数の %%VMs|vm%% で共有します。
+- **ZFS 向け %%VM|vm%% 名の検証:** [%%ZFS|zfs%% プール](../../advanced-configurations/optimize-storage/zfs-storage.mdx) で、%%VM|vm%% 名にサポートされない文字が使われるのを防ぎます。
+
+</details>
+
+<details>
+  <summary><strong>強化されたグラフィックスと GPU 共有</strong></summary>
+
+- **`VirGL` と `QXL` の仮想 GPU:** 複数の Linux %%VMs|vm%% 間で Intel/AMD GPU を共有するか、マルチスクリーン/メモリオプションに `QXL` を利用します。
+- **%%CPU pinning|cpu-pinning%% は任意:** Unraid に CPU 割り当てを自動管理させるか、必要に応じてコアを手動でピン留めできます。
+
+</details>
+
+<details>
+  <summary><strong>その他の高度な機能</strong></summary>
+
+- View all graphics cards and %%VM|vm%%-assigned IP addresses in the %%VM|vm%% tab
+- %%QEMU|qemu%% ppc64 ターゲットと `qemu:override` のサポート
+- Windows %%VMs|vm%% 向け Hypervclock サポート
+- エミュレート CPU の "Migratable" のオン/オフ
+- タイマー/オフセットの設定オプション
+- 特定の用途向けに keymap/nogpu オプションを利用可能
+- %%VM|vm%% アイコンの選択と編集の改善
+- プライマリ GPU をパススルーとして割り当てる際の警告（`vBIOS` が必要な場合があります）
+- `QXL` ビデオドライバーで Unraid %%VMs|vm%% を GUI モードで起動
+- `XML` 表示におけるパスとアイコンの問題に対する各種修正
+
+</details>
+
+---
+
+## VM スナップショット {#vm-snapshots}
+
+VMスナップショットを使うと、特定の時点における%%VM|vm%%の現在の状態を保存できます。問題が発生した場合はその状態に戻せますし、安全に変更をテストするためにスナップショットを使うこともできます。これは、新しいソフトウェアのインストール、設定変更、システム更新の前に特に便利です。
+
+:::info[How VM snapshots work]
+
+スナップショットを作成すると、Unraidはその時点以降に%%VM|vm%%へ加えられたすべての変更を記録する「オーバーレイファイル」を生成します。次のように考えるとわかりやすいでしょう:
+
+- **元のVMディスク**: これは%%VM|vm%%の現在の状態を表します（写真のようなものです）。
+- **スナップショットのオーバーレイ**: これは、スナップショット以降に加えられたすべての変更を記録する別ファイルです（編集履歴の一覧のようなものです）。
+- **VMは動作を継続**: %%VM|vm%%は元のディスクとオーバーレイファイルの両方を一緒に使用します。
+
+この構成では複数のスナップショットを作成でき、それぞれが独自のオーバーレイファイルを生成します。これにより、以前のどの状態にも簡単に戻せます。
+
+**例:**
+
+1. "Clean Windows Install"という名前のスナップショットを作成します。
+2. いくつかのソフトウェアをインストールし、変更を加えます。
+3. "After Software Install"という名前の別のスナップショットを作成します。
+4. これで、クリーンなインストール状態にも、ソフトウェアのインストール後の状態にも戻せます。
+5. また、Block CommitやBlock Pullを使って変更を永続化することもできます。
+
+:::
+
+<Tabs>
+  <TabItem value="作成" label="スナップショットの作成" default>
+
+    %%VM|vm%%のスナップショットを作成するには:
+
+    1. %%WebGUI|web-gui%%の**VMs**ページに移動します。
+    2. %%VM|vm%%の名前をクリックして詳細を展開します。
+    3. **Snapshots**セクションを探し、**Create Snapshot**をクリックします。
+    4. スナップショットにわかりやすい名前を付けます（たとえば、"Before Windows Update" や "Clean Install State" など）。
+    5. **メモリダンプオプション**: 現在のUnraidビルドでは、"Memory dump" チェックボックスは既定で選択されていません。これをオンにすると、%%VM|vm%%のRAMも含めた完全なメモリベースのスナップショットになります（実行中の状態を保存できますが、作成と復元はより大きく、より遅くなります）。オフのままにすると、ディスクのみのクラッシュ整合性のあるスナップショットが作成されます（小さくて高速ですが、メモリ上の未保存データは失われます）。完全な実行時状態の保持が必要か、ディスクの復旧だけでよいかに応じて選択してください。
+    6. **Create**をクリックしてスナップショットを保存します。
+
+    :::tip[ベストプラクティス]
+    - %%VM|vm%%に大きな変更を加える前にスナップショットを作成してください。
+    - スナップショットの内容を思い出しやすい説明的な名前を付けてください。
+    - 必要に応じてMemory dumpを選択してください。完全な実行時状態を保持したい場合は有効にし、ディスクのみで高速に復旧したい場合は無効のままにします。
+    - 重要な節目ではスナップショットを残し、古いものは削除してストレージ容量を節約してください。
+      :::
+
+  </TabItem>
+
+  <TabItem value="管理" label="スナップショットの管理">
+
+    スナップショットを作成すると、%%VM|vm%%の詳細セクションに一覧表示されます。各スナップショットには次の情報が表示されます:
+
+    - **名前**: スナップショットに付けた名前。
+    - **日時**: スナップショットが作成された時刻。
+    - **サイズ**: 使用しているストレージ容量。
+
+    スナップショットを管理するには:
+
+    1. %%WebGUI|web-gui%% の **VMs** タブに移動します。
+    2. %%VM|vm%%の名前をクリックして詳細を展開します。
+    3. **Snapshots**セクションに移動します。
+    4. 使用可能な**Revert**、**Block Commit**、**Block Pull**、または**Remove**ボタンを使用します。
+
+    :::tip
+    **スナップショットを元に戻す**: これは、スナップショットを作成した時点の%%VM|vm%%の状態に正確に復元します。スナップショット以降に加えられた変更は失われます。%%VM|vm%%は、まるでスナップショットが存在しなかったかのように元のディスクファイルを使用します。
+
+    **Block Commit**: この処理は、スナップショットのオーバーレイからのすべての変更を元の%%VM|vm%%ディスクファイルにコピーします。既定では、"Pivot" と "Delete" のオプションが選択された状態で表示されます:
+
+    - **Pivot**: このオプションは、%%VM|vm%%がオーバーレイファイルの使用から元のディスクファイルの使用に戻るよう切り替えます。コミット後、%%VM|vm%%はオーバーレイファイルの代わりに、変更を含む元のディスクを使用します。
+
+    - **Delete**: このオプションは、変更が元のディスクにコミットされた後、スナップショットのオーバーレイファイルを削除します。
+
+    - **両方（"Pivot" + "Delete"）**:
+      - **両方を選択した場合**: 変更は元のファイルにコミットされ、%%VM|vm%%は元のディスクの使用に戻り、オーバーレイファイルは削除されます。これは最も一般的な選択です。
+      - **両方をオフにした場合**: 変更は元のファイルにコミットされますが、%%VM|vm%%は引き続きオーバーレイファイルを使用し、オーバーレイファイルは今後の変更を記録するために残ります。
+
+    変更に満足し、それを永続化したい場合はBlock Commitを使用します。
+
+    **Block Pull**: これは元のディスクデータをスナップショットのオーバーレイファイルに取り込み、オーバーレイファイルを完全で独立したものにします。%%VM|vm%%は引き続きオーバーレイファイルを使用しますが、もはや元のディスクに依存しません。現在の状態を保持し、スナップショットを永続化したい場合に使用します。
+
+    **スナップショットを削除**: これは、%%VM|vm%%に影響を与えずにスナップショットのオーバーレイファイルを単に削除します。%%VM|vm%%は引き続き元のディスクファイルを使用し、スナップショット以降の変更は失われます。
+    :::
+
+  </TabItem>
+
+  <TabItem value="revert" label="スナップショットへの復元">
+
+    以前の状態に戻す必要がある場合は:
+
+    1. %%VM|vm%%が現在実行中であれば停止します。
+    2. %%WebGUI|web-gui%% の **VMs** タブに移動します。
+    3. %%VM|vm%%の名前をクリックして詳細を展開します。
+    4. **Snapshots**セクションに移動します。
+    5. 復元したいスナップショットを見つけて、**Revert**ボタンをクリックします。
+    6. 復元することを確認します（これにより、スナップショット作成後に行った変更は失われます）。
+    7. %%VM|vm%%を起動します。これで、スナップショットを作成したときの状態とまったく同じになります。
+
+    :::caution[データ損失の警告]
+    スナップショットに戻すと、そのスナップショット作成後に加えられた変更は永続的に削除されます。復元する前に、その変更を本当に失ってよいか確認してください。
+    :::
+
+  </TabItem>
+</Tabs>
+
+### スナップショットの保存
+
+スナップショットはシステムのストレージ容量を使用します。各スナップショットは、現在の状態とスナップショットの状態との差分のみを保存しますが、これらの差分は時間とともに蓄積される可能性があります。
+
+考慮すべき点をいくつか挙げます:
+
+- **QCOW2ディスク**はスナップショットをサポートしており、この機能と相性が良いです。
+- **保存場所**: スナップショットは%%VM|vm%%ファイルと一緒に保存されるため、%%cache pools|cache-pool%%または%%array|array%%に十分な空き容量があることを確認してください。
+
+**スナップショットの保存場所:**
+
+- スナップショットのメタデータは`/etc/libvirt/qemu/snapshotdb/VM_name/`に保存されます。
+- 実際のスナップショットデータは、%%cache pools|cache-pool%%または%%array|array%%上の%%VM|vm%%ファイルと同じ場所に保存されます。
+
+:::info[Advanced snapshot concepts]
+
+VMスナップショットの仕組みについて、ブロック図や複数スナップショットを使う高度なシナリオを含むより詳しい技術情報は、[QEMU snapshots documentation](https://kashyapc.fedorapeople.org/virt/lc-2012/snapshots-handout.html)をご覧ください。
+
+:::
+
+:::tip[Common use cases]
+
+- **システム更新前**: Windowsの更新やLinuxパッケージの更新をインストールする前にスナップショットを作成します。問題が発生した場合でも、すばやく以前のバージョンに戻せます。
+- **ソフトウェアのテスト**: 新しいアプリケーションをインストールしたり、設定変更を行ったりします。結果に満足できない場合は、変更前のクリーンな%%VM|vm%%スナップショットに戻します。
+- **開発作業**: プロジェクトのさまざまな段階でスナップショットを作成します。これにより、自由に試しながら、既知の良好な状態へ戻せます。
+- **バックアップ戦略**: 適切なバックアップの代わりにはなりませんが、スナップショットは最近の変更をすばやく復旧するのに役立ちます。
+
+:::
+
+---
+
+## 仮想 GPU と GPU 共有の使用
+
+Unraid は現在、Linux %%VMs|vm%% 向けに `VirGL` と `QXL` を使った高度な GPU 共有をサポートしています（`Nouveau` ドライバーを使用する一部の Nvidia GPU も含む）。
+
+- `VirGL` を使用するには、**Graphics Card** を **Virtual** に設定し、**VM console video driver** を **VirtIO(3D)** に設定します。
+- `QXL` を使用するには、**Graphics Card** を **Virtual** に設定し、**VM console video driver** を **`QXL` (best)** に設定します。
+- `VirGL` は物理モニターに出力せず、Windows %%VMs|vm%% や標準の Nvidia プラグインとは互換性がありません。
+- `QXL` はマルチスクリーンと設定可能なビデオメモリをサポートします。
+
+---
+
+## 高度なオプション
+
+<details>
+  <summary>より高度なオプションのガイダンスを表示するには、このセクションを展開してください</summary>
+
+追加設定にアクセスするには、**Add VM** ページで **Advanced View** に切り替えます。
+
+最も重要な高度なオプションを、目的別のセクションに分けて紹介します:
+
+**CPU mode:**
+
+- **Host passthrough**: すべてのホスト CPU 機能を %%VM|vm%% に公開し、最大限のパフォーマンスを実現します。
+- **Emulated**: 汎用 CPU モデルを使用し、互換性の問題を減らしますが、パフォーマンスは制限されます。
+
+**Memory ballooning:**
+
+- **Max Memory** を設定すると、動的メモリ割り当て（%%memory ballooning|memory-ballooning%%）を有効にできます。
+- PCI デバイスが割り当てられた %%VMs|vm%% では利用できません（例: %%GPU passthrough|gpu-passthrough%%）。
+
+**Machine type:**
+
+- **`i440fx`**: Windows %%VMs|vm%% のデフォルトです。%%GPU passthrough|gpu-passthrough%% に問題がある場合のみ変更してください。
+- **`Q35`**: Linux %%VMs|vm%% のデフォルトであり、特に %%GPU passthrough|gpu-passthrough%% を使うほとんどの最新 OS に推奨されます。
+
+**BIOS type:**
+
+- **SeaBIOS**: レガシー OS 向けの従来の BIOS です。
+- **OVMF**: Windows 8 以降、ほとんどの最新 Linux ディストリビューション、および %%GPU passthrough|gpu-passthrough%% に必要な %%UEFI|uefi%% BIOS です。
+
+:::note
+
+BIOSタイプは新しい%%VM|vm%%を作成するときにのみ設定できます。
+
+:::
+
+**Hyper-V extensions:**
+
+- Windowsの%%VMs|vm%%では、互換性とパフォーマンスを向上させるためにHyper-V extensionsを有効にします。
+
+**VirtIOドライバISO:**
+
+- 必要に応じて既定の%%VirtIO|virtio%% ISOを上書きしてください。特にテスト時や新しいドライバーを使用する場合に有効です。
+
+**vDiskタイプ:**
+
+- **`RAW`**: 最速のパフォーマンス。スナップショットにはあまり柔軟ではありません。
+- **`QCOW2`**: スナップショットをサポートしますが、パフォーマンスはやや低くなります。
+
+**VirtFSマッピング（Linux VM）:**
+
+- ホストとゲストの間でファイルシステムを統合するために、複数の%%VirtFS|virtfs%%（`9p`）共有を追加します。
+- 詳細は[%%QEMU|qemu%% 9p documentation](http://wiki.qemu.org/Documentation/9psetup)を参照してください。
+
+**ネットワーク設定:**
+- **Network MAC address** を変更するか、別の **Network Bridge** を選択します。
+- 更新アイコンをクリックすると、新しいMACアドレスが自動生成されます。
+- 必要に応じて追加の仮想ネットワークインターフェースを追加します。
+
+</details>
+
+:::info[Troubleshooting ヒント]
+
+- %%VM|vm%% の起動に失敗する場合は、ISO と %%vDisk|vdisk%% のパスを再確認してください。
+- %%GPU passthrough|gpu-passthrough%% では、ハードウェアと BIOS 設定が %%IOMMU|iommu%%/VT-d/AMD-Vi をサポートしていることを確認してください。
+- 一部のUSBデバイスはパススルーで安定して動作しない場合があります。デバイス固有のアドバイスについてはテストし、[Unraidフォーラム](https://forums.unraid.net/)に相談してください。
+
+:::
+
+---
+
+## パススルー用 PCI デバイスのバインド
+
+GPUや任意のPCIデバイスを%%VM|vm%%に割り当てる前に、デバイスを**vfio-pci**ドライバーに「バインド」することが重要です。この処理により、そのデバイスはUnraidから隠され、%%VM|vm%%専用になります。
+
+パススルー用に PCI デバイス（GPU、USB コントローラー、NVMe など）をバインドするには:
+
+1. %%WebGUI|web-gui%%の***Tools → System Devices***に移動します。
+2. 検出されたすべての PCI デバイスとその %%IOMMU|iommu%% グループの一覧を確認します。
+3. **vfio-pci** にバインドしたい各デバイスの横のボックスにチェックを入れます（Unraid から隠すためです）。
+   - Unraid ですでに使用中のデバイス（ディスクコントローラーやネットワークカードなど）は選択できないことに注意してください。
+   - GPU を選択した場合は、対応するサウンドデバイスも選択します。
+4. 変更を保存するには、**Bind Selected to VFIO at Boot** をクリックします。
+5. バインドを有効にするにはサーバーを再起動してください。
+
+:::caution
+
+ハードウェア構成を変更した場合（PCI デバイスの追加や削除など）は、**System Devices** に戻って、正しいデバイスが引き続きバインドされていることを確認してください。デバイスのバインドが解除されていたり、誤ってバインドされている場合、パススルーの対象として表示されないことがあります。
+
+:::
+
+バインド後、%%VM|vm%% の編集または作成時に、バインドされたデバイスが **Other PCI Devices** ドロップダウンに表示されます。
+
+<details>
+  <summary>トラブルシューティング</summary>
+
+- 以前に `VFIO-PCI` Config プラグインを使用していた場合は、アンインストールしてください。この機能は現在組み込み済みです。
+- すべてのバインドをリセットするには、`/boot/config/vfio-pci.cfg` を削除してシステムを再起動します。
+- 再起動後、詳細なトラブルシューティングには **System Devices** ページの **View `VFIO-PCI` Log** ボタンを利用してください。
+- 唯一の GPU をバインドすると、Unraid が GUI で起動しない場合があることに注意してください。必ずその場合の対策を計画しておいてください。
+- 詳細については、[Unraid フォーラムの公式ガイド](https://forums.unraid.net/topic/93781-guide-bind-devices-to-vfio-pci-for-easy-passthrough-to-vms/) を参照してください。
+
+</details>
+
+---
+
+## 仮想マシンの GPU パススルー
+
+%%GPU passthrough|gpu-passthrough%%を使うと、物理グラフィックスカードを%%VM|vm%%に直接割り当てられ、ゲーム、クリエイティブ作業、機械学習でほぼネイティブに近いパフォーマンスを得られます。
+
+:::info[Why GPU passthrough を使用しますか?]
+
+- **Performance:** 要求の厳しいアプリケーションにハードウェアへ直接アクセスできます。
+- **Compatibility:** 専用 GPU を必要とするグラフィックス負荷の高いワークロードを実行できます。
+- **柔軟性:** Unraidサーバーを多目的ワークステーションに変えます。
+
+:::
+
+<h4>前提条件</h4>
+
+**Hardware:**
+
+- Intel VT-d または AMD-Vi に対応した CPU（BIOS で %%IOMMU|iommu%% を有効化）。
+- パススルー対応の GPU（[コミュニティで検証済みのハードウェア](https://docs.google.com/spreadsheets/d/1LnGpTrXalwGVNy0PWJDURhyxa3sgqkGXmvNCIvIMenk/edit#ggid=0) を参照）。
+- PCIe デバイスを適切に分離できるマザーボード。
+
+**Software:**
+
+- 仮想化を有効にした Unraid 6.9 以降。
+- %%OVMF|ovmf%%（%%UEFI|uefi%%）BIOS を %%VMs|vm%% に使用します（%%SeaBIOS|seabios%% より推奨）。
+
+GPUパススルーを設定するには:
+
+1. ハードウェアが %%IOMMU|iommu%% をサポートし、BIOS で有効になっていることを確認してください。
+2. BIOS で仮想化機能を有効にします（Intel VT-x/VT-d または AMD-v/AMD-vi）。
+3. Unraid を最新の安定版に更新します。
+4. GPU を %%VM|vm%% 作成または編集画面のグラフィックスカード欄で %%VM|vm%% に割り当てます。
+5. %%GPU passthrough|gpu-passthrough%% を使用する場合は、USB キーボードとマウスを %%VM|vm%% に割り当てます。
+6. %%GPU passthrough|gpu-passthrough%% との互換性を高めるため、%%VM|vm%% には %%OVMF|ovmf%% BIOS を使用します。
+7. %%VM|vm%% を起動し、GPU が正しくパススルーされていることを確認します。
+
+:::note
+
+一部の GPU では、適切なパススルーのために追加の設定や ROM 注入が必要になる場合があります。
+
+:::
+
+### ROM の手動注入 {#manual-rom-injection}
+
+一部の GPU、特に特定の NVIDIA モデルでは、正しく初期化するために ROM ファイルを VM に手動で指定する必要があります。これは、GPU のオンボードファームウェアが既定では正しくパススルーされず、ブラックスクリーンや起動失敗などの問題を引き起こす場合に必要になることがよくあります。手動 ROM 注入は、BIOS と VM 設定の調整を試した後の最終手段です。
+
+ROM を注入するには:
+
+1. **GPU ROM をダウンロード:**
+   - [TechPowerUp VGA BIOS database](https://www.techpowerup.com/vgabios/) にアクセスします。
+   - GPU モデルを検索し、適切な ROM ファイルをダウンロードします。
+   - rom を Unraid の `isos` または `domains` 共有に保存します。
+
+2. **%%VM|vm%% XML を編集:**
+   - %%VM|vm%% を停止し、その XML 設定を開きます（%%VM|vm%% のコンテキストメニューから **Edit XML**）。
+   - GPU の `<hostdev>` ブロックを見つけて `<rom>` タグを追加します:
+
+     ```xml
+
+     <hostdev mode='subsystem' type='pci' managed='yes'>
+       <driver name='vfio'/>
+       <source>
+         <address domain='0x0000' bus='0x02' slot='0x00' function='0x0'/>
+       </source>
+       <rom file='/mnt/user/isos/gpu_roms/your_gpu.rom'/> <!-- Update path -->
+       <address type='pci' domain='0x0000' bus='0x00' slot='0x05' function='0x0'/>
+     </hostdev>
+     ```
+
+3. **保存してテスト:** **Update** をクリックして %%VM|vm%% を起動します。
+
+---
+
+## よくある問題
+
+このセクションでは、Unraidで%%VMs|vm%%を管理する際の高度なトピックと、よくある問題の解決策を扱います。以下のセクションを展開すると、手順ごとの説明とトラブルシューティングのヒントを確認できます。
+
+### vDisk を拡張する {#expand-a-vdisk}
+
+<details>
+  <summary><strong>クリックして展開/折りたたむ</strong></summary>
+
+%%VM|vm%%のディスク容量が不足している場合は、%%WebGUI|web-gui%%から直接%%vDisk|vdisk%%のサイズを拡張できます。
+
+%%vDisk|vdisk%% を拡張するには:
+
+1. %%WebGUI|web-gui%% の **VMs** タブに移動します。
+2. %%VM|vm%% が停止していることを確認します。
+3. VM の名前をクリックして詳細を展開します。
+4. 拡張したい %%vDisk|vdisk%% を見つけます。**Capacity** フィールドの値をクリックして編集可能にします。
+5. 新しい希望サイズを入力し（例: 100 ギガバイトの場合は `100G`）、**Enter** を押します。
+6. これで新しい容量が設定されました。
+
+:::note
+
+Unraid GUIから%%vDisk|vdisk%%を縮小することはできません。拡張のみサポートされています。
+
+:::
+
+<h4>ゲストOS内でパーティションを拡張する</h4>
+
+%%vDisk|vdisk%%のサイズ変更後、%%VM|vm%%を起動します。新しい空き領域を使うには、ゲストOS内でパーティションを拡張する必要があります:
+
+- **Windows:** 内蔵のディスクの管理ツールを使用してパーティションを拡張します。
+
+- **Linux（LVM）:** `fdisk`、`pvresize`、`lvextend`、`resize2fs` などのツールを使用して、パーティションと論理ボリュームを拡張します。
+
+  **例:**
+
+  ```bash
+  sudo fdisk /dev/vda
+  sudo pvresize /dev/vda3
+  sudo lvextend -l +100%FREE /dev/mapper/ubuntu--vg-ubuntu--lv
+  sudo resize2fs /dev/mapper/ubuntu--vg-ubuntu--lv
+  ```
+
+  必要に応じてデバイス名を調整してください。
+
+:::tip
+
+ディスク変更を行う前には、必ず%%VM|vm%%をバックアップしてください。
+
+:::
+
+</details>
+
+### UEFI シェルで停止する
+
+<details>
+  <summary><strong>クリックして展開/折りたたむ</strong></summary>
+
+%%VM|vm%% がオペレーティングシステムではなく %%UEFI|uefi%% シェルで起動した場合は、手動で起動 प्रक्रियाを開始できます:
+
+%%UEFI|uefi%% シェルのプロンプトで、次のように入力します:
+
+```bash
+fs0:
+cd efi/boot
+bootx64.efi
+```
+
+これで %%VM|vm%% は OS の起動を続行するはずです。
+
+:::tip
+
+これが頻繁に起こる場合は、VMの起動順序を確認し、正しい%%vDisk|vdisk%%またはISOがVM設定でプライマリ起動デバイスとして設定されていることを確認してください。
+
+:::
+
+</details>
+
+### VM 起動後にブラックスクリーンになる
+
+<details>
+  <summary><strong>クリックして展開/折りたたむ</strong></summary>
+
+%%VM|vm%% は起動するが、画面が真っ暗なままの場合:
+
+1. **BIOS 設定を確認:**
+   - プライマリグラフィックスをパススルー GPU ではなく、内蔵 GPU（iGPU）に設定します。
+   - マザーボードと GPU の BIOS を最新版に更新します。
+
+2. **%%VM|vm%% 設定を調整:**
+   - %%VM|vm%% 設定で %%SeaBIOS|seabios%% から %%OVMF|ovmf%%（%%UEFI|uefi%%）に切り替えます。
+   - **Machine Type** を i440fx から Q35 に変更します。
+
+3. **ROM の手動注入（最終手段）:** [GPU ROM を手動で注入](#manual-rom-injection) します。
+
+</details>
+
+### エラー: "Failed to set IOMMU for container: operation not permitted"
+
+<details>
+  <summary><strong>クリックして展開/折りたたむ</strong></summary>
+
+このエラーは通常、%%IOMMU|iommu%% グループの競合または割り込み再マッピングの欠如を示します:
+
+1. **PCIe ACS オーバーライドを有効にする:**
+   - ***Settings → VM Manager***に移動します。
+   - **PCIe ACS override** を *Downstream* または *Both* に設定します。
+   - Unraid を再起動します。
+
+2. **Unsafe interrupts を許可（詳細設定）:**
+   - Unraidの起動ボリュームで`syslinux.cfg`を編集します:
+
+     ```bash
+     append vfio_iommu_type1.allow_unsafe_interrupts=1 initrd=/bzroot
+     ```
+
+   - %%VM|vm%% ゲストを完全に信頼している場合にのみ使用してください。
+
+:::note
+
+%%IOMMU|iommu%%グループの詳細な説明については、[Alex Williamsonのブログ](http://vfio.blogspot.com/2014/08/iommu-groups-inside-and-out.html)を参照することをおすすめします。
+
+:::
+
+</details>

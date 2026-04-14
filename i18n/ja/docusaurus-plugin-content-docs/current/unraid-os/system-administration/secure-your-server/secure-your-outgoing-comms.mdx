@@ -1,0 +1,195 @@
+---
+sidebar_position: 8
+sidebar_label: 送信通信を保護する
+---
+
+# 送信通信を保護する
+
+Outgoing Proxy Manager と %%Tailscale|tailscale%% の出口ノードは、Unraid の送信通信を安全なチャネル経由でルーティングする方法を提供します。これらのツールは、制限の厳しいファイアウォールの回避、ネットワークポリシーへの準拠、または送信トラフィックの保護に役立ちます。これらのソリューションは主に Unraid のシステムトラフィックに焦点を当てていますが、より広いネットワークまで対象を拡張するための設定オプションもあります。
+
+送信通信を保護する主な方法は 3 つあります:
+
+1. [**Outgoing Proxy Manager**](#setting-up-a-proxy-server) - このツールは HTTP トラフィックをプロキシサーバー経由でルーティングし、Web リクエストを安全に管理・制御できるようにします。
+2. [**%%Tailscale|tailscale%% の出口ノード**](#tailscale-exit-nodes) - %%Tailscale|tailscale%% の出口ノードを使うと、すべてのトラフィックを %%Tailscale|tailscale%% のメッシュネットワーク経由でルーティングでき、デバイス間で安全な接続が確保されます。
+3. [**%%WireGuard|wireguard%% %%VPN|vpn-tunnel%%**](#outgoing-vpn-connections) - %%WireGuard|wireguard%% %%VPN|vpn-tunnel%% を使ってトラフィックを商用の %%VPN|vpn-tunnel%% プロバイダー経由でルーティングすることもでき、プライバシーとセキュリティをさらに強化できます。
+
+### Outgoing Proxy Manager と Tailscale/WireGuard/VPN の比較
+
+| ユースケース                         | 推奨ツール                                        | 理由                                                                                                |
+| ------------------------------ | -------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| Unraid システム更新のためにファイアウォールを回避する | Outgoing Proxy Manager                       | Unraid のシステムトラフィックのみをプロキシ経由でルーティングします。構成がシンプルで最小限です。                                              |
+| メッシュネットワークで全送信トラフィックを保護する      | %%Tailscale\|tailscale%% の出口ノード              | %%Tailscale\|tailscale%% のメッシュネットワーク経由でトラフィックを暗号化します。既存の %%Tailscale\|tailscale%% インフラで簡単に設定できます。 |
+| 全送信トラフィック（システム全体）を保護する         | %%WireGuard\|wireguard%% %%VPN\|vpn-tunnel%% | Unraid からのすべてのトラフィック（Docker/VM を含む）を暗号化し、トンネル化して商用の %%VPN\|vpn-tunnel%% プロバイダーへ送ります。              |
+| Docker または VM のトラフィックを分離する     | %%VPN\|vpn-tunnel%% またはコンテナプロキシ              | きめ細かな制御のために、コンテナ/VM レベルで %%VPN\|vpn-tunnel%% を設定します。                                              |
+| どこからでもホームネットワークにアクセスする         | %%Tailscale\|tailscale%% の出口ノード              | ホームネットワーク経由でトラフィックをルーティングし、IP と地理的位置を一貫させます。                                                      |
+
+多くのユーザーには、システム全体のセキュリティとプライバシーのために [%%Tailscale|tailscale%%](./tailscale.mdx) や [%%WireGuard|wireguard%%](./wireguard.mdx) のようなソリューションが推奨されます。Unraid 自身の HTTP リクエストだけをプロキシしたい場合は Outgoing Proxy Manager を使用してください。
+
+### プロキシサーバーの設定 {#setting-up-a-proxy-server}
+
+プロキシサーバーを設定するには:
+
+1. %%WebGUI|web-gui%% で ***Settings → Outgoing Proxy Manager*** に移動します。
+
+<div style={{ margin: 'auto', maxWidth: '600px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+  ![Outgoing Proxy Manager](/img/outgoing-proxy-manager.png)
+</div>
+
+2. プロキシの名前、URL、必要に応じてユーザー名/パスワードを追加します。
+3. **Apply** をクリックします。
+4. 一覧から新しいプロキシを選択し、もう一度 **Apply** をクリックします。
+
+%%WebGUI|web-gui%% は、選択されたプロキシを自動的に送信システムトラフィックに使用します。Web ターミナルや %%SSH|ssh%% セッションが開いている場合は、新しいプロキシ設定を適用するためにいったん閉じて再度開いてください。この動作は透過的です。アクティビティを確認するにはプロキシサーバーのログを監視してください。
+
+### HTTP プロキシサーバーの選び方
+
+- **組織がプロキシを提供している場合:** ネットワーク管理者から提供されたアドレスと認証情報を使用します。
+- **自分で設定する必要がある場合:**
+  - [@ich777 による Proxy Server Docker コンテナ](https://forums.unraid.net/profile/72388-ich777/) はテスト済みで、Unraid で問題なく動作します。
+  - このコンテナは、Unraid の [%%WireGuard|wireguard%% %%VPN|vpn-tunnel%%](wireguard.mdx) を使ってトラフィックを商用の %%VPN|vpn-tunnel%% 経由でルーティングしたり、別の Docker ベースの %%VPN|vpn-tunnel%% サービスに接続したりするよう設定できます。
+  - 信頼性のため、起動中もネットワークを利用できるよう、プロキシサーバーは Unraid とは別のシステムでホストしてください。
+
+プロキシトラフィックを監視するには、プロキシホストシステムの **Docker** タブに移動し、**Proxy Server** コンテナを選択して **Logs** を表示します。
+
+### 自動インポートとプラグイン互換性
+
+- 以前 **Proxy Editor** プラグインを使用していた場合、Unraid 7.0 以降のビルトインプロキシサポートへのアップグレード時に自動的に削除されます。
+- `config/go` スクリプトまたは `community.applications/proxy.cfg` にある従来のプロキシ設定は自動的にインポートされ、旧ファイルは安全のために名前が変更されます。
+
+### プラグイン互換性
+
+- PHP の `curl_init()` 関数を使用するプラグインは、自動的に送信プロキシを使用します。
+- `file_get_contents()` を使用するプラグインは、プロキシ互換性のために `curl_init()` に移行してください。
+- コマンドライン処理では、プロキシ対応のために `wget` より `curl` を優先してください。
+
+プラグイン開発と互換性の詳細については、[ドキュメントのプラグインセクション](../../using-unraid-to/customize-your-experience/plugins.mdx) を参照してください。
+
+## Tailscale の出口ノード {#tailscale-exit-nodes}
+
+%%Tailscale|tailscale%% exit nodes offer a secure and modern way to route your Unraid server's outgoing traffic through another device on your %%Tailnet|tailnet%%. This setup provides the security of a %%VPN|vpn-tunnel%% while leveraging %%Tailscale|tailscale%%'s easy-to-use mesh networking, making it ideal for users who want encrypted outgoing traffic without the complexity of traditional %%VPN|vpn-tunnel%%s.
+
+:::tip[When Tailscale の出口ノードを使用するために]
+
+次の用途では %%Tailscale|tailscale%% の出口ノードの使用を検討してください:
+
+- 旅行中に自宅ネットワークからの送信トラフィックを保護する
+- VPN トラフィックをブロックするサービス向けに一貫した IP アドレスを維持する
+- 既存の %%Tailscale|tailscale%% インフラとシームレスに統合する
+
+:::
+
+### Tailscale の出口ノードを設定する
+
+サーバーの送信トラフィック用に %%Tailscale|tailscale%% の出口ノードを設定するには:
+
+1. **Community Applications から [Tailscale プラグイン](https://unraid.net/community/apps/c/plugins?q=tailscale#r:~:text=Plugins-,Tailscale%20\(Plugin\),-Derek%20Kaser) をまだインストールしていない場合はインストールします。**
+2. **%%Tailnet|tailnet%% 上で出口ノードを設定します。** これは別の Unraid サーバー、Docker コンテナ、または %%Tailscale|tailscale%% を実行している任意のデバイスにできます。
+3. **Unraid サーバーを設定して** 出口ノードを使用します:
+   - ***Settings → Tailscale*** に移動します。
+   - **Use Exit Node** フィールドで、利用可能な出口ノードを選択します。
+   - **Apply** をクリックします。
+
+### Mullvad 連携
+
+Tailscale は Mullvad VPN と提携し、商用の出口ノードを提供しています。[Tailscale 経由で Mullvad VPN](https://tailscale.com/mullvad) を購入すると、出口ノードとして同社のグローバルなサーバーネットワークにアクセスできます。この組み合わせにより、Tailscale のメッシュネットワーキングと Mullvad のプライバシー重視のインフラを利用できます。
+
+### Docker コンテナの出口ノード
+
+Unraid サーバー上で %%Tailscale|tailscale%% の出口ノードとして機能する Docker コンテナを設定することもできます。
+
+1. [公式 %%Tailscale|tailscale%% Docker イメージ](https://hub.docker.com/r/tailscale/tailscale) を使用して **%%Tailscale|tailscale%% コンテナをデプロイ** します。
+2. `--advertise-exit-node` フラグを追加して **コンテナを設定** します。
+3. %%Tailscale|tailscale%% の管理コンソールで **出口ノードを承認** します。
+4. %%Tailnet|tailnet%% 上の他のデバイス用の出口ノードとして **コンテナを選択** します。
+
+## Outgoing VPN connections
+
+Unraid は商用プロバイダーへの送信 WireGuard VPN 接続をサポートしており、Docker コンテナまたはサーバー全体のトラフィックを安全なトンネル経由でルーティングできます。これはプライバシーの確保、地理的制限の回避、または送信データの保護に役立ちます。コミュニティの知見やトラブルシューティングについては、[WireGuard VPN tunneled access forum thread](https://forums.unraid.net/topic/84316-wireguard-vpn-tunneled-access/) を参照してください。
+
+### VPN プロバイダーの選び方
+
+適切な %%VPN|vpn-tunnel%% プロバイダーの選択は、速度、プライバシー、使いやすさ、サポートなどの優先事項によって決まります。以下のプロバイダーは Unraid によるサポートが手厚く、%%WireGuard|wireguard%% との強力な統合を提供します:
+
+| プロバイダー                                                                                                   | 最適な用途                | 主な機能                     | Unraid でのサポート | 注記                     |
+| -------------------------------------------------------------------------------------------------------- | -------------------- | ------------------------ | ------------- | ---------------------- |
+| [NordVPN](https://nordvpn.com/)                                                                          | 速度、プライバシー、コストパフォーマンス | ダブル NAT、ノーログ、グローバルネットワーク | 非常に良い         | NordLynx プロトコル、高速      |
+| [Surfshark](https://surfshark.com/)                                                                      | 低価格、無制限デバイス          | ノーログ、無制限接続、高速            | 非常に良い         | 高いコストパフォーマンス、簡単なセットアップ |
+| [ProtonVPN](https://protonvpn.com/)                                                                      | プライバシー、オープンソース       | ダブル NAT、Secure Core、ノーログ | 非常に良い         | オープンソース、強力なプライバシー      |
+| [Mullvad](https://mullvad.net/en)                                                                        | 匿名性、シンプルさ            | 個人情報不要、定額料金、オープンソース      | 非常に良い         | 現金払い可、メール不要            |
+| [PureVPN](https://www.purevpn.com/)                                                                      | ストリーミング、柔軟性          | 大規模ネットワーク、Unraid との簡単な統合 | 良い            | サポート良好、高速              |
+| [CyberGhost](https://www.cyberghostvpn.com/)                                                             | ストリーミング、使いやすさ        | 最適化されたサーバー、高速            | 良い            | 使いやすいアプリ               |
+| [IVPN](https://www.ivpn.net/en/), [OVPN](https://www.ovpn.com/en), [Windscribe](https://windscribe.com/) | ニッチなニーズ              | 高度なプライバシー、地域オプション        | 良い            | コミュニティによるサポート          |
+
+:::tip
+
+ネイティブの %%WireGuard|wireguard%% サポートと強力なプライバシーポリシーを備えたプロバイダーを選んでください。独自クライアントや独自プロトコルを必要とするプロバイダーは避けてください。
+
+:::
+
+### Docker 向け VPN トンネル経由アクセスの設定
+
+特定の Docker コンテナを商用の %%VPN|vpn-tunnel%% トンネル経由でルーティングできます。ルーターの変更は不要です。
+
+1. 選択したプロバイダーから %%WireGuard|wireguard%% 設定ファイルをダウンロードします。
+2. ***Settings → VPN Manager*** で **Import Config** を選択し、ファイルをアップロードします。これにより新しいトンネルが作成されます。
+3. **Peer type of access** は既定で *Docker 向け VPN トンネル経由アクセス* になります。必要に応じてローカル名を付けます。
+4. **Apply** をクリックします。
+5. トンネルの切り替えを **Active** に設定します。
+
+:::tip
+
+トンネル名（例: `wg0`、`wg1`、`wg2`）を控えておきます。Docker コンテナを設定するときに必要になります。\
+プロバイダーの設定に DNS サーバーが指定されている場合は、後で使えるように記録しておきます。指定されていない場合は、`8.8.8.8` のようなパブリック DNS を使用します。
+
+:::
+
+### Docker トンネルのテスト
+
+Docker トンネルが機能しており、DNS や IP 情報が漏れていないことを確認するには:
+
+1. Community Applications 経由で [Firefox](https://unraid.net/community/apps?q=Firefox) の Docker コンテナをインストールします。
+2. **Network Type** を **Custom: wgX** に設定します（X はトンネル名に置き換えます）。
+3. **Advanced** 表示に切り替え、**Extra Parameters** に DNS プロバイダーを追加します（例: `--dns=8.8.8.8`）。
+4. 変更を適用してコンテナを起動します。
+5. Firefox を起動し、[whatismyipaddress.com](https://whatismyipaddress.com/) にアクセスして、IP アドレスが VPN サーバーの国と一致していることを確認します。
+6. [dnsleaktest.com](https://www.dnsleaktest.com/) にアクセスし、VPN の DNS サーバーのみが検出されることを確認します。
+
+このトンネルに追加のコンテナを割り当てることも、複数のトンネルを作成することもできます。
+
+### システム向け VPN トンネル経由アクセスの設定
+
+すべての Unraid トラフィックを商用 VPN 経由でルーティングするには:
+
+1. プロバイダーから %%WireGuard|wireguard%% 設定をダウンロードします。
+2. ***Settings → VPN Manager*** で **Import Config** を選択し、ファイルをアップロードします。
+3. 必要に応じてトンネル名を変更します。
+4. **Apply** をクリックします。
+5. トンネルの切り替えを **Active** に設定します。
+
+:::note
+
+- Unraid の更新やプラグインのインストール時には、一時的にトンネルを無効にする必要がある場合があります。
+- システム全体のトンネルは同時に 1 つしかアクティブにできません。
+- インポートされた設定の DNS 設定は Unraid では無視されます。Unraid の DNS を信頼できるパブリックサーバー（例: `8.8.8.8`、`8.8.4.4`）に設定してください。
+
+:::
+
+### システムトンネルのテスト
+
+1. [Firefox](https://unraid.net/community/apps?q=Firefox) の Docker コンテナをインストールします。
+2. すべての既定値を受け入れます。
+3. Firefox を起動し、[whatismyipaddress.com](https://whatismyipaddress.com/) にアクセスします。IP アドレスは VPN プロバイダーの所在地と一致するはずです。
+
+---
+
+### サポートとコミュニティリソース
+
+最新のガイダンス、トラブルシューティングの支援、コミュニティのヒントについては、[Unraid フォーラム](https://forums.unraid.net/) の次のリソースを参照してください:
+
+- **[WireGuard VPN Tunneled Access](https://forums.unraid.net/topic/84316-wireguard-vpn-tunneled-access/)** - このコミュニティディスカッションでは、Docker コンテナまたはシステム全体のトラフィックを商用 WireGuard VPN プロバイダー経由でルーティングする方法を扱っています。実際のセットアップ例、DNS リークテストのヒント、送信トンネルのトラブルシューティングのアドバイスが含まれています。
+
+- **[Dynamix WireGuard Plugin Thread](https://forums.unraid.net/topic/84229-dynamix-wireguard-vpn/)** - これは Dynamix WireGuard プラグインの公式スレッドです。プラグインの更新、機能要望、バグ報告、および Unraid のビルトイン WireGuard サポートに関する一般的な Q&A を扱っています。
+
+- **[WireGuard Quickstart](https://forums.unraid.net/topic/84226-wireguard-quickstart/)** - Unraid への受信 WireGuard VPN 接続を設定するためのステップバイステップガイドです。このリソースには、設定の手順、ピア設定の手順、リモートアクセスのヒントが含まれています。
+
+\* *"WireGuard" と "WireGuard" のロゴは Jason A. Donenfeld の登録商標です。*

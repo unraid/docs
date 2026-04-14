@@ -1,0 +1,226 @@
+---
+sidebar_position: 6
+sidebar_label: Tailscale
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+# Tailscale
+
+Unraid は、シームレスで安全なネットワーク接続をサーバーに直接もたらす技術提携により、[%%Tailscale|tailscale%%](https://tailscale.com/) との深い統合を実現しました。%%Tailscale|tailscale%% は従来型の VPN ではなく、%%WireGuard|wireguard%% 上に構築された最新のピアツーピア・オーバーレイ ネットワークです。これにより、物理的な場所やネットワーク環境に関係なく、デバイス、サーバー、個々の Docker コンテナを安全なプライベート ネットワーク（%%Tailnet|tailnet%%）に接続できます。Unraid との提携により、%%Tailscale|tailscale%% プラグインは完全に保守され、緊密に統合されます。Unraid 7 以降では、ネイティブの証明書サポートと高度な機能も利用できます。
+
+- **簡単なセットアップ:** ポートフォワーディングやファイアウォールの煩わしさはありません。
+- **強力なセキュリティ:** 内部では %%WireGuard|wireguard%% 暗号化を使用しています。
+- **柔軟な共有:** ネットワーク全体ではなく、特定のデバイスやコンテナだけにアクセス権を付与できます。
+- **充実したサポート:** 公式に保守されるプラグインで、継続的な機能強化が行われます。
+
+---
+
+## Tailscale を始める {#getting-started-with-tailscale}
+
+まず、[無料の Tailscale アカウントに登録](https://login.tailscale.com/start)し、少なくとも 1 台のデバイス（Windows、macOS、Linux、iOS、Android など）にクライアントをインストールします。無料アカウントでは最大 3 ユーザーと 100 台のデバイスをサポートします。
+
+Unraid を追加する前に、次を確認してください:
+
+- 識別しやすくするために [%%Tailnet|tailnet%% の名前を変更](https://tailscale.com/kb/1217/tailnet-name)します。
+- デバイス名を簡略化するために [%%MagicDNS|magicdns%%](https://tailscale.com/kb/1081/magicdns) を有効にします。
+- 安全で信頼できるアクセスのために [HTTPS 証明書](https://tailscale.com/kb/1153/enabling-https) を有効にします。
+
+:::note
+
+HTTPS 証明書内のマシン名は公開されます。公開しても問題ない名前を使用してください。
+
+:::
+
+### Unraid への Tailscale の追加
+
+以下の手順は Unraid 7 以降で有効かつ最新です:
+
+1. 上記のとおり Tailscale アカウント設定を確認します。
+2. Unraid で [**Community Apps**](../../using-unraid-to/run-docker-containers/community-applications.mdx) タブを開き、公式の %%Tailscale|tailscale%% プラグインを検索してインストールします。
+3. ***Settings → Tailscale*** を開き、Reauthenticate をクリックします。%%Tailscale|tailscale%% アカウントでサインインします。
+4. **Connect** をクリックして、Unraid サーバーを %%Tailnet|tailnet%% に追加します。
+5. ***Settings → Management Access*** に移動して、%%WebGUI|web-gui%% 用の %%Tailscale|tailscale%% URL を確認します。
+6. ***Settings → Tailscale*** で、サーバーの %%Tailnet|tailnet%% 名と IP を確認します。これらを使って、%%Tailnet|tailnet%% 上の任意のデバイスから SMB/NFS 共有、Docker コンテナ、その他にアクセスできます。
+   \+7.（任意）**Include Tailscale peers in /etc/hosts** を有効にし（[ホスト名解決の強化](#enhanced-hostname-resolution) を参照）、Tailscale デバイスをサーバーのホスト名解決に自動的に追加して、%%Tailnet|tailnet%% 上の他のデバイスへアクセスしやすくします。
+
+### サブネットルーティング（オプション）
+
+メインの LAN IP で Unraid サーバーにアクセスするには、または独自の IP を持つ Docker コンテナに पहुंच?
+
+1. ***Settings → Tailscale*** に移動し、**Reauthenticate** をクリックして、Tailscale アカウントでサインインします。
+2. Tailscale の設定で、**Advertise Routes** セクションを見つけて、次を追加します:
+   - Unraid サーバーの IP（例: `192.168.0.12/32`）、または
+   - ネットワーク全体のサブネット（例: `192.168.0.0/24`）。
+3. **Apply** をクリックして変更を保存します。
+4. [Tailscale 管理コンソール](https://login.tailscale.com/admin) にログインし、**Machines** ページに移動します。
+5. Unraid サーバーを見つけ、広告されたサブネットの保留中のルートを承認します。
+6. 承認されると、%%Tailnet|tailnet%% 上のデバイスは通常の IP アドレスで Unraid サーバーや LAN デバイスにアクセスできるようになります。
+
+:::note
+
+詳細については、[%%Tailscale|tailscale%% のサブネットルーティングのドキュメント](https://tailscale.com/kb/1019/subnets)を参照してください。
+
+:::
+
+### ホスト名解決の強化 {#enhanced-hostname-resolution}
+
+Tailscale プラグインには、Tailscale のピアをサーバーの `/etc/hosts` ファイルに自動的に追加するオプションがあります。この機能により、%%Tailnet|tailnet%% 上の他のデバイスへホスト名ベースで接続できるため、デバイスへのアクセスが簡単になります。
+
+利点は次のとおりです:
+
+- IP アドレスではなく、わかりやすいホスト名を使用して他の Tailscale デバイスにアクセスできます。
+- デバイスが %%Tailnet|tailnet%% に参加または離脱したときに自動更新されます。
+- ホスト名解決に依存するアプリケーションとの互換性が向上します。
+
+この機能を有効にするには:
+
+1. %%WebGUI|web-gui%% の ***Settings → Tailscale*** に移動します。
+2. **Include Tailscale peers in /etc/hosts** オプションを有効にします。
+3. **Apply** をクリックして変更を保存します。
+
+有効にすると、Unraid サーバーから Tailscale ホスト名を使って %%Tailnet|tailnet%% 上の他のデバイスにアクセスできるようになり、サービスの設定、共有リソースへのアクセス、ネットワーク管理が容易になります。
+
+---
+
+## Docker コンテナへの Tailscale の追加
+
+Unraid を使うと、[Docker コンテナ](../../using-unraid-to/run-docker-containers/overview.mdx) を %%Tailnet|tailnet%% に簡単に接続でき、各コンテナに一意のデバイス ID を付与して、安全で柔軟なリモートアクセスを実現できます。この統合により、サーバー全体を公開することなく個々のコンテナへのアクセスを共有でき、exit node、Serve、Funnel などの高度な機能もコンテナごとに利用できます。セットアップは完全に自動化されているため、あらゆるスキルレベルのユーザーが、強化されたセキュリティと効率化されたネットワークの恩恵を受けられます。
+
+<details>
+  <summary><strong>Tailscale と Docker の統合の仕組み</strong> - クリックして展開/折りたたみ</summary>
+
+  Docker コンテナで **Use %%Tailscale|tailscale%%** を有効にして変更を適用すると、Unraid はシームレスな統合のために次の手順を自動化します:
+
+  1. **Entrypoint の抽出:** Unraid はコンテナの元の Entrypoint と CMD を特定し、想定された起動動作を維持します。
+  2. **統合スクリプトの注入:** `tailscale_container_hook` スクリプトがコンテナ内にマウントされ、Entrypoint はまずこのスクリプトを実行するよう更新されます。
+  3. **環境設定:** 元の Entrypoint、CMD、および必要なすべての %%Tailscale|tailscale%% 変数が Docker run コマンドに渡されます。
+  4. **%%Tailscale|tailscale%% の初期化:** 起動時に、フック スクリプトが必要な依存関係をインストールし、%%Tailscale|tailscale%% クライアントをコンテナ内でダウンロードして起動します。
+  5. **通常起動:** その後、スクリプトがコンテナの元の Entrypoint と CMD を起動するため、アプリケーションは通常どおり実行されます。Tailscale のネットワークが自動的に重ねて適用されます。
+
+  有効にすると、コンテナは Tailnet 上で独自のデバイスとして表示され、手動でのネットワーク設定やポートフォワーディングなしで、安全なアクセスと高度な Tailscale 機能を利用できるようになります。
+
+</details>
+
+:::warning[Container 互換性]
+
+Tailscale の統合はすべてのコンテナで動作するわけではありません。特に次のようなコンテナでは、Tailscale を有効にするとまったく機能しない場合があります:
+
+- カスタムネットワーク要件
+- 特定のネットワーク分離の要件
+- Tailscale のネットワーク変更と競合するアプリケーション
+
+まずは重要でないコンテナで Tailscale 統合をテストし、コンテナが正常に動作しなくなった場合は無効化できるようにしておいてください。
+
+:::
+
+:::note\[Prerequisites]
+
+- まず、Docker コンテナにアクセスする任意のコンピューターに %%Tailscale|tailscale%% をインストールします。
+- Docker との統合には Unraid の Tailscale プラグインは厳密には必須ではありませんが、最良の体験のためにインストールして Unraid サーバーでサインインすることを強く推奨します。
+
+:::
+
+Docker コンテナに %%Tailscale|tailscale%% を追加するには:
+
+1. [はじめに](#getting-started-with-tailscale) で説明したように、%%Tailscale|tailscale%% アカウント設定を確認します。
+2. Unraid で **Docker** タブを開き、[対象のコンテナを編集](../../using-unraid-to/run-docker-containers/managing-and-customizing-containers.mdx)します。
+3. **Use Tailscale** スイッチを有効にします。
+4. コンテナの **Tailscale ホスト名** を入力します（Tailnet 内で一意である必要があります）。
+
+:::warning
+
+このホスト名用の HTTPS 証明書が生成され、公開証明書台帳に掲載されます。公開しても問題ない名前を選んでください。詳細は [Tailscale HTTPS ドキュメント](https://tailscale.com/kb/1153/enabling-https) を参照してください。
+
+:::
+
+5. このコンテナを exit node にするかどうかを決めます（VPN コンテナに便利です）。
+6. コンテナの送信トラフィックに exit node を使用するかどうかを選択します。Tailscale プラグインがインストールされている場合は、使用可能な exit node の一覧が表示されます。そうでない場合は、IP を手動で入力します。
+7. exit node を使用する場合、このコンテナが LAN にもアクセスできるようにするかどうかを指定します。
+8. Tailscale の **Userspace Networking** フィールドは通常自動的に設定されます。特別な理由がない限り無効のままにしてください。
+9. **%%Tailscale|tailscale%% %%SSH|ssh%%** を有効にするかどうかを決めます（%%Tailscale|tailscale%% による認証付きのセキュアシェル アクセス）。
+
+:::info[Serve vs. Funnel]
+
+- **Serve**: フレンドリーな HTTPS URL を使って、Tailnet からコンテナの Web サイトや Web サービスに安全にアクセスできます。ポートフォワーディングは不要で、Tailnet デバイスのみが接続できます。
+- **Funnel**: 一意の HTTPS URL を通じて、コンテナの Web サイトを公開インターネットに公開します。リンクを知っていれば、Tailnet に参加していなくても誰でもアクセスできます。サービスを広いインターネットに公開するため、注意して使用してください。
+
+:::
+
+10. **Serve** を有効にするとコンテナの Web インターフェースを Tailnet にリバースプロキシでき、**Funnel** を有効にすると公開インターネットからアクセスできるようになります。Unraid はコンテナの WebUI 設定に基づいて使用するポートを自動検出します。必要に応じて、詳細オプションも利用できます。
+
+:::warning
+
+Serve または Funnel を使用する場合、追加の認証レイヤーはありません。ユーザーアクセスの管理はコンテナ側の責任です。Web アプリはそれに応じて保護してください。
+
+:::
+
+11. 変更を **Apply** し、Tailscale のメッセージがないか **Enhanced Log** または **Log Viewer** を確認します。**To authenticate, visit...** リンクをクリックして、Tailnet 上でコンテナを承認します。
+
+:::caution\[Troubleshooting]
+
+**永続状態エラー** - "*ERROR: Couldn't detect persistent Docker directory for .tailscale_state*" が表示される場合:
+
+- コンテナを編集し、Tailscale の状態データを保存するためのマップ済みパス（例: `/container-path/`）を指定します。
+- Tailscale の **Show advanced settings** を有効にし、Tailscale の **State directory** を `/container-path/.tailscale_state` に設定します。
+- コンテナを再起動します。
+- Docker XML の作成者は、コンテナの XML ファイルに `<TailscaleStateDir>/container-path/.tailscale_state</TailscaleStateDir>` を追加することで、これを簡略化できます。
+
+:::
+
+---
+
+## Tailscale の更新
+
+%%Tailscale|tailscale%% は、新機能とセキュリティ改善を提供するために頻繁に更新されます。Unraid システムを安全かつ互換性のある状態に保つため、Unraid の %%Tailscale|tailscale%% プラグインと、%%Tailscale|tailscale%% を使用する Docker コンテナの両方を最新に保ってください。
+
+### Tailscale プラグインの更新
+
+新しいバージョンが利用可能になったら、他のプラグインと同様に Unraid の Apps タブからプラグインを更新します。プラグインは सक्रिय に保守されており、最新の Tailscale 機能に合わせて定期的に更新されています。最新の Tailscale の変更内容は、[%%Tailscale|tailscale%% の変更履歴](https://tailscale.com/changelog) と [プラグインのリリースノート](https://github.com/unraid/unraid-tailscale/releases) でいつでも確認できます。
+
+### Docker コンテナの Tailscale 更新
+
+Docker コンテナ内の %%Tailscale|tailscale%% を更新するには:
+
+1. Docker ページで、任意のコンテナの %%Tailscale|tailscale%% アイコンにカーソルを合わせます。更新がある場合は通知が表示されます。
+2. コンテナを更新するには、次のいずれかを行います:
+   - **Advanced View**（右上）に切り替え、次に **Force update** をクリックします。
+   - コンテナを編集し、設定の切り替えなどの軽微な変更を加えて、**Apply** をクリックします。
+
+---
+
+## Userspace networking
+
+**Userspace networking** は、コンテナが %%Tailnet|tailnet%% およびネットワーク全体にどのように接続するかを制御します。多くの場合、コンテナに %%Tailscale|tailscale%% の WebUI URL でアクセスし、すべてのクライアント システムに %%Tailscale|tailscale%% がインストールされているなら、詳細は気にしなくて構いません。
+
+- **Enabled:** コンテナは制限された環境で動作します。ほかの %%Tailnet|tailnet%% デバイスへの接続を開始したり、%%Tailscale|tailscale%% DNS を使用したりはできませんが、%%Tailscale|tailscale%% WebUI と元の WebUI URL の両方から到達可能です。
+
+- **Disabled:** コンテナは完全な %%Tailnet|tailnet%% アクセスを持ち、%%Tailscale|tailscale%% DNS を使用できます。ほかの %%Tailnet|tailnet%% デバイスと通信できますが、元の WebUI URL は利用できない場合があります。
+
+:::info[Feature 要件]
+
+- **Exit Node** に設定されたコンテナでは、常に userspace networking が有効になります。
+- **Use an Exit Node** に設定されたコンテナでは、常に userspace networking が無効になります。
+
+:::
+
+### ネットワークタイプの互換性
+
+Tailscale の統合と userspace networking の動作は、コンテナのネットワークタイプによって異なります。下の表で互換性とアクセス オプションを確認してください:
+
+| ネットワークタイプ            | Userspace networking の既定 | 変更できますか? | WebUI アクセス (%%Tailscale\|tailscale%%) | WebUI アクセス (元)      | 注記                                                       |
+| -------------------- | ------------------------ | -------- | ------------------------------------- | ------------------- | -------------------------------------------------------- |
+| `host`               | 無効化                      | いいえ      | いいえ                                   | はい                  | ホストモードでは %%Tailscale\|tailscale%% 統合は利用できません             |
+| `bridge`             | 無効化                      | はい       | はい                                    | *有効*: はい  *無効*: いいえ | 有効時は両方の URL を使用可能。無効時は %%Tailscale\|tailscale%% WebUI のみ |
+| `eth0`/`br0`/`bond0` | 無効化                      | はい       | はい                                    | はい                  | 設定に関係なく両方の URL にアクセス可能                                   |
+| `container`/`wg0`    | 無効（未テスト）                 | はい       | 不明                                    | 不明                  | 注意して使用してください。完全にはテストされていません                              |
+
+:::info[Keep ご留意ください]
+
+- %%Tailscale|tailscale%% WebUI URL は、%%Tailscale|tailscale%% がインストールされて %%Tailnet|tailnet%% に参加しているデバイス、または明示的な共有が有効になっている場合にのみアクセスできます。
+- ほとんどのユーザーにとって、既定設定で安全かつ信頼性の高いアクセスが提供されます。高度なオプションは、特殊なネットワーク要件向けに用意されています。
+
+:::
+
+\* *"%%WireGuard|wireguard%%" と "%%WireGuard|wireguard%%" のロゴは Jason A. Donenfeld の登録商標です。*

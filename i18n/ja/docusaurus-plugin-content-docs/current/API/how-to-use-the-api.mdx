@@ -1,0 +1,253 @@
+---
+title: Unraid API の使用
+description: GraphQL API を通じて Unraid サーバーとやり取りする方法を学びます
+sidebar_position: 2
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import ManageApiKeysGui from './partials/manage-api-keys-gui.mdx';
+import ManageApiKeysCli from './partials/manage-api-keys-cli.mdx';
+
+# Unraid API の使用
+
+:::tip[Quick 開始]
+
+Unraid API は、サーバーを管理するための強力な GraphQL インターフェースを提供します。このガイドでは、認証、一般的なクエリ、ベストプラクティスを扱います。
+
+:::
+
+Unraid API は、Unraid サーバーとやり取りできる GraphQL インターフェースを提供します。このガイドは、API の調査と利用を始めるのに役立ちます。
+
+## 🎮 GraphQL サンドボックスを有効にする {#enabling-the-graphql-sandbox}
+
+### Web GUI 方式（推奨）
+
+:::info[Preferred 方法]
+
+Web GUI を使用するのが、GraphQL サンドボックスを有効にする最も簡単な方法です。
+
+:::
+
+1. **Settings** → **Management Access** → **Developer Options** に移動します
+2. **GraphQL Sandbox** のトグルを有効にします
+3. 次の場所に移動して GraphQL プレイグラウンドにアクセスします:
+
+   ```txt
+   http://YOUR_SERVER_IP/graphql
+   ```
+
+### CLI 方式
+
+あるいは、CLI を使用して開発者モードを有効にできます:
+
+```bash
+unraid-api developer --sandbox true
+```
+
+または、対話モードを使用します:
+
+```bash
+unraid-api developer
+```
+
+## 🔑 認証
+
+:::warning[Required 一般的な操作向け]
+
+ほとんどのクエリとミューテーションには認証が必要です。リクエストには必ず適切な資格情報を含めてください。
+
+:::
+
+次の方法で認証できます:
+
+1. **API キー** - プログラムからのアクセス用
+2. **Cookie** - WebGUI にサインインしている場合は自動的に使用されます
+3. **SSO/OIDC** - 外部プロバイダーで構成されている場合
+
+### API キーの管理
+
+<Tabs>
+  <TabItem value="gui" label="Web GUI（推奨）" default>
+    <ManageApiKeysGui />
+  </TabItem>
+
+  <TabItem value="cli" label="CLI 方式">
+    <ManageApiKeysCli />
+  </TabItem>
+</Tabs>
+
+### API キーの使用
+
+生成された API キーは、GraphQL リクエストのヘッダーとして含める必要があります:
+
+```json
+{
+    "x-api-key": "YOUR_API_KEY"
+}
+```
+
+## 📊 利用可能なスキーマ
+
+API は、Unraid サーバーのさまざまな側面にアクセスできます:
+
+### システム情報
+
+- CPU、メモリ、OS 情報を含むシステムの詳細を取得します
+- システムの状態と健全性を監視します
+- ベースボードとハードウェア情報にアクセスします
+
+### アレイ管理
+
+- アレイの状態と構成を取得します
+- アレイ操作（開始/停止）を管理します
+- ディスクの状態と健全性を監視します
+- パリティチェックを実行します
+
+### Docker 管理
+
+- Docker コンテナを一覧表示し、管理します
+- コンテナの状態を監視します
+- Docker ネットワークを管理します
+
+### リモートアクセス
+
+- リモートアクセス設定を構成および管理します
+- SSO 設定を処理します
+- 許可されたオリジンを管理します
+
+### 💻 クエリ例
+
+#### システムステータスを確認する
+
+```graphql
+query {
+    info {
+        os {
+            platform
+            distro
+            release
+            uptime
+        }
+        cpu {
+            manufacturer
+            brand
+            cores
+            threads
+        }
+    }
+}
+```
+
+#### アレイステータスを監視する
+
+```graphql
+query {
+    array {
+        state
+        capacity {
+            disks {
+                free
+                used
+                total
+            }
+        }
+        disks {
+            name
+            size
+            status
+            temp
+        }
+    }
+}
+```
+
+#### Docker コンテナを一覧表示する
+
+```graphql
+query {
+    dockerContainers {
+        id
+        names
+        state
+        status
+        autoStart
+    }
+}
+```
+
+## 🏗️ スキーマ型
+
+API にはいくつかの主要な型が含まれています:
+
+### 基本型
+
+- `Node`: 一意の ID を持つオブジェクト用のインターフェース - [Object Identification](https://graphql.org/learn/global-object-identification/) を参照してください
+- `JSON`: 複雑な JSON データ用
+- `DateTime`: タイムスタンプ値用
+- `Long`: 64 ビット整数用
+
+### リソース型
+
+- `Array`: アレイとディスクの管理
+- `Docker`: コンテナとネットワークの管理
+- `Info`: システム情報
+- `Config`: サーバー構成
+- `Connect`: リモートアクセス設定
+
+### ロールベースアクセス
+
+利用可能なロール:
+
+- `admin`: フルアクセス
+- `connect`: リモートアクセス機能
+- `guest`: 制限付き読み取りアクセス
+
+## ✨ ベストプラクティス
+
+:::tip[Pro ヒント]
+
+1. Apollo Sandbox を使用してスキーマを調べ、クエリをテストします
+2. 小さなクエリから始め、必要に応じてフィールドを徐々に追加します
+3. パフォーマンスを維持するために、クエリの複雑さを監視します
+4. API キーには適切なロールと権限を使用します
+5. API キーは安全に保管し、定期的にローテーションします
+
+:::
+
+## ⏱️ レート制限
+
+:::caution[Rate 制限]
+
+API は、不正使用を防ぐためにレート制限を実装しています。アプリケーションがレート制限レスポンスを適切に処理するようにしてください。
+
+:::
+
+## 🚨 エラー処理
+
+API は、次の形式で標準的な GraphQL エラーを返します:
+
+```json
+{
+  "errors": [
+    {
+      "message": "Error description",
+      "locations": [...],
+      "path": [...]
+    }
+  ]
+}
+```
+
+## 📚 追加リソース
+
+:::info[Learn さらに]
+
+- Apollo Sandbox のスキーマエクスプローラーを使用して、利用可能なすべての型とフィールドを参照します
+- 詳細なフィールド説明については、Apollo Sandbox のドキュメントタブを確認してください
+- `unraid-api status` を使用して API の健全性を監視します
+- トラブルシューティングには `unraid-api report` を使用してレポートを生成します
+
+特定のコマンドや構成オプションの詳細については、[CLI ドキュメント](cli.mdx) を参照するか、`unraid-api --help` を実行してください。
+
+:::

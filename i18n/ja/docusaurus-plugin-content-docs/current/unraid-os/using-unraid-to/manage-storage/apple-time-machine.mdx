@@ -1,0 +1,118 @@
+---
+sidebar_position: 5
+sidebar_label: Apple Time Machine
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+# Apple Time Machine
+
+AppleのTime Machineは、すべてのMacに付属するバックアップツールです。ファイル、アプリケーション、システム設定を自動的にバックアップすることで、それらを簡単に保護できます。Time MachineをUnraidサーバーに接続すると、これらのバックアップを自分のハードウェア上で安全に保存できます。この構成は、より高い管理性をもたらすだけでなく、拡張性の向上とさらなる安心感も提供します。
+
+::::note[macOS 互換性]
+
+最良の結果を得るには、ハードウェアと互換性のある最新の macOS バージョンに Mac を更新しておいてください。
+:::caution[macOS Sequoia (15.x) に関する注意]
+
+macOS Sequoia では、Time Machine とネットワーク共有に断続的な問題が発生するという報告があります。バックアップが失敗する場合は、代替手段として [Time Machine Docker container](https://unraid.net/community/apps?q=time+machine#r) の使用を検討してください。
+
+:::
+::::
+
+## Time Machine 共有の作成
+
+:::caution[開始する前に]
+
+%%WebGUI|web-gui%% で %%SMB|samba%% が有効になっていることを確認してください:
+
+1. "Network Services" の下にある ***Settings → SMB*** に移動します。
+2. **Enable %%SMB|samba%%** を **Yes** に設定します（これを変更するには %%array|array%% を停止する必要があります）。
+3. **Enhanced macOS interoperability** を **Yes** に設定します。
+
+<div style={{ margin: 'auto', maxWidth: '600px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+  ![Enhanced macOS interoperability](/img/enhancedmacos.png)
+</div>
+
+:::
+
+Time Machine 共有を作成するには:
+
+1. %%WebGUI|web-gui%% で **Shares** に移動し、**Add %%user share|user-share%%** をクリックします。
+
+2. 次の設定を行います:
+
+   | 設定                               | 説明                                                                                                       |
+   | -------------------------------- | -------------------------------------------------------------------------------------------------------- |
+   | **%%User share\|user-share%% 名** | %%user share\|user-share%% に名前を付けます（例: Time Machine）。                                                    |
+   | **最低限の空き容量**                     | 最良の結果を得るには **1**（1 KB）に設定します。これにより、ディスクが容量に近づいたときに Time Machine が失敗するのを防げます。                             |
+   | **含めるディスク**                      | Time Machine %%user share\|user-share%% に使用するディスクを %%array\|array%% で選択します。                              |
+   | **Copy-on-write を有効にする**         | 最適なパフォーマンスのため、**Auto** のままにします。                                                                          |
+   | **%%SMB\|samba%% export**        | Time Machine サポートを有効にするには **Yes (Time Machine)** に設定します。                                                 |
+   | **Time Machine ボリュームサイズ**        | 希望する最大サイズに設定するか、未設定のままにします。最小空き容量を 1 に設定しない場合は、まず共有を適用し、その後再編集して、表示される計算済みの最小空き容量より小さいボリュームサイズに設定してください。 |
+   | **セキュリティ設定**                     | 必要に応じて %%SMB\|samba%% のセキュリティパラメータを設定します。                                                                |
+
+3. **Apply** をクリックして %%user share|user-share%% を作成します。
+
+共有の作成と管理の詳細については、[User shares](./shares.mdx) を参照してください。
+
+## macOS から接続する
+
+Mac から %%user share|user-share%% に接続するには:
+
+1. **Finder** で **Command + K** を押して、「サーバへ接続」ウィンドウを開きます。
+2. Unraid サーバーの %%SMB|samba%% アドレスを入力します。たとえば、`smb://[server-ip]/[Time Machine share name]` の形式を使用し、**Connect** をクリックします。
+3. 求められたら、共有へのアクセス権を持つ Unraid のユーザー名とパスワードを入力し、**Connect** をクリックします。
+4. macOS Ventura 13.0 以降を使用している場合は **System Settings** を、macOS Monterey 12.x 以前を使用している場合は **System Preferences** を開きます。その後、**Time Machine** に移動します。
+5. **Select Disk** または **Add Backup Disk** をクリックし、Unraid の Time Machine %%user share|user-share%% を選択してから、**Use Disk** をクリックします。
+6. （任意）バックアップをパスワードで保護したい場合は、**Encrypt backups** を有効にします。
+7. 求められたら接続を確認し、必要に応じて Unraid の %%root user|root-user%% の認証情報を再入力します。
+8. Time Machine は最初のバックアップを自動的に開始します。最初のバックアップには時間がかかる場合がありますが、その後のバックアップは増分バックアップのため、より দ্রুতになります。
+
+:::tip
+
+バックアップのスケジュールやオプションをより細かく制御したい場合は、[Time Machine Editor](https://tclementdev.com/timemachineeditor/) のようなサードパーティ製ツールの使用を検討してください。
+
+<div style={{ margin: 'auto', maxWidth: '600px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+  ![Time Machine Editor](/img/TimeMachineEditor.png)
+</div>
+
+:::
+
+## 複数の Time Machine 設定
+
+:::tip
+
+複数の Mac を使う家族や環境では、この方法によりバックアップを明確に分離でき、セキュリティが向上し、管理が簡単になります。
+
+:::
+
+Unraid サーバー上でユーザーごと、または Mac ごとに個別のバックアップを作成するには:
+
+1. バックアップを行う各人または各 Mac ごとに、固有の Unraid %%root user|root-user%% アカウントを作成します。たとえば、`larry`、`curly`、`moe` という名前のユーザーです。これにより、各ユーザーに固有の ID と権限が付与されます。
+
+2. 各ユーザー用に個別の Time Machine %%user shares|user-share%% を作成し、`tm-larry`、`tm-curly`、`tm-moe` のようにユーザー名に合わせて分かりやすく命名します。共有を分けておくと、各ユーザーのストレージ管理とアクセス管理がしやすくなります。
+
+3. 各 %%user share|user-share%% に適切なユーザー権限を割り当てます:
+   - %%user share|user-share%% の %%SMB|samba%% セキュリティ設定を構成し、対応するユーザーだけがアクセスできるようにします。
+   - 対象のユーザーだけが Time Machine %%user share|user-share%% を読み書きできることを確認します。
+
+4. 各 Mac で Time Machine を設定し、割り当てられた %%user share|user-share%% に接続するようにします:
+   - 各 Mac で、それぞれの %%user share|user-share%% の %%SMB|samba%% パスを使用して Unraid サーバーに接続します（例: `smb://unraid-server/tm-larry`）。
+   - 通常の Time Machine 設定手順に従って、%%user share|user-share%% をバックアップディスクとして選択します。
+
+5. ストレージ使用量を監視および管理します:
+   - 1 人のユーザーが容量を使いすぎないように、各 Time Machine %%user share|user-share%% にボリュームサイズの上限を設定することもできます。
+   - 使用状況を定期的に確認し、必要に応じてクォータを調整します。
+
+ユーザー管理とセキュリティの詳細については、[User management](../../system-administration/secure-your-server/user-management.mdx) を参照してください。
+
+## トラブルシューティング
+
+Time Machine バックアップが失敗する、または信頼性が低くなる場合:
+
+1. Time Machine Docker container を試してください: [Community Applications 経由で利用可能](https://unraid.net/community/apps?q=time+machine#r) で、このオプションは直接の %%SMB|samba%% %%user shares|user-share%% よりも安定したバックアップを提供できる場合があります。
+2. macOS のファイアウォールを確認してください: 一時的にファイアウォールを無効にして、接続をブロックしていないか確認します。
+3. 新しいバックアップ先を作成する: 問題が続く場合は、Time Machine %%user share|user-share%% を削除して再作成します。
+
+追加のトラブルシューティングについては、[Troubleshooting](../../troubleshooting/troubleshooting.mdx) を参照するか、[Unraid forums](https://forums.unraid.net/) をご覧ください。

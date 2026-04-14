@@ -1,0 +1,258 @@
+---
+title: プログラムによるAPIキー管理
+description: 自動化ワークフロー向けにAPIキーをプログラムで作成、使用、削除する
+sidebar_position: 4
+---
+
+# プログラムによるAPIキー管理
+
+このガイドでは、Unraid API CLIを使用してAPIキーをプログラムで作成、使用、削除する方法を説明し、自動化ワークフローやスクリプトを可能にします。
+
+## 概要
+
+`unraid-api apikey` コマンドは対話モードと非対話モードの両方をサポートしており、次の用途に適しています:
+
+- 自動デプロイスクリプト
+- CI/CDパイプライン
+- 一時的なアクセスの付与
+- Infrastructure as codeのワークフロー
+
+:::tip[Quick 開始]
+
+[Complete Workflow Example](#complete-workflow-example) にジャンプして、すべてが実際に動作する様子を確認してください。
+
+:::
+
+## APIキーをプログラムで作成する
+
+### JSON出力による基本的な作成
+
+機械可読な出力を取得するには、`--json` フラグを使用します:
+
+```bash
+unraid-api apikey --create --name "workflow key" --roles ADMIN --json
+```
+
+**出力:**
+
+```json
+{
+    "key": "your-generated-api-key-here",
+    "name": "workflow key",
+    "id": "generated-uuid"
+}
+```
+
+### 権限付きの高度な作成
+
+```bash
+unraid-api apikey --create \
+  --name "limited access key" \
+  --permissions "DOCKER:READ_ANY,ARRAY:READ_ANY" \
+  --description "Read-only access for monitoring" \
+  --json
+```
+
+### 既存キーの処理
+
+同じ名前のキーが存在する場合は、`--overwrite` を使用します:
+
+```bash
+unraid-api apikey --create --name "existing key" --roles ADMIN --overwrite --json
+```
+
+:::warning[Key 置換]
+
+`--overwrite` フラグは、既存のキーを永続的に置き換えます。古いキーは直ちに無効になります。
+
+:::
+
+## APIキーをプログラムで削除する
+
+### 非対話的な削除
+
+プロンプトなしで名前によってキーを削除します:
+
+```bash
+unraid-api apikey --delete --name "workflow key"
+```
+
+**出力:**
+
+```
+Successfully deleted 1 API key
+```
+
+### 削除用JSON出力
+
+機械可読な削除確認には `--json` フラグを使用します:
+
+```bash
+unraid-api apikey --delete --name "workflow key" --json
+```
+
+**成功時の出力:**
+
+```json
+{
+    "deleted": 1,
+    "keys": [
+        {
+            "id": "generated-uuid",
+            "name": "workflow key"
+        }
+    ]
+}
+```
+
+**エラー出力:**
+
+```json
+{
+    "deleted": 0,
+    "error": "No API key found with name: nonexistent key"
+}
+```
+
+### エラー処理
+
+指定されたキーが存在しない場合:
+
+```bash
+unraid-api apikey --delete --name "nonexistent key"
+# Output: No API keys found to delete
+```
+
+**JSONエラー出力:**
+
+```json
+{
+    "deleted": 0,
+    "message": "No API keys found to delete"
+}
+```
+
+## 完全なワークフローの例 {#complete-workflow-example}
+
+一時アクセスのプロビジョニングの完全な例を示します:
+
+```bash
+#!/bin/bash
+set -e
+
+# 1. Create temporary API key
+echo "Creating temporary API key..."
+KEY_DATA=$(unraid-api apikey --create \
+  --name "temp deployment key" \
+  --roles ADMIN \
+  --description "Temporary key for deployment $(date)" \
+  --json)
+
+# 2. Extract the API key
+API_KEY=$(echo "$KEY_DATA" | jq -r '.key')
+echo "API key created successfully"
+
+# 3. Use the key for operations
+echo "Configuring services..."
+curl -H "Authorization: Bearer $API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"provider": "azure", "clientId": "your-client-id"}' \
+  http://localhost:3001/graphql
+
+# 4. Clean up (always runs, even on error)
+trap 'echo "Cleaning up..."; unraid-api apikey --delete --name "temp deployment key"' EXIT
+
+echo "Deployment completed successfully"
+```
+
+## コマンドリファレンス
+
+### 作成コマンドのオプション
+
+| 旗                       | 説明                     | 例                                 |
+| ----------------------- | ---------------------- | --------------------------------- |
+| `--name <name>`         | キー名（必須）                | `--name "my key"`                 |
+| `--roles <roles>`       | カンマ区切りのロール             | `--roles ADMIN,VIEWER`            |
+| `--permissions <perms>` | Resource:action の組み合わせ | `--permissions "DOCKER:READ_ANY"` |
+| `--description <desc>`  | キーの説明                  | `--description "CI/CD key"`       |
+| `--overwrite`           | 既存のキーを置き換える            | `--overwrite`                     |
+| `--json`                | 機械可読な出力                | `--json`                          |
+
+### 利用可能なロール
+
+- `ADMIN` - システム全体へのアクセス
+- `CONNECT` - Unraid Connectの機能
+- `VIEWER` - 読み取り専用アクセス
+- `GUEST` - 制限付きアクセス
+
+### 利用可能なリソースとアクション
+
+**リソース:** `ACTIVATION_CODE`, `API_KEY`, `ARRAY`, `CLOUD`, `CONFIG`, `CONNECT`, `CONNECT__REMOTE_ACCESS`, `CUSTOMIZATIONS`, `DASHBOARD`, `DISK`, `DISPLAY`, `DOCKER`, `FLASH`, `INFO`, `LOGS`, `ME`, `NETWORK`, `NOTIFICATIONS`, `ONLINE`, `OS`, `OWNER`, `PERMISSION`, `REGISTRATION`, `SERVERS`, `SERVICES`, `SHARE`, `VARS`, `VMS`, `WELCOME`
+
+**アクション:** `CREATE_ANY`, `CREATE_OWN`, `READ_ANY`, `READ_OWN`, `UPDATE_ANY`, `UPDATE_OWN`, `DELETE_ANY`, `DELETE_OWN`
+
+### 削除コマンドのオプション
+
+| 旗               | 説明          | 例                 |
+| --------------- | ----------- | ----------------- |
+| `--delete`      | 削除モードを有効にする | `--delete`        |
+| `--name <name>` | 削除するキー（任意）  | `--name "my key"` |
+
+**注:** `--name` を省略すると、コマンドは対話的に実行されます。
+
+## ベストプラクティス
+
+:::info[Security ベストプラクティス]
+
+**最小権限**
+
+- 可能な場合はADMINロールではなく、特定の権限を使用してください
+- 例: `--roles ADMIN` の代わりに `--permissions "DOCKER:READ_ANY"`
+
+**キーのライフサイクル管理**
+
+- 一時キーは使用後に必ず削除してください
+- APIキーは安全に保存してください（環境変数、シークレット管理）
+- 監査証跡のために、説明的な名前と説明を使用します
+
+:::
+
+### エラー処理
+
+- 各コマンドの後で終了コード（`$?`）を確認してください
+- bashスクリプトでは`set -e`を使用して、失敗したらすぐに終了するようにしてください
+- `trap`を使って適切なクリーンアップを実装してください
+
+### キーの命名
+
+- 目的と日付を含む説明的な名前を使用してください
+- 名前には文字、数字、スペースのみを含める必要があります
+- Unicode文字がサポートされています
+
+## トラブルシューティング
+
+### よくある問題
+
+:::note[Common エラーメッセージ]
+
+**「APIキー名には、英字、数字、スペースのみを含める必要があります」**
+
+- **解決策:** ハイフン、アンダースコア、記号などの特殊文字を削除してください
+
+**「名前 'x' のAPIキーはすでに存在します」**
+
+- **解決策:** `--overwrite` フラグを使用するか、別の名前を選択してください
+
+**「キーに少なくとも1つのロールまたは権限を追加してください」**
+
+- **解決策:** `--roles` または `--permissions`（または両方）を指定します
+
+:::
+
+### デバッグモード
+
+トラブルシューティングのため、デバッグログを有効にして実行してください:
+
+```bash
+LOG_LEVEL=debug unraid-api apikey --create --name "debug key" --roles ADMIN
+```

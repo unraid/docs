@@ -1,0 +1,581 @@
+---
+sidebar_position: 1
+sidebar_label: コマンドラインインターフェース
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import CliCpuInfo from "./partials/command-line-interface/cpu-info.mdx";
+import CliMemoryInfo from "./partials/command-line-interface/memory-info.mdx";
+import CliStorageInfo from "./partials/command-line-interface/storage-info.mdx";
+
+# コマンドラインインターフェース
+
+Unraid のほとんどの作業は %%WebGUI|web-gui%% から実行できますが、特に診断、ドライブ管理、スクリプト作成に関する一部の操作は、システムコンソールまたは %%SSH|ssh%% ターミナルの使用が必要です。このページでは、Linux の詳しい知識がなくても使える、Unraid 向けのコマンドラインツールと使用例を紹介します。
+
+:::tip[Device パス]
+
+多くのディスクレベルの Unraid 操作は、`/dev/sdX` のような Linux のデバイス名に依存します。任意のドライブのデバイス識別子は、%%WebGUI|web-gui%% の **Main** タブで確認できます。各ディスクの横にある 3 文字のラベル `sdX` または `nvmeX` を探してください。すべてのコマンドでは、`sdX` を実際のディスクに置き換えて適切な識別子を使用してください。
+
+:::
+
+## ターミナルへのアクセス {#accessing-the-terminal}
+
+Unraid には、%%WebGUI|web-gui%% から直接アクセスできる組み込みの Web ターミナルがあります。右上のドロップダウンメニューを開き、">_" を選択してください。これにより、%%root user|root-user%% としてコマンドラインセッションが開き、システムに対する完全な管理アクセスが可能になります。
+
+%%SSH|ssh%%（セキュアシェル）を使って、%%PuTTY|putty%% のようなクライアントから外部経由で Unraid サーバーに接続することもできます。
+
+:::tip[When ターミナルを使うべきですか？]
+
+ターミナルアクセスが役立つのは次のような場合です:
+
+- `smartctl`、`xfs_repair`、`tail`、`top` などの診断およびコマンドラインツールの実行
+- ユーザーインターフェースを必要としないプラグインスクリプトやツールの実行
+- 接続性、システムサービス、または %%user shares|user-share%% に関連する問題のトラブルシューティング
+
+:::
+
+### PuTTY の使用（Windows 専用）
+
+Windows を使用している場合は、組み込みターミナルの代わりに %%SSH|ssh%% アクセス用として %%PuTTY|putty%% を使うとよいでしょう。軽量で無料で、後から簡単にアクセスできるようセッションを保存できます。
+
+<details>
+  <summary><strong>PuTTY のインストールと使用方法</strong> - クリックして展開/折りたたみ</summary>
+
+  **ドライブ情報を表示:**
+
+  ```bash
+  hdparm -I /dev/sdX
+  ```
+
+  これにより、モデル、ファームウェア、キャッシュサイズ、対応機能が表示され、ディスクの種類やコントローラーの動作確認に役立ちます。
+
+</details>
+
+### `smartctl`
+
+このコマンドは %%SMART|smart%% 診断を実行し、ドライブの健全性を監視します。
+
+<details>
+  <summary><strong>smartctl のオプションを表示</strong> - クリックして展開/折りたたみ</summary>
+
+  **基本 %%SMART|smart%% レポート:**
+
+  ```bash
+  smartctl -a /dev/sdX
+  ```
+
+  このコマンドでエラーが返る場合は、デバイスタイプを指定してみてください: `smartctl -a -d ata /dev/sdX`（NVMe ドライブの場合は `-d nvme` を使用）。
+
+  **%%SMART|smart%% 自己テストを開始:**
+
+  ショートテスト（数分かかります）
+
+  ```bash
+  smartctl -t short /dev/sdX
+  ```
+
+  拡張テスト（数時間かかる場合があります）
+
+  ```bash
+  smartctl -t long /dev/sdX
+  ```
+
+  **%%SMART レポート|smart-report%% をファイルに保存:**
+
+  ```bash
+  smartctl -a /dev/sdX > /boot/smart_report.txt
+  ```
+
+  これにより、レポートが Unraid のフラッシュドライブに保存され、後で確認したり [forums](https://forums.unraid.net/) で共有したりできます。
+
+</details>
+
+### `diskspeed.sh`
+
+このスクリプトは、視覚的なレポート付きで包括的な表面レベルのパフォーマンステストを行えます。
+
+<details>
+  <summary><strong>diskspeed.sh の使い方を表示</strong> - クリックして展開/折りたたみ</summary>
+
+  以前は Unraid フォーラムからダウンロードするスクリプトでした。現在は、より洗練されたパッケージとして DiskSpeed が利用できます:
+
+  [Community Applications](../../using-unraid-to/run-docker-containers/community-applications.mdx)（***Apps tab***）で「DiskSpeed」を検索して DiskSpeed をインストールするか、手動インストール手順については [GitHub リポジトリ](https://github.com/jbartlett777/DiskSpeed) を参照してください。
+
+</details>
+
+---
+
+## システム監視
+
+%%WebGUI|web-gui%% が利用できない場合や、より詳細な診断を行う場合に、メモリ、プロセス、システムパフォーマンスを監視するためにこれらのコマンドを使用します。
+
+### `top`
+
+このコマンドは、リアルタイムのプロセスおよびリソースモニターを提供します。
+
+<details>
+  <summary><strong>top の使い方を表示</strong> - クリックして展開/折りたたみ</summary>
+
+  ```bash
+  top
+  ```
+
+  - 各プロセスの CPU 使用率とメモリ使用率をリアルタイムで表示します。
+  - 終了するには `q` を押します。
+  - 矢印キーでスクロールし、`k` でプロセスを終了します。
+
+    :::tip
+    より使いやすいインターフェースと拡張されたコントロールを求めるなら、`htop` の使用を検討してください。
+    :::
+
+</details>
+
+### `無料`
+
+このコマンドはメモリ使用状況の統計を表示します。
+
+<details>
+  <summary><strong>free の使い方を表示</strong> - クリックして展開/折りたたみ</summary>
+
+  ```bash
+  free -h
+  ```
+
+  RAM の使用状況を人間が読みやすい形式で表示します。`-h` フラグは、サイズをバイトではなく KB、MB、または GB で表示することを意味します。
+
+  :::tip[出力を理解する]
+  「利用可能」メモリの値が低くても、必ずしも問題を示すわけではありません。Linux はパフォーマンス向上のためにデータを積極的にキャッシュします。
+  :::
+
+</details>
+
+### `ps`
+
+このコマンドは、詳細情報付きで実行中のプロセスを表示するために使用します。
+
+<details>
+  <summary><strong>ps のオプションを表示</strong> - クリックして展開/折りたたみ</summary>
+
+  **全プロセスを詳細付きで一覧表示:**
+
+  ```bash
+  ps aux
+  ```
+
+  **メモリ使用率で並べ替え:**
+
+  ```bash
+  ps aux --sort=-%mem | head -20
+  ```
+
+  **CPU 使用率で並べ替え:**
+
+  ```bash
+  ps aux --sort=-%cpu | head -20
+  ```
+
+</details>
+
+---
+
+## ストレージユーティリティ
+
+これらのコマンドは、ディスク使用量、パーティション情報の確認、ストレージデバイスの特定に役立ちます。
+
+### `df`
+
+このコマンドはファイルシステムのディスク容量使用状況を表示します。
+
+<details>
+  <summary><strong>df の使い方を表示</strong> - クリックして展開/折りたたみ</summary>
+
+  ```bash
+  df -h
+  ```
+
+  このコマンドは、マウントされているすべてのファイルシステムの使用済み領域と利用可能領域を表示します。Unraid で `/var/log`（RAM ベースのロギングを使用）を確認するのに便利です。[system logging](../../troubleshooting/diagnostics/capture-diagnostics-and-logs.mdx) の詳細については、こちらを参照してください。
+
+</details>
+
+### `fdisk`
+
+ディスクのパーティションテーブルとジオメトリを表示します。
+
+<details>
+  <summary><strong>fdisk の使い方を表示</strong> - クリックして展開/折りたたみ</summary>
+
+  ```bash
+  fdisk -l /dev/sdX
+  ```
+
+  このコマンドは、パーティションのレイアウト、サイズ、およびディスクジオメトリを表示します。これは、特に[ディスクの交換](../../using-unraid-to/manage-storage/array/replacing-disks-in-array.mdx)時に、ディスクサイズの不一致をトラブルシュートするのに役立ちます。
+
+</details>
+
+### `lsblk`
+
+すべてのブロックデバイスをツリー形式で一覧表示します。
+
+<details>
+  <summary><strong>lsblk の使い方を表示</strong> - クリックして展開/折りたたみ</summary>
+
+  ```bash
+  lsblk
+  ```
+
+  このコマンドは、すべてのストレージデバイスとそのマウントポイントを、わかりやすいツリー構造で表示します。ストレージ構成全体を把握するのに最適です。
+
+</details>
+
+### `blockdev -getsz`
+
+リビルド前に置換ドライブの容量が十分かどうかを判断するのに役立ちます。
+
+<details>
+  <summary><strong>blockdev の使い方を表示</strong> - クリックして展開/折りたたみ</summary>
+
+  **構文:**
+
+  ```bash
+  blockdev --getsz /dev/sdX
+  ```
+
+  デバイス上の 512 バイトセクタの生の数を返します。リビルド前に置換ドライブが十分な大きさかを確認するのに便利です。
+
+</details>
+
+### `blkid`
+
+ファイルシステムのラベルを識別します。
+
+<details>
+  <summary><strong>blkid の使い方を表示</strong> - クリックして展開/折りたたみ</summary>
+
+  **構文:**
+
+  ```bash
+  blkid /dev/sdX1
+  ```
+
+  ファイルシステムの種類とラベルを出力します。Unraid のフラッシュが `UNRAID` とラベル付けされていることを確認するときは、非推奨の `vol_id` コマンドの代わりにこれを使用してください。
+
+</details>
+
+---
+
+## ネットワーク診断
+
+ネットワーク接続やインターフェース設定のトラブルシューティング用ツールです。
+
+### `ss`
+
+ソケット統計とネットワーク接続を表示します。これは `netstat` の現代的な代替です。
+
+<details>
+  <summary><strong>ss のオプションを表示</strong> - クリックして展開/折りたたみ</summary>
+
+  **すべてのリスニングポートを表示:**
+
+  ```bash
+  ss -tuln
+  ```
+
+  - `-t`: TCP ソケット
+  - `-u`: UDP ソケット
+  - `-l`: リスニング中のソケットのみ表示
+  - `-n`: サービス名ではなくポート番号を表示
+
+    **確立済み接続を表示:**
+
+    ```bash
+    ss -tup
+    ```
+
+    このコマンドは、アクティブな接続とプロセス情報を表示します。
+
+</details>
+
+### `ip`
+
+ネットワークインターフェース情報を設定および表示します。これは `ifconfig` の現代的な代替です。
+
+<details>
+  <summary><strong>ip のオプションを表示</strong> - クリックして展開/折りたたみ</summary>
+
+  **すべてのネットワークインターフェースを表示:**
+
+  ```bash
+  ip addr show
+  ```
+
+  **色付きでネットワークインターフェースを表示:**
+
+  ```bash
+  ip -c addr show
+  ```
+
+  **ルーティングテーブルを表示:**
+
+  ```bash
+  ip route show
+  ```
+
+</details>
+
+### `ping`
+
+ネットワーク接続をテストします。
+
+<details>
+  <summary><strong>ping の使い方を表示</strong> - クリックして展開/折りたたみ</summary>
+
+  **少数のパケットを送信して接続をテスト:**
+
+  ```bash
+  ping -c 4 google.com
+  ```
+
+  このコマンドは宛先に 4 パケットを送信して停止するため、連続出力なしで基本的な接続テストを行うのに適しています。
+
+</details>
+
+### `ethtool`
+
+リンク速度、オフロード機能、統計情報など、ネットワークインターフェースカード（NIC）のパラメータを照会および調整するのに便利なツールです。
+
+<details>
+  <summary><strong>ethtool の使い方を表示</strong> - クリックして展開/折りたたみ</summary>
+
+  **基本的なドライバーとファームウェア情報:**
+
+  ネットワークインターフェースのドライバーとファームウェアに関する情報を取得するには、次のコマンドを使用します:
+
+  ```bash
+  ethtool -i eth0
+  ```
+
+  **現在のリンク速度と設定を表示:**
+
+  インターフェースの現在のリンク速度と設定を確認するには、次を実行します:
+
+  ```bash
+  ethtool eth0
+  ```
+
+  **拡張インターフェース統計を表示:**
+
+  インターフェースに関する拡張統計を表示するには、次のコマンドを使用します:
+
+  ```bash
+  ethtool -S eth0
+  ```
+
+  これらのコマンドは、ギガビット、2.5 GbE、または 10 GbE 接続のネゴシエーション速度を確認したり、ケーブルの問題を診断したり、オフロードの不一致によって発生する可能性のあるパケット損失を特定したりするのに役立ちます。
+
+</details>
+
+---
+
+## システム情報
+
+ハードウェア、カーネル、およびシステム全体の設定に関する詳細情報を取得します。
+
+<Tabs>
+  <TabItem value="cpu" label="CPU 情報">
+    <CliCpuInfo />
+  </TabItem>
+
+  <TabItem value="memory" label="メモリ情報">
+    <CliMemoryInfo />
+  </TabItem>
+
+  <TabItem value="storage" label="ストレージ情報">
+    <CliStorageInfo />
+  </TabItem>
+</Tabs>
+
+---
+
+## システムメンテナンス
+
+システムのシャットダウン、ログ監視、サービス管理のためのコマンドです。
+
+### `tail`
+
+ログファイルをリアルタイムで監視します。
+
+<details>
+  <summary><strong>tail の使い方を表示</strong> - クリックして展開/折りたたみ</summary>
+
+  ```bash
+  tail -f /var/log/syslog
+  ```
+
+  このコマンドはシステムログのライブ更新を表示します。終了するには `Ctrl+C` を使用します。
+
+  **特定の行数を表示:**
+
+  ```bash
+  tail -n 50 /var/log/syslog
+  ```
+
+</details>
+
+### `powerdown`
+
+システムを安全にシャットダウンします。
+
+<details>
+  <summary><strong>powerdown の使い方を表示</strong> - クリックして展開/折りたたみ</summary>
+
+  ```bash
+  powerdown
+  ```
+
+  このコマンドは Unraid の組み込みシャットダウン処理を利用して %%array|array%% を停止し、安全にシステムを電源オフします。手動でのシャットダウン方法より推奨されます。
+
+</details>
+
+---
+
+## ファイル転送操作 {#file-transfer-operations}
+
+これらの方法を使うと、コマンドラインツールと組み込みユーティリティを使用して、外部ネットワーク共有（Windows または Linux の SMB/CIFS 共有）から Unraid サーバーへファイルを転送できます。
+
+### Midnight Commander の使用（組み込み）
+
+Unraid には、Web ターミナルからアクセスできる、テキストベースの2ペインファイルマネージャーである **Midnight Commander**（`mc`）が含まれています。
+
+1. Web ターミナルを開きます。このオプションは、Unraid の %%WebGUI|web-gui%% の右上メニューにあります。
+
+2. Midnight Commander を起動します:
+
+   ```bash
+   mc
+   ```
+
+   このインターフェースでは、ローカル共有とマウントされたネットワークパスの間をドラッグ＆ドロップで移動できます。
+
+3. ネットワーク共有をマウントします（まだマウントされていない場合）:
+
+   ```bash
+   # Create a temporary mount point
+   mkdir /work
+   ```
+
+   ```bash
+   # 1) Interactive prompt (recommended for one-off mounts)
+   mount -t cifs //workstation/share /work -o username=youruser,iocharset=utf8
+   # You will be prompted for the password interactively.
+   ```
+
+   ```bash
+   # 2) Use a credentials file (recommended for scripts/automation)
+   # Create /root/.cifscredentials with the following content:
+   #   username=youruser
+   #   password=yourpassword
+   # Then protect the file and mount using:
+   chmod 600 /root/.cifscredentials
+   mount -t cifs //workstation/share /work -o credentials=/root/.cifscredentials,iocharset=utf8
+   ```
+
+   - `workstation`、`share`、`youruser` を適切な値に置き換えてください。
+   - `iocharset=utf8` オプションは、国際化されたファイル名の維持に役立ちます。
+
+   **セキュリティ上の注意:** コマンドラインでパスワードを渡さないでください（例: `password=...`）。
+   コマンド引数はシェル履歴に記録される可能性があり、プロセス一覧を通じて他のローカル
+   ユーザーから見えてしまいます。対話型プロンプトまたは `chmod 600` で保護された
+   資格情報ファイルを使用してください。
+
+4. MC のペインを使って、`/work`（ネットワーク共有）と任意の `/mnt/user/` または `/mnt/diskX` 共有の間でファイルを転送します。
+
+5. 最後にクリーンアップします:
+
+   ```bash
+   umount /work
+   rmdir /work
+   ```
+
+Midnight Commander は組み込みシステム内で完全に動作し、追加のインストールは不要です。Unicode ファイル名を含むほとんどの転送ニーズに適しており、送信元と送信先の両方が対応している場合はファイル属性も保持します。
+
+### Krusader の使用
+
+グラフィカルユーザーインターフェースを好む場合は、[Krusader](https://unraid.net/community/apps?q=krusader#r:~:text=batch%20renaming%2C%20etc.-,Krusader,-Productivity%2C%20Tools) のような Docker コンテナをサードパーティ製ソリューションとして使用できます。
+
+1. Krusader をインストールします:
+   - **Apps** タブ（Community Applications）に移動します。
+   - **Krusader** の Docker コンテナを検索してインストールします。
+2. コンテナを起動し、**Docker** タブからその WebUI にアクセスします。
+3. Krusader 内でリモート共有に接続し、ドラッグ＆ドロップまたはコピー＆ペーストを使って、ネットワーク共有と Unraid %%array|array%% の間でファイルを転送します。
+
+:::info
+
+ほかの人気のファイルマネージャーコンテナには、[**Double Commander**](https://unraid.net/community/apps?q=double+commander#r:~:text=of%201%20App-,doublecommander,-Tools%20/%20Utilities%2C) と [**CloudCommander**](https://unraid.net/community/apps?q=cloudcommander#r:~:text=of%201%20App-,CloudCommander,-Tools%20/%20Utilities%2C) があり、どちらも Community Applications から利用できます。
+
+:::
+
+### コマンドラインの方法
+
+高度なユーザーや自動化を利用する場合は、コマンドラインによる転送方法も使用できます。
+
+<details>
+  <summary><strong>コマンドライン転送手順を表示</strong> - クリックして展開/折りたたみ</summary>
+
+  1. ターミナルを開きます（Web Terminal または `root` としての %%SSH|ssh%%）。
+
+  2. ネットワーク共有を作成してマウントします:
+
+  ```bash
+  mkdir /work
+  ```
+
+  ```bash
+  # 1) Interactive prompt (recommended for one-off mounts)
+  mount -t cifs //workstation/share /work -o username=youruser,iocharset=utf8
+  # You will be prompted for the password interactively.
+  ```
+
+  ```bash
+  # 2) Use a credentials file (recommended for scripts/automation)
+  # Create /root/.cifscredentials with the following content:
+  #   username=youruser
+  #   password=yourpassword
+  # Then protect the file and mount using:
+  chmod 600 /root/.cifscredentials
+  mount -t cifs //workstation/share /work -o credentials=/root/.cifscredentials,iocharset=utf8
+  ```
+
+  **セキュリティ上の注意:** コマンドラインでパスワードを渡さないでください。代わりに、
+  対話型プロンプトまたは厳格な権限を持つ資格情報ファイルを使用してください。
+
+  1. ファイルをコピーします:
+
+     - `cp` を使用できます:
+
+       ```bash
+       cp -r /work/* /mnt/disk1
+       ```
+
+     - または、詳細な進行状況を表示するには `rsync` を使用します:
+
+       ```bash
+       rsync -av --progress /work/ /mnt/disk1/
+       ```
+
+  2. 一時ディレクトリをアンマウントして削除します:
+
+     ```bash
+     umount /work
+     rmdir /work
+     ```
+
+</details>
+
+:::caution
+
+特殊文字や国際文字を含むファイルを転送する場合は、常に `iocharset=utf8` オプションを付けて共有をマウントしてください。これを行わないと、他のプラットフォームでファイル名が不正になったり、ファイルが読み取れなくなったりする可能性があります。
+
+また、ターミナル経由で `root` としてファイルをコピーした場合、権限が制限されることがあります。その場合は、%%WebGUI|web-gui%% の **Tools** メニューにある **New Permissions** ツール、または Docker 関連の共有を扱っている場合は **Docker Safe New Perms** を使用して権限をリセットし、すべてのユーザーがネットワークアクセスできるようにしてください。
+
+:::

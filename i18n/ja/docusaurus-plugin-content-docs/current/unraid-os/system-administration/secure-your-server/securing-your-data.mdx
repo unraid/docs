@@ -1,0 +1,63 @@
+---
+sidebar_position: 5
+sidebar_label: データの暗号化
+---
+
+# データの暗号化
+
+Unraid でドライブを暗号化すると、機密データを保護する強力な層が追加され、ドライブが紛失または盗難に遭った場合の不正アクセス防止に役立ちます。暗号化は %%array|array%% と %%cache pool|cache-pool%% で利用できます。ただし、暗号化はデータ復旧を複雑にする可能性があるため、機密性が必要な場合、たとえば個人情報、 ব্যবস業務情報、または規制対象情報を保存する場合などにのみ使用してください。
+
+:::caution
+
+暗号化はデータのセキュリティを高めますが、ハードウェア障害からの復旧を複雑にする場合があります。**本当に必要で、信頼できるバックアップ体制がある場合にのみ暗号化を有効にしてください。** 暗号化キーまたはキーファイルを失うと、データには永久にアクセスできなくなります。
+
+:::
+
+<details>
+  <summary><strong>ドライブの暗号化を検討すべきなのはどんなときですか?</strong> - クリックして展開/折りたたみ</summary>
+
+  - Unraid サーバーに機密、規制対象、または機微なデータを保存している。
+  - ドライブが物理的に取り外されたり盗難に遭ったりした場合のデータ盗難が心配である。
+  - 組織上または法的なデータ保護要件に準拠する必要がある。
+
+  Unraid を主に家庭用メディアや機微でないファイルに使っている場合、暗号化は不要であり、トラブルシューティングや復旧を複雑にする可能性があります。
+
+</details>
+
+## Unraid でドライブを暗号化する方法 {#how-to-encrypt-a-drive-in-unraid}
+
+:::warning
+
+ドライブを暗号化すると、そのドライブ上の既存データはすべて消去されます。
+
+:::
+
+:::important[Before 暗号化中]
+
+Move all data off the drive you want to encrypt to another location (another drive in your %%array|array%%, a %%cache pool|cache-pool%%, or external backup). For details on safely moving your data, see [Converting to a new file system type](../../using-unraid-to/manage-storage/file-systems.mdx#converting-to-a-new-file-system-type).
+
+:::
+
+ドライブを暗号化するには:
+
+1. %%WebGUI|web-gui%% の **Main** タブに移動します。
+2. %%array|array%% を停止します。
+3. 暗号化したいドライブを選択します。
+4. **ファイルシステムの種類** で、希望するファイルシステムの暗号化版を選択します（例: `xfs-encrypted`、`btrfs-encrypted`）。
+5. **適用** をクリックして変更を確定します。
+6. **完了** をクリックして **Main** タブに戻ります。これでそのドライブはマウントできない状態として表示され、マウントできないドライブをフォーマットするオプションが表示されます。
+7. 正しいドライブを選択したことを再確認し、暗号化の設定を完了するために [フォーマット](../../using-unraid-to/manage-storage/file-systems.mdx#creating-a-file-system-formatting) します。
+
+After enabling encryption, you must provide the encryption key or key file each time you start the %%array|array%%. Once unlocked, encrypted drives function just like any other volume in Unraid.
+
+---
+
+## 暗号化キーの管理
+
+Unraid では、システム内のすべての暗号化ドライブに同じ暗号化キーまたはキーファイルが必要です。
+
+- パスフレーズまたはキーファイル（ランダムな画像ファイルなど）を使用できます。
+- 暗号化キーまたはキーファイルは、安全なオフラインの場所に保管してください。キーの保管を Unraid サーバーだけに依存しないでください。
+- キーまたはキーファイルを失うと、暗号化されたデータは復元できません—例外はありません。
+
+暗号化されたドライブは業界標準の %%LUKS|luks%% 形式を使用しており、正しいキーがあれば最新の Linux システムでロック解除できます。

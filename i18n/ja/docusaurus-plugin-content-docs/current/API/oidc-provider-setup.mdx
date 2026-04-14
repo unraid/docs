@@ -1,0 +1,430 @@
+---
+title: OIDCプロバイダーのセットアップ
+description: Unraid APIでSSO認証のためのOIDC（OpenID Connect）プロバイダーを設定します
+sidebar_position: 3
+---
+
+# OIDCプロバイダーのセットアップ
+
+:::info[What OIDCですか？]
+
+OpenID Connect（OIDC）は、Google、Microsoft、またはお使いの社内アイデンティティプロバイダーなどの既存アカウントを使ってユーザーがサインインできる認証プロトコルです。シングルサインオン（SSO）を可能にし、シームレスで安全な認証を実現します。
+
+:::
+
+このガイドでは、Webインターフェースを使用して、Unraid APIでSSO認証用のOIDC（OpenID Connect）プロバイダーを設定する手順を説明します。
+
+## 🚀 クイックスタート
+
+<details open>
+  <summary><strong>OIDC設定へのアクセス</strong></summary>
+
+  1. UnraidサーバーのWebインターフェースに移動します
+  2. **Settings** → **Management Access** → **API** → **OIDC** に移動します
+  3. 異なるプロバイダー用のタブが表示されます。新しいプロバイダーを追加するには **+** ボタンをクリックします
+
+</details>
+
+### OIDCプロバイダーインターフェースの概要
+
+![SSOオプション付きログインページ](/img/api/sso-with-options.png)
+*従来のログインフォームとSSOオプション（「Login With Unraid.net」および「Sign in with Google」ボタン）を表示するログインページ*
+
+このインターフェースには次のものが含まれます:
+
+- **プロバイダータブ**: 設定済みの各プロバイダー（Unraid.net、Google など）がタブとして表示されます
+- **プロバイダー追加ボタン**: **+** ボタンをクリックして新しいプロバイダーを追加します
+- **認可モードのドロップダウン**: 「simple」と「advanced」を切り替えます
+- **シンプル認可セクション**: 許可するメールドメインと特定のアドレスを設定します
+- **項目追加ボタン**: 複数の認可ルールを追加するにはクリックします
+
+## 認可モードの理解
+
+このインターフェースでは2つの認可モードを提供します:
+
+### シンプルモード（推奨）
+
+シンプルモードは、認可を設定する最も簡単な方法です。次のことができます:
+
+- 特定のメールドメインを許可する（例: @company.com）
+- 特定のメールアドレスを許可する
+- 最小限の設定でUnraidサーバーへのアクセス対象を構成する
+
+**シンプルモードを使う場合:**
+
+- 会社ドメインのすべてのユーザーを許可したい
+- 特定ユーザーのリストが少ない
+- OIDC設定が初めてである
+
+<details>
+  <summary><strong>アドバンスモード</strong></summary>
+
+  アドバンスモードでは、クレームベースのルールを使ってきめ細かな制御ができます。次のことができます:
+
+  - JWTクレームに基づく複雑な認可ルールを作成する
+  - equals、contains、endsWith、startsWith などの演算子を使用する
+  - 複数の条件をOR/ANDロジックで組み合わせる
+  - 任意のルールが通ればよい（ORモード）のか、すべてのルールが通る必要がある（ANDモード）のかを選択します
+
+  **アドバンスモードを使う場合:**
+
+  - グループメンバーシップを確認する必要がある
+  - 複数のクレームを検証したい（例: メールドメイン AND 確認済みステータス）
+  - 複雑な認可要件がある
+  - ルールの評価方法を細かく制御する必要がある
+
+</details>
+
+## 認可ルール
+
+![認可ルールの設定](/img/api/advanced-rules.png)
+*ドメインベースのアクセス制御のために email endsWith 演算子を使用したJWTクレーム設定を示すアドバンス認可ルール*
+
+### シンプルモードの例
+
+#### 会社ドメインを許可
+
+シンプル認可では:
+
+- **許可されたメールドメイン**: `company.com` を入力します
+- これにより、@company.com のメールアドレスを持つすべてのユーザーが許可されます
+
+#### 特定ユーザーを許可
+
+- **特定のメールアドレス**: 個別のメールアドレスを追加します
+- **項目を追加** をクリックして複数のアドレスを追加します
+
+<details>
+  <summary><strong>アドバンスモードの例</strong></summary>
+
+  #### 認可ルールモード
+
+  複数のルールを使用する場合、どのように評価するかを選択できます:
+
+  - **ORモード**（既定）: いずれかのルールが通ればユーザーは認可されます
+  - **ANDモード**: すべてのルールが通った場合にのみユーザーは認可されます
+
+  #### 確認済みのメールドメイン（ANDモード）
+
+  メールドメインと確認の両方を必須にするには:
+
+  1. **認可ルールモード**を `AND` に設定します
+  2. 2つのルールを追加します:
+     - ルール 1:
+       - **クレーム**: `email`
+       - **演算子**: `endsWith`
+       - **値**: `@company.com`
+     - ルール 2:
+       - **クレーム**: `email_verified`
+       - **演算子**: `equals`
+       - **値**: `true`
+
+  これにより、ユーザーは会社のメールアドレスと確認済みメールアドレスの両方を持つ必要があります。
+
+  #### グループベースのアクセス（ORモード）
+
+  複数のグループへのアクセスを許可するには:
+
+  1. **認可ルールモード**を `OR`（既定）に設定します
+  2. 各グループのルールを追加します:
+     - **クレーム**: `groups`
+     - **演算子**: `contains`
+     - **値**: `admins`
+       または別のルールを追加:
+     - **クレーム**: `groups`
+     - **演算子**: `contains`
+     - **値**: `developers`
+
+  `admins` または `developers` グループのユーザーが認可されます。
+
+  #### 複数のドメイン
+
+  - **クレーム**: `email`
+  - **演算子**: `endsWith`
+  - **値**: 複数のドメインを追加します（例: `company.com`、`subsidiary.com`）
+
+  #### 複雑な認可（ANDモード）
+
+  複数の条件を必要とする厳格なセキュリティの場合:
+
+  1. **認可ルールモード**を `AND` に設定します
+  2. すべてが通過する必要がある複数のルールを追加します:
+     - メールは会社ドメインのものでなければなりません
+     - メールは確認済みでなければなりません
+     - ユーザーは特定のグループに所属している必要があります
+     - アカウントで2FAが有効になっている必要があります（該当するクレームがある場合）
+
+</details>
+
+<details>
+  <summary><strong>設定インターフェースの詳細</strong></summary>
+
+  ### プロバイダータブ
+
+  - 設定済みの各プロバイダーは上部にタブとして表示されます
+  - タブをクリックするとプロバイダー設定を切り替えられます
+  - 右側の **+** ボタンで新しいプロバイダーを追加します
+
+  ### 認可モードのドロップダウン
+
+  - **simple**: メールベースの認可に最適（ほとんどのユーザーに推奨）
+  - **advanced**: JWTクレームを使った複雑なクレームベースのルール向け
+
+  ### シンプル認可フィールド
+
+  「simple」モードを選択すると、次の項目が表示されます:
+
+  - **許可されたメールドメイン**: @ を付けずにドメインを入力します（例: `company.com`）
+    - ヘルプテキスト: 「これらのドメインで終わるメールアドレスのユーザーはログインできます」
+  - **特定のメールアドレス**: 個別のメールアドレスを追加します
+    - ヘルプテキスト: 「これらの正確なメールアドレスだけがログインできます」
+  - 複数の項目を追加するための **項目を追加** ボタン
+
+  ### アドバンス認可フィールド
+
+  「advanced」モードを選択すると、次の項目が表示されます:
+
+  - **認可ルールモード**: `OR`（どれか1つのルールが通る）または `AND`（すべてのルールが通る）を選択します
+  - **認可ルール**: 複数のクレームベースのルールを追加します
+  - **各ルールごとに**:
+    - **クレーム**: 確認するJWTクレーム
+    - **演算子**: 比較方法（equals、contains、endsWith、startsWith）
+    - **値**: 照合対象
+
+  ### その他のインターフェース要素
+
+  - **開発者サンドボックスを有効にする**: `/graphql` でGraphQLサンドボックスを有効化する切り替え
+  - このインターフェースは視認性向上のためダークテーマを使用しています
+  - フィールド検証インジケーターは正しい設定の確認に役立ちます
+
+</details>
+
+### 必須のリダイレクトURI
+
+:::caution[Important 構成]
+
+すべてのプロバイダーは、この正確なリダイレクトURI形式で設定する必要があります:
+
+:::
+
+```bash
+http://YOUR_UNRAID_IP/graphql/api/auth/oidc/callback
+```
+
+:::tip
+
+`YOUR_UNRAID_IP` を実際のサーバーIPアドレス（例: `192.168.1.100` または `tower.local`）に置き換えてください。
+
+:::
+
+### Issuer URLの形式
+
+**Issuer URL** フィールドは両方の形式を受け付けますが、セキュリティ上は**ベースURL**の使用を強く推奨します:
+
+- **ベースURL**（推奨）: `https://accounts.google.com`
+- **完全な検出URL**: `https://accounts.google.com/.well-known/openid-configuration`
+
+**⚠️ セキュリティ नोट**: 可能な限りベースURL形式を使用してください。システムはOIDC検出のために `/.well-known/openid-configuration` を自動的に追加します。完全な検出URLを直接使用すると、重要なIssuer検証チェックが無効になり、OpenID Connect仕様でも推奨されません。
+
+**正しいベースURLの例:**
+
+- Google: `https://accounts.google.com`
+- Microsoft/Azure: `https://login.microsoftonline.com/YOUR_TENANT_ID/v2.0`
+- Keycloak: `https://keycloak.example.com/realms/YOUR_REALM`
+- Authelia: `https://auth.yourdomain.com`
+
+## ✅ 設定のテスト
+
+![SSOボタン付きログインページ](/img/api/sso-with-options.png)
+*カスタマイズされたプロバイダーボタンを含む、従来のユーザー名/パスワード認証とSSOオプションの両方を表示するUnraidログインページ*
+
+1. プロバイダー設定を保存します
+2. ログアウトします（ログインしている場合）
+3. ログインページに移動します
+4. 設定したプロバイダーボタンが表示されるはずです
+5. クリックしてログインフローをテストします
+
+## 🔧 トラブルシューティング
+
+### よくある問題
+
+#### "Provider not found" エラー
+
+- Issuer URLが正しいことを確認します
+- プロバイダーがOIDCディスカバリー（/.well-known/openid-configuration）をサポートしていることを確認します
+
+#### "Authorization failed"
+
+- シンプルモードでは: メールドメインが正しく入力されていることを確認します（@なし）
+- アドバンスモードでは:
+  - クレーム名がプロバイダーが送信する内容と完全に一致していることを確認します
+  - 認可ルールモードが正しく設定されているか確認します（OR と AND）
+  - 必要なすべてのクレームがトークンに含まれていることを確認します
+- デバッグログを有効にして、実際のクレームとルール評価を確認します
+
+#### "Invalid redirect URI"
+
+- プロバイダー側のリダイレクトURIが完全に一致していることを確認します
+- 標準外の構成を使用している場合は、正しいポートを含めてください
+- リダイレクトURIのプロトコルがサーバーの構成（HTTPまたはHTTPS）と一致していることを確認します
+
+#### ログインボタンが表示されない
+
+- 少なくとも1つの認可ルールが設定されていることを確認します
+- プロバイダーが有効で保存されていることを確認します
+
+### デバッグモード
+
+問題をトラブルシューティングするには:
+
+1. デバッグログを有効にします:
+
+```bash
+LOG_LEVEL=debug unraid-api start --debug
+```
+
+2. 次の内容をログで確認します:
+
+- プロバイダーから受信したクレーム
+- 認可ルールの評価
+- トークン検証エラー
+
+## 🔐 セキュリティのベストプラクティス
+
+1. **認可にはシンプルモードを使用する** - 過度に許可しすぎる設定を防ぎ、誤設定のリスクを減らします
+2. **認可は具体的に設定する** - 広すぎるルールは使用しないでください
+3. **シークレットを定期的にローテーションする** - クライアントシークレットを定期的に更新します
+4. **十分にテストする** - 意図したユーザーのみがアクセスできることを確認します
+
+## 💡 ヘルプが必要ですか?
+
+- プロバイダーのOIDCドキュメントを確認します
+- 詳細なエラーメッセージについてはUnraid APIのログを確認します
+- プロバイダーが標準のOIDCディスカバリーをサポートしていることを確認します
+- Unraidとプロバイダー間のネットワーク接続を確認します
+
+## 🏢 プロバイダー別セットアップ
+
+### Unraid.netプロバイダー
+
+Unraid.netプロバイダーは組み込み済みで事前設定されています。インターフェースで認可ルールを設定するだけで済みます。
+
+**構成:**
+
+- **Issuer URL**: 事前設定済み（組み込みプロバイダー）
+- **Client ID/Secret**: 事前設定済み（組み込みプロバイダー）
+- **Redirect URI**: `http://YOUR_UNRAID_IP/graphql/api/auth/oidc/callback`
+
+:::tip[Redirect URIプロトコル]
+
+**プロトコルをサーバー構成に合わせます:** SSL/TLSなしでUnraidサーバーにアクセスする場合は `http://` を使用します（通常はローカルネットワークアクセス）。サーバーにSSL/TLSを設定している場合は `https://` を使用します。一部のOIDCプロバイダー（Googleなど）はHTTPSを必須とし、HTTPのリダイレクトURIは受け付けません。
+
+:::
+
+シンプルモード（許可されたメールドメイン/アドレス）またはアドバンスモードを使用して、複雑な要件向けに認可ルールを設定します。
+
+### Google
+
+<details>
+  <summary><strong>📋 セットアップ手順</strong></summary>
+
+  [Google Cloud Console](https://console.cloud.google.com/) で OAuth 2.0 認証情報を設定します:
+
+  1. **APIs & Services** → **Credentials** に移動します
+  2. **Create Credentials** → **OAuth client ID** をクリックします
+  3. アプリケーションタイプとして **Web application** を選択します
+  4. リダイレクトURIを **Authorized redirect URIs** に追加します
+  5. 求められた場合は OAuth 同意画面を設定します
+
+</details>
+
+**構成:**
+
+- **Issuer URL**: `https://accounts.google.com`
+- **Client ID/Secret**: OAuth 2.0 クライアント認証情報から取得します
+- **Required Scopes**: `openid`, `profile`, `email`
+- **Redirect URI**: `http://YOUR_UNRAID_IP/graphql/api/auth/oidc/callback`
+
+:::warning[Google ドメイン要件]
+
+**Google では、OAuthリダイレクトURIに有効なドメイン名が必要です。** ローカルIPアドレスや `.local` ドメインは受け付けられません。Google OAuth を Unraid サーバーで使用するには、次が必要です:
+
+- **オプション 1: リバースプロキシ** - 有効なドメイン名をUnraid APIに向けて設定したリバースプロキシ（NGINX Proxy ManagerやTraefikなど）を用意します
+- **オプション 2: Tailscale** - Tailscaleを使って、Googleが受け入れる有効な`*.ts.net`ドメインを取得します
+- **オプション 3: 動的DNS** - DDNSサービスを使って、サーバー用の公開ドメイン名を取得します
+
+Google Cloud Console と Unraid のOIDC設定の両方でリダイレクトURIを有効なドメインに更新することを忘れないでください。
+
+:::
+
+Google Workspaceドメインの場合は、`hd`クレームを使うAdvanced Modeを使用して、組織のドメインへのアクセスを制限します。
+
+### Authelia
+
+Autheliaの`configuration.yml`でOIDCクライアントを設定し、クライアントIDを`unraid-api`にして、Autheliaのhash-passwordコマンドを使ってハッシュ化されたシークレットを生成します。
+
+**構成:**
+
+- **Issuer URL**: `https://auth.yourdomain.com`
+- **Client ID**: `unraid-api`（またはAutheliaで設定した値）
+- **Client Secret**: ハッシュ化されていないシークレット
+- **Required Scopes**: `openid`, `profile`, `email`, `groups`
+- **Redirect URI**: `http://YOUR_UNRAID_IP/graphql/api/auth/oidc/callback`
+
+グループベースの認可には`groups`クレームを使ってAdvanced Modeを使用します。
+
+### Microsoft/Azure AD
+
+Azure Portal](https://portal.azure.com/)でAzure Active Directory → App registrationsの下に新しいアプリを登録します。アプリケーションIDを控え、クライアントシークレットを作成し、テナントIDを控えます。
+
+**構成:**
+
+- **Issuer URL**: `https://login.microsoftonline.com/YOUR_TENANT_ID/v2.0`
+- **Client ID**: アプリケーション（クライアント）ID
+- **Client Secret**: 生成されたクライアントシークレット
+- **Required Scopes**: `openid`, `profile`, `email`
+- **Redirect URI**: `http://YOUR_UNRAID_IP/graphql/api/auth/oidc/callback`
+
+認可ルールは、メールドメインまたはAdvancedクレームを使ってインターフェースで設定できます。
+
+### Keycloak
+
+Keycloak Admin Consoleで`openid-connect`プロトコルを使って新しい confidential client を作成し、Credentialsタブからクライアントシークレットをコピーします。
+
+**構成:**
+
+- **Issuer URL**: `https://keycloak.example.com/realms/YOUR_REALM`
+- **Client ID**: `unraid-api`（またはKeycloakで設定した値）
+- **Client Secret**: KeycloakのCredentialsタブから取得
+- **Required Scopes**: `openid`, `profile`, `email`
+- **Redirect URI**: `http://YOUR_UNRAID_IP/graphql/api/auth/oidc/callback`
+
+ロールベースの認可には、`realm_access.roles`または`resource_access`クレームを使ってAdvanced Modeを使用します。
+
+### Authentik
+
+Authentikで新しいOAuth2/OpenID Providerを作成し、次にApplicationを作成してそれをプロバイダーにリンクします。
+
+**構成:**
+
+- **Issuer URL**: `https://authentik.example.com/application/o/<application_slug>/`
+- **Client ID**: Authentikのプロバイダー設定から取得
+- **Client Secret**: Authentikのプロバイダー設定から取得
+- **Required Scopes**: `openid`, `profile`, `email`
+- **Redirect URI**: `http://YOUR_UNRAID_IP/graphql/api/auth/oidc/callback`
+
+認可ルールは、インターフェースで設定できます。
+
+### Okta
+
+Okta Admin Consoleで新しいOIDC Web Applicationを作成し、適切なユーザーまたはグループを割り当てます。
+
+**構成:**
+
+- **Issuer URL**: `https://YOUR_DOMAIN.okta.com`
+- **Client ID**: Oktaのアプリケーション設定から取得
+- **Client Secret**: Oktaのアプリケーション設定から取得
+- **Required Scopes**: `openid`, `profile`, `email`
+- **Redirect URI**: `http://YOUR_UNRAID_IP/graphql/api/auth/oidc/callback`
+
+認可ルールは、メールドメインまたはAdvancedクレームを使ってインターフェースで設定できます。
