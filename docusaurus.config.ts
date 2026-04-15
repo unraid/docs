@@ -228,8 +228,12 @@ const config: Config = {
           items: [
             { label: "Home", to: "/" },
             {
-              label: "Contribute on Github",
+              label: "Contribute on GitHub",
               href: "https://github.com/unraid/docs",
+            },
+            {
+              label: "Contribute translations",
+              href: "https://unraid.crowdin.com/unraid-docs",
             },
           ],
         },
