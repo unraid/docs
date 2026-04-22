@@ -345,6 +345,18 @@ const config: Config = {
             from: "/category/zfs/",
             to: "/unraid-os/advanced-configurations/optimize-storage/zfs-storage/",
           },
+          {
+            from: "/unraid-os/system-administration/maintain-and-update/",
+            to: "/unraid-os/updating-unraid/",
+          },
+          {
+            from: "/unraid-os/system-administration/maintain-and-update/release-types/",
+            to: "/unraid-os/updating-unraid/release-types/",
+          },
+          {
+            from: "/unraid-os/system-administration/maintain-and-update/upgrading-unraid/",
+            to: "/unraid-os/updating-unraid/upgrading-unraid/",
+          },
 
           // Connect redirects
           { from: "/connect/", to: "/unraid-connect/overview-and-setup/" },
@@ -616,7 +628,7 @@ const config: Config = {
           { from: "/unraid-os/manual/tools/", to: "/category/advanced-tools/" },
           {
             from: "/unraid-os/manual/upgrade-instructions/",
-            to: "/unraid-os/system-administration/maintain-and-update/upgrading-unraid/",
+            to: "/unraid-os/updating-unraid/upgrading-unraid/",
           },
           {
             from: "/unraid-os/manual/users/",
@@ -980,7 +992,7 @@ const config: Config = {
           { from: "/go/troubleshooting/", to: "/unraid-os/troubleshooting/" },
           {
             from: "/go/upgrade-instructions/",
-            to: "/unraid-os/system-administration/maintain-and-update/upgrading-unraid/",
+            to: "/unraid-os/updating-unraid/upgrading-unraid/",
           },
           {
             from: "/go/upgrading-a-vm-to-windows-11/",
