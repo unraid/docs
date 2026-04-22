@@ -355,7 +355,11 @@ const config: Config = {
           },
           {
             from: "/unraid-os/system-administration/maintain-and-update/upgrading-unraid/",
-            to: "/unraid-os/updating-unraid/upgrading-unraid/",
+            to: "/unraid-os/updating-unraid/",
+          },
+          {
+            from: "/unraid-os/updating-unraid/upgrading-unraid/",
+            to: "/unraid-os/updating-unraid/",
           },
 
           // Connect redirects
@@ -628,7 +632,7 @@ const config: Config = {
           { from: "/unraid-os/manual/tools/", to: "/category/advanced-tools/" },
           {
             from: "/unraid-os/manual/upgrade-instructions/",
-            to: "/unraid-os/updating-unraid/upgrading-unraid/",
+            to: "/unraid-os/updating-unraid/",
           },
           {
             from: "/unraid-os/manual/users/",
@@ -992,7 +996,7 @@ const config: Config = {
           { from: "/go/troubleshooting/", to: "/unraid-os/troubleshooting/" },
           {
             from: "/go/upgrade-instructions/",
-            to: "/unraid-os/updating-unraid/upgrading-unraid/",
+            to: "/unraid-os/updating-unraid/",
           },
           {
             from: "/go/upgrading-a-vm-to-windows-11/",
