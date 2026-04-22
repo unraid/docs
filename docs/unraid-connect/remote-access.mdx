@@ -3,14 +3,9 @@ sidebar_position: 3
 sidebar_label: Remote access
 ---
 
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
-import RemoteAccessDynamic from './partials/remote-access/dynamic.mdx';
-import RemoteAccessStatic from './partials/remote-access/static.mdx';
-
 # Remote access
 
-Unlock secure, browser-based access to your Unraid %%WebGUI|web-gui%% from anywhere with remote access. This feature is ideal for managing your server when you're away from home - no complicated networking or %%VPN Tunnel|vpn-tunnel%% setup is required. For more advanced needs, such as connecting to Docker containers or accessing network drives, a %%VPN Tunnel|vpn-tunnel%% remains the recommended solution.
+Unlock secure, browser-based access to your Unraid %%WebGUI|web-gui%% from anywhere with remote access. This feature is ideal for managing your server when you're away from home, but it does require either %%UPnP|upnp%% or a manual port forwarding rule on your router. For more advanced needs, such as connecting to Docker containers or accessing network drives, a %%VPN Tunnel|vpn-tunnel%% remains the recommended solution.
 
 :::important[Security reminder]
 
@@ -20,9 +15,9 @@ Before enabling remote access, ensure your root password is strong and unique. U
 
 Remote access through Unraid Connect provides:
 
-- **Convenience** - Quickly access your server’s management interface from anywhere, using a secure, cloud-managed connection.
-- **Security** - Dynamic access modes limit exposure by only allowing access to the internet when necessary, which helps reduce risks from automated attacks.
-- **Simplicity** - No need for manual port forwarding or VPN client setup for basic management tasks.
+- **Convenience** - Quickly access your server’s management interface from anywhere, using a trusted Unraid Connect URL.
+- **Security** - Your %%WebGUI|web-gui%% traffic is encrypted when SSL/TLS is configured correctly.
+- **Simplicity** - %%UPnP|upnp%% can create the required port mapping automatically when your router supports it.
 
 :::tip
 
@@ -45,45 +40,32 @@ Your Unraid server will be ready to accept secure remote connections via the %%W
 
 ---
 
-## Choosing a remote access type
+## Choosing a remote access configuration
 
-Unraid Connect offers two modes:
+In current Unraid 7.2.x releases, the Unraid API settings page exposes these remote access controls:
 
-<Tabs>
-  <TabItem value="dynamic" label="Dynamic remote access" default>
-    <RemoteAccessDynamic />
-  </TabItem>
+- **Allow Remote Access** - Choose whether remote access is **Disabled** or **Always** available.
+- **Remote Access Forward Type** - Choose **Static** for manual port forwarding, or **UPnP** to let your router create the port mapping automatically.
+- **Remote Access WAN Port** - Choose the WAN port to forward when using **Static** forwarding.
 
-  <TabItem value="static" label="Static remote access">
-    <RemoteAccessStatic />
-  </TabItem>
-</Tabs>
+When remote access is set to **Always**, your %%WebGUI|web-gui%% is continuously reachable from the internet on the configured WAN port. Use a strong root password, keep Unraid OS updated, and disable remote access when you do not need it.
 
-| Feature                              | Dynamic remote access       | Static remote access      |
-| ------------------------------------ | --------------------------- | ------------------------- |
-| %%WebGUI\|web-gui%% open to internet | Only when enabled           | Always                    |
-| Attack surface                       | Minimized                   | Maximized                 |
-| Automation                           | Auto open/close via Connect | Manual setup, always open |
-| %%UPnP\|upnp%% support               | Yes                         | Yes                       |
-|                                      | **Recommended for most**    |                           |
+Dynamic, on-demand remote access is not currently exposed in the Unraid API settings page. If you need remote management without keeping the %%WebGUI|web-gui%% exposed through port forwarding, use [Tailscale](../unraid-os/system-administration/secure-your-server/tailscale.mdx) or another %%VPN Tunnel|vpn-tunnel%%.
 
-## Dynamic remote access setup
+## Enable remote access
 
-To set up dynamic remote access:
+To enable remote access:
 
-1. In ***Settings → Management Access → Unraid API***, select a dynamic option from the Remote Access dropdown:
-   - **Dynamic - UPnP:** Uses %%UPnP|upnp%% to open and close a random port automatically (requires %%UPnP|upnp%% enabled on your router).
-   - **Dynamic - Manual port forward:** Requires you to forward the selected port on your router manually.
+1. In the Unraid %%WebGUI|web-gui%%, navigate to ***Settings → Management Access*** and open the **Unraid API Settings** tab.
+2. Set **Allow Remote Access** to **Always**.
+3. Choose a **Remote Access Forward Type**:
+   - **UPnP:** Lets Unraid ask your router to create the WAN port mapping automatically. This requires %%UPnP|upnp%% support and %%UPnP|upnp%% enabled on your router.
+   - **Static:** Requires you to create the port forwarding rule manually on your router.
+4. If you choose **Static**, enter the **Remote Access WAN Port** you want to use.
+5. Click **Apply**.
+6. Log in to [Unraid Connect](https://connect.myunraid.net/) and click the **Manage** link to connect to your server remotely.
 
-2. Navigate to [Unraid Connect](https://connect.myunraid.net/), and go to the management or server details page.
-
-3. The **Dynamic remote access** card will show a button if your server isn’t currently accessible from your location.
-
-4. Click the button to enable WAN access. If using %%UPnP|upnp%%, a new port forward lease is created (typically for 30 minutes) and auto-renewed while active.
-
-5. The card will display the current status and %%UPnP|upnp%% state.
-
-6. After 10 minutes of inactivity - or if you click **Disable remote access** - internet access is automatically revoked. %%UPnP|upnp%% leases are removed as well.
+If the **Manage** link does not work, use the relevant forwarding section below to verify that the WAN port reaches your server's HTTPS port.
 
 ---
 
@@ -100,12 +82,10 @@ To configure %%UPnP|upnp%%:
    Navigate to ***Settings → Management Access*** and change **Use %%UPnP|upnp%%** to **Yes**.
 
 3. **Select %%UPnP|upnp%% in Unraid Connect.**
-   On the Unraid Connect settings page, choose the remote access option as %%UPnP|upnp%% (select either Dynamic or Always On) and then click **Apply**.
+   On the Unraid API settings page, set **Allow Remote Access** to **Always**, set **Remote Access Forward Type** to **UPnP**, and then click **Apply**.
 
-4. **Verify port forwarding (Always On only).**
+4. **Verify port forwarding.**
    Click the **Check** button. If successful, you'll see the message, "Your Unraid Server is reachable from the Internet."
-
-   For Dynamic forwarding, you need to click **Enable Dynamic Remote Access** in [Unraid Connect](https://connect.myunraid.net/) to allow access.
 
 :::caution[Troubleshooting]
 
@@ -129,9 +109,7 @@ To configure manual port forwarding:
 
    Some routers may require the WAN port and HTTPS port to match. If so, use the same high random number for both.
 
-4. **Verify port forwarding (Always On only):** Press the **Check** button. If everything is correct, you’ll see “Your Unraid Server is reachable from the Internet.”
-
-   For dynamic forwarding, ensure to click **Enable Dynamic Remote Access** in [Unraid Connect](https://connect.myunraid.net/) to enable access.
+4. **Verify port forwarding:** Press the **Check** button. If everything is correct, you’ll see “Your Unraid Server is reachable from the Internet.”
 
 5. **Access your server:** Log in to [Unraid Connect](https://connect.myunraid.net/) and click the **Manage** link to connect to your server remotely.
 
