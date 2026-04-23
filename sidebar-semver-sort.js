@@ -20,10 +20,61 @@ function addItemTitle(item) {
   };
 }
 
+function itemLabel(item) {
+  return item.label?.toLowerCase();
+}
+
+function isVersionHistoryDoc(item) {
+  return item.type === "doc" && item.id === "unraid-os/download_list";
+}
+
+function groupReleaseReferencesUnderUpdatingUnraid(items) {
+  const updatingIndex = items.findIndex((item) =>
+    item.type === "category" && itemLabel(item) === "updating unraid"
+  );
+
+  if (updatingIndex === -1) {
+    return items;
+  }
+
+  const releaseNotes = [];
+  const versionHistory = [];
+  const remainingItems = [];
+
+  items.forEach((item, index) => {
+    if (index === updatingIndex) {
+      remainingItems.push(item);
+    } else if (item.type === "category" && itemLabel(item) === "release notes") {
+      releaseNotes.push(item);
+    } else if (isVersionHistoryDoc(item)) {
+      versionHistory.push(item);
+    } else {
+      remainingItems.push(item);
+    }
+  });
+
+  if (releaseNotes.length === 0 && versionHistory.length === 0) {
+    return items;
+  }
+
+  const updatedUpdatingCategory = {
+    ...items[updatingIndex],
+    items: [
+      ...(items[updatingIndex].items || []),
+      ...releaseNotes,
+      ...versionHistory,
+    ],
+  };
+
+  return remainingItems.map((item) =>
+    item === items[updatingIndex] ? updatedUpdatingCategory : item
+  );
+}
+
 function sortSidebarItems(items, sortBySemver = false) {
-  const result = items.map((item) => {
+  let result = items.map((item) => {
     if (item.type === "category") {
-      if (item.label.toLowerCase() === "release notes") {
+      if (itemLabel(item) === "release notes") {
         return { ...item, items: sortSidebarItems(item.items, true) };
       } else {
         return { ...item, items: sortSidebarItems(item.items, false) };
@@ -31,6 +82,10 @@ function sortSidebarItems(items, sortBySemver = false) {
     }
     return item;
   });
+
+  if (!sortBySemver) {
+    result = groupReleaseReferencesUnderUpdatingUnraid(result);
+  }
 
   if (sortBySemver) {
     const subfolderArrays = result.reduce((acc, item) => {
