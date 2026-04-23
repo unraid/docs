@@ -242,6 +242,10 @@ const config: Config = {
           items: [
             { label: "Forums", href: "https://forums.unraid.net" },
             { label: "Discord", href: "https://discord.unraid.net/" },
+            {
+              label: "Feature and Bug Tracker",
+              href: "https://product.unraid.net/",
+            },
           ],
         },
         {
