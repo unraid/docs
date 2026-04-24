@@ -12,20 +12,9 @@ sidebar_position: 4
 
 `unraid-api apikey` コマンドは対話モードと非対話モードの両方をサポートしており、次の用途に適しています:
 
-- 自動デプロイスクリプト
-- CI/CDパイプライン
-- 一時的なアクセスの付与
-- Infrastructure as codeのワークフロー
-
-:::tip[Quick 開始]
+## APIキーの作成
 
 [Complete Workflow Example](#complete-workflow-example) にジャンプして、すべてが実際に動作する様子を確認してください。
-
-:::
-
-## APIキーをプログラムで作成する
-
-### JSON出力による基本的な作成
 
 機械可読な出力を取得するには、`--json` フラグを使用します:
 
@@ -43,7 +32,7 @@ unraid-api apikey --create --name "workflow key" --roles ADMIN --json
 }
 ```
 
-### 権限付きの高度な作成
+機械可読な出力を取得するには、`--json` フラグを使用します:
 
 ```bash
 unraid-api apikey --create \
@@ -53,7 +42,7 @@ unraid-api apikey --create \
   --json
 ```
 
-### 既存キーの処理
+**出力:**
 
 同じ名前のキーが存在する場合は、`--overwrite` を使用します:
 
@@ -61,15 +50,15 @@ unraid-api apikey --create \
 unraid-api apikey --create --name "existing key" --roles ADMIN --overwrite --json
 ```
 
-:::warning[Key 置換]
+:::warning
 
 `--overwrite` フラグは、既存のキーを永続的に置き換えます。古いキーは直ちに無効になります。
 
 :::
 
-## APIキーをプログラムで削除する
+## APIキーの削除
 
-### 非対話的な削除
+`--overwrite` フラグは、既存のキーを永続的に置き換えます。古いキーは直ちに無効になります。
 
 プロンプトなしで名前によってキーを削除します:
 
@@ -79,11 +68,11 @@ unraid-api apikey --delete --name "workflow key"
 
 **出力:**
 
-```
+```text
 Successfully deleted 1 API key
 ```
 
-### 削除用JSON出力
+プロンプトなしで名前によってキーを削除します:
 
 機械可読な削除確認には `--json` フラグを使用します:
 
@@ -114,7 +103,7 @@ unraid-api apikey --delete --name "workflow key" --json
 }
 ```
 
-### エラー処理
+**成功時の出力:**
 
 指定されたキーが存在しない場合:
 
@@ -132,9 +121,9 @@ unraid-api apikey --delete --name "nonexistent key"
 }
 ```
 
-## 完全なワークフローの例 {/* #complete-workflow-example */}
+## 完全なワークフローの例
 
-一時アクセスのプロビジョニングの完全な例を示します:
+**JSONエラー出力:**
 
 ```bash
 #!/bin/bash
@@ -165,9 +154,9 @@ trap 'echo "Cleaning up..."; unraid-api apikey --delete --name "temp deployment 
 echo "Deployment completed successfully"
 ```
 
-## コマンドリファレンス
+## 完全なワークフローの例
 
-### 作成コマンドのオプション
+一時アクセスのプロビジョニングの完全な例を示します:
 
 | 旗                       | 説明                     | 例                                 |
 | ----------------------- | ---------------------- | --------------------------------- |
@@ -178,78 +167,32 @@ echo "Deployment completed successfully"
 | `--overwrite`           | 既存のキーを置き換える            | `--overwrite`                     |
 | `--json`                | 機械可読な出力                | `--json`                          |
 
-### 利用可能なロール
+**利用可能なロール:** `ADMIN`（システム全体へのアクセス）、`CONNECT`（Unraid Connect の機能）、`VIEWER`（読み取り専用アクセス）、`GUEST`（制限付きアクセス）。
 
-- `ADMIN` - システム全体へのアクセス
-- `CONNECT` - Unraid Connectの機能
-- `VIEWER` - 読み取り専用アクセス
-- `GUEST` - 制限付きアクセス
+**利用可能なリソース:** `ACTIVATION_CODE`, `API_KEY`, `ARRAY`, `CLOUD`, `CONFIG`, `CONNECT`, `CONNECT__REMOTE_ACCESS`, `CUSTOMIZATIONS`, `DASHBOARD`, `DISK`, `DISPLAY`, `DOCKER`, `FLASH`, `INFO`, `LOGS`, `ME`, `NETWORK`, `NOTIFICATIONS`, `ONLINE`, `OS`, `OWNER`, `PERMISSION`, `REGISTRATION`, `SERVERS`, `SERVICES`, `SHARE`, `VARS`, `VMS`, `WELCOME`.
 
-### 利用可能なリソースとアクション
+**利用可能なアクション:** `CREATE_ANY`, `CREATE_OWN`, `READ_ANY`, `READ_OWN`, `UPDATE_ANY`, `UPDATE_OWN`, `DELETE_ANY`, `DELETE_OWN`.
 
-**リソース:** `ACTIVATION_CODE`, `API_KEY`, `ARRAY`, `CLOUD`, `CONFIG`, `CONNECT`, `CONNECT__REMOTE_ACCESS`, `CUSTOMIZATIONS`, `DASHBOARD`, `DISK`, `DISPLAY`, `DOCKER`, `FLASH`, `INFO`, `LOGS`, `ME`, `NETWORK`, `NOTIFICATIONS`, `ONLINE`, `OS`, `OWNER`, `PERMISSION`, `REGISTRATION`, `SERVERS`, `SERVICES`, `SHARE`, `VARS`, `VMS`, `WELCOME`
-
-**アクション:** `CREATE_ANY`, `CREATE_OWN`, `READ_ANY`, `READ_OWN`, `UPDATE_ANY`, `UPDATE_OWN`, `DELETE_ANY`, `DELETE_OWN`
-
-### 削除コマンドのオプション
+**削除コマンドのオプション:**
 
 | 旗               | 説明          | 例                 |
 | --------------- | ----------- | ----------------- |
 | `--delete`      | 削除モードを有効にする | `--delete`        |
 | `--name <name>` | 削除するキー（任意）  | `--name "my key"` |
 
-**注:** `--name` を省略すると、コマンドは対話的に実行されます。
+`--name` を省略すると、コマンドは対話的に実行されます。
 
-## ベストプラクティス
+**リソース:** `ACTIVATION_CODE`, `API_KEY`, `ARRAY`, `CLOUD`, `CONFIG`, `CONNECT`, `CONNECT__REMOTE_ACCESS`, `CUSTOMIZATIONS`, `DASHBOARD`, `DISK`, `DISPLAY`, `DOCKER`, `FLASH`, `INFO`, `LOGS`, `ME`, `NETWORK`, `NOTIFICATIONS`, `ONLINE`, `OS`, `OWNER`, `PERMISSION`, `REGISTRATION`, `SERVERS`, `SERVICES`, `SHARE`, `VARS`, `VMS`, `WELCOME`
 
-:::info[Security ベストプラクティス]
-
-**最小権限**
-
-- 可能な場合はADMINロールではなく、特定の権限を使用してください
-- 例: `--roles ADMIN` の代わりに `--permissions "DOCKER:READ_ANY"`
-
-**キーのライフサイクル管理**
-
-- 一時キーは使用後に必ず削除してください
-- APIキーは安全に保存してください（環境変数、シークレット管理）
-- 監査証跡のために、説明的な名前と説明を使用します
-
-:::
-
-### エラー処理
-
-- 各コマンドの後で終了コード（`$?`）を確認してください
-- bashスクリプトでは`set -e`を使用して、失敗したらすぐに終了するようにしてください
-- `trap`を使って適切なクリーンアップを実装してください
-
-### キーの命名
-
-- 目的と日付を含む説明的な名前を使用してください
-- 名前には文字、数字、スペースのみを含める必要があります
-- Unicode文字がサポートされています
+**リソース:** `ACTIVATION_CODE`, `API_KEY`, `ARRAY`, `CLOUD`, `CONFIG`, `CONNECT`, `CONNECT__REMOTE_ACCESS`, `CUSTOMIZATIONS`, `DASHBOARD`, `DISK`, `DISPLAY`, `DOCKER`, `FLASH`, `INFO`, `LOGS`, `ME`, `NETWORK`, `NOTIFICATIONS`, `ONLINE`, `OS`, `OWNER`, `PERMISSION`, `REGISTRATION`, `SERVERS`, `SERVICES`, `SHARE`, `VARS`, `VMS`, `WELCOME`
 
 ## トラブルシューティング
 
-### よくある問題
+**一般的なエラーメッセージ:**
 
-:::note[Common エラーメッセージ]
-
-**「APIキー名には、英字、数字、スペースのみを含める必要があります」**
-
-- **解決策:** ハイフン、アンダースコア、記号などの特殊文字を削除してください
-
-**「名前 'x' のAPIキーはすでに存在します」**
-
-- **解決策:** `--overwrite` フラグを使用するか、別の名前を選択してください
-
-**「キーに少なくとも1つのロールまたは権限を追加してください」**
-
-- **解決策:** `--roles` または `--permissions`（または両方）を指定します
-
-:::
-
-### デバッグモード
+- **"API key name must contain only letters, numbers, and spaces"**: ハイフン、アンダースコア、記号などの特殊文字を削除してください。
+- **"API key with name 'x' already exists"**: `--overwrite` フラグを使用するか、別の名前を選択してください。
+- **"Please add at least one role or permission to the key"**: `--roles` または `--permissions` のいずれか（または両方）を指定してください。
 
 トラブルシューティングのため、デバッグログを有効にして実行してください:
 
