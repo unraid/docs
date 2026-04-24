@@ -12,22 +12,11 @@ Diese Anleitung erklärt, wie man API-Schlüssel mit der Unraid API CLI programm
 
 Der Befehl `unraid-api apikey` unterstützt sowohl interaktive als auch nicht-interaktive Modi und eignet sich für:
 
-- Automatisierte Bereitstellungsskripte
-- CI/CD-Pipelines
-- Temporäre Zugangsbereitstellung
-- Infrastruktur-als-Code-Workflows
-
-:::tip[Quick Start]
+## API-Schlüssel erstellen
 
 Springen Sie zum [kompletten Workflow-Beispiel](#complete-workflow-example), um alles in Aktion zu sehen.
 
-:::
-
-## Programmatische Erstellung von API-Schlüsseln
-
-### Grundlegende Erstellung mit JSON-Ausgabe
-
-**Ausgabe:**
+Springen Sie zum [kompletten Workflow-Beispiel](#complete-workflow-example), um alles in Aktion zu sehen.
 
 ```bash
 unraid-api apikey --create --name "workflow key" --roles ADMIN --json
@@ -43,7 +32,7 @@ unraid-api apikey --create --name "workflow key" --roles ADMIN --json
 }
 ```
 
-### Erweiterte Erstellung mit Berechtigungen
+**Ausgabe:**
 
 ```bash
 unraid-api apikey --create \
@@ -53,7 +42,7 @@ unraid-api apikey --create \
   --json
 ```
 
-### Umgang mit bestehenden Schlüsseln
+**Ausgabe:**
 
 Verwenden Sie `--overwrite`, wenn ein Schlüssel mit demselben Namen existiert:
 
@@ -61,15 +50,15 @@ Verwenden Sie `--overwrite`, wenn ein Schlüssel mit demselben Namen existiert:
 unraid-api apikey --create --name "existing key" --roles ADMIN --overwrite --json
 ```
 
-:::warning[Key Ersatz]
+:::warning
 
 Löschen Sie einen Schlüssel nach Namen ohne Aufforderungen:
 
 :::
 
-## Programmatisches Löschen von API-Schlüsseln
+## API-Schlüssel löschen
 
-### Nicht-interaktive Löschung
+Löschen Sie einen Schlüssel nach Namen ohne Aufforderungen:
 
 Löschen Sie einen Schlüssel nach Namen ohne Aufforderungen:
 
@@ -79,11 +68,11 @@ unraid-api apikey --delete --name "workflow key"
 
 **Ausgabe:**
 
-```
+```text
 Successfully deleted 1 API key
 ```
 
-### JSON-Ausgabe für das Löschen
+Löschen Sie einen Schlüssel nach Namen ohne Aufforderungen:
 
 Verwenden Sie das `--json`-Flag für maschinenlesbare Löschbestätigung:
 
@@ -105,7 +94,7 @@ unraid-api apikey --delete --name "workflow key" --json
 }
 ```
 
-**Fehlerausgabe:**
+Verwenden Sie das `--json`-Flag für maschinenlesbare Löschbestätigung:
 
 ```json
 {
@@ -114,7 +103,7 @@ unraid-api apikey --delete --name "workflow key" --json
 }
 ```
 
-### Fehlerbehandlung
+**Erfolgs-Ausgabe:**
 
 Wenn der angegebene Schlüssel nicht existiert:
 
@@ -132,9 +121,9 @@ unraid-api apikey --delete --name "nonexistent key"
 }
 ```
 
-## Komplettes Workflow-Beispiel {/* #complete-workflow-example */}
+## Komplettes Workflow-Beispiel
 
-Hier ist ein vollständiges Beispiel zur Bereitstellung von temporärem Zugriff:
+**JSON Fehlerausgabe:**
 
 ```bash
 #!/bin/bash
@@ -165,9 +154,9 @@ trap 'echo "Cleaning up..."; unraid-api apikey --delete --name "temp deployment 
 echo "Deployment completed successfully"
 ```
 
-## Befehlsübersicht
+## Komplettes Workflow-Beispiel
 
-### Befehlserstellungsoptionen
+Hier ist ein vollständiges Beispiel zur Bereitstellung von temporärem Zugriff:
 
 | Kennzeichnung           | Beschreibung                     | Beispiel                          |
 | ----------------------- | -------------------------------- | --------------------------------- |
@@ -178,80 +167,34 @@ echo "Deployment completed successfully"
 | `--overwrite`           | Existierenden Schlüssel ersetzen | `--overwrite`                     |
 | `--json`                | Maschinenlesbare Ausgabefunktion | `--json`                          |
 
-### Verfügbare Rollen
+**Verfügbare Rollen:** `ADMIN` (voller Systemzugriff), `CONNECT` (Unraid Connect-Funktionen), `VIEWER` (nur Lesezugriff), `GUEST` (eingeschränkter Zugriff).
 
-- `ADMIN` - Voller Systemzugang
-- `CONNECT` - Unraid Connect Funktionen
-- `VIEWER` - Nur-Lesezugriff
-- `GUEST` - Eingeschränkter Zugriff
+**Verfügbare Ressourcen:** `ACTIVATION_CODE`, `API_KEY`, `ARRAY`, `CLOUD`, `CONFIG`, `CONNECT`, `CONNECT__REMOTE_ACCESS`, `CUSTOMIZATIONS`, `DASHBOARD`, `DISK`, `DISPLAY`, `DOCKER`, `FLASH`, `INFO`, `LOGS`, `ME`, `NETWORK`, `NOTIFICATIONS`, `ONLINE`, `OS`, `OWNER`, `PERMISSION`, `REGISTRATION`, `SERVERS`, `SERVICES`, `SHARE`, `VARS`, `VMS`, `WELCOME`.
 
-### Verfügbare Ressourcen und Aktionen
+**Verfügbare Aktionen:** `CREATE_ANY`, `CREATE_OWN`, `READ_ANY`, `READ_OWN`, `UPDATE_ANY`, `UPDATE_OWN`, `DELETE_ANY`, `DELETE_OWN`.
 
-**Ressourcen:** `ACTIVATION_CODE`, `API_KEY`, `ARRAY`, `CLOUD`, `CONFIG`, `CONNECT`, `CONNECT__REMOTE_ACCESS`, `CUSTOMIZATIONS`, `DASHBOARD`, `DISK`, `DISPLAY`, `DOCKER`, `FLASH`, `INFO`, `LOGS`, `ME`, `NETWORK`, `NOTIFICATIONS`, `ONLINE`, `OS`, `OWNER`, `PERMISSION`, `REGISTRATION`, `SERVERS`, `SERVICES`, `SHARE`, `VARS`, `VMS`, `WELCOME`
-
-**Aktionen:** `CREATE_ANY`, `CREATE_OWN`, `READ_ANY`, `READ_OWN`, `UPDATE_ANY`, `UPDATE_OWN`, `DELETE_ANY`, `DELETE_OWN`
-
-### Befehlslöschungsoptionen
+**Optionen für den Löschbefehl:**
 
 | Kennzeichnung   | Beschreibung                       | Beispiel                  |
 | --------------- | ---------------------------------- | ------------------------- |
 | `--delete`      | Löschmodus aktivieren              | `--delete`                |
 | `--name <name>` | Zu löschender Schlüssel (optional) | `--name "mein Schlüssel"` |
 
-**Hinweis:** Wenn `--name` weggelassen wird, wird der Befehl interaktiv ausgeführt.
+Wenn `--name` weggelassen wird, wird der Befehl interaktiv ausgeführt.
 
-## Beste Praktiken
+**Ressourcen:** `ACTIVATION_CODE`, `API_KEY`, `ARRAY`, `CLOUD`, `CONFIG`, `CONNECT`, `CONNECT__REMOTE_ACCESS`, `CUSTOMIZATIONS`, `DASHBOARD`, `DISK`, `DISPLAY`, `DOCKER`, `FLASH`, `INFO`, `LOGS`, `ME`, `NETWORK`, `NOTIFICATIONS`, `ONLINE`, `OS`, `OWNER`, `PERMISSION`, `REGISTRATION`, `SERVERS`, `SERVICES`, `SHARE`, `VARS`, `VMS`, `WELCOME`
 
-:::info[Security Beste Praktiken]
-
-**Minimale Berechtigungen**
-
-- Spezifische Berechtigungen anstelle der ADMIN-Rolle verwenden, wenn möglich
-- Beispiel: `--permissions "DOCKER:READ_ANY"` anstelle von `--roles ADMIN`
-
-**Schlüssel-Lebenszyklus-Management**
-
-- Temporäre Schlüssel immer nach Gebrauch bereinigen
-- API-Schlüssel sicher speichern (Umgebungsvariablen, Geheimnismanagement)
-- Verwenden Sie beschreibende Namen und Beschreibungen für Prüfpfade
-
-:::
-
-### Fehlerbehandlung
-
-- **Lösung:** Entfernen Sie Sonderzeichen wie Bindestriche, Unterstriche oder Symbole
-- Verwenden Sie `set -e` in Bash-Skripten, um bei Fehlern schnell zu scheitern
-- Führen Sie eine ordnungsgemäße Reinigung mit `trap` durch
-
-### Schlüsselbenennung
-
-- **Lösung:** Verwenden Sie das `--overwrite`-Flag oder wählen Sie einen anderen Namen
-- Namen müssen nur Buchstaben, Zahlen und Leerzeichen enthalten
-- Unicode-Buchstaben werden unterstützt
+**Aktionen:** `CREATE_ANY`, `CREATE_OWN`, `READ_ANY`, `READ_OWN`, `UPDATE_ANY`, `UPDATE_OWN`, `DELETE_ANY`, `DELETE_OWN`
 
 ## Fehlerbehebung
 
-### Häufige Probleme
+**Häufige Fehlermeldungen:**
 
-:::note[Common Fehlermeldungen]
+- **"Der Name des API-Schlüssels darf nur Buchstaben, Zahlen und Leerzeichen enthalten"**: Entfernen Sie Sonderzeichen wie Bindestriche, Unterstriche oder Symbole.
+- **"Ein API-Schlüssel mit dem Namen 'x' existiert bereits"**: Verwenden Sie das Flag `--overwrite` oder wählen Sie einen anderen Namen.
+- **"Bitte fügen Sie dem Schlüssel mindestens eine Rolle oder Berechtigung hinzu"**: Geben Sie entweder `--roles` oder `--permissions` an (oder beides).
 
-**"API-Schlüsselname darf nur Buchstaben, Zahlen und Leerzeichen enthalten"**
-
-- **Lösung:** Entfernen Sie Sonderzeichen wie Bindestriche, Unterstriche oder Symbole
-
-**"API-Schlüssel mit Namen 'x' existiert bereits"**
-
-- **Lösung:** Verwenden Sie das `--overwrite`-Flag oder wählen Sie einen anderen Namen
-
-**"Bitte fügen Sie mindestens eine Rolle oder Berechtigung zum Schlüssel hinzu"**
-
-- **Lösung:** Geben Sie entweder `--roles` oder `--permissions` an (oder beides)
-
-:::
-
-### Debug-Modus
-
-Führen Sie für die Fehlerbehebung mit Debug-Protokollierung aus:
+**Hinweis:** Wenn `--name` weggelassen wird, wird der Befehl interaktiv ausgeführt.
 
 ```bash
 LOG_LEVEL=debug unraid-api apikey --create --name "debug key" --roles ADMIN
