@@ -10,7 +10,7 @@ import TabItem from "@theme/TabItem";
 
 Lorsque vous consolidez du matériel, préservez des systèmes hérités ou testez des mises à niveau dans un environnement virtuel, vous pouvez avoir besoin de convertir un disque physique ou de migrer un système existant vers une %%machine virtuelle|vm%% sur Unraid. Ce processus s'applique aux systèmes Linux et Windows, vous permettant d'exécuter votre installation en tant que %%VM|vm%% au sein de votre serveur Unraid.
 
-:::note[Prerequisites]
+:::note\[Prerequisites]
 
 - Votre serveur Unraid doit répondre aux [exigences matérielles minimales pour la virtualisation](./overview-and-system-prep.mdx#requirements) (voir tableau ci-dessous).
 - Le disque source doit être connecté à votre serveur Unraid (via SATA, USB ou comme périphérique non assigné).
@@ -21,10 +21,10 @@ Lorsque vous consolidez du matériel, préservez des systèmes hérités ou test
 
 ## Exigences matérielles
 
-| Composant           | Exigence minimale                                                                    | Recommandé pour de meilleures performances                                         |
+| Technologie         | Ce qu'il fait                                                                        | Recommandé pour de meilleures performances                                         |
 | ------------------- | ------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------- |
 | **Processeur**      | 64 bits avec virtualisation matérielle (%%Intel VT-X\|intel-vt-x%%/%%AMD-V\|amd-v%%) | Processeur multicœur avec VT-d/AMD-Vi pour le passage direct                       |
-| **RAM**             | 8 Go                                                                                 | 16 Go ou plus                                                                      |
+| **RAM**             | Gère les définitions des %%VM\|vm%%, ainsi que les interfaces de stockage et réseau. | 16 Go ou plus                                                                      |
 | **Stockage**        | Un pool de cache SSD ou NVMe %%cache pool\|cache-pool%% avec espace suffisant        | Un pool de cache NVMe dédié %%cache pool\|cache-pool%% pour le stockage %%VM\|vm%% |
 | **Carte mère/BIOS** | %%UEFI\|uefi%% avec virtualisation activée                                           | %%UEFI\|uefi%% avec %%IOMMU\|iommu%%/VT-d/AMD-Vi activé                            |
 
@@ -170,7 +170,7 @@ Choisissez le « passthrough » si vous souhaitez une migration simple ou envisa
 
 :::
 
-:::note[Prerequisites]
+:::note\[Prerequisites]
 
 - Sauvegardez votre installation Windows avant de commencer.
 - Ayez une clé USB de rechange prête pour les outils de récupération.
@@ -181,7 +181,7 @@ Choisissez le « passthrough » si vous souhaitez une migration simple ou envisa
 
 :::
 
-#### Étape 1 : Préparer le disque Windows pour la migration
+<h4>Étape 1 : Préparer le disque Windows pour la migration</h4>
 
 Sysprep est intégré à Windows et élimine les informations système uniques, préparant Windows pour un matériel différent.
 
@@ -227,7 +227,7 @@ Acronis True Image 2025 inclut Universal Restore, qui assiste la migration maté
 4. Suivez les instructions à l'écran pour appliquer Universal Restore à votre disque Windows. Cela mettra à jour les pilotes et le HAL pour une meilleure compatibilité avec le matériel virtualisé.
 5. Arrêtez le système et installez le disque dans votre serveur Unraid.
 
-#### Étape 2 : Identifier le disque physique dans Unraid
+<h4>Étape 2 : Identifier le disque physique dans Unraid</h4>
 
 1. Connectez-vous au %%WebGUI|web-gui%% (`http://tower` ou `http://tower.local`).
 2. Allez dans l'onglet **Principal**.
@@ -235,7 +235,7 @@ Acronis True Image 2025 inclut Universal Restore, qui assiste la migration maté
 4. Localisez votre disque sous **Périphériques non assignés**.
 5. Notez la lettre du périphérique (par exemple, `sdb`, `sdc`) pour l'utiliser dans la configuration %%VM|vm%%.
 
-#### Étape 3 : Créer une nouvelle machine virtuelle
+<h4>Étape 3 : Créer une nouvelle machine virtuelle</h4>
 
 1. Allez dans l'onglet **%%VMs|vm%%** dans le %%WebGUI|web-gui%%. Si l'onglet est manquant, assurez-vous que la virtualisation est activée et que les exigences matérielles sont remplies.
 2. Cliquez sur **Ajouter une VM**.
@@ -246,7 +246,7 @@ Acronis True Image 2025 inclut Universal Restore, qui assiste la migration maté
    - Pour le disque %%virtuel|vdisk%% principal, sélectionnez n'importe quel emplacement et taille (cela sera remplacé à l'étape suivante).
    - Décochez **Start VM after creation**.
 
-#### Étape 5 : Installer les pilotes
+<h4>Étape 5 : Installer les pilotes</h4>
 
 Vous devez modifier la configuration XML du %%VM|vm%% pour connecter votre disque physique à la %%machine virtuelle|vm%%.
 
@@ -284,7 +284,7 @@ Vous devez modifier la configuration XML du %%VM|vm%% pour connecter votre disqu
 
 3. Cliquez sur **Update** pour enregistrer vos modifications XML.
 
-#### Étape 5 : Installer les pilotes
+<h4>Étape 5 : Installer les pilotes</h4>
 
 1. Démarrez votre %%VM|vm%%.
 2. Une fois sous Windows, ouvrez le Gestionnaire de périphériques en cliquant avec le bouton droit sur le menu Démarrer et en sélectionnant **Device Manager**.
@@ -328,118 +328,135 @@ Unraid ne prend plus en charge %%Xen|xen-hvm%% à partir de la version 6.2. %%KV
 
 Pour convertir une VM Windows de %%Xen|xen-hvm%% à %%KVM|kvm%%, suivez ces étapes. N'oubliez pas de **retirer tout passage direct de périphérique PCI de votre configuration de domaine %%Xen|xen-hvm%%** avant de commencer. Ces périphériques pourront être ajoutés de nouveau après la migration.
 
-#### Étape 1 : Déterminez si votre VM utilise les pilotes GPLPV de Xen
+<details>
+  <summary><strong>Étape 1 : Déterminez si votre VM utilise les pilotes GPLPV de Xen</strong> - Cliquer pour développer/réduire</summary>
 
-1. À l'intérieur de votre VM %%Xen|xen-hvm%%, ouvrez le **Gestionnaire de périphériques Windows** (appuyez sur *Touche Windows + X*, puis sélectionnez **Device Manager**).
-2. Développez **Carte réseau** et vérifiez le nom de l'appareil.
-   - Si le nom contient "Xen," vous utilisez des pilotes GPLPV.
-   - Si ce n'est pas le cas, passez à l'étape concernant le redémarrage en mode %%KVM|kvm%%.
+  1. À l'intérieur de votre VM %%Xen|xen-hvm%%, ouvrez le **Gestionnaire de périphériques Windows** (appuyez sur *Touche Windows + X*, puis sélectionnez **Device Manager**).
+  2. Développez **Carte réseau** et vérifiez le nom de l'appareil.
+     - Si le nom contient "Xen," vous utilisez des pilotes GPLPV.
+     - Si ce n'est pas le cas, passez à l'étape concernant le redémarrage en mode %%KVM|kvm%%.
 
-:::tip
-Si vous n'utilisez pas les pilotes GPLPV, vous pouvez passer les prochaines étapes et continuer à partir de la section redémarrage en mode %%KVM|kvm%%.
-:::
+  :::tip
+  Si vous n'utilisez pas les pilotes GPLPV, vous pouvez passer les prochaines étapes et continuer à partir de la section redémarrage en mode %%KVM|kvm%%.
+  :::
 
-#### Étape 2 : Préparez Windows pour la suppression des pilotes GPLPV
+</details>
 
-1. Ouvrez une invite de commande en tant qu'Administrateur (**Menu Démarrer** → tapez `cmd` → clic droit sur **Invite de commandes** → sélectionnez **Exécuter en tant qu'administrateur**).
-2. Entrez la commande suivante :
-   ```
-   bcdedit -set loadoptions nogplpv
-   ```
-3. Redémarrez votre VM.
+<details>
+  <summary><strong>Étape 2 : Préparez Windows pour la suppression des pilotes GPLPV</strong> - Cliquer pour développer/réduire</summary>
 
-#### Étape 1 : Déterminez si votre VM utilise les pilotes GPLPV de Xen
+  1. Ouvrez une invite de commande en tant qu'Administrateur (**Menu Démarrer** → tapez `cmd` → clic droit sur **Invite de commandes** → sélectionnez **Exécuter en tant qu'administrateur**).
+  2. Entrez la commande suivante :
+     ```
+     bcdedit -set loadoptions nogplpv
+     ```
+  3. Redémarrez votre VM.
 
-Après le redémarrage, purgez tous les pilotes GPLPV de %%Xen|xen-hvm%% de votre système en utilisant le processus complet de suppression manuelle documenté dans le [Wiki du projet Xen](https://wiki.xenproject.org/wiki/Xen_Windows_GPLPV).
+</details>
 
-:::tip
-Si vous n'utilisez pas les pilotes GPLPV, vous pouvez sauter les prochaines étapes et continuer à partir de la section de redémarrage en mode %%KVM|kvm%%.
-:::
+<details>
+  <summary><strong>Étape 1 : Déterminez si votre VM utilise les pilotes GPLPV de Xen</strong> - Cliquer pour développer/réduire</summary>
 
-#### Étape 2 : Préparez Windows pour la suppression des pilotes GPLPV
+  Après le redémarrage, purgez tous les pilotes GPLPV de %%Xen|xen-hvm%% de votre système en utilisant le processus complet de suppression manuelle documenté dans le [Wiki du projet Xen](https://wiki.xenproject.org/wiki/Xen_Windows_GPLPV).
 
-1. Assurez-vous que le **gestionnaire de VM** est activé :
-   - Allez sur ***Settings → VM manager***.
-   - Réglez **Enable VMs** sur **Oui**.
-   - Téléchargez le dernier **ISO des pilotes VirtIO** pour Windows en le sélectionnant dans le menu déroulant et en cliquant sur **Télécharger**.
+  :::tip
+  Si vous n'utilisez pas les pilotes GPLPV, vous pouvez sauter les prochaines étapes et continuer à partir de la section de redémarrage en mode %%KVM|kvm%%.
+  :::
 
-2. Accédez à l'onglet **VMs** et cliquez sur **Add VM**.
+</details>
 
-3. Sélectionnez la version Windows qui correspond à votre machine virtuelle %%Xen|xen-hvm%% d'origine.
+<details>
+  <summary><strong>Étape 2 : Préparez Windows pour la suppression des pilotes GPLPV</strong> - Cliquer pour développer/réduire</summary>
 
-4. Configurez les paramètres de base :
-   - **Nom** : Attribuez un nom descriptif à votre VM.
-   - **ISO des pilotes VirtIO** : Choisissez la version que vous venez de télécharger.
+  1. Assurez-vous que le **gestionnaire de VM** est activé :
+     - Allez sur ***Settings → VM manager***.
+     - Réglez **Enable VMs** sur **Oui**.
+     - Téléchargez le dernier **ISO des pilotes VirtIO** pour Windows en le sélectionnant dans le menu déroulant et en cliquant sur **Télécharger**.
 
-5. Sous **Primary vDisk Location** :
-   - Parcourez et sélectionnez votre disque virtuel %%Xen|xen-hvm%% existant.
+  2. Accédez à l'onglet **VMs** et cliquez sur **Add VM**.
 
-6. Ajoutez un **Secondary vDisk temporaire** :
-   - Cliquez sur le signe plus vert.
-   - Réglez la taille à **1M** (cela imposera la compatibilité du bus IDE lors du démarrage initial).
-   - Choisissez n'importe quel répertoire temporaire pour l'emplacement (cela sera supprimé plus tard).
+  3. Sélectionnez la version Windows qui correspond à votre machine virtuelle %%Xen|xen-hvm%% d'origine.
 
-7. Laissez les autres paramètres pour les graphismes et le son à leurs valeurs par défaut, puis cliquez sur **Créer**.
+  4. Configurez les paramètres de base :
+     - **Nom** : Attribuez un nom descriptif à votre VM.
+     - **ISO des pilotes VirtIO** : Choisissez la version que vous venez de télécharger.
 
-8. Si la VM a démarré automatiquement, arrêtez-la :
-   - Privilégiez **Arrêter** (évitez **Arrêt forcé** sauf si la VM ne répond pas).
-   - Sinon, décochez **Démarrer la VM après création** lors de la création de la VM.
+  5. Sous **Primary vDisk Location** :
+     - Parcourez et sélectionnez votre disque virtuel %%Xen|xen-hvm%% existant.
 
-9. Modifiez la configuration de la VM :
-   - Cliquez sur l'icône de la VM et sélectionnez **Edit**.
-   - Passez à la vue **XML** en utilisant le basculement en haut à droite.
+  6. Ajoutez un **Secondary vDisk temporaire** :
+     - Cliquez sur le signe plus vert.
+     - Réglez la taille à **1M** (cela imposera la compatibilité du bus IDE lors du démarrage initial).
+     - Choisissez n'importe quel répertoire temporaire pour l'emplacement (cela sera supprimé plus tard).
 
-10. Modifiez le XML du disque principal :
-    - Localisez la section `<disk>` pour votre disque virtuel principal.
-    - Supprimez la ligne entière `<address>`.
-    - Remplacez `bus='virtio'` par `bus='ide'` dans la balise `<target>`.
-    - Cliquez sur **Update**.
+  7. Laissez les autres paramètres pour les graphismes et le son à leurs valeurs par défaut, puis cliquez sur **Créer**.
 
-:::tip[Pourquoi le disque temporaire?]
-Le disque temporaire de 1 Mo force Unraid à assigner le disque principal sous `hda` (IDE) au lieu de `vda` (%%VirtIO|virtio%%), permettant à Windows de démarrer sans pilotes %%VirtIO|virtio%% initialement. Ce disque temporaire sera supprimé après l'installation du pilote.
-:::
+  8. Si la VM a démarré automatiquement, arrêtez-la :
+     - Privilégiez **Arrêter** (évitez **Arrêt forcé** sauf si la VM ne répond pas).
+     - Sinon, décochez **Démarrer la VM après création** lors de la création de la VM.
 
-#### Étape 5 : Installez les pilotes VirtIO
+  9. Modifiez la configuration de la VM :
+     - Cliquez sur l'icône de la VM et sélectionnez **Edit**.
+     - Passez à la vue **XML** en utilisant le basculement en haut à droite.
 
-1. Démarrez la VM depuis l'onglet **VMs**.
-2. Connectez-vous via %%VNC|vnc-session%% en cliquant sur l'icône de la VM et sélectionnez **Start with console (VNC)**.
-3. Pendant le démarrage :
-   - Windows détectera un nouveau matériel mais pourrait échouer à installer les pilotes.
-   - Choisissez **Reboot later** lorsque cela est demandé.
-4. Ouvrez le **Gestionnaire de périphériques** (appuyez sur Win+X et choisissez Gestionnaire de périphériques) :
-   - Installez les pilotes pour chaque appareil répertorié sous **Autres périphériques** (comme le Contrôleur Ethernet, le Périphérique PCI, etc.) :
-     1. Cliquez avec le bouton droit sur le périphérique et sélectionnez **Update driver**.
-     2. Choisissez **Browse my computer for drivers**.
-     3. Indiquez le lecteur %%VirtIO|virtio%% ISO (par exemple, `D:\`).
-     4. Cochez **Include subfolders**.
-     5. Si demandé, acceptez toujours **Always trust Red Hat**.
-5. Installez l'agent %%QEMU|qemu%% %%guest agent|guest-agent%% :
-   - Ouvrez l'Explorateur de fichiers et accédez à `D:\guest-agent\`.
-   - Double-cliquez sur `qemu-ga-x64.msi`.
-6. Éteignez la VM.
+  10. Modifiez le XML du disque principal :
+      - Localisez la section `<disk>` pour votre disque virtuel principal.
+      - Supprimez la ligne entière `<address>`.
+      - Remplacez `bus='virtio'` par `bus='ide'` dans la balise `<target>`.
+      - Cliquez sur **Update**.
 
-#### Étape 4 : Créer une nouvelle machine virtuelle KVM
+  :::tip[Pourquoi le disque temporaire?]
+  Le disque temporaire de 1 Mo force Unraid à assigner le disque principal sous `hda` (IDE) au lieu de `vda` (%%VirtIO|virtio%%), permettant à Windows de démarrer sans pilotes %%VirtIO|virtio%% initialement. Ce disque temporaire sera supprimé après l'installation du pilote.
+  :::
 
-1. Modifiez la VM :
-   - Supprimez le %%vDisk|vdisk%% secondaire temporaire en cliquant sur l'icône rouge moins.
-   - Confirmez que le %%vDisk|vdisk%% principal pointe vers votre disque %%Xen|xen-hvm%% d'origine.
-2. Mettez à jour la VM :
-   - Cliquez sur **Update** pour enregistrer vos modifications.
-3. Démarrez la VM normalement.
-4. Vérifiez dans le **Gestionnaire de périphériques** que :
-   - Aucune icône d'avertissement n'apparaît.
-   - Tous les périphériques utilisent les pilotes %%VirtIO|virtio%% (par exemple, "Adaptateur Ethernet %%VirtIO|virtio%% Red Hat").
-5. (Optionnel) Activez %%VirtIO|virtio%% pour de meilleures performances :
-   - Modifiez la VM et passez à la vue XML.
-   - Changez l'`bus` du disque principal de `ide` à `virtio`.
-   - Cliquez sur **Update** et redémarrez la VM.
+</details>
 
-:::tip[Pourquoi le disque temporaire ?]
-Le disque temporaire de 1 Mo force Unraid à assigner le disque principal comme `hda` (IDE) au lieu de `vda` (%%VirtIO|virtio%%), permettant à Windows de démarrer sans pilotes %%VirtIO|virtio%% au départ. Ce disque temporaire sera supprimé après l'installation du pilote.
-:::
+<details>
+  <summary><strong>Étape 5 : Installez les pilotes VirtIO</strong> - Cliquer pour développer/réduire</summary>
 
-1. Réinstallez les pilotes %%VirtIO|virtio%% depuis l'ISO.
-2. Vérifiez les mises à jour Windows, qui peuvent fournir des pilotes plus récents.
-3. Visitez la page des [Pilotes Red Hat VirtIO](https://docs.fedoraproject.org/en-US/quick-docs/creating-windows-virtual-machines-using-virtio-drivers/) pour les dernières versions.
-   :::
+  1. Démarrez la VM depuis l'onglet **VMs**.
+  2. Connectez-vous via %%VNC|vnc-session%% en cliquant sur l'icône de la VM et sélectionnez **Start with console (VNC)**.
+  3. Pendant le démarrage :
+     - Windows détectera un nouveau matériel mais pourrait échouer à installer les pilotes.
+     - Choisissez **Reboot later** lorsque cela est demandé.
+  4. Ouvrez le **Gestionnaire de périphériques** (appuyez sur Win+X et choisissez Gestionnaire de périphériques) :
+     - Installez les pilotes pour chaque appareil répertorié sous **Autres périphériques** (comme le Contrôleur Ethernet, le Périphérique PCI, etc.) :
+       1. Cliquez avec le bouton droit sur le périphérique et sélectionnez **Update driver**.
+       2. Choisissez **Browse my computer for drivers**.
+       3. Indiquez le lecteur %%VirtIO|virtio%% ISO (par exemple, `D:\`).
+       4. Cochez **Include subfolders**.
+       5. Si demandé, acceptez toujours **Always trust Red Hat**.
+  5. Installez l'agent %%QEMU|qemu%% %%guest agent|guest-agent%% :
+     - Ouvrez l'Explorateur de fichiers et accédez à `D:\guest-agent\`.
+     - Double-cliquez sur `qemu-ga-x64.msi`.
+  6. Éteignez la VM.
 
+</details>
+
+<details>
+  <summary><strong>Étape 4 : Créer une nouvelle machine virtuelle KVM</strong> - Cliquer pour développer/réduire</summary>
+
+  1. Modifiez la VM :
+     - Supprimez le %%vDisk|vdisk%% secondaire temporaire en cliquant sur l'icône rouge moins.
+     - Confirmez que le %%vDisk|vdisk%% principal pointe vers votre disque %%Xen|xen-hvm%% d'origine.
+  2. Mettez à jour la VM :
+     - Cliquez sur **Update** pour enregistrer vos modifications.
+  3. Démarrez la VM normalement.
+  4. Vérifiez dans le **Gestionnaire de périphériques** que :
+     - Aucune icône d'avertissement n'apparaît.
+     - Tous les périphériques utilisent les pilotes %%VirtIO|virtio%% (par exemple, "Adaptateur Ethernet %%VirtIO|virtio%% Red Hat").
+  5. (Optionnel) Activez %%VirtIO|virtio%% pour de meilleures performances :
+     - Modifiez la VM et passez à la vue XML.
+     - Changez l'`bus` du disque principal de `ide` à `virtio`.
+     - Cliquez sur **Update** et redémarrez la VM.
+
+  :::tip[Pourquoi le disque temporaire ?]
+  Le disque temporaire de 1 Mo force Unraid à assigner le disque principal comme `hda` (IDE) au lieu de `vda` (%%VirtIO|virtio%%), permettant à Windows de démarrer sans pilotes %%VirtIO|virtio%% au départ. Ce disque temporaire sera supprimé après l'installation du pilote.
+  :::
+
+  1. Réinstallez les pilotes %%VirtIO|virtio%% depuis l'ISO.
+  2. Vérifiez les mises à jour Windows, qui peuvent fournir des pilotes plus récents.
+  3. Visitez la page des [Pilotes Red Hat VirtIO](https://docs.fedoraproject.org/en-US/quick-docs/creating-windows-virtual-machines-using-virtio-drivers/) pour les dernières versions.
+     :::
+
+</details>
