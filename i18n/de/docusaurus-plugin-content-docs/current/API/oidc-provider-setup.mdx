@@ -16,14 +16,12 @@ Diese Anleitung führt Sie durch die Konfiguration von OIDC (OpenID Connect)-Anb
 
 ## 🚀 Schnellstart
 
-<details open>
-  <summary><strong>Zu den OIDC-Einstellungen gelangen</strong></summary>
+#### Zu den OIDC-Einstellungen gelangen
 
-  1. Navigieren Sie zur Weboberfläche Ihres Unraid-Servers
-  2. Gehen Sie zu **Einstellungen** → **Verwaltungszugriff** → **API** → **OIDC**
-  3. Sie sehen Registerkarten für verschiedene Anbieter - klicken Sie auf die **+**-Schaltfläche, um einen neuen Anbieter hinzuzufügen
+1. Navigieren Sie zur Weboberfläche Ihres Unraid-Servers
+2. Gehen Sie zu **Einstellungen** → **Verwaltungszugriff** → **API** → **OIDC**
+3. Sie sehen Registerkarten für verschiedene Anbieter - klicken Sie auf die **+**-Schaltfläche, um einen neuen Anbieter hinzuzufügen
 
-</details>
 
 ### Überblick über die OIDC-Anbieteroberfläche
 
@@ -56,24 +54,22 @@ Die Oberfläche bietet zwei Autorisierungsmodi:
 - Sie haben eine kleine Liste spezifischer Benutzer
 - Sie sind neu in der OIDC-Konfiguration
 
-<details>
-  <summary><strong>Erweiterter Modus</strong></summary>
+#### Erweiterter Modus
 
-  Der erweiterte Modus bietet granulare Kontrolle mit regelbasierten Ansprüchen.
+Der erweiterte Modus bietet granulare Kontrolle mit regelbasierten Ansprüchen.
 
-  - Komplexe Autorisierungsregeln basierend auf JWT-Ansprüchen erstellen
-  - Operatoren wie gleich, enthält, endetMit, beginntMit verwenden
-  - Mehrere Bedingungen mit ODER/UND Logik kombinieren
-  - Wählen, ob IRGENDEINE Regel bestehen muss (ODER-Modus) oder ALLE Regeln bestehen müssen (UND-Modus)
+- Komplexe Autorisierungsregeln basierend auf JWT-Ansprüchen erstellen
+- Operatoren wie gleich, enthält, endetMit, beginntMit verwenden
+- Mehrere Bedingungen mit ODER/UND Logik kombinieren
+- Wählen, ob IRGENDEINE Regel bestehen muss (ODER-Modus) oder ALLE Regeln bestehen müssen (UND-Modus)
 
-  **Wann sollte der erweiterte Modus verwendet werden:**
+**Wann sollte der erweiterte Modus verwendet werden:**
 
-  - Sie müssen Gruppenmitgliedschaften überprüfen
-  - Mehrfache Ansprüche verifizieren wollen (z.B. E-Mail-Domain UND verifizierter Status)
-  - Sie haben komplexe Autorisierungsanforderungen
-  - Benötigen eine feingranulare Kontrolle darüber, wie Regeln bewertet werden
+- Sie müssen Gruppenmitgliedschaften überprüfen
+- Mehrfache Ansprüche verifizieren wollen (z.B. E-Mail-Domain UND verifizierter Status)
+- Sie haben komplexe Autorisierungsanforderungen
+- Benötigen eine feingranulare Kontrolle darüber, wie Regeln bewertet werden
 
-</details>
 
 ## Beispiele für den einfachen Modus
 
@@ -94,110 +90,106 @@ Im einfachen Autorisierungsmodus:
 - **Spezifische E-Mail-Adressen**: Einzelne E-Mails hinzufügen
 - Klicken Sie auf **Element hinzufügen**, um mehrere Adressen hinzuzufügen
 
-<details>
-  <summary><strong>Beispiele für den erweiterten Modus</strong></summary>
+#### Beispiele für den erweiterten Modus
 
-  #### Autorisierungsregelmodus
+#### Autorisierungsregelmodus
 
-  Wenn mehrere Regeln verwendet werden, können Sie wählen, wie sie bewertet werden:
+Wenn mehrere Regeln verwendet werden, können Sie wählen, wie sie bewertet werden:
 
-  - **ODER-Modus** (Standard): Benutzer wird autorisiert, wenn IRGENDEINE Regel besteht
-  - **UND-Modus**: Benutzer wird nur autorisiert, wenn ALLE Regeln bestehen
+- **ODER-Modus** (Standard): Benutzer wird autorisiert, wenn IRGENDEINE Regel besteht
+- **UND-Modus**: Benutzer wird nur autorisiert, wenn ALLE Regeln bestehen
 
-  #### E-Mail-Domain mit Verifizierung (UND-Modus)
+#### E-Mail-Domain mit Verifizierung (UND-Modus)
 
-  Um sowohl E-Mail-Domain als auch Verifizierung zu verlangen:
+Um sowohl E-Mail-Domain als auch Verifizierung zu verlangen:
 
-  1. Setzen Sie **Autorisierungsregelmodus** auf `UND`
-  2. Zwei Regeln hinzufügen:
-     - Regel 1:
-       - **Anspruch**: `email`
-       - **Operator**: `endsWith`
-       - **Wert**: `@company.com`
-     - Regel 2:
-       - **Anspruch**: `email_verified`
-       - **Operator**: `equals`
-       - **Wert**: `true`
+1. Setzen Sie **Autorisierungsregelmodus** auf `UND`
+2. Zwei Regeln hinzufügen:
+   - Regel 1:
+     - **Anspruch**: `email`
+     - **Operator**: `endsWith`
+     - **Wert**: `@company.com`
+   - Regel 2:
+     - **Anspruch**: `email_verified`
+     - **Operator**: `equals`
+     - **Wert**: `true`
 
-  Dies stellt sicher, dass Benutzer sowohl über eine Unternehmens-E-Mail als auch eine verifizierte E-Mail-Adresse verfügen müssen.
+Dies stellt sicher, dass Benutzer sowohl über eine Unternehmens-E-Mail als auch eine verifizierte E-Mail-Adresse verfügen müssen.
 
-  #### Gruppenbasierter Zugriff (ODER-Modus)
+#### Gruppenbasierter Zugriff (ODER-Modus)
 
-  Um den Zugriff auf mehrere Gruppen zu erlauben:
+Um den Zugriff auf mehrere Gruppen zu erlauben:
 
-  1. Setzen Sie **Autorisierungsregelmodus** auf `ODER` (Standard)
-  2. Fügen Sie Regeln für jede Gruppe hinzu:
-     - **Anspruch**: `groups`
-     - **Operator**: `contains`
-     - **Wert**: `admins`
-       Oder eine andere Regel hinzufügen:
-     - **Anspruch**: `groups`
-     - **Operator**: `contains`
-     - **Wert**: `developers`
+1. Setzen Sie **Autorisierungsregelmodus** auf `ODER` (Standard)
+2. Fügen Sie Regeln für jede Gruppe hinzu:
+   - **Anspruch**: `groups`
+   - **Operator**: `contains`
+   - **Wert**: `admins`
+     Oder eine andere Regel hinzufügen:
+   - **Anspruch**: `groups`
+   - **Operator**: `contains`
+   - **Wert**: `developers`
 
-  Benutzer in der `admins` ODER `developers` Gruppe werden autorisiert.
+Benutzer in der `admins` ODER `developers` Gruppe werden autorisiert.
 
-  #### Mehrere Domains
+#### Mehrere Domains
 
-  - **Anspruch**: `email`
-  - **Operator**: `endsWith`
-  - **Werte**: Mehrere Domains hinzufügen (z.B. `company.com`, `subsidiary.com`)
+- **Anspruch**: `email`
+- **Operator**: `endsWith`
+- **Werte**: Mehrere Domains hinzufügen (z.B. `company.com`, `subsidiary.com`)
 
-  #### Komplexe Autorisierung (UND-Modus)
+#### Komplexe Autorisierung (UND-Modus)
 
-  Für strenge Sicherheit, die mehrere Bedingungen erfordert:
+Für strenge Sicherheit, die mehrere Bedingungen erfordert:
 
-  1. Setzen Sie **Autorisierungsregelmodus** auf `UND`
-  2. Fügen Sie mehrere Regeln hinzu, die ALLE bestehen müssen:
-     - E-Mail muss von der Unternehmensdomain stammen
-     - E-Mail muss verifiziert sein
-     - Benutzer muss in einer spezifischen Gruppe sein
-     - Konto muss 2FA aktiviert haben (wenn Anspruch verfügbar)
+1. Setzen Sie **Autorisierungsregelmodus** auf `UND`
+2. Fügen Sie mehrere Regeln hinzu, die ALLE bestehen müssen:
+   - E-Mail muss von der Unternehmensdomain stammen
+   - E-Mail muss verifiziert sein
+   - Benutzer muss in einer spezifischen Gruppe sein
+   - Konto muss 2FA aktiviert haben (wenn Anspruch verfügbar)
 
-</details>
 
-<details>
-  <summary><strong>Details zur Konfigurationsoberfläche</strong></summary>
+#### Details zur Konfigurationsoberfläche
 
-  ### Anbieter-Registerkarten
+### Anbieter-Registerkarten
 
-  - Jeder konfigurierte Anbieter erscheint als Registerkarte oben
-  - Klicken Sie auf eine Registerkarte, um zwischen Anbieter-Konfigurationen zu wechseln
-  - Mit der **+** Schaltfläche rechts wird ein neuer Anbieter hinzugefügt
+- Jeder konfigurierte Anbieter erscheint als Registerkarte oben
+- Klicken Sie auf eine Registerkarte, um zwischen Anbieter-Konfigurationen zu wechseln
+- Mit der **+** Schaltfläche rechts wird ein neuer Anbieter hinzugefügt
 
-  ### Autorisierungsmodus Dropdown
+### Autorisierungsmodus Dropdown
 
-  - **einfach**: Am besten für E-Mail-basierte Autorisierung (empfohlen für die meisten Benutzer)
-  - **erweitert**: Für komplexe, anspruchsbasierte Regeln mit JWT-Ansprüchen
+- **einfach**: Am besten für E-Mail-basierte Autorisierung (empfohlen für die meisten Benutzer)
+- **erweitert**: Für komplexe, anspruchsbasierte Regeln mit JWT-Ansprüchen
 
-  ### Einfache Autorisierungsfelder
+### Einfache Autorisierungsfelder
 
-  Wenn der "einfache" Modus ausgewählt ist, sehen Sie:
+Wenn der "einfache" Modus ausgewählt ist, sehen Sie:
 
-  - **Erlaubte E-Mail-Domains**: Geben Sie Domains ohne @ ein (z.B. `company.com`)
-    - Hilfstext: "Benutzer mit E-Mails, die in diesen Domains enden, können sich einloggen"
-  - **Spezifische E-Mail-Adressen**: Fügen Sie einzelne E-Mail-Adressen hinzu
-    - Hilfstext: "Nur diese exakten E-Mail-Adressen können sich einloggen"
-  - **Element hinzufügen**-Schaltflächen, um mehrere Einträge hinzuzufügen
+- **Erlaubte E-Mail-Domains**: Geben Sie Domains ohne @ ein (z.B. `company.com`)
+  - Hilfstext: "Benutzer mit E-Mails, die in diesen Domains enden, können sich einloggen"
+- **Spezifische E-Mail-Adressen**: Fügen Sie einzelne E-Mail-Adressen hinzu
+  - Hilfstext: "Nur diese exakten E-Mail-Adressen können sich einloggen"
+- **Element hinzufügen**-Schaltflächen, um mehrere Einträge hinzuzufügen
 
-  ### Erweiterte Autorisierungsfelder
+### Erweiterte Autorisierungsfelder
 
-  Wenn der "erweiterte" Modus ausgewählt ist, sehen Sie:
+Wenn der "erweiterte" Modus ausgewählt ist, sehen Sie:
 
-  - **Autorisierungsregelmodus**: Wählen `ODER` (jede Regel besteht) oder `UND` (alle Regeln müssen bestehen)
-  - **Autorisierungsregeln**: Fügen Sie mehrere anspruchsbasierte Regeln hinzu
-  - **Für jede Regel**:
-    - **Anspruch**: Der JWT-Anspruch, der überprüft werden soll
-    - **Operator**: Wie verglichen werden soll (equals, contains, endsWith, startsWith)
-    - **Wert**: Gegen was abgeglichen werden soll
+- **Autorisierungsregelmodus**: Wählen `ODER` (jede Regel besteht) oder `UND` (alle Regeln müssen bestehen)
+- **Autorisierungsregeln**: Fügen Sie mehrere anspruchsbasierte Regeln hinzu
+- **Für jede Regel**:
+  - **Anspruch**: Der JWT-Anspruch, der überprüft werden soll
+  - **Operator**: Wie verglichen werden soll (equals, contains, endsWith, startsWith)
+  - **Wert**: Gegen was abgeglichen werden soll
 
-  ### Zusätzliche Schnittstellenelemente
+### Zusätzliche Schnittstellenelemente
 
-  - **Entwickler-Sandbox aktivieren**: Umschalten, um die GraphQL-Sandbox unter `/graphql` zu aktivieren
-  - Die Schnittstelle verwendet ein dunkles Thema für bessere Sichtbarkeit
-  - Feldvalidierungsanzeigen helfen, die korrekte Konfiguration sicherzustellen
+- **Entwickler-Sandbox aktivieren**: Umschalten, um die GraphQL-Sandbox unter `/graphql` zu aktivieren
+- Die Schnittstelle verwendet ein dunkles Thema für bessere Sichtbarkeit
+- Feldvalidierungsanzeigen helfen, die korrekte Konfiguration sicherzustellen
 
-</details>
 
 ### Erforderliche Redirect-URI
 
@@ -326,18 +318,16 @@ Für Google Workspace-Domains verwenden Sie die erweiterte Methode mit dem `hd`-
 
 ### Authelia
 
-<details>
-  <summary><strong>📋 Einrichtungs-Schritte</strong></summary>
+#### 📋 Einrichtungs-Schritte
 
-  Richten Sie OAuth 2.0-Anmeldedaten in der [Google Cloud Console](https://console.cloud.google.com/) ein:
+Richten Sie OAuth 2.0-Anmeldedaten in der [Google Cloud Console](https://console.cloud.google.com/) ein:
 
-  1. Gehen Sie zu **APIs & Dienste** → **Anmeldedaten**
-  2. Klicken Sie auf **Anmeldedaten erstellen** → **OAuth Client-ID**
-  3. Wählen Sie **Webanwendung** als Anwendungstyp aus
-  4. Fügen Sie Ihre Redirect-URI zu **Autorisierte Redirect-URIs** hinzu
-  5. Konfigurieren Sie den OAuth-Zustimmungsbildschirm, wenn Sie dazu aufgefordert werden
+1. Gehen Sie zu **APIs & Dienste** → **Anmeldedaten**
+2. Klicken Sie auf **Anmeldedaten erstellen** → **OAuth Client-ID**
+3. Wählen Sie **Webanwendung** als Anwendungstyp aus
+4. Fügen Sie Ihre Redirect-URI zu **Autorisierte Redirect-URIs** hinzu
+5. Konfigurieren Sie den OAuth-Zustimmungsbildschirm, wenn Sie dazu aufgefordert werden
 
-</details>
 
 **Konfiguration:**
 

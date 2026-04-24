@@ -1,0 +1,131 @@
+---
+sidebar_position: 2
+sidebar_label: Actualización de Unraid
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import UpgradeModern from "./partials/upgrade-modern.mdx";
+import UpgradeLegacy611612 from "./partials/upgrade-legacy-611-612.mdx";
+import ManualDowngradeSimplest from "./partials/manual-downgrade-simplest.mdx";
+import ManualDowngradeCommandLine from "./partials/manual-downgrade-command-line.mdx";
+
+# Actualización de Unraid
+
+Actualizar el sistema operativo Unraid garantiza que dispongas de las características más recientes, actualizaciones de seguridad y soporte para hardware. Esta página describe el proceso estándar de actualización, junto con consejos para solucionar problemas y opciones de actualización manual.
+
+:::note[Requisitos previos]
+
+Antes de comenzar la actualización, asegúrate de crear una copia de seguridad completa de tu dispositivo USB. Para más detalles, consulta [Haciendo una copia de seguridad de tu dispositivo](../maintain-and-update/changing-the-flash-device.mdx#backing-up-your-flash-device).
+
+:::
+
+:::tip[Mejores prácticas antes de actualizar]
+
+1. **Hacer una copia de seguridad** de su unidad flash y cualquier dato importante.
+2. **Lea las notas de la versión** para la versión que planea instalar.
+3. **Actualice todos los complementos** a sus versiones más recientes.
+4. **Opcionalmente, detenga el array** antes de proceder.
+5. **Actualice Unraid OS** utilizando la página ***Herramientas → Actualizar OS***.
+6. **Reinicie** su servidor para completar la actualización.
+
+:::
+
+## Proceso de actualización estándar
+
+<Tabs>
+  <TabItem value="modern-7x" label="Unraid 7.x y posteriores" default>
+    <UpgradeModern />
+  </TabItem>
+
+  <TabItem value="legacy-611-612" label="Unraid 6.11 a 6.12">
+    <UpgradeLegacy611612 />
+  </TabItem>
+</Tabs>
+
+:::caution[ZFS advertencias de actualización del grupo]
+
+Al actualizar a Unraid 7.x, puedes ver advertencias sobre las actualizaciones de características del grupo [ZFS](../../advanced-configurations/optimize-storage/zfs-storage.mdx) durante el inicio o en el %%WebGUI|web-gui%%. Estas advertencias no son una señal de problema; simplemente indican que tu grupo %%ZFS|zfs%% está utilizando características de una versión anterior de ZFS.
+
+No es urgente actualizar tu grupo, pero si decides hacerlo, ten en cuenta que podría no funcionar con versiones anteriores de Unraid. Esto significa que es posible que no puedas volver a una versión anterior de Unraid después de actualizar.
+
+Como siempre, recuerda hacer una copia de seguridad de tus datos antes de actualizar tus grupos de %%ZFS|zfs%%.
+
+:::
+
+---
+
+## Solución de problemas de actualización
+
+Si encuentras problemas después de actualizar, consulta la sección correspondiente a continuación.
+
+#### El array o los contenedores Docker tardan en iniciar después de la actualización
+
+Después de ciertas actualizaciones puede ser necesaria una migración única de los contenedores Docker. Este proceso puede tardar, especialmente si tienes muchas imágenes. Ten paciencia durante este proceso; el rendimiento debería volver a la normalidad después del primer inicio.
+
+#### Los contenedores Docker no funcionan correctamente después de la actualización
+
+Si encuentras errores como *"layers from manifest don't match image configuration"*, puede que debas reconstruir el archivo de imagen de Docker:
+
+1. Ve a ***Configuración → Docker*** y detén el servicio Docker.
+2. Marca la casilla para eliminar la imagen de Docker y haz clic en el botón de eliminación.
+3. Reinicia Docker para volver a crear la imagen.
+4. Ve a la pestaña **Apps**, abre **Previous Apps**, marca lo que quieres reinstalar y haz clic en **"Install xx Applications"**.
+
+#### Las VMs muestran "cannot get interface MTU" o errores de red
+
+Si usaste un nombre de puente personalizado para la red de %%VM|vm%%, actualiza todas las %%VMs|vm%% para usar el puente predeterminado `br0`:
+
+1. Ve a la pestaña **VMs** y edita cada %%VM|vm%% (asegúrate de activar **Vista avanzada**).
+2. Establece el puente de red en `br0` y haz clic en **Aplicar**.
+3. Ve a ***Configuración → Administrador de VM*** (en **Vista avanzada**) y establece el puente predeterminado en `br0`.
+
+#### El acceso VNC a las VMs no funciona o es lento
+
+En %%VMs|vm%% antiguas, puede que debas actualizar el controlador de video de %%VNC|vnc-session%%:
+
+1. Edita la %%VM|vm%% desde la pestaña **VMs** (selecciona **Vista avanzada**).
+2. Establece el **controlador de video %%VNC|vnc-session%%** en **QXL** (recomendado). Prueba **Cirrus** o **vmvga** si QXL no funciona bien.
+3. Haz clic en **Aplicar** para guardar los cambios.
+
+#### La VM no arranca (aparece una shell EFI)
+
+Si tienes %%VMs|vm%% basadas en %%OVMF|ovmf%% creadas en versiones antiguas de Unraid, puede aparecer una shell EFI. Puedes arrancar la %%VM|vm%% introduciendo estos comandos:
+
+1. Escribe `fs0:`.
+2. Luego escribe `cd efi/boot`.
+3. Por último, escribe `bootx64.efi`.
+
+Si `fs0:` no funciona, prueba `fs1:`. Si el problema continúa, visita los [foros de Unraid](https://forums.unraid.net/) para obtener ayuda.
+
+#### Al intentar iniciar mi VM aparece el error "Invalid machine type"
+
+Para resolverlo, edita la %%VM|vm%% en la %%WebGUI|web-gui%% y haz clic en **Aplicar** sin hacer cambios. Esta acción actualiza el tipo de máquina a la versión compatible más reciente.
+
+#### Bajo rendimiento de la VM después de la actualización
+
+Si tu %%VM|vm%% está lenta después de una actualización, ve a la configuración de la %%VM|vm%% (en **Vista avanzada**) y actualiza la versión del tipo **Machine** a la revisión más reciente (por ejemplo, cambia de `i440fx-2.5` a `i440fx-2.7`). No cambies el prefijo; por ejemplo, no cambies de `i440fx` a `Q35`.
+
+---
+
+## Degradación de Unraid
+
+Antes de degradar, asegúrate de leer las notas de la versión de la cual te estás degradando. Busca la sección titulada "Retroceso," ya que contiene los pasos importantes que necesitas seguir.
+
+Si tienes acceso al WebGUI, puedes ir a **Herramientas → Degradar SO.** Esta opción te permite degradar a tu versión previamente instalada sin necesidad de descargar un archivo zip desde la página de Historial de Versiones.
+
+Si no ves la opción de degradar en **Herramientas → Degradar SO**, usa el método manual descrito a continuación. Esto generalmente significa que los archivos de la versión anterior no están en tu unidad flash.
+
+### Degradación manual
+
+Las degradaciones manuales solo son necesarias si no puedes acceder al %%WebGUI|interfaz web%% o si la opción de degradación no está disponible. Antes de proceder, es importante respaldar tu dispositivo USB flash. Para más detalles, consulta [Respaldo de tu dispositivo flash](../maintain-and-update/changing-the-flash-device.mdx#backing-up-your-flash-device).
+
+<Tabs>
+  <TabItem value="Método más simple" label="Método más simple">
+    <ManualDowngradeSimplest />
+  </TabItem>
+
+  <TabItem value="Método de línea de comandos" label="Método de línea de comandos">
+    <ManualDowngradeCommandLine />
+  </TabItem>
+</Tabs>

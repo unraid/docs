@@ -12,53 +12,58 @@ This page contains frequently asked questions about internal boot in Unraid OS. 
 
 ---
 
-<details>
-  <summary>If you'd rather watch a step-by-step walkthrough, these videos cover both common internal boot paths.</summary>
+If you'd rather watch a step-by-step walkthrough, these videos cover both common internal boot paths.
 
-  - [Set up a new server with internal boot](https://www.youtube.com/watch?v=NMHaMaa8iV0)
-  - [Convert an existing server to internal boot](https://www.youtube.com/watch?v=sruWM1PqjVo)
+- [Set up a new server with internal boot](https://www.youtube.com/watch?v=NMHaMaa8iV0)
+- [Convert an existing server to internal boot](https://www.youtube.com/watch?v=sruWM1PqjVo)
 
-  <div style={{ marginBottom: "1.5rem" }}>
-    <p><strong>New server setup</strong></p>
-    <ResponsiveEmbed src="https://www.youtube.com/embed/NMHaMaa8iV0" title="Unraid 7.3 Beta: Set Up a New Server with Internal Boot" />
-  </div>
+<div style={{ marginBottom: "1.5rem" }}>
+  <p><strong>New server setup</strong></p>
+  <ResponsiveEmbed src="https://www.youtube.com/embed/NMHaMaa8iV0" title="Unraid 7.3 Beta: Set Up a New Server with Internal Boot" />
+</div>
 
-  <div>
-    <p><strong>Existing server conversion</strong></p>
-    <ResponsiveEmbed src="https://www.youtube.com/embed/sruWM1PqjVo" title="Unraid 7.3 Beta: Convert Your Server to Internal Boot" />
-  </div>
-</details>
+<div>
+  <p><strong>Existing server conversion</strong></p>
+  <ResponsiveEmbed src="https://www.youtube.com/embed/sruWM1PqjVo" title="Unraid 7.3 Beta: Convert Your Server to Internal Boot" />
+</div>
 
-### I switched from flash boot to internal boot, but the system still boots from flash. What should I do? {#internal-boot-bios-order}
+### Warum sollte ich den internen Start statt eines USB-Flash-Laufwerks verwenden? {/* #internal-boot-benefits */}
 
+Interner Start ist optional. Wenn Ihr USB-Flash-Startsetup zuverlässig ist und zu Ihrem Server passt, müssen Sie nicht wechseln, nur weil es den internen Start gibt.
+
+Interner Start löst einige praktische Probleme:
+
+- Er verringert die Abhängigkeit von USB-Flash-Medien. Interne SSD-, NVMe- oder eMMC-Geräte sind im Allgemeinen langlebiger als preiswerte USB-Flash-Laufwerke und werden weniger leicht angestoßen, entfernt oder beschädigt.
+- Er unterstützt gespiegelte Startgeräte. Mit zwei internen Startgeräten kann Unraid weiter starten, wenn eines der Geräte ausfällt.
+- Es funktioniert besser für Systeme, bei denen USB-Boot umständlich, exponiert, unzuverlässig oder aufgrund des Hardwaredesigns nicht bevorzugt ist.
+- Damit können Sie einen dedizierten Boot-Pool für reine Boot-Geräte oder einen Boot- und Daten-Pool wählen, wenn Sie einen Teil eines größeren Geräts für den Boot-Vorgang reservieren und die verbleibende Kapazität als normalen Pool nutzen möchten.
+
+Interner Boot macht das Array im normalen Betrieb nicht schneller und ist für Server, die bereits zuverlässig von USB booten, nicht erforderlich.
+
+### I switched from flash boot to internal boot, but the system still boots from flash. What should I do? {/* #internal-boot-bios-order */}
 Unraid attempts to update the UEFI boot order automatically. If that does not take effect, manually move your internal boot device(s) to the top of your BIOS/UEFI boot order, save changes, and reboot.
 
-### What should I do if I see "prohibited by secure boot policy" after enabling internal boot? {#internal-boot-secure-boot}
-
+### What should I do if I see "prohibited by secure boot policy" after enabling internal boot? {/* #internal-boot-secure-boot */}
 Disable **Secure Boot** in your BIOS/UEFI settings, then reboot.
 
-### Does an internal boot SSD or NVMe device count toward my attached storage device limit? {#internal-boot-drive-count}
-
+### Does an internal boot SSD or NVMe device count toward my attached storage device limit? {/* #internal-boot-drive-count */}
 Yes. Internal boot SSD/NVMe devices count toward your attached device limit.
 
 Unraid does not currently exclude internal boot drives from the attached device count. If you use mirrored internal boot, both boot devices count.
 
 Specifically, attached storage devices include all devices present before %%array|array%% start, except one eMMC device and one USB device. See [Licensing FAQ](/unraid-os/troubleshooting/licensing-faq/).
 
-### Can I configure internal boot with two SSDs in a mirrored setup for redundancy? {#internal-boot-mirror}
-
+### Can I configure internal boot with two SSDs in a mirrored setup for redundancy? {/* #internal-boot-mirror */}
 Yes. Mirrored internal boot is supported by default.
 
 Internal boot uses %%ZFS|zfs%%, and a mirrored setup uses a %%ZFS mirror|zfs%% for redundancy. If one boot drive fails, Unraid continues running in a degraded state. Replace the failed device through the normal Unraid drive assignment flow to restore the mirror.
 
-### Can I enable internal boot and still license from flash? {#internal-boot-flash-license}
-
+### Can I enable internal boot and still license from flash? {/* #internal-boot-flash-license */}
 Yes. The licensing method is independent of the boot method.
 
 For TPM-based licensing details, see the [TPM Licensing FAQ (7.3+)](/unraid-os/troubleshooting/tpm-licensing-faq/).
 
-### Wie funktioniert das Flash-Backup, wenn ich internes Booten verwende? {#internal-boot-flash-backup}
-
+### Wie funktioniert das Flash-Backup, wenn ich internes Booten verwende? {/* #internal-boot-flash-backup */}
 Stellen Sie das Backup zuerst mit dem [Unraid USB Flash Creator](https://unraid.net/download) auf einem USB-Flash-Laufwerk wieder her und booten Sie dann von diesem wiederhergestellten USB-Gerät.
 
 Nachdem der Server gestartet ist, gehen Sie zu ***Einstellungen → Onboarding Wizard***, wählen Sie **internes Booten** und schließen Sie den Wechsel ab. Unraid kopiert während dieses Vorgangs die wiederhergestellte Boot-Konfiguration auf die ausgewählten internen Boot-Geräte.
