@@ -14,7 +14,7 @@ import ManualDowngradeCommandLine from "./partials/manual-downgrade-command-line
 
 Actualizar el sistema operativo Unraid garantiza que dispongas de las características más recientes, actualizaciones de seguridad y soporte para hardware. Esta página describe el proceso estándar de actualización, junto con consejos para solucionar problemas y opciones de actualización manual.
 
-:::note\[Prerequisites]
+:::note[Prerequisites]
 
 Antes de comenzar la actualización, asegúrate de crear una copia de seguridad completa de tu dispositivo USB. Para más detalles, consulta [Haciendo una copia de seguridad de tu dispositivo](../maintain-and-update/changing-the-flash-device.mdx#backing-up-your-flash-device).
 
@@ -45,7 +45,7 @@ Antes de comenzar la actualización, asegúrate de crear una copia de seguridad 
 
 :::caution[ZFS advertencias de actualización del grupo]
 
-Al actualizar a Unraid 7.x, puedes ver advertencias sobre las actualizaciones de características del grupo [%%ZFS|zfs%%](../../advanced-configurations/optimize-storage/zfs-storage.mdx) durante el inicio o en el %%WebGUI|web-gui%%. Estas advertencias no son una señal de problema; simplemente indican que tu grupo %%ZFS|zfs%% está utilizando características de una versión anterior de ZFS.
+Al actualizar a Unraid 7.x, puedes ver advertencias sobre las actualizaciones de características del grupo [ZFS](../../advanced-configurations/optimize-storage/zfs-storage.mdx) durante el inicio o en el %%WebGUI|web-gui%%. Estas advertencias no son una señal de problema; simplemente indican que tu grupo %%ZFS|zfs%% está utilizando características de una versión anterior de ZFS.
 
 No es urgente actualizar tu grupo, pero si decides hacerlo, ten en cuenta que podría no funcionar con versiones anteriores de Unraid. Esto significa que es posible que no puedas volver a una versión anterior de Unraid después de actualizar.
 
@@ -59,73 +59,52 @@ Como siempre, recuerda hacer una copia de seguridad de tus datos antes de actual
 
 Si encuentra problemas después de la actualización, consulte la sección relevante a continuación para obtener asistencia.
 
-<details>
-  <summary><strong>Los contenedores Docker no funcionan correctamente después de la actualización</strong> - Haga clic para expandir/colapsar</summary>
+#### Los contenedores Docker no funcionan correctamente después de la actualización
 
-  Si encuentras errores como *"las capas del manifiesto no coinciden con la configuración de la imagen",* es posible que necesites reconstruir tu archivo de imagen de Docker. Aquí te explicamos cómo:
+Si encuentras errores como *"las capas del manifiesto no coinciden con la configuración de la imagen",* es posible que necesites reconstruir tu archivo de imagen de Docker. Aquí te explicamos cómo:
 
-</details>
+#### Las VMs muestran "no se puede obtener la interfaz MTU" o errores de red
 
-<details>
-  <summary><strong>Las VMs muestran "no se puede obtener la interfaz MTU" o errores de red</strong> - Haga clic para expandir/colapsar</summary>
+Si tienes %%OVMF|ovmf%%-basados %%VMs|vm%% creados en versiones anteriores de Unraid, podrías encontrar un shell EFI. Puedes arrancar el %%VM|vm%% introduciendo los siguientes comandos:
 
-  Si tienes %%OVMF|ovmf%%-basados %%VMs|vm%% creados en versiones anteriores de Unraid, podrías encontrar un shell EFI. Puedes arrancar el %%VM|vm%% introduciendo los siguientes comandos:
+1. Escriba `fs0:`.
+2. Luego escriba `cd efi/boot`.
+3. Finalmente, escriba `bootx64.efi`.
+4. Navegue a la pestaña **Aplicaciones**, **Aplicaciones anteriores** y marque lo que desea reinstalar y haga clic en **"Instalar xx Aplicaciones"**.
 
-  1. Escriba `fs0:`.
-  2. Luego escriba `cd efi/boot`.
-  3. Finalmente, escriba `bootx64.efi`.
-  4. Navegue a la pestaña **Aplicaciones**, **Aplicaciones anteriores** y marque lo que desea reinstalar y haga clic en **"Instalar xx Aplicaciones"**.
+#### El acceso VNC a las VMs no funciona o es lento
 
-</details>
+Para resolver esto, edita el %%VM|vm%% en la %%WebGUI|web-gui%% y haz clic en **Aplicar** sin realizar cambios. Esta acción actualizará el tipo de máquina a la última versión compatible.
 
-<details>
-  <summary><strong>El acceso VNC a las VMs no funciona o es lento</strong> - Haga clic para expandir/colapsar</summary>
+1. Vaya a la pestaña **VMs** y edite cada %%VM|vm%% (asegúrese de habilitar **Vista avanzada**).
+2. Configure el puente de red en `br0` y haga clic en **Aplicar**.
+3. Navegue a ***Configuración → Administrador de VM*** (en **Vista avanzada**) y configure el puente predeterminado en `br0`.
 
-  Para resolver esto, edita el %%VM|vm%% en la %%WebGUI|web-gui%% y haz clic en **Aplicar** sin realizar cambios. Esta acción actualizará el tipo de máquina a la última versión compatible.
+#### La VM no arranca (aparece shell EFI)
 
-  1. Vaya a la pestaña **VMs** y edite cada %%VM|vm%% (asegúrese de habilitar **Vista avanzada**).
-  2. Configure el puente de red en `br0` y haga clic en **Aplicar**.
-  3. Navegue a ***Configuración → Administrador de VM*** (en **Vista avanzada**) y configure el puente predeterminado en `br0`.
+Si tienes %%OVMF|ovmf%%-basados %%VMs|vm%% creados en versiones anteriores de Unraid, podrías encontrar un shell EFI. Puedes arrancar el %%VM|vm%% introduciendo los siguientes comandos:
 
-</details>
+1. Edite la %%VM|vm%% desde la pestaña **VMs** (seleccione **Vista avanzada**).
+2. Establece el controlador de vídeo **%%VNC|vnc-session%%** en **QXL** (recomendado). Prueba con **Cirrus** o **vmvga** si tienes éxito limitado con QXL.
+3. Haga clic en **Aplicar** para guardar los cambios.
 
-<details>
-  <summary><strong>La VM no arranca (aparece shell EFI)</strong> - Haga clic para expandir/colapsar</summary>
+#### Las VMs muestran "no se puede obtener la interfaz MTU" o errores de red
 
-  Si tienes %%OVMF|ovmf%%-basados %%VMs|vm%% creados en versiones anteriores de Unraid, podrías encontrar un shell EFI. Puedes arrancar el %%VM|vm%% introduciendo los siguientes comandos:
+Si tienes %%OVMF|ovmf%%-basados %%VMs|vm%% creados en versiones anteriores de Unraid, podrías encontrar un shell EFI. Puedes arrancar el %%VM|vm%% introduciendo los siguientes comandos:
 
-  1. Edite la %%VM|vm%% desde la pestaña **VMs** (seleccione **Vista avanzada**).
-  2. Establece el controlador de vídeo **%%VNC|vnc-session%%** en **QXL** (recomendado). Prueba con **Cirrus** o **vmvga** si tienes éxito limitado con QXL.
-  3. Haga clic en **Aplicar** para guardar los cambios.
+1. Escriba `fs0:`.
+2. Luego escriba `cd efi/boot`.
+3. Finalmente, escriba `bootx64.efi`.
 
-</details>
+Si `fs0:` no funciona, puedes intentar con `fs1:`. Si continúas teniendo problemas, por favor visita los [foros de Unraid](https://forums.unraid.net/) para obtener asistencia.
 
-<details>
-  <summary><strong>Las VMs muestran "no se puede obtener la interfaz MTU" o errores de red</strong> - Haga clic para expandir/colapsar</summary>
+#### El acceso VNC a las VMs no funciona o es lento
 
-  Si tienes %%OVMF|ovmf%%-basados %%VMs|vm%% creados en versiones anteriores de Unraid, podrías encontrar un shell EFI. Puedes arrancar el %%VM|vm%% introduciendo los siguientes comandos:
+Para resolver esto, edita el %%VM|vm%% en la %%WebGUI|web-gui%% y haz clic en **Aplicar** sin realizar cambios. Esta acción actualizará el tipo de máquina a la última versión compatible.
 
-  1. Escriba `fs0:`.
-  2. Luego escriba `cd efi/boot`.
-  3. Finalmente, escriba `bootx64.efi`.
+#### La VM no arranca (aparece shell EFI)
 
-  Si `fs0:` no funciona, puedes intentar con `fs1:`. Si continúas teniendo problemas, por favor visita los [foros de Unraid](https://forums.unraid.net/) para obtener asistencia.
-
-</details>
-
-<details>
-  <summary><strong>El acceso VNC a las VMs no funciona o es lento</strong> - Haga clic para expandir/colapsar</summary>
-
-  Para resolver esto, edita el %%VM|vm%% en la %%WebGUI|web-gui%% y haz clic en **Aplicar** sin realizar cambios. Esta acción actualizará el tipo de máquina a la última versión compatible.
-
-</details>
-
-<details>
-  <summary><strong>La VM no arranca (aparece shell EFI)</strong> - Haga clic para expandir/colapsar</summary>
-
-  Si tienes %%OVMF|ovmf%%-basados %%VMs|vm%% creados en versiones anteriores de Unraid, podrías encontrar un shell EFI. Puedes arrancar el %%VM|vm%% introduciendo los siguientes comandos:
-
-</details>
+Si tienes %%OVMF|ovmf%%-basados %%VMs|vm%% creados en versiones anteriores de Unraid, podrías encontrar un shell EFI. Puedes arrancar el %%VM|vm%% introduciendo los siguientes comandos:
 
 ---
 

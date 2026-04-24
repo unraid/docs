@@ -14,7 +14,7 @@ import ManualDowngradeCommandLine from "./partials/manual-downgrade-command-line
 
 Das Aktualisieren von Unraid OS stellt sicher, dass Sie die neuesten Funktionen, Sicherheitsupdates und Hardwareunterstützung erhalten. Diese Seite beschreibt den standardmäßigen Aktualisierungsprozess sowie Problemlösungs-Tipps und manuelle Upgrade-Optionen.
 
-:::note\[Prerequisites]
+:::note[Prerequisites]
 
 Bevor Sie mit der Aktualisierung beginnen, sichern Sie unbedingt eine vollständige Sicherung Ihres USB-Flash-Geräts. Weitere Einzelheiten finden Sie unter [Sicherung Ihres Flash-Geräts](../maintain-and-update/changing-the-flash-device.mdx#backing-up-your-flash-device).
 
@@ -31,7 +31,7 @@ Bevor Sie mit der Aktualisierung beginnen, sichern Sie unbedingt eine vollständ
 
 :::
 
-## Standard-Aktualisierungsprozess
+## Standard-Aktualisierungsprozess {/* #standard-update-process */}
 
 <Tabs>
   <TabItem value="modern-7x" label="Unraid 7.x und später" default>
@@ -45,7 +45,7 @@ Bevor Sie mit der Aktualisierung beginnen, sichern Sie unbedingt eine vollständ
 
 :::caution[ZFS Pool-Upgrade-Warnungen]
 
-Beim Upgrade auf Unraid 7.x können während des Bootvorgangs oder im WebGUI Warnungen zu [%%ZFS|zfs%%](../../advanced-configurations/optimize-storage/zfs-storage.mdx) Pool-Feature-Upgrades angezeigt werden. Diese Warnungen sind kein Anzeichen für ein Problem; sie weisen lediglich darauf hin, dass Ihr %%ZFS|zfs%%-Pool Funktionen einer älteren Version von ZFS verwendet.
+Beim Upgrade auf Unraid 7.x können während des Bootvorgangs oder im WebGUI Warnungen zu [ZFS](../../advanced-configurations/optimize-storage/zfs-storage.mdx) Pool-Feature-Upgrades angezeigt werden. Diese Warnungen sind kein Anzeichen für ein Problem; sie weisen lediglich darauf hin, dass Ihr %%ZFS|zfs%%-Pool Funktionen einer älteren Version von ZFS verwendet.
 
 Das Upgrade Ihres Pools ist nicht dringend erforderlich, aber wenn Sie sich entscheiden, es durchzuführen, sollten Sie beachten, dass es möglicherweise nicht mit früheren Versionen von Unraid funktioniert. Dies bedeutet, dass Sie nach dem Upgrade möglicherweise nicht zu einer vorherigen Unraid-Version zurückkehren können.
 
@@ -59,73 +59,52 @@ Denken Sie wie immer daran, Ihre Daten zu sichern, bevor Sie Ihre %%ZFS|zfs%%-Po
 
 Wenn Sie nach dem Upgrade auf Probleme stoßen, sehen Sie sich den entsprechenden Abschnitt unten zur Unterstützung an.
 
-<details>
-  <summary><strong>Docker-Container funktionieren nach einem Upgrade nicht richtig</strong> - Klicken zum Expandieren/Reduzieren</summary>
+#### Docker-Container funktionieren nach einem Upgrade nicht richtig
 
-  Wenn Sie auf Fehler stoßen wie *"Layer aus dem Manifest stimmen nicht mit der Image-Konfiguration überein,"* müssen Sie möglicherweise Ihre Docker-Image-Datei neu erstellen. Hier ist, wie:
+Wenn Sie auf Fehler stoßen wie *"Layer aus dem Manifest stimmen nicht mit der Image-Konfiguration überein,"* müssen Sie möglicherweise Ihre Docker-Image-Datei neu erstellen. Hier ist, wie:
 
-</details>
+#### VMs zeigen "Kann Schnittstellen-MTU nicht abrufen" oder Netzwerkfehler
 
-<details>
-  <summary><strong>VMs zeigen "Kann Schnittstellen-MTU nicht abrufen" oder Netzwerkfehler</strong> - Klicken zum Expandieren/Reduzieren</summary>
+Wenn Sie %%OVMF|ovmf%%-basierte %%VMs|vm%% in älteren Unraid-Versionen erstellt haben, könnten Sie auf eine EFI-Shell stoßen. Sie können die %%VM|vm%% starten, indem Sie die folgenden Befehle eingeben:
 
-  Wenn Sie %%OVMF|ovmf%%-basierte %%VMs|vm%% in älteren Unraid-Versionen erstellt haben, könnten Sie auf eine EFI-Shell stoßen. Sie können die %%VM|vm%% starten, indem Sie die folgenden Befehle eingeben:
+1. Geben Sie `fs0:` ein.
+2. Geben Sie dann `cd efi/boot` ein.
+3. Schließlich geben Sie `bootx64.efi` ein.
+4. Navigieren Sie zur **Apps**-Registerkarte, **Vorherige Apps** und markieren Sie, was Sie erneut installieren möchten, und klicken Sie auf **„xx Anwendungen installieren“**.
 
-  1. Geben Sie `fs0:` ein.
-  2. Geben Sie dann `cd efi/boot` ein.
-  3. Schließlich geben Sie `bootx64.efi` ein.
-  4. Navigieren Sie zur **Apps**-Registerkarte, **Vorherige Apps** und markieren Sie, was Sie erneut installieren möchten, und klicken Sie auf **„xx Anwendungen installieren“**.
+#### VNC-Zugriff auf VMs funktioniert nicht oder ist langsam
 
-</details>
+Um dieses Problem zu lösen, bearbeiten Sie die %%VM|vm%% im %%WebGUI|web-gui%% und klicken Sie auf **Anwenden**, ohne Änderungen vorzunehmen. Diese Aktion aktualisiert den Maschinentyp auf die neueste unterstützte Version.
 
-<details>
-  <summary><strong>VNC-Zugriff auf VMs funktioniert nicht oder ist langsam</strong> - Klicken zum Expandieren/Reduzieren</summary>
+1. Gehen Sie zum **VMs**-Tab und bearbeiten Sie jede %%VM|vm%% (stellen Sie sicher, dass die **Erweiterte Ansicht** aktiviert ist).
+2. Setzen Sie die Netzwerkbrücke auf `br0` und klicken Sie auf **Anwenden**.
+3. Navigieren Sie zu ***Einstellungen → VM-Manager*** (in **Erweiterter Ansicht**) und setzen Sie die Standard-Bridge auf `br0`.
 
-  Um dieses Problem zu lösen, bearbeiten Sie die %%VM|vm%% im %%WebGUI|web-gui%% und klicken Sie auf **Anwenden**, ohne Änderungen vorzunehmen. Diese Aktion aktualisiert den Maschinentyp auf die neueste unterstützte Version.
+#### VM wird nicht booten (EFI-Shell erscheint)
 
-  1. Gehen Sie zum **VMs**-Tab und bearbeiten Sie jede %%VM|vm%% (stellen Sie sicher, dass die **Erweiterte Ansicht** aktiviert ist).
-  2. Setzen Sie die Netzwerkbrücke auf `br0` und klicken Sie auf **Anwenden**.
-  3. Navigieren Sie zu ***Einstellungen → VM-Manager*** (in **Erweiterter Ansicht**) und setzen Sie die Standard-Bridge auf `br0`.
+Wenn Sie %%OVMF|ovmf%%-basierte %%VMs|vm%% in älteren Unraid-Versionen erstellt haben, könnten Sie auf eine EFI-Shell stoßen. Sie können die %%VM|vm%% starten, indem Sie die folgenden Befehle eingeben:
 
-</details>
+1. Bearbeiten Sie die %%VM|vm%% über das **VMs**-Tab (wählen Sie **Erweiterte Ansicht** aus).
+2. Stellen Sie den **%%VNC|vnc-session%%-Video-Treiber** auf **QXL** (empfohlen) ein. Versuchen Sie **Cirrus** oder **vmvga**, wenn Sie mit QXL wenig Erfolg haben.
+3. Klicken Sie auf **Anwenden**, um die Änderungen zu speichern.
 
-<details>
-  <summary><strong>VM wird nicht booten (EFI-Shell erscheint)</strong> - Klicken zum Expandieren/Reduzieren</summary>
+#### VMs zeigen "Kann Schnittstellen-MTU nicht abrufen" oder Netzwerkfehler
 
-  Wenn Sie %%OVMF|ovmf%%-basierte %%VMs|vm%% in älteren Unraid-Versionen erstellt haben, könnten Sie auf eine EFI-Shell stoßen. Sie können die %%VM|vm%% starten, indem Sie die folgenden Befehle eingeben:
+Wenn Sie %%OVMF|ovmf%%-basierte %%VMs|vm%% in älteren Unraid-Versionen erstellt haben, könnten Sie auf eine EFI-Shell stoßen. Sie können die %%VM|vm%% starten, indem Sie die folgenden Befehle eingeben:
 
-  1. Bearbeiten Sie die %%VM|vm%% über das **VMs**-Tab (wählen Sie **Erweiterte Ansicht** aus).
-  2. Stellen Sie den **%%VNC|vnc-session%%-Video-Treiber** auf **QXL** (empfohlen) ein. Versuchen Sie **Cirrus** oder **vmvga**, wenn Sie mit QXL wenig Erfolg haben.
-  3. Klicken Sie auf **Anwenden**, um die Änderungen zu speichern.
+1. Geben Sie `fs0:` ein.
+2. Geben Sie dann `cd efi/boot` ein.
+3. Schließlich geben Sie `bootx64.efi` ein.
 
-</details>
+Wenn `fs0:` nicht funktioniert, können Sie stattdessen `fs1:` versuchen. Wenn weiterhin Probleme auftreten, besuchen Sie bitte das [Unraid-Forum](https://forums.unraid.net/) für Unterstützung.
 
-<details>
-  <summary><strong>VMs zeigen "Kann Schnittstellen-MTU nicht abrufen" oder Netzwerkfehler</strong> - Klicken zum Expandieren/Reduzieren</summary>
+#### VNC-Zugriff auf VMs funktioniert nicht oder ist langsam
 
-  Wenn Sie %%OVMF|ovmf%%-basierte %%VMs|vm%% in älteren Unraid-Versionen erstellt haben, könnten Sie auf eine EFI-Shell stoßen. Sie können die %%VM|vm%% starten, indem Sie die folgenden Befehle eingeben:
+Um dieses Problem zu lösen, bearbeiten Sie die %%VM|vm%% im %%WebGUI|web-gui%% und klicken Sie auf **Anwenden**, ohne Änderungen vorzunehmen. Diese Aktion aktualisiert den Maschinentyp auf die neueste unterstützte Version.
 
-  1. Geben Sie `fs0:` ein.
-  2. Geben Sie dann `cd efi/boot` ein.
-  3. Schließlich geben Sie `bootx64.efi` ein.
+#### VM wird nicht booten (EFI-Shell erscheint)
 
-  Wenn `fs0:` nicht funktioniert, können Sie stattdessen `fs1:` versuchen. Wenn weiterhin Probleme auftreten, besuchen Sie bitte das [Unraid-Forum](https://forums.unraid.net/) für Unterstützung.
-
-</details>
-
-<details>
-  <summary><strong>VNC-Zugriff auf VMs funktioniert nicht oder ist langsam</strong> - Klicken zum Expandieren/Reduzieren</summary>
-
-  Um dieses Problem zu lösen, bearbeiten Sie die %%VM|vm%% im %%WebGUI|web-gui%% und klicken Sie auf **Anwenden**, ohne Änderungen vorzunehmen. Diese Aktion aktualisiert den Maschinentyp auf die neueste unterstützte Version.
-
-</details>
-
-<details>
-  <summary><strong>VM wird nicht booten (EFI-Shell erscheint)</strong> - Klicken zum Expandieren/Reduzieren</summary>
-
-  Wenn Sie %%OVMF|ovmf%%-basierte %%VMs|vm%% in älteren Unraid-Versionen erstellt haben, könnten Sie auf eine EFI-Shell stoßen. Sie können die %%VM|vm%% starten, indem Sie die folgenden Befehle eingeben:
-
-</details>
+Wenn Sie %%OVMF|ovmf%%-basierte %%VMs|vm%% in älteren Unraid-Versionen erstellt haben, könnten Sie auf eine EFI-Shell stoßen. Sie können die %%VM|vm%% starten, indem Sie die folgenden Befehle eingeben:
 
 ---
 

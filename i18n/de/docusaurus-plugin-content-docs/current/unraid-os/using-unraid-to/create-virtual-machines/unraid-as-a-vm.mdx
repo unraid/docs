@@ -22,7 +22,7 @@ Das Ausführen von Unraid als virtuelle Maschine auf Ihrem primären Unraid-Serv
 
 :::
 
-:::note\[Prerequisites]
+:::note[Prerequisites]
 
 - Ein gültiger Unraid-Lizenzschlüssel für die %%VM|vm%%
 - Ein dedizierter USB-Stick (verwenden Sie einen anderen Hersteller als das Boot-Laufwerk Ihres Hosts)
@@ -32,106 +32,98 @@ Das Ausführen von Unraid als virtuelle Maschine auf Ihrem primären Unraid-Serv
 
 Um Unraid als %%VM|vm%% zum Laufen zu bringen:
 
-<details>
-  <summary><strong>1. Bereiten Sie das Flash-Laufwerk für die VM vor</strong> - Zum Ein-/Ausklappen klicken</summary>
+#### 1. Bereiten Sie das Flash-Laufwerk für die VM vor
 
-  Die Konfiguration der Unraid %%VM|vm%% erfordert einige spezifische Einstellungen, um einen ordnungsgemäßen Betrieb sicherzustellen.
+Die Konfiguration der Unraid %%VM|vm%% erfordert einige spezifische Einstellungen, um einen ordnungsgemäßen Betrieb sicherzustellen.
 
-  1. Verwenden Sie das [Unraid USB Creator](https://unraid.net/download) Tool auf Ihrem Desktop, um das Flash-Laufwerk vorzubereiten:
-     - Wählen Sie **EFI-Boot zulassen**.
-     - Setzen Sie einen eindeutigen Servernamen (z.B. `TowerVM`, wenn Ihr Host `Tower` ist).
-     - Schreiben Sie das Image auf das Flash-Laufwerk.
+1. Verwenden Sie das [Unraid USB Creator](https://unraid.net/download) Tool auf Ihrem Desktop, um das Flash-Laufwerk vorzubereiten:
+   - Wählen Sie **EFI-Boot zulassen**.
+   - Setzen Sie einen eindeutigen Servernamen (z.B. `TowerVM`, wenn Ihr Host `Tower` ist).
+   - Schreiben Sie das Image auf das Flash-Laufwerk.
 
-  2. Konfigurationsdateien ändern:
-     - Benennen Sie die Flash-Laufwerk-Label von `UNRAID` in einen eindeutigen Namen um (z.B., `UNRAID-VM`).
+2. Konfigurationsdateien ändern:
+   - Benennen Sie die Flash-Laufwerk-Label von `UNRAID` in einen eindeutigen Namen um (z.B., `UNRAID-VM`).
 
-     - Bearbeiten Sie die `syslinux/syslinux.cfg` Datei auf dem Flash-Laufwerk:
-
-       ```
-       label Unraid OS
-         menu default
-         kernel /bzimage
-         append unraidlabel=UNRAID-VM initrd=/bzroot
-       ```
-
-     - Nehmen Sie diese Änderung in allen Boot-Modi (GUI/Safe Mode) innerhalb der Datei vor.
-
-     - Kopieren Sie die aktualisierte `syslinux.cfg` Datei nach `EFI/boot/syslinux.cfg`
-
-  3. Erstellen Sie eine Datei namens `startup.nsh` im Root des Flash-Laufwerks mit folgendem Inhalt:
+   - Bearbeiten Sie die `syslinux/syslinux.cfg` Datei auf dem Flash-Laufwerk:
 
      ```
-     \EFI\boot\bootx64.efi
+     label Unraid OS
+       menu default
+       kernel /bzimage
+       append unraidlabel=UNRAID-VM initrd=/bzroot
      ```
 
-  4. Notieren Sie den Hersteller des Flash-Laufwerks (dies benötigen Sie später für die %%VM|vm%%-Einrichtung).
+   - Nehmen Sie diese Änderung in allen Boot-Modi (GUI/Safe Mode) innerhalb der Datei vor.
 
-</details>
+   - Kopieren Sie die aktualisierte `syslinux.cfg` Datei nach `EFI/boot/syslinux.cfg`
 
-<details>
-  <summary><strong>2. Richten Sie die VM auf dem Host ein</strong> - Zum Ein-/Ausklappen klicken</summary>
+3. Erstellen Sie eine Datei namens `startup.nsh` im Root des Flash-Laufwerks mit folgendem Inhalt:
 
-  Die Konfiguration der Unraid %%VM|vm%% erfordert einige spezifische Einstellungen, um einen ordnungsgemäßen Betrieb sicherzustellen.
+   ```
+   \EFI\boot\bootx64.efi
+   ```
 
-  Um die %%VM|vm%%-Vorlage zu erstellen:
+4. Notieren Sie den Hersteller des Flash-Laufwerks (dies benötigen Sie später für die %%VM|vm%%-Einrichtung).
 
-  1. Gehen Sie auf dem Host-Unraid-Server zu ***Einstellungen → VM-Manager*** und stellen Sie sicher, dass %%VM|vm%% aktiviert sind.
-  2. Navigieren Sie zum Tab **VMs** und klicken Sie auf **VM hinzufügen**.
-  3. Wählen Sie die **Slackware** Vorlage, da sie am nahesten zu Unraid passt.
-  4. (Optional) Wenn verfügbar, ersetzen Sie das Slackware-Symbol durch das Unraid-Symbol.
-  5. Benennen Sie die %%VM|vm%% (z.B., `UNRAID-VM`).
-  6. (Optional) Fügen Sie eine Beschreibung hinzu, wie *"Unraid-Testumgebung - vX.XX.X."*
-  7. Ressourcen zuweisen:
-     - CPUs: 2-4 Kerne
-     - RAM: 4-8 GB (setzen Sie Initial und Max auf denselben Wert)
-  8. Setzen Sie **Maschinentyp** auf **Q35 (neueste)**.
-  9. Setzen Sie **BIOS** auf **OVMF** und **USB-Controller** auf **3.0 (QEMU XHCI)**.
-  10. Konfigurieren Sie virtuelle Festplatten:
-      - Fügen Sie %%vDisks|vdisk%% für Cache/Daten mit **RAW** Format und **SATA**-Bus hinzu.
-      - Größen unterscheiden, um eine einfache Identifikation zu ermöglichen (z.B., %%parity|parity%% > Daten > %%cache|cache%%).
-  11. Grafik, Sound und Netzwerk auf deren Standardeinstellungen belassen.
-  12. Unter **USB-Geräte** wählen Sie den Flash-Laufwerk nach **Hersteller**, nicht nach Label.
 
-  :::important
-  Das Flash-Laufwerk der %%VM|vm%% muss von einem anderen Hersteller als das Startlaufwerk des Hosts sein. Wenn sie übereinstimmen, wird das %%VM|vm%% Laufwerk nicht sichtbar sein.
-  :::
+#### 2. Richten Sie die VM auf dem Host ein
 
-</details>
+Die Konfiguration der Unraid %%VM|vm%% erfordert einige spezifische Einstellungen, um einen ordnungsgemäßen Betrieb sicherzustellen.
 
-<details>
-  <summary><strong>3. Erstellen und starten Sie die VM</strong> - Zum Ein-/Ausklappen klicken</summary>
+Um die %%VM|vm%%-Vorlage zu erstellen:
 
-  Sobald die %%VM|vm%% läuft, richten Sie es wie einen physischen Unraid-Server ein:
+1. Gehen Sie auf dem Host-Unraid-Server zu ***Einstellungen → VM-Manager*** und stellen Sie sicher, dass %%VM|vm%% aktiviert sind.
+2. Navigieren Sie zum Tab **VMs** und klicken Sie auf **VM hinzufügen**.
+3. Wählen Sie die **Slackware** Vorlage, da sie am nahesten zu Unraid passt.
+4. (Optional) Wenn verfügbar, ersetzen Sie das Slackware-Symbol durch das Unraid-Symbol.
+5. Benennen Sie die %%VM|vm%% (z.B., `UNRAID-VM`).
+6. (Optional) Fügen Sie eine Beschreibung hinzu, wie *"Unraid-Testumgebung - vX.XX.X."*
+7. Ressourcen zuweisen:
+   - CPUs: 2-4 Kerne
+   - RAM: 4-8 GB (setzen Sie Initial und Max auf denselben Wert)
+8. Setzen Sie **Maschinentyp** auf **Q35 (neueste)**.
+9. Setzen Sie **BIOS** auf **OVMF** und **USB-Controller** auf **3.0 (QEMU XHCI)**.
+10. Konfigurieren Sie virtuelle Festplatten:
+    - Fügen Sie %%vDisks|vdisk%% für Cache/Daten mit **RAW** Format und **SATA**-Bus hinzu.
+    - Größen unterscheiden, um eine einfache Identifikation zu ermöglichen (z.B., %%parity|parity%% > Daten > %%cache|cache%%).
+11. Grafik, Sound und Netzwerk auf deren Standardeinstellungen belassen.
+12. Unter **USB-Geräte** wählen Sie den Flash-Laufwerk nach **Hersteller**, nicht nach Label.
 
-  1. Greifen Sie auf das %%WebGUI|web-gui%% der %%VM|vm%% unter `http://[VM-IP]` zu.
-  2. Gehen Sie zu ***Einstellungen → Identifikation***:
-  3. Klicken Sie auf der **VMs**-Registerkarte auf das Unraid %%VM|vm%%-Symbol und wählen **Start mit Konsole (%%VNC|vnc-session%%)**.
-  4. Gehen Sie zu ***Einstellungen → %%SMB|samba%% Einstellungen → Arbeitsgruppeneinstellungen***, und stellen Sie **Lokaler Master** auf *Nein*, um Konflikte zu vermeiden.
+:::important
+Das Flash-Laufwerk der %%VM|vm%% muss von einem anderen Hersteller als das Startlaufwerk des Hosts sein. Wenn sie übereinstimmen, wird das %%VM|vm%% Laufwerk nicht sichtbar sein.
+:::
 
-</details>
 
-<details>
-  <summary><strong>3. Erstellen und starten Sie die VM</strong> - Zum Ein-/Ausklappen klicken</summary>
+#### 3. Erstellen und starten Sie die VM
 
-  Sobald die %%VM|vm%% läuft, richten Sie es wie einen physischen Unraid-Server ein:
+Sobald die %%VM|vm%% läuft, richten Sie es wie einen physischen Unraid-Server ein:
 
-  1. Greifen Sie auf das %%WebGUI|web-gui%% der %%VM|vm%% unter `http://[VM-IP]`.
-  2. Gehen Sie zu ***Einstellungen → Identifikation***:
-     - Legen Sie einen eindeutigen **Servernamen** fest (z.B. `Unraid-VM`).
-     - Fügen Sie eine Beschreibung hinzu wie "Entwicklungsinstanz."
-  3. (Optional) Gehen Sie zu ***Einstellungen → Anzeigeeinstellungen*** und wählen Sie ein anderes Farbthema, um es vom Host zu unterscheiden.
-  4. Gehen Sie zu ***Einstellungen → %%SMB|samba%% Einstellungen → Arbeitsgruppeneinstellungen***, und stellen **Lokaler Master** auf *Nein*, um Konflikte zu vermeiden.
-  5. Für UPS-Durchschleifung (falls der Host UPS hat):
-     - Gehen Sie auf ***Einstellungen → UPS*** auf der %%VM|vm%%.
-     - Setzen Sie **UPS-Kabel** auf *Ether*.
-     - Setzen Sie **UPS-Typ** auf *net*.
-     - Geben Sie die IP des Hosts bei **Gerät** ein.
-     - Konfigurieren Sie die **Laufzeit**, um die %%VM|vm%% vor dem Host herunterzufahren.
-  6. Starten Sie das %%array|array%% mit Ihren konfigurierten Geräten.
-  7. Installieren Sie [**Community Applications**](https://unraid.net/community/apps) für Plugin/Docker-Tests.
-  8. Aktualisieren Sie die %%VM|vm%% über ***Werkzeuge → Betriebssystem aktualisieren***, genau wie einen physischen Server.
+1. Greifen Sie auf das %%WebGUI|web-gui%% der %%VM|vm%% unter `http://[VM-IP]` zu.
+2. Gehen Sie zu ***Einstellungen → Identifikation***:
+3. Klicken Sie auf der **VMs**-Registerkarte auf das Unraid %%VM|vm%%-Symbol und wählen **Start mit Konsole (%%VNC|vnc-session%%)**.
+4. Gehen Sie zu ***Einstellungen → %%SMB|samba%% Einstellungen → Arbeitsgruppeneinstellungen***, und stellen Sie **Lokaler Master** auf *Nein*, um Konflikte zu vermeiden.
 
-</details>
+
+#### 3. Erstellen und starten Sie die VM
+
+Sobald die %%VM|vm%% läuft, richten Sie es wie einen physischen Unraid-Server ein:
+
+1. Greifen Sie auf das %%WebGUI|web-gui%% der %%VM|vm%% unter `http://[VM-IP]`.
+2. Gehen Sie zu ***Einstellungen → Identifikation***:
+   - Legen Sie einen eindeutigen **Servernamen** fest (z.B. `Unraid-VM`).
+   - Fügen Sie eine Beschreibung hinzu wie "Entwicklungsinstanz."
+3. (Optional) Gehen Sie zu ***Einstellungen → Anzeigeeinstellungen*** und wählen Sie ein anderes Farbthema, um es vom Host zu unterscheiden.
+4. Gehen Sie zu ***Einstellungen → %%SMB|samba%% Einstellungen → Arbeitsgruppeneinstellungen***, und stellen **Lokaler Master** auf *Nein*, um Konflikte zu vermeiden.
+5. Für UPS-Durchschleifung (falls der Host UPS hat):
+   - Gehen Sie auf ***Einstellungen → UPS*** auf der %%VM|vm%%.
+   - Setzen Sie **UPS-Kabel** auf *Ether*.
+   - Setzen Sie **UPS-Typ** auf *net*.
+   - Geben Sie die IP des Hosts bei **Gerät** ein.
+   - Konfigurieren Sie die **Laufzeit**, um die %%VM|vm%% vor dem Host herunterzufahren.
+6. Starten Sie das %%array|array%% mit Ihren konfigurierten Geräten.
+7. Installieren Sie [**Community Applications**](https://unraid.net/community/apps) für Plugin/Docker-Tests.
+8. Aktualisieren Sie die %%VM|vm%% über ***Werkzeuge → Betriebssystem aktualisieren***, genau wie einen physischen Server.
+
 
 ### Fehlerbehebung
 
