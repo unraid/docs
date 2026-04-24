@@ -3,14 +3,9 @@ sidebar_position: 3
 sidebar_label: 远程访问
 ---
 
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
-import RemoteAccessDynamic from './partials/remote-access/dynamic.mdx';
-import RemoteAccessStatic from './partials/remote-access/static.mdx';
-
 # 远程访问
 
-从任何地方远程访问您的 Unraid WebGUI，解锁安全的基于浏览器的访问。这一功能对于在家外管理服务器非常理想——不需要复杂的网络或 VPN Tunnel 设置。对于更高级的需求，如连接到 Docker 容器或访问网络驱动器，仍建议使用 VPN Tunnel。
+本页面介绍 **Unraid Connect 远程访问**，它通过使用 %%UPnP|upnp%% 或在路由器上手动设置端口转发规则，将您的 %%WebGUI|web-gui%% 发布到互联网。如果您希望在不向 WAN 流量暴露 %%WebGUI|web-gui%% 的情况下进行完整远程管理，建议使用官方的 [%%Tailscale|tailscale%% 集成](../unraid-os/system-administration/secure-your-server/tailscale.mdx)。对于更高级的需求，例如连接 Docker 容器或访问网络驱动器，%%VPN Tunnel|vpn-tunnel%% 仍然是推荐的解决方案。
 
 :::important[Security 提醒]
 
@@ -18,15 +13,21 @@ import RemoteAccessStatic from './partials/remote-access/static.mdx';
 
 :::
 
+:::note[Connect 仪表板访问不同]
+
+登录 [Unraid Connect 仪表板](https://connect.myunraid.net/) 本身**不会**将您的 %%WebGUI|web-gui%% 暴露到互联网。仪表板访问使用由服务器发起的连接，并对受支持的 Connect 功能提供受限的 API 访问。**Unraid Connect 远程访问** 是一个单独的功能，它通过 WAN 端口转发或 %%UPnP|upnp%% 将完整的 %%WebGUI|web-gui%% 暴露出来。
+
+:::
+
 通过 Unraid Connect 提供的远程访问：
 
-- **便利性** - 通过安全的云托管连接快速从任何地方访问您的服务器管理界面。
-- **安全性** - 动态访问模式仅在必要时允许对互联网的访问，帮助减少自动化攻击的风险。
-- **简易性** - 对于基本管理任务，无需手动端口转发或 VPN 客户端设置。
+- **便利性** - 通过可信的 Unraid Connect URL，您可以随时随地快速访问服务器的管理界面。
+- **安全性** - 当正确配置 SSL/TLS 时，您的 %%WebGUI|web-gui%% 流量会被加密。
+- **简便性** - 当您的路由器支持时，%%UPnP|upnp%% 可以自动创建所需的端口映射。
 
-:::tip
+:::tip[Preferred 方法]
 
-对于全面的网络访问或高级使用案例，请考虑设置[Tailscale](../unraid-os/system-administration/secure-your-server/tailscale.mdx)或 VPN 解决方案。
+对于大多数用户来说，官方 [%%Tailscale|tailscale%% 集成](../unraid-os/system-administration/secure-your-server/tailscale.mdx) 是远程管理的更佳选择，因为它避免了将 %%WebGUI|web-gui%% 暴露给公共互联网。仅当您明确需要通过浏览器访问面向公网的 %%WebGUI|web-gui%% URL 时，才使用 Unraid Connect 远程访问。
 
 :::
 
@@ -45,45 +46,32 @@ import RemoteAccessStatic from './partials/remote-access/static.mdx';
 
 ---
 
-## 选择远程访问类型
+## 选择远程访问配置
 
-Unraid Connect 提供两种模式：
+在当前的 Unraid 7.2.x 版本中，Unraid API 设置页面提供以下远程访问控制：
 
-<Tabs>
-  <TabItem value="动态" label="动态远程访问" default>
-    <RemoteAccessDynamic />
-  </TabItem>
+- **允许远程访问** - 选择远程访问是**禁用**还是始终**可用**。
+- **远程访问转发类型** - 选择 **Static** 用于手动端口转发，或选择 **UPnP** 让路由器自动创建端口映射。
+- **远程访问 WAN 端口** - 在使用 **Static** 转发时，选择要转发的 WAN 端口。
 
-  <TabItem value="静态" label="静态远程访问">
-    <RemoteAccessStatic />
-  </TabItem>
-</Tabs>
+当远程访问设置为 **Always** 时，您的 %%WebGUI|web-gui%% 会通过已配置的 WAN 端口持续可从互联网访问。**Static** 和 **UPnP** 两种远程访问方式都会将 %%WebGUI|web-gui%% 发布到 WAN 流量中。请使用强根密码，保持 Unraid OS 为最新版本，并在不需要时禁用远程访问。
 
-| 功能                         | 动态远程访问          | 静态远程访问    |
-| -------------------------- | --------------- | --------- |
-| %%WebGUI\|web-gui%% 向互联网开放 | 仅在启用时           | 始终        |
-| 攻击面                        | 最小化             | 最大化       |
-| 自动化                        | 通过 Connect 自动开关 | 手动设置，总是开启 |
-| %%UPnP\|upnp%% 支持          | 可以              | 可以        |
-|                            | **推荐给大多数人**     |           |
+动态按需远程访问目前未在 Unraid API 设置页面中提供。如果您需要远程管理，但又不想通过端口转发让 %%WebGUI|web-gui%% 保持暴露，请优先使用 [%%Tailscale|tailscale%%](../unraid-os/system-administration/secure-your-server/tailscale.mdx) 或其他 %%VPN Tunnel|vpn-tunnel%%。
 
-## 使用 UPnP（通用即插即用）
+## 启用远程访问
 
-UPnP 自动化了端口转发，简化了远程访问而无需手动路由器配置。
+要启用远程访问：
 
-1. 在***设置 → 管理访问 → Unraid API***中，选择远程访问下拉菜单中的动态选项：
-   - **动态 - UPnP：** 使用%%UPnP|upnp%%自动打开和关闭随机端口（需要在路由器上启用%%UPnP|upnp%%）。
-   - \*\*动态 - 手动端口转发：\*\*需要您手动在路由器上转发选定的端口。
+1. 在 Unraid %%WebGUI|web-gui%% 中，导航到 ***Settings → Management Access*** 并打开 **Unraid API Settings** 选项卡。
+2. 将 **Allow Remote Access** 设置为 **Always**。
+3. 选择 **Remote Access Forward Type**：
+   - **UPnP：** 允许 Unraid 请求路由器自动创建 WAN 端口映射。这需要路由器支持 %%UPnP|upnp%%，并且路由器已启用 %%UPnP|upnp%%。
+   - **Static：** 需要您在路由器上手动创建端口转发规则。
+4. 如果选择 **Static**，请输入要使用的 **Remote Access WAN Port**。
+5. 点击 **应用**。
+6. 登录 [Unraid Connect](https://connect.myunraid.net/) 并点击 **Manage** 链接以远程连接到您的服务器。
 
-2. 导航到 [Unraid Connect](https://connect.myunraid.net/)，并进入管理或服务器详细页面。
-
-3. 如果您的服务器当前无法从您的位置访问，则**动态远程访问**卡片将显示一个按钮。
-
-4. 点击按钮以启用 WAN 访问。如果使用 %%UPnP|upnp%%，将创建一个新端口转发租约（通常为 30 分钟）并在活动期间自动续订。
-
-5. 该卡将显示当前状态和 UPnP 状态。
-
-6. 在 10 分钟不活动后 - 或者如果您点击 **禁用远程访问** - 将自动撤销互联网访问。%%UPnP|upnp%% 租约也会被移除。
+如果 **Manage** 链接不起作用，请使用下面相应的转发部分验证 WAN 端口是否可到达服务器的 HTTPS 端口。
 
 ---
 
@@ -100,14 +88,12 @@ UPnP 自动化了端口转发，简化了远程访问而无需手动路由器配
    前往 ***设置 → 管理访问*** 并更改 **使用 %%UPnP|upnp%%** 为 **是**。
 
 3. **在 Unraid Connect 中选择 %%UPnP|upnp%%。**
-   在 Unraid Connect 设置页面，选择远程访问选项为 %%UPnP|upnp%%（选择动态或始终开启）然后点击 **应用**。
+   在 Unraid API 设置页面，将 **Allow Remote Access** 设置为 **Always**，将 **Remote Access Forward Type** 设置为 **UPnP**，然后点击 **Apply**。
 
-4. **验证端口转发（仅限“始终打开”）。**
-   点击 **检查** 按钮。如果成功，您将看到“您的 Unraid 服务器可从互联网访问”的消息。
+4. **验证端口转发。**
+   点击 **Check** 按钮。如果成功，您会看到消息：“Your Unraid Server is reachable from the Internet.”
 
-   对于动态转发，需要点击[Unraid Connect](https://connect.myunraid.net/)中的 **启用动态远程访问** 以允许访问。
-
-:::caution[Troubleshooting]
+:::caution\[Troubleshooting]
 
 如果在重新加载时设置从 %%UPnP|upnp%% 更改为手动端口转发，Unraid 可能无法与您的路由器通信。请仔细检查 %%UPnP|upnp%% 是否已启用，并考虑更新您的路由器固件。
 
@@ -129,9 +115,7 @@ UPnP 自动化了端口转发，简化了远程访问而无需手动路由器配
 
    某些路由器可能要求 WAN 端口和 HTTPS 端口一致。如果是这样，请为两者使用相同高随机数。
 
-4. **验证端口转发（仅限“始终打开”）：** 按 **检查** 按钮。如果一切正常，您将看到“您的 Unraid 服务器可从互联网访问”的消息。
-
-   对于动态转发，请确保点击 [Unraid Connect](https://connect.myunraid.net/) 中的 **启用动态远程访问** 以开启访问。
+4. **验证端口转发：** 按下 **Check** 按钮。如果一切正确，您会看到“Your Unraid Server is reachable from the Internet.”
 
 5. **访问您的服务器：**登录 [Unraid Connect](https://connect.myunraid.net/)，然后点击**管理**链接以远程连接到您的服务器。
 

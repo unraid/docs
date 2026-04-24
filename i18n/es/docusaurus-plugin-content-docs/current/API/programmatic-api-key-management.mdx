@@ -12,20 +12,9 @@ Esta guía explica cómo crear, usar y eliminar claves API programáticamente us
 
 El comando `unraid-api apikey` admite modos tanto interactivos como no interactivos, lo que lo hace adecuado para:
 
-- Scripts de despliegue automatizado
-- Canales de CI/CD
-- Provisión de acceso temporal
-- Flujos de trabajo de infraestructura como código
-
-:::tip[Quick Rápido]
+## Creación de claves API
 
 Salte a la [Ejemplo Completo del Flujo de Trabajo](#complete-workflow-example) para ver todo en acción.
-
-:::
-
-## Creación Programática de Claves API
-
-### Creación Básica con Salida en JSON
 
 **Salida:**
 
@@ -43,7 +32,7 @@ unraid-api apikey --create --name "workflow key" --roles ADMIN --json
 }
 ```
 
-### Creación Avanzada con Permisos
+**Salida:**
 
 ```bash
 unraid-api apikey --create \
@@ -53,7 +42,7 @@ unraid-api apikey --create \
   --json
 ```
 
-### Gestión de Claves Existentes
+**Salida:**
 
 Si ya existe una clave con el mismo nombre, use `--overwrite`:
 
@@ -61,15 +50,15 @@ Si ya existe una clave con el mismo nombre, use `--overwrite`:
 unraid-api apikey --create --name "existing key" --roles ADMIN --overwrite --json
 ```
 
-:::warning[Key Reemplazo]
+:::warning
 
 :::warning[Reemplazar Clave Existente]
 
 :::
 
-## Eliminación Programática de Claves API
+## Eliminación de claves API
 
-### Eliminación Programática de Claves API
+:::warning[Reemplazar Clave Existente]
 
 Eliminar una clave por nombre sin confirmaciones:
 
@@ -79,11 +68,11 @@ unraid-api apikey --delete --name "workflow key"
 
 **Salida:**
 
-```
+```text
 Successfully deleted 1 API key
 ```
 
-### Salida en JSON para Eliminación
+Eliminar una clave por nombre sin confirmaciones:
 
 Utilice la bandera `--json` para obtener confirmación de eliminación legible por máquina:
 
@@ -114,7 +103,7 @@ unraid-api apikey --delete --name "workflow key" --json
 }
 ```
 
-### Gestión de Errores
+**Salida de Éxito:**
 
 Cuando la clave especificada no existe:
 
@@ -132,9 +121,9 @@ unraid-api apikey --delete --name "nonexistent key"
 }
 ```
 
-## Ejemplo Completo de Flujo de Trabajo
+## Ejemplo completo de flujo de trabajo
 
-Aquí hay un ejemplo completo para la provisión de acceso temporal:
+**Salida de Error en JSON:**
 
 ```bash
 #!/bin/bash
@@ -165,9 +154,9 @@ trap 'echo "Cleaning up..."; unraid-api apikey --delete --name "temp deployment 
 echo "Deployment completed successfully"
 ```
 
-## Referencia de Comandos
+## Ejemplo Completo de Flujo de Trabajo
 
-### Referencia de Comandos
+Aquí hay un ejemplo completo para la provisión de acceso temporal:
 
 | Bandera                 | Descripción                    | Ejemplo                           |
 | ----------------------- | ------------------------------ | --------------------------------- |
@@ -178,78 +167,32 @@ echo "Deployment completed successfully"
 | `--overwrite`           | Reemplazar clave existente     | `--overwrite`                     |
 | `--json`                | Salida legible por máquina     | `--json`                          |
 
-### Roles Disponibles
+**Roles disponibles:** `ADMIN` (acceso completo al sistema), `CONNECT` (funciones de Unraid Connect), `VIEWER` (acceso de solo lectura), `GUEST` (acceso limitado).
 
-- `ADMIN` - Acceso total al sistema
-- `CONNECT` - Funciones de Unraid Connect
-- `VIEWER` - Acceso de solo lectura
-- `GUEST` - Acceso limitado
+**Recursos disponibles:** `ACTIVATION_CODE`, `API_KEY`, `ARRAY`, `CLOUD`, `CONFIG`, `CONNECT`, `CONNECT__REMOTE_ACCESS`, `CUSTOMIZATIONS`, `DASHBOARD`, `DISK`, `DISPLAY`, `DOCKER`, `FLASH`, `INFO`, `LOGS`, `ME`, `NETWORK`, `NOTIFICATIONS`, `ONLINE`, `OS`, `OWNER`, `PERMISSION`, `REGISTRATION`, `SERVERS`, `SERVICES`, `SHARE`, `VARS`, `VMS`, `WELCOME`.
 
-### Recursos y Acciones Disponibles
+**Acciones disponibles:** `CREATE_ANY`, `CREATE_OWN`, `READ_ANY`, `READ_OWN`, `UPDATE_ANY`, `UPDATE_OWN`, `DELETE_ANY`, `DELETE_OWN`.
 
-**Recursos:** `ACTIVATION_CODE`, `API_KEY`, `ARRAY`, `CLOUD`, `CONFIG`, `CONNECT`, `CONNECT__REMOTE_ACCESS`, `CUSTOMIZATIONS`, `DASHBOARD`, `DISK`, `DISPLAY`, `DOCKER`, `FLASH`, `INFO`, `LOGS`, `ME`, `NETWORK`, `NOTIFICATIONS`, `ONLINE`, `OS`, `OWNER`, `PERMISSION`, `REGISTRATION`, `SERVERS`, `SERVICES`, `SHARE`, `VARS`, `VMS`, `WELCOME`
-
-**Recursos:** `ACTIVATION_CODE`, `API_KEY`, `ARRAY`, `CLOUD`, `CONFIG`, `CONNECT`, `CONNECT__REMOTE_ACCESS`, `CUSTOMIZATIONS`, `DASHBOARD`, `DISK`, `DISPLAY`, `DOCKER`, `FLASH`, `INFO`, `LOGS`, `ME`, `NETWORK`, `NOTIFICATIONS`, `ONLINE`, `OS`, `OWNER`, `PERMISSION`, `REGISTRATION`, `SERVERS`, `SERVICES`, `SHARE`, `VARS`, `VMS`, `WELCOME`
-
-### Opciones del Comando de Eliminación
+**Opciones del comando de eliminación:**
 
 | Bandera         | Descripción                 | Ejemplo             |
 | --------------- | --------------------------- | ------------------- |
 | `--delete`      | Habilitar modo eliminación  | `--delete`          |
 | `--name <name>` | Clave a eliminar (opcional) | `--name "mi clave"` |
 
-**Nota:** Si se omite `--name`, el comando se ejecuta de manera interactiva.
+Si se omite `--name`, el comando se ejecuta de forma interactiva.
 
-## Mejores Prácticas
+**Recursos:** `ACTIVATION_CODE`, `API_KEY`, `ARRAY`, `CLOUD`, `CONFIG`, `CONNECT`, `CONNECT__REMOTE_ACCESS`, `CUSTOMIZATIONS`, `DASHBOARD`, `DISK`, `DISPLAY`, `DOCKER`, `FLASH`, `INFO`, `LOGS`, `ME`, `NETWORK`, `NOTIFICATIONS`, `ONLINE`, `OS`, `OWNER`, `PERMISSION`, `REGISTRATION`, `SERVERS`, `SERVICES`, `SHARE`, `VARS`, `VMS`, `WELCOME`
 
-:::info[Security Mejores Prácticas]
-
-**Permisos Mínimos**
-
-- Usar permisos específicos en lugar del rol ADMIN cuando sea posible
-- Ejemplo: `--permissions "DOCKER:READ_ANY"` en lugar de `--roles ADMIN`
-
-**Gestión del Ciclo de Vida de las Claves**
-
-- Siempre limpiar claves temporales después de su uso
-- Almacenar claves API de forma segura (variables de entorno, gestión de secretos)
-- Utilizar nombres y descripciones descriptivos para el rastro de auditoría
-
-:::
-
-### Gestión de Errores
-
-- **Solución:** Elimine caracteres especiales como guiones, guiones bajos o símbolos
-- Usar `set -e` en scripts bash para fallar rápidamente
-- Implementar limpieza adecuada con `trap`
-
-### Nomenclatura de Claves
-
-- **Solución:** Use la bandera `--overwrite` o elija un nombre diferente
-- Los nombres deben contener solo letras, números y espacios
-- Se admiten letras Unicode
+**Recursos:** `ACTIVATION_CODE`, `API_KEY`, `ARRAY`, `CLOUD`, `CONFIG`, `CONNECT`, `CONNECT__REMOTE_ACCESS`, `CUSTOMIZATIONS`, `DASHBOARD`, `DISK`, `DISPLAY`, `DOCKER`, `FLASH`, `INFO`, `LOGS`, `ME`, `NETWORK`, `NOTIFICATIONS`, `ONLINE`, `OS`, `OWNER`, `PERMISSION`, `REGISTRATION`, `SERVERS`, `SERVICES`, `SHARE`, `VARS`, `VMS`, `WELCOME`
 
 ## Solución de problemas
 
-### Solución de problemas
+**Mensajes de error comunes:**
 
-:::note[Common Mensajes de Error]
-
-Para resolución de problemas, ejecute con registro de depuración:
-
-- **"Caracteres inválidos en el nombre"**
-
-**"Una clave API con el nombre 'x' ya existe"**
-
-- **Solución:** Use la bandera `--overwrite` o elija un nombre diferente
-
-**"Por favor, añada al menos un rol o permiso a la clave"**
-
-- **Solución:** Especifique ya sea `--roles` o `--permissions` (o ambos)
-
-:::
-
-### Modo de Depuración
+- **"El nombre de la clave API debe contener solo letras, números y espacios"**: Elimine caracteres especiales como guiones, guiones bajos o símbolos.
+- **"La clave API con el nombre 'x' ya existe"**: Use la bandera `--overwrite` o elija un nombre diferente.
+- **"Agregue al menos un rol o permiso a la clave"**: Especifique `--roles` o `--permissions` (o ambos).
 
 Para resolución de problemas, ejecute con registro de depuración:
 

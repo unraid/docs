@@ -1,4 +1,5 @@
 ---
+title: FAQ
 sidebar_position: 3
 sidebar_label: FAQ
 toc_max_heading_level: 3
@@ -87,9 +88,7 @@ Si tenías activado [Unraid Connect](../../unraid-connect/overview-and-setup.mdx
 Consulta [Restablecer tu contraseña](../system-administration/secure-your-server/user-management.mdx#reset-your-password).
 
 :::note
-
 Si usas unidades encriptadas y olvidas la contraseña de encriptación, la recuperación de datos no es posible - no hay puerta trasera.
-
 :::
 
 <br />
@@ -100,15 +99,13 @@ Si usas unidades encriptadas y olvidas la contraseña de encriptación, la recup
 
 1. Haz una copia de respaldo de cualquier dato que desees conservar.
 2. Detén el %%array|array%% y apaga tu servidor.
-3. Remueve el dispositivo USB flash.
-4. Usa la herramienta Creador de USB Flash de Unraid para reformatear y reinstalar Unraid en la memoria USB.
-5. Reinserta el dispositivo flash e inicia tu servidor.
-6. En el %%WebGUI|web-gui%%, abre un terminal y ejecuta `lsblk` para listar todas las unidades (excluyendo el flash).
+3. Retira el dispositivo de arranque.
+4. Usa la herramienta Creador de USB Flash de Unraid para reformatear y reinstalar Unraid en la unidad.
+5. Vuelve a insertar el dispositivo de arranque e inicia tu servidor.
+6. En el %%WebGUI|web-gui%%, abre una terminal y ejecuta `lsblk` para listar todas las unidades (excluyendo el dispositivo de arranque).
 7. Borra los sistemas de archivos existentes de cada unidad de datos:
 
 :::danger[Critical: Operación Destructiva]
-
-**¡Este paso borrará permanentemente TODOS los datos en las unidad(es) especificadas y es IRREVERSIBLE!**
 
 - **Verifica que tengas copias de seguridad** de cualquier dato que necesites antes de continuar
 
@@ -122,9 +119,7 @@ Para cada unidad de datos, ejecuta:
 wipefs /dev/sdX
 ```
 
-Reemplaza `X` con la letra correcta de la unidad (por ejemplo, sda, sdb, sdc)
-
-:::
+Para cada unidad de datos, ejecuta:
 
 8. Continúa con la configuración e instalación habitual de Unraid.
 
@@ -146,19 +141,11 @@ Para cambiar el nombre de host de tu servidor Unraid, navega por el %%WebGUI|web
 
 <a id="guid-inválido" />
 
-### Mi unidad flash está reportando un GUID inválido. ¿Qué hago?
+### Mi dispositivo de arranque está informando de un GUID no válido. ¿Qué hago?
 
-Unraid requiere un dispositivo flash USB con un %%GUID|guid%% de hardware único (número de serie). Algunos fabricantes pueden reutilizar %%GUID|guid%%s o usar valores genéricos, lo que hace que estas unidades sean incompatibles entre sí.
+Unraid requires a boot device with a unique hardware %%GUID|guid%% (for USB boot, this is usually a USB flash drive). Some manufacturers may reuse %%GUID|guid%%s or use generic values, and counterfeit drives, especially of well-known brands like SanDisk and Samsung—often lack unique %%GUID|guid%%s. For guidance on choosing a compatible drive (including brand and retailer advice), see [Create your bootable media](../getting-started/set-up-unraid/create-your-bootable-media.mdx) and [Selecting a replacement device](../system-administration/maintain-and-update/changing-the-flash-device.mdx#selecting-a-replacement-device).
 
-**Marcas probadas en el campo:**
-
-- Samsung FIT Plus / Bar Plus
-- Kingston DataTraveler Exodia
-- Lexar JumpDrive M45
-- PNY Elite-X
-  (Evitar modelos más nuevos de SanDisk Ultra Fit/Cruzer a menos que puedas confirmar un %%GUID|guid%% único.)
-
-Es mejor evitar unidades genéricas o sin marca, SSDs, lectores de tarjetas USB, y adaptadores de tarjetas SD, ya que a menudo carecen de %%GUID|guid%%s únicos y pueden no ser compatibles para arrancar Unraid.
+In short: Prefer drives from reputable retailers. Consider second-tier brands (e.g., TeamGroup, Transcend, PNY), which are less often counterfeited. Avoid generic or unbranded drives, SSDs, USB card readers, and SD card adapters; they often lack unique %%GUID|guid%%s and may not be supported for booting Unraid.
 
 <br />
 
@@ -193,18 +180,20 @@ Esto es factible, pero requiere pasos adicionales. Consulta [la guía en video d
 Unraid presenta una arquitectura de almacenamiento única que lo distingue de los sistemas tradicionales %%RAID|raid%%. Aquí hay una comparación de diferentes opciones de almacenamiento:
 
 <div style={{ display: 'flex', justifyContent: 'center', margin: '20px 0' }}>
-  | Característica / Capacidad                         | Unraid %%parity\|paridad%% %%array\|array%% (md)                            | %%BTRFS\|btrfs%% grupo (%%cache\|caché%%)                                                               | **%%ZFS\|zfs%% grupo (7.x+)**                   | Tradicional %%RAID 1\|raid1%%/%%RAID 5\|raid5%%/%%RAID 6\|raid6%%/%%RAID 10\|raid10%%            |
-  | -------------------------------------------------- | --------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- | ----------------------------------------------- | ------------------------------------------------------------------------------------------------ |
-  | Modelo de %%paridad\|paridad%% / redundancia       | Disco(s) de %%paridad\|paridad%% dedicados                                  | Software %%RAID 1\|raid1%%/%%RAID 10\|raid10%%/%%RAID 5\|raid5%%/%%RAID 6\|raid6%% vía %%BTRFS\|btrfs%% | %%RAID 1\|raid1%%-Z1/Z2/Z3 o espejos            | Rayado %%paridad\|parity%% (%%RAID 5\|raid5%%/%%RAID 6\|raid6%%) o espejos (%%RAID 10\|raid10%%) |
-  | Intercalado de datos                               | No                                                                          | Sí (excepto %%RAID 1\|raid1%%)                                                                          | Sí                                              | Sí                                                                                               |
-  | Flexibilidad del tamaño de disco                   | Mezcla cualquier tamaño                                                     | Mejor cuando los tamaños son similares                                                                  | Mejor cuando son similares por vdev             | Requiere tamaños iguales                                                                         |
-  | Expande un disco a la vez                          | Sí                                                                          | Sí (añadir o reemplazar dispositivos)                                                                   | Sí (por vdev\*)                                 | Típicamente no                                                                                   |
-  | Sistema de archivos por disco                      | Sí                                                                          | No                                                                                                      | No                                              | No                                                                                               |
-  | Velocidad de lectura de un solo disco              | Velocidad nativa del disco                                                  | Agregado (multi-disco)                                                                                  | Agregado (multi-disco)                          | Agregado                                                                                         |
-  | Degradación de escritura durante la reconstrucción | Mínima (solo unidad fallida)                                                | Depende del nivel                                                                                       | Depende de la disposición de vdev               | Significativa                                                                                    |
-  | Detección de %%Bit rot\|bit-rot%%                  | Opcional (%%BTRFS\|btrfs%%/%%ZFS\|zfs%% %%checksum\|suma de verificación%%) | ✅ Incorporado                                                                                           | ✅ Fin a fin %%checksum\|suma de verificación%%s | ❌ No inherente                                                                                   |
-  | %%Snapshot\|snapshot%% / send-receive              | ❌                                                                           | ✅ (%%BTRFS\|btrfs%%)                                                                                    | ✅ Nativo                                        | ❌                                                                                                |
-  | Uso recomendado en producción                      | Almacenamiento general de medios                                            | %%RAID 1\|raid1%%/%%RAID 10\|raid10%% (evitar %%RAID 5\|raid5%%/%%RAID 6\|raid6%%)\*\*                  | ✅ Todos los niveles estables                    | Enterprise %%array\|array%%s                                                                     |
+
+| Característica / Capacidad                         | Unraid %%parity\|paridad%% %%array\|array%% (md)                            | %%BTRFS\|btrfs%% grupo (%%cache\|caché%%)                                                               | **%%ZFS\|zfs%% grupo (7.x+)**                   | Tradicional %%RAID 1\|raid1%%/%%RAID 5\|raid5%%/%%RAID 6\|raid6%%/%%RAID 10\|raid10%%            |
+| -------------------------------------------------- | --------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- | ----------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| Modelo de %%paridad\|paridad%% / redundancia       | Disco(s) de %%paridad\|paridad%% dedicados                                  | Software %%RAID 1\|raid1%%/%%RAID 10\|raid10%%/%%RAID 5\|raid5%%/%%RAID 6\|raid6%% vía %%BTRFS\|btrfs%% | %%RAID 1\|raid1%%-Z1/Z2/Z3 o espejos            | Rayado %%paridad\|parity%% (%%RAID 5\|raid5%%/%%RAID 6\|raid6%%) o espejos (%%RAID 10\|raid10%%) |
+| Intercalado de datos                               | No                                                                          | Sí (excepto %%RAID 1\|raid1%%)                                                                          | Sí                                              | Sí                                                                                               |
+| Flexibilidad del tamaño de disco                   | Mezcla cualquier tamaño                                                     | Mejor cuando los tamaños son similares                                                                  | Mejor cuando son similares por vdev             | Requiere tamaños iguales                                                                         |
+| Expande un disco a la vez                          | Sí                                                                          | Sí (añadir o reemplazar dispositivos)                                                                   | Sí (por vdev\*)                                 | Típicamente no                                                                                   |
+| Sistema de archivos por disco                      | Sí                                                                          | No                                                                                                      | No                                              | No                                                                                               |
+| Velocidad de lectura de un solo disco              | Velocidad nativa del disco                                                  | Agregado (multi-disco)                                                                                  | Agregado (multi-disco)                          | Agregado                                                                                         |
+| Degradación de escritura durante la reconstrucción | Mínima (solo unidad fallida)                                                | Depende del nivel                                                                                       | Depende de la disposición de vdev               | Significativa                                                                                    |
+| Detección de %%Bit rot\|bit-rot%%                  | Opcional (%%BTRFS\|btrfs%%/%%ZFS\|zfs%% %%checksum\|suma de verificación%%) | ✅ Incorporado                                                                                           | ✅ Fin a fin %%checksum\|suma de verificación%%s | ❌ No inherente                                                                                   |
+| %%Snapshot\|snapshot%% / send-receive              | ❌                                                                           | ✅ (%%BTRFS\|btrfs%%)                                                                                    | ✅ Nativo                                        | ❌                                                                                                |
+| Uso recomendado en producción                      | Almacenamiento general de medios                                            | %%RAID 1\|raid1%%/%%RAID 10\|raid10%% (evitar %%RAID 5\|raid5%%/%%RAID 6\|raid6%%)\*\*                  | ✅ Todos los niveles estables                    | Enterprise %%array\|array%%s                                                                     |
+
 </div>
 
 \* Los vdevs de %%ZFS|zfs%% deben expandirse reemplazando **todos** los discos en el vdev o agregando un nuevo vdev.\
@@ -213,7 +202,7 @@ Unraid presenta una arquitectura de almacenamiento única que lo distingue de lo
 - **Unraid %%parity|paridad%% %%array|arreglo%%** es excelente para la expansión incremental, permitiendo tamaños de unidades desiguales con un estrés mínimo durante la reconstrucción.
 - **Pools de %%ZFS|zfs%%** (disponibles en 7.x) proporcionan redundancia de nivel empresarial, %%snapshot|snapshot%%s y %%checksum|checksum%%s, haciéndolos ideal para %%VM|vm%%s y bases de datos.
 - **Pools de %%BTRFS|btrfs%%** sobresalen para %%caché|cache%%s SSD rápidos, especialmente en modo %%RAID 1|raid1%%/%%RAID 10|raid10%% escalado.
-- Las tarjetas de %%RAID|raid%% de hardware tradicionales *no* son necesarias; se pueden usar simples HBAs para permitir que Unraid gestione las unidades directamente.
+- Las tarjetas de %%RAID|raid%% de hardware tradicionales *no* son necesarias; puedes usar HBAs sencillos para permitir que Unraid gestione las unidades directamente.
 
 <br />
 
@@ -235,9 +224,7 @@ marginTop: "1.5rem",
 El particionamiento MBR (Master Boot Record) soporta discos de hasta 2TB y solo permite un máximo de cuatro particiones primarias. Por otro lado, GPT (%%GUID|guid%% Partition Table) puede manejar discos mucho más grandes y particiones casi ilimitadas. Convertir a GPT es recomendable si trabajas con discos más grandes o deseas una mejor gestión de particiones.
 
 :::important[Use **Modo de Mantenimiento**]
-
 Antes de iniciar el proceso de conversión, pon tu %%array|array%% en **Modo de Mantenimiento**. Este paso asegura que no se realicen escrituras durante la conversión, protegiendo tus datos.
-
 :::
 
 <div
@@ -251,7 +238,7 @@ marginTop: "1.5rem",
 Proceso de conversión
 </div>
 
-1. Asegúrese de tener un %%parity|paridad%% válido y una copia de seguridad actual de su unidad flash.
+1. Asegúrate de tener un %%parity|parity%% válido y una copia de seguridad actual de tu dispositivo de arranque.
 2. Ingrese a **Modo de Mantenimiento** desde la pestaña ***Principal***.
 3. Reemplace y reconstruya su unidad de %%parity|paridad%% primero.
 4. Reemplace cada unidad de datos una a la vez, reconstruyendo el %%array|arreglo%% después de cada sustitución.
@@ -268,7 +255,8 @@ Este proceso mantiene su información segura mientras cambia el estilo de partic
   - **2TB o menos**: Siempre usa particionamiento MBR
   - **Mayor a 2TB**: Siempre usa particionamiento GPT
 
-- A partir de Unraid OS 6.9, la partición 1 comienza a las 32KiB para dispositivos rotacionales y a las 1MiB para dispositivos no rotacionales, independientemente del estilo de partición.
+- A partir de Unraid OS 6.9, la partición 1 comienza en 32KiB para dispositivos rotativos y en 1MiB para dispositivos no rotativos, independientemente del estilo de partición.
+  \-- Siempre [haz una copia de seguridad de tu dispositivo de arranque](/unraid-os/system-administration/secure-your-server/secure-your-boot-drive/#backups) antes de iniciar este proceso de conversión.
 
 :::
 
@@ -285,9 +273,7 @@ Este proceso mantiene su información segura mientras cambia el estilo de partic
 Sí. El puente **br0** es un puente de red de Linux que permite que los contenedores Docker y las %%VM|vm%%s se conecten directamente a tu red de área local (LAN) con sus direcciones IP. Actúa como un interruptor de red virtual que conecta tu interfaz de red física a las interfaces virtuales utilizadas por los contenedores y las %%VM|vm%%s.
 
 :::note
-
 Desactivar br0 significa que %%VMs|vm%% y los contenedores Docker no tendrán acceso directo a la LAN y pueden perder algunas funciones avanzadas de red.
-
 :::
 
 <br />
@@ -301,7 +287,7 @@ Si estás teniendo problemas para conectarte a la %%WebGUI|web-gui%% por nombre 
 **Cómo encontrar la dirección IP de su servidor:**
 
 - Verifique la lista de clientes DHCP en su enrutador o conmutador para un dispositivo que aparezca como "Tower" o algo similar.
-- Si asignó una IP estática durante la creación del flash, utilice esa dirección.
+- Si asignaste una IP estática al crear el medio de arranque con USB Flash Creator, usa esa dirección.
 - Conecte un monitor y un teclado a su servidor; la dirección IP aparece en la consola local después de que se inicia.
 
 **Causas comunes para este problema:**
@@ -321,9 +307,9 @@ Si no puede conectarse, intente reiniciar su servidor y equipo de red, y asegúr
 
 <a id="problema-creador-usb" />
 
-### No puedo lograr que el creador de flash USB instale Unraid en mi dispositivo flash. ¿Qué hago?
+### No consigo que USB Flash Creator instale Unraid en mi medio de arranque. ¿Qué hago?
 
-Si la herramienta creadora de flash USB no está funcionando para tu sistema o unidad flash, puedes utilizar el [método de instalación manual](../getting-started/set-up-unraid/create-your-bootable-media.mdx#manual-install-method) para preparar tu dispositivo de arranque Unraid. Este método es compatible con Windows, macOS y Debian/Ubuntu Linux.
+Si USB Flash Creator no funciona con tu sistema o tu unidad USB, puedes usar el [método de instalación manual](../getting-started/set-up-unraid/create-your-bootable-media.mdx#manual-install-method) para preparar tu dispositivo de arranque de Unraid. Este método es compatible con Windows, macOS y Debian/Ubuntu Linux.
 
 <br />
 
@@ -333,23 +319,23 @@ Si la herramienta creadora de flash USB no está funcionando para tu sistema o u
 
 Puede configurar el modo de arranque %%UEFI|uefi%% de varias maneras:
 
-#### Opción 1: Durante la creación del flash
+#### Instalación
 
-Al utilizar el creador de USB flash, seleccione la opción para habilitar el modo de arranque %%UEFI|uefi%% antes de escribir Unraid en la unidad flash.
+Al usar USB Flash Creator, selecciona la opción para habilitar el modo de arranque %%UEFI|uefi%% antes de escribir Unraid en la unidad USB.
 
 #### Opción 2: Después de iniciar en modo Legacy
 
-En el %%WebGUI|web-gui%%, diríjase a la página ***Configuraciones → Dispositivo de Flash***.
+En el %%WebGUI|web-gui%%, abre ***Configuración → Dispositivo de arranque*** (en Unraid **7.3.0** o superior). En versiones anteriores, la misma página está en ***Configuración → Dispositivo flash***.
 
 Habilite el modo de arranque %%UEFI|uefi%% y reinicie su servidor.
 
 #### Opción 3: Renombrar manualmente la carpeta
 
-En la unidad flash, renombre la carpeta `EFI-` a `EFI` (elimine el guion `-`).
+En el volumen de arranque (unidad USB), cambia el nombre de la carpeta `EFI~` a `EFI` (elimina la tilde `~`).
 
-Inserte la unidad flash en su servidor, luego ingrese en la configuración de su BIOS/%%UEFI|uefi%% de la placa base.
+Puede configurar el modo de arranque %%UEFI|uefi%% de varias maneras:
 
-Configure la flash USB como el dispositivo de arranque primario y habilite el modo de arranque %%UEFI|uefi%% (asegúrese de deshabilitar el modo CSM/Legacy/Compatibility, si está disponible).
+Establece el dispositivo de arranque de Unraid (USB, cuando corresponda) como el objetivo de arranque principal y habilita el modo de arranque %%UEFI|uefi%% (asegúrate de deshabilitar el modo CSM/Legacy/Compatibility, si está disponible).
 
 <br />
 
@@ -376,9 +362,7 @@ Si los problemas persisten, intente acceder al WebGUI desde otro navegador o dis
 Si necesitas más tiempo con tu [prueba gratuita de 30 días](https://unraid.net/download) de Unraid, puedes extenderla. Una vez que tu prueba original expire, detén el %%array|array%% y ve a la página de **Registro**. Deberías ver un botón que te permite solicitar una extensión de 15 días. Puedes hacer esto dos veces para un total de 60 días antes de necesitar comprar una licencia.
 
 :::important
-
-Debes usar el mismo dispositivo flash USB para continuar tu prueba. Cambiar el dispositivo flash requerirá comenzar una nueva prueba desde cero.
-
+Debes usar el mismo dispositivo de arranque para continuar tu prueba. Cambiar el medio de arranque requerirá empezar una nueva prueba desde cero.
 :::
 
 <br />

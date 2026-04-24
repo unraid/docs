@@ -50,7 +50,7 @@ Unraid prend en charge la plupart des unités UPS utilisant le protocole %%apcup
 
 ### Défaillance du lecteur flash
 
-Le statut de %%array|array%% est stocké sur votre dispositif USB. Si la clé USB devient indisponible ou passe en mode lecture seule, Unraid ne peut pas mettre à jour le statut d'arrêt, même si l'%%array|array%% s'arrête correctement. Cela entraîne la détection d'un arrêt incorrect au prochain démarrage.
+Le statut de %%array|array%% est stocké sur votre périphérique de démarrage. Si le périphérique de démarrage devient indisponible ou passe en mode lecture seule, Unraid ne peut pas mettre à jour le statut d'arrêt, même si l'%%array|array%% s'arrête correctement. Cela entraîne la détection d'un arrêt incorrect au prochain démarrage.
 
 ### Ouvrir des sessions terminal
 
@@ -116,16 +116,15 @@ Pour activer l'hibernation VM :
   <TabItem value="linux" label="VMs Linux">
 
     1. **Install %%QEMU|qemu%% %%Guest Agent|guest-agent%%:**
+       ```bash
+       # Ubuntu/Debian
+       sudo apt install qemu-guest-agent
 
-    ```bash
-    # Ubuntu/Debian
-    sudo apt install qemu-guest-agent
-
-    # CentOS/RHEL/Fedora
-    sudo yum install qemu-guest-agent
-    # or
-    sudo dnf install qemu-guest-agent
-    ```
+       # CentOS/RHEL/Fedora
+       sudo yum install qemu-guest-agent
+       # or
+       sudo dnf install qemu-guest-agent
+       ```
 
     2. **Activez le service :**
        ```bash
@@ -148,6 +147,10 @@ Pour activer l'hibernation VM :
 
     :::note[Pourquoi les machines virtuelles d'appliance sont différentes]
     Les %%VMs d'appliance|vm%% sont conçues pour exécuter des logiciels spécifiques et n'autorisent souvent pas l'installation de paquets supplémentaires, tels que %%QEMU|qemu%% %%Guest Agent|guest-agent%%. Cela signifie que l'hibernation n'est pas disponible, vous devrez donc vous fier à une configuration correcte du délai d'attente.
+    :::
+
+    Les %%VMs|vm%% d'appliance sont conçues pour exécuter des logiciels spécifiques et n'autorisent souvent pas l'installation de paquets supplémentaires, tels que %%QEMU|qemu%% %%Guest Agent|guest-agent%%. Cela signifie que l'hibernation n'est pas disponible ; vous devrez donc vous appuyer sur une configuration correcte du délai d'attente.
+
     :::
 
   </TabItem>
@@ -177,8 +180,6 @@ Dans cette section, nous couvrirons comment configurer les délais pour divers s
 
 Si vous rencontrez des arrêts intempestifs ou des conteneurs qui plantent lors de l'arrêt, envisagez d'augmenter le délai d'arrêt général à **180 secondes** (ou **300+ secondes** si vous avez plusieurs %%VMs|vm%%). Cela donne plus de temps aux services pour s'arrêter correctement.
 
-:::
-
 ### Séquence d'arrêt
 
 Lorsque l'arrêt est en cours, le processus se déroule dans l'ordre suivant :
@@ -201,7 +202,7 @@ Lorsque l'arrêt est en cours, le processus se déroule dans l'ordre suivant :
 
 **Formule :** Votre délai d'arrêt général doit être supérieur à :
 
-```
+```text
 (VM timeout × 3) + (Docker timeout) + (Other services) + 15-30 seconds
 ```
 
@@ -245,9 +246,7 @@ Configurer les délais d'arrêt VM dans ***Paramètres → Gestionnaire de VM �
 :::
 
 :::warning[No délai d'attente sécuritaire sans hibernation]
-
 Without hibernation and %%QEMU|qemu%% %%Guest Agent|guest-agent%%, there isn't a truly safe timeout for Windows %%VMs|vm%%. Dialog boxes or ongoing update installations could render any timeout inadequate, leading to forced shutdowns and data corruption risk.
-
 :::
 
 #### Délais d'arrêt Docker
@@ -299,7 +298,7 @@ Certains plugins ou services personnalisés peuvent avoir leurs propres procédu
 
 **Formule mise à jour avec des services tiers :**
 
-```
+```text
 (VM timeout × 3) + (Docker timeout) + (LXC/other timeouts) + 15-30 seconds
 ```
 

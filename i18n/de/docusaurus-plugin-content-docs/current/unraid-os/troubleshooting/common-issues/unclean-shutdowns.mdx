@@ -50,7 +50,7 @@ Unraid unterstützt die meisten USV-Einheiten über das %%apcupsd-Protokoll|apcu
 
 ### Fehler des Flash-Laufwerks
 
-Der Status des %%array|array%% wird auf Ihrem USB-Flash-Laufwerk gespeichert. Wenn das Flash-Laufwerk nicht verfügbar oder schreibgeschützt wird, kann Unraid den Herunterfahrstatus nicht aktualisieren, selbst wenn das %%array|array%% korrekt stoppt. Dies führt dazu, dass beim nächsten Start ein unsauberes Herunterfahren erkannt wird.
+The %%array|array%% status is stored on your boot device. If the boot device becomes unavailable or enters a read-only state, Unraid cannot update the shutdown status, even if the %%array|array%% stops correctly. This results in an unclean shutdown being detected at the next boot.
 
 ### Terminalsitzungen öffnen
 
@@ -116,16 +116,15 @@ Um den VM-Ruhezustand zu aktivieren:
   <TabItem value="linux" label="Linux-VMs">
 
     1. **Installieren Sie %%QEMU|qemu%% %%Guest Agent|guest-agent%%:**
+       ```bash
+       # Ubuntu/Debian
+       sudo apt install qemu-guest-agent
 
-    ```bash
-    # Ubuntu/Debian
-    sudo apt install qemu-guest-agent
-
-    # CentOS/RHEL/Fedora
-    sudo yum install qemu-guest-agent
-    # or
-    sudo dnf install qemu-guest-agent
-    ```
+       # CentOS/RHEL/Fedora
+       sudo yum install qemu-guest-agent
+       # or
+       sudo dnf install qemu-guest-agent
+       ```
 
     2. **Aktivieren Sie den Dienst:**
        ```bash
@@ -148,6 +147,10 @@ Um den VM-Ruhezustand zu aktivieren:
 
     :::note[Warum Appliance-VMs unterschiedlich sind]
     Appliance-%%VMs|vm%% sind dazu ausgelegt, spezielle Software auszuführen und erlauben oft nicht die Installation zusätzlicher Pakete, wie dem %%QEMU|qemu%% %%Guest Agent|guest-agent%%. Dies bedeutet, dass kein Ruhezustand verfügbar ist, weshalb Sie sich auf eine ordnungsgemäße Timeout-Konfiguration verlassen müssen.
+    :::
+
+    Appliance-%%VMs|vm%% sind dafür ausgelegt, bestimmte Software auszuführen, und erlauben oft nicht die Installation zusätzlicher Pakete, wie des %%QEMU|qemu%% %%Guest Agent|guest-agent%%. Das bedeutet, dass kein Ruhezustand verfügbar ist, sodass Sie sich auf eine korrekte Timeout-Konfiguration verlassen müssen.
+
     :::
 
   </TabItem>
@@ -177,8 +180,6 @@ In diesem Abschnitt behandeln wir, wie man Timeouts für verschiedene Systeme un
 
 Wenn Sie nicht saubere Abschaltungen oder abstürzende Container beim Herunterfahren erleben, ziehen Sie in Betracht, den allgemeinen Shutdown-Timeout auf **180 Sekunden** (oder **300+ Sekunden**, falls Sie mehrere %%VMs|vm%% haben) zu erhöhen. Dies gibt den Diensten mehr Zeit, um ordentlich herunterzufahren.
 
-:::
-
 ### Abschaltsequenz
 
 Beim Herunterfahren erfolgt der Prozess in folgender Reihenfolge:
@@ -201,7 +202,7 @@ Beim Herunterfahren erfolgt der Prozess in folgender Reihenfolge:
 
 **Formel:** Ihr allgemeines Abschalt-Timeout sollte größer sein als:
 
-```
+```text
 (VM timeout × 3) + (Docker timeout) + (Other services) + 15-30 seconds
 ```
 
@@ -245,9 +246,7 @@ Konfigurieren Sie die VM-Abschaltzeitlimits in ***Einstellungen → VM-Manager �
 :::
 
 :::warning[No Sicherer Timeout ohne Ruhezustand]
-
 Ohne Hibernation und %%QEMU|qemu%% %%Guest Agent|guest-agent%% gibt es kein wirklich sicheres Timeout für Windows %%VMs|vm%%. Dialogboxen oder laufende Installationen von Updates könnten jedes Timeout unzureichend machen, was zu erzwungenen Abschaltungen und Datenverlust führen könnte.
-
 :::
 
 #### Docker-Timeouts
@@ -299,7 +298,7 @@ Einige Plugins oder benutzerdefinierte Dienste können eigene Abschaltverfahren 
 
 **Aktualisierte Formel mit Drittdiensten:**
 
-```
+```text
 (VM timeout × 3) + (Docker timeout) + (LXC/other timeouts) + 15-30 seconds
 ```
 
