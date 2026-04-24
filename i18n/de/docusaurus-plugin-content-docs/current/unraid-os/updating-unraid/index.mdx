@@ -14,13 +14,13 @@ import ManualDowngradeCommandLine from "./partials/manual-downgrade-command-line
 
 Das Aktualisieren von Unraid OS stellt sicher, dass Sie die neuesten Funktionen, Sicherheitsupdates und Hardwareunterstützung erhalten. Diese Seite beschreibt den standardmäßigen Aktualisierungsprozess sowie Problemlösungs-Tipps und manuelle Upgrade-Optionen.
 
-:::note[Prerequisites]
+:::note[Voraussetzungen]
 
 Bevor Sie mit der Aktualisierung beginnen, sichern Sie unbedingt eine vollständige Sicherung Ihres USB-Flash-Geräts. Weitere Einzelheiten finden Sie unter [Sicherung Ihres Flash-Geräts](../maintain-and-update/changing-the-flash-device.mdx#backing-up-your-flash-device).
 
 :::
 
-:::tip[Best Praktiken vor dem Upgrade]
+:::tip[Bewährte Praktiken vor dem Upgrade]
 
 1. **Erstellen Sie ein Backup** Ihres Flash-Laufwerks und aller wichtigen Daten.
 2. **Lesen Sie die Versionshinweise** für die Version, die Sie installieren möchten.
@@ -55,56 +55,56 @@ Denken Sie wie immer daran, Ihre Daten zu sichern, bevor Sie Ihre %%ZFS|zfs%%-Po
 
 ---
 
-## Troubleshooting upgrade issues
+## Probleme beim Upgrade beheben
 
-Wenn Sie nach dem Upgrade auf Probleme stoßen, sehen Sie sich den entsprechenden Abschnitt unten zur Unterstützung an.
+Wenn nach dem Upgrade Probleme auftreten, lesen Sie den passenden Abschnitt unten.
 
-#### Docker-Container funktionieren nach einem Upgrade nicht richtig
+#### Array oder Docker-Container starten nach dem Upgrade langsam
 
-Wenn Sie auf Fehler stoßen wie *"Layer aus dem Manifest stimmen nicht mit der Image-Konfiguration überein,"* müssen Sie möglicherweise Ihre Docker-Image-Datei neu erstellen. Hier ist, wie:
+Nach bestimmten Upgrades kann eine einmalige Migration für Docker-Container erforderlich sein. Dieser Vorgang kann dauern, insbesondere wenn Sie viele Images haben. Warten Sie den Vorgang ab; nach dem ersten Start sollte die Leistung wieder normal sein.
 
-#### VMs zeigen "Kann Schnittstellen-MTU nicht abrufen" oder Netzwerkfehler
+#### Docker-Container funktionieren nach dem Upgrade nicht richtig
 
-Wenn Sie %%OVMF|ovmf%%-basierte %%VMs|vm%% in älteren Unraid-Versionen erstellt haben, könnten Sie auf eine EFI-Shell stoßen. Sie können die %%VM|vm%% starten, indem Sie die folgenden Befehle eingeben:
+Wenn Fehler wie *"layers from manifest don't match image configuration"* auftreten, müssen Sie möglicherweise die Docker-Image-Datei neu erstellen:
 
-1. Geben Sie `fs0:` ein.
-2. Geben Sie dann `cd efi/boot` ein.
-3. Schließlich geben Sie `bootx64.efi` ein.
-4. Navigieren Sie zur **Apps**-Registerkarte, **Vorherige Apps** und markieren Sie, was Sie erneut installieren möchten, und klicken Sie auf **„xx Anwendungen installieren“**.
+1. Gehen Sie zu ***Einstellungen → Docker*** und stoppen Sie den Docker-Dienst.
+2. Aktivieren Sie das Kontrollkästchen zum Löschen des Docker-Images und klicken Sie auf die Schaltfläche zum Löschen.
+3. Starten Sie Docker neu, damit das Image neu erstellt wird.
+4. Öffnen Sie den Tab **Apps**, dann **Vorherige Apps**, markieren Sie die neu zu installierenden Apps und klicken Sie auf **"xx Anwendungen installieren"**.
+
+#### VMs zeigen "cannot get interface MTU" oder Netzwerkfehler
+
+Wenn Sie für %%VM|vm%%-Netzwerke einen benutzerdefinierten Bridge-Namen verwendet haben, stellen Sie alle %%VMs|vm%% auf die Standard-Bridge `br0` um:
+
+1. Öffnen Sie den Tab **VMs** und bearbeiten Sie jede %%VM|vm%% (aktivieren Sie **Erweiterte Ansicht**).
+2. Setzen Sie die Netzwerk-Bridge auf `br0` und klicken Sie auf **Anwenden**.
+3. Öffnen Sie ***Einstellungen → VM-Manager*** (in **Erweiterter Ansicht**) und setzen Sie die Standard-Bridge auf `br0`.
 
 #### VNC-Zugriff auf VMs funktioniert nicht oder ist langsam
 
-Um dieses Problem zu lösen, bearbeiten Sie die %%VM|vm%% im %%WebGUI|web-gui%% und klicken Sie auf **Anwenden**, ohne Änderungen vorzunehmen. Diese Aktion aktualisiert den Maschinentyp auf die neueste unterstützte Version.
+Bei älteren %%VMs|vm%% müssen Sie eventuell den %%VNC|vnc-session%%-Videotreiber aktualisieren:
 
-1. Gehen Sie zum **VMs**-Tab und bearbeiten Sie jede %%VM|vm%% (stellen Sie sicher, dass die **Erweiterte Ansicht** aktiviert ist).
-2. Setzen Sie die Netzwerkbrücke auf `br0` und klicken Sie auf **Anwenden**.
-3. Navigieren Sie zu ***Einstellungen → VM-Manager*** (in **Erweiterter Ansicht**) und setzen Sie die Standard-Bridge auf `br0`.
-
-#### VM wird nicht booten (EFI-Shell erscheint)
-
-Wenn Sie %%OVMF|ovmf%%-basierte %%VMs|vm%% in älteren Unraid-Versionen erstellt haben, könnten Sie auf eine EFI-Shell stoßen. Sie können die %%VM|vm%% starten, indem Sie die folgenden Befehle eingeben:
-
-1. Bearbeiten Sie die %%VM|vm%% über das **VMs**-Tab (wählen Sie **Erweiterte Ansicht** aus).
-2. Stellen Sie den **%%VNC|vnc-session%%-Video-Treiber** auf **QXL** (empfohlen) ein. Versuchen Sie **Cirrus** oder **vmvga**, wenn Sie mit QXL wenig Erfolg haben.
+1. Bearbeiten Sie die %%VM|vm%% im Tab **VMs** (wählen Sie **Erweiterte Ansicht**).
+2. Setzen Sie den **%%VNC|vnc-session%%-Videotreiber** auf **QXL** (empfohlen). Versuchen Sie **Cirrus** oder **vmvga**, wenn QXL nicht gut funktioniert.
 3. Klicken Sie auf **Anwenden**, um die Änderungen zu speichern.
 
-#### VMs zeigen "Kann Schnittstellen-MTU nicht abrufen" oder Netzwerkfehler
+#### VM startet nicht (EFI-Shell wird angezeigt)
 
-Wenn Sie %%OVMF|ovmf%%-basierte %%VMs|vm%% in älteren Unraid-Versionen erstellt haben, könnten Sie auf eine EFI-Shell stoßen. Sie können die %%VM|vm%% starten, indem Sie die folgenden Befehle eingeben:
+Wenn Sie %%OVMF|ovmf%%-basierte %%VMs|vm%% in älteren Unraid-Versionen erstellt haben, kann eine EFI-Shell angezeigt werden. Sie können die %%VM|vm%% mit diesen Befehlen starten:
 
 1. Geben Sie `fs0:` ein.
-2. Geben Sie dann `cd efi/boot` ein.
-3. Schließlich geben Sie `bootx64.efi` ein.
+2. Geben Sie anschließend `cd efi/boot` ein.
+3. Geben Sie zuletzt `bootx64.efi` ein.
 
-Wenn `fs0:` nicht funktioniert, können Sie stattdessen `fs1:` versuchen. Wenn weiterhin Probleme auftreten, besuchen Sie bitte das [Unraid-Forum](https://forums.unraid.net/) für Unterstützung.
+Wenn `fs0:` nicht funktioniert, versuchen Sie stattdessen `fs1:`. Wenn weiterhin Probleme auftreten, besuchen Sie bitte die [Unraid-Foren](https://forums.unraid.net/).
 
-#### VNC-Zugriff auf VMs funktioniert nicht oder ist langsam
+#### Beim Starten meiner VM erscheint der Fehler "Invalid machine type"
 
-Um dieses Problem zu lösen, bearbeiten Sie die %%VM|vm%% im %%WebGUI|web-gui%% und klicken Sie auf **Anwenden**, ohne Änderungen vorzunehmen. Diese Aktion aktualisiert den Maschinentyp auf die neueste unterstützte Version.
+Bearbeiten Sie zur Behebung die %%VM|vm%% im %%WebGUI|web-gui%% und klicken Sie ohne Änderungen auf **Anwenden**. Dadurch wird der Maschinentyp auf die neueste unterstützte Version aktualisiert.
 
-#### VM wird nicht booten (EFI-Shell erscheint)
+#### Schlechte VM-Leistung nach dem Upgrade
 
-Wenn Sie %%OVMF|ovmf%%-basierte %%VMs|vm%% in älteren Unraid-Versionen erstellt haben, könnten Sie auf eine EFI-Shell stoßen. Sie können die %%VM|vm%% starten, indem Sie die folgenden Befehle eingeben:
+Wenn Ihre %%VM|vm%% nach einem Upgrade langsam ist, öffnen Sie die %%VM|vm%%-Einstellungen (in **Erweiterter Ansicht**) und aktualisieren Sie die Version des **Machine**-Typs auf die neueste Revision (z. B. von `i440fx-2.5` auf `i440fx-2.7`). Ändern Sie dabei nicht das Präfix, also wechseln Sie zum Beispiel nicht von `i440fx` zu `Q35`.
 
 ---
 

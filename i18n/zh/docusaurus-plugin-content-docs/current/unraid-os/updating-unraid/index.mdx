@@ -14,13 +14,13 @@ import ManualDowngradeCommandLine from "./partials/manual-downgrade-command-line
 
 升级 Unraid OS 可确保您获得最新功能、安全更新和硬件支持。本页概述了标准升级过程，提供了疑难解答技巧和手动升级选项。
 
-:::note[Prerequisites]
+:::note[前提条件]
 
 在开始升级之前，请确保完整备份您的USB闪存设备。有关更多详细信息，请参阅[备份闪存设备](../maintain-and-update/changing-the-flash-device.mdx#backing-up-your-flash-device)。
 
 :::
 
-:::tip[Best 升级前的实践]
+:::tip[升级前的最佳实践]
 
 1. **备份**您的闪存驱动器和任何重要数据。
 2. **阅读您计划安装版本的发布说明**。
@@ -31,7 +31,7 @@ import ManualDowngradeCommandLine from "./partials/manual-downgrade-command-line
 
 :::
 
-## 标准升级流程
+## 标准升级流程 {/* #standard-update-process */}
 
 <Tabs>
   <TabItem value="modern-7x" label="Unraid 7.x及更高版本" default>
@@ -57,54 +57,54 @@ import ManualDowngradeCommandLine from "./partials/manual-downgrade-command-line
 
 ## 排查升级问题
 
-如果升级后遇到问题，请查看下面相关部分获取帮助。
+如果升级后遇到问题，请查看下面的对应部分。
+
+#### 升级后阵列或 Docker 容器启动缓慢
+
+某些升级后，Docker 容器可能需要执行一次性迁移。此过程可能需要一些时间，尤其是在镜像较多时。请耐心等待；首次启动完成后，性能应恢复正常。
 
 #### 升级后 Docker 容器无法正常工作
 
-如果您遇到类似 "layers from manifest don't match image configuration" 的错误，您可能需要重新构建您的 Docker 镜像文件。以下是方法：
+如果遇到类似 *"layers from manifest don't match image configuration"* 的错误，可能需要重建 Docker 镜像文件：
 
-#### VMs 显示“无法获取接口 MTU”或网络错误
+1. 前往 ***设置 → Docker*** 并停止 Docker 服务。
+2. 勾选删除 Docker 镜像的复选框，然后点击删除按钮。
+3. 重新启动 Docker 以重新创建镜像。
+4. 前往 **Apps** 标签页中的 **Previous Apps**，勾选要重新安装的项目，然后点击 **"Install xx Applications"**。
 
-If you have %%OVMF|ovmf%%-based %%VMs|vm%% created in older Unraid versions, you might encounter an EFI shell. You can boot the %%VM|vm%% by entering the following commands:
+#### VMs 显示 "cannot get interface MTU" 或网络错误
 
-1. 键入 `fs0:`。
-2. 然后键入 `cd efi/boot`。
-3. 最后，键入 `bootx64.efi`。
-4. 导航到 **应用** 标签页，选择 **先前的应用**，勾选要重新安装的应用并点击 **安装 xx 应用**。
+如果您曾为 %%VM|vm%% 网络使用自定义桥接名称，请按以下步骤将所有 %%VMs|vm%% 更新为使用默认 `br0` 桥接：
 
-#### VNC 无法访问或速度慢
+1. 前往 **VMs** 标签页并编辑每个 %%VM|vm%%（确保启用 **高级视图**）。
+2. 将网络桥接设置为 `br0`，然后点击 **应用**。
+3. 前往 ***设置 → VM 管理器***（在 **高级视图** 中），并将默认桥接设置为 `br0`。
 
-为了解决此问题，在 %%WebGUI|web-gui%% 中编辑 %%VM|vm%%，然后在不进行任何修改的情况下点击 **Apply**。此操作将更新机器类型为最新支持版本。
+#### VNC 无法访问 VMs 或速度较慢
 
-1. 前往 **VMs** 标签页并编辑每个 %%VM%%（确保启用 **高级视图**）。
-2. 将网络桥接设置为 `br0` 并点击 **应用**。
-3. 前往 ***设置 → VM 管理器***（在 **高级视图** 中）并将默认桥接设置为 `br0`。
+对于较旧的 %%VMs|vm%%，可能需要更新 %%VNC|vnc-session%% 视频驱动程序：
 
-#### VM 无法启动（出现 EFI shell）
-
-If you have %%OVMF|ovmf%%-based %%VMs|vm%% created in older Unraid versions, you might encounter an EFI shell. You can boot the %%VM|vm%% by entering the following commands:
-
-1. 在 **VMs** 标签页编辑 %%VM%%（选择 **高级视图**）。
-2. 将 **VNC 视频驱动程序** 设置为 **QXL**（推荐）。如果 QXL 不成功，可以尝试 **Cirrus** 或 **vmvga**。
+1. 在 **VMs** 标签页编辑 %%VM|vm%%（选择 **高级视图**）。
+2. 将 **%%VNC|vnc-session%% 视频驱动程序** 设置为 **QXL**（推荐）。如果 QXL 效果不佳，可尝试 **Cirrus** 或 **vmvga**。
 3. 点击 **应用** 以保存更改。
 
-#### VMs 显示“无法获取接口 MTU”或网络错误
-
-If you have %%OVMF|ovmf%%-based %%VMs|vm%% created in older Unraid versions, you might encounter an EFI shell. You can boot the %%VM|vm%% by entering the following commands:
-
-1. 键入 `fs0:`。
-2. 然后键入 `cd efi/boot`。
-3. 最后，键入 `bootx64.efi`。
-
-如果 `fs0:` 不起作用，您可以尝试 `fs1:`。如果问题仍然存在，请访问 [Unraid 论坛](https://forums.unraid.net/) 寻求帮助。
-
-#### VNC 无法访问或速度慢
-
-为了解决此问题，在 %%WebGUI|web-gui%% 中编辑 %%VM|vm%%，然后在不进行任何修改的情况下点击 **Apply**。此操作将更新机器类型为最新支持版本。
-
 #### VM 无法启动（出现 EFI shell）
 
-If you have %%OVMF|ovmf%%-based %%VMs|vm%% created in older Unraid versions, you might encounter an EFI shell. You can boot the %%VM|vm%% by entering the following commands:
+如果您在较旧的 Unraid 版本中创建了基于 %%OVMF|ovmf%% 的 %%VMs|vm%%，可能会遇到 EFI shell。可输入以下命令启动 %%VM|vm%%：
+
+1. 输入 `fs0:`。
+2. 然后输入 `cd efi/boot`。
+3. 最后输入 `bootx64.efi`。
+
+如果 `fs0:` 不起作用，可以改试 `fs1:`。如果仍有问题，请访问 [Unraid 论坛](https://forums.unraid.net/) 获取帮助。
+
+#### 尝试启动 VM 时出现 "Invalid machine type" 错误
+
+要解决此问题，请在 %%WebGUI|web-gui%% 中编辑 %%VM|vm%%，然后不做任何更改直接点击 **应用**。此操作会将机器类型更新为最新支持版本。
+
+#### 升级后 VM 性能较差
+
+如果升级后 %%VM|vm%% 运行缓慢，请前往 %%VM|vm%% 设置（在 **高级视图** 中），并将 **Machine** 类型版本更新到最新修订版（例如从 `i440fx-2.5` 改为 `i440fx-2.7`）。请不要更改前缀，例如不要从 `i440fx` 切换到 `Q35`。
 
 ---
 
