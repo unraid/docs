@@ -14,7 +14,7 @@ import MoveBetweenPoolsManual from './partials/move-between-pools-manual.mdx';
 
 # Piscinas de caché
 
-En Unraid, un %%cache pool|cache-pool%% es una colección de uno o más discos, generalmente SSDs o HDDs de alta velocidad. Estos discos almacenan temporalmente datos antes de ser movidos a tu [%%array|array%%](/unraid-os/using-unraid-to/manage-storage/array/overview) principal. Usar %%cache pools|cache-pool%% puede mejorar significativamente las velocidades de escritura, proteger tus datos y proporcionar almacenamiento dedicado para tareas específicas como ejecutar contenedores Docker o [%%virtual machines|vm%%](../create-virtual-machines/overview-and-system-prep.mdx).
+En Unraid, un %%cache pool|cache-pool%% es una colección de una o más unidades, normalmente SSD o HDD de alta velocidad. Estas unidades almacenan datos temporalmente antes de que se muevan a tu [array](./array/overview.mdx) principal. Usar %%cache pools|cache-pool%% puede mejorar significativamente las velocidades de escritura, proteger tus datos y proporcionar almacenamiento dedicado para tareas específicas como ejecutar contenedores Docker o [máquinas virtuales](../create-virtual-machines/overview-and-system-prep.mdx).
 
 %%Cache pools|cache-pool%% offer several advantages, making them a valuable addition to your Unraid setup, such as:
 
@@ -32,7 +32,7 @@ En Unraid, un %%cache pool|cache-pool%% es una colección de uno o más discos, 
 - **SSD vs. HDD:** Los SSD son excelentes para la velocidad, mientras que puedes usar HDD para cargas de trabajo de datos grandes y secuenciales. Además, los HDD pueden ayudar a prolongar la vida útil de tus SSD.
 - **La redundancia importa:** Para proteger tus datos, utiliza más de una unidad en una %%cache pool|cache-pool%%. Un pool de una sola unidad no te protegerá de posibles fallos en la unidad.
 - **Elección del sistema de archivos:** El sistema de archivos predeterminado para %%cache pools|cache-pool%% es %%BTRFS|btrfs%%, que admite varias opciones de %%RAID|raid%% para mayor redundancia y flexibilidad. Para más detalles sobre la selección del sistema de archivos, consulta [Sistemas de archivos](./file-systems.mdx).
-- **Integración de %%Mover|mover%%:** Los datos escritos en una %%cache pool|cache-pool%% se transfieren automáticamente a tu %%array|array%% principal según un horario que configures. Esto mantiene tus [%%user shares|user-share%%](./shares.mdx) organizados y fáciles de gestionar.
+- **Integración de %%Mover|mover%%:** Los datos escritos en una %%cache pool|cache-pool%% se transfieren automáticamente a tu %%array|array%% principal según un horario que configures. Esto mantiene tus [shares de usuario](./shares.mdx) organizados y fáciles de gestionar.
 - **Rendimiento de la aplicación:** Al colocar contenedores Docker, datos de aplicaciones y discos de %%VM|vm%% en una %%cache pool|cache-pool%%, mejora la velocidad de acceso y minimiza el desgaste en su almacenamiento principal.
   :::
 
@@ -215,13 +215,13 @@ Puedes acceder al Espacio Libre Mínimo haciendo clic en el nombre de la agrupac
 
 6. Monitoree el progreso en el %%WebGUI|web-gui%%.
 
-:::note[Timing]
+:::note\[Timing]
 
 Reemplazar un disco en tu %%cache pool|pool de caché%% es una tarea importante que ayuda a mantener el rendimiento y la confiabilidad de tu sistema de almacenamiento.
 
 :::
 
-:::info[Solucionar problemas de operaciones de equilibrio si se atascan]
+:::info[Troubleshooting problemas de operaciones de equilibrio si se atascan]
 
 Si una operación de equilibrio parece atascada o no responde, sigue estos pasos:
 
@@ -244,7 +244,7 @@ Para detalles avanzados de configuración de %%BTRFS|btrfs%%, consulta la [wiki 
 
 Reemplazar un disco en tu %%cache pool|pool de caché%% es una tarea importante que ayuda a mantener el rendimiento y la confiabilidad de tu sistema de almacenamiento.
 
-:::note[Prerequisites]
+:::note\[Prerequisites]
 
 - **Verifica la configuración de tu pool:** Asegúrate de que tu pool esté configurado con un perfil %%RAID|raid%% redundante, como %%RAID 1|raid1%%. Puedes hacer esto yendo a ***Principal → Pool → Estado de Balance*** (para %%BTRFS|btrfs%%) o estado del pool ZFS (para %%ZFS|zfs%%) en tu interfaz de gestión.
 - **Elige el disco de reemplazo adecuado:** El nuevo disco debe ser del mismo tamaño o más grande que el que estás reemplazando.
@@ -262,7 +262,7 @@ Puedes acceder al Espacio Libre Mínimo haciendo clic en el nombre de la agrupac
 6. Inicie el %%array|matriz%%.
 7. Monitoree el progreso de la reconstrucción en el %%WebGUI|web-gui%%.
 
-:::important[Timing]
+:::important\[Timing]
 
 Si a menudo descargas archivos de alrededor de 10 GB, establece el espacio libre mínimo en al menos 10 GB, pero idealmente 20 GB para permitir ajustes.
 
@@ -274,11 +274,15 @@ Si a menudo descargas archivos de alrededor de 10 GB, establece el espacio libre
 
 Establecer un espacio libre mínimo para tu %%cache pool|pool de caché%% puede proporcionar un mejor control sobre la ubicación de archivos, especialmente cuando se trata de archivos grandes como vídeos de alta resolución. Esta configuración ayuda a Unraid a saber cuándo dejar de escribir en el pool y comenzar a escribir directamente en el %%array|array%% de almacenamiento más grande, evitando interrupciones o corrupción de datos.
 
-**Ejemplo:** Si a menudo descargas archivos de alrededor de 10 GB, establece el espacio libre mínimo en al menos 10 GB, pero idealmente 20 GB para permitir ajustes.
+:::tip\[Example]
 
 Si alguno de los archivos pertenece a un contenedor de Docker y/o %%VM|MV%%, los servicios deben ser desactivados para que los archivos puedan moverse con éxito.
 
-**Cómo funciona**
+:::
+
+Si alguno de los archivos pertenece a un contenedor de Docker y/o %%VM|MV%%, los servicios deben ser desactivados para que los archivos puedan moverse con éxito.
+
+Aquí hay una breve visión general de para qué es cada participación predeterminada:
 
 - Cuando transfieres un archivo a una carpeta compartida que incluye una agrupación, Unraid respetará primero el ajuste de mínima cantidad de espacio libre que encuentre (ya sea el mínimo de espacio libre de la carpeta o el mínimo de espacio libre de la agrupación, lo que se alcance primero).
 - La configuración de espacio libre mínimo le indica a Unraid que deje de usar el %%cache pool|cache-pool%% cuando el espacio libre caiga por debajo de esta cantidad.
@@ -286,7 +290,11 @@ Si alguno de los archivos pertenece a un contenedor de Docker y/o %%VM|MV%%, los
 - Si está configurado para usar un %%cache pool|pool de caché%% exclusivamente (sin **almacenamiento Secundario**), esta configuración no se aplica.
 - Si está configurado para usar sólo la %%array|array%% como **Almacenamiento Primario**, los archivos van directamente a la %%array|array%%.
 
-**Ejemplo de uso:** La share multimedia tiene el umbral configurado en 20 GB, lo cual es adecuado para los archivos de esa share. Sin embargo, si también usas el pool para una VM y quieres dejar un margen por si el disco virtual crece, podrías establecer el umbral del pool en 50 GB. De este modo, cualquier transferencia a la share multimedia después de que el pool tenga menos de 50 GB libres iría directamente al array.
+:::tip[Use ejemplo de caso]
+
+La share de multimedia tiene el límite establecido en 20GB, lo cual es adecuado para los archivos en esa share. Sin embargo, si también usas el pool para una MV y quieres dejar un margen en caso de que el disco virtual crezca, podrías establecer el límite del pool en 50GB. De esta manera, cualquier transferencia a la share de multimedia después de que el pool tenga menos de 50GB libres iría directamente al array.
+
+:::
 
 :::tip[Best práctica]
 
@@ -296,15 +304,15 @@ Establece el espacio libre mínimo al menos al tamaño del archivo más grande q
 
 :::caution
 
-Al acceder a un [%%user share|share de usuario%%](./shares.mdx) desde múltiples pools y discos %%array|array%%, Unraid fusiona los listados de directorios en este orden:
+There are times when you may need to move files between your %%cache pool|cache-pool%% and the main %%array|array%%, such as when preparing for maintenance, upgrading hardware, or optimizing performance. This process is also useful for backing up your %%cache pool|cache-pool%% before making configuration changes or replacing drives. Unraid provides a built-in tool called %%Mover|mover%% to automate this process for [%%user shares|user-share%%](./shares.mdx).
 
 :::
 
 ---
 
-## Mover archivos entre un pool y la matriz {/* #moving-files-between-a-pool-and-the-array */}
+## Mover archivos entre un pool y la matriz {#moving-files-between-a-pool-and-the-array}
 
-There are times when you may need to move files between your %%cache pool|cache-pool%% and the main %%array|array%%, such as when preparing for maintenance, upgrading hardware, or optimizing performance. This process is also useful for backing up your %%cache pool|cache-pool%% before making configuration changes or replacing drives. Unraid provides a built-in tool called %%Mover|mover%% to automate this process for [%%user shares|user-share%%](./shares.mdx).
+Hay ocasiones en las que puede que necesites mover archivos entre tu %%cache pool|cache-pool%% y el %%array|array%% principal, por ejemplo, al prepararte para mantenimiento, actualizar hardware u optimizar el rendimiento. Este proceso también es útil para hacer una copia de seguridad de tu %%cache pool|cache-pool%% antes de realizar cambios de configuración o sustituir unidades. Unraid proporciona una herramienta integrada llamada %%Mover|mover%% para automatizar este proceso para las [shares de usuario](./shares.mdx).
 
 :::tip
 
@@ -330,7 +338,7 @@ Para asegurarte de que los archivos se muevan como se espera, considera las sigu
 - Copiar archivos y luego eliminar los originales.
 - Mover archivos a través de la red.
 
-Estos métodos ayudan a prevenir que los archivos terminen en la ubicación incorrecta.
+**¿Por qué usar múltiples pooles?**
 
 ---
 
@@ -340,9 +348,9 @@ Unraid permite crear y gestionar hasta 34 grupos de almacenamiento separados, ca
 
 **¿Por qué usar múltiples pooles?**
 
-- **Optimizar el rendimiento:** Pools separados para %%VMs|vm%%, contenedores Docker, descargas o contenido multimedia pueden mejorar la velocidad y reducir conflictos.
-- **Proteger datos:** Asignar diferentes niveles de %%RAID|raid%% o sistemas de archivos a cada pool para opciones de redundancia y respaldo personalizadas.
-- **Aislar cargas de trabajo:** Mantenga aplicaciones críticas en pools más rápidos y redundantes y almacene datos masivos en dispositivos más grandes y rentables.
+- %%BTRFS|btrfs%%: Mejor para pooles de múltiples dispositivos (soporta %%RAID 0|raid0%%, %%RAID 1|raid1%%, %%RAID 10|raid10%%, %%RAID 5|raid5%%, %%RAID 6|raid6%%).
+- %%ZFS|zfs%%: Excelente para pools tanto de un solo dispositivo como de múltiples dispositivos (Unraid 6.12+), con soporte maduro para %%RAIDZ1|raidz1%% y %%RAIDZ2|raidz2%%. Para características avanzadas de ZFS y configuración, consulta [almacenamiento ZFS](../../advanced-configurations/optimize-storage/zfs-storage.mdx).
+- %%XFS|xfs%%: Adecuado para pooles de un solo dispositivo.
 - **Gestionar con flexibilidad:** Puedes expandir, reducir o formatear pooles de forma independiente sin afectar a otros.
 
 **Casos de uso comunes**
@@ -363,7 +371,7 @@ Unraid permite crear y gestionar hasta 34 grupos de almacenamiento separados, ca
 
 :::
 
-Al acceder a un [%%user share|share de usuario%%](./shares.mdx) desde múltiples pools y discos %%array|array%%, Unraid fusiona los listados de directorios en este orden:
+Al acceder a una [share de usuario](./shares.mdx) desde varios pools y discos del %%array|array%%, Unraid fusiona los listados de directorios en este orden:
 
 1. Pool asignado a la compartición.
 2. Discos %%array|array%% (disk1, disk2, ..., disk28)
@@ -373,7 +381,7 @@ Al acceder a un [%%user share|share de usuario%%](./shares.mdx) desde múltiples
 
 Unraid no permite el movimiento directo de archivos entre pooles a través del WebGUI, pero puedes hacerlo usando la herramienta %%Mover|mover%% o a través del comando de línea.
 
-:::note[Remember]
+:::note\[Remember]
 
 Si alguno de los archivos pertenece a un contenedor de Docker y/o %%VM|MV%%, los servicios deben ser desactivados para que los archivos puedan moverse con éxito.
 
