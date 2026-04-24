@@ -3,14 +3,9 @@ sidebar_position: 3
 sidebar_label: Accès à distance
 ---
 
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
-import RemoteAccessDynamic from './partials/remote-access/dynamic.mdx';
-import RemoteAccessStatic from './partials/remote-access/static.mdx';
-
 # Accès à distance
 
-Débloquez un accès sécurisé, basé sur un navigateur, à votre Unraid WebGUI depuis n'importe où avec l'accès à distance. Cette fonctionnalité est idéale pour gérer votre serveur lorsque vous êtes loin de chez vous - aucun paramétrage réseau compliqué ou tunnel VPN n'est requis. Pour des besoins plus avancés, tels que la connexion à des conteneurs Docker ou l'accès à des lecteurs réseau, un tunnel VPN reste la solution recommandée.
+Cette page traite de **Unraid Connect Remote Access**, qui publie votre %%WebGUI|web-gui%% sur Internet en utilisant soit %%UPnP|upnp%%, soit une règle de redirection de port manuelle sur votre routeur. Si vous souhaitez une gestion à distance complète sans exposer le %%WebGUI|web-gui%% au trafic WAN, privilégiez l'[intégration officielle %%Tailscale|tailscale%%](../unraid-os/system-administration/secure-your-server/tailscale.mdx). Pour des besoins plus avancés, comme la connexion à des conteneurs Docker ou l'accès à des lecteurs réseau, un %%VPN Tunnel|vpn-tunnel%% reste la solution recommandée.
 
 :::important[Security rappel]
 
@@ -18,15 +13,21 @@ L'accès à distance via Unraid Connect offre :
 
 :::
 
+:::note[Connect l'accès au tableau de bord est différent]
+
+Se connecter au [tableau de bord Unraid Connect](https://connect.myunraid.net/) n'expose **pas** à lui seul votre %%WebGUI|web-gui%% sur Internet. L'accès au tableau de bord utilise une connexion initiée par le serveur avec un accès API restreint pour les fonctionnalités Connect prises en charge. **Unraid Connect Remote Access** est une fonctionnalité distincte qui expose l'intégralité du %%WebGUI|web-gui%% via une redirection de port WAN ou %%UPnP|upnp%%.
+
+:::
+
 L'accès à distance via Unraid Connect offre :
 
-- **Commodité** - Accédez rapidement à l'interface de gestion de votre serveur depuis n'importe où, en utilisant une connexion cloud sécurisée et gérée.
-- **Sécurité** - Des modes d'accès dynamiques limitent l'exposition en autorisant l'accès à Internet uniquement lorsque c'est nécessaire, ce qui aide à réduire les risques d'attaques automatisées.
-- **Simplicité** - Pas besoin de transférer des ports manuellement ou de configurer un client VPN pour des tâches de gestion de base.
+- **Commodité** - Accédez rapidement à l'interface de gestion de votre serveur depuis n'importe où, en utilisant une URL Unraid Connect de confiance.
+- **Sécurité** - Le trafic de votre %%WebGUI|web-gui%% est chiffré lorsque SSL/TLS est correctement configuré.
+- **Simplicité** - %%UPnP|upnp%% peut créer automatiquement le mappage de port requis lorsque votre routeur le prend en charge.
 
-:::tip
+:::tip[Preferred approche]
 
-Pour un accès complet au réseau ou des cas d'utilisation avancés, envisagez de configurer [Tailscale](../unraid-os/system-administration/secure-your-server/tailscale.mdx) ou une solution VPN.
+Pour la plupart des utilisateurs, l'[intégration officielle %%Tailscale|tailscale%%](../unraid-os/system-administration/secure-your-server/tailscale.mdx) est le meilleur choix pour l'administration à distance, car elle évite d'exposer le %%WebGUI|web-gui%% à l'Internet public. N'utilisez Unraid Connect Remote Access que lorsque vous avez spécifiquement besoin d'un accès via le navigateur à l'URL publique du %%WebGUI|web-gui%%.
 
 :::
 
@@ -34,7 +35,7 @@ Pour un accès complet au réseau ou des cas d'utilisation avancés, envisagez d
 
 ## Configuration initiale
 
-Pour activer l'accès à distance :
+Votre serveur Unraid sera prêt à accepter des connexions distantes sécurisées via le WebGUI, en utilisant le port configuré et un certificat de confiance.
 
 1. Dans l'Unraid WebGUI, naviguez vers ***Paramètres → Accès à la gestion***.
 2. Vérifiez le **port HTTPS** (par défaut : 443). Si ce port est utilisé (par exemple, par Docker), sélectionnez un port inutilisé au-dessus de 1000 (comme 3443, 4443 ou 5443).
@@ -45,45 +46,32 @@ Votre serveur Unraid sera prêt à accepter des connexions distantes sécurisée
 
 ---
 
-## Choisir un type d'accès à distance
+## Choisir une configuration d'accès à distance
 
-Unraid Connect propose deux modes :
+Dans les versions actuelles d'Unraid 7.2.x, la page des paramètres de l'API Unraid expose ces contrôles d'accès à distance :
 
-<Tabs>
-  <TabItem value="dynamique" label="Accès à distance dynamique" default>
-    <RemoteAccessDynamic />
-  </TabItem>
+- **Autoriser l'accès à distance** - Choisissez si l'accès à distance est **Désactivé** ou **Toujours** disponible.
+- **Type de redirection de l'accès à distance** - Choisissez **Statique** pour une redirection de port manuelle, ou **UPnP** pour laisser votre routeur créer automatiquement le mappage de port.
+- **Port WAN de l'accès à distance** - Choisissez le port WAN à rediriger lorsque vous utilisez la redirection **Statique**.
 
-  <TabItem value="statique" label="Accès à distance statique">
-    <RemoteAccessStatic />
-  </TabItem>
-</Tabs>
+Lorsque l'accès à distance est défini sur **Toujours**, votre %%WebGUI|web-gui%% est continuellement accessible depuis Internet sur le port WAN configuré. Les accès à distance **Statique** et **UPnP** publient tous deux le %%WebGUI|web-gui%% vers le trafic WAN. Utilisez un mot de passe root fort, maintenez Unraid OS à jour et désactivez l'accès à distance lorsque vous n'en avez pas besoin.
 
-| Fonctionnalité                        | Accès à distance dynamique                  | Accès à distance statique               |
-| ------------------------------------- | ------------------------------------------- | --------------------------------------- |
-| %%WebGUI\|web-gui%% ouvert à Internet | Seulement lorsqu'il est activé              | Toujours                                |
-| Surface d'attaque                     | Minimisé                                    | Maximisé                                |
-| Automatisation                        | Ouverture/fermeture automatique via Connect | Configuration manuelle, toujours ouvert |
-| Support de %%UPnP\|upnp%%             | Oui                                         | Oui                                     |
-|                                       | Recommandé pour la plupart                  |                                         |
+Un accès à distance dynamique à la demande n'est actuellement pas exposé dans la page des paramètres de l'API Unraid. Si vous avez besoin d'une administration à distance sans conserver le %%WebGUI|web-gui%% exposé via une redirection de port, privilégiez [%%Tailscale|tailscale%%](../unraid-os/system-administration/secure-your-server/tailscale.mdx) ou un autre %%VPN Tunnel|vpn-tunnel%%.
 
-## Utilisation de UPnP (Universal Plug and Play)
+## Activer l'accès à distance
 
-UPnP automatise le transfert de port, simplifiant l'accès à distance sans nécessiter de configuration manuelle du routeur.
+Votre serveur Unraid sera prêt à accepter des connexions distantes sécurisées via le WebGUI, en utilisant le port configuré et un certificat de confiance.
 
-1. Dans ***Paramètres → Accès à la gestion → API Unraid***, sélectionnez une option dynamique dans le menu déroulant Accès à distance :
-   - **Dynamique - UPnP :** Utilise %%UPnP|upnp%% pour ouvrir et fermer automatiquement un port aléatoire (nécessite que %%UPnP|upnp%% soit activé sur votre routeur).
-   - **Dynamique - Transfert de port manuel :** Vous devez transférer manuellement le port sélectionné sur votre routeur.
+1. Dans le %%WebGUI|web-gui%% d'Unraid, accédez à ***Paramètres → Accès de gestion*** et ouvrez l'onglet **Paramètres de l'API Unraid**.
+2. Réglez **Autoriser l'accès à distance** sur **Toujours**.
+3. Choisissez un **Type de redirection de l'accès à distance** :
+   - **UPnP :** permet à Unraid de demander à votre routeur de créer automatiquement le mappage du port WAN. Cela nécessite la prise en charge de %%UPnP|upnp%% et %%UPnP|upnp%% activé sur votre routeur.
+   - **Statique :** vous devez créer manuellement la règle de redirection de port sur votre routeur.
+4. Si vous choisissez **Statique**, saisissez le **Port WAN de l'accès à distance** que vous souhaitez utiliser.
+5. Cliquez sur **Appliquer**.
+6. Connectez-vous à [Unraid Connect](https://connect.myunraid.net/) et cliquez sur le lien **Gérer** pour vous connecter à votre serveur à distance.
 
-2. Accédez à [Unraid Connect](https://connect.myunraid.net/), et allez sur la page de gestion ou les détails du serveur.
-
-3. La carte **Accès à distance dynamique** affichera un bouton si votre serveur n'est actuellement pas accessible depuis votre emplacement.
-
-4. Cliquez sur le bouton pour activer l'accès WAN. Si vous utilisez %%UPnP|upnp%%, un nouveau bail de redirection de port est créé (généralement pour 30 minutes) et se renouvelle automatiquement tant qu'il est actif.
-
-5. La carte affiche l'état actuel et l'état UPnP.
-
-6. Après 10 minutes d'inactivité - ou si vous cliquez sur **Désactiver l'accès à distance** - l'accès internet est automatiquement révoqué. Les baux %%UPnP|upnp%% sont également supprimés.
+Pour configurer UPnP :
 
 ---
 
@@ -100,14 +88,12 @@ Pour configurer UPnP :
    Allez dans ***Paramètres → Accès à la gestion*** et changez **Utiliser %%UPnP|upnp%%** en **Oui**.
 
 3. **Sélectionnez %%UPnP|upnp%% dans Unraid Connect.**
-   Sur la page des paramètres d'Unraid Connect, choisissez l'option d'accès à distance comme %%UPnP|upnp%% (sélectionnez soit Dynamique ou Toujours Activé) et cliquez ensuite sur **Appliquer**.
+   Sur la page des paramètres de l'API Unraid, réglez **Autoriser l'accès à distance** sur **Toujours**, réglez **Type de redirection de l'accès à distance** sur **UPnP**, puis cliquez sur **Appliquer**.
 
-4. **Vérifiez le transfert de port (Toujours Activé uniquement).**
-   Cliquez sur le bouton **Vérifier**. Si réussi, vous verrez le message, "Votre serveur Unraid est accessible depuis Internet."
+4. **Vérifiez la redirection de port.**
+   Cliquez sur le bouton **Vérifier**. Si l'opération réussit, vous verrez le message « Votre serveur Unraid est accessible depuis Internet. »
 
-   Pour le transfert dynamique, vous devez cliquer sur **Activer l'accès à distance dynamique** dans [Unraid Connect](https://connect.myunraid.net/) pour permettre l'accès.
-
-:::caution[Troubleshooting]
+:::caution\[Troubleshooting]
 
 Si le paramètre passe de %%UPnP|upnp%% à Transfert de Port Manuel lors du rechargement, Unraid pourrait ne pas être capable de communiquer avec votre routeur. Vérifiez que %%UPnP|upnp%% est activé et considérez mettre à jour le firmware de votre routeur.
 
@@ -119,7 +105,7 @@ Si le paramètre passe de %%UPnP|upnp%% à Transfert de Port Manuel lors du rech
 
 Le transfert de port manuel offre plus de contrôle et est compatible avec la plupart des routeurs.
 
-Pour configurer le transfert de port manuel :
+Un accès local sécurisé garantit que toutes les connexions à votre Unraid WebGUI, même à l'intérieur de votre réseau domestique ou de bureau, sont cryptées en utilisant HTTPS, protégeant ainsi toute information sensible, comme les identifiants de connexion et les données de configuration.
 
 1. **Choisissez un port WAN :** Choisissez un numéro de port aléatoire au-dessus de 1000 (par exemple, 13856 ou 48653), plutôt que d'utiliser le 443 par défaut.
 
@@ -129,9 +115,7 @@ Pour configurer le transfert de port manuel :
 
    Certains routeurs peuvent exiger que le port WAN et le port HTTPS correspondent. Si oui, utilisez le même nombre aléatoire élevé pour les deux.
 
-4. **Vérifiez la redirection de port (Toujours Activé uniquement) :** Appuyez sur le bouton **Vérifier**. Si tout est correct, vous verrez "Votre serveur Unraid est accessible depuis Internet."
-
-   Pour le transfert dynamique, assurez-vous de cliquer sur **Activer l'accès à distance dynamique** dans [Unraid Connect](https://connect.myunraid.net/) pour activer l'accès.
+4. **Vérifiez la redirection de port :** appuyez sur le bouton **Vérifier**. Si tout est correct, vous verrez « Votre serveur Unraid est accessible depuis Internet. »
 
 5. **Accédez à votre serveur :** Connectez-vous à [Unraid Connect](https://connect.myunraid.net/) et cliquez sur le lien **Gérer** pour vous connecter à votre serveur à distance.
 
