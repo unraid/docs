@@ -14,7 +14,7 @@ import MoveBetweenPoolsManual from './partials/move-between-pools-manual.mdx';
 
 # Caches temporaires
 
-Dans Unraid, un %%cache pool|cache-pool%% est une collection d'un ou plusieurs disques, généralement des SSD ou des HDD haute-vitesse. Ces disques stockent temporairement des données avant qu'elles ne soient déplacées vers votre [%%array|array%%](/unraid-os/using-unraid-to/manage-storage/array/overview) principal. Utiliser des %%cache pools|cache-pool%% peut améliorer significativement les vitesses d'écriture, protéger vos données, et fournir un stockage dédié pour certaines tâches comme l'exécution de conteneurs Docker ou [%%machines virtuelles|vm%%](../create-virtual-machines/overview-and-system-prep.mdx).
+Dans Unraid, un %%cache pool|cache-pool%% est un ensemble d'un ou de plusieurs disques, généralement des SSD ou des HDD à haute vitesse. Ces disques stockent temporairement les données avant qu'elles ne soient déplacées vers votre [array](./array/overview.mdx) principal. L'utilisation de %%cache pools|cache-pool%% peut améliorer considérablement les vitesses d'écriture, protéger vos données et fournir un stockage dédié à des tâches spécifiques, comme l'exécution de conteneurs Docker ou de [machines virtuelles](../create-virtual-machines/overview-and-system-prep.mdx).
 
 Les %%Cache pools|cache-pool%% offrent plusieurs avantages, ce qui en fait un ajout précieux à votre configuration Unraid, tels que :
 
@@ -32,7 +32,7 @@ Les %%Cache pools|cache-pool%% offrent plusieurs avantages, ce qui en fait un aj
 - **SSD vs. HDD :** Les SSD sont excellents pour la vitesse, tandis que vous pouvez utiliser les HDD pour des charges de travail de données séquentielles et volumineuses. De plus, les HDD peuvent aider à prolonger la durée de vie de vos SSD.
 - **La redondance est importante :** Pour protéger vos données, utilisez plus d'un disque dans un %%cache pool|cache-pool%%. Un pool à disque unique ne vous protégera pas d'une éventuelle défaillance de disque.
 - **Choix du système de fichiers :** Le système de fichiers par défaut pour les %%cache pools|cache-pool%% est %%BTRFS|btrfs%%, qui prend en charge divers options de %%RAID|raid%% pour une redondance et une flexibilité accrues. Pour plus de détails sur la sélection de systèmes de fichiers, consultez [Systèmes de fichiers](./file-systems.mdx).
-- **Intégration avec le %%Mover|mover%% :** Les données écrites sur un %%cache pool|cache-pool%% sont automatiquement transférées vers votre %%array|array%% principal selon un calendrier que vous définissez. Cela garde vos [%%user shares|user-share%%](./shares.mdx) organisées et faciles à gérer.
+- **Intégration de %%Mover|mover%% :** Les données écrites sur un %%cache pool|cache-pool%% sont automatiquement transférées vers votre %%array|array%% principal selon un calendrier que vous définissez. Cela garde vos [partages utilisateur](./shares.mdx) organisés et faciles à gérer.
 - **Performance des applications :** En plaçant les conteneurs Docker, les données des applications et les disques de %%machines virtuelles|vm%% sur un %%cache temporaire|cache-pool%%, vous améliorez la vitesse d'accès et réduisez la charge sur votre stockage principal.
 
 :::
@@ -214,13 +214,13 @@ Pour changer le niveau de %%RAID|raid%% d'une pool :
 
 6. Surveillez la progression dans le %%WebGUI|web-gui%%.
 
-:::note[Timing]
+:::note\[Timing]
 
 Le partage Média a le sol fixé à 20 Go, ce qui est approprié pour les fichiers dans ce partage. Cependant, si vous utilisez également le pool pour une VM et que vous souhaitez laisser une marge au cas où le vdisk se développerait, vous pouvez définir le sol du pool à 50 Go. De cette façon, tout transfert vers le partage Media après que le pool ait moins de 50 Go libres irait directement au tableau.
 
 :::
 
-:::info[Dépannage des opérations d'équilibrage si bloquées]
+:::info[Troubleshooting des opérations d'équilibrage si bloquées]
 
 Si une opération d'équilibrage semble bloquée ou ne répond pas, suivez ces étapes :
 
@@ -243,7 +243,7 @@ Pour des détails de configuration avancée pour %%BTRFS|btrfs%%, référez-vous
 
 Remplacer un disque dans votre %%cache pool|cache-pool%% est une tâche importante qui aide à maintenir la performance et la fiabilité de votre système de stockage.
 
-:::note[Prerequisites]
+:::note\[Prerequisites]
 
 - **Vérifiez la configuration de votre pool :** Assurez-vous que votre pool est configuré avec un profil %%RAID|raid%% redondant, comme %%RAID 1|raid1%%. Vous pouvez le faire en allant à ***Principal → Pool → État de l'équilibre*** (pour %%BTRFS|btrfs%%) ou à l'état du pool ZFS (pour %%ZFS|zfs%%) dans votre interface de gestion.
 - **Choisissez le bon disque de remplacement :** Le nouveau disque doit être de la même taille ou plus grand que celui que vous remplacez.
@@ -261,7 +261,7 @@ Pour remplacer un disque dans une pool :
 6. Démarrez l’%%array|array%%.
 7. Surveillez la progression de la reconstruction dans le %%WebGUI|web-gui%%.
 
-:::important[Timing]
+:::important\[Timing]
 
 La reconstruction peut prendre du temps, en fonction de la taille du disque et de la charge actuelle de votre système. Par exemple, la reconstruction d'un SSD de 4 To dans une configuration %%RAID 1|raid1%% peut prendre environ 3 à 6 heures. Il est conseillé de planifier cela lorsque vous pouvez permettre au système de travailler sans interruption.
 
@@ -273,11 +273,15 @@ La reconstruction peut prendre du temps, en fonction de la taille du disque et d
 
 Définir un espace libre minimum pour votre %%cache pool|cache-pool%% peut offrir un meilleur contrôle sur le placement des fichiers, surtout lorsqu'il s'agit de gros fichiers comme des vidéos haute résolution. Ce paramètre aide Unraid à savoir quand arrêter d'écrire sur le pool et commencer à écrire directement sur le %%array|array%% de stockage plus grand, évitant les interruptions ou la corruption de données.
 
-**Exemple :** si vous téléchargez souvent des fichiers d’environ 10 Go, définissez l’espace libre minimum à au moins 10 Go, et idéalement à 20 Go pour garder une marge.
+:::tip\[Example]
 
 There are times when you may need to move files between your %%cache pool|cache-pool%% and the main %%array|array%%, such as when preparing for maintenance, upgrading hardware, or optimizing performance. Unraid provides a built-in tool called %%Mover|mover%% to automate this process for [%%user shares|user-share%%](./shares.mdx).
 
-**Comment ça fonctionne**
+:::
+
+There are times when you may need to move files between your %%cache pool|cache-pool%% and the main %%array|array%%, such as when preparing for maintenance, upgrading hardware, or optimizing performance. Unraid provides a built-in tool called %%Mover|mover%% to automate this process for [%%user shares|user-share%%](./shares.mdx).
+
+Voici un aperçu rapide de la fonction de chaque partage par défaut :
 
 - Lorsque vous transférez un fichier vers un partage qui inclut un pool, Unraid respectera le premier paramètre de seuil qu'il rencontre (soit l'espace libre minimum du partage, soit celui du pool, selon le cas atteint en premier).
 - Le paramètre d'espace libre minimum indique à Unraid d'arrêter d'utiliser la %%cache pool|cache-pool%% lorsque l'espace libre tombe en dessous de ce montant.
@@ -285,7 +289,11 @@ There are times when you may need to move files between your %%cache pool|cache-
 - Si elle est réglée pour utiliser exclusivement la %%cache pool|cache-pool%% (pas de **Stockage Secondaire**), ce paramètre n'est pas appliqué.
 - Si elle est réglée pour n'utiliser que le %%array|array%% comme **Stockage Principal**, les fichiers vont directement au %%array|array%%.
 
-**Exemple de cas d’usage :** le partage Media a un seuil fixé à 20 Go, ce qui convient aux fichiers de ce partage. Cependant, si vous utilisez aussi le pool pour une VM et souhaitez garder une marge au cas où le vdisk grandirait, vous pouvez fixer le seuil du pool à 50 Go. Ainsi, tout transfert vers le partage Media une fois que le pool a moins de 50 Go libres ira directement vers l’array.
+:::tip[Use exemple de cas].
+
+Le partage Média a le sol fixé à 20 Go, ce qui est approprié pour les fichiers dans ce partage. Cependant, si vous utilisez également le pool pour une VM et que vous souhaitez laisser une marge au cas où le vdisk se développerait, vous pouvez définir le sol du pool à 50 Go. De cette façon, tout transfert vers le partage Media après que le pool ait moins de 50 Go libres irait directement au tableau.
+
+:::
 
 :::tip[Best pratique]
 
@@ -295,7 +303,7 @@ Définissez l'espace libre minimum à au moins la taille du fichier le plus gran
 
 :::caution
 
-**Ne définissez pas l'espace libre minimum à 0.** Cela peut entraîner des erreurs de disque plein. Utilisez toujours une valeur raisonnable.
+Il y a des moments où vous pourriez avoir besoin de déplacer des fichiers entre votre %%cache pool|cache-pool%% et l'%%array|array%% principal, par exemple lors de la préparation à la maintenance, de la mise à niveau du matériel ou de l'optimisation des performances. Ce processus est également utile pour sauvegarder votre %%cache pool|cache-pool%% avant d'apporter des modifications à la configuration ou de remplacer des disques. Unraid propose un outil intégré appelé %%Mover|mover%% pour automatiser ce processus pour les [%%user shares|user-share%%](./shares.mdx).
 
 :::
 
@@ -303,7 +311,7 @@ Définissez l'espace libre minimum à au moins la taille du fichier le plus gran
 
 ## Déplacer des fichiers entre une pool et l'array
 
-Il y a des moments où vous pourriez avoir besoin de déplacer des fichiers entre votre %%cache pool|cache-pool%% et l'%%array|array%% principal, par exemple lors de la préparation à la maintenance, de la mise à niveau du matériel ou de l'optimisation des performances. Ce processus est également utile pour sauvegarder votre %%cache pool|cache-pool%% avant d'apporter des modifications à la configuration ou de remplacer des disques. Unraid propose un outil intégré appelé %%Mover|mover%% pour automatiser ce processus pour les [%%user shares|user-share%%](./shares.mdx).
+Il arrive parfois que vous deviez déplacer des fichiers entre votre %%cache pool|cache-pool%% et l'%%array|array%% principal, par exemple lors de la préparation d'une maintenance, d'une mise à niveau matérielle ou d'une optimisation des performances. Ce processus est également utile pour sauvegarder votre %%cache pool|cache-pool%% avant d'effectuer des modifications de configuration ou de remplacer des disques. Unraid fournit un outil intégré appelé %%Mover|mover%% pour automatiser ce processus pour les [partages utilisateur](./shares.mdx).
 
 :::tip
 
@@ -329,7 +337,7 @@ Pour vous assurer que les fichiers se déplacent comme prévu, prenez en compte 
 - Copiez les fichiers, puis supprimez les originaux.
 - Déplacez les fichiers via le réseau.
 
-Ces méthodes aident à éviter que des fichiers se retrouvent au mauvais endroit.
+**Pourquoi utiliser plusieurs pools ?**
 
 ---
 
@@ -339,9 +347,9 @@ Unraid vous permet de créer et de gérer jusqu'à 34 pools de stockage séparé
 
 **Pourquoi utiliser plusieurs pools ?**
 
-- **Optimisez la performance :** Les pools séparés pour les %%VMs|vm%%, conteneurs Docker, téléchargements ou médias peuvent améliorer la vitesse et réduire les conflits.
-- **Protégez les données :** Assignez différents niveaux %%RAID|raid%% ou systèmes de fichiers à chaque pool pour une redondance et des options de sauvegarde personnalisées.
-- **Isolez les charges de travail :** Gardez les applications critiques sur des pools plus rapides et redondants et stockez les données volumineuses sur des appareils plus grands et rentables.
+- %%BTRFS|btrfs%% : Meilleur pour les pools multi-appareils (prend en charge %%RAID 0|raid0%%, %%RAID 1|raid1%%, %%RAID 10|raid10%%, %%RAID 5|raid5%%, %%RAID 6|raid6%%).
+- %%ZFS|zfs%% : Excellent pour les pools à un ou plusieurs appareils (Unraid 6.12+), avec un support mature pour %%RAIDZ1|raidz1%% et %%RAIDZ2|raidz2%%. Pour des fonctionnalités avancées de ZFS et sa configuration, voir [Stockage ZFS](../../advanced-configurations/optimize-storage/zfs-storage.mdx).
+- %%XFS|xfs%% : Convient pour les pools à un seul appareil.
 - **Gérez de manière flexible :** Vous pouvez agrandir, réduire ou formater les pools indépendamment sans impact sur les autres.
 
 **Cas d'utilisation courants**
@@ -362,7 +370,7 @@ Unraid vous permet de créer et de gérer jusqu'à 34 pools de stockage séparé
 
 :::
 
-Lors de l'accès à une [partage utilisateur %%user share|user-share%%](./shares.mdx) de plusieurs pools et de disques %%array|array%%, Unraid fusionne les listes de répertoires dans cet ordre :
+Lors de l'accès à un [partage utilisateur](./shares.mdx) depuis plusieurs pools et des disques de l'%%array|array%%, Unraid fusionne les listes de répertoires dans cet ordre :
 
 1. Pool assigné au partage
 2. Disques %%array|array%% (disk1, disk2, ..., disk28)
@@ -372,7 +380,7 @@ Lors de l'accès à une [partage utilisateur %%user share|user-share%%](./shares
 
 Unraid ne permet pas le déplacement direct de fichiers entre pools via le %%WebGUI|web-gui%%, mais vous pouvez le faire en utilisant l'outil %%Mover|mover%% ou en ligne de commande.
 
-:::note[Remember]
+:::note\[Remember]
 
 Si certains des fichiers appartiennent à un conteneur Docker et/ou à une %%VM|vm%%, les services doivent être désactivés pour que les fichiers soient déplacés avec succès.
 
