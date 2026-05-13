@@ -50,7 +50,7 @@ Unraid admite la mayoría de las unidades UPS utilizando el protocolo %%apcupsd|
 
 ### Fallo de unidad flash
 
-El estado de %%array|array%% se guarda en tu dispositivo USB. Si la unidad flash se vuelve inaccesible o entra en un estado de solo lectura, Unraid no puede actualizar el estado de apagado, incluso si el %%array|array%% se detiene correctamente. Esto resulta en un apagado incorrecto que se detecta en el próximo arranque.
+El estado de %%array|array%% se guarda en tu dispositivo de arranque. Si el dispositivo de arranque se vuelve inaccesible o entra en un estado de solo lectura, Unraid no puede actualizar el estado de apagado, incluso si el %%array|array%% se detiene correctamente. Esto resulta en un apagado incorrecto que se detecta en el próximo arranque.
 
 ### Abrir sesiones de terminal
 
@@ -116,16 +116,15 @@ Para habilitar la hibernación de VM:
   <TabItem value="linux" label="VMs de Linux">
 
     1. **Instale %%QEMU|qemu%% %%Guest Agent|guest-agent%%:**
+       ```bash
+       # Ubuntu/Debian
+       sudo apt install qemu-guest-agent
 
-    ```bash
-    # Ubuntu/Debian
-    sudo apt install qemu-guest-agent
-
-    # CentOS/RHEL/Fedora
-    sudo yum install qemu-guest-agent
-    # or
-    sudo dnf install qemu-guest-agent
-    ```
+       # CentOS/RHEL/Fedora
+       sudo yum install qemu-guest-agent
+       # or
+       sudo dnf install qemu-guest-agent
+       ```
 
     2. **Habilitar el servicio:**
        ```bash
@@ -148,6 +147,10 @@ Para habilitar la hibernación de VM:
 
     :::note[Why appliance VMs are different]
     Appliance %%VMs|vm%% are designed to run specific software and often don't allow the installation of additional packages, such as %%QEMU|qemu%% %%Guest Agent|guest-agent%%. This means hibernation isn't available, so you'll need to rely on proper timeout configuration.
+    :::
+
+    Las %%VMs|vm%% de appliance están diseñadas para ejecutar software específico y, a menudo, no permiten la instalación de paquetes adicionales, como %%QEMU|qemu%% %%Guest Agent|guest-agent%%. Esto significa que la hibernación no está disponible, por lo que deberá confiar en una configuración adecuada del tiempo de espera.
+
     :::
 
   </TabItem>
@@ -177,8 +180,6 @@ En esta sección, cubriremos cómo configurar los tiempos de espera para varios 
 
 Si experimentas apagados anómalos o contenedores que se bloquean durante el apagado, considera aumentar el tiempo de espera general de apagado a **180 segundos** (o **300+ segundos** si tienes múltiples %%VMs|vm%%). Esto da más tiempo a los servicios para apagarse correctamente.
 
-:::
-
 ### Secuencia de apagado
 
 Al apagar, el proceso ocurre en el siguiente orden:
@@ -197,17 +198,17 @@ Al apagar, el proceso ocurre en el siguiente orden:
 
 4. Apagado del array: las unidades deben desmontarse y sincronizarse los datos; esto típicamente toma de 15-30 segundos.
 
-:::tip[Calculate su tiempo de espera general de apagado]
+:::tip[Calculate su tiempo de espera general de apagado
 
 **Fórmula:** Su tiempo de espera general de apagado debe ser mayor que:
 
-```
+```text
 (VM timeout × 3) + (Docker timeout) + (Other services) + 15-30 seconds
 ```
 
 **Ejemplo:** Si seguimos la fórmula, se vería así: `(300 × 3) + 30 + 10 + 30 = 970 segundos (más de 16 minutos)`.
 
-**Recomendado:** Al menos **180 segundos (3 minutos)** como mínimo y **300+ segundos (5+ minutos)** si tiene múltiples %%VMs|vm%% o contenedores complejos.
+**Ejemplo:** Si seguimos la fórmula, se vería así: `(300 × 3) + 30 + 10 + 30 = 970 segundos (más de 16 minutos)`.
 
 :::
 
@@ -223,7 +224,7 @@ Esta sección proporciona información detallada sobre cómo configurar los tiem
 
 Configura los tiempos de espera al apagar la VM en ***Configuración → Administrador de VM → Apagado de VM*** (activa la vista avanzada).
 
-**Cómo funciona:**
+Configura los tiempos de espera al apagar la VM en ***Configuración → Administrador de VM → Apagado de VM*** (activa la vista avanzada).
 
 - Las %%VMs|vm%% pasan por tres etapas de apagado, cada una consume el tiempo de espera completo de la VM.
 - Todas las %%VMs|vm%% en cada etapa se procesan simultáneamente
@@ -245,16 +246,14 @@ Configura los tiempos de espera al apagar la VM en ***Configuración → Adminis
 :::
 
 :::warning[No tiempo de espera seguro sin hibernación]
-
 Sin hibernación y %%QEMU|qemu%% %%Guest Agent|guest-agent%%, no existe un tiempo de espera verdaderamente seguro para las %%VMs|vm%% de Windows. Los cuadros de diálogo o las instalaciones de actualizaciones en curso podrían hacer que cualquier tiempo de espera sea inadecuado, lo que podría llevar a apagados forzados y riesgo de corrupción de datos.
-
 :::
 
 #### Tiempos de espera de Docker
 
-Configura los tiempos de espera de detención de contenedores Docker en ***Configuración → Docker*** (activa la vista avanzada).
+Sin hibernación y %%QEMU|qemu%% %%Guest Agent|guest-agent%%, no existe un tiempo de espera verdaderamente seguro para las %%VMs|vm%% de Windows. Los cuadros de diálogo o las instalaciones de actualizaciones en curso podrían hacer que cualquier tiempo de espera sea inadecuado, lo que podría llevar a apagados forzados y riesgo de corrupción de datos.
 
-**Cómo funciona:**
+Configura los tiempos de espera al apagar la VM en ***Configuración → Administrador de VM → Apagado de VM*** (activa la vista avanzada).
 
 - Los contenedores se detienen en paralelo, por lo que el tiempo total es igual al tiempo de espera de detención de Docker.
 - La mayoría de los contenedores se detienen en 10 segundos, pero algunos pueden necesitar más tiempo.
@@ -299,7 +298,7 @@ Algunos plugins o servicios personalizados pueden tener sus propios procedimient
 
 **Fórmula actualizada con servicios de terceros:**
 
-```
+```text
 (VM timeout × 3) + (Docker timeout) + (LXC/other timeouts) + 15-30 seconds
 ```
 
@@ -320,8 +319,8 @@ Puedes instalarlo desde [Community Applications (busca "Dynamix Stop Shell")](ht
 
 :::caution
 
-- Sé cauteloso si tienes scripts o procesos ejecutándose en sesiones de terminal.
-- Asegúrate de que no haya operaciones de escritura críticas en progreso antes de apagar.
-- El plugin cerrará las sesiones de manera forzada, lo que podría interrumpir el trabajo.
+- Si regularmente tienes sesiones de terminal abiertas.
+- Para prevenir que las sesiones SSH olvidadas retrasen el apagado.
+- Para limpieza automatizada durante el apagado.
 
 :::

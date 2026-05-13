@@ -11,27 +11,29 @@ import ManageApiKeysCli from './partials/manage-api-keys-cli.mdx';
 
 # Verwendung der Unraid API
 
-:::tip[Quick Start]
+The Unraid API provides a %%GraphQL|graphql%% interface that allows you to interact with your Unraid server. This guide covers authentication, common queries, and usage patterns.
 
-Die Unraid-API bietet eine GraphQL-Schnittstelle, mit der Sie mit Ihrem Unraid-Server interagieren können. Diese Anleitung hilft Ihnen, die Erkundung und Nutzung der API zu beginnen.
+## Aktivieren der GraphQL-Sandbox
 
-:::
+### WebGUI-Methode (empfohlen)
 
-Die Unraid-API bietet eine GraphQL-Schnittstelle, mit der Sie mit Ihrem Unraid-Server interagieren können. Diese Anleitung hilft Ihnen, die Erkundung und Nutzung der API zu beginnen.
+:::tip[📖 Live-Dokumentation]
 
-## 🎮 Aktivieren des GraphQL-Sandkastenes {/* #enabling-the-graphql-sandbox */}
+**Zeigen Sie das vollständige API-Schema und die Dokumentation an:**
 
-### WebGUI-Methode (Empfohlen)
-
-:::info[Preferred Methode]
+**[Live-Dokumentation in Apollo GraphQL Studio anzeigen →](https://studio.apollographql.com/graph/Unraid-API/variant/current/home)**
 
 Die Nutzung des WebGUI ist der einfachste Weg, die GraphQL-Sandbox zu aktivieren.
 
 :::
 
-1. Navigieren Sie zu **Einstellungen** → **Verwaltungszugriff** → **Entwickleroptionen**
-2. Schalten Sie den **GraphQL-Sandbox**-Schalter ein
-3. Zugriff auf den GraphQL-Spielplatz durch Navigieren zu:
+### WebGUI-Methode (empfohlen)
+
+Using the %%WebGUI|web-gui%% is the easiest way to enable the %%GraphQL|graphql%% sandbox:
+
+1. Navigieren Sie zu ***Einstellungen → Verwaltungszugriff → Entwickleroptionen***
+2. Aktivieren Sie den Schalter **%%GraphQL|graphql%% Sandbox**
+3. Access the %%GraphQL|graphql%% playground by navigating to:
 
    ```txt
    http://YOUR_SERVER_IP/graphql
@@ -51,21 +53,15 @@ Oder den interaktiven Modus nutzen:
 unraid-api developer
 ```
 
-## 🔑 Authentifizierung
-
-:::warning[Required für die meisten Operationen]
+## Authentifizierung
 
 Die meisten Abfragen und Mutationen erfordern eine Authentifizierung. Fügen Sie immer die entsprechenden Anmeldedaten in Ihre Anfragen ein.
 
-:::
-
-Sie können sich authentifizieren mit:
-
 1. **API-Schlüssel** - Für programmgesteuerten Zugriff
-2. **Cookies** - Automatisch, wenn beim WebGUI angemeldet
-3. **SSO/OIDC** - Wenn mit externen Anbietern konfiguriert
+2. **Cookies** - Automatisch, wenn Sie bei der %%WebGUI|web-gui%% angemeldet sind
+3. **%%SSO|sso%%/OIDC** - Wenn mit externen Anbietern konfiguriert
 
-### Verwaltung von API-Schlüsseln
+### Verwalten von API-Schlüsseln
 
 <Tabs>
   <TabItem value="GUI" label="Web-GUI (Empfohlen)" default>
@@ -77,9 +73,9 @@ Sie können sich authentifizieren mit:
   </TabItem>
 </Tabs>
 
-### Verwendung von API-Schlüsseln
+### Verwaltung von API-Schlüsseln
 
-Der generierte API-Schlüssel sollte als Header in Ihren GraphQL-Anfragen enthalten sein:
+The generated API key should be included in your %%GraphQL|graphql%% requests as a header.
 
 ```json
 {
@@ -87,38 +83,18 @@ Der generierte API-Schlüssel sollte als Header in Ihren GraphQL-Anfragen enthal
 }
 ```
 
-## 📊 Verfügbare Schemata
+## Verfügbare Schemata
 
 Die API bietet Zugang zu verschiedenen Aspekten Ihres Unraid-Servers:
 
+- **Systeminformationen**: Systemdetails einschließlich CPU-, Speicher- und OS-Informationen abfragen; den Systemstatus und die Systemintegrität überwachen; Zugriff auf Mainboard- und Hardwareinformationen.
+- **%%Array|array%% management**: Query %%array|array%% status and configuration; manage %%array|array%% operations (start/stop); monitor disk status and health; perform %%parity checks|parity-check%%. For more information about array operations, see [Array overview](../unraid-os/using-unraid-to/manage-storage/array/overview.mdx).
+- **Docker-Verwaltung**: Docker-Container auflisten und verwalten; Containerstatus überwachen; Docker-Netzwerke verwalten.
+- **Remote access**: Configure and manage remote access settings; handle %%SSO|sso%% configuration; manage allowed origins.
+
+## Systeminformationen
+
 ### Systeminformationen
-
-- Systemdetails wie CPU-, Speicher- und Betriebssysteminformationen abfragen
-- Systemstatus und -gesundheit überwachen
-- Zugriff auf Basisplatten- und Hardwareinformationen
-
-### Array-Verwaltung
-
-- Array-Status und -konfiguration abfragen
-- Array-Operationen verwalten (Start/Stopp)
-- Festplattenstatus und -gesundheit überwachen
-- Paritätsprüfungen durchführen
-
-### Docker-Verwaltung
-
-- Docker-Container auflisten und verwalten
-- Containerstatus überwachen
-- Docker-Netzwerke verwalten
-
-### Fernzugriff
-
-- Fernzugriffseinstellungen konfigurieren und verwalten
-- SSO-Konfiguration behandeln
-- Erlaubte Ursprünge verwalten
-
-### 💻 Beispielanfragen
-
-#### Systemstatus überprüfen
 
 ```graphql
 query {
@@ -139,7 +115,7 @@ query {
 }
 ```
 
-#### Array-Status überwachen
+### Array-Verwaltung
 
 ```graphql
 query {
@@ -162,7 +138,7 @@ query {
 }
 ```
 
-#### Docker-Container auflisten
+### Docker-Verwaltung
 
 ```graphql
 query {
@@ -176,38 +152,15 @@ query {
 }
 ```
 
-## 🏗️ Schema-Typen
+## Fernzugriff
 
-Die API umfasst mehrere Kern-Typen:
+Die API umfasst mehrere Kern-Typen. Zu den Basistypen gehören `Node` (Interface für Objekte mit eindeutigen IDs; siehe [Object Identification](https://graphql.org/learn/global-object-identification/)), `JSON` (für komplexe JSON-Daten), `DateTime` (für Zeitstempelwerte) und `Long` (für 64-Bit-Ganzzahlen). Zu den Ressourcentypen gehören `Array` (%%array|array%%- und Festplattenverwaltung), `Docker` (Container- und Netzwerkverwaltung), `Info` (Systeminformationen), `Config` (Serverkonfiguration) und `Connect` (Einstellungen für den Fernzugriff). Verfügbare Rollen sind `admin` (voller Zugriff), `connect` (Funktionen für den Fernzugriff) und `guest` (eingeschränkter Lesezugriff).
 
-### Basistypen
-
-- `Node`: Schnittstelle für Objekte mit eindeutigen IDs - siehe [Objekterkennung](https://graphql.org/learn/global-object-identification/)
-- `JSON`: Für komplexe JSON-Daten
-- `DateTime`: Für Zeitstempelwerte
-- `Long`: Für 64-Bit Ganzzahlen
-
-### Ressourcentypen
-
-- `Array`: Array- und Festplattenverwaltung
-- `Docker`: Container- und Netzwerkverwaltung
-- `Info`: Systeminformationen
-- `Config`: Serverkonfiguration
-- `Connect`: Fernzugriffseinstellungen
-
-### Rollenbasierter Zugriff
-
-Verfügbare Rollen:
-
-- `admin`: Voller Zugriff
-- `connect`: Fernzugriffsfunktionen
-- `guest`: Eingeschränkter Lesezugriff
-
-## ✨ Bewährte Verfahren
+## Best Practices
 
 :::tip[Pro Tipps]
 
-1. Verwenden Sie den Apollo-Sandbox, um das Schema zu erkunden und Abfragen zu testen
+1. Verwenden Sie [Apollo GraphQL Studio](https://studio.apollographql.com/graph/Unraid-API/variant/current/home), um das vollständige API-Schema und die Dokumentation anzuzeigen und zu erkunden
 2. Beginnen Sie mit kleinen Abfragen und fügen Sie schrittweise Felder hinzu, wie benötigt
 3. Überwachen Sie die Abfragestruktur, um die Leistung aufrechtzuerhalten
 4. Verwenden Sie geeignete Rollen und Berechtigungen für Ihre API-Schlüssel
@@ -215,7 +168,7 @@ Verfügbare Rollen:
 
 :::
 
-## ⏱️ Ratenbegrenzung
+## Docker-Container auflisten
 
 :::caution[Rate Grenzen]
 
@@ -223,9 +176,7 @@ Die API implementiert eine Ratenbegrenzung, um Missbrauch zu verhindern. Stellen
 
 :::
 
-## 🚨 Fehlerbehandlung
-
-Die API gibt Standard-GraphQL-Fehler im folgenden Format zurück:
+The API returns standard %%GraphQL|graphql%% errors in the following format:
 
 ```json
 {
@@ -239,15 +190,16 @@ Die API gibt Standard-GraphQL-Fehler im folgenden Format zurück:
 }
 ```
 
-## 📚 Zusätzliche Ressourcen
+## Ressourcentypen
 
 :::info[Learn Mehr]
 
-- Verwenden Sie den Schema-Explorer von Apollo Sandbox, um alle verfügbaren Typen und Felder zu durchsuchen
-- Prüfen Sie die Dokumentationsregisterkarte in der Apollo Sandbox für detaillierte Felderbeschreibungen
+- Zeigen Sie das vollständige API-Schema und die Dokumentation mit [Apollo GraphQL Studio](https://studio.apollographql.com/graph/Unraid-API/variant/current/home) an
+- `Docker`: Container- und Netzwerkverwaltung
+- `Info`: Systeminformationen
 - Überwachen Sie die Gesundheit der API mit `unraid-api status`
 - Berichte mit `unraid-api report` zur Fehlerbehebung generieren
 
-Für weitere Informationen zu spezifischen Befehlen und Konfigurationsoptionen, ziehen Sie die [CLI-Dokumentation](cli.mdx) zurate oder führen Sie `unraid-api --help` aus.
+Weitere Informationen zu spezifischen Befehlen und Konfigurationsoptionen finden Sie in der [CLI-Dokumentation](cli.mdx) oder indem Sie `unraid-api --help` ausführen. Wenn Probleme auftreten, besuchen Sie die [Unraid-Foren](https://forums.unraid.net/) für Community-Support.
 
 :::

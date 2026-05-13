@@ -23,11 +23,12 @@ Les %%VMs|vm%% sont idéales pour :
 
 Pour une liste des systèmes d'exploitation testés avec Unraid, voir la page [%%VM|vm%% Setup](./vm-setup.mdx).
 
-**Sous le capot :** En savoir plus sur la pile technologique derrière la virtualisation d'Unraid
+<details>
+  <summary>**Sous le capot :** Développez pour en savoir plus sur la pile technologique derrière la virtualisation d'Unraid</summary>
 
   La pile de virtualisation d’Unraid est conçue pour être flexible et performante, utilisant plusieurs technologies open-source pour prendre en charge une gestion efficace des %%machines virtuelles (VM)|vm%%. Cette vue d'ensemble explique les composants clés et leur interaction de manière conviviale.
 
-  **Technologies de base**
+  <h4>Technologies de base</h4>
 
   | Technologie                       | Ce qu'il fait                                                                                           | Pourquoi c'est important                                                                                                       |
   | --------------------------------- | ------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
@@ -40,7 +41,7 @@ Pour une liste des systèmes d'exploitation testés avec Unraid, voir la page [%
   | %%HVM\|hvm%%                      | Supporte la virtualisation assistée par matériel (%%Intel VT-x\|intel-vt-x%%, %%AMD-V\|amd-v%%).        | Nécessaire pour faire fonctionner les %%VMs\|vm%% avec une accélération matérielle complète.                                   |
   | %%VFIO\|vfio%% & %%IOMMU\|iommu%% | Permettent le passage direct de périphériques PCI aux %%VMs\|vm%% (comme les GPU et périphériques USB). | Essentiel pour obtenir une performance quasi-native et maintenir l'isolement sécuritaire.                                      |
 
-  **Comment Unraid implémente le support de %%VM|vm%%**
+  <h4>Comment Unraid implémente le support de %%VM|vm%%</h4>
 
   - %%KVM|kvm%%/%%QEMU|qemu%% : La virtualisation d'Unraid repose fondamentalement sur %%KVM|kvm%% et %%QEMU|qemu%%, offrant de robustes capacités d'hébergement de %%VM|vm%%.
   - %%Libvirt|libvirt%%: Les définitions de %%VM|vm%% sont stockées en tant que fichiers XML dans `libvirt.img` (typiquement trouvé dans le partage `system`).
@@ -55,18 +56,20 @@ Pour une liste des systèmes d'exploitation testés avec Unraid, voir la page [%
   La plupart des utilisateurs n'ont pas besoin d'interagir directement avec ces technologies, mais comprendre ce qui se passe "sous le capot" peut être incroyablement utile pour le dépannage et la personnalisation avancés. Pour des informations plus détaillées, consultez la documentation officielle pour [KVM](https://www.linux-kvm.org/page/Main_Page), [QEMU](https://www.qemu.org/), [Libvirt](https://libvirt.org/) et [VirtIO](https://www.linux-kvm.org/page/Virtio).
   :::
 
+</details>
+
 ## Exigences
 
 Pour exécuter des %%VMs|vm%% sur Unraid, votre système doit satisfaire aux exigences suivantes :
 
-| Composant        | Exigence minimale                                             | Recommandé pour les %%VMs\|vm%% & le passage %%GPU\|gpu-passthrough%%.               |
-| ---------------- | ------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
-| CPU              | 64 bits, 4 cœurs, 2,4 GHz+ (Intel/AMD)                        | 8+ cœurs, 3,0 GHz+ (Intel Core i7/i9, AMD Ryzen 7/9, ou plus récent)                 |
-| Virtualisation   | %%HVM\|hvm%% (%%Intel VT-x\|intel-vt-x%% ou %%AMD-V\|amd-v%%) | %%HVM\|hvm%% + %%IOMMU\|iommu%% (Intel VT-d ou AMD-Vi)                               |
-| RAM              | 8 Go                                                          | 16 Go ou plus (ajoutez de la RAM pour chaque %%VM\|vm%% active).                     |
-| Stockage         | SSD/NVMe pour les disques de %%VM\|vm%%.                      | NVMe haut de gamme pour une meilleure performance                                    |
-| Réseau           | Ethernet Gigabit (PCIe recommandé)                            | Ethernet 2,5G/10G pour des charges de travail exigeantes                             |
-| GPU (facultatif) | NVIDIA RTX moderne (recommandé) ou AMD Radeon RX              | Série RTX 3000/4000 (NVIDIA recommandée pour une meilleure compatibilité de passage) |
+| Technologie               | Ce qu'il fait                                                                                  | Recommandé pour les %%VMs\|vm%% & le passage %%GPU\|gpu-passthrough%%.                                                         |
+| ------------------------- | ---------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| %%KVM\|kvm%%              | Agit en tant que %%hyperviseur\|hypervisor%% intégré au noyau Linux.                           | Permet à Unraid de faire fonctionner les %%VMs\|vm%% en douceur avec accélération matérielle et un minimum de surcharge.       |
+| Virtualisation            | %%HVM\|hvm%% (%%Intel VT-x\|intel-vt-x%% ou %%AMD-V\|amd-v%%)                                  | %%HVM\|hvm%% + %%IOMMU\|iommu%% (Intel VT-d ou AMD-Vi)                                                                         |
+| %%Libvirt\|libvirt%%      | Gère les définitions des %%VM\|vm%%, ainsi que les interfaces de stockage et réseau.           | Stocke les configurations de %%VM\|vm%% dans `libvirt.img` et fournit une API de gestion cohérente.                            |
+| Stockage                  | Offre un accès graphique à distance aux %%VM\|vm%%.                                            | Permet d'interagir avec les %%VMs\|vm%% depuis n'importe quel appareil via un navigateur ou un client %%VNC\|vnc-session%%.    |
+| %%VirtIO\|virtio%%        | Fournit des pilotes paravirtualisés haute performance pour les périphériques réseau et disque. | Améliore la vitesse et l'efficacité des %%VM\|vm%%, nécessitant l'installation de pilotes %%VirtIO\|virtio%% dans l'OS invité. |
+| %%VirtFS\|virtfs%% (`9p`) | Facilite le partage de systèmes de fichiers entre l'hôte et les invités basés sur Linux.       | Utile pour le développement et les besoins avancés de partage de fichiers.                                                     |
 
 :::tip[GPU compatibilité de passage]
 
@@ -76,7 +79,7 @@ Les GPU NVIDIA sont **généralement recommandés** pour le passage %%VM|vm%% en
 
 :::note
 
-Votre BIOS de carte mère doit activer la virtualisation assistée par matériel et le support %%IOMMU|iommu%%. Recherchez les paramètres étiquetés « %%Intel VT-x|intel-vt-x%% », « Intel VT-d », « %%AMD-V|amd-v%% » ou « AMD-Vi ».
+Pour exécuter des %%VMs|vm%% sur Unraid, votre système doit satisfaire aux exigences suivantes :
 
 :::
 
@@ -152,7 +155,7 @@ Avant de créer des machines virtuelles, effectuez ces tâches de configuration 
 
 ### Partages utilisateurs pour la virtualisation
 
-Unraid crée deux partages %%user shares|user-share%% par défaut pour la %%virtualization|virt%% :
+La compatibilité matérielle et des pilotes change rapidement. Avant d'acheter un GPU pour le passage, consultez les [forums Unraid](https://forums.unraid.net/) et la documentation du fournisseur pour des rapports à jour et des expériences utilisateur.
 
 :::note
 
@@ -189,7 +192,7 @@ Unraid crée deux partages %%user shares|user-share%% par défaut pour la %%virt
 
 Envisagez de créer un partage séparé pour les sauvegardes %%VM|vm%% afin de protéger vos données.
 
-**Recommandations de configuration du partage**
+<h4>Recommandations de configuration du partage</h4>
 
 - Store active %%VM|vm%% %%virtual disk images|virtual-disk-images%% on a %%cache|cache%%-only share for the best performance.
 - Utiliser des SSDs dans votre %%cache pool|cache-pool%% améliore considérablement la réactivité des %%VM|vm%%.
@@ -226,4 +229,4 @@ Ce paramètre est expérimental et peut affecter la stabilité du système. Util
 
 :::
 
-5. Cliquez sur **Appliquer** pour enregistrer vos paramètres.
+Avant de commencer, assurez-vous que votre système est prêt pour la virtualisation (consultez [Préparation du système](#system-preparation)). Configurer vos préférences de %%virtualisation|virt%% dans Unraid aide à garantir que vos %%machines virtuelles (VM)|vm%% sont configurées pour des performances optimales et une compatibilité.
