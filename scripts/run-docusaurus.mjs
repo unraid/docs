@@ -19,12 +19,22 @@ if (!Object.hasOwn(defaultPorts, commandName)) {
 const host = process.env.DOCUSAURUS_BIND_HOST || "localhost";
 const port = process.env.DOCUSAURUS_PORT || defaultPorts[commandName];
 const command = process.platform === "win32" ? "pnpm.cmd" : "pnpm";
+const passthroughArgs = process.argv.slice(3);
 
 console.log(`Starting Docusaurus ${commandName} on ${host}:${port}`);
 
 const child = spawn(
   command,
-  ["exec", "docusaurus", commandName, "--host", host, "--port", port],
+  [
+    "exec",
+    "docusaurus",
+    commandName,
+    "--host",
+    host,
+    "--port",
+    port,
+    ...passthroughArgs,
+  ],
   {
     stdio: "inherit",
   },
