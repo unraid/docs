@@ -127,6 +127,22 @@ nvm use
    pnpm install
    ```
 
+### Optional: VS Code Dev Container
+
+This repo includes a VS Code dev container for contributors who want a local environment that closely matches the GitHub Actions Ubuntu/Node/pnpm setup.
+
+To use it:
+
+1. Install [Docker Desktop](https://www.docker.com/products/docker-desktop/) or another compatible container runtime.
+2. Install the [Dev Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) for VS Code.
+3. Open this repo in VS Code and choose **Dev Containers: Reopen in Container**.
+
+The container uses the Node.js version from `.nvmrc`, enables Corepack/pnpm, installs repo dependencies, forwards the Docusaurus dev server on port `3001`, and includes useful CLI tools such as `git`, `gh`, `jq`, `ripgrep`, `nvi`, `shellcheck`, and `actionlint`.
+
+Once the container is ready, see [Usage](#usage) for local development commands.
+
+VS Code Dev Containers can share host Git credentials with the container. See [Sharing Git credentials with your container](https://code.visualstudio.com/remote/advancedcontainers/sharing-git-credentials) for SSH agent and credential-helper setup. GitHub CLI authentication is separate; run `gh auth login` inside the container if you need authenticated `gh` commands. The container stores GitHub CLI config in a Docker named volume (`gh-config`) so `gh` authentication can persist across dev container rebuilds and can be shared with other dev containers on the same Docker engine.
+
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- USAGE EXAMPLES -->

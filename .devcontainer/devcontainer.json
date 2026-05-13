@@ -1,0 +1,48 @@
+{
+  "name": "docs",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "remoteUser": "vscode",
+  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+  "containerEnv": {
+    "COREPACK_ENABLE_DOWNLOAD_PROMPT": "0",
+    "DOCUSAURUS_BIND_HOST": "0.0.0.0"
+  },
+  "remoteEnv": {
+    "DOCUSAURUS_BIND_HOST": "0.0.0.0"
+  },
+  "mounts": [
+    "source=gh-config,target=/home/vscode/.config/gh,type=volume"
+  ],
+  "postCreateCommand": "sudo chown -R vscode:vscode /home/vscode/.config && corepack enable && pnpm install --store-dir /home/vscode/.local/share/pnpm/store --frozen-lockfile --prefer-offline",
+  "postStartCommand": "sudo chown -R vscode:vscode /home/vscode/.config",
+  "forwardPorts": [
+    3000,
+    3001
+  ],
+  "portsAttributes": {
+    "3000": {
+      "label": "Docusaurus static preview",
+      "onAutoForward": "notify"
+    },
+    "3001": {
+      "label": "Docusaurus",
+      "onAutoForward": "notify"
+    }
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "davidanson.vscode-markdownlint",
+        "esbenp.prettier-vscode",
+        "github.vscode-github-actions",
+        "redhat.vscode-yaml",
+        "unifiedjs.vscode-mdx"
+      ],
+      "settings": {
+        "typescript.tsdk": "node_modules/typescript/lib"
+      }
+    }
+  }
+}
