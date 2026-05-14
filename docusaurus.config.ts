@@ -555,7 +555,11 @@ const config: Config = {
           },
           {
             from: "/unraid-os/manual/applications/",
-            to: "/unraid-os/using-unraid-to/run-docker-containers/community-applications/",
+            to: "/community-applications/",
+          },
+          {
+            from: "/unraid-os/using-unraid-to/run-docker-containers/community-applications/",
+            to: "/community-applications/",
           },
           {
             from: "/unraid-os/manual/changing-the-flash-device/",
@@ -776,7 +780,7 @@ const config: Config = {
           },
           {
             from: "/go/applications/",
-            to: "/unraid-os/using-unraid-to/run-docker-containers/community-applications/",
+            to: "/community-applications/",
           },
           {
             from: "/go/backing-up-your-flash-drive/",
