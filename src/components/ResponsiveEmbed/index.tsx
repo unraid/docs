@@ -13,6 +13,13 @@ type ResponsiveEmbedProps = {
   iframeClassName?: string;
 };
 
+const credentiallessIframeProps: Record<string, string> = {
+  // React treats `credentialless` as a non-boolean iframe attribute.
+  // Passing `credentialless` or `{true}` omits it during SSR, which breaks
+  // embeds on pages served with `Cross-Origin-Embedder-Policy: credentialless`.
+  credentialless: "",
+} as const;
+
 export default function ResponsiveEmbed({
   src,
   title,
@@ -38,7 +45,7 @@ export default function ResponsiveEmbed({
     <div className={embedClasses}>
       <div className={frameClasses} style={frameStyle}>
         <iframe
-          credentialless
+          {...credentiallessIframeProps}
           loading="lazy"
           className={iframeClasses}
           src={src}
