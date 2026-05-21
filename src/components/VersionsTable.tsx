@@ -19,13 +19,30 @@ type RowStatus = "Supported" | "Security updates" | "Superseded" | "EOL";
 const minorOf = (version: string): Minor =>
   version.split(".").slice(0, 2).join(".") as Minor;
 
-const parseVersion = (version: string): number[] =>
-  version.split(/[-.]/).map((part) => {
-    if (part === "beta") return -2;
-    if (part === "rc") return -1;
-    const parsed = Number.parseInt(part, 10);
-    return Number.isNaN(parsed) ? 0 : parsed;
-  });
+const parseVersion = (version: string): number[] => {
+  const parts: number[] = [];
+
+  for (const rawPart of version.split(/[-.]/)) {
+    const part = rawPart.toLowerCase();
+    const betaMatch = part.match(/^beta(\d+)$/);
+    const rcMatch = part.match(/^rc(\d+)$/);
+
+    if (part === "beta") {
+      parts.push(-2);
+    } else if (part === "rc") {
+      parts.push(-1);
+    } else if (betaMatch) {
+      parts.push(-2, Number.parseInt(betaMatch[1], 10));
+    } else if (rcMatch) {
+      parts.push(-1, Number.parseInt(rcMatch[1], 10));
+    } else {
+      const parsed = Number.parseInt(part, 10);
+      parts.push(Number.isNaN(parsed) ? 0 : parsed);
+    }
+  }
+
+  return parts;
+};
 
 const compareVersions = (a: string, b: string) => {
   const aParts = parseVersion(a);
