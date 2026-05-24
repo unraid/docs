@@ -805,7 +805,7 @@ Para cambiar el Modo de Escritura:
 
 ## Modos de lectura
 
-Cuando uses Unraid, la velocidad a la que puedes leer archivos está determinada principalmente por el disco individual que contiene cada archivo. A diferencia de los sistemas %%RAID|raid%% tradicionales, que combinan múltiples discos para mejorar el rendimiento, Unraid almacena cada archivo en un solo disco. Esto significa que las velocidades de lectura no se incrementarán por las velocidades combinadas de varios discos.
+Cuando uses Unraid, la velocidad a la que puedes leer archivos está determinada principalmente por el disco individual que contiene cada archivo. A diferencia de los sistemas RAID tradicionales, que combinan múltiples discos para mejorar el rendimiento, Unraid almacena cada archivo en un solo disco. Esto significa que las velocidades de lectura no se incrementarán por las velocidades combinadas de varios discos.
 
 <h3>Expectativas de rendimiento</h3>
 
@@ -816,7 +816,7 @@ Cuando uses Unraid, la velocidad a la que puedes leer archivos está determinada
 :::note[Special casos
 
 - Si un disco está deshabilitado y sus datos están siendo reconstruidos, Unraid usará las unidades restantes junto con la información de paridad para recrear los datos. Durante este proceso, la velocidad de lectura puede reducirse a 30–60 MB/s o incluso menos, dependiendo del disco más lento en tu sistema.
-- Cualquier operación en curso en la matriz, como una verificación de %%parity|parity-check%% o la reconstrucción de una unidad, también puede afectar el rendimiento de lectura. Esto se debe al aumento del movimiento de los cabezales de la unidad y la competencia general por los recursos.
+- Cualquier operación en curso en la matriz, como una verificación de parity o la reconstrucción de una unidad, también puede afectar el rendimiento de lectura. Esto se debe al aumento del movimiento de los cabezales de la unidad y la competencia general por los recursos.
 
 :::
 
@@ -824,7 +824,7 @@ Cuando uses Unraid, la velocidad a la que puedes leer archivos está determinada
 
 ## Piscinas de caché
 
-Los %%Cache pools|cache-pool%% en Unraid proporcionan ventajas significativas, particularmente para tareas intensivas en escrituras, máquinas virtuales (VMs) y contenedores Docker. Estos pools operan por separado del array principal y pueden configurarse con múltiples discos utilizando los sistemas de archivos %%BTRFS|btrfs%% o %%ZFS|zfs%%, soportando varias configuraciones de %%RAID|raid%% para velocidad y protección de datos.
+Los Cache pools en Unraid proporcionan ventajas significativas, particularmente para tareas intensivas en escrituras, máquinas virtuales (VMs) y contenedores Docker. Estos pools operan por separado del array principal y pueden configurarse con múltiples discos utilizando los sistemas de archivos BTRFS o ZFS, soportando varias configuraciones de RAID para velocidad y protección de datos.
 
 <h3>Pools de caché vs. el arreglo principal</h3>
 
@@ -832,9 +832,9 @@ Los %%Cache pools|cache-pool%% en Unraid proporcionan ventajas significativas, p
 | ---------------------------------- | ----------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------- |
 | **Velocidad de lectura**           | SSD: 400–550 MB/s, NVMe: 250–7,000 MB/s\*                                                                         | SSD: 400–550 MB/s, NVMe: 250–7,000 MB/s\*                                                                                                                              | HDD: 70–250 MB/s (por disco)                                |
 | **Velocidad de escritura**         | SSD: 400–550 MB/s, NVMe: 250–7,000 MB/s\*                                                                         | SSD: 400–550 MB/s, NVMe: 250–7,000 MB/s\*                                                                                                                              | 20–120 MB/s (dependiente del modo de paridad)               |
-| **Protección de datos**            | %%RAID 1\|raid1%%/%%RAID 10\|raid10%%; %%RAID 5\|raid5%%/%%RAID 6\|raid6%% (experimental, no para datos críticos) | %%RAID 1\|raid1%%/%%RAID 10\|raid10%%; %%RAIDZ1\|raidz1%%/%%RAIDZ2\|raidz2%%/%%RAIDZ3\|raidz3%% (estable, listo para producción)                                       | Basado en paridad, independiente del sistema de archivos    |
+| **Protección de datos**            | RAID 1\/RAID 10\; RAID 5\/RAID 6\ (experimental, no para datos críticos) | RAID 1\/RAID 10\; RAIDZ1\/RAIDZ2\/RAIDZ3\ (estable, listo para producción)                                       | Basado en paridad, independiente del sistema de archivos    |
 | **Expansión**                      | Mezclar tamaños de unidades; agregar/eliminar dispositivos dinámicamente                                          | Soporte limitado de adición/eliminación de dispositivos; no se puede eliminar de RAIDZ; adición de un solo dispositivo para expandir un único vdev RAIDZ en Unraid 7.2 | Agregar unidades, pero sin banda ni escalado de rendimiento |
-| **Complejidad en la recuperación** | Mayor riesgo de pérdida de datos; se necesitan herramientas %%BTRFS\|btrfs%%                                      | Mayor riesgo de pérdida de datos; se requieren herramientas %%ZFS\|zfs%%                                                                                               | Reconstrucciones más fáciles basadas en paridad             |
+| **Complejidad en la recuperación** | Mayor riesgo de pérdida de datos; se necesitan herramientas BTRFS\                                      | Mayor riesgo de pérdida de datos; se requieren herramientas ZFS\                                                                                               | Reconstrucciones más fáciles basadas en paridad             |
 | **Mejor para**                     | Aplicaciones, máquinas virtuales, escrituras frecuentes                                                           | Aplicaciones, máquinas virtuales, escrituras frecuentes, cargas de trabajo empresariales                                                                               | Almacenamiento a granel, bibliotecas de medios              |
 
 \**Las velocidades reales de NVMe dependen de la generación PCIe, el enfriamiento, y el ancho de banda de la red (p.ej., 10GbE se limita a \~1,100 MB/s).*
@@ -842,17 +842,17 @@ Los %%Cache pools|cache-pool%% en Unraid proporcionan ventajas significativas, p
 #### Pros de los pools de caché
 
 - **Mayor rendimiento:** Los pools NVMe pueden saturar redes de 10GbE/40GbE (1,100–3,500 MB/s).
-- **RAID flexible:** Tanto %%BTRFS|btrfs%% como %%ZFS|zfs%% soportan %%RAID 1|raid1%%/%%RAID 10|raid10%% para redundancia sin necesidad de igualar tamaños de unidades.
+- **RAID flexible:** Tanto BTRFS como ZFS soportan RAID 1/RAID 10 para redundancia sin necesidad de igualar tamaños de unidades.
 - **Baja latencia:** Ideal para bases de datos, máquinas virtuales y contenedores Docker.
-- **Ventajas de ZFS:** %%ZFS|zfs%% proporciona funciones de grado empresarial como verificación de integridad de datos, compresión y snapshots.
+- **Ventajas de ZFS:** ZFS proporciona funciones de grado empresarial como verificación de integridad de datos, compresión y snapshots.
 
 #### Contras de los pools de caché
 
 - **Sin protección de paridad:** Los datos no están protegidos hasta que se trasladan al arreglo.
-- **Riesgos de recuperación:** %%BTRFS|btrfs%% %%RAID 5|raid5%%/%%RAID 6|raid6%% es inestable; los pools de un solo disco carecen de redundancia.
-- **Consideraciones de ZFS:** %%ZFS|zfs%% requiere más memoria RAM y tiene requisitos de hardware más estrictos que %%BTRFS|btrfs%%.
+- **Riesgos de recuperación:** BTRFS RAID 5/RAID 6 es inestable; los pools de un solo disco carecen de redundancia.
+- **Consideraciones de ZFS:** ZFS requiere más memoria RAM y tiene requisitos de hardware más estrictos que BTRFS.
 
-Para obtener información más detallada sobre %%cache pools|cache-pool%%, incluyendo cómo configurarlos, gestionarlos y características avanzadas, consulte la página [Pools de Caché](./cache-pools.mdx).
+Para obtener información más detallada sobre cache pools, incluyendo cómo configurarlos, gestionarlos y características avanzadas, consulte la página [Pools de Caché](./cache-pools.mdx).
 
 ---
 
