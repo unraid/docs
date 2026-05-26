@@ -63,7 +63,7 @@ Si votre clé HASP est une clé USB, vous pouvez l'assigner à seulement un %%VM
 
 <br />
 
-### OS & Configuration
+### Mon périphérique de démarrage est tombé en panne et je n'ai pas de sauvegarde. Comment restaurer ma configuration ? {/* #usb-failed-restore */}
 
 Si vous aviez activé [Unraid Connect](../../unraid-connect/overview-and-setup.mdx) pour les sauvegardes Flash, vous pouvez l'utiliser pour restaurer. Sinon, procurez-vous une nouvelle clé USB de haute qualité, installez Unraid dessus et utilisez la clé d'enregistrement que vous avez reçue par email. Réassignez vos disques comme ils l'étaient. Si vous ne pouvez pas vous souvenir des affectations, postez pour obtenir de l'aide dans le [forum de support général](https://forums.unraid.net/forum/55-general-support/).
 
@@ -82,28 +82,30 @@ Si vous utilisez des disques chiffrés et oubliez le mot de passe de chiffrement
 ### Comment puis-je démarrer complètement Unraid OS à partir de zéro ? (Procédure de réinitialisation d'usine) {/* #factory-reset */}
 
 1. Sauvegardez toutes les données que vous souhaitez conserver.
-2. Stop the %%array|array%% and shut down your server.
+2. Arrêtez le %%array|array%% et éteignez votre serveur.
 3. Retirez le périphérique de démarrage.
 4. Utilisez l'outil Unraid USB Flash Creator pour reformater et réinstaller Unraid sur le lecteur.
 5. Réinsérez le périphérique de démarrage et démarrez votre serveur.
 6. Dans le %%WebGUI|web-gui%%, ouvrez un terminal et exécutez `lsblk` pour répertorier tous les lecteurs (à l'exception du périphérique de démarrage).
 7. Effacer les systèmes de fichiers existants de chaque disque de données :
 
-:::danger[Critical: Opération destructive
+:::danger[Critical: Opération destructive]
+**Cette étape effacera définitivement TOUTES les données des disques spécifiés et elle est IRRÉVERSIBLE.**
 
-- Sauvegardez toutes les données que vous souhaitez conserver.
+- **Vérifiez que vous disposez de sauvegardes** de toutes les données nécessaires avant de continuer
 
 - **Vérifiez deux fois l'identifiant du périphérique** dans le WebGUI ou avec `lsblk` avant d'exécuter cette commande
 
-- Retirez le périphérique flash USB.
+- **Assurez-vous de cibler le bon disque** - la perte de données sur le mauvais disque ne peut pas être récupérée
 
-Référez-vous à [Réinitialiser votre mot de passe](../system-administration/secure-your-server/user-management.mdx#reset-your-password).
+Pour chaque disque de données, exécutez :
 
 ```bash
 wipefs /dev/sdX
 ```
 
-Pour chaque disque de données, exécutez :
+Remplacez `X` par la bonne lettre de disque (par exemple, sda, sdb, sdc).
+:::
 
 8. Continuez avec la configuration et l'installation normales d'Unraid.
 
@@ -123,9 +125,9 @@ Pour changer le nom d'hôte de votre serveur Unraid, accédez au WebGUI dans **P
 
 ### Mon périphérique de démarrage signale un GUID invalide. Que dois-je faire ? {/* #invalid-guid */}
 
-Unraid requires a boot device with a unique hardware %%GUID|guid%% (for USB boot, this is usually a USB flash drive). Some manufacturers may reuse %%GUID|guid%%s or use generic values, and counterfeit drives, especially of well-known brands like SanDisk and Samsung—often lack unique %%GUID|guid%%s. For guidance on choosing a compatible drive (including brand and retailer advice), see [Create your bootable media](../getting-started/set-up-unraid/create-your-bootable-media.mdx) and [Selecting a replacement device](../system-administration/maintain-and-update/changing-the-flash-device.mdx#selecting-a-replacement-device).
+Unraid nécessite un périphérique de démarrage avec un %%GUID|guid%% matériel unique (pour le démarrage USB, il s'agit généralement d'une clé USB). Certains fabricants peuvent réutiliser des %%GUID|guid%%s ou utiliser des valeurs génériques, et les clés contrefaites, surtout de marques connues comme SanDisk et Samsung, n'ont souvent pas de %%GUID|guid%%s uniques. Pour savoir comment choisir un périphérique compatible (y compris des conseils sur les marques et revendeurs), consultez [Créer votre support de démarrage](../getting-started/set-up-unraid/create-your-bootable-media.mdx) et [Sélection d'un périphérique de remplacement](../system-administration/maintain-and-update/changing-the-flash-device.mdx#selecting-a-replacement-device).
 
-In short: Prefer drives from reputable retailers. Consider second-tier brands (e.g., TeamGroup, Transcend, PNY), which are less often counterfeited. Avoid generic or unbranded drives, SSDs, USB card readers, and SD card adapters; they often lack unique %%GUID|guid%%s and may not be supported for booting Unraid.
+En bref : privilégiez les clés provenant de revendeurs réputés. Envisagez des marques secondaires (par exemple TeamGroup, Transcend, PNY), qui sont moins souvent contrefaites. Évitez les clés génériques ou sans marque, les SSD, les lecteurs de cartes USB et les adaptateurs de cartes SD ; ils n'ont souvent pas de %%GUID|guid%%s uniques et peuvent ne pas être pris en charge pour démarrer Unraid.
 
 <br />
 
@@ -135,7 +137,7 @@ In short: Prefer drives from reputable retailers. Consider second-tier brands (e
 
 ### Chaque fois que j'arrête ma VM Windows avec un GPU AMD assigné, elle ne parvient pas à redémarrer. Que puis-je faire ? {/* #amd-gpu-vm-restart */}
 
-Il est préférable d'éviter les disques génériques ou sans marque, les SSD, les lecteurs de cartes USB et les adaptateurs de cartes SD, car ils manquent souvent de %%GUID|guid%%s uniques et peuvent ne pas être pris en charge pour démarrer Unraid.
+De nombreux GPU AMD rencontrent des problèmes avec les réinitialisations au niveau fonctionnel, ce qui contribue à ce problème. Les solutions de contournement consistent notamment à éjecter le GPU depuis Windows avant l'arrêt ou à utiliser un GPU NVIDIA, qui évite généralement ce problème.
 
 <br />
 
@@ -151,7 +153,7 @@ C'est faisable mais nécessite des étapes supplémentaires. Consultez le [guide
 
 ### Unraid prend-il en charge différents types de RAID comme RAID1/5/6/10 ? {/* #raid-types-support */}
 
-C'est faisable mais nécessite des étapes supplémentaires. Consultez le [guide vidéo de SpaceInvaderOne](https://forums.unraid.net/topic/51230-video-guidehow-to-pass-through-an-nvidia-gpu-as-primary-or-only-gpu-in-unraid/) pour des instructions détaillées sur la façon de le faire correctement.
+Unraid présente une architecture de stockage unique qui le distingue des systèmes %%RAID|raid%% traditionnels. Voici une comparaison des différentes options de stockage :
 
 <div style={{ display: 'flex', justifyContent: 'center', margin: '20px 0' }}>
 
@@ -259,15 +261,14 @@ Si vous avez du mal à vous connecter à l'%%interface-web|WebGUI%% par nom d'h�
 - Si vous avez attribué une adresse IP statique lors de la création du support de démarrage avec le USB Flash Creator, utilisez cette adresse.
 - Branchez un moniteur et un clavier à votre serveur ; l'adresse IP apparaîtra sur la console locale après le démarrage.
 
-Oui. Le pont **br0** est un pont réseau Linux permettant aux conteneurs Docker et aux %%VM|vm%%s de se connecter directement à votre réseau local (LAN) avec leurs adresses IP. Il agit comme un commutateur réseau virtuel connectant votre interface réseau physique aux interfaces virtuelles utilisées par les conteneurs et les %%VM|vm%%s.
+**Causes courantes de ce problème :**
 
-- **Le partitionnement est automatique** : Unraid choisit automatiquement le style de partitionnement basé sur la taille du disque :
-- À partir d'Unraid OS 6.9, la partition 1 commence à 32 KiB pour les périphériques rotatifs et à 1 MiB pour les périphériques non rotatifs, quel que soit le style de partition.
-  \-- Sauvegardez toujours [votre périphérique de démarrage](/unraid-os/system-administration/secure-your-server/secure-your-boot-drive/#backups) avant de commencer ce processus de conversion.
+- Votre ordinateur et le serveur peuvent se trouver sur des sous-réseaux ou VLAN différents.
+- Votre routeur peut ne pas prendre en charge la résolution locale des noms d'hôte.
 - Le serveur Unraid pourrait ne pas être connecté au réseau ou avoir une configuration réseau incorrecte.
 - Les logiciels de sécurité ou pare-feu peuvent bloquer l'accès.
 
-Désactiver br0 signifie que les %%VMs|vm%% et les conteneurs Docker n'auront pas accès direct au LAN et pourraient perdre certaines fonctionnalités réseau avancées.
+Si vous ne pouvez pas vous connecter, essayez de redémarrer votre serveur et votre équipement réseau, et assurez-vous que tous les câbles sont correctement branchés.
 
 <br />
 
