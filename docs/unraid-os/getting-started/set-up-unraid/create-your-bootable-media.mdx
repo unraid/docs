@@ -1,13 +1,15 @@
 ---
 sidebar_position: 1
-sidebar_label: Create your bootable media
+sidebar_label: Create an Unraid USB drive
 ---
 
-import FlashDriveGuidance from '../../partials/flash-drive-selection-guidance.mdx';
+import FlashDriveGuidance from "../../partials/flash-drive-selection-guidance.mdx";
 
-# Create your bootable media
+# Create an Unraid USB drive
 
-Unraid OS is installed on a USB flash drive, which acts as the boot device for your server. You can create this bootable media using our recommended [Automated install method](./create-your-bootable-media.mdx#automated-install-method) with our [USB Flash Creator](https://unraid.net/download) tool or by following the [Manual installation method](./create-your-bootable-media.mdx#manual-install-method). In both cases, you will need a high-quality USB flash drive (between 4 and 32 GB) that has a unique %%GUID|guid%%.
+Unraid OS runs from a boot device. For a typical installation, this device is a USB flash drive. You can prepare it with our recommended [Automated install method](./create-your-bootable-media.mdx#automated-install-method) and the [Unraid USB Creator](https://unraid.net/download), or use the [Manual installation method](./create-your-bootable-media.mdx#manual-install-method).
+
+Use a high-quality USB flash drive between 4 and 32 GB with a unique %%GUID|guid%%. The %%GUID|guid%% identifies the boot device for licensing.
 
 :::tip[Choosing reliable boot media]
 
@@ -17,26 +19,136 @@ For typical USB installs, that means a quality USB flash drive; licensing depend
 
 ## Automated install method {/* #automated-install-method */}
 
-The automated installation method is the best way to set up Unraid OS. It simplifies the process, reduces errors, and ensures your USB flash drive is ready for most hardware configurations. This method offers the quickest and most reliable path to a successful installation for most users.
+The Unraid USB Creator prepares the drive, downloads or uses the selected Unraid OS image, and writes the image to the USB drive. Use this method for most new installations.
 
-1. **Prepare your USB Device:**
-   Insert a high-quality USB flash drive into your computer.
+:::caution[Writing erases the USB drive]
 
-2. **Download the Unraid USB Flash Creator and install Unraid OS onto the drive.**
-   [Windows](https://releases.unraid.net/dl/stable/usb-creator.exe) | [Mac](https://releases.unraid.net/dl/stable/usb-creator.dmg) | [Linux](https://releases.unraid.net/dl/stable/usb-creator.appimage)
+The **WRITE** action erases the selected USB drive. Disconnect other removable drives before you start. If you are replacing an existing Unraid boot device, [back it up first](../../system-administration/secure-your-server/secure-your-boot-drive.mdx).
 
-3. **Complete Setup:**
-   Customize your server name and network settings.
+:::
 
-4. **Eject and Install:**
-   Safely remove the USB drive and insert it into your server.
+### Download the USB Creator
 
-5. **Configure your server's BIOS settings**
-   - Set the boot device to the USB flash drive.
-   - Enable %%hardware virtualization|hvm%% features, including %%IOMMU|iommu%%.  (See [HVM & IOMMU configuration](../../using-unraid-to/create-virtual-machines/overview-and-system-prep.mdx#hvm--iommu-what-they-enable) for details.)
+Download and install the USB Creator for your computer:
 
-6. **Boot into Unraid OS:**
-   Save your BIOS configuration, then exit to boot into Unraid OS.
+- [Windows](https://releases.unraid.net/dl/stable/usb-creator.exe)
+- [macOS](https://releases.unraid.net/dl/stable/usb-creator.dmg)
+- [Linux](https://releases.unraid.net/dl/stable/usb-creator.appimage)
+
+Insert the USB flash drive into your computer. Close any application that has the drive open.
+
+### Select the language
+
+1. Open the USB Creator.
+2. Select your language.
+3. Select **NEXT**.
+
+<div style={{ margin: "auto", maxWidth: "680px" }}>
+  ![USB Creator language
+  selection](/img/unraid-os/getting-started/create-unraid-usb/01-00-language-selection.png)
+</div>
+
+### Select an Unraid OS release
+
+1. Select the Unraid OS release to install.
+2. Select **NEXT**.
+
+For a production server, select the latest stable release. Use a development image only when you are testing that image.
+
+<div style={{ margin: "auto", maxWidth: "680px" }}>
+  ![USB Creator operating system
+  selection](/img/unraid-os/getting-started/create-unraid-usb/02-01-os-selection.png)
+</div>
+
+### Select the USB drive
+
+1. Select the USB drive that you want to prepare.
+2. Check the drive name, size, and %%GUID|guid%%.
+3. Keep **Exclude system drives** selected.
+4. Select **NEXT**.
+
+The %%GUID|guid%% must be unique for the drive to work with Unraid licensing. Do not select a drive that contains data that you want to keep.
+
+<div style={{ margin: "auto", maxWidth: "680px" }}>
+  ![USB Creator storage device
+  selection](/img/unraid-os/getting-started/create-unraid-usb/03-02-storage-selection.png)
+</div>
+
+### Configure the new server (optional)
+
+The **Customisation** section lets you set these options before the first boot:
+
+- **Server name** sets the name that Unraid uses on your network.
+- **Wi-Fi** stores the Wi-Fi network settings for a server that uses a wireless connection.
+- **Network** sets automatic addressing with DHCP or a static IP address.
+
+Skip these sections if you want to configure the server after the first boot. If you configure Wi-Fi, treat the USB drive as containing the Wi-Fi password until the server starts for the first time.
+
+### Review and write the image
+
+1. Review the operating system and storage device in the summary.
+2. Make sure that the storage device is the USB drive that you want to erase.
+3. Select **WRITE**.
+
+The USB Creator writes the selected image to the drive.
+
+<div style={{ margin: "auto", maxWidth: "680px" }}>
+  ![USB Creator write
+  summary](/img/unraid-os/getting-started/create-unraid-usb/04-03-write-summary.png)
+</div>
+
+### Finish the USB setup
+
+When the write is complete:
+
+1. Review the choices shown on the completion screen.
+2. Select **FINISH**.
+3. Remove the USB drive only after the USB Creator ejects it.
+
+UEFI systems can boot from the drive without any extra step. For an older BIOS-only system, run the boot script from the root of the USB drive:
+
+- **Windows:** Right-click `make_bootable.bat` and select **Run as administrator**.
+- **macOS:** Double-click `make_bootable_mac` and enter your administrator password when prompted.
+- **Linux:** Unmount the USB drive. Then run `sudo bash ./make_bootable_linux`.
+
+<div style={{ margin: "auto", maxWidth: "680px" }}>
+  ![USB Creator write
+  complete](/img/unraid-os/getting-started/create-unraid-usb/05-04-write-complete.png)
+</div>
+
+### Boot the server from the new USB drive
+
+1. Insert the prepared USB drive into the server.
+2. Open the server's BIOS or UEFI settings.
+3. Set the USB drive as the first boot device.
+4. Enable %%hardware virtualization|hvm%% features, including %%IOMMU|iommu%%. See [HVM & IOMMU configuration](../../using-unraid-to/create-virtual-machines/overview-and-system-prep.mdx#hvm--iommu-what-they-enable) for details.
+5. Save the BIOS settings and restart the server.
+
+After Unraid OS starts, continue with [Deploy and configure Unraid OS](./deploy-and-configure-unraid-os.mdx).
+
+## Troubleshooting
+
+### The USB drive does not appear
+
+1. Disconnect the USB drive.
+2. Close the USB Creator.
+3. Connect the USB drive directly to the computer.
+4. Open the USB Creator again.
+
+The Unraid USB Creator only lists USB storage devices for this workflow. Make sure that your computer detects the drive before you open the USB Creator.
+
+### The server does not boot from the USB drive
+
+1. Open the BIOS or UEFI settings.
+2. Make sure that the USB drive is the first boot device.
+3. For a BIOS-only system, run the platform-specific `make_bootable` script described in [Finish the USB setup](#finish-the-usb-setup).
+4. Save the settings and restart the server.
+
+If the server still does not boot, use the [Manual install method](#manual-install-method) to prepare the drive again.
+
+### The USB drive cannot register a license
+
+Unraid licensing requires a unique %%GUID|guid%%. If the drive has no unique %%GUID|guid%%, use a different USB flash drive. See [Choosing a boot device](#choosing-a-usb-flash-drive) for drive selection guidance.
 
 ## Manual install method {/* #manual-install-method */}
 
