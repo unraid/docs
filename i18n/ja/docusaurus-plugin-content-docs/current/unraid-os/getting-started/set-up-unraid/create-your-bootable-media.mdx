@@ -1,46 +1,166 @@
 ---
 sidebar_position: 1
-sidebar_label: 起動可能なメディアを作成する
+sidebar_label: Unraid USB ドライブを作成する
 ---
 
-import FlashDriveGuidance from '../../partials/flash-drive-selection-guidance.mdx';
+import FlashDriveGuidance from "../../partials/flash-drive-selection-guidance.mdx";
 
-# 起動可能なメディアを作成する
+# Unraid USB ドライブを作成する
 
-Unraid OS は USB フラッシュドライブにインストールされ、サーバーのブートデバイスとして機能します。推奨の [自動インストール方法](./create-your-bootable-media.mdx#automated-install-method) を [USB Flash Creator](https://unraid.net/download) ツールで使用するか、[手動インストール方法](./create-your-bootable-media.mdx#manual-install-method) に従うことで、この起動可能なメディアを作成できます。どちらの場合も、固有の %%GUID|guid%% を持つ高品質の USB フラッシュドライブ（4～32 GB）を用意する必要があります。
+Unraid OS は USB フラッシュドライブから起動できます。また、Unraid 7.3 以降では、対応する内部ブートデバイスからも起動できます。このページでは、新しいサーバー用の USB ドライブを作成する方法を説明します。USB ドライブを引き続きフラッシュブートに使用することも、オンボーディング中に内部ブートを選択する前にサーバーを起動するために使用することもできます。詳細は [Internal Boot FAQ (7.3+)](./internal-boot-faq.mdx) を参照してください。
+
+USB ブートでは、固有の %%GUID|guid%% を持つ高品質な USB フラッシュドライブを使用してください。%%GUID|guid%% は、ライセンス用の USB デバイスを識別します。
 
 :::tip[Choosing 信頼できるブートメディア]
 
-通常の USB インストールでは、これは高品質の USB フラッシュドライブを意味します。ライセンスは、ブートデバイス上の固有の %%GUID|guid%% に依存します。ブランドの選び方や偽物を避ける方法については、マニュアルインストールのセクションにある [ブートデバイスの選択](#choosing-a-usb-flash-drive) を参照してください。
+USB ブートでは、固有の %%GUID|guid%% を持つ高品質な USB フラッシュドライブを選択してください。信頼できるメディアや偽造ドライブについての注意は、手動インストール セクションの [ブートデバイスの選択](#choosing-a-usb-flash-drive) を参照してください。
+
+内部ブートを使用する予定でも、新しいサーバーを起動するにはこの USB ドライブが必要です。最初の起動後、オンボーディング ウィザードでフラッシュブートまたは内部ブートを選択できます。
 
 :::
 
 ## 自動インストール方法 {/* #automated-install-method */}
 
-自動インストール方法は、Unraid OS をセットアップする最適な方法です。手順が簡単になり、エラーが減り、ほとんどのハードウェア構成で USB フラッシュドライブをすぐに使える状態にできます。この方法は、ほとんどのユーザーにとって、インストールを最も速く、最も確実に成功へ導く手段です。
+Unraid USB Creator は、ドライブを準備し、選択した Unraid OS イメージをダウンロードまたは使用して、そのイメージを USB ドライブに書き込みます。ほとんどの新規インストールではこの方法を使用してください。
 
-1. **USB デバイスを準備する:**
-   高品質の USB フラッシュドライブをコンピューターに挿入します。
+:::caution[Writing USB ドライブを消去します]
 
-2. **Unraid USB Flash Creator をダウンロードし、Unraid OS をドライブにインストールします。**
-   [Windows](https://releases.unraid.net/dl/stable/usb-creator.exe) | [Mac](https://releases.unraid.net/dl/stable/usb-creator.dmg) | [Linux](https://releases.unraid.net/dl/stable/usb-creator.appimage)
+**WRITE** 操作は、選択した USB ドライブを消去します。開始する前に、ほかのリムーバブルドライブを切断してください。既存の Unraid 起動デバイスを置き換える場合は、[まずバックアップを作成してください](../../system-administration/secure-your-server/secure-your-boot-drive.mdx)。
 
-3. **セットアップを完了する:**
-   サーバー名とネットワーク設定をカスタマイズします。
+:::
 
-4. **取り外してインストールする:**
-   USB ドライブを安全に取り外し、サーバーに挿入します。
+### USB Creator をダウンロードする
 
-5. **サーバーの BIOS 設定を構成する**
-   - 起動デバイスを USB フラッシュドライブに設定します。
-   - %%IOMMU|iommu%% を含む %%hardware virtualization|hvm%% 機能を有効にします。（詳細は [HVM と IOMMU の設定](../../using-unraid-to/create-virtual-machines/overview-and-system-prep.mdx#hvm--iommu-what-they-enable) を参照してください。）
+お使いのコンピューター用に USB Creator をダウンロードしてインストールしてください:
 
-6. **Unraid OS で起動する:**
-   BIOS 設定を保存して終了し、Unraid OS で起動します。
+- [Windows](https://releases.unraid.net/dl/stable/usb-creator.exe)
+- [macOS](https://releases.unraid.net/dl/stable/usb-creator.dmg)
+- [Linux](https://releases.unraid.net/dl/stable/usb-creator.appimage)
+
+USB ドライブをコンピューターに挿入します。ドライブを開いているアプリケーションはすべて閉じてください。
+
+### 言語を選択
+
+1. USB Creator を開きます。
+2. 言語を選択します。
+3. **NEXT** を選択します。
+
+<div style={{ margin: "auto", maxWidth: "680px" }}>
+  ![USB Creator language
+  selection](/img/unraid-os/getting-started/create-unraid-usb/01-00-language-selection.png)
+</div>
+
+### Unraid OS リリースを選択
+
+1. インストールする Unraid OS リリースを選択します。
+2. **NEXT** を選択します。
+
+本番用サーバーでは、最新の安定版リリースを選択してください。開発版イメージは、そのイメージをテストする場合にのみ使用してください。
+
+<div style={{ margin: "auto", maxWidth: "680px" }}>
+  ![USB Creator operating system
+  selection](/img/unraid-os/getting-started/create-unraid-usb/02-01-os-selection.png)
+</div>
+
+### USBドライブを選択
+
+1. 準備したいUSBドライブを選択します。
+2. ドライブ名、サイズ、および %%GUID|guid%% を確認します。
+3. **Exclude system drives** は選択したままにします。
+4. **NEXT** を選択します。
+
+%%GUID|guid%% は、ドライブが Unraid のライセンスで動作するために一意である必要があります。保持したいデータが入っているドライブは選択しないでください。
+
+<div style={{ margin: "auto", maxWidth: "680px" }}>
+  ![USB Creator storage device
+  selection](/img/unraid-os/getting-started/create-unraid-usb/03-02-storage-selection.png)
+</div>
+
+### 新しいサーバーを構成する（任意）
+
+**Customisation** セクションでは、初回起動前に次のオプションを設定できます:
+
+- **Server name** は、Unraid がネットワーク上で使用する名前を設定します。
+- **Wi-Fi** は、無線接続を使用するサーバーの Wi-Fi ネットワーク設定を保存します。
+- **Network** は、DHCP による自動割り当てまたは静的 IP アドレスを設定します。
+
+サーバーを初回起動後に構成したい場合は、これらのセクションをスキップしてください。Wi-Fi を構成する場合は、サーバーが初めて起動するまでは USB ドライブに Wi-Fi パスワードが含まれているものとして扱ってください。
+
+### イメージを確認して書き込む
+
+1. 概要でオペレーティングシステムとストレージデバイスを確認します。
+2. ストレージデバイスが、消去したい USB ドライブであることを確認してください。
+3. **WRITE** を選択します。
+
+USB Creator は、選択したイメージをドライブに書き込みます。
+
+<div style={{ margin: "auto", maxWidth: "680px" }}>
+  ![USB Creator write
+  summary](/img/unraid-os/getting-started/create-unraid-usb/04-03-write-summary.png)
+</div>
+
+### USB セットアップを完了する
+
+書き込みが完了したら:
+
+1. 完了画面に表示された選択内容を確認します。
+2. **FINISH** を選択します。
+3. USB Creator が取り出すまで USB ドライブを取り外さないでください。
+
+UEFI システムは追加の手順なしでドライブから起動できます。古い BIOS 専用システムの場合は、USB ドライブのルートから次のブートスクリプトを実行します:
+
+- **Windows:** `make_bootable.bat` を右クリックし、**Run as administrator** を選択します。
+- **macOS:** `make_bootable_mac` をダブルクリックし、プロンプトが表示されたら管理者パスワードを入力します。
+- **Linux:** USB ドライブをアンマウントします。次に `sudo bash ./make_bootable_linux` を実行します。
+
+<div style={{ margin: "auto", maxWidth: "680px" }}>
+  ![USB Creator write
+  complete](/img/unraid-os/getting-started/create-unraid-usb/05-04-write-complete.png)
+</div>
+
+### 新しい USB ドライブからサーバーを起動する
+
+1. 準備した USB ドライブをサーバーに挿入します。
+2. サーバーの BIOS または UEFI 設定を開きます。
+3. USB ドライブを最初の起動デバイスとして設定します。
+4. BIOS 設定を保存して、サーバーを再起動します。
+
+Unraid 7.3 以降では、Unraid が初めて起動するときに、オンボーディング ウィザードで次の起動方法を選択できます:
+
+- **フラッシュブート** は、Unraid を USB ドライブ上に保持します。
+- **内部ブート** は、Unraid を対応する 1 つの内部ブートデバイス、または 2 つのミラーリングされた内部ブートデバイスに移します。
+
+内部ブートの詳細については、[オンボーディング](./deploy-and-configure-unraid-os.mdx#onboarding) セクションと [Internal Boot FAQ (7.3+)](./internal-boot-faq.mdx) を参照してください。
+
+Unraid OS が起動したら、[Unraid OS の展開と構成](./deploy-and-configure-unraid-os.mdx) に進んでください。
+
+## トラブルシューティング
+
+### USB ドライブが表示されない
+
+1. USB ドライブを取り外します。
+2. USB Creator を閉じます。
+3. USB ドライブをコンピューターに直接接続します。
+4. USB Creator を再度開きます。
+
+このワークフローでは、Unraid USB Creator は USB ストレージデバイスのみを一覧表示します。USB Creator を開く前に、コンピューターがドライブを検出していることを確認してください。
+
+### サーバーが USB ドライブから起動しない
+
+1. BIOS または UEFI 設定を開きます。
+2. USB ドライブが最初の起動デバイスになっていることを確認します。
+3. BIOS 専用システムの場合は、[USB セットアップを完了する](#finish-the-usb-setup) で説明されているプラットフォーム固有の `make_bootable` スクリプトを実行します。
+4. 設定を保存してサーバーを再起動します。
+
+内部ブートを選択し、オンボーディング後にサーバーが起動しない場合は、選択した内部ブートデバイスを BIOS/UEFI のブート順序の最上位に移動してください。それでもサーバーが起動しない場合は、[手動インストール方法](#manual-install-method)を使用して USB ドライブを再度準備してください。
+
+### USB ドライブでライセンスを登録できない
+
+USB ブートと USB ライセンスには、一意の %%GUID|guid%% が必要です。ドライブに一意の %%GUID|guid%% がない場合は、別の USB フラッシュドライブを使用してください。TPM ベースのライセンスで内部ブートを使用する場合は、[内部ブート FAQ (7.3 以降)](./internal-boot-faq.mdx#internal-boot-flash-license) を参照してください。
 
 ## 手動インストール方法 {/* #manual-install-method */}
 
-手動インストール方法は、USB Flash Creator ツールが利用できない場合や、お使いのハードウェアと互換性がない場合に向けて設計されています。この方法では、フォーマットとセットアップのプロセスを完全に制御できるため、上級ユーザーや USB デバイスの特定の問題をトラブルシューティングする場合に最適です。
+手動インストール方法は、USB Creator が利用できない場合や、お使いのハードウェアと互換性がない場合に使用します。この方法では、フォーマットとセットアップの प्रक्रियाを自由に制御できます。
 
 ### 起動デバイスを選択する {/* #choosing-a-usb-flash-drive */}
 
@@ -54,7 +174,7 @@ Unraid OS は USB フラッシュドライブにインストールされ、サ�
 
 :::important
 
-Windows では、32 GB を超えるドライブは、組み込みのフォーマットツールでは FAT32 としてフォーマットできません（既定では exFAT になります）。32 GB を超えるドライブを FAT32 としてフォーマットするには、[Rufus](https://rufus.ie/en/) のようなサードパーティ製ツールを使用する必要があります。
+Windows では、標準のフォーマットツールでは 32 GB を超えるドライブを FAT32 でフォーマットできません。既定では exFAT になります。より大容量のドライブには、[Rufus](https://rufus.ie/en/) のような FAT32 対応ツールを使用してください。
 
 :::
 
