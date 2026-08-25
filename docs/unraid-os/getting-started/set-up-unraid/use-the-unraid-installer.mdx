@@ -1,0 +1,186 @@
+---
+sidebar_position: 1.5
+sidebar_label: Use the Unraid Installer
+---
+
+# Use the Unraid Installer
+
+The Unraid Installer boots on the target machine and prepares a device for an
+Unraid installation. It can create a USB flash boot device or an internal boot
+device.
+
+Use this tool when you work directly on the target machine or through a remote
+or virtual console. For most users who create a USB drive on a laptop or
+desktop, use the [Unraid USB Creator](https://unraid.net/download) instead.
+
+:::note[Unraid 7.3 and later]
+
+The Unraid Installer supports the internal boot workflow introduced in Unraid
+7.3.
+
+:::
+
+## When to use the Unraid Installer
+
+Choose the tool that matches your installation path:
+
+| Tool               | Use it when                                                                                                                      | Where it runs          |
+| ------------------ | -------------------------------------------------------------------------------------------------------------------------------- | ---------------------- |
+| Unraid USB Creator | You want to prepare a USB drive from a laptop or desktop.                                                                        | Your laptop or desktop |
+| Unraid Installer   | You want to prepare the boot device on the target machine, use internal boot, or install in a remote or virtualized environment. | The target machine     |
+
+The USB Creator does not require a display on the server while it prepares the
+USB drive. The Unraid Installer requires display or console access to the
+target machine because you must boot and use the installer there.
+
+## Before you start
+
+Prepare these items:
+
+1. A target machine with display or console access.
+2. An installer asset from the [latest stable Unraid Installer release](https://github.com/unraid/bootable-unraid-installer/releases/latest).
+3. A USB drive or virtual media for the installer.
+4. A target disk that you can erase.
+5. Network access if you use the online installer and need to download the
+   Unraid OS ZIP during installation.
+
+Back up any data that you need before you select a target disk.
+
+:::caution[The installer erases selected disks]
+
+The **Create Flash Boot** and **Create Internal Boot** actions erase the
+selected target disk or disks. Read the disk name and size before you confirm
+the operation.
+
+:::
+
+## Choose an installer asset
+
+The release page provides assets for ISO and USB boot paths:
+
+| Asset                                        | Use it when                                                                                                | Network requirement                                                     |
+| -------------------------------------------- | ---------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------- |
+| `unraid-installer-<version>-online.iso`      | You will boot the installer through virtual media or a remote console.                                     | The target must reach the release service when it downloads the OS ZIP. |
+| `unraid-installer-<version>-online.img.zip`  | You will write the installer image to a USB drive. Extract the ZIP before you write the IMG file.          | The target must reach the release service when it downloads the OS ZIP. |
+| `unraid-installer-<version>-bundled.img.zip` | You want the installer media to contain the OS ZIP already. Extract the ZIP before you write the IMG file. | The OS ZIP is already on the installer media.                           |
+
+Use the online installer for a smaller download when the target has network
+access. Use the bundled installer when the target cannot download the OS ZIP
+during the installation.
+
+The release page also provides checksum files for the downloadable assets. Use
+them when your download or imaging tool supports checksum verification.
+
+## Boot the installer
+
+1. Download an installer asset from the [latest stable release](https://github.com/unraid/bootable-unraid-installer/releases/latest).
+2. Extract an IMG ZIP if you downloaded one.
+3. Start the target machine from the installer:
+   - Attach an ISO through virtual media or a virtual machine console.
+   - Write an IMG file to a USB drive with a disk imaging tool, such as Rufus
+     or Balena Etcher.
+4. Select the installer device in the target machine boot menu.
+5. Wait for the **Unraid ISO Installer** menu.
+
+:::caution[Writing an IMG file erases the USB drive]
+
+Select the whole USB device, not a partition. Disconnect other removable drives
+before you write the installer image.
+
+:::
+
+## Use the installer menu
+
+The installer menu provides these actions:
+
+| Menu action                  | Purpose                                                                                         |
+| ---------------------------- | ----------------------------------------------------------------------------------------------- |
+| **Download ZIP**             | Download an Unraid OS ZIP and save it for the boot actions.                                     |
+| **Set Internal Boot Size**   | Set the size of the internal boot pool before you create an internal boot device.               |
+| **Create Internal Boot**     | Prepare one or two internal disks for Unraid boot. Two disks create a mirrored boot device set. |
+| **Create Flash Boot**        | Prepare one USB disk as an Unraid flash boot device.                                            |
+| **Show Network Status**      | Show interfaces, IP addresses, and routes.                                                      |
+| **Retry Network (DHCP)**     | Bring up network interfaces and retry DHCP.                                                     |
+| **Connect Wi-Fi + DHCP**     | Connect a detected wireless interface when Wi-Fi support is available.                          |
+| **Shell**                    | Open a shell for advanced troubleshooting.                                                      |
+| **Resize Persistence**       | Resize the installer persistence area when the image supports it.                               |
+| **Power Off** and **Reboot** | Shut down or restart the target machine.                                                        |
+
+If a graphical menu is not available, the installer uses a text prompt.
+
+## Create a flash boot device
+
+Use this path when the target machine will boot Unraid from a USB flash drive.
+
+1. Select **Download ZIP** and select an Unraid release. Skip this step when a
+   bundled installer already contains the required ZIP.
+2. Select **Create Flash Boot**.
+3. Select the target USB disk. Select the whole disk, not a partition.
+4. Read the warning and confirm that the disk can be erased.
+5. Wait for the installer to create a FAT32 partition labeled `UNRAID`, copy
+   the Unraid files, and make the device bootable.
+6. Reboot the target and select the new flash boot device.
+
+For USB boot and licensing guidance, see [Create an Unraid USB drive](./create-your-bootable-media.mdx).
+
+## Create an internal boot device
+
+Use this path when the target machine should boot Unraid from internal storage.
+This path is useful for direct server installs and remote or virtualized
+environments.
+
+1. Select **Download ZIP** and select an Unraid release. Skip this step when a
+   bundled installer already contains the required ZIP.
+2. Select **Set Internal Boot Size** if the default size is not suitable.
+3. Select **Create Internal Boot**.
+4. Select one disk or two disks. Select two disks to create a mirrored boot
+   device set.
+5. Select the boot pool size. Use **Dedicated** to use the disk as a dedicated
+   boot device, or select a fixed or custom size.
+6. Enter a boot pool name. The name must start with a lowercase letter and can
+   contain lowercase letters, numbers, `-`, and `_`.
+7. Verify the selected disks and confirm the destructive action.
+8. Wait while the installer creates the partition layout, copies the Unraid
+   files, validates the files, and writes the boot configuration.
+9. Reboot the target and select the new internal boot device.
+
+For internal boot questions, see the [Internal Boot FAQ (7.3+)](./internal-boot-faq.mdx).
+
+The installer refuses to overwrite the device that is running the installer or
+the active root disk. It still erases any other disk that you select.
+
+## Troubleshooting
+
+### The installer says that a ZIP is required
+
+Select **Download ZIP** first. If the download fails, select **Show Network
+Status**, then select **Retry Network (DHCP)**. Use a bundled installer when the
+target cannot download the OS ZIP.
+
+### The installer cannot find a release
+
+Check that the target has a usable IP address and default route. Retry the
+network setup, then select **Download ZIP** again.
+
+### The target disk is not listed
+
+Confirm that the disk is connected and available to the target machine. For a
+virtual machine, pass the disk through to the virtual machine. Select the whole
+disk, such as `/dev/sdb` or `/dev/nvme1n1`, not a partition.
+
+### The installer refuses to use a disk
+
+The installer refuses to overwrite the device that is running the installer or
+the active root disk. Boot the installer from a different device and select the
+intended target disk.
+
+### The target does not boot after installation
+
+Open the target firmware or virtual machine boot settings. Move the new flash or
+internal boot device to the top of the boot order, then restart the target.
+
+## Continue setup
+
+After Unraid starts from the new boot device, continue with [Deploy and configure Unraid OS](./deploy-and-configure-unraid-os.mdx).
+
+For the source code and current release assets, see the [Unraid Installer repository](https://github.com/unraid/bootable-unraid-installer).
