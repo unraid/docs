@@ -1,0 +1,154 @@
+---
+sidebar_position: 1.5
+sidebar_label: Utiliser l’installateur Unraid
+---
+
+# Utiliser l’installateur Unraid
+
+L’installateur Unraid démarre sur la machine cible et prépare un périphérique pour une installation d’Unraid. Il peut créer un périphérique de démarrage USB ou un périphérique de démarrage interne.
+
+Utilisez cet outil lorsque vous travaillez directement sur la machine cible ou via une console distante ou virtuelle. Pour la plupart des utilisateurs qui créent une clé USB sur un ordinateur portable ou de bureau, utilisez plutôt le [créateur USB Unraid](https://unraid.net/download).
+
+:::note[Unraid 7.3 et versions ultérieures]
+
+L’installateur Unraid prend en charge le flux de démarrage interne introduit dans Unraid 7.3.
+
+:::
+
+## Quand utiliser l’installateur Unraid
+
+Choisissez l’outil qui correspond à votre parcours d’installation :
+
+| Outil              | Quand l’utiliser                                                                                                                                                | Où il s’exécute                        |
+| ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------- |
+| Unraid USB Creator | Vous voulez préparer une clé USB depuis un ordinateur portable ou de bureau.                                                                                    | Votre ordinateur portable ou de bureau |
+| Unraid Installer   | Vous voulez préparer le périphérique de démarrage sur la machine cible, utiliser le démarrage interne ou installer dans un environnement distant ou virtualisé. | La machine cible                       |
+
+L’outil USB Creator ne nécessite pas d’affichage sur le serveur pendant la préparation de la clé USB. L’Unraid Installer nécessite un accès à l’affichage ou à la console de la machine cible, car vous devez le démarrer et l’utiliser sur place.
+
+## Avant de commencer
+
+Préparez ces éléments :
+
+1. Une machine cible avec accès à l’affichage ou à la console.
+2. Un élément d’installation provenant de la [dernière version stable de l’Unraid Installer](https://github.com/unraid/bootable-unraid-installer/releases/latest).
+3. Une clé USB ou un support virtuel pour l’installateur.
+4. Un disque cible que vous pouvez effacer.
+5. Un accès réseau si vous utilisez l’installateur en ligne et devez télécharger le fichier ZIP de l’OS Unraid pendant l’installation.
+
+Sauvegardez toutes les données dont vous avez besoin avant de sélectionner un disque cible.
+
+:::caution[The L’installateur efface les disques sélectionnés]
+
+Les actions **Create Flash Boot** et **Create Internal Boot** effacent le ou les disques cibles sélectionnés. Lisez le nom et la taille du disque avant de confirmer l’opération.
+
+:::
+
+## Choisir un élément d’installation
+
+La page de publication fournit des éléments pour les parcours de démarrage ISO et USB :
+
+| Élément                                                        | Quand l’utiliser                                                                                                                        | Exigence réseau                                                                                  |
+| -------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| `unraid-installer-\<version>-online.iso`      | Vous démarrerez l’installateur via un support virtuel ou une console distante.                                                          | La cible doit atteindre le service de publication lorsqu’elle télécharge le fichier ZIP de l’OS. |
+| `unraid-installer-\<version>-online.img.zip`  | Vous écrirez l’image de l’installateur sur une clé USB. Extrayez le fichier ZIP avant d’écrire le fichier IMG.                          | La cible doit atteindre le service de publication lorsqu’elle télécharge le fichier ZIP de l’OS. |
+| `unraid-installer-\<version>-bundled.img.zip` | Vous voulez que le support d’installation contienne déjà le fichier ZIP de l’OS. Extrayez le fichier ZIP avant d’écrire le fichier IMG. | Le fichier ZIP de l’OS se trouve déjà sur le support d’installation.                             |
+
+Utilisez l’installateur en ligne pour un téléchargement plus léger lorsque la cible dispose d’un accès réseau. Utilisez l’installateur fourni lorsque la cible ne peut pas télécharger le fichier ZIP de l’OS pendant l’installation.
+
+La page de publication fournit également des fichiers de somme de contrôle pour les éléments téléchargeables. Utilisez-les lorsque votre outil de téléchargement ou d’imagerie prend en charge la vérification par somme de contrôle.
+
+## Démarrer l’installateur
+
+1. Téléchargez un élément d’installation depuis la [dernière version stable](https://github.com/unraid/bootable-unraid-installer/releases/latest).
+2. Extrayez un fichier IMG ZIP si vous en avez téléchargé un.
+3. Démarrez la machine cible à partir de l’installateur :
+   - Raccordez un ISO via un support virtuel ou la console d’une machine virtuelle.
+   - Écrivez un fichier IMG sur une clé USB à l’aide d’un outil d’imagerie disque, tel que Rufus ou Balena Etcher.
+4. Sélectionnez le périphérique d’installation dans le menu de démarrage de la machine cible.
+5. Attendez le menu de **Unraid ISO Installer**.
+
+:::caution[Writing Un fichier IMG efface la clé USB]
+
+Sélectionnez l’ensemble du périphérique USB, pas une partition. Déconnectez les autres lecteurs amovibles avant d’écrire l’image de l’installateur.
+
+:::
+
+## Utiliser le menu de l’installateur
+
+Le menu de l’installateur propose ces actions :
+
+| Action du menu                             | But                                                                                                                                      |
+| ------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| **Télécharger le ZIP**                     | Téléchargez un fichier ZIP de l’OS Unraid et enregistrez-le pour les actions de démarrage.                                               |
+| **Définir la taille du démarrage interne** | Définissez la taille du pool de démarrage interne avant de créer un périphérique de démarrage interne.                                   |
+| **Créer un démarrage interne**             | Prépare un ou deux disques internes pour le démarrage d’Unraid. Deux disques créent un ensemble de périphériques de démarrage en miroir. |
+| **Créer un démarrage Flash**               | Prépare un disque USB comme périphérique de démarrage flash Unraid.                                                                      |
+| **Afficher l’état du réseau**              | Affiche les interfaces, les adresses IP et les routes.                                                                                   |
+| **Réessayer le réseau (DHCP)**             | Active les interfaces réseau et réessaie le DHCP.                                                                                        |
+| **Connecter le Wi-Fi + DHCP**              | Connecte une interface sans fil détectée lorsque la prise en charge Wi‑Fi est disponible.                                                |
+| **Shell**                                  | Ouvre un shell pour le dépannage avancé.                                                                                                 |
+| **Redimensionner la persistance**          | Redimensionne la zone de persistance de l’installateur lorsque l’image le prend en charge.                                               |
+| **Éteindre** et **Redémarrer**             | Éteint ou redémarre la machine cible.                                                                                                    |
+
+Si aucun menu graphique n’est disponible, l’installateur utilise une invite de texte.
+
+## Créer un périphérique de démarrage flash
+
+Utilisez ce parcours lorsque la machine cible doit démarrer Unraid à partir d’une clé USB flash.
+
+1. Sélectionnez **Télécharger le ZIP** et choisissez une version d’Unraid. Ignorez cette étape lorsqu’un installateur fourni contient déjà le ZIP requis.
+2. Sélectionnez **Créer un démarrage Flash**.
+3. Sélectionnez le disque USB cible. Sélectionnez le disque entier, pas une partition.
+4. Lisez l’avertissement et confirmez que le disque peut être effacé.
+5. Attendez que l’installateur crée une partition FAT32 nommée `UNRAID`, copie les fichiers d’Unraid et rende le périphérique amorçable.
+6. Redémarrez la cible et sélectionnez le nouveau périphérique de démarrage flash.
+
+Pour des conseils sur le démarrage USB et la licence, consultez [Créer une clé USB Unraid](./create-your-bootable-media.mdx).
+
+## Créer un périphérique de démarrage interne
+
+Utilisez ce parcours lorsque la machine cible doit démarrer Unraid à partir du stockage interne.
+Ce parcours est utile pour les installations directes sur serveur ainsi que pour les environnements distants ou virtualisés.
+
+1. Sélectionnez **Télécharger le ZIP** et choisissez une version d’Unraid. Ignorez cette étape lorsqu’un installateur fourni contient déjà le ZIP requis.
+2. Sélectionnez **Définir la taille du démarrage interne** si la taille par défaut ne convient pas.
+3. Sélectionnez **Créer un démarrage interne**.
+4. Sélectionnez un disque ou deux disques. Sélectionnez deux disques pour créer un ensemble de périphériques de démarrage en miroir.
+5. Sélectionnez la taille du pool de démarrage. Utilisez **Dedicated** pour utiliser le disque comme périphérique de démarrage dédié, ou choisissez une taille fixe ou personnalisée.
+6. Entrez un nom de pool de démarrage. Le nom doit commencer par une lettre minuscule et peut contenir des lettres minuscules, des chiffres, `-` et `_`.
+7. Vérifiez les disques sélectionnés et confirmez l’action destructive.
+8. Attendez que l’installateur crée la structure des partitions, copie les fichiers d’Unraid, valide les fichiers et écrive la configuration de démarrage.
+9. Redémarrez la cible et sélectionnez le nouveau périphérique de démarrage interne.
+
+For internal boot questions, see the [Internal Boot FAQ (7.3+)](./internal-boot-faq.mdx).
+
+L’installateur refuse d’écraser le périphérique qui exécute l’installateur ou le disque racine actif. Il efface tout autre disque que vous sélectionnez.
+
+## Dépannage
+
+### L’installateur indique qu’un fichier ZIP est requis
+
+Sélectionnez d’abord **Télécharger le ZIP**. Si le téléchargement échoue, sélectionnez **Afficher l’état du réseau**, puis **Réessayer le réseau (DHCP)**. Utilisez un installateur fourni lorsque la cible ne peut pas télécharger le fichier ZIP de l’OS.
+
+### L’installateur ne parvient pas à trouver une version
+
+Vérifiez que la cible dispose d’une adresse IP utilisable et d’une route par défaut. Réessayez la configuration réseau, puis sélectionnez à nouveau **Télécharger le ZIP**.
+
+### Le disque cible n’est pas सूची
+
+Confirmez que le disque est connecté et disponible pour la machine cible. Pour une machine virtuelle, faites passer le disque à la machine virtuelle. Sélectionnez le disque entier, comme `/dev/sdb` ou `/dev/nvme1n1`, pas une partition.
+
+### L’installateur refuse d’utiliser un disque
+
+L’installateur refuse d’écraser le périphérique qui exécute l’installateur ou le disque racine actif. Démarrez l’installateur depuis un autre périphérique et sélectionnez le disque cible prévu.
+
+### La cible ne démarre pas après l’installation
+
+Ouvrez les paramètres de démarrage du micrologiciel ou de la machine virtuelle cible. Placez le nouveau périphérique de démarrage flash ou interne en haut de l’ordre de démarrage, puis redémarrez la cible.
+
+## Continuer la configuration
+
+Après qu’Unraid démarre à partir du nouveau périphérique de démarrage, poursuivez avec [Déployer et configurer l’OS Unraid](./deploy-and-configure-unraid-os.mdx).
+
+Pour le code source et les éléments de la version actuelle, consultez le [dépôt Unraid Installer](https://github.com/unraid/bootable-unraid-installer).
