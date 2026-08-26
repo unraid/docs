@@ -1,0 +1,154 @@
+---
+sidebar_position: 1.5
+sidebar_label: Usar el Unraid Installer
+---
+
+# Usar el Unraid Installer
+
+El Unraid Installer arranca en la máquina de destino y prepara un dispositivo para una instalación de Unraid. Puede crear un dispositivo de arranque flash USB o un dispositivo de arranque interno.
+
+Use esta herramienta cuando trabaje directamente en la máquina de destino o a través de una consola remota o virtual. Para la mayoría de los usuarios que crean una unidad USB en un portátil o escritorio, use en su lugar el [Unraid USB Creator](https://unraid.net/download).
+
+:::note[Unraid 7.3 y posteriores]
+
+El Unraid Installer admite el flujo de trabajo de arranque interno introducido en Unraid 7.3.
+
+:::
+
+## Cuándo usar el Unraid Installer
+
+Elija la herramienta que coincida con su ruta de instalación:
+
+| Herramienta        | Úselo cuando                                                                                                                                  | Dónde se ejecuta                 |
+| ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------- |
+| Unraid USB Creator | Quiere preparar una unidad USB desde una laptop o un equipo de escritorio.                                                                    | Su laptop o equipo de escritorio |
+| Unraid Installer   | Quiere preparar el dispositivo de arranque en la máquina de destino, usar el arranque interno o instalar en un entorno remoto o virtualizado. | La máquina de destino            |
+
+El USB Creator no requiere una pantalla en el servidor mientras prepara la unidad USB. El Unraid Installer requiere acceso a pantalla o consola en la máquina de destino porque debe iniciarlo y usarlo allí.
+
+## Antes de empezar
+
+Prepare estos elementos:
+
+1. Una máquina de destino con acceso a pantalla o consola.
+2. Un archivo de instalación de la [última versión estable de Unraid Installer](https://github.com/unraid/bootable-unraid-installer/releases/latest).
+3. Una unidad USB o un medio virtual para el instalador.
+4. Un disco de destino que pueda borrar.
+5. Acceso a la red si usa el instalador en línea y necesita descargar el archivo ZIP de Unraid OS durante la instalación.
+
+Haga una copia de seguridad de los datos que necesite antes de seleccionar un disco de destino.
+
+:::caution[The el instalador borra los discos seleccionados]
+
+Las acciones **Create Flash Boot** y **Create Internal Boot** borran el disco o discos de destino seleccionados. Lea el nombre y el tamaño del disco antes de confirmar la operación.
+
+:::
+
+## Elija un archivo de instalación
+
+La página de la versión proporciona archivos para las rutas de arranque ISO y USB:
+
+| Archivo                                                        | Úselo cuando                                                                                                   | Requisito de red                                                                      |
+| -------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| `unraid-installer-\<version>-online.iso`      | Arrancará el instalador mediante medios virtuales o una consola remota.                                        | El destino debe poder الوصول al servicio de la versión cuando descargue el ZIP de OS. |
+| `unraid-installer-\<version>-online.img.zip`  | Escribirá la imagen del instalador en una unidad USB. Extraiga el ZIP antes de escribir el archivo IMG.        | El destino debe poder الوصول al servicio de la versión cuando descargue el ZIP de OS. |
+| `unraid-installer-\<version>-bundled.img.zip` | Quiere que el medio del instalador ya contenga el ZIP de OS. Extraiga el ZIP antes de escribir el archivo IMG. | El ZIP de OS ya está en el medio del instalador.                                      |
+
+Use el instalador en línea para una descarga más pequeña cuando el destino tenga acceso a la red. Use el instalador incluido cuando el destino no pueda descargar el ZIP de OS durante la instalación.
+
+La página de la versión también proporciona archivos de suma de verificación para los archivos descargables. Úselos cuando su herramienta de descarga o de creación de imágenes admita la verificación de suma de verificación.
+
+## Iniciar el instalador
+
+1. Descargue un archivo de instalación desde la [última versión estable](https://github.com/unraid/bootable-unraid-installer/releases/latest).
+2. Extraiga un ZIP IMG si descargó uno.
+3. Inicie la máquina de destino desde el instalador:
+   - Conecte una ISO mediante medios virtuales o la consola de una máquina virtual.
+   - Escriba un archivo IMG en una unidad USB con una herramienta de creación de imágenes de disco, como Rufus o Balena Etcher.
+4. Seleccione el dispositivo del instalador en el menú de arranque de la máquina de destino.
+5. Espere al menú del **Unraid ISO Installer**.
+
+:::caution[Writing un archivo IMG borra la unidad USB]
+
+Seleccione todo el dispositivo USB, no una partición. Desconecte otras unidades extraíbles antes de escribir la imagen del instalador.
+
+:::
+
+## Usar el menú del instalador
+
+El menú del instalador ofrece estas acciones:
+
+| Acción de menú               | Descripción                                                                                                                      |
+| ---------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| **Download ZIP**             | Descargue un ZIP de Unraid OS y guárdelo para las acciones de arranque.                                                          |
+| **Set Internal Boot Size**   | Establezca el tamaño del grupo de arranque interno antes de crear un dispositivo de arranque interno.                            |
+| **Create Internal Boot**     | Prepare uno o dos discos internos para el arranque de Unraid. Dos discos crean un conjunto de dispositivo de arranque reflejado. |
+| **Create Flash Boot**        | Prepare un disco USB como dispositivo de arranque flash de Unraid.                                                               |
+| **Show Network Status**      | Muestra interfaces, direcciones IP y rutas.                                                                                      |
+| **Retry Network (DHCP)**     | Levanta las interfaces de red y reintenta DHCP.                                                                                  |
+| **Connect Wi-Fi + DHCP**     | Conecta una interfaz inalámbrica detectada cuando haya compatibilidad con Wi-Fi.                                                 |
+| **Shell**                    | Abra una shell para solucionar problemas avanzados.                                                                              |
+| **Resize Persistence**       | Redimensiona el área de persistencia del instalador cuando la imagen lo admite.                                                  |
+| **Power Off** and **Reboot** | Apaga o reinicia la máquina de destino.                                                                                          |
+
+Si no hay un menú gráfico disponible, el instalador usa un prompt de texto.
+
+## Crear un dispositivo de arranque flash
+
+Use esta ruta cuando la máquina de destino arrancará Unraid desde una unidad flash USB.
+
+1. Seleccione **Download ZIP** y seleccione una versión de Unraid. Omita este paso cuando un instalador incluido ya contenga el ZIP requerido.
+2. Seleccione **Create Flash Boot**.
+3. Seleccione el disco USB de destino. Seleccione el disco completo, no una partición.
+4. Lea la advertencia y confirme que el disco puede borrarse.
+5. Espere a que el instalador cree una partición FAT32 etiquetada `UNRAID`, copie los archivos de Unraid y haga que el dispositivo sea arrancable.
+6. Reinicie el destino y seleccione el nuevo dispositivo de arranque flash.
+
+Para orientación sobre arranque USB y licencias, consulte [Crear una unidad USB de Unraid](./create-your-bootable-media.mdx).
+
+## Crear un dispositivo de arranque interno
+
+Use esta ruta cuando la máquina de destino deba arrancar Unraid desde almacenamiento interno.
+Esta ruta es útil para instalaciones directas en servidores y entornos remotos o virtualizados.
+
+1. Seleccione **Download ZIP** y seleccione una versión de Unraid. Omita este paso cuando un instalador incluido ya contenga el ZIP requerido.
+2. Seleccione **Set Internal Boot Size** si el tamaño predeterminado no es adecuado.
+3. Seleccione **Create Internal Boot**.
+4. Seleccione uno o dos discos. Seleccione dos discos para crear un conjunto de dispositivo de arranque reflejado.
+5. Seleccione el tamaño del grupo de arranque. Use **Dedicated** para usar el disco como un dispositivo de arranque dedicado, o seleccione un tamaño fijo o personalizado.
+6. Introduzca un nombre para el grupo de arranque. El nombre debe comenzar con una letra minúscula y puede contener letras minúsculas, números, `-` y `_`.
+7. Verifique los discos seleccionados y confirme la acción destructiva.
+8. Espere mientras el instalador crea la disposición de particiones, copia los archivos de Unraid, valida los archivos y escribe la configuración de arranque.
+9. Reinicie el destino y seleccione el nuevo dispositivo de arranque interno.
+
+For internal boot questions, see the [Internal Boot FAQ (7.3+)](./internal-boot-faq.mdx).
+
+El instalador se niega a sobrescribir el dispositivo en el que se está ejecutando el instalador o el disco raíz activo. Aun así borra cualquier otro disco que seleccione.
+
+## Solución de problemas
+
+### El instalador dice que se requiere un ZIP
+
+Seleccione primero **Download ZIP**. Si la descarga falla, seleccione **Show Network Status** y luego **Retry Network (DHCP)**. Use un instalador incluido cuando el destino no pueda descargar el ZIP de OS.
+
+### El instalador no puede encontrar una versión
+
+Compruebe que el destino tenga una dirección IP utilizable y una ruta predeterminada. Vuelva a intentar la configuración de red y luego seleccione **Download ZIP** de nuevo.
+
+### El disco de destino no aparece en la lista
+
+Confirme que el disco esté conectado y disponible para la máquina de destino. En una máquina virtual, pase el disco a la máquina virtual. Seleccione el disco completo, como `/dev/sdb` o `/dev/nvme1n1`, no una partición.
+
+### El instalador se niega a usar un disco
+
+El instalador se niega a sobrescribir el dispositivo en el que se está ejecutando el instalador o el disco raíz activo. Arranque el instalador desde un dispositivo diferente y seleccione el disco de destino previsto.
+
+### El destino no arranca después de la instalación
+
+Abra la configuración de arranque del firmware de destino o de la máquina virtual. Mueva el nuevo dispositivo de arranque flash o interno al inicio del orden de arranque y luego reinicie el destino.
+
+## Continuar la configuración
+
+Después de que Unraid inicie desde el nuevo dispositivo de arranque, continúe con [Implementar y configurar Unraid OS](./deploy-and-configure-unraid-os.mdx).
+
+Para el código fuente y los archivos de la versión actual, consulte el [repositorio de Unraid Installer](https://github.com/unraid/bootable-unraid-installer).
