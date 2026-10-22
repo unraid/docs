@@ -79,7 +79,7 @@
 
 This repository powers the public [Unraid Docs](https://docs.unraid.net) site. It contains source content, UI components, and supporting scripts that help the Unraid team publish accurate, localized, and accessible documentation for Unraid OS and connected services.
 
-The documentation site is built on [Docusaurus 3](https://docusaurus.io/), rendered as a static site, and deployed via GitHub Pages. Remark-based linting, Crowdin integrations, and automated formatting scripts keep Markdown/MDX contributions consistent across the project.
+The documentation site is built on [Docusaurus 3](https://docusaurus.io/), rendered as a static site, and deployed to Cloudflare Workers. Remark-based linting, Crowdin integrations, and automated formatting scripts keep Markdown/MDX contributions consistent across the project.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -176,6 +176,45 @@ Additional project scripts:
 * Single test run (CI): `pnpm test:run`
 * Build production site: `pnpm build`
 * Preview production build: `pnpm serve`
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+## Production deployment tracking
+
+Every push to `main` starts [Production Deployment](.github/workflows/production-deployment.yml).
+The workflow creates a `Production` deployment in GitHub for that exact commit.
+Cloudflare continues to build and deploy the site through its existing Git integration.
+The tracking workflow does not deploy code.
+
+Open the repository's **Deployments** view and select **Production** to see each commit's status:
+
+* **Queued**: Waiting for the Cloudflare build result.
+* **In progress**: Cloudflare is building the commit, or the workflow is checking the public site.
+* **Success**: The public site returned the expected commit SHA and Cloudflare build ID.
+* **Failure**: Cloudflare reported an unsuccessful build, including a canceled or skipped build.
+* **Error**: Tracking failed or the public deployment could not be verified within the time limit.
+
+Each record links to the site and its GitHub tracking log. The log includes the Cloudflare build link.
+The workflow waits up to 25 minutes for Cloudflare and another five minutes for public verification.
+It uses the repository's automatic GitHub token. No additional Cloudflare secret is required.
+
+Cloudflare builds publish `deployment.json` through a Docusaurus plugin.
+The file contains the commit SHA, build ID, and branch from Cloudflare's build environment.
+The default locale writes the file at the site root. Local builds do not write this metadata.
+The file has a `no-store` cache policy, and verification requests include the build ID.
+A blocked request, stale page, or different build cannot produce a successful deployment record.
+
+To repeat verification, rerun the workflow for the affected commit.
+**Run workflow** on `main` verifies the current mainline commit.
+A repeat run creates a new tracking record. It does not rebuild or redeploy the site.
+Older commits can remain unverified if a newer deployment replaced them before verification.
+Search indexing has its own workflow and is not part of the production deployment status.
+
+Run the tracking tests without building the site:
+
+```bash
+node --test scripts/track-production-deployment.node-test.cjs
+```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
