@@ -1,0 +1,65 @@
+name: Production Deployment
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - .github/workflows/production-deployment.yml
+      - scripts/track-production-deployment*
+      - plugins/deployment-metadata/**
+      - docusaurus.config.ts
+      - static/_headers
+
+permissions:
+  contents: read
+
+concurrency:
+  group: production-deployment-${{ github.sha }}
+  cancel-in-progress: false
+
+jobs:
+  test:
+    name: Test deployment tracking
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+      - run: node --test scripts/track-production-deployment.node-test.cjs
+
+  track:
+    name: Track Cloudflare production deployment
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    needs: test
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    permissions:
+      contents: read
+      checks: read
+      deployments: write
+    steps:
+      - uses: actions/checkout@v7
+      - name: Track build and verify public commit
+        id: deployment
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const track = require('./scripts/track-production-deployment.cjs');
+            await track({ github, context, core });
+      - name: Record interrupted tracking
+        if: cancelled() && steps.deployment.outputs.deployment_id != ''
+        uses: actions/github-script@v8
+        env:
+          DEPLOYMENT_ID: ${{ steps.deployment.outputs.deployment_id }}
+        with:
+          script: |
+            await github.rest.repos.createDeploymentStatus({
+              ...context.repo,
+              deployment_id: Number(process.env.DEPLOYMENT_ID),
+              state: 'error',
+              description: 'Tracking was interrupted; production state is unverified.',
+              auto_inactive: false,
+            });

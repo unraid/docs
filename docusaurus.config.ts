@@ -298,6 +298,7 @@ const config: Config = {
   } satisfies Preset.ThemeConfig,
 
   plugins: [
+    path.resolve(__dirname, "./plugins/deployment-metadata/index.cjs"),
     [
       path.resolve(__dirname, "./plugins/structured-data/index.mjs"),
       {
