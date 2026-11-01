@@ -18,7 +18,9 @@ A short-lived container starts when you run a command and is removed when the co
 
 ## Before you start
 
-Check whether Unraid already includes the tool. These tools are part of a standard Unraid 7.3.4 installation, so you do not need a container for them: `rsync`, `htop`, `iperf3`, `nano`, `mc` (Midnight Commander), `curl`, `wget`, `dig`, `lsof`, and `smartctl`.
+Check whether Unraid already includes the tool. These tools are part of a standard Unraid 7.3.4 installation, so you do not need a container for them: `rsync`, `htop`, `iperf3`, `nano`, `mc` (Midnight Commander), `curl`, `wget`, `dig`, `lsof`, `smartctl`, and `bsdtar`.
+
+`bsdtar` comes from the `libarchive` package and reads many archive types. See [Archives and RAR files](#archives-and-rar-files) before you install a separate archive tool.
 
 These tools are **not** part of Unraid 7.3.4: `ffmpeg`, `mediainfo`, `7z`, `unrar`, `exiftool`, `tcpdump`, `ncdu`, `nmap`, `tmux`, and `screen`.
 
@@ -63,26 +65,42 @@ The table shows an example for each tool. The images come from their maintainers
 | --- | --- | --- |
 | `ffmpeg`, `ffprobe` | `linuxserver/ffmpeg` | `docker run --rm --user 99:100 --entrypoint ffmpeg -v "$PWD":/work -w /work linuxserver/ffmpeg -i in.mp4 -vf scale=-2:480 out.mp4` |
 | `mediainfo` | `cli-tools` (built below) | `docker run --rm --user 99:100 -v "$PWD":/work:ro -w /work cli-tools mediainfo movie.mp4` |
-| `7z` | `cli-tools` | `docker run --rm --user 99:100 -v "$PWD":/work -w /work cli-tools 7zz a backup.7z folder` |
-| `unrar` | `cli-tools` | `docker run --rm --user 99:100 -v "$PWD":/work -w /work cli-tools unrar x archive.rar` |
+| `7z` (`.7z`, `.zip`, encrypted 7z) | `cli-tools` | `docker run --rm --user 99:100 -v "$PWD":/work -w /work cli-tools 7zz a backup.7z folder` |
+| `unrar` (only if `bsdtar` cannot read the file) | `rar-tools` (built below) | `docker run --rm --user 99:100 -v "$PWD":/work -w /work rar-tools 7z x archive.rar` |
 | `exiftool` | `cli-tools` | `docker run --rm --user 99:100 -v "$PWD":/work -w /work cli-tools exiftool photo.jpg` |
 | `ncdu` | `cli-tools` | `docker run --rm -it --user 99:100 -v "$PWD":/work:ro -w /work cli-tools ncdu` |
-| `tcpdump` | `cli-tools` | `docker run --rm --net=host --cap-add NET_RAW --cap-add NET_ADMIN cli-tools tcpdump -n -i br0 -c 20` |
+| `tcpdump` | `cli-tools` | `docker run --rm --net=host cli-tools tcpdump -n -i br0 -c 20` |
 | `nmap` | `instrumentisto/nmap` | `docker run --rm --net=host instrumentisto/nmap -Pn -p 22,80 192.168.1.1` |
 
 The `linuxserver/ffmpeg` project describes its image as "meant to be run ephemerally from the command line." This is the intended use. The `cli-tools` image is described in the next section.
 
 Source projects: [`linuxserver/ffmpeg`](https://github.com/linuxserver/docker-ffmpeg), [`instrumentisto/nmap`](https://github.com/instrumentisto/nmap-docker-image), and [Alpine Linux](https://hub.docker.com/_/alpine) (the base of `cli-tools`).
 
-:::info[Why `cli-tools`?]
+### Archives and RAR files
 
-No widely used image exists for `mediainfo`, `exiftool`, or `unrar` alone, and `unrar` is not in the Alpine package repository. The next section builds one small image that contains all of these tools. You build it once, and it is about 125 MB.
+Try the `bsdtar` that is already in Unraid first. It needs no container:
 
-:::
+```bash
+bsdtar -tf archive.rar              # list the files
+bsdtar -xf archive.rar -C /mnt/user/media/unpacked   # extract into an existing folder
+```
 
-### Build the cli-tools image
+`bsdtar` also reads `.zip`, `.7z`, and `.iso` files, and it can create them. The tests behind this page found these results for RAR files, using the same `libarchive` version (3.8.10) that Unraid 7.3.4 includes:
 
-1. Create a folder and a file named `Dockerfile` in it, for example on a share:
+| RAR file | `bsdtar` in Unraid | Fallback |
+| --- | --- | --- |
+| RAR5 or RAR4, list and extract | Works | Not needed |
+| Solid archive (`rar -s`) | Works | Not needed |
+| Password-protected | Fails: `Encryption is not supported` | `rar-tools` |
+| Multi-volume set (`.part1.rar`, `.part2.rar`) | Fails with `Too small block encountered` | `rar-tools` |
+
+The `libarchive` project documents RAR support as limited. Its [README](https://github.com/libarchive/libarchive/blob/master/README.md) lists "RAR and RAR 5.0 archives (with some limitations due to RAR's proprietary status)". The multi-volume failure is a known regression in 3.8.10 ([issue 3683](https://github.com/libarchive/libarchive/issues/3683)). It was fixed after that release ([pull request 3686](https://github.com/libarchive/libarchive/pull/3686)), so a later Unraid release may not need the fallback.
+
+For the cases that `bsdtar` cannot read, build the `rar-tools` image in the next section. It uses the Debian `7zip` and `7zip-rar` packages. `7zip-rar` is in the `non-free` area of Debian because the RAR code uses the unRAR licence. The 7-Zip package in Alpine, used by `cli-tools`, leaves out RAR support for the same reason.
+
+### Build the images
+
+1. Create a folder with two files, for example on a share:
 
    ```bash
    mkdir -p /mnt/user/appdata/cli-tools
@@ -90,28 +108,36 @@ No widely used image exists for `mediainfo`, `exiftool`, or `unrar` alone, and `
    ```
 
    ```dockerfile title="Dockerfile"
-   FROM linuxserver/unrar:latest AS unrar
    FROM alpine:3
    RUN apk add --no-cache mediainfo 7zip exiftool tcpdump ncdu
-   COPY --from=unrar /usr/bin/unrar-alpine /usr/local/bin/unrar
    ```
 
-2. Build the image:
+   ```dockerfile title="Dockerfile.rar"
+   FROM debian:trixie-slim
+   RUN sed -i 's/^Components: main$/Components: main contrib non-free/' /etc/apt/sources.list.d/debian.sources \
+    && apt-get update \
+    && apt-get install -y --no-install-recommends 7zip 7zip-rar \
+    && rm -rf /var/lib/apt/lists/*
+   ```
+
+2. Build the images. Build as root, which is the default in the Unraid terminal:
 
    ```bash
    docker build -t cli-tools .
+   docker build -f Dockerfile.rar -t rar-tools .
    ```
 
-:::note
+   `cli-tools` is about 125 MB and `rar-tools` is about 128 MB. Build `rar-tools` only if you need it.
 
-The `unrar` program is free to use but not open source. The `linuxserver/unrar` image only holds the compiled program, and its documentation says it "is meant to be ingested by other images during build time." The `7zz` program in Alpine cannot open RAR archives, so use `unrar` for them.
+:::info[Why build images?]
+
+No widely used image exists for `mediainfo` or `exiftool` alone. A small image that you build once also avoids a package download every time that you run a tool.
 
 :::
 
-### Network tools need extra options
+### Network tools
 
-- `--net=host` lets the container see the network of Unraid, not a private container network.
-- `--cap-add NET_RAW --cap-add NET_ADMIN` lets `tcpdump` capture packets. Without these options, `tcpdump` fails with `You don't have permission to perform this capture on that device`.
+- `--net=host` lets the container see the network interfaces of Unraid. Without it, `tcpdump` only sees the interfaces of the container.
 - Use `br0`, `bond0`, or `eth0` as the interface name, depending on your network settings.
 
 ### Hardware transcoding with an Intel GPU
@@ -193,12 +219,30 @@ Do not run `docker container prune` without a filter. It removes **every** stopp
 
 | Situation | Use |
 | --- | --- |
-| One-off commands such as `ffprobe`, `mediainfo`, `unrar`, `exiftool` | `--rm` |
+| One-off commands such as `ffprobe`, `mediainfo`, `exiftool` | `--rm` |
 | You need the logs or exit code of a failed run | A named container without `--rm` |
 | You want to run the same configuration again with `docker start` | A named container without `--rm` |
 | You want to copy a file out with `docker cp` | A named container without `--rm` |
 | A long job that you check later | A named container without `--rm`, or `-d --name job` |
 | A service that should keep running | `-d --restart unless-stopped`, or install it from Community Applications |
+
+## Traps and quirks
+
+Each item shows what happens, why, and the fix. "Observed" means that the behavior was seen in testing and that no document describes it.
+
+- **`--user` fails with `linuxserver` images.** The container prints `groupmod: Permission denied` and `s6-applyuidgid: fatal`. These images start as root to set up their user. The [LinuxServer.io documentation](https://docs.linuxserver.io/general/understanding-puid-and-pgid/) says: "Our images are not yet compatible with this, so we recommend continuing usage of PUID and PGID." Fix: skip the start-up script with `--entrypoint ffmpeg --user 99:100`.
+- **`PUID` and `PGID` do not set the owner of `ffmpeg` output files.** The `linuxserver/ffmpeg` image does not use them. Its [README](https://github.com/linuxserver/docker-ffmpeg) says: "If an input file is detected we will run FFmpeg as that user/group so the output file will match its permissions." Observed: an output file got the same owner as the input file, whichever owner that was (a normal user, or `99:100`). Fix: `--entrypoint ffmpeg --user 99:100`.
+- **`apk add` fails as a normal user.** The error is `Unable to open log: Permission denied`, because installing packages needs root. Observed. Fix: install the packages when you build the image, and run the tools with `--user`.
+- **`../` paths do not work.** Only the current folder is mounted, so `../other` does not exist in the container. Observed. Fix: run the command from a parent folder, or add another `-v`.
+- **`tcpdump` sees only the container network.** Observed: a container on the default network has only `eth0` and `lo`. Fix: `--net=host`. Capturing packets needs the `NET_RAW` capability. The [Docker documentation](https://docs.docker.com/engine/containers/run/) lists `NET_RAW` among the capabilities that are on by default, so you only see an error if you remove it, for example with `--cap-drop ALL`.
+- **Intel GPU: `No VA display found`.** The container does not get devices unless you add them. The Docker documentation says that `--device` "Allows you to run devices inside the container without the `--privileged` flag.", and the [`linuxserver/ffmpeg` documentation](https://docs.linuxserver.io/images/docker-ffmpeg/) uses `--device=/dev/dri:/dev/dri`. Observed: with `--user 99:100`, the render device also needs its group. Fix: `--group-add "$(stat -c %g /dev/dri/renderD128)"`. The Docker documentation describes `--group-add` as: "Add additional groups to run as".
+- **Anonymous and named volumes.** The Docker documentation says: "Only volumes that are specified without a name are removed." removing the container this way is "similar to running `docker rm -v my-container`". Observed: a plain `docker rm` leaves anonymous volumes behind, and named volumes always stay. Fix: use `docker rm -v`, or prefer bind mounts.
+- **Name conflicts.** A second `docker run --name job1` fails with `Conflict. The container name "/job1" is already in use`, while the first container exists. Observed. Fix: `docker rm job1`, or leave out `--name` when you use `--rm`.
+- **`docker container prune` removes every stopped container.** The [Docker documentation](https://docs.docker.com/reference/cli/docker/container/prune/) says: "Removes all stopped containers." That includes containers that you stopped on purpose. Fix: give your own containers a label and use `--filter label=...`, or use `docker rm <name>`.
+- **Disk use in `docker.img`.** Without `--rm`, each run keeps its changes. The [Overview](./overview.mdx) page says that "All the data and programs for each container are stored in a single virtual disk image file called `docker.img`." Observed: 20 runs that each wrote 10 MB kept about 200 MB. Fix: use `--rm`, or remove kept containers.
+- **Alpine `7zip` cannot open RAR files.** The error is `Cannot open the file as archive`. The [Alpine package recipe](https://raw.githubusercontent.com/alpinelinux/aports/master/main/7zip/APKBUILD) says "DISABLE_RAR: RAR codec is non-free". Debian puts the same code in a separate `non-free` package. Its [copyright file](https://metadata.ftp-master.debian.org/changelogs//non-free/7/7zip-rar/7zip-rar_25.00+ds-1+deb13u1_copyright) says: "RAR code is under the non-free "unRAR license restriction"". Fix: use `bsdtar`, or the `rar-tools` image.
+- **`bsdtar` cannot read encrypted or multi-volume RAR files.** See [Archives and RAR files](#archives-and-rar-files). The `libarchive` [issue 1661](https://github.com/libarchive/libarchive/issues/1661) describes the missing encryption support, and [issue 3683](https://github.com/libarchive/libarchive/issues/3683) describes the multi-volume failure in 3.8.10. Fix: `rar-tools`.
+- **`tmux` and `screen` sessions end with the container.** Observed: a detached `tmux` session started in one `docker run --rm` was gone in the next run (`error connecting to /tmp/tmux-0/default`). Fix: use the web terminal, or a long-running container with `docker exec`.
 
 ## Make the commands feel native
 
@@ -210,10 +254,10 @@ ffmpeg()    { docker run --rm $(_tty) --user 99:100 --entrypoint ffmpeg  -v "$PW
 ffprobe()   { docker run --rm $(_tty) --user 99:100 --entrypoint ffprobe -v "$PWD":/work:ro -w /work linuxserver/ffmpeg "$@"; }
 mediainfo() { docker run --rm --user 99:100 -v "$PWD":/work:ro -w /work cli-tools mediainfo "$@"; }
 7z()        { docker run --rm --user 99:100 -v "$PWD":/work -w /work cli-tools 7zz "$@"; }
-unrar()     { docker run --rm --user 99:100 -v "$PWD":/work -w /work cli-tools unrar "$@"; }
+unrar()     { docker run --rm --user 99:100 -v "$PWD":/work -w /work rar-tools 7z "$@"; }
 exiftool()  { docker run --rm --user 99:100 -v "$PWD":/work -w /work cli-tools exiftool "$@"; }
 ncdu()      { docker run --rm $(_tty) --user 99:100 -v "$PWD":/work:ro -w /work cli-tools ncdu "$@"; }
-tcpdump()   { docker run --rm $(_tty) --net=host --cap-add NET_RAW --cap-add NET_ADMIN cli-tools tcpdump "$@"; }
+tcpdump()   { docker run --rm $(_tty) --net=host cli-tools tcpdump "$@"; }
 ```
 
 Run `source /boot/config/cli-tools.sh` to use the functions in the current session. Each function mounts only the folder you are in.
