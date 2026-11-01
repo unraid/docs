@@ -1,0 +1,247 @@
+---
+sidebar_position: 4
+sidebar_label: Run command-line tools in containers
+---
+
+# Run command-line tools in containers
+
+Some command-line tools, such as `ffmpeg`, `mediainfo`, and `exiftool`, are not part of Unraid. In the past, many people added them with NerdTools, NerdPack, or `un-get`. Those methods are no longer a good choice. This page shows how to run the same tools in short-lived Docker containers instead.
+
+A short-lived container starts when you run a command and is removed when the command ends. You do not install anything on Unraid, and you do not have to maintain it.
+
+## Why not install packages on Unraid
+
+- **NerdTools and NerdPack are deprecated.** For example, the [data recovery guide](../../troubleshooting/common-issues/data-recovery.mdx) states that "Nerd Tools and NerdPack are both deprecated."
+- **`un-get` is archived.** The author of [`un-get`](https://github.com/ich777/un-get) writes in the README: "I would always recommend that you use Docker containers, LXC containers or VMs instead of running it on bare metal."
+- **Missing libraries.** Unraid runs from RAM and ships a small set of packages. A tool that you add to it may need libraries that Unraid does not include, and it may fail when you run it. A container image includes the libraries that the tool needs.
+- **Nothing is left behind.** Packages that you add to the host must be installed again at every boot. A container image is stored once and is easy to remove.
+
+## Before you start
+
+Check whether Unraid already includes the tool. These tools are part of a standard Unraid 7.3.4 installation, so you do not need a container for them: `rsync`, `htop`, `iperf3`, `nano`, `mc` (Midnight Commander), `curl`, `wget`, `dig`, `lsof`, and `smartctl`.
+
+These tools are **not** part of Unraid 7.3.4: `ffmpeg`, `mediainfo`, `7z`, `unrar`, `exiftool`, `tcpdump`, `ncdu`, `nmap`, `tmux`, and `screen`.
+
+:::note
+
+`tmux` and `screen` keep a session alive after you disconnect. A short-lived container ends when its command ends, so they do not fit this method. Use the web terminal or a long-lived container instead.
+
+:::
+
+The commands on this page run in the Unraid terminal. For more information, see [Accessing the terminal](../../system-administration/advanced-tools/command-line-interface.mdx#accessing-the-terminal).
+
+## How a short-lived container works
+
+This example reads the length of a video with `ffprobe`:
+
+```bash
+cd /mnt/user/media/videos
+docker run --rm --user 99:100 --entrypoint ffprobe \
+  -v "$PWD":/work:ro -w /work \
+  linuxserver/ffmpeg -v error -show_entries format=duration -of csv=p=0 movie.mp4
+```
+
+Each option has a purpose:
+
+| Option | Purpose |
+| --- | --- |
+| `--rm` | Removes the container when the command ends. See [What `--rm` does](#what-rm-does). |
+| `--user 99:100` | Runs the tool as `nobody:users`, the owner of most Unraid shares. New files get the same owner as other files on your shares. |
+| `-v "$PWD":/work:ro` | Makes the current folder visible inside the container as `/work`. `:ro` means read-only, which is safe for tools that only read. Remove `:ro` for tools that write files. |
+| `-w /work` | Starts the command in `/work`, so you can use short file names. |
+| `--entrypoint ffprobe` | Starts `ffprobe` instead of the default program of the image. |
+
+The tool can only see the folder you mount. Paths such as `../other-folder` do not work inside the container.
+
+The first run downloads the image and stores it in `docker.img`. For more information, see [Overview](./overview.mdx).
+
+## Choose the tools and images
+
+The table shows an example for each tool. The images come from their maintainers on Docker Hub.
+
+| Tool | Image | Example |
+| --- | --- | --- |
+| `ffmpeg`, `ffprobe` | `linuxserver/ffmpeg` | `docker run --rm --user 99:100 --entrypoint ffmpeg -v "$PWD":/work -w /work linuxserver/ffmpeg -i in.mp4 -vf scale=-2:480 out.mp4` |
+| `mediainfo` | `cli-tools` (built below) | `docker run --rm --user 99:100 -v "$PWD":/work:ro -w /work cli-tools mediainfo movie.mp4` |
+| `7z` | `cli-tools` | `docker run --rm --user 99:100 -v "$PWD":/work -w /work cli-tools 7zz a backup.7z folder` |
+| `unrar` | `cli-tools` | `docker run --rm --user 99:100 -v "$PWD":/work -w /work cli-tools unrar x archive.rar` |
+| `exiftool` | `cli-tools` | `docker run --rm --user 99:100 -v "$PWD":/work -w /work cli-tools exiftool photo.jpg` |
+| `ncdu` | `cli-tools` | `docker run --rm -it --user 99:100 -v "$PWD":/work:ro -w /work cli-tools ncdu` |
+| `tcpdump` | `cli-tools` | `docker run --rm --net=host --cap-add NET_RAW --cap-add NET_ADMIN cli-tools tcpdump -n -i br0 -c 20` |
+| `nmap` | `instrumentisto/nmap` | `docker run --rm --net=host instrumentisto/nmap -Pn -p 22,80 192.168.1.1` |
+
+The `linuxserver/ffmpeg` project describes its image as "meant to be run ephemerally from the command line." This is the intended use. The `cli-tools` image is described in the next section.
+
+Source projects: [`linuxserver/ffmpeg`](https://github.com/linuxserver/docker-ffmpeg), [`instrumentisto/nmap`](https://github.com/instrumentisto/nmap-docker-image), and [Alpine Linux](https://hub.docker.com/_/alpine) (the base of `cli-tools`).
+
+:::info[Why `cli-tools`?]
+
+No widely used image exists for `mediainfo`, `exiftool`, or `unrar` alone, and `unrar` is not in the Alpine package repository. The next section builds one small image that contains all of these tools. You build it once, and it is about 125 MB.
+
+:::
+
+### Build the cli-tools image
+
+1. Create a folder and a file named `Dockerfile` in it, for example on a share:
+
+   ```bash
+   mkdir -p /mnt/user/appdata/cli-tools
+   cd /mnt/user/appdata/cli-tools
+   ```
+
+   ```dockerfile title="Dockerfile"
+   FROM linuxserver/unrar:latest AS unrar
+   FROM alpine:3
+   RUN apk add --no-cache mediainfo 7zip exiftool tcpdump ncdu
+   COPY --from=unrar /usr/bin/unrar-alpine /usr/local/bin/unrar
+   ```
+
+2. Build the image:
+
+   ```bash
+   docker build -t cli-tools .
+   ```
+
+:::note
+
+The `unrar` program is free to use but not open source. The `linuxserver/unrar` image only holds the compiled program, and its documentation says it "is meant to be ingested by other images during build time." The `7zz` program in Alpine cannot open RAR archives, so use `unrar` for them.
+
+:::
+
+### Network tools need extra options
+
+- `--net=host` lets the container see the network of Unraid, not a private container network.
+- `--cap-add NET_RAW --cap-add NET_ADMIN` lets `tcpdump` capture packets. Without these options, `tcpdump` fails with `You don't have permission to perform this capture on that device`.
+- Use `br0`, `bond0`, or `eth0` as the interface name, depending on your network settings.
+
+### Hardware transcoding with an Intel GPU
+
+Add `--device /dev/dri` to give `ffmpeg` access to the Intel GPU. You also need the hardware options of `ffmpeg`. For example, this command encodes with VAAPI:
+
+```bash
+docker run --rm --device /dev/dri --user 99:100 \
+  --group-add "$(stat -c %g /dev/dri/renderD128)" --entrypoint ffmpeg \
+  -v "$PWD":/work -w /work linuxserver/ffmpeg \
+  -init_hw_device vaapi=va:/dev/dri/renderD128 -filter_hw_device va \
+  -i in.mp4 -vf format=nv12,hwupload -c:v h264_vaapi out.mp4
+```
+
+`--group-add` gives the container the group that owns the GPU device, so a non-root user can open it. Without `--device /dev/dri`, the command fails with `No VA display found`. The `qsv` encoders of `ffmpeg` also work through this device.
+
+## What `--rm` does {/* #what-rm-does */}
+
+Every example above uses `--rm`. This section explains the difference between running with and without it.
+
+| | With `--rm` | Without `--rm` |
+| --- | --- | --- |
+| Container after the command ends | Removed | Stays, in the `Exited` state |
+| Listed by `docker ps -a` | No | Yes |
+| Files written inside the container | Lost | Kept in the container until you remove it |
+| Logs and exit code | Lost | Kept (`docker logs`, `docker inspect`) |
+| Anonymous volumes | Removed with the container | Stay until you remove them |
+| Named volumes | Stay | Stay |
+| Files written to a bind mount (`-v folder:/work`) | Kept | Kept |
+| Disk space in `docker.img` | Nothing grows | Grows with each run |
+| `--name` can be used again | Yes | No, until you remove the container |
+
+The key point is that results written to a bind mount stay in the folder on your server in both cases. Only files written inside the container are lost with `--rm`.
+
+### What stays behind without `--rm`
+
+A container that is not removed stays in the list of stopped containers. In this example, the command fails on purpose:
+
+```bash
+docker run --name test1 alpine sh -c 'echo hello; echo oops >&2; exit 3'
+```
+
+You can then inspect it:
+
+```bash
+docker ps -a --filter name=test1       # shows "Exited (3)"
+docker logs test1                      # shows the saved output
+docker inspect test1 --format '{{.State.ExitCode}}'
+docker diff test1                      # lists files changed inside the container
+docker cp test1:/tmp/result.txt .      # copies a file out
+docker start -a test1                  # runs the same command again
+docker rm test1                        # removes it
+```
+
+A kept container also appears on the **Docker** tab of the %%WebGUI|web-gui%% in the stopped state.
+
+### Disk use and name conflicts
+
+- **Disk use.** Each container without `--rm` keeps its own writable layer. Twenty runs that each wrote 10 MB inside the container kept about 200 MB. On Unraid, this space comes from `docker.img`, which can fill up. For more information about a full `docker.img`, see [Docker troubleshooting](../../troubleshooting/common-issues/docker-troubleshooting.mdx).
+- **Names.** A container name must be unique. A second `docker run --name test1` fails with `Conflict. The container name "/test1" is already in use`. This also applies to `--rm`, while the first container is still running.
+- **Volumes.** `--rm` removes anonymous volumes (for example `-v /data`) but not named volumes (for example `-v mydata:/data`). Without `--rm`, a plain `docker rm` leaves anonymous volumes behind. Use `docker rm -v` to remove them too.
+
+### Clean up
+
+To remove one container, use `docker rm <name>`. To remove many, use a label so that you only remove your own containers:
+
+```bash
+docker run --label cli-test=1 --name job1 alpine true
+docker container prune --filter label=cli-test=1
+```
+
+:::caution
+
+Do not run `docker container prune` without a filter. It removes **every** stopped container, including containers that you stopped on purpose on the **Docker** tab. You must then create them again.
+
+:::
+
+### Which one should you use?
+
+| Situation | Use |
+| --- | --- |
+| One-off commands such as `ffprobe`, `mediainfo`, `unrar`, `exiftool` | `--rm` |
+| You need the logs or exit code of a failed run | A named container without `--rm` |
+| You want to run the same configuration again with `docker start` | A named container without `--rm` |
+| You want to copy a file out with `docker cp` | A named container without `--rm` |
+| A long job that you check later | A named container without `--rm`, or `-d --name job` |
+| A service that should keep running | `-d --restart unless-stopped`, or install it from Community Applications |
+
+## Make the commands feel native
+
+Typing long `docker run` lines is slow. Define shell functions so that you can type `ffprobe movie.mp4` as before. Save this as a file, for example `/boot/config/cli-tools.sh` (you can choose any file name on the boot device):
+
+```bash title="/boot/config/cli-tools.sh"
+_tty() { [ -t 0 ] && [ -t 1 ] && echo -it || echo -i; }
+ffmpeg()    { docker run --rm $(_tty) --user 99:100 --entrypoint ffmpeg  -v "$PWD":/work -w /work linuxserver/ffmpeg "$@"; }
+ffprobe()   { docker run --rm $(_tty) --user 99:100 --entrypoint ffprobe -v "$PWD":/work:ro -w /work linuxserver/ffmpeg "$@"; }
+mediainfo() { docker run --rm --user 99:100 -v "$PWD":/work:ro -w /work cli-tools mediainfo "$@"; }
+7z()        { docker run --rm --user 99:100 -v "$PWD":/work -w /work cli-tools 7zz "$@"; }
+unrar()     { docker run --rm --user 99:100 -v "$PWD":/work -w /work cli-tools unrar "$@"; }
+exiftool()  { docker run --rm --user 99:100 -v "$PWD":/work -w /work cli-tools exiftool "$@"; }
+ncdu()      { docker run --rm $(_tty) --user 99:100 -v "$PWD":/work:ro -w /work cli-tools ncdu "$@"; }
+tcpdump()   { docker run --rm $(_tty) --net=host --cap-add NET_RAW --cap-add NET_ADMIN cli-tools tcpdump "$@"; }
+```
+
+Run `source /boot/config/cli-tools.sh` to use the functions in the current session. Each function mounts only the folder you are in.
+
+### Keep the functions after a reboot
+
+Unraid runs from RAM, so changes to the shell environment are lost at every reboot. Commands that must run at boot belong in the `go` file at `/boot/config/go`, as described in [Wake on LAN](../../system-administration/advanced-tools/wake-on-lan.mdx). A community answer on the Unraid forum gives the same advice for shell aliases: put the commands in a script, and call the script from the `go` file ([Bash aliases persisting after reboot](https://forums.unraid.net/topic/58849-bash-aliases-persisting-after-reboot/)).
+
+Add this line to `/boot/config/go` so that your functions are loaded at login. Open a new terminal session after the next reboot to use them:
+
+```bash
+echo 'source /boot/config/cli-tools.sh' >> /root/.bash_profile
+```
+
+Also rebuild the `cli-tools` image if it is missing after you recreate `docker.img`.
+
+### Use the tools in scheduled scripts
+
+The [User Scripts plugin](./managing-and-customizing-containers.mdx#user-scripts-plugin) runs scripts on a schedule. Inside a script, call `docker run --rm` directly instead of the functions. For example, this script saves a media report for a folder:
+
+```bash
+#!/bin/bash
+docker run --rm --user 99:100 -v /mnt/user/media/videos:/work:ro cli-tools \
+  sh -c 'mediainfo --Output=JSON /work/*.mp4' > /mnt/user/media/report.json
+```
+
+## Related pages
+
+- [Overview](./overview.mdx)
+- [Managing & customizing containers](./managing-and-customizing-containers.mdx)
+- [Command line interface](../../system-administration/advanced-tools/command-line-interface.mdx)
