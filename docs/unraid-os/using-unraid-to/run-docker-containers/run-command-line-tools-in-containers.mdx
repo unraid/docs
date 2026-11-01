@@ -83,7 +83,10 @@ Try the `bsdtar` that is already in Unraid first. It needs no container:
 ```bash
 bsdtar -tf archive.rar              # list the files
 bsdtar -xf archive.rar -C /mnt/user/media/unpacked   # extract into an existing folder
+chown -R nobody:users /mnt/user/media/unpacked       # give the files the usual share owner
 ```
+
+When you run `bsdtar` as root, which is the default in the Unraid terminal, it keeps the owner and permissions that are stored in the archive. The extracted files can then belong to a user ID that does not exist on Unraid, and `nobody:users` (`99:100`) may not be able to write to them. The `chown` command fixes the owner. The `--no-same-owner` option does not help here: it gives the files to root instead.
 
 `bsdtar` also reads `.zip`, `.7z`, and `.iso` files, and it can create them. The tests behind this page found these results for RAR files, using the same `libarchive` version (3.8.10) that Unraid 7.3.4 includes:
 
@@ -145,12 +148,20 @@ No widely used image exists for `mediainfo` or `exiftool` alone. A small image t
 Add `--device /dev/dri` to give `ffmpeg` access to the Intel GPU. You also need the hardware options of `ffmpeg`. For example, this command encodes with VAAPI:
 
 ```bash
+# Find the render device of the Intel GPU (vendor 0x8086)
+for d in /sys/class/drm/renderD*; do
+  [ "$(cat "$d/device/vendor")" = 0x8086 ] && RENDER=/dev/dri/${d##*/} && break
+done
+echo "$RENDER"    # for example /dev/dri/renderD128
+
 docker run --rm --device /dev/dri --user 99:100 \
-  --group-add "$(stat -c %g /dev/dri/renderD128)" --entrypoint ffmpeg \
+  --group-add "$(stat -c %g "$RENDER")" --entrypoint ffmpeg \
   -v "$PWD":/work -w /work linuxserver/ffmpeg \
-  -init_hw_device vaapi=va:/dev/dri/renderD128 -filter_hw_device va \
+  -init_hw_device vaapi=va:"$RENDER" -filter_hw_device va \
   -i in.mp4 -vf format=nv12,hwupload -c:v h264_vaapi out.mp4
 ```
+
+The device name is often `renderD128`, but it can differ when the server has more than one GPU. If `echo "$RENDER"` prints nothing, the server has no Intel GPU.
 
 `--group-add` gives the container the group that owns the GPU device, so a non-root user can open it. Without `--device /dev/dri`, the command fails with `No VA display found`. The `qsv` encoders of `ffmpeg` also work through this device.
 
@@ -163,11 +174,13 @@ Every example above uses `--rm`. This section explains the difference between ru
 | Container after the command ends | Removed | Stays, in the `Exited` state |
 | Listed by `docker ps -a` | No | Yes |
 | Files written inside the container | Lost | Kept in the container until you remove it |
-| Logs and exit code | Lost | Kept (`docker logs`, `docker inspect`) |
+| Exit code of `docker run` (`$?` in the shell) | Same as the command | Same as the command |
+| Logs and stored exit code afterwards | Lost | Kept (`docker logs`, `docker inspect`) |
 | Anonymous volumes | Removed with the container | Stay until you remove them |
 | Named volumes | Stay | Stay |
 | Files written to a bind mount (`-v folder:/work`) | Kept | Kept |
-| Disk space in `docker.img` | Nothing grows | Grows with each run |
+| Disk space in `docker.img`: image | Used once, by the first pull or build (about 125 MB for `cli-tools`) | Same |
+| Disk space in `docker.img`: each run | No growth | The writable layer of each kept container |
 | `--name` can be used again | Yes | No, until you remove the container |
 
 The key point is that results written to a bind mount stay in the folder on your server in both cases. Only files written inside the container are lost with `--rm`.
@@ -177,17 +190,17 @@ The key point is that results written to a bind mount stay in the folder on your
 A container that is not removed stays in the list of stopped containers. In this example, the command fails on purpose:
 
 ```bash
-docker run --name test1 alpine sh -c 'echo hello; echo oops >&2; exit 3'
+docker run --name test1 alpine sh -c 'echo hello; echo oops >&2; echo result > /tmp/result.txt; exit 3'
 ```
 
-You can then inspect it:
+The `docker run` command returns the exit status of the command, so `echo $?` prints `3` here, with or without `--rm`. You can then inspect the stopped container:
 
 ```bash
 docker ps -a --filter name=test1       # shows "Exited (3)"
 docker logs test1                      # shows the saved output
 docker inspect test1 --format '{{.State.ExitCode}}'
-docker diff test1                      # lists files changed inside the container
-docker cp test1:/tmp/result.txt .      # copies a file out
+docker diff test1                      # lists files changed inside the container (shows /tmp/result.txt)
+docker cp test1:/tmp/result.txt .      # copies the file out of the container
 docker start -a test1                  # runs the same command again
 docker rm test1                        # removes it
 ```
@@ -196,7 +209,7 @@ A kept container also appears on the **Docker** tab of the %%WebGUI|web-gui%% in
 
 ### Disk use and name conflicts
 
-- **Disk use.** Each container without `--rm` keeps its own writable layer. Twenty runs that each wrote 10 MB inside the container kept about 200 MB. On Unraid, this space comes from `docker.img`, which can fill up. For more information about a full `docker.img`, see [Docker troubleshooting](../../troubleshooting/common-issues/docker-troubleshooting.mdx).
+- **Disk use.** The image is a one-time cost that `--rm` does not change. Each container without `--rm` also keeps its own writable layer, which is the per-run growth. Twenty runs that each wrote 10 MB inside the container kept about 200 MB. On Unraid, this space comes from `docker.img`, which can fill up. For more information about a full `docker.img`, see [Docker troubleshooting](../../troubleshooting/common-issues/docker-troubleshooting.mdx).
 - **Names.** A container name must be unique. A second `docker run --name test1` fails with `Conflict. The container name "/test1" is already in use`. This also applies to `--rm`, while the first container is still running.
 - **Volumes.** `--rm` removes anonymous volumes (for example `-v /data`) but not named volumes (for example `-v mydata:/data`). Without `--rm`, a plain `docker rm` leaves anonymous volumes behind. Use `docker rm -v` to remove them too.
 
@@ -220,7 +233,7 @@ Do not run `docker container prune` without a filter. It removes **every** stopp
 | Situation | Use |
 | --- | --- |
 | One-off commands such as `ffprobe`, `mediainfo`, `exiftool` | `--rm` |
-| You need the logs or exit code of a failed run | A named container without `--rm` |
+| You need the logs or stored exit code of a failed run afterwards | A named container without `--rm` |
 | You want to run the same configuration again with `docker start` | A named container without `--rm` |
 | You want to copy a file out with `docker cp` | A named container without `--rm` |
 | A long job that you check later | A named container without `--rm`, or `-d --name job` |
@@ -235,7 +248,7 @@ Each item shows what happens, why, and the fix. "Observed" means that the behavi
 - **`apk add` fails as a normal user.** The error is `Unable to open log: Permission denied`, because installing packages needs root. Observed. Fix: install the packages when you build the image, and run the tools with `--user`.
 - **`../` paths do not work.** Only the current folder is mounted, so `../other` does not exist in the container. Observed. Fix: run the command from a parent folder, or add another `-v`.
 - **`tcpdump` sees only the container network.** Observed: a container on the default network has only `eth0` and `lo`. Fix: `--net=host`. Capturing packets needs the `NET_RAW` capability. The [Docker documentation](https://docs.docker.com/engine/containers/run/) lists `NET_RAW` among the capabilities that are on by default, so you only see an error if you remove it, for example with `--cap-drop ALL`.
-- **Intel GPU: `No VA display found`.** The container does not get devices unless you add them. The Docker documentation says that `--device` "Allows you to run devices inside the container without the `--privileged` flag.", and the [`linuxserver/ffmpeg` documentation](https://docs.linuxserver.io/images/docker-ffmpeg/) uses `--device=/dev/dri:/dev/dri`. Observed: with `--user 99:100`, the render device also needs its group. Fix: `--group-add "$(stat -c %g /dev/dri/renderD128)"`. The Docker documentation describes `--group-add` as: "Add additional groups to run as".
+- **Intel GPU: `No VA display found`.** The container does not get devices unless you add them. The Docker documentation says that `--device` "Allows you to run devices inside the container without the `--privileged` flag.", and the [`linuxserver/ffmpeg` documentation](https://docs.linuxserver.io/images/docker-ffmpeg/) uses `--device=/dev/dri:/dev/dri`. Observed: with `--user 99:100`, the render device also needs its group. Fix: `--group-add "$(stat -c %g "$RENDER")"`, with `$RENDER` set as in [Hardware transcoding with an Intel GPU](#hardware-transcoding-with-an-intel-gpu). The Docker documentation describes `--group-add` as: "Add additional groups to run as".
 - **Anonymous and named volumes.** The Docker documentation says: "Only volumes that are specified without a name are removed." removing the container this way is "similar to running `docker rm -v my-container`". Observed: a plain `docker rm` leaves anonymous volumes behind, and named volumes always stay. Fix: use `docker rm -v`, or prefer bind mounts.
 - **Name conflicts.** A second `docker run --name job1` fails with `Conflict. The container name "/job1" is already in use`, while the first container exists. Observed. Fix: `docker rm job1`, or leave out `--name` when you use `--rm`.
 - **`docker container prune` removes every stopped container.** The [Docker documentation](https://docs.docker.com/reference/cli/docker/container/prune/) says: "Removes all stopped containers." That includes containers that you stopped on purpose. Fix: give your own containers a label and use `--filter label=...`, or use `docker rm <name>`.
