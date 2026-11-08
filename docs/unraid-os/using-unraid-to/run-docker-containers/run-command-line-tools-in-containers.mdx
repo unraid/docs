@@ -55,7 +55,7 @@ Each option has a purpose:
 
 The tool can only see the folder you mount. Paths such as `../other-folder` do not work inside the container.
 
-The first run downloads the image and stores it in `docker.img`. For more information, see [Overview](./overview.mdx).
+The first run downloads the image and stores it in `docker.img`, or in the Docker directory if **Docker data-root** on **Settings → Docker** is set to a directory. For more information, see [Overview](./overview.mdx).
 
 ## Choose the tools and images
 
@@ -82,11 +82,15 @@ Try the `bsdtar` that is already in Unraid first. It needs no container:
 
 ```bash
 bsdtar -tf archive.rar              # list the files
-bsdtar -xf archive.rar -C /mnt/user/media/unpacked   # extract into an existing folder
-chown -R nobody:users /mnt/user/media/unpacked       # give the files the usual share owner
+mkdir /mnt/user/media/unpacked \
+  && bsdtar -xf archive.rar -C /mnt/user/media/unpacked \
+  && chown -R nobody:users /mnt/user/media/unpacked \
+  && chmod -R u+rwX /mnt/user/media/unpacked
 ```
 
-When you run `bsdtar` as root, which is the default in the Unraid terminal, it keeps the owner and permissions that are stored in the archive. The extracted files can then belong to a user ID that does not exist on Unraid, and `nobody:users` (`99:100`) may not be able to write to them. The `chown` command fixes the owner. The `--no-same-owner` option does not help here: it gives the files to root instead.
+When you run `bsdtar` as root, which is the default in the Unraid terminal, it keeps the owner and permissions that are stored in the archive. The extracted files can then belong to a user ID that does not exist on Unraid, and `nobody:users` (`99:100`) may not be able to write to them. The `chown` command gives the files the usual share owner. The owner change alone is not enough when the archive stores read-only files or folders, so `chmod -R u+rwX` gives the owner write access. The `--no-same-owner` option does not help here: it gives the files to root instead.
+
+Extract into a new folder. `mkdir` stops the commands if the folder already exists, so `chown` and `chmod` do not change files that were there before.
 
 `bsdtar` also reads `.zip`, `.7z`, and `.iso` files, and it can create them. The tests behind this page found these results for RAR files, using the same `libarchive` version (3.8.10) that Unraid 7.3.4 includes:
 
@@ -149,6 +153,7 @@ Add `--device /dev/dri` to give `ffmpeg` access to the Intel GPU. You also need 
 
 ```bash
 # Find the render device of the Intel GPU (vendor 0x8086)
+RENDER=
 for d in /sys/class/drm/renderD*; do
   [ "$(cat "$d/device/vendor")" = 0x8086 ] && RENDER=/dev/dri/${d##*/} && break
 done
@@ -161,7 +166,7 @@ docker run --rm --device /dev/dri --user 99:100 \
   -i in.mp4 -vf format=nv12,hwupload -c:v h264_vaapi out.mp4
 ```
 
-The device name is often `renderD128`, but it can differ when the server has more than one GPU. If `echo "$RENDER"` prints nothing, the server has no Intel GPU.
+The device name is often `renderD128`, but it can differ when the server has more than one GPU. If `echo "$RENDER"` prints nothing, no Intel render device was found. Do not run the `docker` command then. Check that the server has an Intel GPU, that its driver is loaded, and that the GPU is not bound to VFIO for a VM.
 
 `--group-add` gives the container the group that owns the GPU device, so a non-root user can open it. Without `--device /dev/dri`, the command fails with `No VA display found`. The `qsv` encoders of `ffmpeg` also work through this device.
 
@@ -174,43 +179,45 @@ Every example above uses `--rm`. This section explains the difference between ru
 | Container after the command ends | Removed | Stays, in the `Exited` state |
 | Listed by `docker ps -a` | No | Yes |
 | Files written inside the container | Lost | Kept in the container until you remove it |
-| Exit code of `docker run` (`$?` in the shell) | Same as the command | Same as the command |
+| Exit code of `docker run` (`$?` in the shell), without `-d` | Same as the command | Same as the command |
 | Logs and stored exit code afterwards | Lost | Kept (`docker logs`, `docker inspect`) |
 | Anonymous volumes | Removed with the container | Stay until you remove them |
 | Named volumes | Stay | Stay |
 | Files written to a bind mount (`-v folder:/work`) | Kept | Kept |
-| Disk space in `docker.img`: image | Used once, by the first pull or build (about 125 MB for `cli-tools`) | Same |
-| Disk space in `docker.img`: each run | No growth | The writable layer of each kept container |
+| Disk space in Docker storage: image | Used once, by the first pull or build (about 125 MB for `cli-tools`) | Same |
+| Disk space in Docker storage: each run | No growth, except data written to a named volume | The writable layer and the log of each kept container, plus data written to a named volume |
 | `--name` can be used again | Yes | No, until you remove the container |
 
 The key point is that results written to a bind mount stay in the folder on your server in both cases. Only files written inside the container are lost with `--rm`.
+
+With `-d`, `docker run` starts the container in the background and returns at once, with exit code `0` if the start worked. To get the exit code of the job, use `docker wait <name>`. It waits until the container stops and prints its exit code. This needs a container without `--rm`, or a `docker wait` that runs before the container ends.
 
 ### What stays behind without `--rm`
 
 A container that is not removed stays in the list of stopped containers. In this example, the command fails on purpose:
 
 ```bash
-docker run --name test1 alpine sh -c 'echo hello; echo oops >&2; echo result > /tmp/result.txt; exit 3'
+docker run --name cli-demo alpine sh -c 'echo hello; echo oops >&2; echo result > /tmp/result.txt; exit 3'
 ```
 
-The `docker run` command returns the exit status of the command, so `echo $?` prints `3` here, with or without `--rm`. You can then inspect the stopped container:
+The `docker run` command returns the exit status of the command, so `echo $?` prints `3` here, with or without `--rm`. If the command fails with `Conflict. The container name "/cli-demo" is already in use` (exit status `125`), a container with this name already exists. Stop here and use another name, because the commands below would act on that container. Otherwise, you can inspect the stopped container:
 
 ```bash
-docker ps -a --filter name=test1       # shows "Exited (3)"
-docker logs test1                      # shows the saved output
-docker inspect test1 --format '{{.State.ExitCode}}'
-docker diff test1                      # lists files changed inside the container (shows /tmp/result.txt)
-docker cp test1:/tmp/result.txt .      # copies the file out of the container
-docker start -a test1                  # runs the same command again
-docker rm test1                        # removes it
+docker ps -a --filter 'name=^cli-demo$'   # shows "Exited (3)"
+docker logs cli-demo                      # shows the saved output
+docker inspect cli-demo --format '{{.State.ExitCode}}'
+docker diff cli-demo                      # lists files changed inside the container (shows /tmp/result.txt)
+out=$(mktemp -d) && docker cp cli-demo:/tmp/result.txt "$out"/ && echo "$out"   # copies the file into a new folder
+docker start -a cli-demo                  # runs the same command again
+docker rm cli-demo                        # removes it
 ```
 
 A kept container also appears on the **Docker** tab of the %%WebGUI|web-gui%% in the stopped state.
 
 ### Disk use and name conflicts
 
-- **Disk use.** The image is a one-time cost that `--rm` does not change. Each container without `--rm` also keeps its own writable layer, which is the per-run growth. Twenty runs that each wrote 10 MB inside the container kept about 200 MB. On Unraid, this space comes from `docker.img`, which can fill up. For more information about a full `docker.img`, see [Docker troubleshooting](../../troubleshooting/common-issues/docker-troubleshooting.mdx).
-- **Names.** A container name must be unique. A second `docker run --name test1` fails with `Conflict. The container name "/test1" is already in use`. This also applies to `--rm`, while the first container is still running.
+- **Disk use.** The image is a one-time cost that `--rm` does not change. Each container without `--rm` also keeps its own writable layer and its log (the output of the command), which is the per-run growth. Twenty runs that each wrote 10 MB inside the container kept about 200 MB. A command with a lot of output can leave a large log even when it writes few files. Data written to a named volume stays with or without `--rm`. On Unraid, this space comes from `docker.img`, which can fill up, or from the Docker directory if **Docker data-root** on **Settings → Docker** is set to a directory. For more information about a full `docker.img`, see [Docker troubleshooting](../../troubleshooting/common-issues/docker-troubleshooting.mdx).
+- **Names.** A container name must be unique. A second `docker run --name cli-demo` fails with `Conflict. The container name "/cli-demo" is already in use`. This also applies to `--rm`, while the first container is still running.
 - **Volumes.** `--rm` removes anonymous volumes (for example `-v /data`) but not named volumes (for example `-v mydata:/data`). Without `--rm`, a plain `docker rm` leaves anonymous volumes behind. Use `docker rm -v` to remove them too.
 
 ### Clean up
@@ -248,11 +255,11 @@ Each item shows what happens, why, and the fix. "Observed" means that the behavi
 - **`apk add` fails as a normal user.** The error is `Unable to open log: Permission denied`, because installing packages needs root. Observed. Fix: install the packages when you build the image, and run the tools with `--user`.
 - **`../` paths do not work.** Only the current folder is mounted, so `../other` does not exist in the container. Observed. Fix: run the command from a parent folder, or add another `-v`.
 - **`tcpdump` sees only the container network.** Observed: a container on the default network has only `eth0` and `lo`. Fix: `--net=host`. Capturing packets needs the `NET_RAW` capability. The [Docker documentation](https://docs.docker.com/engine/containers/run/) lists `NET_RAW` among the capabilities that are on by default, so you only see an error if you remove it, for example with `--cap-drop ALL`.
-- **Intel GPU: `No VA display found`.** The container does not get devices unless you add them. The Docker documentation says that `--device` "Allows you to run devices inside the container without the `--privileged` flag.", and the [`linuxserver/ffmpeg` documentation](https://docs.linuxserver.io/images/docker-ffmpeg/) uses `--device=/dev/dri:/dev/dri`. Observed: with `--user 99:100`, the render device also needs its group. Fix: `--group-add "$(stat -c %g "$RENDER")"`, with `$RENDER` set as in [Hardware transcoding with an Intel GPU](#hardware-transcoding-with-an-intel-gpu). The Docker documentation describes `--group-add` as: "Add additional groups to run as".
+- **Intel GPU: `No VA display found`.** The container does not get devices unless you add them. The Docker documentation says that `--device` "Allows you to run devices inside the container without the `--privileged` flag.", and the [`linuxserver/ffmpeg` documentation](https://docs.linuxserver.io/images/docker-ffmpeg/) uses `--device=/dev/dri:/dev/dri`. Observed: with `--user 99:100`, the render device also needs its group. Fix: add `--device /dev/dri`, and with `--user 99:100` also `--group-add "$(stat -c %g "$RENDER")"`, with `$RENDER` set as in [Hardware transcoding with an Intel GPU](#hardware-transcoding-with-an-intel-gpu). The Docker documentation describes `--group-add` as: "Add additional groups to run as".
 - **Anonymous and named volumes.** The Docker documentation says: "Only volumes that are specified without a name are removed." removing the container this way is "similar to running `docker rm -v my-container`". Observed: a plain `docker rm` leaves anonymous volumes behind, and named volumes always stay. Fix: use `docker rm -v`, or prefer bind mounts.
 - **Name conflicts.** A second `docker run --name job1` fails with `Conflict. The container name "/job1" is already in use`, while the first container exists. Observed. Fix: `docker rm job1`, or leave out `--name` when you use `--rm`.
 - **`docker container prune` removes every stopped container.** The [Docker documentation](https://docs.docker.com/reference/cli/docker/container/prune/) says: "Removes all stopped containers." That includes containers that you stopped on purpose. Fix: give your own containers a label and use `--filter label=...`, or use `docker rm <name>`.
-- **Disk use in `docker.img`.** Without `--rm`, each run keeps its changes. The [Overview](./overview.mdx) page says that "All the data and programs for each container are stored in a single virtual disk image file called `docker.img`." Observed: 20 runs that each wrote 10 MB kept about 200 MB. Fix: use `--rm`, or remove kept containers.
+- **Disk use in `docker.img`.** Without `--rm`, each run keeps its changes and its log. The [Overview](./overview.mdx) page says that "All the data and programs for each container are stored in a single virtual disk image file called `docker.img`." With a directory as **Docker data-root**, the space comes from that directory instead. Observed: 20 runs that each wrote 10 MB kept about 200 MB. Fix: use `--rm`, or remove kept containers.
 - **Alpine `7zip` cannot open RAR files.** The error is `Cannot open the file as archive`. The [Alpine package recipe](https://raw.githubusercontent.com/alpinelinux/aports/master/main/7zip/APKBUILD) says "DISABLE_RAR: RAR codec is non-free". Debian puts the same code in a separate `non-free` package. Its [copyright file](https://metadata.ftp-master.debian.org/changelogs//non-free/7/7zip-rar/7zip-rar_25.00+ds-1+deb13u1_copyright) says: "RAR code is under the non-free "unRAR license restriction"". Fix: use `bsdtar`, or the `rar-tools` image.
 - **`bsdtar` cannot read encrypted or multi-volume RAR files.** See [Archives and RAR files](#archives-and-rar-files). The `libarchive` [issue 1661](https://github.com/libarchive/libarchive/issues/1661) describes the missing encryption support, and [issue 3683](https://github.com/libarchive/libarchive/issues/3683) describes the multi-volume failure in 3.8.10. Fix: `rar-tools`.
 - **`tmux` and `screen` sessions end with the container.** Observed: a detached `tmux` session started in one `docker run --rm` was gone in the next run (`error connecting to /tmp/tmux-0/default`). Fix: use the web terminal, or a long-running container with `docker exec`.
