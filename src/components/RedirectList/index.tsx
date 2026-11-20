@@ -13,19 +13,21 @@ type ParsedRedirectObject = {
 };
 type Redirects = Redirect[];
 
+const initialRedirects = {
+  golinks: {
+    redirects: [],
+    title: "Go Links",
+    description: "Other websites should link to the Go Link specified in the Incoming Link column and the user will be redirected to the appropriate Destination.",
+  },
+  otherredirects: {
+    redirects: [],
+    title: "Other redirects",
+    description: "To account for sites not using Go Links, the following redirects are in place to help users find the corrent content when the content at an 'Incoming Link' no longer exists. We recommend linking to Go Links whenever possible as they are much more granular.",
+  },
+} satisfies Required<ParsedRedirectObject>;
+
 export function RedirectListViewer() {
-  const [redirects, setRedirects] = useState<ParsedRedirectObject>({
-    golinks: {
-      redirects: [],
-      title: "Go Links",
-      description: "Other websites should link to the Go Link specified in the Incoming Link column and the user will be redirected to the appropriate Destination.",
-    },
-    otherredirects: {
-      redirects: [],
-      title: "Other redirects",
-      description: "To account for sites not using Go Links, the following redirects are in place to help users find the corrent content when the content at an 'Incoming Link' no longer exists. We recommend linking to Go Links whenever possible as they are much more granular.",
-    },
-  });
+  const [redirects, setRedirects] = useState<ParsedRedirectObject>(initialRedirects);
 
   function compareRedirect(a: Redirect, b: Redirect) {
     if (a.from < b.from) {
@@ -45,6 +47,7 @@ export function RedirectListViewer() {
         const resText = await response.text();
         // get just the section that deals with redirects
         const resJson = resText.match(/redirects: (\[[^\]]*\])/m);
+        if (!resJson) throw new Error("Redirect list missing from the documentation configuration");
         const data: Redirect[] = eval(resJson[1]);
         const parsedRedirects = data.reduce<{
           golinks: Redirect[];
@@ -70,7 +73,7 @@ export function RedirectListViewer() {
           ...(parsedRedirects.golinks.length
             ? {
                 golinks: {
-                  ...redirects.golinks,
+                  ...initialRedirects.golinks,
                   redirects: parsedRedirects.golinks,
                 },
               }
@@ -78,7 +81,7 @@ export function RedirectListViewer() {
           ...(parsedRedirects.otherredirects.length
             ? {
                 otherredirects: {
-                  ...redirects.otherredirects,
+                  ...initialRedirects.otherredirects,
                   redirects: parsedRedirects.otherredirects,
                 },
               }
@@ -125,7 +128,7 @@ export function RedirectListViewer() {
   );
 }
 
-export function RedirectList(props) {
+export function RedirectList() {
   return (
     <BrowserOnly fallback={<div>Loading...</div>}>
       {() => <RedirectListViewer />}
