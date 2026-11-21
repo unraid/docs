@@ -49,7 +49,6 @@ RUN set -eux; \
     rm /tmp/actionlint.tar.gz
 
 RUN corepack enable \
-    && corepack prepare pnpm@10.33.2 --activate \
     && usermod -l vscode node \
     && groupmod -n vscode node \
     && usermod -d /home/vscode -m vscode \
