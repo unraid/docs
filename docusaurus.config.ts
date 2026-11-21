@@ -5,6 +5,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 // @ts-ignore - ESM module without proper types
 import remarkAutoGlossary from "@renatonagliati/remark-auto-glossary";
+import remarkGlossaryLinkTriggers from "./plugins/glossary-link-triggers/index.mjs";
 import remarkPresetLintRecommended from "remark-preset-lint-recommended";
 import remarkLintListItemIndent from "remark-lint-list-item-indent";
 import remarkLintOrderedListMarkerStyle from "remark-lint-ordered-list-marker-style";
@@ -123,6 +124,7 @@ const config: Config = {
           // Remark plugins for processing MDX
           remarkPlugins: [
             [remarkAutoGlossary, { yamlFile: "glossary.yaml" }],
+            remarkGlossaryLinkTriggers,
 
             // Import remark-lint plugins for consistency with standalone remark config
             remarkPresetLintRecommended,
