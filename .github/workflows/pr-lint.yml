@@ -27,3 +27,53 @@ jobs:
 
       - name: Run lint
         run: pnpm lint
+
+  renovate-merge-checks:
+    name: Renovate merge checks
+    # A failed or cancelled lint job must fail this check for Renovate.
+    if: always()
+    needs: lint
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      checks: read
+    steps:
+      - name: Verify Renovate lint and Cloudflare preview
+        uses: actions/github-script@v9
+        env:
+          LINT_RESULT: ${{ needs.lint.result }}
+        with:
+          script: |
+            const pr = context.payload.pull_request;
+            if (pr.user.login !== 'renovate[bot]') return;
+            if (pr.head.repo?.id !== pr.base.repo.id) {
+              throw new Error('Renovate previews require a branch in this repository.');
+            }
+            if (process.env.LINT_RESULT !== 'success') {
+              throw new Error('PR lint must pass before auto-merge.');
+            }
+
+            const sha = pr.head.sha;
+            const name = 'Workers Builds: unraid-docs';
+            for (let attempt = 0; attempt < 30; attempt++) {
+              const checks = await github.paginate(github.rest.checks.listForRef, {
+                ...context.repo,
+                ref: sha,
+                app_id: 85455,
+                check_name: name,
+                filter: 'latest',
+              });
+              const check = checks
+                .filter((item) =>
+                  item.head_sha === sha && item.name === name && item.app?.id === 85455)
+                .sort((a, b) => b.id - a.id)[0];
+              if (check?.status === 'completed') {
+                if (check.conclusion !== 'success') {
+                  throw new Error(`Cloudflare preview concluded: ${check.conclusion}`);
+                }
+                core.info(`Cloudflare preview passed for ${sha}: ${check.details_url}`);
+                return;
+              }
+              await new Promise((resolve) => setTimeout(resolve, 30_000));
+            }
+            throw new Error(`No successful Cloudflare preview for ${sha} before timeout.`);
