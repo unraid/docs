@@ -88,7 +88,8 @@ const config: Config = {
     faster: {
       swcJsLoader: true,
       swcJsMinimizer: true,
-      swcHtmlMinimizer: true,
+      // Cloudflare Workers Builds cannot load the SWC HTML native binding.
+      swcHtmlMinimizer: false,
       lightningCssMinimizer: true,
       mdxCrossCompilerCache: true,
       rspackBundler: true,
