@@ -1,4 +1,4 @@
-FROM node:24.16.0-bookworm
+FROM node:26.13.1-bookworm
 
 ENV COREPACK_ENABLE_DOWNLOAD_PROMPT=0
 ENV DEBIAN_FRONTEND=noninteractive
@@ -49,7 +49,6 @@ RUN set -eux; \
     rm /tmp/actionlint.tar.gz
 
 RUN corepack enable \
-    && corepack prepare pnpm@10.33.2 --activate \
     && usermod -l vscode node \
     && groupmod -n vscode node \
     && usermod -d /home/vscode -m vscode \

@@ -10,6 +10,8 @@ type Release = {
   md5?: string;
   changelog_pretty: string;
   downloadable?: boolean;
+  public: boolean;
+  supportStatus?: "supported" | "security-updates" | "superseded" | "eol";
 };
 
 type Minor = `${number}.${number}`;
@@ -57,9 +59,6 @@ const compareVersions = (a: string, b: string) => {
   return 0;
 };
 
-const getLatestRelease = (releases: Release[]) =>
-  [...releases].sort((a, b) => compareVersions(a.version, b.version))[0];
-
 const isDownloadableRelease = (
   release: Release,
 ): release is Release & { basefile: string; url: string; md5: string } =>
@@ -83,7 +82,9 @@ const getSupportPolicies = (currentMinor?: Minor, previousMinor?: Minor) => ({
     description:
       currentMinor && previousMinor
         ? `Unraid ${currentMinor}.x is the current public minor series. Unraid ${previousMinor}.x receives security updates as appropriate.`
-        : "Loading supported public minor series.",
+        : currentMinor
+          ? `Unraid ${currentMinor}.x is the current public minor series.`
+          : "No supported public minor series are available.",
     details: [
       "The latest patch or pre-release build in the current public minor series is supported.",
       "The latest patch in the previous public minor series receives security updates as appropriate.",
@@ -105,74 +106,83 @@ const getSupportPolicies = (currentMinor?: Minor, previousMinor?: Minor) => ({
 
 function Viewer() {
   const [releases, setReleases] = useState<Release[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [filter, setFilter] = useState<StatusFilter>("supported");
   const { colorMode } = useColorMode();
 
   useEffect(() => {
     fetch("https://releases.unraid.net/json?includePublic=1")
-      .then((response) => response.json())
-      .then((data: Release[]) =>
+      .then((response) => {
+        if (!response.ok) throw new Error("Release catalog request failed");
+        return response.json();
+      })
+      .then((data: Release[]) => {
+        const publicReleases = data.filter(
+          (release) => release.public === true,
+        );
+        const statuses = ["supported", "security-updates", "superseded", "eol"];
+        if (
+          publicReleases.some(
+            (release) =>
+              !release.supportStatus ||
+              !statuses.includes(release.supportStatus),
+          )
+        ) {
+          throw new Error("Release support status missing");
+        }
         setReleases(
-          [...data].sort((a, b) => compareVersions(a.version, b.version)),
+          [...publicReleases].sort((a, b) =>
+            compareVersions(a.version, b.version),
+          ),
+        );
+      })
+      .catch(() =>
+        setError(
+          "Release support information is unavailable. Please try again later.",
         ),
       )
-      .catch(console.error);
+      .finally(() => setLoading(false));
   }, []);
 
-  const minors = Array.from(
-    new Set(releases.map((release) => minorOf(release.version))),
-  ).sort((a, b) => compareVersions(`${a}.0`, `${b}.0`));
-  const currentMinor = minors[0];
-  const previousMinor = minors[1];
-
+  const currentRelease = releases.find(
+    (release) => release.supportStatus === "supported",
+  );
+  const previousRelease = releases.find(
+    (release) => release.supportStatus === "security-updates",
+  );
+  const currentMinor = currentRelease
+    ? minorOf(currentRelease.version)
+    : undefined;
+  const previousMinor = previousRelease
+    ? minorOf(previousRelease.version)
+    : undefined;
   const groups = {
-    current: releases.filter(
-      (release) => minorOf(release.version) === currentMinor,
-    ),
-    previous: releases.filter(
-      (release) => minorOf(release.version) === previousMinor,
-    ),
-    supported: releases.filter((release) =>
-      [currentMinor, previousMinor].includes(minorOf(release.version)),
-    ),
-    eol: releases.filter(
-      (release) =>
-        ![currentMinor, previousMinor].includes(minorOf(release.version)),
-    ),
+    supported: releases.filter((release) => release.supportStatus !== "eol"),
+    eol: releases.filter((release) => release.supportStatus === "eol"),
   };
-
   const supportPolicies = getSupportPolicies(currentMinor, previousMinor);
-
-  const latestCurrentRelease = getLatestRelease(groups.current);
-  const latestPreviousRelease = getLatestRelease(groups.previous);
-
-  const getRowStatus = (release: Release, statusFilter: StatusFilter) => {
-    const releaseMinor = minorOf(release.version);
-
-    if (statusFilter === "eol") return "EOL";
-    if (releaseMinor === currentMinor) {
-      return latestCurrentRelease?.version === release.version
-        ? "Supported"
-        : "Superseded";
-    }
-    if (releaseMinor === previousMinor) {
-      return latestPreviousRelease?.version === release.version
-        ? "Security updates"
-        : "Superseded";
-    }
-
-    return "EOL";
+  const statusLabels: Record<
+    NonNullable<Release["supportStatus"]>,
+    RowStatus
+  > = {
+    supported: "Supported",
+    "security-updates": "Security updates",
+    superseded: "Superseded",
+    eol: "EOL",
   };
 
-  const renderRows = (list: Release[], statusFilter: StatusFilter) =>
+  const renderRows = (list: Release[]) =>
     list.map((release) => {
-      const rowStatus = getRowStatus(release, statusFilter);
+      const rowStatus = release.supportStatus
+        ? statusLabels[release.supportStatus]
+        : null;
       const canDownload = isDownloadableRelease(release);
 
       return (
         <React.Fragment key={release.version}>
           <tr>
-            <td>{badge(rowStatus)}</td>
+            <td>{rowStatus ? badge(rowStatus) : null}</td>
             <td>{release.version}</td>
             <td>{release.date}</td>
             <td>
@@ -194,6 +204,9 @@ function Viewer() {
         </React.Fragment>
       );
     });
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div role="alert">{error}</div>;
 
   return (
     <>
@@ -256,7 +269,7 @@ function Viewer() {
             <th style={{ width: "5%" }}>Changes</th>
           </tr>
         </thead>
-        <tbody>{renderRows(groups[filter], filter)}</tbody>
+        <tbody>{renderRows(groups[filter])}</tbody>
       </table>
     </>
   );

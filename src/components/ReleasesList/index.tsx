@@ -19,19 +19,21 @@ type ParsedReleaseObject = {
 };
 type Releases = Release[];
 
+const initialReleases = {
+  featured: {
+    releases: [],
+    title: "Featured",
+    description: "Recommended Releases",
+  },
+  archive: {
+    releases: [],
+    title: "Archive",
+    description: "Older / Non-Recommended Releases",
+  },
+} satisfies Required<ParsedReleaseObject>;
+
 export function ReleasesListViewer() {
-  const [releases, setReleases] = useState<ParsedReleaseObject>({
-    featured: {
-      releases: [],
-      title: "Featured",
-      description: "Recommended Releases",
-    },
-    archive: {
-      releases: [],
-      title: "Archive",
-      description: "Older / Non-Recommended Releases",
-    },
-  });
+  const [releases, setReleases] = useState<ParsedReleaseObject>(initialReleases);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -57,7 +59,7 @@ export function ReleasesListViewer() {
           ...(parsedReleases.featured.length
             ? {
                 featured: {
-                  ...releases.featured,
+                  ...initialReleases.featured,
                   releases: parsedReleases.featured,
                 },
               }
@@ -65,7 +67,7 @@ export function ReleasesListViewer() {
           ...(parsedReleases.archive.length
             ? {
                 archive: {
-                  ...releases.archive,
+                  ...initialReleases.archive,
                   releases: parsedReleases.archive,
                 },
               }
@@ -124,7 +126,7 @@ export function ReleasesListViewer() {
   );
 }
 
-export function ReleasesList(props) {
+export function ReleasesList() {
   return (
     <BrowserOnly fallback={<div>Loading...</div>}>
       {() => <ReleasesListViewer />}
